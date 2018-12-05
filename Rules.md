@@ -7987,7 +7987,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `hash_function` | Enabled | No | lint | No | 4.2.0 
 
-The new hash function should be preferred in general. Consider using `func hash(into hasher: inout Hasher)` instead.
+Prefer using implementation `hash(into:)` instead of `hashValue`
 
 ### Examples
 
@@ -7997,14 +7997,47 @@ The new hash function should be preferred in general. Consider using `func hash(
 ```swift
 struct Foo: Hashable {
     let bar: Int = 10
-    let baz: String = "baz"
-    let xyz = 100
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(bar)
-        hasher.combine(baz)
-        hasher.combine(xyz)
       }
+}
+```
+
+```swift
+class Foo: Hashable {
+    let bar: Int = 10
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(bar)
+      }
+}
+```
+
+```swift
+var hashValue: Int { return 1 }
+class Foo: Hashable { 
+ }
+```
+
+```swift
+class Foo: Hashable {
+    let bar: String = "Foo"
+
+    public var hashValue: String {
+        return bar
+    }
+}
+```
+
+```swift
+class Foo: Hashable {
+    let bar: String = "Foo"
+
+    public var hashValue: String {
+        get { return bar }
+        set { bar = newValue }
+    }
 }
 ```
 
@@ -8015,11 +8048,19 @@ struct Foo: Hashable {
 ```swift
 struct Foo: Hashable {
     let bar: Int = 10
-    let baz: String = "baz"
-    let xyz = 100
 
     public ↓var hashValue: Int {
-        return bar + baz.hashValue * bar - xyz
+        return bar
+    }
+}
+```
+
+```swift
+class Foo: Hashable {
+    let bar: Int = 10
+
+    public ↓var hashValue: Int {
+        return bar
     }
 }
 ```

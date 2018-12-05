@@ -9,22 +9,49 @@ public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTes
     public static let description = RuleDescription(
         identifier: "hash_function",
         name: "Hash Function",
-        description: "The new hash function should be preferred in general. " +
-        "Consider using `func hash(into hasher: inout Hasher)` instead.",
+        description: "Prefer using implementation `hash(into:)` instead of `hashValue`",
         kind: .lint,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             """
             struct Foo: Hashable {
                 let bar: Int = 10
-                let baz: String = "baz"
-                let xyz = 100
 
                 func hash(into hasher: inout Hasher) {
                     hasher.combine(bar)
-                    hasher.combine(baz)
-                    hasher.combine(xyz)
                   }
+            }
+            """,
+            """
+            class Foo: Hashable {
+                let bar: Int = 10
+
+                func hash(into hasher: inout Hasher) {
+                    hasher.combine(bar)
+                  }
+            }
+            """,
+            """
+            var hashValue: Int { return 1 }
+            class Foo: Hashable { \n }
+            """,
+            """
+            class Foo: Hashable {
+                let bar: String = "Foo"
+
+                public var hashValue: String {
+                    return bar
+                }
+            }
+            """,
+            """
+            class Foo: Hashable {
+                let bar: String = "Foo"
+
+                public var hashValue: String {
+                    get { return bar }
+                    set { bar = newValue }
+                }
             }
             """
         ],
@@ -32,11 +59,18 @@ public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTes
             """
             struct Foo: Hashable {
                 let bar: Int = 10
-                let baz: String = "baz"
-                let xyz = 100
 
                 public ↓var hashValue: Int {
-                    return bar + baz.hashValue * bar - xyz
+                    return bar
+                }
+            }
+            """,
+            """
+            class Foo: Hashable {
+                let bar: Int = 10
+
+                public ↓var hashValue: Int {
+                    return bar
                 }
             }
             """
@@ -49,6 +83,7 @@ public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTes
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .varInstance,
+            dictionary.setterAccessibility == nil,
             dictionary.typeName == "Int",
             dictionary.name == "hashValue",
             let offset = dictionary.offset else {

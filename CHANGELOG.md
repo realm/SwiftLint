@@ -29,7 +29,7 @@
 * Fix false positives in `redundant_objc_attribute` for private declarations
   under `@objcMembers`.  
   [Daniel Metzing](https://github.com/dirtydanee)
-  [#2270](https://github.com/realm/SwiftLint/pull/2270)
+  [#2499](https://github.com/realm/SwiftLint/issues/2499)
 
 ## 0.29.1: There’s Always More Laundry
 

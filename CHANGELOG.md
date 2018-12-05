@@ -10,13 +10,13 @@
 
 #### Enhancements
 
-* Add new opt-in rule `vertical_whitespace_opening_braces` to warn against empty lines
-  after opening braces.  
+* Add new opt-in rule `vertical_whitespace_opening_braces` to warn against empty
+  lines after opening braces.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#1518](https://github.com/realm/SwiftLint/issues/1518)
 
-* Add new opt-in rule `vertical_whitespace_closing_braces` to warn against empty lines
-  before closing braces.  
+* Add new opt-in rule `vertical_whitespace_closing_braces` to warn against empty
+  lines before closing braces.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#1518](https://github.com/realm/SwiftLint/issues/1518)
 
@@ -26,7 +26,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives in `redundant_objc_attribute` for private declarations
+  under `@objcMembers`.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2270](https://github.com/realm/SwiftLint/pull/2270)
 
 ## 0.29.1: There’s Always More Laundry
 

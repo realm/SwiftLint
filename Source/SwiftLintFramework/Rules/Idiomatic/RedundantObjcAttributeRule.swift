@@ -4,6 +4,8 @@ import SourceKittenFramework
 private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
     [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
 
+private let privateACL: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate]
+
 public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -14,6 +16,7 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
         name: "Redundant @objc Attribute",
         description: "Objective-C attribute (@objc) is redundant in declaration.",
         kind: .idiomatic,
+        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             "@objc private var foo: String? {}",
             "@IBInspectable private var foo: String? {}",
@@ -60,6 +63,15 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
                @objc
                var bar: Int { return 0 }
                var fooBar: Int { return 1 }
+            }
+            """,
+            """
+            @objcMembers
+            class Foo: NSObject {
+              @objc
+              private var bar: Int {
+                return 0
+              }
             }
             """
         ],
@@ -108,8 +120,22 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
                 return 0
               }
             }
+            """,
+            """
+            @objc
+            extension Foo {
+              @objc
+              private ↓var bar: Int {
+                return 0
+              }
+            }
             """
         ])
+
+    fileprivate struct ObjcAttributeLocations {
+        var inObjcMembers = [NSRange]()
+        var inObjcExtension = [NSRange]()
+    }
 
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
@@ -121,12 +147,16 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
             return []
         }
 
-        let isInObjcVisibleScope = {
-            file.structure.dictionary.objcVisibleRanges.contains(where: { $0.contains(offset) })
+        let isInObjcVisibleScope = { () -> Bool in
+            let ranges = file.structure.dictionary.objcAttributeLocationRanges
+            if ranges.inObjcMembers.contains(where: { $0.contains(offset) })
+                && !enclosedSwiftAttributes.isDisjoint(with: privateACL) {
+                return false
+            }
+            return (ranges.inObjcMembers + ranges.inObjcExtension).contains(where: { $0.contains(offset) })
         }
 
         let isUsedWithObjcAttribute = { !enclosedSwiftAttributes.isDisjoint(with: kindsImplyingObjc) }
-
         if isInObjcVisibleScope() || isUsedWithObjcAttribute() {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: configuration.severity,
@@ -138,27 +168,37 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
 }
 
 private extension Dictionary where Key == String, Value == SourceKitRepresentable {
-    var objcVisibleRanges: [NSRange] {
-        var ranges = [NSRange]()
-        func search(in dictionary: [String: SourceKitRepresentable]) {
-            let enclosedRanges = [dictionary.enclosedObjcMembersRange, dictionary.enclosedObjcExtensionRange]
-            ranges.append(contentsOf: enclosedRanges.compactMap({ $0 }))
+    var objcAttributeLocationRanges: RedundantObjcAttributeRule.ObjcAttributeLocations {
+        var objcImpliedAttributeLocatioRanges = RedundantObjcAttributeRule.ObjcAttributeLocations()
+        func search(in dictionary: [Key: Value]) {
+            if let enclosedObjcMembersRange = dictionary.enclosedObjcMembersRange {
+                objcImpliedAttributeLocatioRanges.inObjcMembers.append(enclosedObjcMembersRange)
+            }
+
+            if let enclosedObjcExtensionRange = dictionary.enclosedObjcExtensionRange {
+                objcImpliedAttributeLocatioRanges.inObjcExtension.append(enclosedObjcExtensionRange)
+            }
 
             if let enclosedNonObjcMembersClassRange = dictionary.enclosedNonObjcMembersClassRange {
-                let intersectingRanges = ranges.filter { $0.intersects(enclosedNonObjcMembersClassRange) }
-                intersectingRanges.compactMap(ranges.index(of:))
-                                  .forEach { ranges.remove(at: $0) }
+                func split(ranges: inout [NSRange]) {
+                    let intersectingRanges = ranges.filter { $0.intersects(enclosedNonObjcMembersClassRange) }
+                    intersectingRanges.compactMap(ranges.index(of:))
+                        .forEach { ranges.remove(at: $0) }
 
-                intersectingRanges.forEach {
-                    let (lhs, rhs) = $0.split(by: enclosedNonObjcMembersClassRange)
-                    ranges += [lhs, rhs]
+                    intersectingRanges.forEach {
+                        let (lhs, rhs) = $0.split(by: enclosedNonObjcMembersClassRange)
+                        ranges += [lhs, rhs]
+                    }
                 }
+
+                split(ranges: &objcImpliedAttributeLocatioRanges.inObjcMembers)
+                split(ranges: &objcImpliedAttributeLocatioRanges.inObjcExtension)
             }
 
             dictionary.substructure.forEach(search)
         }
         search(in: self)
-        return ranges
+        return objcImpliedAttributeLocatioRanges
     }
 
     var bodyRange: NSRange? {

@@ -67,6 +67,7 @@
 * [Legacy CGGeometry Functions](#legacy-cggeometry-functions)
 * [Legacy Constant](#legacy-constant)
 * [Legacy Constructor](#legacy-constructor)
+* [Legacy Hashing](#legacy-hashing)
 * [Legacy NSGeometry Functions](#legacy-nsgeometry-functions)
 * [Legacy Random](#legacy-random)
 * [Variable Declaration Whitespace](#variable-declaration-whitespace)
@@ -9866,6 +9867,94 @@ UIOffset(horizontal: horizontal, vertical: vertical)
 
 ```swift
 ↓UIOffsetMake(horizontal, vertical)
+```
+
+</details>
+
+
+
+## Legacy Hashing
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`legacy_hashing` | Enabled | No | idiomatic | No | 4.2.0 
+
+Prefer using the `hash(into:)` function instead of overriding `hashValue`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+struct Foo: Hashable {
+    let bar: Int = 10
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(bar)
+      }
+}
+```
+
+```swift
+class Foo: Hashable {
+    let bar: Int = 10
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(bar)
+      }
+}
+```
+
+```swift
+var hashValue: Int { return 1 }
+class Foo: Hashable { 
+ }
+```
+
+```swift
+class Foo: Hashable {
+    let bar: String = "Foo"
+
+    public var hashValue: String {
+        return bar
+    }
+}
+```
+
+```swift
+class Foo: Hashable {
+    let bar: String = "Foo"
+
+    public var hashValue: String {
+        get { return bar }
+        set { bar = newValue }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+struct Foo: Hashable {
+    let bar: Int = 10
+
+    public ↓var hashValue: Int {
+        return bar
+    }
+}
+```
+
+```swift
+class Foo: Hashable {
+    let bar: Int = 10
+
+    public ↓var hashValue: Int {
+        return bar
+    }
+}
 ```
 
 </details>

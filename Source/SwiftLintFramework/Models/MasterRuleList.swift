@@ -68,6 +68,7 @@ public let masterRuleList = RuleList(rules: [
     LegacyCGGeometryFunctionsRule.self,
     LegacyConstantRule.self,
     LegacyConstructorRule.self,
+    LegacyHashingRule.self,
     LegacyNSGeometryFunctionsRule.self,
     LegacyRandomRule.self,
     LetVarWhitespaceRule.self,

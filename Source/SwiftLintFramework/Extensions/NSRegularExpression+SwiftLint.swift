@@ -9,8 +9,8 @@ private struct RegexCacheKey: Hashable {
 }
 
 extension NSRegularExpression.Options: Hashable {
-    public var hashValue: Int {
-        return rawValue.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
     }
 }
 

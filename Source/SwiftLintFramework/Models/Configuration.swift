@@ -22,15 +22,18 @@ public struct Configuration: Hashable {
     public private(set) var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
 
-    public var hashValue: Int {
+    public func hash(into hasher: inout Hasher) {
         if let configurationPath = configurationPath {
-            return configurationPath.hashValue
+            hasher.combine(configurationPath)
         } else if let rootPath = rootPath {
-            return rootPath.hashValue
+            hasher.combine(rootPath)
         } else if let cachePath = cachePath {
-            return cachePath.hashValue
+            hasher.combine(cachePath)
+        } else {
+            hasher.combine(included)
+            hasher.combine(excluded)
+            hasher.combine(reporter)
         }
-        return (included + excluded + [reporter]).reduce(0, { $0 ^ $1.hashValue })
     }
 
     internal var computedCacheDescription: String?

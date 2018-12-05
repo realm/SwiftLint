@@ -294,6 +294,12 @@ class LegacyConstructorRuleTests: XCTestCase {
     }
 }
 
+class LegacyHashingRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyHashingRule.description)
+    }
+}
+
 class LegacyNSGeometryFunctionsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyNSGeometryFunctionsRule.description)

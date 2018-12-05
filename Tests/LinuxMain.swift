@@ -603,6 +603,12 @@ extension LegacyConstructorRuleTests {
     ]
 }
 
+extension LegacyHashingRuleTests {
+    static var allTests: [(String, (LegacyHashingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension LegacyNSGeometryFunctionsRuleTests {
     static var allTests: [(String, (LegacyNSGeometryFunctionsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1420,6 +1426,7 @@ XCTMain([
     testCase(LegacyCGGeometryFunctionsRuleTests.allTests),
     testCase(LegacyConstantRuleTests.allTests),
     testCase(LegacyConstructorRuleTests.allTests),
+    testCase(LegacyHashingRuleTests.allTests),
     testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
     testCase(LegacyRandomRuleTests.allTests),
     testCase(LetVarWhitespaceRuleTests.allTests),

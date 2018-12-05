@@ -234,12 +234,6 @@ class FunctionDefaultParameterAtEndRuleTests: XCTestCase {
     }
 }
 
-class HashFunctionRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(HashFunctionRule.description)
-    }
-}
-
 class IdenticalOperandsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)
@@ -297,6 +291,12 @@ class LegacyConstantRuleTests: XCTestCase {
 class LegacyConstructorRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstructorRule.description)
+    }
+}
+
+class LegacyHashingRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyHashingRule.description)
     }
 }
 

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

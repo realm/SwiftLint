@@ -509,12 +509,6 @@ extension GlobTests {
     ]
 }
 
-extension HashFunctionRuleTests {
-    static var allTests: [(String, (HashFunctionRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension IdenticalOperandsRuleTests {
     static var allTests: [(String, (IdenticalOperandsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -605,6 +599,12 @@ extension LegacyConstantRuleTests {
 
 extension LegacyConstructorRuleTests {
     static var allTests: [(String, (LegacyConstructorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LegacyHashingRuleTests {
+    static var allTests: [(String, (LegacyHashingRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1412,7 +1412,6 @@ XCTMain([
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(GlobTests.allTests),
-    testCase(HashFunctionRuleTests.allTests),
     testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),
@@ -1427,6 +1426,7 @@ XCTMain([
     testCase(LegacyCGGeometryFunctionsRuleTests.allTests),
     testCase(LegacyConstantRuleTests.allTests),
     testCase(LegacyConstructorRuleTests.allTests),
+    testCase(LegacyHashingRuleTests.allTests),
     testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
     testCase(LegacyRandomRuleTests.allTests),
     testCase(LetVarWhitespaceRuleTests.allTests),

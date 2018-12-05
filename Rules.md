@@ -7987,7 +7987,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `hash_function` | Enabled | No | lint | No | 4.2.0 
 
-Prefer using implementation `hash(into:)` instead of `hashValue`
+Prefer using the `hash(into:)` function instead of overriding `hashValue`
 
 ### Examples
 

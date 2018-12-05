@@ -9,7 +9,7 @@ public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTes
     public static let description = RuleDescription(
         identifier: "hash_function",
         name: "Hash Function",
-        description: "Prefer using implementation `hash(into:)` instead of `hashValue`",
+        description: "Prefer using the `hash(into:)` function instead of overriding `hashValue`",
         kind: .lint,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [

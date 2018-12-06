@@ -80,6 +80,11 @@ private extension Rule {
             allViolations: violations
         )
 
+        let nonValidSuperfluousCommandViolations = self.nonValidSuperfluousCommandViolations(
+            regions: regions,
+            superfluousDisableCommandRule: superfluousDisableCommandRule,
+            ruleIdentifiers: ruleIdentifiers)
+
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
             enabledViolations = enabledViolationsAndRegions.compactMap { violation, _ in
@@ -94,8 +99,34 @@ private extension Rule {
             return identifiers.map { ($0, ruleID) }
         }
 
-        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations, ruleTime: ruleTime,
+        return LintResult(violations: enabledViolations +
+            superfluousDisableCommandViolations +
+            nonValidSuperfluousCommandViolations,
+                          ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+
+    private func nonValidSuperfluousCommandViolations(regions: [Region],
+                                                      superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+                                                      ruleIdentifiers: Set<RuleIdentifier>) -> [StyleViolation] {
+        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+            return []
+        }
+        let regions = regions.filter { $0.disabledRuleIdentifiers.isDisjoint(with: ruleIdentifiers) }
+
+        return regions.compactMap { region in
+            for id in region.disabledRuleIdentifiers where !ruleIdentifiers.contains(id) {
+                return StyleViolation(
+                    ruleDescription: type(of: superfluousDisableCommandRule).description,
+                    severity: superfluousDisableCommandRule.configuration.severity,
+                    location: region.start,
+                    reason: superfluousDisableCommandRule.reason(for: id.stringRepresentation)
+                )
+            }
+
+            return nil
+        }
+
     }
 }
 

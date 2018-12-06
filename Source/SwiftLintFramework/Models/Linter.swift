@@ -82,8 +82,7 @@ private extension Rule {
 
         let nonValidSuperfluousCommandViolations = self.nonValidSuperfluousCommandViolations(
             regions: regions,
-            superfluousDisableCommandRule: superfluousDisableCommandRule,
-            ruleIdentifiers: ruleIdentifiers)
+            superfluousDisableCommandRule: superfluousDisableCommandRule)
 
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
@@ -99,23 +98,28 @@ private extension Rule {
             return identifiers.map { ($0, ruleID) }
         }
 
-        return LintResult(violations: enabledViolations +
-            superfluousDisableCommandViolations +
+        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations +
             nonValidSuperfluousCommandViolations,
                           ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 
     private func nonValidSuperfluousCommandViolations(regions: [Region],
-                                                      superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-                                                      ruleIdentifiers: Set<RuleIdentifier>) -> [StyleViolation] {
+                                                      superfluousDisableCommandRule: SuperfluousDisableCommandRule?
+        ) -> [StyleViolation] {
+        let allValidIdentifiers = Set(masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) })
+
         guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
-        let regions = regions.filter { $0.disabledRuleIdentifiers.isDisjoint(with: ruleIdentifiers) }
+
+        let regions = regions.filter {
+            !$0.disabledRuleIdentifiers.contains(.all) &&
+                $0.disabledRuleIdentifiers.isDisjoint(with: allValidIdentifiers)
+        }
 
         return regions.compactMap { region in
-            for id in region.disabledRuleIdentifiers where !ruleIdentifiers.contains(id) {
+            for id in region.disabledRuleIdentifiers where !allValidIdentifiers.contains(id) {
                 return StyleViolation(
                     ruleDescription: type(of: superfluousDisableCommandRule).description,
                     severity: superfluousDisableCommandRule.configuration.severity,
@@ -126,7 +130,6 @@ private extension Rule {
 
             return nil
         }
-
     }
 }
 

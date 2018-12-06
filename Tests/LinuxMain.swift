@@ -109,6 +109,7 @@ extension CommandTests {
         ("testExpandThisCommand", testExpandThisCommand),
         ("testExpandNextCommand", testExpandNextCommand),
         ("testSuperfluousDisableCommands", testSuperfluousDisableCommands),
+        ("testNonValidSuperfluousDisableCommands", testNonValidSuperfluousDisableCommands),
         ("testSuperfluousDisableCommandsDisabled", testSuperfluousDisableCommandsDisabled),
         ("testSuperfluousDisableCommandsDisabledOnConfiguration", testSuperfluousDisableCommandsDisabledOnConfiguration)
     ]

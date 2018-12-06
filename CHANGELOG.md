@@ -29,6 +29,11 @@
   [Kim de Vos](https://github.com/kimdv)
   [#2108](https://github.com/realm/SwiftLint/issues/2108)
 
+* Improve `private_unit_test` rule to allow private classes with `@objc`
+  attribute.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#2282](https://github.com/realm/SwiftLint/issues/2282)
+
 #### Bug Fixes
 
 * Fix false positives in `redundant_objc_attribute` for private declarations

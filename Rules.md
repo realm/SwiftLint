@@ -14266,6 +14266,13 @@ public class FooTest: XCTestCase { func test1() {}
 ```
 
 ```swift
+@objc private class FooTest: XCTestCase { @objc private func test1() {}
+ internal func test2() {}
+ public func test3() {}
+ }
+```
+
+```swift
 private class Foo: NSObject { func test1() {}
  internal func test2() {}
  public func test3() {}

@@ -63,6 +63,11 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +
             "}",
+            "@objc private class FooTest: XCTestCase { " +
+                "@objc private func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+            "}",
             // Non-test classes
             "private class Foo: NSObject { " +
                 "func test1() {}\n " +
@@ -150,7 +155,9 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
 
     private func validateAccessControlLevel(file: File,
                                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let acl = AccessControlLevel(dictionary), acl.isPrivate else { return [] }
+        guard let acl = AccessControlLevel(dictionary), acl.isPrivate,
+            !dictionary.enclosedSwiftAttributes.contains(.objc)
+            else { return [] }
         let offset = dictionary.offset ?? 0
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severityConfiguration.severity,

@@ -128,6 +128,29 @@ private extension Rule {
             }
         }
     }
+
+    private func nonValidSuperfluousCommandViolations(regions: [Region],
+                                                      superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+                                                      ruleIdentifiers: Set<RuleIdentifier>) -> [StyleViolation] {
+        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+            return []
+        }
+        let regions = regions.filter { $0.disabledRuleIdentifiers.isDisjoint(with: ruleIdentifiers) }
+
+        return regions.compactMap { region in
+            for id in region.disabledRuleIdentifiers where !ruleIdentifiers.contains(id) {
+                return StyleViolation(
+                    ruleDescription: type(of: superfluousDisableCommandRule).description,
+                    severity: superfluousDisableCommandRule.configuration.severity,
+                    location: region.start,
+                    reason: superfluousDisableCommandRule.reason(for: id.stringRepresentation)
+                )
+            }
+
+            return nil
+        }
+
+    }
 }
 
 public struct Linter {

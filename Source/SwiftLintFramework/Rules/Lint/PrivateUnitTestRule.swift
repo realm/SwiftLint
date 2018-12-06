@@ -28,6 +28,16 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 }
 
+private extension Array where Element == [String: SourceKitRepresentable] {
+    func enclosedSwiftAttributes() -> Set<SwiftDeclarationAttributeKind> {
+        let swiftAttributes = flatMap { $0.swiftAttributes }
+            .compactMap { $0.attribute }
+            .compactMap(SwiftDeclarationAttributeKind.init(rawValue: ))
+
+        return Set(swiftAttributes)
+    }
+}
+
 public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider, AutomaticTestableRule {
     public var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
@@ -59,6 +69,12 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
                 "public func test3() {}\n " +
             "}",
             "public class FooTest: XCTestCase { " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+            "}",
+            "@objc" +
+            "private class FooTest: XCTestCase { " +
                 "func test1() {}\n " +
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +
@@ -150,7 +166,9 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
 
     private func validateAccessControlLevel(file: File,
                                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let acl = AccessControlLevel(dictionary), acl.isPrivate else { return [] }
+        guard let acl = AccessControlLevel(dictionary), acl.isPrivate,
+            !dictionary.swiftAttributes.enclosedSwiftAttributes().contains(.objc)
+            else { return [] }
         let offset = dictionary.offset ?? 0
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severityConfiguration.severity,

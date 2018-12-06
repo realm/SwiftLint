@@ -73,8 +73,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +
             "}",
-            "@objc" +
-            "private class FooTest: XCTestCase { " +
+            "@objc private class FooTest: XCTestCase { " +
                 "func test1() {}\n " +
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +

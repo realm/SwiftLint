@@ -25,9 +25,9 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
             "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics",
             """
             class ViewController: UIViewController {
-                func someMethod() {
-                    let myVar↓: Int = Int(5)
-                }
+              func someMethod() {
+                let myVar↓: Int = Int(5)
+              }
             }
             """
         ],
@@ -38,16 +38,16 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
                 "let alphanumerics = CharacterSet.alphanumerics",
             """
             class ViewController: UIViewController {
-                func someMethod() {
-                    let myVar↓: Int = Int(5)
-                }
+              func someMethod() {
+                let myVar↓: Int = Int(5)
+              }
             }
             """:
             """
             class ViewController: UIViewController {
-                func someMethod() {
-                    let myVar = Int(5)
-                }
+              func someMethod() {
+                let myVar = Int(5)
+              }
             }
             """
         ]

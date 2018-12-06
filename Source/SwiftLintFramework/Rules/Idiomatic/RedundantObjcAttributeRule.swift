@@ -60,9 +60,9 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
             """
             @IBDesignable
             extension Foo {
-               @objc
-               var bar: Int { return 0 }
-               var fooBar: Int { return 1 }
+              @objc
+              var bar: Int { return 0 }
+              var fooBar: Int { return 1 }
             }
             """,
             """

@@ -19,12 +19,12 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
             "func foo() {}",
             """
             class A: B {
-                override func foo(bar: Int = 0, baz: String) {}
+              override func foo(bar: Int = 0, baz: String) {}
             """,
             "func foo(bar: Int = 0, completion: @escaping CompletionHandler) {}",
             """
             func foo(a: Int, b: CGFloat = 0) {
-                let block = { (error: Error?) in }
+              let block = { (error: Error?) in }
             }
             """
         ],

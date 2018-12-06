@@ -15,47 +15,47 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
             """
             switch myvar {
             case 1:
-                var a = 1
-                fallthrough
+              var a = 1
+              fallthrough
             case 2:
-                var a = 2
+              var a = 2
             }
             """,
             """
             switch myvar {
             case "a":
-                var one = 1
-                var two = 2
-                fallthrough
+              var one = 1
+              var two = 2
+              fallthrough
             case "b": /* comment */
-                var three = 3
+              var three = 3
             }
             """,
             """
             switch myvar {
             case 1:
-               let one = 1
+              let one = 1
             case 2:
-               // comment
-               var two = 2
+              // comment
+              var two = 2
             }
             """,
             """
             switch myvar {
             case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
-                var three = 3
-                fallthrough
+              var three = 3
+              fallthrough
             default:
-                var three = 4
+              var three = 4
             }
             """,
             """
             switch myvar {
             case .alpha:
-                var one = 1
+              var one = 1
             case .beta:
-                var three = 3
-                fallthrough
+              var three = 3
+              fallthrough
             default:
                 var four = 4
             }
@@ -64,21 +64,21 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
             let aPoint = (1, -1)
             switch aPoint {
             case let (x, y) where x == y:
-                let A = "A"
+              let A = "A"
             case let (x, y) where x == -y:
-                let B = "B"
-                fallthrough
+              let B = "B"
+              fallthrough
             default:
-                let C = "C"
+              let C = "C"
             }
             """,
             """
             switch myvar {
             case MyFun(with: { $1 }):
-                let one = 1
-                fallthrough
+              let one = 1
+              fallthrough
             case "abc":
-                let two = 2
+              let two = 2
             }
             """
         ],
@@ -86,53 +86,53 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
             """
             switch myvar {
             case 1:
-                ↓fallthrough
+              ↓fallthrough
             case 2:
-                var a = 1
+              var a = 1
             }
             """,
             """
             switch myvar {
             case 1:
-                var a = 2
+              var a = 2
             case 2:
-                ↓fallthrough
+              ↓fallthrough
             case 3:
-                var a = 3
+              var a = 3
             }
             """,
             """
             switch myvar {
             case 1: // comment
-                ↓fallthrough
+              ↓fallthrough
             }
             """,
             """
             switch myvar {
             case 1: /* multi
-                line
-                comment */
-                ↓fallthrough
+              line
+              comment */
+              ↓fallthrough
             case 2:
-                var a = 2
+              var a = 2
             }
             """,
             """
             switch myvar {
             case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
-                ↓fallthrough
+              ↓fallthrough
             default:
-                var three = 4
+              var three = 4
             }
             """,
             """
             switch myvar {
             case .alpha:
-                var one = 1
+              var one = 1
             case .beta:
-                ↓fallthrough
+              ↓fallthrough
             case .gamma:
-                var three = 3
+              var three = 3
             default:
               var four = 4
             }
@@ -141,19 +141,19 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
             let aPoint = (1, -1)
             switch aPoint {
             case let (x, y) where x == y:
-                let A = "A"
+              let A = "A"
             case let (x, y) where x == -y:
-                ↓fallthrough
+              ↓fallthrough
             default:
-                let B = "B"
+              let B = "B"
             }
             """,
             """
             switch myvar {
             case MyFun(with: { $1 }):
-                ↓fallthrough
+              ↓fallthrough
             case "abc":
-                let two = 2
+              let two = 2
             }
             """
         ]

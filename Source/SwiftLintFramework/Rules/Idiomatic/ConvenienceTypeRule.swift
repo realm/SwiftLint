@@ -15,24 +15,24 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         nonTriggeringExamples: [
             """
             enum Math { // enum
-                public static let pi = 3.14
+              public static let pi = 3.14
             }
             """,
             """
             // class with inheritance
             class MathViewController: UIViewController {
-                public static let pi = 3.14
+              public static let pi = 3.14
             }
             """,
             """
             @objc class Math: NSObject { // class visible to Obj-C
-                public static let pi = 3.14
+              public static let pi = 3.14
             }
             """,
             """
             struct Math { // type with non-static declarations
-                public static let pi = 3.14
-                public let randomNumber = 2
+              public static let pi = 3.14
+              public let randomNumber = 2
             }
             """,
             "class DummyClass {}"
@@ -40,18 +40,18 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         triggeringExamples: [
             """
             ↓struct Math {
-                public static let pi = 3.14
+              public static let pi = 3.14
             }
             """,
             """
             ↓class Math {
-                public static let pi = 3.14
+              public static let pi = 3.14
             }
             """,
             """
             ↓struct Math {
-                public static let pi = 3.14
-                @available(*, unavailable) init() {}
+              public static let pi = 3.14
+              @available(*, unavailable) init() {}
             }
             """
         ]

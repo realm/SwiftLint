@@ -19,7 +19,7 @@ public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule,
             "var foo: Int",
             """
             private final class A {
-                private(set) var value: Int
+              private(set) var value: Int
             }
             """
         ],
@@ -30,17 +30,17 @@ public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule,
             "↓public(set) public var foo: Int",
             """
             open class Foo {
-                ↓open(set) open var bar: Int
+              ↓open(set) open var bar: Int
             }
             """,
             """
             class A {
-                ↓internal(set) var value: Int
+              ↓internal(set) var value: Int
             }
             """,
             """
             fileprivate class A {
-                ↓fileprivate(set) var value: Int
+              ↓fileprivate(set) var value: Int
             }
             """
         ]

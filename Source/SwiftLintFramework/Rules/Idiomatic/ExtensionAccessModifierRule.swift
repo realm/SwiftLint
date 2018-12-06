@@ -12,47 +12,67 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         description: "Prefer to use extension access modifiers",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "extension Foo: SomeProtocol {\n" +
-            "   public var bar: Int { return 1 }\n" +
-            "}",
-            "extension Foo {\n" +
-            "   private var bar: Int { return 1 }\n" +
-            "   public var baz: Int { return 1 }\n" +
-            "}",
-            "extension Foo {\n" +
-            "   private var bar: Int { return 1 }\n" +
-            "   public func baz() {}\n" +
-            "}",
-            "extension Foo {\n" +
-            "   var bar: Int { return 1 }\n" +
-            "   var baz: Int { return 1 }\n" +
-            "}",
-            "public extension Foo {\n" +
-            "   var bar: Int { return 1 }\n" +
-            "   var baz: Int { return 1 }\n" +
-            "}",
-            "extension Foo {\n" +
-            "   private bar: Int { return 1 }\n" +
-            "   private baz: Int { return 1 }\n" +
-            "}",
-            "extension Foo {\n" +
-            "   open bar: Int { return 1 }\n" +
-            "   open baz: Int { return 1 }\n" +
-            "}"
+            """
+            extension Foo: SomeProtocol {
+              public var bar: Int { return 1 }
+            }
+            """,
+            """
+            extension Foo {
+              private var bar: Int { return 1 }
+              public var baz: Int { return 1 }
+            }
+            """,
+            """
+            extension Foo {
+              private var bar: Int { return 1 }
+              public func baz() {}
+            }
+            """,
+            """
+            extension Foo {
+              var bar: Int { return 1 }
+              var baz: Int { return 1 }
+            }
+            """,
+            """
+            public extension Foo {
+              var bar: Int { return 1 }
+              var baz: Int { return 1 }
+            }
+            """,
+            """
+            extension Foo {
+              private bar: Int { return 1 }
+              private baz: Int { return 1 }
+            }
+            """,
+            """
+            extension Foo {
+              open bar: Int { return 1 }
+              open baz: Int { return 1 }
+            }
+            """
         ],
         triggeringExamples: [
-            "↓extension Foo {\n" +
-            "   public var bar: Int { return 1 }\n" +
-            "   public var baz: Int { return 1 }\n" +
-            "}",
-            "↓extension Foo {\n" +
-            "   public var bar: Int { return 1 }\n" +
-            "   public func baz() {}\n" +
-            "}",
-            "public extension Foo {\n" +
-            "   public ↓func bar() {}\n" +
-            "   public ↓func baz() {}\n" +
-            "}"
+            """
+            ↓extension Foo {
+               public var bar: Int { return 1 }
+               public var baz: Int { return 1 }
+            }
+            """,
+            """
+            ↓extension Foo {
+               public var bar: Int { return 1 }
+               public func baz() {}
+            }
+            """,
+            """
+            public extension Foo {
+               public ↓func bar() {}
+               public ↓func baz() {}
+            }
+            """
         ]
     )
 

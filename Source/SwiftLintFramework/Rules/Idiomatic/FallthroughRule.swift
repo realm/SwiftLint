@@ -11,18 +11,22 @@ public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         description: "Fallthrough should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "switch foo {\n" +
-            "case .bar, .bar2, .bar3:\n" +
-            "    something()\n" +
-            "}"
+            """
+            switch foo {
+            case .bar, .bar2, .bar3:
+              something()
+            }
+            """
         ],
         triggeringExamples: [
-            "switch foo {\n" +
-            "case .bar:\n" +
-            "    ↓fallthrough\n" +
-            "case .bar2:\n" +
-            "    something()\n" +
-            "}"
+            """
+            switch foo {
+            case .bar:
+              ↓fallthrough
+            case .bar2:
+              something()
+            }
+            """
         ]
     )
 

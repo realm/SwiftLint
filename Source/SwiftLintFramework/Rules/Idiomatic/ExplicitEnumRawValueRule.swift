@@ -11,18 +11,64 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         description: "Enums should be explicitly assigned their raw values.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "enum Numbers {\n case int(Int)\n case short(Int16)\n}\n",
-            "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",
-            "enum Numbers: Double {\n case one = 1.1\n case two = 2.2\n}\n",
-            "enum Numbers: String {\n case one = \"one\"\n case two = \"two\"\n}\n",
-            "protocol Algebra {}\nenum Numbers: Algebra {\n case one\n}\n"
+            """
+            enum Numbers {
+              case int(Int)
+              case short(Int16)
+            }
+            """,
+            """
+            enum Numbers: Int {
+              case one = 1
+              case two = 2
+            }
+            """,
+            """
+            enum Numbers: Double {
+              case one = 1.1
+              case two = 2.2
+            }
+            """,
+            """
+            enum Numbers: String {
+              case one = "one"
+              case two = "two"
+            }
+            """,
+            """
+            protocol Algebra {}
+            enum Numbers: Algebra {
+              case one
+            }
+            """
         ],
         triggeringExamples: [
-            "enum Numbers: Int {\n case one = 10, ↓two, three = 30\n}\n",
-            "enum Numbers: NSInteger {\n case ↓one\n}\n",
-            "enum Numbers: String {\n case ↓one\n case ↓two\n}\n",
-            "enum Numbers: String {\n case ↓one, two = \"two\"\n}\n",
-            "enum Numbers: Decimal {\n case ↓one, ↓two\n}\n"
+            """
+            enum Numbers: Int {
+              case one = 10, ↓two, three = 30
+            }
+            """,
+            """
+            enum Numbers: NSInteger {
+              case ↓one
+            }
+            """,
+            """
+            enum Numbers: String {
+              case ↓one
+              case ↓two
+            }
+            """,
+            """
+            enum Numbers: String {
+               case ↓one, two = "two"
+            }
+            """,
+            """
+            enum Numbers: Decimal {
+              case ↓one, ↓two
+            }
+            """
         ]
     )
 

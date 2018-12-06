@@ -21,20 +21,33 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             "let myVar: Optional<Int> = nil\n",
             "var myVar: Optional<Int> = 0\n",
             // properties with body should be ignored
-            "var foo: Int? {\n" +
-            "   if bar != nil { }\n" +
-            "   return 0\n" +
-            "}\n",
+            """
+            var foo: Int? {
+              if bar != nil { }
+              return 0
+            }
+            """
+            ,
             // properties with a closure call
-            "var foo: Int? = {\n" +
-            "   if bar != nil { }\n" +
-            "   return 0\n" +
-            "}()\n",
+            """
+            var foo: Int? = {
+              if bar != nil { }
+              return 0
+            }()
+            """,
             // lazy variables need to be initialized
             "lazy var test: Int? = nil",
             // local variables
-            "func funcName() {\n    var myVar: String?\n}",
-            "func funcName() {\n    let myVar: String? = nil\n}"
+            """
+            func funcName() {
+              var myVar: String?
+            }
+            """,
+            """
+            func funcName() {
+              let myVar: String? = nil
+            }
+            """
         ],
         triggeringExamples: triggeringExamples,
         corrections: corrections

@@ -14,9 +14,9 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule,
         nonTriggeringExamples: [
             """
             class A: Equatable {
-                static func == (lhs: A, rhs: A) -> Bool {
-                    return false
-                }
+              static func == (lhs: A, rhs: A) -> Bool {
+                return false
+              }
             """,
             """
             class A<T>: Equatable {
@@ -26,54 +26,54 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule,
             """,
             """
             public extension Array where Element == Rule {
-                static func == (lhs: Array, rhs: Array) -> Bool {
-                    if lhs.count != rhs.count { return false }
-                    return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
-                }
+              static func == (lhs: Array, rhs: Array) -> Bool {
+                if lhs.count != rhs.count { return false }
+                return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+              }
             }
             """,
             """
             private extension Optional where Wrapped: Comparable {
-                static func < (lhs: Optional, rhs: Optional) -> Bool {
-                    switch (lhs, rhs) {
-                    case let (lhs?, rhs?):
-                        return lhs < rhs
-                    case (nil, _?):
-                        return true
-                    default:
-                        return false
-                    }
+              static func < (lhs: Optional, rhs: Optional) -> Bool {
+                switch (lhs, rhs) {
+                case let (lhs?, rhs?):
+                  return lhs < rhs
+                case (nil, _?):
+                  return true
+                default:
+                  return false
                 }
+              }
             }
             """
         ],
         triggeringExamples: [
             """
             ↓func == (lhs: A, rhs: A) -> Bool {
-                return false
+              return false
             }
             """,
             """
             ↓func == <T>(lhs: A<T>, rhs: A<T>) -> Bool {
-                return false
+              return false
             }
             """,
             """
             ↓func == (lhs: [Rule], rhs: [Rule]) -> Bool {
-                if lhs.count != rhs.count { return false }
-                return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+              if lhs.count != rhs.count { return false }
+              return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
             }
             """,
             """
             private ↓func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
-                switch (lhs, rhs) {
-                case let (lhs?, rhs?):
-                    return lhs < rhs
-                case (nil, _?):
-                    return true
-                default:
-                    return false
-                }
+              switch (lhs, rhs) {
+              case let (lhs?, rhs?):
+                return lhs < rhs
+              case (nil, _?):
+                return true
+              default:
+                return false
+              }
             }
             """
         ]

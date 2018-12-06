@@ -19,6 +19,11 @@
   [#1815](https://github.com/realm/SwiftLint/issues/1815)
   [#2441](https://github.com/realm/SwiftLint/issues/2441)
 
+* Improve `superfluous_disable_command` to warn against disabling non-existent
+  rules.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#2348](https://github.com/realm/SwiftLint/issues/2348)
+
 ## 0.29.3: Entangled Agitator
 
 #### Breaking

@@ -5290,7 +5290,9 @@ internal final class Foo {}
 
 ```swift
 internal
-class Foo {  private let bar = 5 }
+class Foo {
+  private let bar = 5
+}
 ```
 
 ```swift
@@ -5312,13 +5314,13 @@ private struct C { let d = 5 }
 
 ```swift
 internal protocol A {
-    func b()
+  func b()
 }
 ```
 
 ```swift
 internal protocol A {
-    var b: Int
+  var b: Int
 }
 ```
 
@@ -5491,9 +5493,9 @@ Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()
 
 ```swift
 Observable.zip(
-    obs1,
-    obs2,
-    resultSelector: MyType.init
+  obs1,
+  obs2,
+  resultSelector: MyType.init
 ).asMaybe()
 ```
 
@@ -5511,15 +5513,15 @@ Observable.zip(
 
 ```swift
 func foo() -> [String] {
-    return [1].flatMap { String↓.init($0) }
+  return [1].flatMap { String↓.init($0) }
 }
 ```
 
 ```swift
 Observable.zip(
-    obs1,
-    obs2,
-    resultSelector: { MyType.init($0, $1) }
+  obs1,
+  obs2,
+  resultSelector: { MyType.init($0, $1) }
 ).asMaybe()
 ```
 
@@ -5683,28 +5685,24 @@ Properties should have a type interface
 class Foo {
   var myVar: Int? = 0
 }
-
 ```
 
 ```swift
 class Foo {
   let myVar: Int? = 0
 }
-
 ```
 
 ```swift
 class Foo {
   static var myVar: Int? = 0
 }
-
 ```
 
 ```swift
 class Foo {
   class var myVar: Int? = 0
 }
-
 ```
 
 </details>
@@ -5714,45 +5712,37 @@ class Foo {
 ```swift
 class Foo {
   ↓var myVar = 0
-
 }
-
 ```
 
 ```swift
 class Foo {
   ↓let mylet = 0
-
 }
-
 ```
 
 ```swift
 class Foo {
   ↓static var myStaticVar = 0
 }
-
 ```
 
 ```swift
 class Foo {
   ↓class var myClassVar = 0
 }
-
 ```
 
 ```swift
 class Foo {
   ↓let myVar = Int(0)
 }
-
 ```
 
 ```swift
 class Foo {
   ↓let myVar = Set<Int>(0)
 }
-
 ```
 
 </details>
@@ -14168,27 +14158,27 @@ internal extension String {}
 
 ```swift
 extension String {
-fileprivate func Something(){}
+  fileprivate func Something(){}
 }
 ```
 
 ```swift
 class MyClass {
-fileprivate let myInt = 4
+  fileprivate let myInt = 4
 }
 ```
 
 ```swift
 class MyClass {
-fileprivate(set) var myInt = 4
+  fileprivate(set) var myInt = 4
 }
 ```
 
 ```swift
 struct Outter {
-struct Inter {
-fileprivate struct Inner {}
-}
+  struct Inter {
+    fileprivate struct Inner {}
+  }
 }
 ```
 
@@ -14202,7 +14192,7 @@ fileprivate struct Inner {}
 
 ```swift
 ↓fileprivate class MyClass {
-fileprivate(set) var myInt = 4
+  fileprivate(set) var myInt = 4
 }
 ```
 
@@ -15733,9 +15723,8 @@ func foo()↓ -> Void {}
 
 ```swift
 protocol Foo {
- func foo()↓ -> Void
+  func foo()↓ -> Void
 }
-
 ```
 
 ```swift
@@ -15745,9 +15734,8 @@ func foo()↓ -> () {}
 
 ```swift
 protocol Foo {
- func foo()↓ -> ()
+  func foo()↓ -> ()
 }
-
 ```
 
 </details>
@@ -17086,15 +17074,15 @@ let x: Int!
 ```
 
 ```swift
-extension Array { 
- func x() { } 
- }
+extension Array {
+  func x() { }
+}
 ```
 
 ```swift
-extension Dictionary { 
- func x() { } 
- }
+extension Dictionary {
+  func x() { }
+}
 ```
 
 ```swift

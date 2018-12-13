@@ -26,9 +26,17 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         ],
         triggeringExamples: [
             "func foo()↓ -> Void {}\n",
-            "protocol Foo {\n func foo()↓ -> Void\n}\n",
+            """
+            protocol Foo {
+              func foo()↓ -> Void
+            }
+            """,
             "func foo()↓ -> () {}\n",
-            "protocol Foo {\n func foo()↓ -> ()\n}\n"
+            """
+            protocol Foo {
+              func foo()↓ -> ()
+            }
+            """
         ],
         corrections: [
             "func foo()↓ -> Void {}\n": "func foo() {}\n",

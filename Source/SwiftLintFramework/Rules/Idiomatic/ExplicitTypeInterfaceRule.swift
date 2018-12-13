@@ -12,18 +12,58 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         description: "Properties should have a type interface",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "class Foo {\n  var myVar: Int? = 0\n}\n",
-            "class Foo {\n  let myVar: Int? = 0\n}\n",
-            "class Foo {\n  static var myVar: Int? = 0\n}\n",
-            "class Foo {\n  class var myVar: Int? = 0\n}\n"
+            """
+            class Foo {
+              var myVar: Int? = 0
+            }
+            """,
+            """
+            class Foo {
+              let myVar: Int? = 0
+            }
+            """,
+            """
+            class Foo {
+              static var myVar: Int? = 0
+            }
+            """,
+            """
+            class Foo {
+              class var myVar: Int? = 0
+            }
+            """
         ],
         triggeringExamples: [
-            "class Foo {\n  ↓var myVar = 0\n\n}\n",
-            "class Foo {\n  ↓let mylet = 0\n\n}\n",
-            "class Foo {\n  ↓static var myStaticVar = 0\n}\n",
-            "class Foo {\n  ↓class var myClassVar = 0\n}\n",
-            "class Foo {\n  ↓let myVar = Int(0)\n}\n",
-            "class Foo {\n  ↓let myVar = Set<Int>(0)\n}\n"
+            """
+            class Foo {
+              ↓var myVar = 0
+            }
+            """,
+            """
+            class Foo {
+              ↓let mylet = 0
+            }
+            """,
+            """
+            class Foo {
+              ↓static var myStaticVar = 0
+            }
+            """,
+            """
+            class Foo {
+              ↓class var myClassVar = 0
+            }
+            """,
+            """
+            class Foo {
+              ↓let myVar = Int(0)
+            }
+            """,
+            """
+            class Foo {
+              ↓let myVar = Set<Int>(0)
+            }
+            """
         ]
     )
 

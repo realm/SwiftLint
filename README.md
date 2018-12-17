@@ -48,7 +48,7 @@ git is discouraged.
 
 ### Using [Mint](https://github.com/yonaskolb/mint):
 ```
-$ mint run realm/SwiftLint
+$ mint install realm/SwiftLint
 ```
 
 ### Using a pre-built package:

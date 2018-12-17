@@ -35,7 +35,7 @@ CocoaPods를 사용하면 최신 버전 외에도 SwiftLint의 특정 버전을 
 
 ### [Mint](https://github.com/yonaskolb/mint)를 사용하는 경우:
 ```
-$ mint run realm/SwiftLint
+$ mint install realm/SwiftLint
 ```
 
 ### 빌드된 패키지를 사용하는 경우:

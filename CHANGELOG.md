@@ -15,6 +15,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2433](https://github.com/realm/SwiftLint/issues/2433)
 
+* Make `weak_delegate` not trigger on properties that are immediately assigned.  
+  [skagedal](https://github.com/skagedal)
+  
 #### Bug Fixes
 
 * Fix inaccessible custom rules in nested configurations.  

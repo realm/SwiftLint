@@ -23017,6 +23017,13 @@ class Foo {
 }
 ```
 
+```swift
+class Foo {
+ var immediatelyInitializedDelegate = SomeClass()
+ }
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

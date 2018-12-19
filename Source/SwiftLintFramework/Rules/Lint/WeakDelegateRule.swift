@@ -24,7 +24,8 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
             // There's no way to declare a property weak in a protocol
             "protocol P {\n var delegate: AnyObject? { get set }\n}\n",
             "class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n",
-            "class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"
+            "class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}",
+            "class Foo {\n var immediatelyInitializedDelegate = SomeClass()\n }\n"
         ],
         triggeringExamples: [
             "class Foo {\n  ↓var delegate: SomeProtocol?\n}\n",
@@ -57,6 +58,9 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         // Check if non-computed
         let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
+
+        // Check if the declaration is followed by a = sign
+        guard !isImmediatelyAssigned(file: file, dictionary: dictionary) else { return [] }
 
         // Violation found!
         let location: Location
@@ -96,5 +100,19 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         }
         parse(dictionary: structure.dictionary)
         return results
+    }
+
+    private func isImmediatelyAssigned(file: File, dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            case let contents = file.contents.bridge(),
+            case let start = nameOffset + nameLength,
+            case let remainingLength = length - nameLength - (nameOffset - offset),
+            let range = contents.byteRangeToNSRange(start: start, length: remainingLength) else {
+            return false
+        }
+        return !file.match(pattern: "^\\s*=", range: range).isEmpty
     }
 }

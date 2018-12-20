@@ -85,6 +85,18 @@ extension Configuration {
             return nil
         }
 
+        let swiftlintVersion: String?
+        if let version = dict[Key.swiftlintVersion.rawValue] {
+            if let version = version as? String {
+                swiftlintVersion = version
+            } else {
+                queuedPrintError("Incorrect type for \(Key.swiftlintVersion.rawValue) – expected string, got \(type(of: version)). Ignoring.")
+                swiftlintVersion = nil
+            }
+        } else {
+            swiftlintVersion = nil
+        }
+        
         self.init(disabledRules: disabledRules,
                   optInRules: optInRules,
                   enableAllRules: enableAllRules,
@@ -96,7 +108,7 @@ extension Configuration {
                   reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
                   ruleList: ruleList,
                   configuredRules: configuredRules,
-                  swiftlintVersion: dict[Key.swiftlintVersion.rawValue] as? String,
+                  swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
                   indentation: indentation)
     }

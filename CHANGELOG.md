@@ -41,6 +41,9 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#2499](https://github.com/realm/SwiftLint/issues/2499)
 
+* Fix an error when pulling SwiftLint as a dependency using Carthage.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.29.1: There’s Always More Laundry
 
 #### Breaking

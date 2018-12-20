@@ -108,16 +108,23 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
                 return rhsOffset < lhsOffset
             }
             .compactMap {
+                guard let offset = $0.offset else { return nil }
                 if let attribute = $0.attribute,
-                   let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawAttribute: attribute) {
+                   let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawAttribute: attribute),
+                   let length = $0.length {
                     return ModifierDescription(
                         keyword: attribute.lastComponentAfter("."),
-                        group: modifierGroup
+                        group: modifierGroup,
+                        offset: offset,
+                        length: length
                     )
                 } else if let kind = $0.kind {
+                    let keyword = kind.lastComponentAfter(".")
                     return ModifierDescription(
-                        keyword: kind.lastComponentAfter("."),
-                        group: .typeMethods
+                        keyword: keyword,
+                        group: .typeMethods,
+                        offset: offset,
+                        length: keyword.count
                     )
                 }
                 return nil
@@ -144,4 +151,6 @@ private extension String {
 private struct ModifierDescription: Equatable {
     let keyword: String
     let group: SwiftDeclarationAttributeKind.ModifierGroup
+    let offset: Int
+    let length: Int
 }

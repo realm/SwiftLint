@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {

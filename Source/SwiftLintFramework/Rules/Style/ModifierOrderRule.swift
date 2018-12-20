@@ -36,18 +36,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
             return []
         }
 
-        let violatableModifiers = self.violatableModifiers(declaredModifiers: dictionary.modifierDescriptions)
-        let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
-        let sortedByPriorityModifiers = prioritizedModifiers.sorted(
-            by: { lhs, rhs in lhs.priority < rhs.priority }
-        ).map { $0.modifier }
-
-        let violatingModifiers = zip(
-            sortedByPriorityModifiers,
-            violatableModifiers
-        ).filter { sortedModifier, unsortedModifier in
-            return sortedModifier != unsortedModifier
-        }
+        let violatingModifiers = self.violatingModifiers(dictionary: dictionary)
 
         if let first = violatingModifiers.first {
             let preferredModifier = first.0
@@ -85,6 +74,25 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
             }
             return prioritizedModifiers + [(priority: priority, modifier: modifier)]
         }
+    }
+
+    private func violatingModifiers(
+        dictionary: [String: SourceKitRepresentable]
+    ) -> [(preferredModifier: ModifierDescription, declaredModifier: ModifierDescription)] {
+        let violatableModifiers = self.violatableModifiers(declaredModifiers: dictionary.modifierDescriptions)
+        let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
+        let sortedByPriorityModifiers = prioritizedModifiers.sorted(
+            by: { lhs, rhs in lhs.priority < rhs.priority }
+            ).map { $0.modifier }
+
+        let violatingModifiers = zip(
+            sortedByPriorityModifiers,
+            violatableModifiers
+        ).filter { sortedModifier, unsortedModifier in
+            sortedModifier != unsortedModifier
+        }
+
+        return violatingModifiers
     }
 }
 

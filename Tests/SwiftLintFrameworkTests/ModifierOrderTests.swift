@@ -371,10 +371,10 @@ class ModifierOrderTests: XCTestCase {
                 final private class Foo {}
                 """,
                 """
-                public protocol Foo: class {}
+                public protocol Foo: class {}\n
                 """:
                 """
-                public protocol Foo: class {}
+                public protocol Foo: class {}\n
                 """
             ]
         )

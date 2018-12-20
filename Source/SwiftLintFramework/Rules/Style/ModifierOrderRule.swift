@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule {

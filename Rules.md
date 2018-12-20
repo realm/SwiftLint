@@ -10751,7 +10751,7 @@ public let b: Int
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`modifier_order` | Disabled | No | style | No | 4.1.0 
+`modifier_order` | Disabled | Yes | style | No | 4.1.0 
 
 Modifier order should be consistent.
 

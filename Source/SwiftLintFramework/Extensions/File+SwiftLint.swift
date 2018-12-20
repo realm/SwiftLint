@@ -267,6 +267,10 @@ extension File {
         return violatingRanges
     }
 
+    internal func ruleEnabled(violatingRange: NSRange, for rule: Rule) -> NSRange? {
+        return ruleEnabled(violatingRanges: [violatingRange], for: rule).first
+    }
+
     fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
         let commentKinds = SyntaxKind.commentKinds
         return syntaxKindsByLines[startLine...endLine].filter { kinds in

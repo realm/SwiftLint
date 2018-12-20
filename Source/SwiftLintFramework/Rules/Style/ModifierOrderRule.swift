@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule {
     public var configuration = ModifierOrderConfiguration(
         preferredModifierOrder: [
             .override,
@@ -53,6 +53,72 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
         } else {
             return []
         }
+    }
+
+    public func correct(file: File) -> [Correction] {
+        return correct(file: file, dictionary: file.structure.dictionary)
+    }
+
+    private func correct(file: File, dictionary: [String: SourceKitRepresentable]) -> [Correction] {
+        return dictionary.substructure.flatMap { subDict -> [Correction] in
+            var corrections = correct(file: file, dictionary: subDict)
+
+            if let kindString = subDict.kind,
+                let kind = KindType(rawValue: kindString) {
+                corrections += correct(file: file, kind: kind, dictionary: subDict)
+            }
+
+            return corrections
+        }
+    }
+
+    private func correct(file: File,
+                         kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [Correction] {
+        guard let offset = dictionary.offset else { return [] }
+        let originalContents = file.contents.bridge()
+        let violatingRanges = violatingModifiers(dictionary: dictionary)
+            .compactMap { preferred, declared -> (NSRange, NSRange)? in
+                guard
+                    let preferredRange = originalContents.byteRangeToNSRange(
+                        start: preferred.offset,
+                        length: preferred.length
+                    ).flatMap({ file.ruleEnabled(violatingRange: $0, for: self) }),
+                    let declaredRange = originalContents.byteRangeToNSRange(
+                        start: declared.offset,
+                        length: declared.length
+                    ).flatMap({ file.ruleEnabled(violatingRange: $0, for: self) }) else {
+                    return nil
+                }
+                return (preferredRange, declaredRange)
+            }
+
+        let corrections: [Correction]
+        if violatingRanges.isEmpty {
+            corrections = []
+        } else {
+            var correctedContents = originalContents
+
+            violatingRanges.reversed().forEach { preferredModifierRange, declaredModifierRange in
+                correctedContents = correctedContents.replacingCharacters(
+                    in: declaredModifierRange,
+                    with: originalContents.substring(with: preferredModifierRange)
+                ).bridge()
+            }
+
+            file.write(correctedContents.bridge())
+
+            corrections = [
+                Correction(
+                    ruleDescription: type(of: self).description,
+                    location: Location(
+                        file: file,
+                        byteOffset: offset
+                    )
+                )
+            ]
+        }
+        return corrections
     }
 
     private func violatableModifiers(declaredModifiers: [ModifierDescription]) -> [ModifierDescription] {

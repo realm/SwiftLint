@@ -589,7 +589,6 @@
 		8F6B3153213CDCD100858E44 /* UnusedPrivateDeclarationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedPrivateDeclarationRule.swift; sourceTree = "<group>"; };
 		8F715B82213B528B00427BD9 /* UnusedImportRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedImportRule.swift; sourceTree = "<group>"; };
 		8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+IndentationStyle.swift"; sourceTree = "<group>"; };
-		8FB2AE2E21A1F99200D380F3 /* CryptoSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CryptoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8523A2117BDDE0015269B /* ExplicitSelfRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitSelfRule.swift; sourceTree = "<group>"; };
 		8FC9F5101F4B8E48006826C1 /* IsDisjointRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IsDisjointRule.swift; sourceTree = "<group>"; };
 		8FD216CB205584AF008ED13F /* CharacterSet+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CharacterSet+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -1169,14 +1168,6 @@
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 			);
 			path = Idiomatic;
-			sourceTree = "<group>";
-		};
-		8FB2AE2D21A1F99200D380F3 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8FB2AE2E21A1F99200D380F3 /* CryptoSwift.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D0D1210F19E87861005E4BAA = {

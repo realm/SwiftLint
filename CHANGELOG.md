@@ -41,6 +41,10 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#2499](https://github.com/realm/SwiftLint/issues/2499)
 
+* Verify correct type of the `swiftlint_version` configuration value.  
+  [skagedal](https://github.com/skagedal)
+  [#2518](https://github.com/realm/SwiftLint/issues/2518)
+  
 ## 0.29.1: There’s Always More Laundry
 
 #### Breaking

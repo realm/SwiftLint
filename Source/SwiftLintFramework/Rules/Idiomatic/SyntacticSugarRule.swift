@@ -17,8 +17,16 @@ public struct SyntacticSugarRule: ConfigurationProviderRule, AutomaticTestableRu
             "let x: Int?",
             "func x(a: [Int], b: Int) -> [Int: Any]",
             "let x: Int!",
-            "extension Array { \n func x() { } \n }",
-            "extension Dictionary { \n func x() { } \n }",
+            """
+            extension Array {
+              func x() { }
+            }
+            """,
+            """
+            extension Dictionary {
+              func x() { }
+            }
+            """,
             "let x: CustomArray<String>",
             "var currentIndex: Array<OnboardingPage>.Index?",
             "func x(a: [Int], b: Int) -> Array<Int>.Index",

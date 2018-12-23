@@ -12,54 +12,76 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
         description: "`where` clauses are preferred over a single `if` inside a `for`.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "for user in users where user.id == 1 { }\n",
+            """
+            for user in users where user.id == 1 { }
+            """,
             // if let
-            "for user in users {\n" +
-            "   if let id = user.id { }\n" +
-            "}\n",
+            """
+            for user in users {
+              if let id = user.id { }
+            }
+            """,
             // if var
-            "for user in users {\n" +
-            "   if var id = user.id { }\n" +
-            "}\n",
+            """
+            for user in users {
+              if var id = user.id { }
+            }
+            """,
             // if with else
-            "for user in users {\n" +
-            "   if user.id == 1 { } else { }\n" +
-            "}\n",
+            """
+            for user in users {
+              if user.id == 1 { } else { }
+            }
+            """,
             // if with else if
-            "for user in users {\n" +
-            "   if user.id == 1 {\n" +
-            "} else if user.id == 2 { }\n" +
-            "}\n",
+            """
+            for user in users {
+              if user.id == 1 {
+              } else if user.id == 2 { }
+            }
+            """,
             // if is not the only expression inside for
-            "for user in users {\n" +
-            "   if user.id == 1 { }\n" +
-            "   print(user)\n" +
-            "}\n",
+            """
+            for user in users {
+              if user.id == 1 { }
+              print(user)
+            }
+            """,
             // if a variable is used
-            "for user in users {\n" +
-            "   let id = user.id\n" +
-            "   if id == 1 { }\n" +
-            "}\n",
+            """
+            for user in users {
+              let id = user.id
+              if id == 1 { }
+            }
+            """,
             // if something is after if
-            "for user in users {\n" +
-            "   if user.id == 1 { }\n" +
-            "   return true\n" +
-            "}\n",
+            """
+            for user in users {
+              if user.id == 1 { }
+              return true
+            }
+            """,
             // condition with multiple clauses
-            "for user in users {\n" +
-            "   if user.id == 1 && user.age > 18 { }\n" +
-            "}\n",
+            """
+            for user in users {
+              if user.id == 1 && user.age > 18 { }
+            }
+            """,
             // if case
-            "for (index, value) in array.enumerated() {\n" +
-            "   if case .valueB(_) = value {\n" +
-            "       return index\n" +
-            "   }\n" +
-            "}\n"
+            """
+            for (index, value) in array.enumerated() {
+              if case .valueB(_) = value {
+                return index
+              }
+            }
+            """
         ],
         triggeringExamples: [
-            "for user in users {\n" +
-            "   ↓if user.id == 1 { return true }\n" +
-            "}\n"
+            """
+            for user in users {
+              ↓if user.id == 1 { return true }
+            }
+            """
         ]
     )
 

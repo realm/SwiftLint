@@ -713,17 +713,17 @@ let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
 
 ```swift
 class Foo: NSObject {
-   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
-                               change: [NSKeyValueChangeKey : Any]?,
-                               context: UnsafeMutableRawPointer?) {}
+  override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                              change: [NSKeyValueChangeKey : Any]?,
+                              context: UnsafeMutableRawPointer?) {}
 }
 ```
 
 ```swift
 class Foo: NSObject {
-   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
-                               change: Dictionary<NSKeyValueChangeKey, Any>?,
-                               context: UnsafeMutableRawPointer?) {}
+  override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                              change: Dictionary<NSKeyValueChangeKey, Any>?,
+                              context: UnsafeMutableRawPointer?) {}
 }
 ```
 
@@ -2737,27 +2737,27 @@ Types used for hosting only static members should be implemented as a caseless e
 
 ```swift
 enum Math { // enum
-    public static let pi = 3.14
+  public static let pi = 3.14
 }
 ```
 
 ```swift
 // class with inheritance
 class MathViewController: UIViewController {
-    public static let pi = 3.14
+  public static let pi = 3.14
 }
 ```
 
 ```swift
 @objc class Math: NSObject { // class visible to Obj-C
-    public static let pi = 3.14
+  public static let pi = 3.14
 }
 ```
 
 ```swift
 struct Math { // type with non-static declarations
-    public static let pi = 3.14
-    public let randomNumber = 2
+  public static let pi = 3.14
+  public let randomNumber = 2
 }
 ```
 
@@ -2771,20 +2771,20 @@ class DummyClass {}
 
 ```swift
 ↓struct Math {
-    public static let pi = 3.14
+  public static let pi = 3.14
 }
 ```
 
 ```swift
 ↓class Math {
-    public static let pi = 3.14
+  public static let pi = 3.14
 }
 ```
 
 ```swift
 ↓struct Math {
-    public static let pi = 3.14
-    @available(*, unavailable) init() {}
+  public static let pi = 3.14
+  @available(*, unavailable) init() {}
 }
 ```
 
@@ -5290,7 +5290,9 @@ internal final class Foo {}
 
 ```swift
 internal
-class Foo {  private let bar = 5 }
+class Foo {
+  private let bar = 5
+}
 ```
 
 ```swift
@@ -5312,13 +5314,13 @@ private struct C { let d = 5 }
 
 ```swift
 internal protocol A {
-    func b()
+  func b()
 }
 ```
 
 ```swift
 internal protocol A {
-    var b: Int
+  var b: Int
 }
 ```
 
@@ -5380,42 +5382,37 @@ Enums should be explicitly assigned their raw values.
 
 ```swift
 enum Numbers {
- case int(Int)
- case short(Int16)
+  case int(Int)
+  case short(Int16)
 }
-
 ```
 
 ```swift
 enum Numbers: Int {
- case one = 1
- case two = 2
+  case one = 1
+  case two = 2
 }
-
 ```
 
 ```swift
 enum Numbers: Double {
- case one = 1.1
- case two = 2.2
+  case one = 1.1
+  case two = 2.2
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case one = "one"
- case two = "two"
+  case one = "one"
+  case two = "two"
 }
-
 ```
 
 ```swift
 protocol Algebra {}
 enum Numbers: Algebra {
- case one
+  case one
 }
-
 ```
 
 </details>
@@ -5424,38 +5421,33 @@ enum Numbers: Algebra {
 
 ```swift
 enum Numbers: Int {
- case one = 10, ↓two, three = 30
+  case one = 10, ↓two, three = 30
 }
-
 ```
 
 ```swift
 enum Numbers: NSInteger {
- case ↓one
+  case ↓one
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case ↓one
- case ↓two
+  case ↓one
+  case ↓two
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case ↓one, two = "two"
+   case ↓one, two = "two"
 }
-
 ```
 
 ```swift
 enum Numbers: Decimal {
- case ↓one, ↓two
+  case ↓one, ↓two
 }
-
 ```
 
 </details>
@@ -5501,9 +5493,9 @@ Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()
 
 ```swift
 Observable.zip(
-    obs1,
-    obs2,
-    resultSelector: MyType.init
+  obs1,
+  obs2,
+  resultSelector: MyType.init
 ).asMaybe()
 ```
 
@@ -5521,15 +5513,15 @@ Observable.zip(
 
 ```swift
 func foo() -> [String] {
-    return [1].flatMap { String↓.init($0) }
+  return [1].flatMap { String↓.init($0) }
 }
 ```
 
 ```swift
 Observable.zip(
-    obs1,
-    obs2,
-    resultSelector: { MyType.init($0, $1) }
+  obs1,
+  obs2,
+  resultSelector: { MyType.init($0, $1) }
 ).asMaybe()
 ```
 
@@ -5693,28 +5685,24 @@ Properties should have a type interface
 class Foo {
   var myVar: Int? = 0
 }
-
 ```
 
 ```swift
 class Foo {
   let myVar: Int? = 0
 }
-
 ```
 
 ```swift
 class Foo {
   static var myVar: Int? = 0
 }
-
 ```
 
 ```swift
 class Foo {
   class var myVar: Int? = 0
 }
-
 ```
 
 </details>
@@ -5724,45 +5712,37 @@ class Foo {
 ```swift
 class Foo {
   ↓var myVar = 0
-
 }
-
 ```
 
 ```swift
 class Foo {
   ↓let mylet = 0
-
 }
-
 ```
 
 ```swift
 class Foo {
   ↓static var myStaticVar = 0
 }
-
 ```
 
 ```swift
 class Foo {
   ↓class var myClassVar = 0
 }
-
 ```
 
 ```swift
 class Foo {
   ↓let myVar = Int(0)
 }
-
 ```
 
 ```swift
 class Foo {
   ↓let myVar = Set<Int>(0)
 }
-
 ```
 
 </details>
@@ -5784,49 +5764,49 @@ Prefer to use extension access modifiers
 
 ```swift
 extension Foo: SomeProtocol {
-   public var bar: Int { return 1 }
+  public var bar: Int { return 1 }
 }
 ```
 
 ```swift
 extension Foo {
-   private var bar: Int { return 1 }
-   public var baz: Int { return 1 }
+  private var bar: Int { return 1 }
+  public var baz: Int { return 1 }
 }
 ```
 
 ```swift
 extension Foo {
-   private var bar: Int { return 1 }
-   public func baz() {}
+  private var bar: Int { return 1 }
+  public func baz() {}
 }
 ```
 
 ```swift
 extension Foo {
-   var bar: Int { return 1 }
-   var baz: Int { return 1 }
+  var bar: Int { return 1 }
+  var baz: Int { return 1 }
 }
 ```
 
 ```swift
 public extension Foo {
-   var bar: Int { return 1 }
-   var baz: Int { return 1 }
+  var bar: Int { return 1 }
+  var baz: Int { return 1 }
 }
 ```
 
 ```swift
 extension Foo {
-   private bar: Int { return 1 }
-   private baz: Int { return 1 }
+  private bar: Int { return 1 }
+  private baz: Int { return 1 }
 }
 ```
 
 ```swift
 extension Foo {
-   open bar: Int { return 1 }
-   open baz: Int { return 1 }
+  open bar: Int { return 1 }
+  open baz: Int { return 1 }
 }
 ```
 
@@ -5875,7 +5855,7 @@ Fallthrough should be avoided.
 ```swift
 switch foo {
 case .bar, .bar2, .bar3:
-    something()
+  something()
 }
 ```
 
@@ -5886,9 +5866,9 @@ case .bar, .bar2, .bar3:
 ```swift
 switch foo {
 case .bar:
-    ↓fallthrough
+  ↓fallthrough
 case .bar2:
-    something()
+  something()
 }
 ```
 
@@ -5913,14 +5893,12 @@ A fatalError call should have a message.
 func foo() {
   fatalError("Foo")
 }
-
 ```
 
 ```swift
 func foo() {
   fatalError(x)
 }
-
 ```
 
 </details>
@@ -5931,14 +5909,12 @@ func foo() {
 func foo() {
   ↓fatalError("")
 }
-
 ```
 
 ```swift
 func foo() {
   ↓fatalError()
 }
-
 ```
 
 </details>
@@ -7336,76 +7312,66 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 
 ```swift
 for user in users where user.id == 1 { }
-
 ```
 
 ```swift
 for user in users {
-   if let id = user.id { }
+  if let id = user.id { }
 }
-
 ```
 
 ```swift
 for user in users {
-   if var id = user.id { }
+  if var id = user.id { }
 }
-
 ```
 
 ```swift
 for user in users {
-   if user.id == 1 { } else { }
+  if user.id == 1 { } else { }
 }
-
 ```
 
 ```swift
 for user in users {
-   if user.id == 1 {
-} else if user.id == 2 { }
+  if user.id == 1 {
+  } else if user.id == 2 { }
 }
-
 ```
 
 ```swift
 for user in users {
-   if user.id == 1 { }
-   print(user)
+  if user.id == 1 { }
+  print(user)
 }
-
 ```
 
 ```swift
 for user in users {
-   let id = user.id
-   if id == 1 { }
+  let id = user.id
+  if id == 1 { }
 }
-
 ```
 
 ```swift
 for user in users {
-   if user.id == 1 { }
-   return true
+  if user.id == 1 { }
+  return true
 }
-
 ```
 
 ```swift
 for user in users {
-   if user.id == 1 && user.age > 18 { }
+  if user.id == 1 && user.age > 18 { }
 }
-
 ```
 
 ```swift
 for (index, value) in array.enumerated() {
-   if case .valueB(_) = value {
-       return index
-   }
+  if case .valueB(_) = value {
+    return index
+  }
 }
-
 ```
 
 </details>
@@ -7414,9 +7380,8 @@ for (index, value) in array.enumerated() {
 
 ```swift
 for user in users {
-   ↓if user.id == 1 { return true }
+  ↓if user.id == 1 { return true }
 }
-
 ```
 
 </details>
@@ -7468,7 +7433,10 @@ Force tries should be avoided.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-func a() throws {}; do { try a() } catch {}
+func a() throws {}
+do {
+  try a()
+} catch {}
 ```
 
 </details>
@@ -7476,7 +7444,8 @@ func a() throws {}; do { try a() } catch {}
 <summary>Triggering Examples</summary>
 
 ```swift
-func a() throws {}; ↓try! a()
+func a() throws {}
+↓try! a()
 ```
 
 </details>
@@ -7675,7 +7644,7 @@ func foo() {}
 
 ```swift
 class A: B {
-    override func foo(bar: Int = 0, baz: String) {}
+  override func foo(bar: Int = 0, baz: String) {}
 ```
 
 ```swift
@@ -7684,7 +7653,7 @@ func foo(bar: Int = 0, completion: @escaping CompletionHandler) {}
 
 ```swift
 func foo(a: Int, b: CGFloat = 0) {
-    let block = { (error: Error?) in }
+  let block = { (error: Error?) in }
 }
 ```
 
@@ -9174,12 +9143,12 @@ let foo = bar.joined(↓separator: "")
 
 ```swift
 let foo = bar.filter(toto)
-             .joined(↓separator: "")
+             .joined(↓separator: ""),
 ```
 
 ```swift
 func foo() -> String {
-   return ["1", "2"].joined(↓separator: "")
+  return ["1", "2"].joined(↓separator: "")
 }
 ```
 
@@ -9888,21 +9857,21 @@ Prefer using the `hash(into:)` function instead of overriding `hashValue`
 
 ```swift
 struct Foo: Hashable {
-    let bar: Int = 10
+  let bar: Int = 10
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(bar)
-      }
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(bar)
+  }
 }
 ```
 
 ```swift
 class Foo: Hashable {
-    let bar: Int = 10
+  let bar: Int = 10
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(bar)
-      }
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(bar)
+  }
 }
 ```
 
@@ -9914,22 +9883,22 @@ class Foo: Hashable {
 
 ```swift
 class Foo: Hashable {
-    let bar: String = "Foo"
+  let bar: String = "Foo"
 
-    public var hashValue: String {
-        return bar
-    }
+  public var hashValue: String {
+    return bar
+  }
 }
 ```
 
 ```swift
 class Foo: Hashable {
-    let bar: String = "Foo"
+  let bar: String = "Foo"
 
-    public var hashValue: String {
-        get { return bar }
-        set { bar = newValue }
-    }
+  public var hashValue: String {
+    get { return bar }
+    set { bar = newValue }
+  }
 }
 ```
 
@@ -12458,51 +12427,51 @@ Fallthroughs can only be used if the `case` contains at least one other statemen
 ```swift
 switch myvar {
 case 1:
-    var a = 1
-    fallthrough
+  var a = 1
+  fallthrough
 case 2:
-    var a = 2
+  var a = 2
 }
 ```
 
 ```swift
 switch myvar {
 case "a":
-    var one = 1
-    var two = 2
-    fallthrough
+  var one = 1
+  var two = 2
+  fallthrough
 case "b": /* comment */
-    var three = 3
+  var three = 3
 }
 ```
 
 ```swift
 switch myvar {
 case 1:
-   let one = 1
+  let one = 1
 case 2:
-   // comment
-   var two = 2
+  // comment
+  var two = 2
 }
 ```
 
 ```swift
 switch myvar {
 case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
-    var three = 3
-    fallthrough
+  var three = 3
+  fallthrough
 default:
-    var three = 4
+  var three = 4
 }
 ```
 
 ```swift
 switch myvar {
 case .alpha:
-    var one = 1
+  var one = 1
 case .beta:
-    var three = 3
-    fallthrough
+  var three = 3
+  fallthrough
 default:
     var four = 4
 }
@@ -12512,22 +12481,22 @@ default:
 let aPoint = (1, -1)
 switch aPoint {
 case let (x, y) where x == y:
-    let A = "A"
+  let A = "A"
 case let (x, y) where x == -y:
-    let B = "B"
-    fallthrough
+  let B = "B"
+  fallthrough
 default:
-    let C = "C"
+  let C = "C"
 }
 ```
 
 ```swift
 switch myvar {
 case MyFun(with: { $1 }):
-    let one = 1
-    fallthrough
+  let one = 1
+  fallthrough
 case "abc":
-    let two = 2
+  let two = 2
 }
 ```
 
@@ -12538,58 +12507,58 @@ case "abc":
 ```swift
 switch myvar {
 case 1:
-    ↓fallthrough
+  ↓fallthrough
 case 2:
-    var a = 1
+  var a = 1
 }
 ```
 
 ```swift
 switch myvar {
 case 1:
-    var a = 2
+  var a = 2
 case 2:
-    ↓fallthrough
+  ↓fallthrough
 case 3:
-    var a = 3
+  var a = 3
 }
 ```
 
 ```swift
 switch myvar {
 case 1: // comment
-    ↓fallthrough
+  ↓fallthrough
 }
 ```
 
 ```swift
 switch myvar {
 case 1: /* multi
-    line
-    comment */
-    ↓fallthrough
+  line
+  comment */
+  ↓fallthrough
 case 2:
-    var a = 2
+  var a = 2
 }
 ```
 
 ```swift
 switch myvar {
 case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
-    ↓fallthrough
+  ↓fallthrough
 default:
-    var three = 4
+  var three = 4
 }
 ```
 
 ```swift
 switch myvar {
 case .alpha:
-    var one = 1
+  var one = 1
 case .beta:
-    ↓fallthrough
+  ↓fallthrough
 case .gamma:
-    var three = 3
+  var three = 3
 default:
   var four = 4
 }
@@ -12599,20 +12568,20 @@ default:
 let aPoint = (1, -1)
 switch aPoint {
 case let (x, y) where x == y:
-    let A = "A"
+  let A = "A"
 case let (x, y) where x == -y:
-    ↓fallthrough
+  ↓fallthrough
 default:
-    let B = "B"
+  let B = "B"
 }
 ```
 
 ```swift
 switch myvar {
 case MyFun(with: { $1 }):
-    ↓fallthrough
+  ↓fallthrough
 case "abc":
-    let two = 2
+  let two = 2
 }
 ```
 
@@ -14189,27 +14158,27 @@ internal extension String {}
 
 ```swift
 extension String {
-fileprivate func Something(){}
+  fileprivate func Something(){}
 }
 ```
 
 ```swift
 class MyClass {
-fileprivate let myInt = 4
+  fileprivate let myInt = 4
 }
 ```
 
 ```swift
 class MyClass {
-fileprivate(set) var myInt = 4
+  fileprivate(set) var myInt = 4
 }
 ```
 
 ```swift
 struct Outter {
-struct Inter {
-fileprivate struct Inner {}
-}
+  struct Inter {
+    fileprivate struct Inner {}
+  }
 }
 ```
 
@@ -14223,7 +14192,7 @@ fileprivate struct Inner {}
 
 ```swift
 ↓fileprivate class MyClass {
-fileprivate(set) var myInt = 4
+  fileprivate(set) var myInt = 4
 }
 ```
 
@@ -15247,9 +15216,9 @@ extension Foo {
 ```swift
 @IBDesignable
 extension Foo {
-   @objc
-   var bar: Int { return 0 }
-   var fooBar: Int { return 1 }
+  @objc
+  var bar: Int { return 0 }
+  var fooBar: Int { return 1 }
 }
 ```
 
@@ -15407,18 +15376,16 @@ var myVar: Optional<Int> = 0
 
 ```swift
 var foo: Int? {
-   if bar != nil { }
-   return 0
+  if bar != nil { }
+  return 0
 }
-
 ```
 
 ```swift
 var foo: Int? = {
-   if bar != nil { }
-   return 0
+  if bar != nil { }
+  return 0
 }()
-
 ```
 
 ```swift
@@ -15427,13 +15394,13 @@ lazy var test: Int? = nil
 
 ```swift
 func funcName() {
-    var myVar: String?
+  var myVar: String?
 }
 ```
 
 ```swift
 func funcName() {
-    let myVar: String? = nil
+  let myVar: String? = nil
 }
 ```
 
@@ -15502,7 +15469,7 @@ var foo: Int
 
 ```swift
 private final class A {
-    private(set) var value: Int
+  private(set) var value: Int
 }
 ```
 
@@ -15528,19 +15495,19 @@ private final class A {
 
 ```swift
 open class Foo {
-    ↓open(set) open var bar: Int
+  ↓open(set) open var bar: Int
 }
 ```
 
 ```swift
 class A {
-    ↓internal(set) var value: Int
+  ↓internal(set) var value: Int
 }
 ```
 
 ```swift
 fileprivate class A {
-    ↓fileprivate(set) var value: Int
+  ↓fileprivate(set) var value: Int
 }
 ```
 
@@ -15563,41 +15530,36 @@ String enum values can be omitted when they are equal to the enumcase name.
 
 ```swift
 enum Numbers: String {
- case one
- case two
+  case one
+  case two
 }
-
 ```
 
 ```swift
 enum Numbers: Int {
- case one = 1
- case two = 2
+  case one = 1
+  case two = 2
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case one = "ONE"
- case two = "TWO"
+  case one = "ONE"
+  case two = "TWO"
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case one = "ONE"
- case two = "two"
+  case one = "ONE"
+  case two = "two"
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case one, two
+  case one, two
 }
-
 ```
 
 </details>
@@ -15606,24 +15568,21 @@ enum Numbers: String {
 
 ```swift
 enum Numbers: String {
- case one = ↓"one"
- case two = ↓"two"
+  case one = ↓"one"
+  case two = ↓"two"
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case one = ↓"one", two = ↓"two"
+  case one = ↓"one", two = ↓"two"
 }
-
 ```
 
 ```swift
 enum Numbers: String {
- case one, two = ↓"two"
+  case one, two = ↓"two"
 }
-
 ```
 
 </details>
@@ -15681,9 +15640,9 @@ let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics
 
 ```swift
 class ViewController: UIViewController {
-    func someMethod() {
-        let myVar↓: Int = Int(5)
-    }
+  func someMethod() {
+    let myVar↓: Int = Int(5)
+  }
 }
 ```
 
@@ -15770,9 +15729,8 @@ func foo()↓ -> Void {}
 
 ```swift
 protocol Foo {
- func foo()↓ -> Void
+  func foo()↓ -> Void
 }
-
 ```
 
 ```swift
@@ -15782,9 +15740,8 @@ func foo()↓ -> () {}
 
 ```swift
 protocol Foo {
- func foo()↓ -> ()
+  func foo()↓ -> ()
 }
-
 ```
 
 </details>
@@ -16606,9 +16563,9 @@ Operators should be declared as static functions, not free functions.
 
 ```swift
 class A: Equatable {
-    static func == (lhs: A, rhs: A) -> Bool {
-        return false
-    }
+  static func == (lhs: A, rhs: A) -> Bool {
+    return false
+  }
 ```
 
 ```swift
@@ -16620,25 +16577,25 @@ class A<T>: Equatable {
 
 ```swift
 public extension Array where Element == Rule {
-    static func == (lhs: Array, rhs: Array) -> Bool {
-        if lhs.count != rhs.count { return false }
-        return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
-    }
+  static func == (lhs: Array, rhs: Array) -> Bool {
+    if lhs.count != rhs.count { return false }
+    return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+  }
 }
 ```
 
 ```swift
 private extension Optional where Wrapped: Comparable {
-    static func < (lhs: Optional, rhs: Optional) -> Bool {
-        switch (lhs, rhs) {
-        case let (lhs?, rhs?):
-            return lhs < rhs
-        case (nil, _?):
-            return true
-        default:
-            return false
-        }
+  static func < (lhs: Optional, rhs: Optional) -> Bool {
+    switch (lhs, rhs) {
+    case let (lhs?, rhs?):
+      return lhs < rhs
+    case (nil, _?):
+      return true
+    default:
+      return false
     }
+  }
 }
 ```
 
@@ -16648,33 +16605,33 @@ private extension Optional where Wrapped: Comparable {
 
 ```swift
 ↓func == (lhs: A, rhs: A) -> Bool {
-    return false
+  return false
 }
 ```
 
 ```swift
 ↓func == <T>(lhs: A<T>, rhs: A<T>) -> Bool {
-    return false
+  return false
 }
 ```
 
 ```swift
 ↓func == (lhs: [Rule], rhs: [Rule]) -> Bool {
-    if lhs.count != rhs.count { return false }
-    return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+  if lhs.count != rhs.count { return false }
+  return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
 }
 ```
 
 ```swift
 private ↓func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
-    switch (lhs, rhs) {
-    case let (lhs?, rhs?):
-        return lhs < rhs
-    case (nil, _?):
-        return true
-    default:
-        return false
-    }
+  switch (lhs, rhs) {
+  case let (lhs?, rhs?):
+    return lhs < rhs
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
 }
 ```
 
@@ -16704,13 +16661,13 @@ private extension String {}
 ```
 
 ```swift
-public 
- extension String {}
+public
+extension String {}
 ```
 
 ```swift
-open extension 
- String {}
+open extension
+  String {}
 ```
 
 ```swift
@@ -16726,38 +16683,38 @@ internal extension String {}
 ```
 
 ```swift
-↓fileprivate 
- extension String {}
+↓fileprivate
+  extension String {}
 ```
 
 ```swift
-↓fileprivate extension 
- String {}
+↓fileprivate extension
+  String {}
 ```
 
 ```swift
 extension String {
-↓fileprivate func Something(){}
+  ↓fileprivate func Something(){}
 }
 ```
 
 ```swift
 class MyClass {
-↓fileprivate let myInt = 4
+  ↓fileprivate let myInt = 4
 }
 ```
 
 ```swift
 class MyClass {
-↓fileprivate(set) var myInt = 4
+  ↓fileprivate(set) var myInt = 4
 }
 ```
 
 ```swift
 struct Outter {
-struct Inter {
-↓fileprivate struct Inner {}
-}
+  struct Inter {
+    ↓fileprivate struct Inner {}
+  }
 }
 ```
 
@@ -17123,15 +17080,15 @@ let x: Int!
 ```
 
 ```swift
-extension Array { 
- func x() { } 
- }
+extension Array {
+  func x() { }
+}
 ```
 
 ```swift
-extension Dictionary { 
- func x() { } 
- }
+extension Dictionary {
+  func x() { }
+}
 ```
 
 ```swift
@@ -20849,14 +20806,14 @@ private typealias Foo = Void
 
 ```swift
 protocol Foo {
- associatedtype Bar
- }
+  associatedtype Bar
+}
 ```
 
 ```swift
 protocol Foo {
- associatedtype Bar: Equatable
- }
+  associatedtype Bar: Equatable
+}
 ```
 
 ```swift
@@ -20947,20 +20904,20 @@ typealias ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA = Void
 
 ```swift
 protocol Foo {
- associatedtype ↓X
- }
+  associatedtype ↓X
+}
 ```
 
 ```swift
 protocol Foo {
- associatedtype ↓Foo_Bar: Equatable
- }
+  associatedtype ↓Foo_Bar: Equatable
+}
 ```
 
 ```swift
 protocol Foo {
- associatedtype ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
- }
+  associatedtype ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+}
 ```
 
 </details>
@@ -20982,23 +20939,23 @@ Unimplemented functions should be marked as unavailable.
 
 ```swift
 class ViewController: UIViewController {
-    @available(*, unavailable)
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+  @available(*, unavailable)
+  public required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 }
 ```
 
 ```swift
 func jsonValue(_ jsonString: String) -> NSObject {
-    let data = jsonString.data(using: .utf8)!
-    let result = try! JSONSerialization.jsonObject(with: data, options: [])
-    if let dict = (result as? [String: Any])?.bridge() {
-        return dict
-    } else if let array = (result as? [Any])?.bridge() {
-        return array
-    }
-    fatalError()
+   let data = jsonString.data(using: .utf8)!
+   let result = try! JSONSerialization.jsonObject(with: data, options: [])
+   if let dict = (result as? [String: Any])?.bridge() {
+    return dict
+   } else if let array = (result as? [Any])?.bridge() {
+    return array
+   }
+   fatalError()
 }
 ```
 
@@ -21008,18 +20965,18 @@ func jsonValue(_ jsonString: String) -> NSObject {
 
 ```swift
 class ViewController: UIViewController {
-    public required ↓init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+  public required ↓init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 }
 ```
 
 ```swift
 class ViewController: UIViewController {
-    public required ↓init?(coder aDecoder: NSCoder) {
-        let reason = "init(coder:) has not been implemented"
-        fatalError(reason)
-    }
+  public required ↓init?(coder aDecoder: NSCoder) {
+    let reason = "init(coder:) has not been implemented"
+    fatalError(reason)
+  }
 }
 ```
 
@@ -21220,27 +21177,27 @@ Catch statements should not declare error variables without type casting.
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } catch {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } catch Error.invalidOperation {
 } catch {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } catch let error as MyError {
 } catch {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } catch var error as MyError {
 } catch {}
 ```
@@ -21251,43 +21208,43 @@ do {
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch var error {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch let error {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch let someError {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch var someError {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch let e {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch(let error) {}
 ```
 
 ```swift
 do {
-    try foo() 
+  try foo()
 } ↓catch (let error) {}
 ```
 
@@ -22823,13 +22780,13 @@ An XCTFail call should include a description of the assertion.
 
 ```swift
 func testFoo() {
-    XCTFail("bar")
+  XCTFail("bar")
 }
 ```
 
 ```swift
 func testFoo() {
-    XCTFail(bar)
+  XCTFail(bar)
 }
 ```
 
@@ -22839,13 +22796,13 @@ func testFoo() {
 
 ```swift
 func testFoo() {
-    ↓XCTFail()
+  ↓XCTFail()
 }
 ```
 
 ```swift
 func testFoo() {
-    ↓XCTFail("")
+  ↓XCTFail("")
 }
 ```
 

@@ -11,12 +11,28 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         description: "A fatalError call should have a message.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "func foo() {\n  fatalError(\"Foo\")\n}\n",
-            "func foo() {\n  fatalError(x)\n}\n"
+            """
+            func foo() {
+              fatalError("Foo")
+            }
+            """,
+            """
+            func foo() {
+              fatalError(x)
+            }
+            """
         ],
         triggeringExamples: [
-            "func foo() {\n  ↓fatalError(\"\")\n}\n",
-            "func foo() {\n  ↓fatalError()\n}\n"
+            """
+            func foo() {
+              ↓fatalError("")
+            }
+            """,
+            """
+            func foo() {
+              ↓fatalError()
+            }
+            """
         ]
     )
 

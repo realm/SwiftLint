@@ -22,16 +22,53 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         description: "String enum values can be omitted when they are equal to the enumcase name.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "enum Numbers: String {\n case one\n case two\n}\n",
-            "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",
-            "enum Numbers: String {\n case one = \"ONE\"\n case two = \"TWO\"\n}\n",
-            "enum Numbers: String {\n case one = \"ONE\"\n case two = \"two\"\n}\n",
-            "enum Numbers: String {\n case one, two\n}\n"
+            """
+            enum Numbers: String {
+              case one
+              case two
+            }
+            """,
+            """
+            enum Numbers: Int {
+              case one = 1
+              case two = 2
+            }
+            """,
+            """
+            enum Numbers: String {
+              case one = "ONE"
+              case two = "TWO"
+            }
+            """,
+            """
+            enum Numbers: String {
+              case one = "ONE"
+              case two = "two"
+            }
+            """,
+            """
+            enum Numbers: String {
+              case one, two
+            }
+            """
         ],
         triggeringExamples: [
-            "enum Numbers: String {\n case one = ↓\"one\"\n case two = ↓\"two\"\n}\n",
-            "enum Numbers: String {\n case one = ↓\"one\", two = ↓\"two\"\n}\n",
-            "enum Numbers: String {\n case one, two = ↓\"two\"\n}\n"
+            """
+            enum Numbers: String {
+              case one = ↓"one"
+              case two = ↓"two"
+            }
+            """,
+            """
+            enum Numbers: String {
+              case one = ↓"one", two = ↓"two"
+            }
+            """,
+            """
+            enum Numbers: String {
+              case one, two = ↓"two"
+            }
+            """
         ]
     )
 

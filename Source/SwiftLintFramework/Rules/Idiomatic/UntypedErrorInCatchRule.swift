@@ -35,19 +35,66 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
         description: "Catch statements should not declare error variables without type casting.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "do {\n    try foo() \n} catch {}",
-            "do {\n    try foo() \n} catch Error.invalidOperation {\n} catch {}",
-            "do {\n    try foo() \n} catch let error as MyError {\n} catch {}",
-            "do {\n    try foo() \n} catch var error as MyError {\n} catch {}"
+            """
+            do {
+              try foo()
+            } catch {}
+            """,
+            """
+            do {
+              try foo()
+            } catch Error.invalidOperation {
+            } catch {}
+            """,
+            """
+            do {
+              try foo()
+            } catch let error as MyError {
+            } catch {}
+            """,
+            """
+            do {
+              try foo()
+            } catch var error as MyError {
+            } catch {}
+            """
         ],
         triggeringExamples: [
-            "do {\n    try foo() \n} ↓catch var error {}",
-            "do {\n    try foo() \n} ↓catch let error {}",
-            "do {\n    try foo() \n} ↓catch let someError {}",
-            "do {\n    try foo() \n} ↓catch var someError {}",
-            "do {\n    try foo() \n} ↓catch let e {}",
-            "do {\n    try foo() \n} ↓catch(let error) {}",
-            "do {\n    try foo() \n} ↓catch (let error) {}"
+            """
+            do {
+              try foo()
+            } ↓catch var error {}
+            """,
+            """
+            do {
+              try foo()
+            } ↓catch let error {}
+            """,
+            """
+            do {
+              try foo()
+            } ↓catch let someError {}
+            """,
+            """
+            do {
+              try foo()
+            } ↓catch var someError {}
+            """,
+            """
+            do {
+              try foo()
+            } ↓catch let e {}
+            """,
+            """
+            do {
+              try foo()
+            } ↓catch(let error) {}
+            """,
+            """
+            do {
+              try foo()
+            } ↓catch (let error) {}
+            """
         ],
         corrections: [
             "do {\n    try foo() \n} ↓catch let error {}": "do {\n    try foo() \n} catch {}",

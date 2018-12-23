@@ -12,21 +12,28 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "let observer = foo.observe(\\.value, options: [.new]) { (foo, change) in\n" +
-            "   print(change.newValue)\n" +
-            "}"
+            """
+            let observer = foo.observe(\\.value, options: [.new]) { (foo, change) in
+               print(change.newValue)
+            }
+            """
         ],
         triggeringExamples: [
-            "class Foo: NSObject {\n" +
-            "   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,\n" +
-            "                               change: [NSKeyValueChangeKey : Any]?,\n" +
-            "                               context: UnsafeMutableRawPointer?) {}\n" +
-            "}",
-            "class Foo: NSObject {\n" +
-            "   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,\n" +
-            "                               change: Dictionary<NSKeyValueChangeKey, Any>?,\n" +
-            "                               context: UnsafeMutableRawPointer?) {}\n" +
-            "}"
+            """
+            class Foo: NSObject {
+              override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                                          change: [NSKeyValueChangeKey : Any]?,
+                                          context: UnsafeMutableRawPointer?) {}
+            }
+            """
+           ,
+            """
+            class Foo: NSObject {
+              override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                                          change: Dictionary<NSKeyValueChangeKey, Any>?,
+                                          context: UnsafeMutableRawPointer?) {}
+            }
+            """
         ]
     )
 

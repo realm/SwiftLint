@@ -19,9 +19,15 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
         ],
         triggeringExamples: [
             "let foo = bar.joined(↓separator: \"\")",
-            "let foo = bar.filter(toto)\n" +
-            "             .joined(↓separator: \"\")",
-            "func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}"
+            """
+            let foo = bar.filter(toto)
+                         .joined(↓separator: ""),
+            """,
+            """
+            func foo() -> String {
+              return ["1", "2"].joined(↓separator: "")
+            }
+            """
         ],
         corrections: [
             "let foo = bar.joined(↓separator: \"\")": "let foo = bar.joined()",

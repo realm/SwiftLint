@@ -11,10 +11,18 @@ public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
         description: "Force tries should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "func a() throws {}; do { try a() } catch {}"
+            """
+            func a() throws {}
+            do {
+              try a()
+            } catch {}
+            """
         ],
         triggeringExamples: [
-            "func a() throws {}; ↓try! a()"
+            """
+            func a() throws {}
+            ↓try! a()
+            """
         ]
     )
 

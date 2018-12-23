@@ -19,13 +19,26 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             "private struct C {}\n",
             "internal enum A {\n internal enum B {}\n}",
             "internal final class Foo {}",
-            "internal\nclass Foo {  private let bar = 5 }",
+            """
+            internal
+            class Foo {
+              private let bar = 5
+            }
+            """,
             "internal func a() { let a =  }\n",
             "private func a() { func innerFunction() { } }",
             "private enum Foo { enum Bar { } }",
             "private struct C { let d = 5 }",
-            "internal protocol A {\n    func b()\n}",
-            "internal protocol A {\n    var b: Int\n}",
+            """
+            internal protocol A {
+              func b()
+            }
+            """,
+            """
+            internal protocol A {
+              var b: Int
+            }
+            """,
             "internal class A { deinit {} }"
         ],
         triggeringExamples: [

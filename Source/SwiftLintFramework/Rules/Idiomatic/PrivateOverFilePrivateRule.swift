@@ -17,14 +17,36 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
             "public \n enum MyEnum {}",
             "open extension \n String {}",
             "internal extension String {}",
-            "extension String {\nfileprivate func Something(){}\n}",
-            "class MyClass {\nfileprivate let myInt = 4\n}",
-            "class MyClass {\nfileprivate(set) var myInt = 4\n}",
-            "struct Outter {\nstruct Inter {\nfileprivate struct Inner {}\n}\n}"
+            """
+            extension String {
+              fileprivate func Something(){}
+            }
+            """,
+            """
+            class MyClass {
+              fileprivate let myInt = 4
+            }
+            """,
+            """
+            class MyClass {
+              fileprivate(set) var myInt = 4
+            }
+            """,
+            """
+            struct Outter {
+              struct Inter {
+                fileprivate struct Inner {}
+              }
+            }
+            """
         ],
         triggeringExamples: [
             "↓fileprivate enum MyEnum {}",
-            "↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}"
+            """
+            ↓fileprivate class MyClass {
+              fileprivate(set) var myInt = 4
+            }
+            """
         ],
         corrections: [
             "↓fileprivate enum MyEnum {}": "private enum MyEnum {}",

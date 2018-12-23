@@ -15,39 +15,39 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         nonTriggeringExamples: [
             """
             class ViewController: UIViewController {
-                @available(*, unavailable)
-                public required init?(coder aDecoder: NSCoder) {
-                    fatalError("init(coder:) has not been implemented")
-                }
+              @available(*, unavailable)
+              public required init?(coder aDecoder: NSCoder) {
+                fatalError("init(coder:) has not been implemented")
+              }
             }
             """,
             """
             func jsonValue(_ jsonString: String) -> NSObject {
-                let data = jsonString.data(using: .utf8)!
-                let result = try! JSONSerialization.jsonObject(with: data, options: [])
-                if let dict = (result as? [String: Any])?.bridge() {
-                    return dict
-                } else if let array = (result as? [Any])?.bridge() {
-                    return array
-                }
-                fatalError()
+               let data = jsonString.data(using: .utf8)!
+               let result = try! JSONSerialization.jsonObject(with: data, options: [])
+               if let dict = (result as? [String: Any])?.bridge() {
+                return dict
+               } else if let array = (result as? [Any])?.bridge() {
+                return array
+               }
+               fatalError()
             }
             """
         ],
         triggeringExamples: [
             """
             class ViewController: UIViewController {
-                public required ↓init?(coder aDecoder: NSCoder) {
-                    fatalError("init(coder:) has not been implemented")
-                }
+              public required ↓init?(coder aDecoder: NSCoder) {
+                fatalError("init(coder:) has not been implemented")
+              }
             }
             """,
             """
             class ViewController: UIViewController {
-                public required ↓init?(coder aDecoder: NSCoder) {
-                    let reason = "init(coder:) has not been implemented"
-                    fatalError(reason)
-                }
+              public required ↓init?(coder aDecoder: NSCoder) {
+                let reason = "init(coder:) has not been implemented"
+                fatalError(reason)
+              }
             }
             """
         ]

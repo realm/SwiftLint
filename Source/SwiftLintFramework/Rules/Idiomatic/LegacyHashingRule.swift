@@ -14,20 +14,20 @@ public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTe
         nonTriggeringExamples: [
             """
             struct Foo: Hashable {
-                let bar: Int = 10
+              let bar: Int = 10
 
-                func hash(into hasher: inout Hasher) {
-                    hasher.combine(bar)
-                  }
+              func hash(into hasher: inout Hasher) {
+                hasher.combine(bar)
+              }
             }
             """,
             """
             class Foo: Hashable {
-                let bar: Int = 10
+              let bar: Int = 10
 
-                func hash(into hasher: inout Hasher) {
-                    hasher.combine(bar)
-                  }
+              func hash(into hasher: inout Hasher) {
+                hasher.combine(bar)
+              }
             }
             """,
             """
@@ -36,21 +36,21 @@ public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTe
             """,
             """
             class Foo: Hashable {
-                let bar: String = "Foo"
+              let bar: String = "Foo"
 
-                public var hashValue: String {
-                    return bar
-                }
+              public var hashValue: String {
+                return bar
+              }
             }
             """,
             """
             class Foo: Hashable {
-                let bar: String = "Foo"
+              let bar: String = "Foo"
 
-                public var hashValue: String {
-                    get { return bar }
-                    set { bar = newValue }
-                }
+              public var hashValue: String {
+                get { return bar }
+                set { bar = newValue }
+              }
             }
             """
         ],

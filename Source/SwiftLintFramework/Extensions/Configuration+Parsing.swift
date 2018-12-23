@@ -85,6 +85,7 @@ extension Configuration {
             return nil
         }
 
+        let swiftlintVersion = dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) }
         self.init(disabledRules: disabledRules,
                   optInRules: optInRules,
                   enableAllRules: enableAllRules,
@@ -96,7 +97,7 @@ extension Configuration {
                   reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
                   ruleList: ruleList,
                   configuredRules: configuredRules,
-                  swiftlintVersion: dict[Key.swiftlintVersion.rawValue] as? String,
+                  swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
                   indentation: indentation)
     }

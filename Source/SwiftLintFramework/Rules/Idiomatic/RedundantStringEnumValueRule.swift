@@ -61,6 +61,11 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
             """,
             """
             enum Numbers: String {
+              case one = ↓"one", two = ↓"two"
+            }
+            """,
+            """
+            enum Numbers: String {
               case one, two = ↓"two"
             }
             """

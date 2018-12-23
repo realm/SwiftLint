@@ -7329,7 +7329,7 @@ for user in users {
 ```swift
 for user in users {
   if user.id == 1 { } else { }
-"}
+}
 ```
 
 ```swift
@@ -7433,7 +7433,7 @@ Force tries should be avoided.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-func a() throws {};
+func a() throws {}
 do {
   try a()
 } catch {}
@@ -7444,7 +7444,7 @@ do {
 <summary>Triggering Examples</summary>
 
 ```swift
-func a() throws {};
+func a() throws {}
 ↓try! a()
 ```
 
@@ -15570,6 +15570,12 @@ enum Numbers: String {
 enum Numbers: String {
   case one = ↓"one"
   case two = ↓"two"
+}
+```
+
+```swift
+enum Numbers: String {
+  case one = ↓"one", two = ↓"two"
 }
 ```
 

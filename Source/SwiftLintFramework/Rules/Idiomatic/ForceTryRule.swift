@@ -12,7 +12,7 @@ public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             """
-            func a() throws {};
+            func a() throws {}
             do {
               try a()
             } catch {}
@@ -20,7 +20,7 @@ public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
         ],
         triggeringExamples: [
             """
-            func a() throws {};
+            func a() throws {}
             ↓try! a()
             """
         ]

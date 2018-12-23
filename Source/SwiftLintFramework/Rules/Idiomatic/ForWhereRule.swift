@@ -31,7 +31,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
             """
             for user in users {
               if user.id == 1 { } else { }
-            "}
+            }
             """,
             // if with else if
             """

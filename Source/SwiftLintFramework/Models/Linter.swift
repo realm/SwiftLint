@@ -80,7 +80,7 @@ private extension Rule {
             allViolations: violations
         )
 
-        let nonValidSuperfluousCommandViolations = self.nonValidSuperfluousCommandViolations(
+        let undefinedDisableCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions,
             superfluousDisableCommandRule: superfluousDisableCommandRule)
 
@@ -98,28 +98,27 @@ private extension Rule {
             return identifiers.map { ($0, ruleID) }
         }
 
-        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations +
-            nonValidSuperfluousCommandViolations,
-                          ruleTime: ruleTime,
-                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+        return LintResult(
+            violations: enabledViolations + superfluousDisableCommandViolations + undefinedDisableCommandViolations,
+            ruleTime: ruleTime,
+            deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 
-    private func nonValidSuperfluousCommandViolations(regions: [Region],
-                                                      superfluousDisableCommandRule: SuperfluousDisableCommandRule?
+    private func undefinedSuperfluousCommandViolations(regions: [Region],
+                                                       superfluousDisableCommandRule: SuperfluousDisableCommandRule?
         ) -> [StyleViolation] {
-        let allValidIdentifiers = Set(masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) })
-
         guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
 
+        let allValidIdentifiers = Set(masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) })
         let regions = regions.filter {
             !$0.disabledRuleIdentifiers.contains(.all) &&
                 $0.disabledRuleIdentifiers.isDisjoint(with: allValidIdentifiers)
         }
 
         return regions.compactMap { region in
-            for id in region.disabledRuleIdentifiers where !allValidIdentifiers.contains(id) {
+            region.disabledRuleIdentifiers.first(where: { !allValidIdentifiers.contains($0) }).map { id in
                 return StyleViolation(
                     ruleDescription: type(of: superfluousDisableCommandRule).description,
                     severity: superfluousDisableCommandRule.configuration.severity,
@@ -127,8 +126,6 @@ private extension Rule {
                     reason: superfluousDisableCommandRule.reason(for: id.stringRepresentation)
                 )
             }
-
-            return nil
         }
     }
 }

@@ -5907,13 +5907,13 @@ func foo() {
 
 ```swift
 func foo() {
-  fatalError("")
+  ↓fatalError("")
 }
 ```
 
 ```swift
 func foo() {
-  fatalError()
+  ↓fatalError()
 }
 ```
 

@@ -25,12 +25,12 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         triggeringExamples: [
             """
             func foo() {
-              fatalError("")
+              ↓fatalError("")
             }
             """,
             """
             func foo() {
-              fatalError()
+              ↓fatalError()
             }
             """
         ]

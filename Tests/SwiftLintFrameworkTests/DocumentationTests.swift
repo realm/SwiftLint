@@ -8,7 +8,6 @@ private let projectRoot = #file.bridge()
     .deletingLastPathComponent
 
 class DocumentationTests: XCTestCase {
-    // sourcery:skipTestOnLinux
     func testRulesDocumentationIsUpdated() throws {
         guard SwiftVersion.current >= .fourDotOne else {
             return

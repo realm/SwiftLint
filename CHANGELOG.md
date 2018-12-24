@@ -15,6 +15,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2439](https://github.com/realm/SwiftLint/issues/2439)
 
+* Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
+  over `XCTAssertEqual` and `XCTAssertNotEqual`.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1874](https://github.com/realm/SwiftLint/issues/1874)
+
 #### Bug Fixes
 
 * None.
@@ -332,11 +337,6 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   `compiler_protocol_init` rule.  
   [Timofey Solonin](https://github.com/biboran)
   [#2422](https://github.com/realm/SwiftLint/issues/2422)
-
-* Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
-  over `XCTAssertEqual` and `XCTAssertNotEqual`.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#1874](https://github.com/realm/SwiftLint/issues/1874)
 
 #### Bug Fixes
 

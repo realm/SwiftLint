@@ -260,7 +260,9 @@ extension DiscouragedDirectInitRuleTests {
 
 extension DiscouragedObjectLiteralRuleTests {
     static var allTests: [(String, (DiscouragedObjectLiteralRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithImageLiteral", testWithImageLiteral),
+        ("testWithColorLiteral", testWithColorLiteral)
     ]
 }
 

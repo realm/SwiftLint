@@ -219,6 +219,7 @@
 		D40FE89D1F867BFF006433E2 /* OverrideInExtensionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */; };
 		D4130D971E16183F00242361 /* IdentifierNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */; };
 		D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */; };
+		D414D6AC21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */; };
 		D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */; };
 		D41E7E0B1DF9DABB0065259A /* RedundantStringEnumValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */; };
 		D4246D6D1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */; };
@@ -668,6 +669,7 @@
 		D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideInExtensionRule.swift; sourceTree = "<group>"; };
 		D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierNameRuleExamples.swift; sourceTree = "<group>"; };
 		D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRuleExamples.swift; sourceTree = "<group>"; };
+		D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedObjectLiteralRuleTests.swift; sourceTree = "<group>"; };
 		D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantStringEnumValueRule.swift; sourceTree = "<group>"; };
 		D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRuleConfiguration.swift; sourceTree = "<group>"; };
@@ -1177,7 +1179,6 @@
 				D0D1211A19E87861005E4BAA /* swiftlint */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
-				8FB2AE2D21A1F99200D380F3 /* Frameworks */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -1324,6 +1325,7 @@
 				CCD8B87720559C4A00B75847 /* DisableAllTests.swift */,
 				62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */,
 				D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */,
+				D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */,
 				125CE52E20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift */,
 				12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */,
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
@@ -2089,6 +2091,7 @@
 				B25DCD101F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift in Sources */,
 				3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */,
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,
+				D414D6AC21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift in Sources */,
 				3B20CD0C1EB699C20069EF2E /* TypeNameRuleTests.swift in Sources */,
 				CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */,
 				3B3A9A331EA3DFD90075B121 /* IdentifierNameRuleTests.swift in Sources */,

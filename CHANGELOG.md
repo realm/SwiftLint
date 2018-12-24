@@ -37,6 +37,10 @@
 * Support glob patterns without the star.  
   [Maksym Grebenets](https://github.com/mgrebenets)
 
+* Make `modifier_order` rule autocorrectable.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2353](https://github.com/realm/SwiftLint/issues/2353)
+
 #### Bug Fixes
 
 * Fix false positives in `redundant_objc_attribute` for private declarations

@@ -724,6 +724,9 @@ extension ModifierOrderTests {
         ("testRightOrderedModifierGroups", testRightOrderedModifierGroups),
         ("testAtPrefixedGroup", testAtPrefixedGroup),
         ("testNonSpecifiedModifiersDontInterfere", testNonSpecifiedModifiersDontInterfere),
+        ("testCorrectionsAreAppliedCorrectly", testCorrectionsAreAppliedCorrectly),
+        ("testCorrectionsAreNotAppliedToIrrelevantModifier", testCorrectionsAreNotAppliedToIrrelevantModifier),
+        ("testTypeMethodClassCorrection", testTypeMethodClassCorrection),
         ("testViolationMessage", testViolationMessage)
     ]
 }

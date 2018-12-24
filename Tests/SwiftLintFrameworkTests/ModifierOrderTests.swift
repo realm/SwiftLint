@@ -1,6 +1,8 @@
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length type_body_length
+
 class ModifierOrderTests: XCTestCase {
     func testAttributeTypeMethod() {
         let descriptionOverride = RuleDescription(
@@ -199,6 +201,185 @@ class ModifierOrderTests: XCTestCase {
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
+    }
+
+    func testCorrectionsAreAppliedCorrectly() {
+        let descriptionOverride = RuleDescription(
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
+            kind: .style,
+            minSwiftVersion: .fourDotOne,
+            nonTriggeringExamples: [],
+            triggeringExamples: [],
+            corrections: [
+                """
+                class Foo {
+                    private final override var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    final override private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    private final var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    final private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    class private final var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    final private class var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    @objc
+                    private
+                    class
+                    final
+                    override
+                    var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    @objc
+                    final
+                    override
+                    private
+                    class
+                    var bar: UIView?
+                }
+                """,
+                """
+                private final class Foo {}
+                """:
+                """
+                final private class Foo {}
+                """
+            ]
+        )
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
+    }
+
+    func testCorrectionsAreNotAppliedToIrrelevantModifier() {
+        let descriptionOverride = RuleDescription(
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
+            kind: .style,
+            minSwiftVersion: .fourDotOne,
+            nonTriggeringExamples: [],
+            triggeringExamples: [],
+            corrections: [
+                """
+                class Foo {
+                    weak class final var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    weak final class var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    static weak final var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    final weak static var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    class final weak var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    final class weak var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    @objc
+                    private
+                    private(set)
+                    class
+                    final
+                    var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    @objc
+                    final
+                    private(set)
+                    private
+                    class
+                    var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    var bar: UIView?
+                }
+                """:
+                """
+                class Foo {
+                    var bar: UIView?
+                }
+                """
+            ]
+        )
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
+    }
+
+    func testTypeMethodClassCorrection() {
+        let descriptionOverride = RuleDescription(
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
+            kind: .style,
+            minSwiftVersion: .fourDotOne,
+            nonTriggeringExamples: [],
+            triggeringExamples: [],
+            corrections: [
+                """
+                private final class Foo {}
+                """:
+                """
+                final private class Foo {}
+                """,
+                """
+                public protocol Foo: class {}\n
+                """:
+                """
+                public protocol Foo: class {}\n
+                """
+            ]
+        )
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]])
     }
 
     func testViolationMessage() {

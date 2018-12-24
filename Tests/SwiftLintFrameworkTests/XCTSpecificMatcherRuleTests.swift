@@ -2,7 +2,6 @@ import SwiftLintFramework
 import XCTest
 
 class XCTSpecificMatcherRuleTests: XCTestCase {
-
     func testRule() {
         verifyRule(XCTSpecificMatcherRule.description)
     }

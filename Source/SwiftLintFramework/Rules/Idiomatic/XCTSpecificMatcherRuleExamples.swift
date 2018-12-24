@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct XCTSpecificMatcherRuleExamples {
     static let nonTriggeringExamples = [
         // True/False

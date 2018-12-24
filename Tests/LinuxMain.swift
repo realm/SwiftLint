@@ -505,8 +505,14 @@ extension GlobTests {
         ("testOnlyGlobForWildcard", testOnlyGlobForWildcard),
         ("testNoMatchReturnsEmpty", testNoMatchReturnsEmpty),
         ("testMatchesFiles", testMatchesFiles),
+        ("testMatchesSingleCharacter", testMatchesSingleCharacter),
+        ("testMatchesOneCharacterInBracket", testMatchesOneCharacterInBracket),
+        ("testNoMatchOneCharacterInBracket", testNoMatchOneCharacterInBracket),
+        ("testMatchesCharacterInRange", testMatchesCharacterInRange),
+        ("testNoMatchCharactersInRange", testNoMatchCharactersInRange),
         ("testMatchesMultipleFiles", testMatchesMultipleFiles),
-        ("testMatchesNestedDirectory", testMatchesNestedDirectory)
+        ("testMatchesNestedDirectory", testMatchesNestedDirectory),
+        ("testNoGlobstarSupport", testNoGlobstarSupport)
     ]
 }
 

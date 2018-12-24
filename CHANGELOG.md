@@ -47,6 +47,11 @@
 * Fix an error when pulling SwiftLint as a dependency using Carthage.  
   [JP Simard](https://github.com/jpsim)
 
+* Non-string values specified in `swiftlint_version` now fail the lint if
+  it doesn't match the version.  
+  [JP Simard](https://github.com/jpsim)
+  [#2518](https://github.com/realm/SwiftLint/issues/2518)
+
 ## 0.29.1: There’s Always More Laundry
 
 #### Breaking

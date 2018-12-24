@@ -4,8 +4,12 @@ private var regexCache = [RegexCacheKey: NSRegularExpression]()
 private let regexCacheLock = NSLock()
 
 private struct RegexCacheKey: Hashable {
+    // Disable unused private declaration rule here because even though we don't use these properties
+    // directly, we rely on them for their hashable and equatable behavior.
+    // swiftlint:disable unused_private_declaration
     let pattern: String
     let options: NSRegularExpression.Options
+    // swiftlint:enable unused_private_declaration
 }
 
 extension NSRegularExpression.Options: Hashable {

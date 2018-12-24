@@ -63,7 +63,7 @@ write_xcodebuild_log: bootstrap
 	xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint > xcodebuild.log
 
 analyze: write_xcodebuild_log
-	swift run -c release swiftlint analyze --compiler-log-path xcodebuild.log
+	swift run -c release swiftlint analyze --strict --compiler-log-path xcodebuild.log
 
 analyze_autocorrect: write_xcodebuild_log
 	swift run -c release swiftlint analyze --autocorrect --compiler-log-path xcodebuild.log

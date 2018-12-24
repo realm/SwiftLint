@@ -1,3 +1,5 @@
+import Foundation
+
 #if canImport(Darwin)
 import Darwin
 
@@ -12,7 +14,8 @@ private let globFunction = Glibc.glob
 
 struct Glob {
     static func resolveGlob(_ pattern: String) -> [String] {
-        guard pattern.contains("*") else {
+        let globCharset = CharacterSet(charactersIn: "*?[]")
+        guard pattern.rangeOfCharacter(from: globCharset) != nil else {
             return [pattern]
         }
 

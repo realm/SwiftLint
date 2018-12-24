@@ -34,6 +34,9 @@
   [Kim de Vos](https://github.com/kimdv)
   [#2282](https://github.com/realm/SwiftLint/issues/2282)
 
+* Support glob patterns without the star.  
+  [Maksym Grebenets](https://github.com/mgrebenets)
+
 #### Bug Fixes
 
 * Fix false positives in `redundant_objc_attribute` for private declarations

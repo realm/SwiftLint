@@ -148,18 +148,11 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     ) -> [(preferredModifier: ModifierDescription, declaredModifier: ModifierDescription)] {
         let violatableModifiers = self.violatableModifiers(declaredModifiers: dictionary.modifierDescriptions)
         let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
-        let sortedByPriorityModifiers = prioritizedModifiers.sorted(
-            by: { lhs, rhs in lhs.priority < rhs.priority }
-            ).map { $0.modifier }
+        let sortedByPriorityModifiers = prioritizedModifiers
+            .sorted { $0.priority < $1.priority }
+            .map { $0.modifier }
 
-        let violatingModifiers = zip(
-            sortedByPriorityModifiers,
-            violatableModifiers
-        ).filter { sortedModifier, unsortedModifier in
-            sortedModifier != unsortedModifier
-        }
-
-        return violatingModifiers
+        return zip(sortedByPriorityModifiers, violatableModifiers).filter { $0 != $1 }
     }
 }
 
@@ -210,8 +203,8 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
 }
 
 private extension String {
-    func lastComponentAfter(_ charachter: String) -> String {
-        return components(separatedBy: charachter).last ?? ""
+    func lastComponentAfter(_ character: String) -> String {
+        return components(separatedBy: character).last ?? ""
     }
 }
 

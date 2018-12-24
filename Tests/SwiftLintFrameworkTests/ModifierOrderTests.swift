@@ -1,8 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable file_length
-// swiftlint:disable type_body_length
+// swiftlint:disable file_length type_body_length
 
 class ModifierOrderTests: XCTestCase {
     func testAttributeTypeMethod() {

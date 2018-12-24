@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Allow configuring `discouraged_object_literal` rule to only discourage one kind
+  of object literal.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2439](https://github.com/realm/SwiftLint/issues/2439)
 
 #### Bug Fixes
 

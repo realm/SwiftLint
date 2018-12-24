@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
-public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
+    public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
 
@@ -29,8 +29,16 @@ public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationPro
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary.offset, kind == .objectLiteral else { return [] }
 
+        if !configuration.imageLiteral && dictionary.name == "imageLiteral" {
+            return []
+        }
+
+        if !configuration.colorLiteral && dictionary.name == "colorLiteral" {
+            return []
+        }
+
         return [StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
+                               severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, byteOffset: offset))]
     }
 }

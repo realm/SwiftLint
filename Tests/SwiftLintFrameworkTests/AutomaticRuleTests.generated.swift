@@ -90,12 +90,6 @@ class DiscardedNotificationCenterObserverRuleTests: XCTestCase {
     }
 }
 
-class DiscouragedObjectLiteralRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedObjectLiteralRule.description)
-    }
-}
-
 class DiscouragedOptionalBooleanRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalBooleanRule.description)

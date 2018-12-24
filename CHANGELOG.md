@@ -6,12 +6,14 @@
 
 #### Experimental
 
-* None.
+* Skip `@IBInspectable` and `deinit` declarations in
+  `unused_private_declaration`.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Enhancements
 
-* Allow configuring `discouraged_object_literal` rule to only discourage one kind
-  of object literal.  
+* Allow configuring `discouraged_object_literal` rule to only discourage one
+  kind of object literal.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2439](https://github.com/realm/SwiftLint/issues/2439)
 

@@ -90,7 +90,7 @@ private extension File {
             // Skip declarations marked as @IBOutlet, @IBAction or @objc
             // since those might not be referenced in code, but only dynamically (e.g. Interface Builder)
             if let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
-                ["@IBOutlet", "@IBAction", "@objc"].contains(where: annotatedDecl.contains) {
+                ["@IBOutlet", "@IBAction", "@objc", "@IBInspectable"].contains(where: annotatedDecl.contains) {
                 return nil
             }
             // Skip declarations that override another. This works for both subclass overrides &
@@ -132,9 +132,10 @@ private extension File {
     }
 }
 
-// Skip initializers, enum cases and subscripts since we can't reliably detect if they're used.
+// Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
 private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
     .functionConstructor,
+    .functionDestructor,
     .enumelement,
     .functionSubscript
 ]

@@ -75,7 +75,7 @@ class ConfigurationTests: XCTestCase {
 
     func testWarningThreshold_nil() {
         let config = Configuration(dict: [:])!
-        XCTAssertEqual(config.warningThreshold, nil)
+        XCTAssertNil(config.warningThreshold)
     }
 
     func testOtherRuleConfigurationsAlongsideWhitelistRules() {

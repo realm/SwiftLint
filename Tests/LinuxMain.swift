@@ -1336,6 +1336,26 @@ extension XCTFailMessageRuleTests {
     ]
 }
 
+extension XCTSpecificMatcherRuleTests {
+    static var allTests: [(String, (XCTSpecificMatcherRuleTests) -> () throws -> Void)] = [
+        ("testRule", testRule),
+        ("testEqualTrue", testEqualTrue),
+        ("testEqualFalse", testEqualFalse),
+        ("testEqualNil", testEqualNil),
+        ("testNotEqualTrue", testNotEqualTrue),
+        ("testNotEqualFalse", testNotEqualFalse),
+        ("testNotEqualNil", testNotEqualNil),
+        ("testEqualOptionalFalse", testEqualOptionalFalse),
+        ("testEqualUnwrappedOptionalFalse", testEqualUnwrappedOptionalFalse),
+        ("testEqualNilNil", testEqualNilNil),
+        ("testEqualTrueTrue", testEqualTrueTrue),
+        ("testEqualFalseFalse", testEqualFalseFalse),
+        ("testNotEqualNilNil", testNotEqualNilNil),
+        ("testNotEqualTrueTrue", testNotEqualTrueTrue),
+        ("testNotEqualFalseFalse", testNotEqualFalseFalse)
+    ]
+}
+
 extension YamlParserTests {
     static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] = [
         ("testParseEmptyString", testParseEmptyString),
@@ -1535,6 +1555,7 @@ XCTMain([
     testCase(VoidReturnRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),
+    testCase(XCTSpecificMatcherRuleTests.allTests),
     testCase(YamlParserTests.allTests),
     testCase(YamlSwiftLintTests.allTests),
     testCase(YodaConditionRuleTests.allTests)

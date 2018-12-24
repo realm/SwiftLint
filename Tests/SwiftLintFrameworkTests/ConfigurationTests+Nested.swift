@@ -62,9 +62,8 @@ extension ConfigurationTests {
         XCTAssertEqual(configuration(forWarningThreshold: 3)
             .merge(with: configuration(forWarningThreshold: nil)).warningThreshold,
                        3)
-        XCTAssertEqual(configuration(forWarningThreshold: nil)
-            .merge(with: configuration(forWarningThreshold: nil)).warningThreshold,
-                       nil)
+        XCTAssertNil(configuration(forWarningThreshold: nil)
+            .merge(with: configuration(forWarningThreshold: nil)).warningThreshold)
     }
 
     func testNestedWhitelistedRules() {

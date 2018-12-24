@@ -15,7 +15,7 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
                                          "allow_redundancy": true])
         XCTAssertEqual(config.severityConfiguration.severity, .error)
         XCTAssertEqual(config.allowedKinds, Set([.varInstance, .varClass, .varStatic]))
-        XCTAssertEqual(config.allowRedundancy, true)
+        XCTAssertTrue(config.allowRedundancy)
     }
 
     func testInvalidKeyInCustomConfiguration() {

@@ -46,6 +46,7 @@ extension Configuration {
         return .default
     }
 
+    // swiftlint:disable:next function_body_length
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
                  cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         func defaultStringArray(_ object: Any?) -> [String] {

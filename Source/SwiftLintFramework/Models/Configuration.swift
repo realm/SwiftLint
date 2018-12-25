@@ -154,7 +154,8 @@ public struct Configuration: Hashable {
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
-            self.init(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
+            self.init(dict: dict, enableAllRules: enableAllRules,
+                      cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
             configurationPath = fullPath
             self.rootPath = rootPath
             setCached(atPath: fullPath)

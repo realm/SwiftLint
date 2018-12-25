@@ -21,8 +21,16 @@ extension Configuration {
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             let fullPath = pathNSString.absolutePathRepresentation()
+            let customRuleIdentifiers = (rules.first(where: { $0 is CustomRules }) as? CustomRules)?
+                .configuration.customRuleConfigurations.map { $0.identifier }
             let config = Configuration.getCached(atPath: fullPath) ??
-                Configuration(path: configurationSearchPath, rootPath: fullPath, optional: false, quiet: true)
+                Configuration(
+                    path: configurationSearchPath,
+                    rootPath: fullPath,
+                    optional: false,
+                    quiet: true,
+                    customRulesIdentifiers: customRuleIdentifiers ?? []
+                )
             return merge(with: config)
         }
 

@@ -47,7 +47,7 @@ extension Configuration {
     }
 
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
-                 cachePath: String? = nil) {
+                 cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         func defaultStringArray(_ object: Any?) -> [String] {
             return [String].array(of: object) ?? []
         }
@@ -99,7 +99,8 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-                  indentation: indentation)
+                  indentation: indentation,
+                  customRulesIdentifiers: customRulesIdentifiers)
     }
 
     private init?(disabledRules: [String],
@@ -115,7 +116,8 @@ extension Configuration {
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
                   cachePath: String?,
-                  indentation: IndentationStyle) {
+                  indentation: IndentationStyle,
+                  customRulesIdentifiers: [String]) {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
@@ -140,7 +142,8 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath,
-                  indentation: indentation)
+                  indentation: indentation,
+                  customRulesIdentifiers: customRulesIdentifiers)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],

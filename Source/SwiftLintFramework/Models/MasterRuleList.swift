@@ -64,6 +64,7 @@ public let masterRuleList = RuleList(rules: [
     IsDisjointRule.self,
     JoinedDefaultParameterRule.self,
     LargeTupleRule.self,
+    LastWhereRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,
     LegacyConstantRule.self,

@@ -223,6 +223,7 @@
 		D4130D971E16183F00242361 /* IdentifierNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */; };
 		D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */; };
 		D414D6AC21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */; };
+		D414D6AE21D22FF500960935 /* LastWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6AD21D22FF500960935 /* LastWhereRule.swift */; };
 		D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */; };
 		D41E7E0B1DF9DABB0065259A /* RedundantStringEnumValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */; };
 		D4246D6D1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */; };
@@ -676,6 +677,7 @@
 		D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierNameRuleExamples.swift; sourceTree = "<group>"; };
 		D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRuleExamples.swift; sourceTree = "<group>"; };
 		D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedObjectLiteralRuleTests.swift; sourceTree = "<group>"; };
+		D414D6AD21D22FF500960935 /* LastWhereRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastWhereRule.swift; sourceTree = "<group>"; };
 		D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantStringEnumValueRule.swift; sourceTree = "<group>"; };
 		D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRuleConfiguration.swift; sourceTree = "<group>"; };
@@ -989,6 +991,7 @@
 				E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */,
 				740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */,
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
+				D414D6AD21D22FF500960935 /* LastWhereRule.swift */,
 				429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */,
 			);
 			path = Performance;
@@ -1187,7 +1190,6 @@
 				D0D1211A19E87861005E4BAA /* swiftlint */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
-				622AD7FD216ACDE100A002C6 /* Recovered References */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -1800,6 +1802,7 @@
 				827169B51F48D712003FB9AF /* NoGroupingExtensionRule.swift in Sources */,
 				D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */,
 				E881985C1BEA978500333A11 /* TrailingNewlineRule.swift in Sources */,
+				D414D6AE21D22FF500960935 /* LastWhereRule.swift in Sources */,
 				D44037972132730000FDA77B /* ProhibitedInterfaceBuilderRule.swift in Sources */,
 				78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */,
 				D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */,
@@ -1838,7 +1841,6 @@
 				1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */,
 				DAD3BE4A1D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift in Sources */,
 				188B3FF4207D61230073C2D6 /* ModifierOrderConfiguration.swift in Sources */,
-				62D08A762000EE8E00AB4717 /* XCTSpecificMatcherRule.swift in Sources */,
 				D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */,
 				2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */,
 				D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */,
@@ -1925,7 +1927,6 @@
 				E80E018F1B92C1350078EB70 /* Region.swift in Sources */,
 				E88198581BEA956C00333A11 /* FunctionBodyLengthRule.swift in Sources */,
 				E88DEA751B09852000A66CB0 /* File+SwiftLint.swift in Sources */,
-				6248E7392002429600A32C52 /* XCTSpecificMatcherRuleExamples.swift in Sources */,
 				D47EF4841F69E3D60012C4CA /* ColonRule+Type.swift in Sources */,
 				3BCC04D11C4F56D3006073C3 /* SeverityLevelsConfiguration.swift in Sources */,
 				D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */,

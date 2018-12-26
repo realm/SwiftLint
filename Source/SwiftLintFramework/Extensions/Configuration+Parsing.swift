@@ -13,6 +13,7 @@ extension Configuration {
         case whitelistRules = "whitelist_rules"
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
+        case plugins = "plugins"
     }
 
     private static func validKeys(ruleList: RuleList) -> [String] {
@@ -29,7 +30,8 @@ extension Configuration {
             .warningThreshold,
             .whitelistRules,
             .indentation,
-            .analyzerRules
+            .analyzerRules,
+            .plugins
         ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
     }
 
@@ -69,6 +71,7 @@ extension Configuration {
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
         let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
+        let plugins = defaultStringArray(dict[Key.plugins.rawValue])
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
@@ -99,7 +102,8 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-                  indentation: indentation)
+                  indentation: indentation,
+                  plugins: plugins)
     }
 
     private init?(disabledRules: [String],
@@ -115,7 +119,8 @@ extension Configuration {
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
                   cachePath: String?,
-                  indentation: IndentationStyle) {
+                  indentation: IndentationStyle,
+                  plugins: [String]) {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
@@ -140,7 +145,8 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath,
-                  indentation: indentation)
+                  indentation: indentation,
+                  plugins: plugins)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],

@@ -224,6 +224,8 @@
 		D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */; };
 		D414D6AC21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */; };
 		D414D6AE21D22FF500960935 /* LastWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6AD21D22FF500960935 /* LastWhereRule.swift */; };
+		D414D6B021D34FA500960935 /* RemoteRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6AF21D34FA500960935 /* RemoteRule.swift */; };
+		D414D6B221D3509B00960935 /* RemoteRuleResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414D6B121D3509B00960935 /* RemoteRuleResolver.swift */; };
 		D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */; };
 		D41E7E0B1DF9DABB0065259A /* RedundantStringEnumValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */; };
 		D4246D6D1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */; };
@@ -678,6 +680,8 @@
 		D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRuleExamples.swift; sourceTree = "<group>"; };
 		D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedObjectLiteralRuleTests.swift; sourceTree = "<group>"; };
 		D414D6AD21D22FF500960935 /* LastWhereRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastWhereRule.swift; sourceTree = "<group>"; };
+		D414D6AF21D34FA500960935 /* RemoteRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteRule.swift; sourceTree = "<group>"; };
+		D414D6B121D3509B00960935 /* RemoteRuleResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteRuleResolver.swift; sourceTree = "<group>"; };
 		D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantStringEnumValueRule.swift; sourceTree = "<group>"; };
 		D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRuleConfiguration.swift; sourceTree = "<group>"; };
@@ -1490,6 +1494,8 @@
 				D4C27BFD1E12D53F00DF713E /* Version.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
 				3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */,
+				D414D6AF21D34FA500960935 /* RemoteRule.swift */,
+				D414D6B121D3509B00960935 /* RemoteRuleResolver.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1831,6 +1837,7 @@
 				BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */,
 				3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */,
 				B25DCD0C1F7E9FA20028A199 /* MultilineArgumentsRule.swift in Sources */,
+				D414D6B021D34FA500960935 /* RemoteRule.swift in Sources */,
 				6258783B1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift in Sources */,
 				62A3E95D209E084000547A86 /* EmptyXCTestMethodRule.swift in Sources */,
 				D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */,
@@ -2012,6 +2019,7 @@
 				F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */,
 				E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */,
 				62426A032118BA6E007E6340 /* ClosureBodyLengthRule.swift in Sources */,
+				D414D6B221D3509B00960935 /* RemoteRuleResolver.swift in Sources */,
 				1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */,
 				E80746F61ECB722F00548D31 /* CacheDescriptionProvider.swift in Sources */,
 				094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */,

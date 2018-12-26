@@ -1,4 +1,4 @@
-public enum RuleKind: String {
+public enum RuleKind: String, Codable {
     case lint
     case idiomatic
     case style

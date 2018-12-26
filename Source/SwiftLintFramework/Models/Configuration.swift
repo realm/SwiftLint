@@ -18,6 +18,7 @@ public struct Configuration: Hashable {
     public let excluded: [String]                      // excluded
     public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
     public let warningThreshold: Int?                  // warning threshold
+    public let plugins: [String]
     public private(set) var rootPath: String?          // the root path to search for nested configurations
     public private(set) var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
@@ -33,6 +34,7 @@ public struct Configuration: Hashable {
             hasher.combine(included)
             hasher.combine(excluded)
             hasher.combine(reporter)
+            hasher.combine(plugins)
         }
     }
 
@@ -56,7 +58,8 @@ public struct Configuration: Hashable {
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
-                 indentation: IndentationStyle = .default) {
+                 indentation: IndentationStyle = .default,
+                 plugins: [String] = []) {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
@@ -82,7 +85,8 @@ public struct Configuration: Hashable {
                   reporter: reporter,
                   rules: rules,
                   cachePath: cachePath,
-                  indentation: indentation)
+                  indentation: indentation,
+                  plugins: plugins)
     }
 
     internal init(rulesMode: RulesMode,
@@ -93,7 +97,8 @@ public struct Configuration: Hashable {
                   rules: [Rule],
                   cachePath: String?,
                   rootPath: String? = nil,
-                  indentation: IndentationStyle) {
+                  indentation: IndentationStyle,
+                  plugins: [String]) {
         self.rulesMode = rulesMode
         self.included = included
         self.excluded = excluded
@@ -102,6 +107,7 @@ public struct Configuration: Hashable {
         self.rules = rules
         self.rootPath = rootPath
         self.indentation = indentation
+        self.plugins = plugins
 
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
@@ -117,6 +123,7 @@ public struct Configuration: Hashable {
         cachePath = configuration.cachePath
         rootPath = configuration.rootPath
         indentation = configuration.indentation
+        plugins = configuration.plugins
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SwiftVersion: RawRepresentable {
+public struct SwiftVersion: RawRepresentable, Codable {
     public typealias RawValue = String
 
     public let rawValue: String

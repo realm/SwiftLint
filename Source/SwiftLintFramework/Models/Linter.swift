@@ -7,6 +7,37 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
+private struct LintableBox {
+    private let rule: Rule?
+    private let remoteRule: RemoteRule?
+
+    init(rule: Rule) {
+        self.rule = rule
+        self.remoteRule = nil
+    }
+
+    init(remoteRule: RemoteRule) {
+        self.remoteRule = remoteRule
+        self.rule = nil
+    }
+
+    func lint(file: File, regions: [Region], benchmark: Bool,
+              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+              compilerArguments: [String]) -> LintResult? {
+        if let rule = rule {
+            return rule.lint(file: file, regions: regions, benchmark: benchmark,
+                             superfluousDisableCommandRule: superfluousDisableCommandRule,
+                             compilerArguments: compilerArguments)
+        } else if let remoteRule = remoteRule {
+            return remoteRule.lint(file: file, regions: regions, benchmark: benchmark,
+                                   superfluousDisableCommandRule: superfluousDisableCommandRule,
+                                   compilerArguments: compilerArguments)
+        } else {
+            return nil
+        }
+    }
+}
+
 private extension Rule {
     static func superfluousDisableCommandViolations(regions: [Region],
                                                     superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
@@ -99,12 +130,35 @@ private extension Rule {
     }
 }
 
+private extension RemoteRule {
+    func lint(file: File, regions: [Region], benchmark: Bool,
+              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+              compilerArguments: [String]) -> LintResult? {
+        let ruleID = description.identifier
+
+        let violations: [StyleViolation]
+        let ruleTime: (String, Double)?
+        if benchmark {
+            let start = Date()
+            violations = validate(file: file)
+            ruleTime = (ruleID, -start.timeIntervalSinceNow)
+        } else {
+            violations = validate(file: file)
+            ruleTime = nil
+        }
+
+        return LintResult(violations: violations, ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: [])
+    }
+}
+
 public struct Linter {
     public let file: File
     private let rules: [Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
+    private let remoteRules: [RemoteRule]
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
@@ -126,7 +180,9 @@ public struct Linter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelCompactMap {
+
+        let lintables = rules.map(LintableBox.init(rule:)) + remoteRules.map(LintableBox.init(remoteRule:))
+        let validationResults = lintables.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: self.compilerArguments)
@@ -183,6 +239,11 @@ public struct Linter {
             } else {
                 return rule is AnalyzerRule
             }
+        }
+        let resolver = RemoteRuleResolver()
+        self.remoteRules = configuration.plugins.compactMap {
+            // TODO: How to move configuration to this point?
+            try? resolver.remoteRule(forExecutable: $0, configuration: nil)
         }
     }
 

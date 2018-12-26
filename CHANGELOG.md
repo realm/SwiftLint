@@ -29,7 +29,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives on `first_where` rule when calling `filter` without a
+  closure parameter (for example on a Realm collection).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.29.2: Washateria
 

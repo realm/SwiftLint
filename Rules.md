@@ -7255,6 +7255,10 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```
 
+```swift
+collection.filter("stringCol = '3'").first
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -9350,6 +9354,10 @@ match(pattern: pattern).filter { $0.last == .identifier }
 ```swift
 (myList.filter { $0 == 1 }.suffix(2)).last
 
+```
+
+```swift
+collection.filter("stringCol = '3'").last
 ```
 
 </details>

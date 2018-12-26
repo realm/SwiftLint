@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -14,7 +15,8 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n",
             "myList.first(where: { $0 % 2 == 0 })\n",
             "match(pattern: pattern).filter { $0.first == .identifier }\n",
-            "(myList.filter { $0 == 1 }.suffix(2)).first\n"
+            "(myList.filter { $0 == 1 }.suffix(2)).first\n",
+            "collection.filter(\"stringCol = '3'\").first"
         ],
         triggeringExamples: [
             "↓myList.filter { $0 % 2 == 0 }.first\n",
@@ -32,6 +34,17 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
                         pattern: "[\\}\\)]\\s*\\.first",
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter",
-                        severity: configuration.severity)
+                        severity: configuration.severity) { dictionary in
+            if !dictionary.substructure.isEmpty {
+                return true // has a substructure, like a closure
+            }
+
+            guard let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength else {
+                return true
+            }
+
+            let syntaxKinds = file.syntaxMap.kinds(inByteRange: NSRange(location: bodyOffset, length: bodyLength))
+            return !syntaxKinds.contains(.string)
+        }
     }
 }

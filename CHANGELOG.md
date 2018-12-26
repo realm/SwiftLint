@@ -71,6 +71,10 @@
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
   [#2538](https://github.com/realm/SwiftLint/issues/2538)
 
+* Fix unaccessible custom rules in nested configurations.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2441](https://github.com/realm/SwiftLint/issues/2441)
+
 ## 0.29.2: Washateria
 
 #### Breaking

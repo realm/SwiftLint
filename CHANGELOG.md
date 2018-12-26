@@ -33,6 +33,11 @@
   closure parameter (for example on a Realm collection).  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix false positives on `sorted_first_last` rule when calling `sorted` with
+  a different argument than `by:` (e.g. on a Realm collection).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2533](https://github.com/realm/SwiftLint/issues/2533)
+
 ## 0.29.2: Washateria
 
 #### Breaking

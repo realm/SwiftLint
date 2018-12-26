@@ -14,8 +14,10 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
             "let min = myList.min()\n",
             "let min = myList.min(by: { $0 < $1 })\n",
             "let min = myList.min(by: >)\n",
-            "let min = myList.max()\n",
-            "let min = myList.max(by: { $0 < $1 })\n"
+            "let max = myList.max()\n",
+            "let max = myList.max(by: { $0 < $1 })\n",
+            "let message = messages.sorted(byKeyPath: #keyPath(Message.timestamp)).last",
+            "let message = messages.sorted(byKeyPath: \"timestamp\", ascending: false).first"
         ],
         triggeringExamples: [
             "↓myList.sorted().first\n",
@@ -39,6 +41,9 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
                         pattern: "[\\}\\)]\\s*\\.(first|last)",
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".sorted",
-                        severity: configuration.severity)
+                        severity: configuration.severity) { dictionary in
+            let arguments = dictionary.enclosedArguments.compactMap { $0.name }
+            return arguments.isEmpty || arguments == ["by"]
+        }
     }
 }

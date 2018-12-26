@@ -16377,13 +16377,21 @@ let min = myList.min(by: >)
 ```
 
 ```swift
-let min = myList.max()
+let max = myList.max()
 
 ```
 
 ```swift
-let min = myList.max(by: { $0 < $1 })
+let max = myList.max(by: { $0 < $1 })
 
+```
+
+```swift
+let message = messages.sorted(byKeyPath: #keyPath(Message.timestamp)).last
+```
+
+```swift
+let message = messages.sorted(byKeyPath: "timestamp", ascending: false).first
 ```
 
 </details>

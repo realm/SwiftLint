@@ -27,6 +27,7 @@ opt_in_rules:
   - identical_operands
   - joined_default_parameter
   - let_var_whitespace
+  - last_where
   - literal_expression_end_indentation
   - lower_acl_than_parent
   - nimble_operator

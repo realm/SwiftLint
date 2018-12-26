@@ -270,6 +270,12 @@ class LargeTupleRuleTests: XCTestCase {
     }
 }
 
+class LastWhereRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LastWhereRule.description)
+    }
+}
+
 class LegacyCGGeometryFunctionsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)

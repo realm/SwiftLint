@@ -594,6 +594,12 @@ extension LargeTupleRuleTests {
     ]
 }
 
+extension LastWhereRuleTests {
+    static var allTests: [(String, (LastWhereRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension LegacyCGGeometryFunctionsRuleTests {
     static var allTests: [(String, (LegacyCGGeometryFunctionsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1455,6 +1461,7 @@ XCTMain([
     testCase(IsDisjointRuleTests.allTests),
     testCase(JoinedDefaultParameterRuleTests.allTests),
     testCase(LargeTupleRuleTests.allTests),
+    testCase(LastWhereRuleTests.allTests),
     testCase(LegacyCGGeometryFunctionsRuleTests.allTests),
     testCase(LegacyConstantRuleTests.allTests),
     testCase(LegacyConstructorRuleTests.allTests),

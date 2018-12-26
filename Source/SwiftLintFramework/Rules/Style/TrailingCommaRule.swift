@@ -133,11 +133,11 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
         // skip commas in comments
-        return ranges.filter {
+        return ranges.last {
             let range = NSRange(location: $0.location + offset, length: $0.length)
             let kinds = file.syntaxMap.kinds(inByteRange: range)
             return SyntaxKind.commentKinds.isDisjoint(with: kinds)
-        }.last.flatMap {
+        }.flatMap {
             nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
     }

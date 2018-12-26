@@ -22,9 +22,16 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1874](https://github.com/realm/SwiftLint/issues/1874)
 
+* Add `last_where` opt-in rule that warns against using
+  `.filter { /* ... */ }.last` in collections, as
+  `.last(where: { /* ... */ })` is more efficient.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
-* None.
+* Fix false positives on `first_where` rule when calling `filter` without a
+  closure parameter (for example on a Realm collection).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.29.2: Washateria
 

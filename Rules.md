@@ -63,6 +63,7 @@
 * [Is Disjoint](#is-disjoint)
 * [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
+* [Last Where](#last-where)
 * [Leading Whitespace](#leading-whitespace)
 * [Legacy CGGeometry Functions](#legacy-cggeometry-functions)
 * [Legacy Constant](#legacy-constant)
@@ -7254,6 +7255,10 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```
 
+```swift
+collection.filter("stringCol = '3'").first
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -9311,6 +9316,87 @@ func foo() throws -> ↓(Int, ↓(String, String, String), Int) {}
 
 ```swift
 func getDictionaryAndInt() -> (Dictionary<Int, ↓(String, String, String)>, Int)?
+
+```
+
+</details>
+
+
+
+## Last Where
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`last_where` | Disabled | No | performance | No | 4.2.0 
+
+Prefer using `.last(where:)` over `.filter { }.last` in collections.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+kinds.filter(excludingKinds.contains).isEmpty && kinds.last == .identifier
+
+```
+
+```swift
+myList.last(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+match(pattern: pattern).filter { $0.last == .identifier }
+
+```
+
+```swift
+(myList.filter { $0 == 1 }.suffix(2)).last
+
+```
+
+```swift
+collection.filter("stringCol = '3'").last
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myList.filter { $0 % 2 == 0 }.last
+
+```
+
+```swift
+↓myList.filter({ $0 % 2 == 0 }).last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).last?.something()
+
+```
+
+```swift
+↓myList.filter(someFunction).last
+
+```
+
+```swift
+↓myList.filter({ $0 % 2 == 0 })
+.last
+
+```
+
+```swift
+(↓myList.filter { $0 == 1 }).last
 
 ```
 

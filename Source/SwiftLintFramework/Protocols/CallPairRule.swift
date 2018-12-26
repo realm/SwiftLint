@@ -23,12 +23,14 @@ extension CallPairRule {
         - patternSyntaxKinds: Syntax kinds matches should have
         - callNameSuffix: Suffix of the first method call name
         - severity: Severity of violations
+        - predicate: Predicate to apply after checking callNameSuffix
      */
     internal func validate(file: File,
                            pattern: String,
                            patternSyntaxKinds: [SyntaxKind],
                            callNameSuffix: String,
-                           severity: ViolationSeverity) -> [StyleViolation] {
+                           severity: ViolationSeverity,
+                           predicate: ([String: SourceKitRepresentable]) -> Bool = { _ in true }) -> [StyleViolation] {
         let firstRanges = file.match(pattern: pattern, with: patternSyntaxKinds)
         let contents = file.contents.bridge()
         let structure = file.structure
@@ -50,7 +52,7 @@ extension CallPairRule {
                     return false
                 }
 
-                return name.hasSuffix(callNameSuffix)
+                return name.hasSuffix(callNameSuffix) && predicate(dictionary)
             })
         }
 

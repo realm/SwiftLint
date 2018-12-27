@@ -1,10 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-struct RemoteRule {
+final class RemoteRule {
     let description: RuleDescription
     let executable: String
     let configuration: Any?
+
+    init(description: RuleDescription, executable: String, configuration: Any?) {
+        self.description = description
+        self.executable = executable
+        self.configuration = configuration
+    }
 
     func validate(file: File) -> [StyleViolation] {
         let payload = Payload(structure: file.structure.dictionary,
@@ -97,7 +103,7 @@ private struct Payload {
     func asJSONDictionary() -> [String: Any] {
         var json = [
             "structure": structure,
-            "syntax_map": syntaxMap.map { $0.dictionaryValue },
+            "syntax_map": syntaxMap.map { $0.dictionaryValue }
         ] as [String: Any]
         json["path"] = path
         json["configuration"] = configuration

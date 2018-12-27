@@ -238,6 +238,7 @@
 		D43B04661E071ED3004016AF /* ColonRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43B04651E071ED3004016AF /* ColonRuleTests.swift */; };
 		D43B04691E072291004016AF /* ColonConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43B04671E07228D004016AF /* ColonConfiguration.swift */; };
 		D43B046B1E075905004016AF /* ClosureEndIndentationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43B046A1E075905004016AF /* ClosureEndIndentationRule.swift */; };
+		D43CD01721D4AFD200944FAC /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43CD01621D4AFD200944FAC /* Socket.framework */; };
 		D43DB1081DC573DA00281215 /* ImplicitGetterRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */; };
 		D44037972132730000FDA77B /* ProhibitedInterfaceBuilderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44037962132730000FDA77B /* ProhibitedInterfaceBuilderRule.swift */; };
 		D44254201DB87CA200492EA4 /* ValidIBInspectableRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */; };
@@ -694,6 +695,7 @@
 		D43B04651E071ED3004016AF /* ColonRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColonRuleTests.swift; sourceTree = "<group>"; };
 		D43B04671E07228D004016AF /* ColonConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColonConfiguration.swift; sourceTree = "<group>"; };
 		D43B046A1E075905004016AF /* ClosureEndIndentationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureEndIndentationRule.swift; sourceTree = "<group>"; };
+		D43CD01621D4AFD200944FAC /* Socket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Socket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitGetterRule.swift; sourceTree = "<group>"; };
 		D44037962132730000FDA77B /* ProhibitedInterfaceBuilderRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProhibitedInterfaceBuilderRule.swift; sourceTree = "<group>"; };
 		D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidIBInspectableRule.swift; sourceTree = "<group>"; };
@@ -859,6 +861,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D43CD01721D4AFD200944FAC /* Socket.framework in Frameworks */,
 				E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */,
 				E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */,
 				3BBF2F9D1C640A0F006CD775 /* SwiftyTextTable.framework in Frameworks */,
@@ -1194,6 +1197,7 @@
 				D0D1211A19E87861005E4BAA /* swiftlint */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
+				D43CD01521D4AFD200944FAC /* Frameworks */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -1401,6 +1405,14 @@
 				D0D1217D19E87B05005E4BAA /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D43CD01521D4AFD200944FAC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D43CD01621D4AFD200944FAC /* Socket.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E802ECFE1C56A54600A35AE1 /* Helpers */ = {
@@ -2194,7 +2206,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212619E878CC005E4BAA /* Debug.xcconfig */;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -2203,7 +2215,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212819E878CC005E4BAA /* Release.xcconfig */;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -2280,7 +2292,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212719E878CC005E4BAA /* Profile.xcconfig */;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Profile;
@@ -2323,7 +2335,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212919E878CC005E4BAA /* Test.xcconfig */;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Test;

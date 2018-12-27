@@ -19,3 +19,6 @@
 [submodule "Carthage/Checkouts/Yams"]
 	path = Carthage/Checkouts/Yams
 	url = https://github.com/jpsim/Yams.git
+[submodule "Carthage/Checkouts/BlueSocket"]
+	path = Carthage/Checkouts/BlueSocket
+	url = https://github.com/IBM-Swift/BlueSocket.git

@@ -1,4 +1,5 @@
 import Foundation
+import Socket
 import SourceKittenFramework
 
 final class RemoteRule {
@@ -23,30 +24,16 @@ final class RemoteRule {
 
     private func validate(payload: Payload, file: File) -> [StyleViolation] {
         do {
-            let task = Process()
-            task.launchPath = executable
-            task.arguments = ["lint"]
+            let socket = try Socket.create(family: .unix, type: .stream, proto: .unix)
+            try socket.connect(to: "/tmp/\(description.identifier).socket")
 
-            let pipe = Pipe()
-            task.standardOutput = pipe
+            let data = try payload.asJSONData()
+            try socket.write(from: data)
 
-            let stdinPipe = Pipe()
-            task.standardInput = stdinPipe.fileHandleForReading
+            var readData = Data()
+            _ = try socket.read(into: &readData)
 
-            stdinPipe.fileHandleForWriting.writeabilityHandler = { pipeHandle in
-                let outputData = (try? payload.asJSONData()) ?? Data()
-                stdinPipe.fileHandleForWriting.write(outputData)
-                stdinPipe.fileHandleForWriting.writeabilityHandler = nil
-                stdinPipe.fileHandleForWriting.closeFile()
-            }
-
-            task.launch()
-
-            let pipeFile = pipe.fileHandleForReading
-            defer { pipeFile.closeFile() }
-
-            let data = pipeFile.readDataToEndOfFile()
-            guard let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            guard let json = try JSONSerialization.jsonObject(with: readData) as? [[String: Any]] else {
                 return []
             }
 
@@ -63,14 +50,6 @@ final class RemoteRule {
             }
         } catch {
             return []
-        }
-    }
-}
-
-extension Data {
-    func chunks(_ chunkSize: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: chunkSize).map {
-            Array(self[$0..<Swift.min($0 + chunkSize, count)])
         }
     }
 }

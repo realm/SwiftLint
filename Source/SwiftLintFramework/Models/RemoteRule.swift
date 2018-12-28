@@ -2,18 +2,18 @@ import Foundation
 import Socket
 import SourceKittenFramework
 
-final class RemoteRule {
-    let description: RuleDescription
-    let executable: String
-    let configuration: Any?
+public final class RemoteRule {
+    public let description: RuleDescription
+    private let executable: String
+    private let configuration: Any?
 
-    init(description: RuleDescription, executable: String, configuration: Any?) {
+    public init(description: RuleDescription, executable: String, configuration: Any?) {
         self.description = description
         self.executable = executable
         self.configuration = configuration
     }
 
-    func validate(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let payload = Payload(structure: file.structure.dictionary,
                               syntaxMap: file.syntaxMap.tokens,
                               path: file.path,

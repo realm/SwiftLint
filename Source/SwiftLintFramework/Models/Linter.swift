@@ -240,11 +240,7 @@ public struct Linter {
                 return rule is AnalyzerRule
             }
         }
-        let resolver = RemoteRuleResolver()
-        self.remoteRules = configuration.plugins.compactMap {
-            // TODO: How to move configuration to this point?
-            try? resolver.remoteRule(forExecutable: $0, configuration: nil)
-        }
+        self.remoteRules = configuration.remoteRules
     }
 
     public func correct() -> [Correction] {

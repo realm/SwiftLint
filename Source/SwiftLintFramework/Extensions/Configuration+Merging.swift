@@ -116,7 +116,8 @@ extension Configuration {
             cachePath: cachePath, // Always use the parent cache path
             rootPath: configuration.rootPath,
             indentation: configuration.indentation,
-            plugins: plugins
+            plugins: plugins,
+            remoteRules: remoteRules
         )
     }
 }

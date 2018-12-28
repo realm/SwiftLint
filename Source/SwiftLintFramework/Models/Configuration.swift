@@ -42,8 +42,10 @@ public struct Configuration: Hashable {
 
     // MARK: Rules Properties
 
-    // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
+    /// All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
     public let rules: [Rule]
+
+    internal let remoteRules: [RemoteRule]
 
     internal let rulesMode: RulesMode
 
@@ -59,7 +61,8 @@ public struct Configuration: Hashable {
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
                  indentation: IndentationStyle = .default,
-                 plugins: [String] = []) {
+                 plugins: [String] = [],
+                 remoteRules: [RemoteRule]? = nil) {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
@@ -69,6 +72,11 @@ public struct Configuration: Hashable {
         let configuredRules = configuredRules
             ?? (try? ruleList.configuredRules(with: [:]))
             ?? []
+
+        let resolver = RemoteRuleResolver()
+        let remoteRules = remoteRules ?? plugins.compactMap {
+            try? resolver.remoteRule(forExecutable: $0, configuration: nil)
+        }
 
         let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }
 
@@ -86,7 +94,8 @@ public struct Configuration: Hashable {
                   rules: rules,
                   cachePath: cachePath,
                   indentation: indentation,
-                  plugins: plugins)
+                  plugins: plugins,
+                  remoteRules: remoteRules)
     }
 
     internal init(rulesMode: RulesMode,
@@ -98,7 +107,8 @@ public struct Configuration: Hashable {
                   cachePath: String?,
                   rootPath: String? = nil,
                   indentation: IndentationStyle,
-                  plugins: [String]) {
+                  plugins: [String],
+                  remoteRules: [RemoteRule]) {
         self.rulesMode = rulesMode
         self.included = included
         self.excluded = excluded
@@ -108,6 +118,7 @@ public struct Configuration: Hashable {
         self.rootPath = rootPath
         self.indentation = indentation
         self.plugins = plugins
+        self.remoteRules = remoteRules
 
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
@@ -124,6 +135,7 @@ public struct Configuration: Hashable {
         rootPath = configuration.rootPath
         indentation = configuration.indentation
         plugins = configuration.plugins
+        remoteRules = configuration.remoteRules
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
@@ -183,7 +195,8 @@ public struct Configuration: Hashable {
             (lhs.included == rhs.included) &&
             (lhs.excluded == rhs.excluded) &&
             (lhs.rules == rhs.rules) &&
-            (lhs.indentation == rhs.indentation)
+            (lhs.indentation == rhs.indentation) &&
+            (lhs.plugins == rhs.plugins)
     }
 }
 

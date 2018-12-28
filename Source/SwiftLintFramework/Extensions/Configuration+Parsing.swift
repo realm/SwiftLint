@@ -16,7 +16,7 @@ extension Configuration {
         case plugins = "plugins"
     }
 
-    private static func validKeys(ruleList: RuleList) -> [String] {
+    private static func validKeys(ruleList: RuleList, remoteRules: [RemoteRule]) -> [String] {
         return [
             Key.cachePath,
             .disabledRules,
@@ -32,7 +32,7 @@ extension Configuration {
             .indentation,
             .analyzerRules,
             .plugins
-        ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
+        ].map({ $0.rawValue }) + ruleList.allValidIdentifiers() + remoteRules.flatMap { $0.description.allIdentifiers }
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
@@ -50,20 +50,18 @@ extension Configuration {
 
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
                  cachePath: String? = nil) {
-        func defaultStringArray(_ object: Any?) -> [String] {
-            return [String].array(of: object) ?? []
-        }
-
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(
             dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue]
         )
 
-        // Log an error when supplying invalid keys in the configuration dictionary
-        let invalidKeys = Set(dict.keys).subtracting(Configuration.validKeys(ruleList: ruleList))
-        if !invalidKeys.isEmpty {
-            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+        let plugins = defaultStringArray(dict[Key.plugins.rawValue])
+        let resolver = RemoteRuleResolver()
+        let remoteRules = plugins.compactMap {
+            try? resolver.remoteRule(forExecutable: $0, configuration: dict)
         }
+
+        Configuration.validateConfigurationKeys(dict: dict, ruleList: ruleList, remoteRules: remoteRules)
 
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
@@ -71,7 +69,6 @@ extension Configuration {
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
         let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
-        let plugins = defaultStringArray(dict[Key.plugins.rawValue])
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
@@ -80,9 +77,7 @@ extension Configuration {
         do {
             configuredRules = try ruleList.configuredRules(with: dict)
         } catch RuleListError.duplicatedConfigurations(let ruleType) {
-            let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
-            let identifier = ruleType.description.identifier
-            queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
+            Configuration.warnAboutDuplicateConfigurations(for: ruleType)
             return nil
         } catch {
             return nil
@@ -103,7 +98,8 @@ extension Configuration {
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
                   indentation: indentation,
-                  plugins: plugins)
+                  plugins: plugins,
+                  remoteRules: remoteRules)
     }
 
     private init?(disabledRules: [String],
@@ -120,7 +116,8 @@ extension Configuration {
                   swiftlintVersion: String?,
                   cachePath: String?,
                   indentation: IndentationStyle,
-                  plugins: [String]) {
+                  plugins: [String],
+                  remoteRules: [RemoteRule]) {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
@@ -146,7 +143,8 @@ extension Configuration {
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath,
                   indentation: indentation,
-                  plugins: plugins)
+                  plugins: plugins,
+                  remoteRules: remoteRules)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],
@@ -183,4 +181,23 @@ extension Configuration {
                 "completely removed in a future release.")
         }
     }
+
+    private static func warnAboutDuplicateConfigurations(for ruleType: Rule.Type) {
+        let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
+        let identifier = ruleType.description.identifier
+        queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
+    }
+
+    private static func validateConfigurationKeys(dict: [String: Any], ruleList: RuleList, remoteRules: [RemoteRule]) {
+        // Log an error when supplying invalid keys in the configuration dictionary
+        let invalidKeys = Set(dict.keys).subtracting(validKeys(ruleList: ruleList,
+                                                               remoteRules: remoteRules))
+        if !invalidKeys.isEmpty {
+            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+        }
+    }
+}
+
+private func defaultStringArray(_ object: Any?) -> [String] {
+    return [String].array(of: object) ?? []
 }

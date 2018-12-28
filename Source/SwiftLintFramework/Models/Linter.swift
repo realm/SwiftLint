@@ -181,7 +181,7 @@ public struct Linter {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
 
-        let lintables = rules.map(LintableBox.init(rule:)) + remoteRules.map(LintableBox.init(remoteRule:))
+        let lintables = remoteRules.map(LintableBox.init(remoteRule:)) + rules.map(LintableBox.init(rule:))
         let validationResults = lintables.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,

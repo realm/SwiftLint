@@ -27,6 +27,8 @@ struct LintOrAnalyzeCommand {
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
+        let pluginsProcesses = configuration.startPlugins()
+
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
@@ -47,8 +49,7 @@ struct LintOrAnalyzeCommand {
             linter.file.invalidateCache()
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if isWarningThresholdBroken(configuration: configuration, violations: violations)
-                && !options.lenient {
+            if isWarningThresholdBroken(configuration: configuration, violations: violations) && !options.lenient {
                 violations.append(createThresholdViolation(threshold: configuration.warningThreshold!))
                 reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
@@ -63,6 +64,7 @@ struct LintOrAnalyzeCommand {
                 ruleBenchmark.save()
             }
             try? cache?.save()
+            pluginsProcesses.forEach { $0.terminate() }
             return successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                  strictWithViolations: options.strict && !violations.isEmpty)
         }

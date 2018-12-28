@@ -163,6 +163,16 @@ extension Configuration {
         return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap(visitLintableFiles)
     }
 
+    func startPlugins() -> [Process] {
+        return plugins.map { executable in
+            let task = Process()
+            task.launchPath = executable
+            task.arguments = ["lint"]
+            task.launch()
+            return task
+        }
+    }
+
     // MARK: AutoCorrect Command
 
     init(options: AutoCorrectOptions) {

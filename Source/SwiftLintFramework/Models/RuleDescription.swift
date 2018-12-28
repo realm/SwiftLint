@@ -39,4 +39,31 @@ public struct RuleDescription: Equatable, Codable {
     public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
         return lhs.identifier == rhs.identifier
     }
+
+    // MARK: Codable
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.identifier = try container.decode(String.self, forKey: .identifier)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decode(String.self, forKey: .description)
+        self.kind = try container.decode(RuleKind.self, forKey: .kind)
+        self.nonTriggeringExamples = container.optionalDecode([String].self, forKey: .nonTriggeringExamples) ?? []
+        self.triggeringExamples = container.optionalDecode([String].self, forKey: .triggeringExamples) ?? []
+        self.corrections = container.optionalDecode([String: String].self, forKey: .corrections) ?? [:]
+        self.deprecatedAliases = container.optionalDecode(Set<String>.self, forKey: .deprecatedAliases) ?? []
+        self.minSwiftVersion = container.optionalDecode(SwiftVersion.self, forKey: .minSwiftVersion) ?? .three
+        self.requiresFileOnDisk = container.optionalDecode(Bool.self, forKey: .requiresFileOnDisk) ?? false
+    }
+}
+
+private extension KeyedDecodingContainerProtocol {
+    func optionalDecode<T>(_ type: T.Type, forKey key: KeyedDecodingContainer<Key>.Key) -> T? where T: Decodable {
+        do {
+            return try decodeIfPresent(type, forKey: key)
+        } catch {
+            return nil
+        }
+    }
 }

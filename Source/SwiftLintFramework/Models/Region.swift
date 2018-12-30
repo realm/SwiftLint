@@ -13,22 +13,34 @@ public struct Region: Equatable {
         return start <= location && end >= location
     }
 
+    public func isRuleEnabled(_ ruleDescription: RuleDescription) -> Bool {
+        return !isRuleDisabled(ruleDescription)
+    }
+
+    public func isRuleDisabled(_ ruleDescription: RuleDescription) -> Bool {
+        guard !disabledRuleIdentifiers.contains(.all) else {
+            return true
+        }
+
+        let identifiersToCheck = ruleDescription.allIdentifiers
+        let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
+        return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
+    }
+
     public func isRuleEnabled(_ rule: Rule) -> Bool {
         return !isRuleDisabled(rule)
     }
 
     public func isRuleDisabled(_ rule: Rule) -> Bool {
-        guard !disabledRuleIdentifiers.contains(.all) else {
-            return true
-        }
+        return isRuleDisabled(type(of: rule).description)
+    }
 
-        let identifiersToCheck = type(of: rule).description.allIdentifiers
-        let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
-        return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
+    public func deprecatedAliasesDisabling(ruleDescription: RuleDescription) -> Set<String> {
+        let identifiers = ruleDescription.deprecatedAliases
+        return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
     }
 
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
-        let identifiers = type(of: rule).description.deprecatedAliases
-        return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
+        return deprecatedAliasesDisabling(ruleDescription: type(of: rule).description)
     }
 }

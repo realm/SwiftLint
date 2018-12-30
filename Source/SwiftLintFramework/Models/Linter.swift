@@ -7,47 +7,83 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
-private struct LintableBox {
-    private let rule: Rule?
-    private let remoteRule: RemoteRule?
+private enum LintableBox {
+    case rule(Rule)
+    case remoteRule(RemoteRule)
 
-    init(rule: Rule) {
-        self.rule = rule
-        self.remoteRule = nil
-    }
-
-    init(remoteRule: RemoteRule) {
-        self.remoteRule = remoteRule
-        self.rule = nil
+    private var ruleDescription: RuleDescription {
+        switch self {
+        case .rule(let rule):
+            return type(of: rule).description
+        case .remoteRule(let remoteRule):
+            return remoteRule.description
+        }
     }
 
     func lint(file: File, regions: [Region], benchmark: Bool,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
-        if let rule = rule {
-            return rule.lint(file: file, regions: regions, benchmark: benchmark,
-                             superfluousDisableCommandRule: superfluousDisableCommandRule,
-                             compilerArguments: compilerArguments)
-        } else if let remoteRule = remoteRule {
-            return remoteRule.lint(file: file, regions: regions, benchmark: benchmark,
-                                   superfluousDisableCommandRule: superfluousDisableCommandRule,
-                                   compilerArguments: compilerArguments)
-        } else {
+        let lintResultBeforeDisableCommand: LintResult?
+        switch self {
+        case .rule(let rule):
+            lintResultBeforeDisableCommand = rule.lint(file: file, regions: regions, benchmark: benchmark,
+                                                       compilerArguments: compilerArguments)
+        case .remoteRule(let remoteRule):
+            lintResultBeforeDisableCommand = remoteRule.lint(file: file, regions: regions, benchmark: benchmark,
+                                                             compilerArguments: compilerArguments)
+        }
+
+        guard let lintResult = lintResultBeforeDisableCommand else {
             return nil
         }
+
+        let violations = lintResult.violations
+        let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
+            return (violation, regions.first { $0.contains(violation.location) })
+        }.partitioned { _, region in
+            return region?.isRuleEnabled(ruleDescription) ?? true
+        }
+
+        let ruleIDs = ruleDescription.allIdentifiers +
+            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? [])
+        let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
+
+        let superfluousDisableCommandViolations = ruleDescription.superfluousDisableCommandViolations(
+            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
+            superfluousDisableCommandRule: superfluousDisableCommandRule,
+            allViolations: violations
+        )
+
+        let enabledViolations: [StyleViolation]
+        if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
+            enabledViolations = enabledViolationsAndRegions.compactMap { violation, _ in
+                if violation.location.line == 1 { return nil }
+                return violation
+            }
+        } else {
+            enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+        }
+        let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
+            let identifiers = region?.deprecatedAliasesDisabling(ruleDescription: ruleDescription) ?? []
+            return identifiers.map { ($0, ruleDescription.identifier) }
+        }
+
+        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
+                          ruleTime: lintResult.ruleTime,
+                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 }
 
-private extension Rule {
-    static func superfluousDisableCommandViolations(regions: [Region],
-                                                    superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-                                                    allViolations: [StyleViolation]) -> [StyleViolation] {
+private extension RuleDescription {
+    func superfluousDisableCommandViolations(regions: [Region],
+                                             superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+                                             allViolations: [StyleViolation]) -> [StyleViolation] {
         guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
 
         let regionsDisablingCurrentRule = regions.filter { region in
-            return region.isRuleDisabled(self.init())
+            return region.isRuleDisabled(self)
         }
         let regionsDisablingSuperflousDisableRule = regions.filter { region in
             return region.isRuleDisabled(superfluousDisableCommandRule)
@@ -74,9 +110,10 @@ private extension Rule {
             )
         }
     }
+}
 
+private extension Rule {
     func lint(file: File, regions: [Region], benchmark: Bool,
-              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
@@ -95,44 +132,13 @@ private extension Rule {
             ruleTime = nil
         }
 
-        let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
-            return (violation, regions.first { $0.contains(violation.location) })
-        }.partitioned { _, region in
-            return region?.isRuleEnabled(self) ?? true
-        }
-
-        let ruleIDs = Self.description.allIdentifiers +
-            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? [])
-        let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
-
-        let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
-            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
-            superfluousDisableCommandRule: superfluousDisableCommandRule,
-            allViolations: violations
-        )
-
-        let enabledViolations: [StyleViolation]
-        if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
-            enabledViolations = enabledViolationsAndRegions.compactMap { violation, _ in
-                if violation.location.line == 1 { return nil }
-                return violation
-            }
-        } else {
-            enabledViolations = enabledViolationsAndRegions.map { $0.0 }
-        }
-        let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
-            let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
-            return identifiers.map { ($0, ruleID) }
-        }
-
-        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations, ruleTime: ruleTime,
-                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+        return LintResult(violations: violations, ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: [])
     }
 }
 
 private extension RemoteRule {
     func lint(file: File, regions: [Region], benchmark: Bool,
-              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         let ruleID = description.identifier
 
@@ -181,7 +187,7 @@ public struct Linter {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
 
-        let lintables = remoteRules.map(LintableBox.init(remoteRule:)) + rules.map(LintableBox.init(rule:))
+        let lintables = remoteRules.map(LintableBox.remoteRule) + rules.map(LintableBox.rule)
         let validationResults = lintables.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,

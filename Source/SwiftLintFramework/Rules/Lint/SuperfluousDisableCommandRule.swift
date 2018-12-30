@@ -18,8 +18,8 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
         return []
     }
 
-    public func reason(for rule: Rule.Type) -> String {
-        return "SwiftLint rule '\(rule.description.identifier)' did not trigger a violation " +
+    public func reason(for ruleDescription: RuleDescription) -> String {
+        return "SwiftLint rule '\(ruleDescription.identifier)' did not trigger a violation " +
                "in the disabled region. Please remove the disable command."
     }
 }

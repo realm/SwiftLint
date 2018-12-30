@@ -80,9 +80,10 @@ public struct Configuration: Hashable {
 
         let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }
 
-        guard let rules = enabledRules(from: configuredRules,
-                                       with: rulesMode,
-                                       aliasResolver: handleAliasWithRuleList) else {
+        guard let enabledRules = enabledRules(from: configuredRules,
+                                              with: rulesMode,
+                                              remoteRules: remoteRules,
+                                              aliasResolver: handleAliasWithRuleList) else {
             return nil
         }
 
@@ -91,11 +92,11 @@ public struct Configuration: Hashable {
                   excluded: excluded,
                   warningThreshold: warningThreshold,
                   reporter: reporter,
-                  rules: rules,
+                  rules: enabledRules.0,
                   cachePath: cachePath,
                   indentation: indentation,
                   plugins: plugins,
-                  remoteRules: remoteRules)
+                  remoteRules: enabledRules.1)
     }
 
     internal init(rulesMode: RulesMode,
@@ -233,12 +234,13 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
 
 private func enabledRules(from configuredRules: [Rule],
                           with mode: Configuration.RulesMode,
-                          aliasResolver: (String) -> String) -> [Rule]? {
-    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+                          remoteRules: [RemoteRule],
+                          aliasResolver: (String) -> String) -> ([Rule], [RemoteRule])? {
+    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier } + remoteRules.identifiers
 
     switch mode {
     case .allEnabled:
-        return configuredRules
+        return (configuredRules, remoteRules)
     case .whitelisted(let whitelistedRuleIdentifiers):
         let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
             ruleIdentifiers: whitelistedRuleIdentifiers.map(aliasResolver),
@@ -247,9 +249,15 @@ private func enabledRules(from configuredRules: [Rule],
         if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
             return nil
         }
-        return configuredRules.filter { rule in
+
+        let whitelistedRules = configuredRules.filter { rule in
             return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
         }
+        let whitelistedRemoteRules = remoteRules.filter { rule in
+            return validWhitelistedRuleIdentifiers.contains(rule.description.identifier)
+        }
+
+        return (whitelistedRules, whitelistedRemoteRules)
     case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
         let validDisabledRuleIdentifiers = validateRuleIdentifiers(
             ruleIdentifiers: disabledRuleIdentifiers.map(aliasResolver),
@@ -262,11 +270,19 @@ private func enabledRules(from configuredRules: [Rule],
             || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
             return nil
         }
-        return configuredRules.filter { rule in
+
+        let enabledRules = configuredRules.filter { rule in
             let id = type(of: rule).description.identifier
             if validDisabledRuleIdentifiers.contains(id) { return false }
             return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
         }
+
+        let enabledRemoteRules = remoteRules.filter { rule in
+            let id = rule.description.identifier
+            return !validDisabledRuleIdentifiers.contains(id)
+        }
+
+        return (enabledRules, enabledRemoteRules)
     }
 }
 

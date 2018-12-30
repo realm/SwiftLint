@@ -54,6 +54,12 @@ public final class RemoteRule {
     }
 }
 
+internal extension Array where Element == RemoteRule {
+    var identifiers: [String] {
+        return map { $0.description.identifier }
+    }
+}
+
 private func parseLocation(from dictionary: [String: Any],
                            file: File) -> Location? {
     if let byteOffset = dictionary["byte_offset"] as? Int {

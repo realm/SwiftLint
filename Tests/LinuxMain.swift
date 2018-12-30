@@ -1071,6 +1071,12 @@ extension RuleConfigurationTests {
     ]
 }
 
+extension RuleDescriptionTests {
+    static var allTests: [(String, (RuleDescriptionTests) -> () throws -> Void)] = [
+        ("testCodableWithMissingValues", testCodableWithMissingValues)
+    ]
+}
+
 extension RuleTests {
     static var allTests: [(String, (RuleTests) -> () throws -> Void)] = [
         ("testRuleIsEqualTo", testRuleIsEqualTo),
@@ -1522,6 +1528,7 @@ XCTMain([
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),
+    testCase(RuleDescriptionTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),

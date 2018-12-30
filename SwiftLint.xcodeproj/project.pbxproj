@@ -291,6 +291,7 @@
 		D4C889711E385B7B00BAE88D /* RedundantDiscardableLetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */; };
 		D4CA758F1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */; };
 		D4CFC5D2209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CFC5D1209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift */; };
+		D4D11B1D21D8AE2300FB9D93 /* RuleDescriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D11B1C21D8AE2300FB9D93 /* RuleDescriptionTests.swift */; };
 		D4D1B9BB1EAC2C910028BE6A /* AccessControlLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */; };
 		D4D383852145F550000235BD /* StaticOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D383842145F550000235BD /* StaticOperatorRule.swift */; };
 		D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */; };
@@ -748,6 +749,7 @@
 		D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantDiscardableLetRule.swift; sourceTree = "<group>"; };
 		D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRuleTests.swift; sourceTree = "<group>"; };
 		D4CFC5D1209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDefaultParameterAtEndRule.swift; sourceTree = "<group>"; };
+		D4D11B1C21D8AE2300FB9D93 /* RuleDescriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleDescriptionTests.swift; sourceTree = "<group>"; };
 		D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessControlLevel.swift; sourceTree = "<group>"; };
 		D4D383842145F550000235BD /* StaticOperatorRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticOperatorRule.swift; sourceTree = "<group>"; };
 		D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShorthandOperatorRule.swift; sourceTree = "<group>"; };
@@ -1376,6 +1378,7 @@
 				3B12C9BE1C3209AC000B423F /* Resources */,
 				3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */,
 				D45255C71F0932F8003C9B56 /* RuleDescription+Examples.swift */,
+				D4D11B1C21D8AE2300FB9D93 /* RuleDescriptionTests.swift */,
 				E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */,
 				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
@@ -2105,6 +2108,7 @@
 				D4C27C001E12DFF500DF713E /* LinterCacheTests.swift in Sources */,
 				D45255C81F0932F8003C9B56 /* RuleDescription+Examples.swift in Sources */,
 				E81ADD721ED5ED9D000CD451 /* RegionTests.swift in Sources */,
+				D4D11B1D21D8AE2300FB9D93 /* RuleDescriptionTests.swift in Sources */,
 				D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */,
 				750BBD0B214180AF007EC437 /* CollectionAlignmentRuleTests.swift in Sources */,
 				8B01E50220A4349100C9233E /* FunctionParameterCountRuleTests.swift in Sources */,

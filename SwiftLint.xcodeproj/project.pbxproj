@@ -260,6 +260,8 @@
 		D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */; };
 		D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
 		D47820C621D8B3ED00F24836 /* ConfigurationTests+Plugins.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47820C521D8B3ED00F24836 /* ConfigurationTests+Plugins.swift */; };
+		D47820C821D8CBC000F24836 /* PluginDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47820C721D8CBC000F24836 /* PluginDescription.swift */; };
+		D47820CA21D8CD2C00F24836 /* Lazy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47820C921D8CD2C00F24836 /* Lazy.swift */; };
 		D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
 		D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
 		D47EF4801F69E3100012C4CA /* ColonRule+FunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */; };
@@ -719,6 +721,8 @@
 		D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParametersRule.swift; sourceTree = "<group>"; };
 		D47079AE1DFE520000027086 /* VoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidReturnRule.swift; sourceTree = "<group>"; };
 		D47820C521D8B3ED00F24836 /* ConfigurationTests+Plugins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Plugins.swift"; sourceTree = "<group>"; };
+		D47820C721D8CBC000F24836 /* PluginDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDescription.swift; sourceTree = "<group>"; };
+		D47820C921D8CD2C00F24836 /* Lazy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lazy.swift; sourceTree = "<group>"; };
 		D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseOnNewlineRule.swift; sourceTree = "<group>"; };
 		D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRule.swift; sourceTree = "<group>"; };
 		D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColonRule+FunctionCall.swift"; sourceTree = "<group>"; };
@@ -1497,10 +1501,12 @@
 				3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */,
 				E8B67C3D1C095E6300FDED8E /* Correction.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
+				D47820C921D8CD2C00F24836 /* Lazy.swift */,
 				D4FD58B11E12A0200019503C /* LinterCache.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
 				3B12C9C41C322032000B423F /* MasterRuleList.swift */,
 				E80E018E1B92C1350078EB70 /* Region.swift */,
+				D47820C721D8CBC000F24836 /* PluginDescription.swift */,
 				83D71E261B131EB5000395DE /* RuleDescription.swift */,
 				CC26ED05204DE86E0013BBBC /* RuleIdentifier.swift */,
 				E8BDE3FE1EDF91B6002EC12F /* RuleList.swift */,
@@ -1893,6 +1899,7 @@
 				D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */,
 				E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */,
 				37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */,
+				D47820CA21D8CD2C00F24836 /* Lazy.swift in Sources */,
 				823EDC6221020D850070B7CD /* MultilineLiteralBracketsRule.swift in Sources */,
 				D47EF4801F69E3100012C4CA /* ColonRule+FunctionCall.swift in Sources */,
 				E88198561BEA94D800333A11 /* FileLengthRule.swift in Sources */,
@@ -2033,6 +2040,7 @@
 				CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */,
 				62DEA1661FB21A9E00BCCCC6 /* PrivateActionRule.swift in Sources */,
 				D4FD58B21E12A0200019503C /* LinterCache.swift in Sources */,
+				D47820C821D8CBC000F24836 /* PluginDescription.swift in Sources */,
 				3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */,
 				F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */,
 				E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */,

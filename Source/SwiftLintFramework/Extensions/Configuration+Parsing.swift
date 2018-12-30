@@ -17,7 +17,7 @@ extension Configuration {
     }
 
     private static func validKeys(ruleList: RuleList, remoteRules: [RemoteRule]) -> [String] {
-        return [
+        let globalKeys = [
             Key.cachePath,
             .disabledRules,
             .enabledRules,
@@ -32,7 +32,10 @@ extension Configuration {
             .indentation,
             .analyzerRules,
             .plugins
-        ].map({ $0.rawValue }) + ruleList.allValidIdentifiers() + remoteRules.flatMap { $0.description.allIdentifiers }
+        ].map { $0.rawValue }
+
+        return globalKeys + ruleList.allValidIdentifiers() +
+            remoteRules.flatMap { $0.ruleDescription.allIdentifiers }
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {

@@ -8,7 +8,7 @@ extension ConfigurationTests {
         let configuration = Configuration(dict: configurationJSON, remoteRulesResolver: resolver)!
 
         XCTAssertEqual(configuration.plugins, ["path/to/plugin"])
-        XCTAssertEqual(configuration.remoteRules.map { $0.description.identifier }, ["test"])
+        XCTAssertEqual(configuration.remoteRules.map { $0.ruleDescription.identifier }, ["test"])
         XCTAssertEqual(resolver.executable, "path/to/plugin")
         XCTAssertEqual(resolver.configuration?.bridge(), configurationJSON.bridge())
     }
@@ -32,7 +32,7 @@ extension ConfigurationTests {
         }.sorted()
 
         XCTAssertEqual(["nesting"], configuredIdentifiers)
-        XCTAssertEqual(["test"], config.remoteRules.map { $0.description.identifier })
+        XCTAssertEqual(["test"], config.remoteRules.map { $0.ruleDescription.identifier })
     }
 
     func testDisabledRulesWithPlugins() {
@@ -65,7 +65,9 @@ private class ResolverMock: RemoteRuleResolverProtocol {
         self.configuration = configuration
 
         let identifier = identifiers[executable] ?? ""
-        let description = RuleDescription(identifier: identifier, name: "Test", description: "", kind: .idiomatic)
-        return RemoteRule(description: description, executable: executable, configuration: nil)
+        let ruleDescription = RuleDescription(identifier: identifier, name: "Test",
+                                              description: "", kind: .idiomatic)
+        let pluginDescription = PluginDescription(ruleDescription: ruleDescription)
+        return RemoteRule(description: pluginDescription, executable: executable, configuration: nil)
     }
 }

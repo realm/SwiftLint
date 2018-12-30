@@ -254,7 +254,7 @@ private func enabledRules(from configuredRules: [Rule],
             return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
         }
         let whitelistedRemoteRules = remoteRules.filter { rule in
-            return validWhitelistedRuleIdentifiers.contains(rule.description.identifier)
+            return validWhitelistedRuleIdentifiers.contains(rule.ruleDescription.identifier)
         }
 
         return (whitelistedRules, whitelistedRemoteRules)
@@ -278,7 +278,7 @@ private func enabledRules(from configuredRules: [Rule],
         }
 
         let enabledRemoteRules = remoteRules.filter { rule in
-            let id = rule.description.identifier
+            let id = rule.ruleDescription.identifier
             return !validDisabledRuleIdentifiers.contains(id)
         }
 

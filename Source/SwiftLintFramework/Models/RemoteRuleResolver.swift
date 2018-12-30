@@ -12,7 +12,7 @@ public final class RemoteRuleResolver: RemoteRuleResolverProtocol {
                            configuration: [String: Any]?) throws -> RemoteRule {
         let task = Process()
         task.launchPath = executable
-        task.arguments = ["rule_description"]
+        task.arguments = ["plugin_description"]
 
         let pipe = Pipe()
         task.standardOutput = pipe
@@ -24,8 +24,8 @@ public final class RemoteRuleResolver: RemoteRuleResolverProtocol {
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let description = try decoder.decode(RuleDescription.self, from: file.readDataToEndOfFile())
+        let description = try decoder.decode(PluginDescription.self, from: file.readDataToEndOfFile())
         return RemoteRule(description: description, executable: executable,
-                          configuration: configuration?[description.identifier])
+                          configuration: configuration?[description.ruleDescription.identifier])
     }
 }

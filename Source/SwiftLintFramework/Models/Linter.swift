@@ -16,7 +16,7 @@ private enum LintableBox {
         case .rule(let rule):
             return type(of: rule).description
         case .remoteRule(let remoteRule):
-            return remoteRule.description
+            return remoteRule.ruleDescription
         }
     }
 
@@ -140,7 +140,7 @@ private extension Rule {
 private extension RemoteRule {
     func lint(file: File, regions: [Region], benchmark: Bool,
               compilerArguments: [String]) -> LintResult? {
-        let ruleID = description.identifier
+        let ruleID = ruleDescription.identifier
 
         let violations: [StyleViolation]
         let ruleTime: (String, Double)?

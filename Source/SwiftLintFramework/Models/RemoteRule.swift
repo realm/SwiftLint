@@ -3,21 +3,25 @@ import Socket
 import SourceKittenFramework
 
 public final class RemoteRule {
-    public let description: RuleDescription
+    public let description: PluginDescription
     private let executable: String
     private let configuration: Any?
 
-    public init(description: RuleDescription, executable: String, configuration: Any?) {
+    public var ruleDescription: RuleDescription {
+        return description.ruleDescription
+    }
+
+    public init(description: PluginDescription, executable: String, configuration: Any?) {
         self.description = description
         self.executable = executable
         self.configuration = configuration
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        let payload = Payload(structure: file.structure.dictionary,
-                              syntaxMap: file.syntaxMap.tokens,
+        let payload = Payload(structure: Lazy(file.structure.dictionary),
+                              syntaxMap: Lazy(file.syntaxMap.tokens),
                               path: file.path,
-                              contents: file.contents,
+                              contents: Lazy(file.contents),
                               configuration: configuration)
         return validate(payload: payload, file: file)
     }
@@ -25,9 +29,9 @@ public final class RemoteRule {
     private func validate(payload: Payload, file: File) -> [StyleViolation] {
         do {
             let socket = try Socket.create(family: .unix, type: .stream, proto: .unix)
-            try socket.connect(to: "/tmp/\(description.identifier).socket")
+            try socket.connect(to: "/tmp/\(ruleDescription.identifier).socket")
 
-            let data = try payload.asJSONData()
+            let data = try payload.asJSONData(input: description.requiredInformation)
             try socket.write(from: data)
 
             var readData = Data()
@@ -43,7 +47,7 @@ public final class RemoteRule {
                     return nil
                 }
 
-                return StyleViolation(ruleDescription: description,
+                return StyleViolation(ruleDescription: ruleDescription,
                                       severity: severity,
                                       location: location,
                                       reason: dictionary["reason"] as? String)
@@ -56,7 +60,7 @@ public final class RemoteRule {
 
 internal extension Array where Element == RemoteRule {
     var identifiers: [String] {
-        return map { $0.description.identifier }
+        return map { $0.ruleDescription.identifier }
     }
 }
 
@@ -75,25 +79,29 @@ private func parseLocation(from dictionary: [String: Any],
 }
 
 private struct Payload {
-    let structure: [String: SourceKitRepresentable]
-    let syntaxMap: [SyntaxToken]
+    let structure: Lazy<[String: SourceKitRepresentable]>
+    let syntaxMap: Lazy<[SyntaxToken]>
     let path: String?
-    let contents: String
+    let contents: Lazy<String>
     let configuration: Any?
 
-    func asJSONData() throws -> Data {
-        return try JSONSerialization.data(withJSONObject: asJSONDictionary())
+    func asJSONData(input: Set<PluginRequiredInput>) throws -> Data {
+        return try JSONSerialization.data(withJSONObject: asJSONDictionary(input: input))
     }
 
-    func asJSONDictionary() -> [String: Any] {
-        var json = [
-            "structure": structure,
-            "syntax_map": syntaxMap.map { $0.dictionaryValue }
-        ] as [String: Any]
+    private func asJSONDictionary(input: Set<PluginRequiredInput>) -> [String: Any] {
+        var json = [String: Any]()
+        if input.contains(.structure) {
+            json["structure"] = structure.value
+        }
+        if input.contains(.syntaxMap) {
+            json["syntax_map"] = syntaxMap.value.map { $0.dictionaryValue }
+        }
+
         json["path"] = path
         json["configuration"] = configuration
         if path == nil {
-            json["contents"] = contents
+            json["contents"] = contents.value
         }
 
         return json

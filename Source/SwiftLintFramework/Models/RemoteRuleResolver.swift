@@ -1,8 +1,15 @@
 import Foundation
 
-final class RemoteRuleResolver {
+public protocol RemoteRuleResolverProtocol {
     func remoteRule(forExecutable executable: String,
-                    configuration: [String: Any]?) throws -> RemoteRule {
+                    configuration: [String: Any]?) throws -> RemoteRule
+}
+
+public final class RemoteRuleResolver: RemoteRuleResolverProtocol {
+    public init() {}
+
+    public func remoteRule(forExecutable executable: String,
+                           configuration: [String: Any]?) throws -> RemoteRule {
         let task = Process()
         task.launchPath = executable
         task.arguments = ["rule_description"]

@@ -48,17 +48,19 @@ extension Configuration {
         return .default
     }
 
-    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
-                 cachePath: String? = nil) {
+    public init?(dict: [String: Any],
+                 ruleList: RuleList = masterRuleList,
+                 enableAllRules: Bool = false,
+                 cachePath: String? = nil,
+                 remoteRulesResolver: RemoteRuleResolverProtocol = RemoteRuleResolver()) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(
             dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue]
         )
 
         let plugins = defaultStringArray(dict[Key.plugins.rawValue])
-        let resolver = RemoteRuleResolver()
         let remoteRules = plugins.compactMap {
-            try? resolver.remoteRule(forExecutable: $0, configuration: dict)
+            try? remoteRulesResolver.remoteRule(forExecutable: $0, configuration: dict)
         }
 
         Configuration.validateConfigurationKeys(dict: dict, ruleList: ruleList, remoteRules: remoteRules)

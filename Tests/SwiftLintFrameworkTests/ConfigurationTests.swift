@@ -34,6 +34,8 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.indentation, .spaces(count: 4))
         XCTAssertEqual(config.reporter, "xcode")
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
+        XCTAssertEqual(config.plugins, [])
+        XCTAssertTrue(config.remoteRules.isEmpty)
     }
 
     func testInitWithRelativePathAndRootPath() {

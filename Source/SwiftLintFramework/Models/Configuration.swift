@@ -62,6 +62,7 @@ public struct Configuration: Hashable {
                  cachePath: String? = nil,
                  indentation: IndentationStyle = .default,
                  plugins: [String] = [],
+                 remoteRulesResolver: RemoteRuleResolverProtocol = RemoteRuleResolver(),
                  remoteRules: [RemoteRule]? = nil) {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
@@ -73,9 +74,8 @@ public struct Configuration: Hashable {
             ?? (try? ruleList.configuredRules(with: [:]))
             ?? []
 
-        let resolver = RemoteRuleResolver()
         let remoteRules = remoteRules ?? plugins.compactMap {
-            try? resolver.remoteRule(forExecutable: $0, configuration: nil)
+            try? remoteRulesResolver.remoteRule(forExecutable: $0, configuration: nil)
         }
 
         let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }

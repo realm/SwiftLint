@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule, AutomaticTestableRule {
+public struct NimbleOperatorRule: ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         name: "Nimble Operator",
         description: "Prefer Nimble operator overloads over free matcher functions.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "expect(seagull.squawk) != \"Hi!\"\n",
             "expect(\"Hi!\") == \"Hi!\"\n",

@@ -11,6 +11,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         name: "Unused Import",
         description: "All imported modules should be required to make the file compile.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             import Dispatch

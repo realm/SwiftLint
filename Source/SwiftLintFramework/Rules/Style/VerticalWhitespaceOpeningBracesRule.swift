@@ -60,7 +60,7 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }
 
-extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule {
+extension VerticalWhitespaceOpeningBracesRule: AutomaticTestableRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}
@@ -70,6 +70,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
         name: "Vertical Whitespace after Opening Braces",
         description: "Don't include vertical whitespace (empty line) after opening braces.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
         triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
         corrections: violatingToValidExamples.removingViolationMarkers()

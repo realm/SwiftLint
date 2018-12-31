@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct IdenticalOperandsRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -13,6 +13,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         name: "Identical Operands",
         description: "Comparing two identical operands is likely a mistake.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: operators.flatMap { operation in
             [
                 "1 \(operation) 2",

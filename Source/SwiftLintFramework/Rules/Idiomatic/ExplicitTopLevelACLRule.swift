@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ExplicitTopLevelACLRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
         name: "Explicit Top Level ACL",
         description: "Top-level declarations should specify Access Control Level keywords explicitly.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "internal enum A {}\n",
             "public final class B {}\n",

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct FallthroughRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         name: "Fallthrough",
         description: "Fallthrough should be avoided.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             switch foo {

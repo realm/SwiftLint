@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         name: "Array Init",
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "Array(foo)\n",
             "foo.map { $0.0 }\n",

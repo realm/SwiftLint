@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NoExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         name: "No Extension Access Modifier",
         description: "Prefer not to use extension access modifiers",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "extension String {}",
             "\n\n extension String {}"

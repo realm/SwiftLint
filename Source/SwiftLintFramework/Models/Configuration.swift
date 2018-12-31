@@ -245,7 +245,7 @@ private func enabledRules(from configuredRules: [Rule],
         return configuredRules.filter { rule in
             let id = type(of: rule).description.identifier
             if validDisabledRuleIdentifiers.contains(id) { return false }
-            return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
+            return validOptInRuleIdentifiers.contains(id) || !rule.isOptIn
         }
     }
 }

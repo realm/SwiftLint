@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ForceUnwrappingRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         name: "Force Unwrapping",
         description: "Force unwrapping should be avoided.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "if let url = NSURL(string: query)",
             "navigationController?.pushViewController(viewController, animated: true)",

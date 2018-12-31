@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
+public struct FileHeaderRule: ConfigurationProviderRule {
     public var configuration = FileHeaderConfiguration()
 
     public init() {}
@@ -13,6 +13,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             "The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the " +
             "required and forbidden patterns. It will be replaced by the real file name.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let foo = \"Copyright\"",
             "let foo = 2 // Copyright",

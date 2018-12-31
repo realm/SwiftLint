@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LastWhereRule: CallPairRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -12,6 +12,7 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
         description: "Prefer using `.last(where:)` over `.filter { }.last` in collections.",
         kind: .performance,
         minSwiftVersion: .fourDotTwo,
+        isOptIn: true,
         nonTriggeringExamples: [
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.last == .identifier\n",
             "myList.last(where: { $0 % 2 == 0 })\n",

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct EmptyCountRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTes
         name: "Empty Count",
         description: "Prefer checking `isEmpty` over comparing `count` to zero.",
         kind: .performance,
+        isOptIn: true,
         nonTriggeringExamples: [
             "var count = 0\n",
             "[Int]().isEmpty\n",

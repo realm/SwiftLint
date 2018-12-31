@@ -39,7 +39,7 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
 }
 
-extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule {
+extension VerticalWhitespaceClosingBracesRule: AutomaticTestableRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}
@@ -49,6 +49,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule 
         name: "Vertical Whitespace before Closing Braces",
         description: "Don't include vertical whitespace (empty line) before closing braces.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
         triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
         corrections: violatingToValidExamples.removingViolationMarkers()

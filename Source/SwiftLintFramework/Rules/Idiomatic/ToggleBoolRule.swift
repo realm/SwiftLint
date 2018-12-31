@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ToggleBoolRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTes
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`.",
         kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
+        isOptIn: true,
         nonTriggeringExamples: [
             "isHidden.toggle()\n",
             "view.clipsToBounds.toggle()\n",

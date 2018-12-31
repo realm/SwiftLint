@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct YodaConditionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -37,6 +37,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         name: "Yoda condition rule",
         description: "The variable should be placed on the left, the constant on the right of a comparison operator.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "if foo == 42 {}\n",
             "if foo <= 42.42 {}\n",

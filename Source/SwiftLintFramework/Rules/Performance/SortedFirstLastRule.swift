@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct SortedFirstLastRule: CallPairRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
         name: "Min or Max over Sorted First or Last",
         description: "Prefer using `min()` or `max()` over `sorted().first` or `sorted().last`",
         kind: .performance,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let min = myList.min()\n",
             "let min = myList.min(by: { $0 < $1 })\n",

@@ -14,7 +14,7 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 }
 
-public struct FileNameRule: ConfigurationProviderRule, OptInRule {
+public struct FileNameRule: ConfigurationProviderRule {
     public var configuration = FileNameConfiguration(
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],
@@ -28,7 +28,8 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         identifier: "file_name",
         name: "File Name",
         description: "File name should match a type or extension declared in the file (if any).",
-        kind: .idiomatic
+        kind: .idiomatic,
+        isOptIn: true
     )
 
     public func validate(file: File) -> [StyleViolation] {

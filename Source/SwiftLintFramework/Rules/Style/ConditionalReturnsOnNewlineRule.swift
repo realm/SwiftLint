@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule {
     public var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
         name: "Conditional Returns on Newline",
         description: "Conditional statements should always return on the next line",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "guard true else {\n return true\n}",
             "guard true,\n let x = true else {\n return true\n}",

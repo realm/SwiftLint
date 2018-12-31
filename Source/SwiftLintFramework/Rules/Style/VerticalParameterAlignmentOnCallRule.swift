@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule,
+public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule,
                                                     AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -11,6 +11,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         name: "Vertical Parameter Alignment On Call",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a method call.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "foo(param1: 1, param2: bar\n" +
             "    param3: false, param4: true)",

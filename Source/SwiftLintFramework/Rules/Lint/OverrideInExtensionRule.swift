@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct OverrideInExtensionRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
         name: "Override in Extension",
         description: "Extensions shouldn't override declarations.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "extension Person {\n  var age: Int { return 42 }\n}\n",
             "extension Person {\n  func celebrateBirthday() {}\n}\n",

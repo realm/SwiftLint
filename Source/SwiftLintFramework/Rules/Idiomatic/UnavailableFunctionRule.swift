@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -12,6 +12,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         description: "Unimplemented functions should be marked as unavailable.",
         kind: .idiomatic,
         minSwiftVersion: .fourDotOne,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             class ViewController: UIViewController {

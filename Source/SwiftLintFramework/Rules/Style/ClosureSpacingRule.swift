@@ -16,7 +16,7 @@ extension NSRange {
     }
 }
 
-public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -26,6 +26,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         name: "Closure Spacing",
         description: "Closure expressions should have a single space inside each brace.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "[].map ({ $0.description })",
             "[].filter { $0.contains(location) }",

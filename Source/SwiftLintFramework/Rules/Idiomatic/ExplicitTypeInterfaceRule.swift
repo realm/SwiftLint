@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ExplicitTypeInterfaceRule: ASTRule, ConfigurationProviderRule {
     public var configuration = ExplicitTypeInterfaceConfiguration()
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         name: "Explicit Type Interface",
         description: "Properties should have a type interface",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             class Foo {

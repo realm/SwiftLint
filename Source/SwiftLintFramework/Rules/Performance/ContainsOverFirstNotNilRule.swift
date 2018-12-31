@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ContainsOverFirstNotNilRule: CallPairRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
         name: "Contains over first not nil",
         description: "Prefer `contains` over `first(where:) != nil`",
         kind: .performance,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let first = myList.first(where: { $0 % 2 == 0 })\n",
             "let first = myList.first { $0 % 2 == 0 }\n"

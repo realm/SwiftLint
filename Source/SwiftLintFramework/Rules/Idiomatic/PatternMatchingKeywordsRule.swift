@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
         name: "Pattern Matching Keywords",
         description: "Combine multiple pattern matching bindings by moving keywords out of tuples.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "default",
             "case 1",

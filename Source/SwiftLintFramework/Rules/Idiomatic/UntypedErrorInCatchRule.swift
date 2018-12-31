@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct UntypedErrorInCatchRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -34,6 +34,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
         name: "Untyped Error in Catch",
         description: "Catch statements should not declare error variables without type casting.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             do {

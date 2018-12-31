@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct DiscouragedObjectLiteralRule: ASTRule, ConfigurationProviderRule {
     public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
@@ -10,6 +10,7 @@ public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationPro
         name: "Discouraged Object Literal",
         description: "Prefer initializers over object literals.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let image = UIImage(named: aVariable)",
             "let image = UIImage(named: \"interpolated \\(variable)\")",

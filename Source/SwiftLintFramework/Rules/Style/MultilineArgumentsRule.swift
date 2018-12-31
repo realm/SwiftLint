@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct MultilineArgumentsRule: ASTRule, ConfigurationProviderRule {
     public var configuration = MultilineArgumentsConfiguration()
 
     public init() {}
@@ -11,6 +11,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
         name: "Multiline Arguments",
         description: "Arguments should be either on the same line, or one per line.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: MultilineArgumentsRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineArgumentsRuleExamples.triggeringExamples
     )

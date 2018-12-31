@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
+public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
     public var configuration = ProhibitedSuperConfiguration()
 
     public init() {}
@@ -10,6 +10,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         name: "Prohibited calls to super",
         description: "Some methods should not call super",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             class VC: UIViewController {

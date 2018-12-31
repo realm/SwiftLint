@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         name: "Function Default Parameter at End",
         description: "Prefer to locate parameters with defaults toward the end of the parameter list.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "func foo(baz: String, bar: Int = 0) {}",
             "func foo(x: String, y: Int = 0, z: CGFloat = 0) {}",

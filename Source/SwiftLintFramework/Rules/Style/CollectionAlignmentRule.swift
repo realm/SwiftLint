@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = CollectionAlignmentConfiguration()
 
     public init() {}
@@ -10,6 +10,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         name: "Collection Element Alignment",
         description: "All elements in a collection literal should be vertically aligned",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: Examples(alignColons: false).nonTriggeringExamples,
         triggeringExamples: Examples(alignColons: false).triggeringExamples
     )

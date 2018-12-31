@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct QuickDiscouragedPendingTestRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderR
         name: "Quick Discouraged Pending Test",
         description: "Discouraged pending test. This test won't run while it's marked as pending.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: QuickDiscouragedPendingTestRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedPendingTestRuleExamples.triggeringExamples
     )

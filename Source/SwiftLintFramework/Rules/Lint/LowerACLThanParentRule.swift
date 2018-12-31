@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LowerACLThanParentRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
         name: "Lower ACL than parent",
         description: "Ensure definitions have a lower access control level than their enclosing parent",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "public struct Foo { public func bar() {} }",
             "internal struct Foo { func bar() {} }",

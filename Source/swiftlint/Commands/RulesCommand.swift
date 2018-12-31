@@ -146,7 +146,7 @@ extension TextTable {
             }
             addRow(values: [
                 ruleID,
-                (rule is OptInRule) ? "yes" : "no",
+                rule.isOptIn ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,

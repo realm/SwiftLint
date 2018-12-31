@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultilineFunctionChainsRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         name: "Multiline Function Chains",
         description: "Chained function calls should be either on the same line, or one per line.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let evenSquaresSum = [20, 17, 35, 4].filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)",
             """

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NoGroupingExtensionRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         name: "No Grouping Extension",
         description: "Extensions shouldn't be used to group code within the same source file.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "protocol Food {}\nextension Food {}\n",
             "class Apples {}\nextension Oranges {}\n"

@@ -64,7 +64,7 @@ extension RuleList {
         var content = columns.joined(separator: " | ") + "\n"
         content += columns.map { _ in "---" }.joined(separator: " | ") + "\n"
         let identifier = type(of: rule).description.identifier
-        let defaultStatus = rule is OptInRule ? "Disabled" : "Enabled"
+        let defaultStatus = rule.isOptIn ? "Disabled" : "Enabled"
         let correctable = rule is CorrectableRule ? "Yes" : "No"
         let kind = type(of: rule).description.kind
         let analyzer = rule is AnalyzerRule ? "Yes" : "No"

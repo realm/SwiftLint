@@ -6,7 +6,7 @@ private enum AttributesRuleError: Error {
     case moreThanOneAttributeInSameLine
 }
 
-public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct AttributesRule: ASTRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
@@ -20,6 +20,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )

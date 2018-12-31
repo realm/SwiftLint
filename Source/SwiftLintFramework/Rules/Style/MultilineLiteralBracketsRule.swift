@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultilineLiteralBracketsRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         name: "Multiline Literal Brackets",
         description: "Multiline literals should have their surrounding brackets in a new line.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             let trio = ["harry", "ronald", "hermione"]

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
         description: "Prefer using `type.random(in:)` over legacy functions.",
         kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
+        isOptIn: true,
         nonTriggeringExamples: [
             "Int.random(in: 0..<10)\n",
             "Double.random(in: 8.6...111.34)\n",

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ExplicitEnumRawValueRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         name: "Explicit Enum Raw Value",
         description: "Enums should be explicitly assigned their raw values.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             enum Numbers {

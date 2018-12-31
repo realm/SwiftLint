@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultilineParametersRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     private typealias ParameterRange = (offset: Int, length: Int)
@@ -12,6 +12,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         name: "Multiline Parameters",
         description: "Functions and methods parameters should be either on the same line, or one per line.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )

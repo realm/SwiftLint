@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, OptInRule, CorrectableRule,
+public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, CorrectableRule,
                                           AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -12,6 +12,7 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
         name: "Joined Default Parameter",
         description: "Discouraged explicit usage of the default separator.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let foo = bar.joined()",
             "let foo = bar.joined(separator: \",\")",

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct TrailingClosureRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, Automat
         name: "Trailing Closure",
         description: "Trailing closure syntax should be used whenever possible.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "foo.map { $0 + 1 }\n",
             "foo.bar()\n",

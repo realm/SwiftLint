@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule,
         name: "Static Operator",
         description: "Operators should be declared as static functions, not free functions.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             class A: Equatable {

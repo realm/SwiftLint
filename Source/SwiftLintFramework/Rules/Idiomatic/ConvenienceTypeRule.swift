@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ConvenienceTypeRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -12,6 +12,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
                      "to avoid instantiation.",
         kind: .idiomatic,
         minSwiftVersion: .fourDotOne,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             enum Math { // enum

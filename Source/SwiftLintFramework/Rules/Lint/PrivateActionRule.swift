@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct PrivateActionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         name: "Private Actions",
         description: "IBActions should be private.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "class Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}\n",
             "struct Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}\n",

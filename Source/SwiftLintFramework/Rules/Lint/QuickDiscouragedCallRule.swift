@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct QuickDiscouragedCallRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         name: "Quick Discouraged Call",
         description: "Discouraged call inside 'describe' and/or 'context' block.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: QuickDiscouragedCallRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )

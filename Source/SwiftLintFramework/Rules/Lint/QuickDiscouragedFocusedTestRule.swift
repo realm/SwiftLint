@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct QuickDiscouragedFocusedTestRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         name: "Quick Discouraged Focused Test",
         description: "Discouraged focused test. Other tests won't run while this one is focused.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: QuickDiscouragedFocusedTestRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )

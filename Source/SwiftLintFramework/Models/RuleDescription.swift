@@ -3,6 +3,7 @@ public struct RuleDescription: Equatable {
     public let name: String
     public let description: String
     public let kind: RuleKind
+    public let isOptIn: Bool
     public let nonTriggeringExamples: [String]
     public let triggeringExamples: [String]
     public let corrections: [String: String]
@@ -18,6 +19,7 @@ public struct RuleDescription: Equatable {
 
     public init(identifier: String, name: String, description: String, kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .three,
+                isOptIn: Bool = false,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],
                 deprecatedAliases: Set<String> = [],
@@ -26,6 +28,7 @@ public struct RuleDescription: Equatable {
         self.name = name
         self.description = description
         self.kind = kind
+        self.isOptIn = isOptIn
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples
         self.corrections = corrections

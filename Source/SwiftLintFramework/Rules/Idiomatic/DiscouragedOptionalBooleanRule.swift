@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DiscouragedOptionalBooleanRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRu
         name: "Discouraged Optional Boolean",
         description: "Prefer non-optional booleans over optional booleans.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: DiscouragedOptionalBooleanRuleExamples.nonTriggeringExamples,
         triggeringExamples: DiscouragedOptionalBooleanRuleExamples.triggeringExamples
     )

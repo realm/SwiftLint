@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultilineParametersBracketsRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         name: "Multiline Parameters Brackets",
         description: "Multiline parameters should have their surrounding brackets in a new line.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             func foo(param1: String, param2: String, param3: String)

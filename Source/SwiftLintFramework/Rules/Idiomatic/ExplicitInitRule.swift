@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableRule, OptInRule, AutomaticTestableRule {
+public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         name: "Explicit Init",
         description: "Explicitly calling .init() should be avoided.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "import Foundation; class C: NSObject { override init() { super.init() }}", // super
             "struct S { let n: Int }; extension S { init() { self.init(n: 1) } }",      // self

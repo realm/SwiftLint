@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
+public struct RedundantTypeAnnotationRule: CorrectableRule,
                                            ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -12,6 +12,7 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
         name: "Redundant Type Annotation",
         description: "Variables should not have redundant type annotation",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "var url = URL()",
             "var url: CustomStringConvertible = URL()"

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct StrictFilePrivateRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, Autom
         name: "Strict fileprivate",
         description: "`fileprivate` should be avoided.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "extension String {}",
             "private extension String {}",

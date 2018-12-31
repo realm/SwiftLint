@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DiscouragedOptionalCollectionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
         name: "Discouraged Optional Collection",
         description: "Prefer empty collection over optional collection.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: DiscouragedOptionalCollectionExamples.nonTriggeringExamples,
         triggeringExamples: DiscouragedOptionalCollectionExamples.triggeringExamples
     )

@@ -3,13 +3,13 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
+private let optInRules = masterRuleList.list.filter({ $0.1.description.isOptIn }).map({ $0.0 })
 
 private extension Configuration {
     var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
         let defaultRuleIDs = Set(masterRuleList.list.values.filter({
-            !($0.init() is OptInRule)
+            !$0.description.isOptIn
         }).map({ $0.description.identifier }))
         return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
     }

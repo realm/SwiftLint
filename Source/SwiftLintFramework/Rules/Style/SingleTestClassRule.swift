@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct SingleTestClassRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(
@@ -8,6 +8,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
         name: "Single Test Class",
         description: "Test files should contain a single QuickSpec or XCTestCase class.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "class FooTests {  }\n",
             "class FooTests: QuickSpec {  }\n",

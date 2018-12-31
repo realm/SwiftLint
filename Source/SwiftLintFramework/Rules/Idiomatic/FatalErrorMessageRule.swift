@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         name: "Fatal Error Message",
         description: "A fatalError call should have a message.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             func foo() {

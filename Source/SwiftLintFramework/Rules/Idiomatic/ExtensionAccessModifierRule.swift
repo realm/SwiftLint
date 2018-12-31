@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         name: "Extension Access Modifier",
         description: "Prefer to use extension access modifiers",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             extension Foo: SomeProtocol {

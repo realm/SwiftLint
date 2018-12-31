@@ -8,7 +8,7 @@ private extension File {
     }
 }
 
-public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantNilCoalescingRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -19,6 +19,7 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
         description: "nil coalescing operator is only evaluated if the lhs is nil" +
             ", coalescing operator with nil as rhs is redundant",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "var myVar: Int?; myVar ?? 0\n"
         ],

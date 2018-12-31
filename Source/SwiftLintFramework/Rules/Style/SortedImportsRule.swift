@@ -46,7 +46,7 @@ private extension Sequence where Element == Line {
     }
 }
 
-public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -56,6 +56,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         name: "Sorted Imports",
         description: "Imports should be sorted.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "import AAA\nimport BBB\nimport CCC\nimport DDD",
             "import Alamofire\nimport API",

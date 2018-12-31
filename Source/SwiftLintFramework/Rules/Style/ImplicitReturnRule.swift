@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, OptInRule, AutomaticTestableRule {
+public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
         name: "Implicit Return",
         description: "Prefer implicit returns in closures.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "foo.map { $0 + 1 }",
             "foo.map({ $0 + 1 })",

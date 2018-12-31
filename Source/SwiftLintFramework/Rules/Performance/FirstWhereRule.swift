@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct FirstWhereRule: CallPairRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
         name: "First Where",
         description: "Prefer using `.first(where:)` over `.filter { }.first` in collections.",
         kind: .performance,
+        isOptIn: true,
         nonTriggeringExamples: [
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n",
             "myList.first(where: { $0 % 2 == 0 })\n",

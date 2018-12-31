@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct XCTSpecificMatcherRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -12,6 +12,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
         description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
         kind: .idiomatic,
         minSwiftVersion: .fourDotOne,
+        isOptIn: true,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )

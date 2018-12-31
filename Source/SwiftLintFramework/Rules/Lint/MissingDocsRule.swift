@@ -24,7 +24,7 @@ private extension File {
     }
 }
 
-public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MissingDocsRule: ConfigurationProviderRule, AutomaticTestableRule {
     public init() {
         configuration = MissingDocsRuleConfiguration(
             parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
@@ -40,6 +40,7 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         description: "Declarations should be documented.",
         kind: .lint,
         minSwiftVersion: .fourDotOne,
+        isOptIn: true,
         nonTriggeringExamples: [
             // locally-defined superclass member is documented, but subclass member is not
             "/// docs\npublic class A {\n/// docs\npublic func b() {}\n}\n" +

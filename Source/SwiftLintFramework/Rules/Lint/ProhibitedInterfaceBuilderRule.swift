@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
+public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule
         name: "Prohibited Interface Builder",
         description: "Creating views using Interface Builder should be avoided.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "var label: UILabel!",
             "@objc func buttonTapped(_ sender: UIButton) {}"

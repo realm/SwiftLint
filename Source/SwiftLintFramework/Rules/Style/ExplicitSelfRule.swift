@@ -11,6 +11,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         name: "Explicit Self",
         description: "Instance variables and functions should be explicitly accessed with 'self.'.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             struct A {

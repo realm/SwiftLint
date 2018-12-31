@@ -67,7 +67,7 @@ import SourceKittenFramework
 ///     case accountCreated
 /// }
 /// ````
-public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct RequiredEnumCaseRule: ASTRule, ConfigurationProviderRule {
     private typealias RequiredCase = RequiredEnumCaseRuleConfiguration.RequiredCase
 
     /// Simple representation of parsed information from the SourceKitRepresentable dictionary.
@@ -123,6 +123,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         name: "Required Enum Case",
         description: "Enums conforming to a specified protocol must implement a specific case(s).",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             "enum MyNetworkResponse: String, NetworkResponsable {\n" +
             "    case success, error, notConnected \n" +

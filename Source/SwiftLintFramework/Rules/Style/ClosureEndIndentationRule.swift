@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ClosureEndIndentationRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
         name: "Closure End Indentation",
         description: "Closure end should have the same indentation as the line that started it.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: ClosureEndIndentationRuleExamples.nonTriggeringExamples,
         triggeringExamples: ClosureEndIndentationRuleExamples.triggeringExamples,
         corrections: ClosureEndIndentationRuleExamples.corrections

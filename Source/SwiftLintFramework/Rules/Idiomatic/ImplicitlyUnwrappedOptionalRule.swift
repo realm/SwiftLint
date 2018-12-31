@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule {
     public var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
                                                                         severity: SeverityConfiguration(.warning))
 
@@ -12,6 +12,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
         name: "Implicitly Unwrapped Optional",
         description: "Implicitly unwrapped optionals should be avoided when possible.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "@IBOutlet private var label: UILabel!",
             "@IBOutlet var label: UILabel!",

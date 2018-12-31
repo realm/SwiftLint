@@ -11,6 +11,7 @@ public struct UnusedPrivateDeclarationRule: AutomaticTestableRule, Configuration
         name: "Unused Private Declaration",
         description: "Private declarations should be referenced in that file.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: [
             """
             private let kConstant = 0

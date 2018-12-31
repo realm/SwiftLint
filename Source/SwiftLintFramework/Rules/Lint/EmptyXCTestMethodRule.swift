@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct EmptyXCTestMethodRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
         name: "Empty XCTest Method",
         description: "Empty XCTest method should be avoided.",
         kind: .lint,
+        isOptIn: true,
         nonTriggeringExamples: EmptyXCTestMethodRuleExamples.nonTriggeringExamples,
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
     )

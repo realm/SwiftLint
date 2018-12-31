@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct EmptyStringRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -10,6 +10,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         name: "Empty String",
         description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal.",
         kind: .performance,
+        isOptIn: true,
         nonTriggeringExamples: [
             "myString.isEmpty",
             "!myString.isEmpy"

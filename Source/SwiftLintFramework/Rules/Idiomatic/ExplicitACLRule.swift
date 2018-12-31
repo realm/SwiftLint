@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private typealias SourceKittenElement = [String: SourceKitRepresentable]
 
-public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ExplicitACLRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -13,6 +13,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         name: "Explicit ACL",
         description: "All declarations should specify Access Control Level keywords explicitly.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "internal enum A {}\n",
             "public final class B {}\n",

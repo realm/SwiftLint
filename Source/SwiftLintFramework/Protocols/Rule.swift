@@ -24,9 +24,11 @@ extension Rule {
     internal var cacheDescription: String {
         return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
     }
-}
 
-public protocol OptInRule: Rule {}
+    public var isOptIn: Bool {
+        return type(of: self).description.isOptIn
+    }
+}
 
 public protocol AutomaticTestableRule: Rule {}
 
@@ -49,7 +51,7 @@ public extension CorrectableRule {
 
 public protocol SourceKitFreeRule: Rule {}
 
-public protocol AnalyzerRule: OptInRule {}
+public protocol AnalyzerRule: Rule {}
 
 public extension AnalyzerRule {
     func validate(file: File) -> [StyleViolation] {

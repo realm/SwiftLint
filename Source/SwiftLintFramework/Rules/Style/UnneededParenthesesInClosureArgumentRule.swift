@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule, OptInRule,
+public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule,
                                                         AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -12,6 +12,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         name: "Unneeded Parentheses in Closure Argument",
         description: "Parentheses are not needed when declaring closure arguments.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let foo = { (bar: Int) in }\n",
             "let foo = { bar, _  in }\n",

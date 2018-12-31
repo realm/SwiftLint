@@ -106,12 +106,13 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
 }
 
-extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
+extension VerticalWhitespaceBetweenCasesRule: AutomaticTestableRule {
     public static let description = RuleDescription(
         identifier: "vertical_whitespace_between_cases",
         name: "Vertical Whitespace Between Cases",
         description: "Include a single empty line between switch cases.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
         triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
         corrections: violatingToValidExamples.removingViolationMarkers()

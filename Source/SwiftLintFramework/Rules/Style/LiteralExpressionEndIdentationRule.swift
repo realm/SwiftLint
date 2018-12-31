@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,6 +11,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
         name: "Literal Expression End Indentation",
         description: "Array and dictionary literal end should have the same indentation as the line that started it.",
         kind: .style,
+        isOptIn: true,
         nonTriggeringExamples: [
             "[1, 2, 3]",
             "[1,\n" +

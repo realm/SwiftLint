@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule {
     public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
@@ -11,6 +11,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         name: "Object Literal",
         description: "Prefer object literals over image and color inits.",
         kind: .idiomatic,
+        isOptIn: true,
         nonTriggeringExamples: [
             "let image = #imageLiteral(resourceName: \"image.jpg\")",
             "let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)",

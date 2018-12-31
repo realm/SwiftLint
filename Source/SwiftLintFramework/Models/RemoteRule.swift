@@ -5,7 +5,7 @@ import SourceKittenFramework
 public final class RemoteRule {
     public let description: PluginDescription
     private let executable: String
-    private let configuration: Any?
+    public let configuration: Any?
 
     public var ruleDescription: RuleDescription {
         return description.ruleDescription

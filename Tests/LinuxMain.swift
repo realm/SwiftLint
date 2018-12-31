@@ -1006,6 +1006,12 @@ extension RegionTests {
     ]
 }
 
+extension RemoteRuleResolverTests {
+    static var allTests: [(String, (RemoteRuleResolverTests) -> () throws -> Void)] = [
+        ("testCreatesRemoteRule", testCreatesRemoteRule)
+    ]
+}
+
 extension ReporterTests {
     static var allTests: [(String, (ReporterTests) -> () throws -> Void)] = [
         ("testReporterFromString", testReporterFromString),
@@ -1528,6 +1534,7 @@ XCTMain([
     testCase(RedundantTypeAnnotationRuleTests.allTests),
     testCase(RedundantVoidReturnRuleTests.allTests),
     testCase(RegionTests.allTests),
+    testCase(RemoteRuleResolverTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),

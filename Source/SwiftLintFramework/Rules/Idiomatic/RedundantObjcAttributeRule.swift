@@ -74,15 +74,6 @@ public struct RedundantObjcAttributeRule: ConfigurationProviderRule, AutomaticTe
             }
             """,
             """
-            @objc
-            extension Foo {
-              @objc
-              private var bar: Int {
-                return 0
-              }
-            }
-            """,
-            """
             @objcMembers
             class Foo {
                 class Bar: NSObject {
@@ -151,6 +142,15 @@ public struct RedundantObjcAttributeRule: ConfigurationProviderRule, AutomaticTe
                     @objc ↓var foo: Any
                 }
             }
+            """,
+            """
+            @objc
+            extension Foo {
+                @objc
+                private var bar: Int {
+                    return 0
+                }
+            }
             """
         ])
 
@@ -187,14 +187,14 @@ public struct RedundantObjcAttributeRule: ConfigurationProviderRule, AutomaticTe
             guard let parentStructure = parentStructure,
                 let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
                 let parentKind = parentStructure.kind.flatMap(SwiftDeclarationKind.init),
-                enclosedSwiftAttributes.isDisjoint(with: privateACL) else {
+                let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) else {
                     return false
             }
 
             let isInObjCExtension = [.extensionClass, .extension].contains(parentKind) &&
                 parentStructure.enclosedSwiftAttributes.contains(.objc)
 
-            let isInObjcMembers = parentStructure.enclosedSwiftAttributes.contains(.objcMembers)
+            let isInObjcMembers = parentStructure.enclosedSwiftAttributes.contains(.objcMembers) && !acl.isPrivate
 
             guard isInObjCExtension || isInObjcMembers else {
                 return false

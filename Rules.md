@@ -15320,16 +15320,6 @@ class Foo: NSObject {
 ```
 
 ```swift
-@objc
-extension Foo {
-  @objc
-  private var bar: Int {
-    return 0
-  }
-}
-```
-
-```swift
 @objcMembers
 class Foo {
     class Bar: NSObject {
@@ -15431,6 +15421,16 @@ class Foo {
     @objcMembers
     class Bar: NSObject {
         @objc ↓var foo: Any
+    }
+}
+```
+
+```swift
+@objc
+extension Foo {
+    @objc
+    private var bar: Int {
+        return 0
     }
 }
 ```

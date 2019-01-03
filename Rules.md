@@ -15429,7 +15429,7 @@ class Foo {
 @objc
 extension Foo {
     @objc
-    private var bar: Int {
+    private ↓var bar: Int {
         return 0
     }
 }

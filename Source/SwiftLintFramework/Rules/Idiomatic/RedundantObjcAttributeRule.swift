@@ -3,8 +3,6 @@ import SourceKittenFramework
 private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
     [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
 
-private let privateACL: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate]
-
 public struct RedundantObjcAttributeRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 

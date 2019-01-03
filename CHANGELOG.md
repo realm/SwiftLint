@@ -38,6 +38,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2533](https://github.com/realm/SwiftLint/issues/2533)
 
+* Fix false positives on `redundant_objc_attribute` rule when using nested
+  types.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2539](https://github.com/realm/SwiftLint/issues/2539)
+
 ## 0.29.2: Washateria
 
 #### Breaking

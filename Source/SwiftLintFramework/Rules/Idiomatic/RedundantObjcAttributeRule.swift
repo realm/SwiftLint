@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
@@ -6,7 +5,7 @@ private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
 
 private let privateACL: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate]
 
-public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantObjcAttributeRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -73,6 +72,29 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
                 return 0
               }
             }
+            """,
+            """
+            @objc
+            extension Foo {
+              @objc
+              private var bar: Int {
+                return 0
+              }
+            }
+            """,
+            """
+            @objcMembers
+            class Foo {
+                class Bar: NSObject {
+                    @objc var foo: Any
+                }
+            }
+            """,
+            """
+            @objcMembers
+            class Foo {
+                @objc class Bar {}
+            }
             """
         ],
         triggeringExamples: [
@@ -122,24 +144,38 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
             }
             """,
             """
-            @objc
-            extension Foo {
-              @objc
-              private ↓var bar: Int {
-                return 0
-              }
+            @objcMembers
+            class Foo {
+                @objcMembers
+                class Bar: NSObject {
+                    @objc ↓var foo: Any
+                }
             }
             """
         ])
 
-    fileprivate struct ObjcAttributeLocations {
-        var inObjcMembers = [NSRange]()
-        var inObjcExtension = [NSRange]()
+    public func validate(file: File) -> [StyleViolation] {
+        return validate(file: file, dictionary: file.structure.dictionary, parentStructure: nil)
     }
 
-    public func validate(file: File,
-                         kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func validate(file: File, dictionary: [String: SourceKitRepresentable],
+                          parentStructure: [String: SourceKitRepresentable]?) -> [StyleViolation] {
+        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
+            var violations = validate(file: file, dictionary: subDict, parentStructure: dictionary)
+
+            if let kindString = subDict.kind,
+                let kind = SwiftDeclarationKind(rawValue: kindString) {
+                violations += validate(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
+            }
+
+            return violations
+        }
+    }
+
+    private func validate(file: File,
+                          kind: SwiftDeclarationKind,
+                          dictionary: [String: SourceKitRepresentable],
+                          parentStructure: [String: SourceKitRepresentable]?) -> [StyleViolation] {
         let enclosedSwiftAttributes = Set(dictionary.enclosedSwiftAttributes)
         guard let offset = dictionary.offset,
               enclosedSwiftAttributes.contains(.objc),
@@ -148,16 +184,28 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
         }
 
         let isInObjcVisibleScope = { () -> Bool in
-            let ranges = file.structure.dictionary.objcAttributeLocationRanges
-            if ranges.inObjcMembers.contains(where: { $0.contains(offset) })
-                && !enclosedSwiftAttributes.isDisjoint(with: privateACL) {
+            guard let parentStructure = parentStructure,
+                let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+                let parentKind = parentStructure.kind.flatMap(SwiftDeclarationKind.init),
+                enclosedSwiftAttributes.isDisjoint(with: privateACL) else {
+                    return false
+            }
+
+            let isInObjCExtension = [.extensionClass, .extension].contains(parentKind) &&
+                parentStructure.enclosedSwiftAttributes.contains(.objc)
+
+            let isInObjcMembers = parentStructure.enclosedSwiftAttributes.contains(.objcMembers)
+
+            guard isInObjCExtension || isInObjcMembers else {
                 return false
             }
-            return (ranges.inObjcMembers + ranges.inObjcExtension).contains(where: { $0.contains(offset) })
+
+            return !SwiftDeclarationKind.typeKinds.contains(kind)
         }
 
-        let isUsedWithObjcAttribute = { !enclosedSwiftAttributes.isDisjoint(with: kindsImplyingObjc) }
-        if isInObjcVisibleScope() || isUsedWithObjcAttribute() {
+        let isUsedWithObjcAttribute = !enclosedSwiftAttributes.isDisjoint(with: kindsImplyingObjc)
+
+        if isUsedWithObjcAttribute || isInObjcVisibleScope() {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: configuration.severity,
                                    location: Location(file: file, byteOffset: offset))]
@@ -168,88 +216,11 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
 }
 
 private extension Dictionary where Key == String, Value == SourceKitRepresentable {
-    var objcAttributeLocationRanges: RedundantObjcAttributeRule.ObjcAttributeLocations {
-        var objcImpliedAttributeLocatioRanges = RedundantObjcAttributeRule.ObjcAttributeLocations()
-        func search(in dictionary: [Key: Value]) {
-            if let enclosedObjcMembersRange = dictionary.enclosedObjcMembersRange {
-                objcImpliedAttributeLocatioRanges.inObjcMembers.append(enclosedObjcMembersRange)
-            }
-
-            if let enclosedObjcExtensionRange = dictionary.enclosedObjcExtensionRange {
-                objcImpliedAttributeLocatioRanges.inObjcExtension.append(enclosedObjcExtensionRange)
-            }
-
-            if let enclosedNonObjcMembersClassRange = dictionary.enclosedNonObjcMembersClassRange {
-                func split(ranges: inout [NSRange]) {
-                    let intersectingRanges = ranges.filter { $0.intersects(enclosedNonObjcMembersClassRange) }
-                    intersectingRanges.compactMap(ranges.index(of:))
-                        .forEach { ranges.remove(at: $0) }
-
-                    intersectingRanges.forEach {
-                        let (lhs, rhs) = $0.split(by: enclosedNonObjcMembersClassRange)
-                        ranges += [lhs, rhs]
-                    }
-                }
-
-                split(ranges: &objcImpliedAttributeLocatioRanges.inObjcMembers)
-                split(ranges: &objcImpliedAttributeLocatioRanges.inObjcExtension)
-            }
-
-            dictionary.substructure.forEach(search)
-        }
-        search(in: self)
-        return objcImpliedAttributeLocatioRanges
-    }
-
-    var bodyRange: NSRange? {
-        guard let bodyOffset = bodyOffset, let bodyLength = bodyLength else {
-            return nil
-        }
-        return NSRange(location: bodyOffset, length: bodyLength)
-    }
-
-    var enclosedObjcExtensionRange: NSRange? {
-        guard let kind = kind,
-            let declaration = SwiftDeclarationKind(rawValue: kind),
-            [.extensionClass, .extension].contains(declaration),
-            enclosedSwiftAttributes.contains(.objc),
-            let bodyRange = bodyRange else {
-                return nil
-        }
-        return bodyRange
-    }
-
-    var enclosedObjcMembersRange: NSRange? {
-        guard enclosedSwiftAttributes.contains(.objcMembers), let bodyRange = bodyRange else {
-            return nil
-        }
-        return bodyRange
-    }
-
-    var enclosedNonObjcMembersClassRange: NSRange? {
-        guard let kind = kind,
-            SwiftDeclarationKind(rawValue: kind) == .class,
-            !enclosedSwiftAttributes.contains(.objcMembers),
-            let offset = offset,
-            let bodyLength = bodyLength else {
-                return nil
-        }
-        return NSRange(location: offset, length: bodyLength)
-    }
-
     var isObjcAndIBDesignableDeclaredExtension: Bool {
         guard let kind = kind, let declaration = SwiftDeclarationKind(rawValue: kind) else {
             return false
         }
         return [.extensionClass, .extension].contains(declaration)
             && Set(enclosedSwiftAttributes).isSuperset(of: [.ibdesignable, .objc])
-    }
-}
-
-private extension NSRange {
-    func split(by range: NSRange) -> (lhs: NSRange, rhs: NSRange) {
-        return (NSRange(location: location, length: range.location - location),
-                NSRange(location: (range.location + range.length),
-                        length: location + length - (range.location + range.length)))
     }
 }

@@ -15319,6 +15319,32 @@ class Foo: NSObject {
 }
 ```
 
+```swift
+@objc
+extension Foo {
+  @objc
+  private var bar: Int {
+    return 0
+  }
+}
+```
+
+```swift
+@objcMembers
+class Foo {
+    class Bar: NSObject {
+        @objc var foo: Any
+    }
+}
+```
+
+```swift
+@objcMembers
+class Foo {
+    @objc class Bar {}
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -15400,12 +15426,12 @@ extension Foo {
 ```
 
 ```swift
-@objc
-extension Foo {
-  @objc
-  private ↓var bar: Int {
-    return 0
-  }
+@objcMembers
+class Foo {
+    @objcMembers
+    class Bar: NSObject {
+        @objc ↓var foo: Any
+    }
 }
 ```
 

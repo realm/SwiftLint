@@ -4,16 +4,14 @@ import SourceKittenFramework
 
 public final class RemoteRule {
     public let description: PluginDescription
-    private let executable: String
     public let configuration: Any?
 
     public var ruleDescription: RuleDescription {
         return description.ruleDescription
     }
 
-    public init(description: PluginDescription, executable: String, configuration: Any?) {
+    public init(description: PluginDescription, configuration: Any?) {
         self.description = description
-        self.executable = executable
         self.configuration = configuration
     }
 

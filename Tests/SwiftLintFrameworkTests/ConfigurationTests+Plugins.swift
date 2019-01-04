@@ -68,6 +68,6 @@ private class ResolverMock: RemoteRuleResolverProtocol {
         let ruleDescription = RuleDescription(identifier: identifier, name: "Test",
                                               description: "", kind: .idiomatic)
         let pluginDescription = PluginDescription(ruleDescription: ruleDescription)
-        return RemoteRule(description: pluginDescription, executable: executable, configuration: nil)
+        return RemoteRule(description: pluginDescription, configuration: nil)
     }
 }

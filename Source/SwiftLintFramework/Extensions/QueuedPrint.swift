@@ -41,6 +41,15 @@ public func queuedPrintError(_ string: String) {
 }
 
 /**
+ A thread-safe, newline-terminated version of fputs(..., stderr).
+
+ - parameter error: Error to print.
+ */
+public func queuedPrintError(_ error: Error) {
+    queuedPrintError(error.localizedDescription)
+}
+
+/**
  A thread-safe, newline-terminated version of fatalError that doesn't leak
  the source path from the compiled binary.
  */

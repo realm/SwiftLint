@@ -274,6 +274,9 @@
 		D48B51231F4F5E4B0068AB98 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */; };
 		D495B1A221165DAA00E2CD7B /* FileNameRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */; };
 		D495B1A321165DAA00E2CD7B /* FileHeaderRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */; };
+		D496009221DF32D700520803 /* RemoteLintServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D496009121DF32D700520803 /* RemoteLintServer.swift */; };
+		D496009421DF376B00520803 /* RemoteRulePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = D496009321DF376B00520803 /* RemoteRulePayload.swift */; };
+		D496009621DF39DF00520803 /* RemoteRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D496009521DF39DF00520803 /* RemoteRuleTests.swift */; };
 		D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */; };
 		D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE61DF191380006E05D /* AttributesRuleTests.swift */; };
 		D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */; };
@@ -736,6 +739,9 @@
 		D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationTests.swift; sourceTree = "<group>"; };
 		D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileNameRuleFixtures; sourceTree = "<group>"; };
 		D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileHeaderRuleFixtures; sourceTree = "<group>"; };
+		D496009121DF32D700520803 /* RemoteLintServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLintServer.swift; sourceTree = "<group>"; };
+		D496009321DF376B00520803 /* RemoteRulePayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteRulePayload.swift; sourceTree = "<group>"; };
+		D496009521DF39DF00520803 /* RemoteRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteRuleTests.swift; sourceTree = "<group>"; };
 		D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantSetAccessControlRule.swift; sourceTree = "<group>"; };
 		D4998DE61DF191380006E05D /* AttributesRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRuleTests.swift; sourceTree = "<group>"; };
 		D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRuleTests.swift; sourceTree = "<group>"; };
@@ -1383,6 +1389,7 @@
 				D4246D6E1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift */,
 				E81ADD711ED5ED9D000CD451 /* RegionTests.swift */,
 				D47820CB21D9FA5B00F24836 /* RemoteRuleResolverTests.swift */,
+				D496009521DF39DF00520803 /* RemoteRuleTests.swift */,
 				E86396C61BADAFE6002C9E88 /* ReporterTests.swift */,
 				B89F3BCB1FD5EDA900931E59 /* RequiredEnumCaseRuleTestCase.swift */,
 				3B12C9BE1C3209AC000B423F /* Resources */,
@@ -1523,6 +1530,8 @@
 				3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */,
 				D414D6AF21D34FA500960935 /* RemoteRule.swift */,
 				D414D6B121D3509B00960935 /* RemoteRuleResolver.swift */,
+				D496009121DF32D700520803 /* RemoteLintServer.swift */,
+				D496009321DF376B00520803 /* RemoteRulePayload.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1896,6 +1905,7 @@
 				D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */,
 				E88198601BEA98F000333A11 /* IdentifierNameRule.swift in Sources */,
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
+				D496009221DF32D700520803 /* RemoteLintServer.swift in Sources */,
 				8F715B83213B528B00427BD9 /* UnusedImportRule.swift in Sources */,
 				626D02971F31CBCC0054788D /* XCTFailMessageRule.swift in Sources */,
 				D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */,
@@ -1942,6 +1952,7 @@
 				C3EF547821B5A4000009262F /* LegacyHashingRule.swift in Sources */,
 				31F1B6CC1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift in Sources */,
 				E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */,
+				D496009421DF376B00520803 /* RemoteRulePayload.swift in Sources */,
 				E88198591BEA95F100333A11 /* LeadingWhitespaceRule.swift in Sources */,
 				D42B45D91F0AF5E30086B683 /* StrictFilePrivateRule.swift in Sources */,
 				1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */,
@@ -2142,6 +2153,7 @@
 				6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */,
 				820F451E21073D7200AA056A /* ConditionalReturnsOnNewlineRuleTests.swift in Sources */,
 				D4246D6F1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift in Sources */,
+				D496009621DF39DF00520803 /* RemoteRuleTests.swift in Sources */,
 				B25DCD101F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift in Sources */,
 				3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */,
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,

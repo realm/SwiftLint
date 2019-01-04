@@ -16,15 +16,15 @@ public final class RemoteRule {
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        let payload = Payload(structure: Lazy(file.structure.dictionary),
-                              syntaxMap: Lazy(file.syntaxMap.tokens),
-                              path: file.path,
-                              contents: Lazy(file.contents),
-                              configuration: configuration)
+        let payload = RemoteRulePayload(structure: Lazy(file.structure.dictionary),
+                                        syntaxMap: Lazy(file.syntaxMap.tokens),
+                                        path: file.path,
+                                        contents: Lazy(file.contents),
+                                        configuration: configuration)
         return validate(payload: payload, file: file)
     }
 
-    private func validate(payload: Payload, file: File) -> [StyleViolation] {
+    private func validate(payload: RemoteRulePayload, file: File) -> [StyleViolation] {
         do {
             let socket = try Socket.create(family: .unix, type: .stream, proto: .unix)
             try socket.connect(to: "/tmp/\(ruleDescription.identifier).socket")
@@ -41,7 +41,7 @@ public final class RemoteRule {
 
             return json.compactMap { dictionary -> StyleViolation? in
                 let severity = (dictionary["severity"] as? String).flatMap(ViolationSeverity.init) ?? .warning
-                guard let location = parseLocation(from: dictionary, file: file) else {
+                guard let location = Location(file: file, json: dictionary) else {
                     return nil
                 }
 
@@ -51,6 +51,7 @@ public final class RemoteRule {
                                       reason: dictionary["reason"] as? String)
             }
         } catch {
+            queuedPrintError(error)
             return []
         }
     }
@@ -62,46 +63,17 @@ internal extension Array where Element == RemoteRule {
     }
 }
 
-private func parseLocation(from dictionary: [String: Any],
-                           file: File) -> Location? {
-    if let byteOffset = dictionary["byte_offset"] as? Int {
-        return Location(file: file, byteOffset: byteOffset)
-    } else if let characterOffset = dictionary["character_offset"] as? Int {
-        return Location(file: file, characterOffset: characterOffset)
-    } else if let location = dictionary["location"] as? [String: Int],
-        let line = location["line"] {
-        return Location(file: file.path, line: line, character: location["character"] ?? 1)
-    }
-
-    return nil
-}
-
-private struct Payload {
-    let structure: Lazy<[String: SourceKitRepresentable]>
-    let syntaxMap: Lazy<[SyntaxToken]>
-    let path: String?
-    let contents: Lazy<String>
-    let configuration: Any?
-
-    func asJSONData(input: Set<PluginRequiredInput>) throws -> Data {
-        return try JSONSerialization.data(withJSONObject: asJSONDictionary(input: input))
-    }
-
-    private func asJSONDictionary(input: Set<PluginRequiredInput>) -> [String: Any] {
-        var json = [String: Any]()
-        if input.contains(.structure) {
-            json["structure"] = structure.value
+private extension Location {
+    init?(file: File, json: [String: Any]) {
+        if let byteOffset = json["byte_offset"] as? Int {
+            self = Location(file: file, byteOffset: byteOffset)
+        } else if let characterOffset = json["character_offset"] as? Int {
+            self = Location(file: file, characterOffset: characterOffset)
+        } else if let location = json["location"] as? [String: Int],
+            let line = location["line"] {
+            self = Location(file: file.path, line: line, character: location["character"] ?? 1)
+        } else {
+            return nil
         }
-        if input.contains(.syntaxMap) {
-            json["syntax_map"] = syntaxMap.value.map { $0.dictionaryValue }
-        }
-
-        json["path"] = path
-        json["configuration"] = configuration
-        if path == nil {
-            json["contents"] = contents.value
-        }
-
-        return json
     }
 }

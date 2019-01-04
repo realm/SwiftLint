@@ -4,14 +4,17 @@ import SourceKittenFramework
 import XCTest
 
 class RemoteRuleTests: XCTestCase {
-    func testValidate() throws {
+    func testValidate() {
         let ruleDescription = RuleDescription(identifier: "test", name: "Test", description: "Test", kind: .lint)
         let pluginDescription = PluginDescription(ruleDescription: ruleDescription, requiredInformation: [.structure])
         let configuration = ["key": "value"]
         let fileContents = "let x = 10"
 
         let server = RemoteLintServer(socketPath: "/tmp/test.socket")
+        let dispatchGroup = DispatchGroup()
+
         let delegate = MockRemoteLintServerDelegate()
+        delegate.dispatchGroup = dispatchGroup
         delegate.violationsToReturn = [
             StyleViolation(ruleDescription: ruleDescription, severity: .error,
                            location: Location(file: nil, line: 1, character: 4),
@@ -19,10 +22,12 @@ class RemoteRuleTests: XCTestCase {
         ]
 
         server.delegate = delegate
+
+        dispatchGroup.enter()
         server.run()
 
         // wait until the server has started
-        while !delegate.startedListening {}
+        dispatchGroup.wait()
 
         let remoteRule = RemoteRule(description: pluginDescription, configuration: configuration)
         let violations = remoteRule.validate(file: File(contents: fileContents))
@@ -40,8 +45,8 @@ class RemoteRuleTests: XCTestCase {
 
 private class MockRemoteLintServerDelegate: RemoteLintServerDelegate {
     var payload: RemoteRulePayload?
+    var dispatchGroup: DispatchGroup?
     var violationsToReturn: [StyleViolation] = []
-    var startedListening = false
 
     func server(_ server: RemoteLintServer, didReceivePayload payload: RemoteRulePayload) -> [StyleViolation] {
         self.payload = payload
@@ -49,6 +54,6 @@ private class MockRemoteLintServerDelegate: RemoteLintServerDelegate {
     }
 
     func serverStartedListening(_ server: RemoteLintServer) {
-        startedListening = true
+        dispatchGroup?.leave()
     }
 }

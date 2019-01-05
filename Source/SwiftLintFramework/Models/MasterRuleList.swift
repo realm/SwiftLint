@@ -146,6 +146,7 @@ public let masterRuleList = RuleList(rules: [
     UnneededParenthesesInClosureArgumentRule.self,
     UntypedErrorInCatchRule.self,
     UnusedClosureParameterRule.self,
+    UnusedControlFlowLabelRule.self,
     UnusedEnumeratedRule.self,
     UnusedImportRule.self,
     UnusedOptionalBindingRule.self,

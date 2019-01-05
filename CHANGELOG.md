@@ -27,6 +27,11 @@
   `.last(where: { /* ... */ })` is more efficient.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `unused_control_flow_label` rule to validate that control flow labels are
+  used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2227](https://github.com/realm/SwiftLint/issues/2227)
+
 #### Bug Fixes
 
 * Fix false positives on `first_where` rule when calling `filter` without a

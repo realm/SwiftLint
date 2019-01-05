@@ -648,6 +648,12 @@ class UnusedClosureParameterRuleTests: XCTestCase {
     }
 }
 
+class UnusedControlFlowLabelRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedControlFlowLabelRule.description)
+    }
+}
+
 class UnusedEnumeratedRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedEnumeratedRule.description)

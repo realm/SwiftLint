@@ -145,6 +145,7 @@
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Untyped Error in Catch](#untyped-error-in-catch)
 * [Unused Closure Parameter](#unused-closure-parameter)
+* [Unused Control Flow Label](#unused-control-flow-label)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
@@ -21533,6 +21534,96 @@ func foo () {
  return 3
 }
 
+```
+
+</details>
+
+
+
+## Unused Control Flow Label
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_control_flow_label` | Enabled | No | lint | No | 3.0.0 
+
+Unused control flow label should be removed.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+loop: while true { break loop }
+```
+
+```swift
+loop: while true { continue loop }
+```
+
+```swift
+loop:
+    while true { break loop }
+```
+
+```swift
+while true { break }
+```
+
+```swift
+loop: for x in array { break loop }
+```
+
+```swift
+label: switch number {
+case 1: print("1")
+case 2: print("2")
+default: break label
+}
+```
+
+```swift
+loop: repeat {
+    if x == 10 {
+        break loop
+    }
+} while true
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓loop: while true { break }
+```
+
+```swift
+↓loop: while true { break loop1 }
+```
+
+```swift
+↓loop: while true { break outerLoop }
+```
+
+```swift
+↓loop: for x in array { break }
+```
+
+```swift
+↓label: switch number {
+case 1: print("1")
+case 2: print("2")
+default: break
+}
+```
+
+```swift
+↓loop: repeat {
+    if x == 10 {
+        break
+    }
+} while true
 ```
 
 </details>

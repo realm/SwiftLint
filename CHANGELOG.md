@@ -47,6 +47,11 @@
   types.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2539](https://github.com/realm/SwiftLint/issues/2539)
+  
+* Fix false positives on `vertical_whitespace_between_cases` rule when a blank
+  line is present but it contains trailing whitespace.  
+  [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
+  [#2538](https://github.com/realm/SwiftLint/issues/2538)
 
 ## 0.29.2: Washateria
 

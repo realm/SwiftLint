@@ -46,6 +46,15 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
         default: print("x is invalid")
         }
         """
+        ,
+        // Testing handling of trailing spaces: do not convert to """ style
+        "switch x {    \n" +
+        "case 1:    \n" +
+        "    print(\"one\")    \n" +
+        "    \n" +
+        "default:    \n" +
+        "    print(\"not one\")    \n" +
+        "}    "
     ]
 
     private static let violatingToValidExamples: [String: String] = [
@@ -104,6 +113,27 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     ]
 
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
+
+    private func violationRanges(in file: File) -> [NSRange] {
+        return file.violatingRanges(for: pattern).filter {
+            !isFalsePositive(in: file, range: $0)
+        }
+    }
+
+    private func isFalsePositive(in file: File, range: NSRange) -> Bool {
+        // Regex incorrectly flags blank lines that contain trailing whitespace (#2538)
+        let patternRegex = regex(pattern)
+        let substring = file.contents.substring(from: range.location, length: range.length)
+        guard let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substring.fullNSRange),
+            matchResult.numberOfRanges > 1 else {
+            return false
+        }
+
+        let matchFirstRange = matchResult.range(at: 1)
+        let matchFirstString = substring.substring(from: matchFirstRange.location, length: matchFirstRange.length)
+        let isAllWhitespace = matchFirstString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return isAllWhitespace
+    }
 }
 
 extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
@@ -119,10 +149,10 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let patternRegex = regex(pattern)
-        return file.violatingRanges(for: pattern).compactMap { violationRange in
+        return violationRanges(in: file).compactMap { violationRange in
             let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
-            let substringRange = NSRange(location: 0, length: substring.count)
-            guard let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substringRange) else {
+            guard let matchResult = patternRegex.firstMatch(in: substring, options: [],
+                                                            range: substring.fullNSRange) else {
                 return nil
             }
 
@@ -140,7 +170,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
 
 extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
     public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         guard !violatingRanges.isEmpty else { return [] }
 
         let patternRegex = regex(pattern)

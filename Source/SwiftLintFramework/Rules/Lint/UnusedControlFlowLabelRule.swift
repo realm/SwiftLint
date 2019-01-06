@@ -104,7 +104,7 @@ public struct UnusedControlFlowLabelRule: ASTRule, ConfigurationProviderRule, Au
         let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
-        for range in violatingRanges.reversed() {
+        for range in violatingRanges {
             var rangeToRemove = range
             let contentsNSString = contents.bridge()
             if let byteRange = contentsNSString.NSRangeToByteRange(start: range.location, length: range.length),

@@ -21544,7 +21544,7 @@ func foo () {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`unused_control_flow_label` | Enabled | No | lint | No | 3.0.0 
+`unused_control_flow_label` | Enabled | Yes | lint | No | 3.0.0 
 
 Unused control flow label should be removed.
 

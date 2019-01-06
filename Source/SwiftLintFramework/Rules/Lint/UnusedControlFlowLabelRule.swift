@@ -98,19 +98,18 @@ public struct UnusedControlFlowLabelRule: ASTRule, ConfigurationProviderRule, Au
     }
 
     public func correct(file: File) -> [Correction] {
-        let matches = violationRanges(in: file)
-            .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
-        guard !matches.isEmpty else { return [] }
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
+        guard !violatingRanges.isEmpty else { return [] }
 
         let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
-        for range in matches {
+        for range in violatingRanges.reversed() {
             var rangeToRemove = range
-            if let byteRange = file.contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
-                let nextToken = file.syntaxMap.tokens.first(where: { $0.offset > byteRange.location }),
-                let nextTokenCharacterLocation = file.contents.bridge().byteRangeToNSRange(start: nextToken.offset, length: 0) {
-                rangeToRemove.length = nextTokenCharacterLocation.location - range.location
+            if let byteRange = contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
+                let nextToken = file.syntaxMap.tokens.firstToken(afterByteOffset: byteRange.location),
+                let nextTokenLocation = contents.bridge().byteRangeToNSRange(start: nextToken.offset, length: 0) {
+                rangeToRemove.length = nextTokenLocation.location - range.location
             }
 
             contents = contents.bridge().replacingCharacters(in: rangeToRemove, with: "")
@@ -137,11 +136,13 @@ public struct UnusedControlFlowLabelRule: ASTRule, ConfigurationProviderRule, Au
         }
 
         let pattern = "(?:break|continue)\\s+\(tokenContent)\\b"
-        guard file.match(pattern: pattern, with: [.keyword, .identifier], range: range).isEmpty else {
-            return []
+        guard file.match(pattern: pattern, with: [.keyword, .identifier], range: range).isEmpty,
+            let violationRange = contents.byteRangeToNSRange(start: firstToken.offset,
+                                                             length: firstToken.length) else {
+                return []
         }
 
-        return [file.contents.bridge().byteRangeToNSRange(start: firstToken.offset, length: firstToken.length)!]
+        return [violationRange]
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
@@ -170,7 +171,7 @@ private extension NSString {
     }
 }
 
-extension Collection where Element == SyntaxToken {
+private extension Collection where Element == SyntaxToken {
     func firstToken(afterByteOffset byteOffset: Int) -> SyntaxToken? {
         return first(where: { $0.offset > byteOffset })
     }

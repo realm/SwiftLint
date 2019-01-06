@@ -22321,6 +22321,16 @@ default: print("x is invalid")
 }
 ```
 
+```swift
+switch x {    
+case 1:    
+    print("one")    
+    
+default:    
+    print("not one")    
+}    
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

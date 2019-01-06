@@ -106,13 +106,14 @@ public struct UnusedControlFlowLabelRule: ASTRule, ConfigurationProviderRule, Au
         var contents = file.contents
         for range in violatingRanges.reversed() {
             var rangeToRemove = range
-            if let byteRange = contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
-                let nextToken = file.syntaxMap.tokens.firstToken(afterByteOffset: byteRange.location),
-                let nextTokenLocation = contents.bridge().byteRangeToNSRange(start: nextToken.offset, length: 0) {
+            let contentsNSString = contents.bridge()
+            if let byteRange = contentsNSString.NSRangeToByteRange(start: range.location, length: range.length),
+                let nextToken = file.syntaxMap.tokens.first(where: { $0.offset > byteRange.location }),
+                let nextTokenLocation = contentsNSString.byteRangeToNSRange(start: nextToken.offset, length: 0) {
                 rangeToRemove.length = nextTokenLocation.location - range.location
             }
 
-            contents = contents.bridge().replacingCharacters(in: rangeToRemove, with: "")
+            contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: "")
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
@@ -168,11 +169,5 @@ public struct UnusedControlFlowLabelRule: ASTRule, ConfigurationProviderRule, Au
 private extension NSString {
     func substring(with token: SyntaxToken) -> String? {
         return substringWithByteRange(start: token.offset, length: token.length)
-    }
-}
-
-private extension Collection where Element == SyntaxToken {
-    func firstToken(afterByteOffset byteOffset: Int) -> SyntaxToken? {
-        return first(where: { $0.offset > byteOffset })
     }
 }

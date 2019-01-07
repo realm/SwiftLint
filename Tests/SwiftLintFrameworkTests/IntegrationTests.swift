@@ -125,17 +125,37 @@ class IntegrationTests: XCTestCase {
     }
 }
 
-extension String {
+private struct StaticStringImitator {
+    let string: String
+
     func withStaticString(_ closure: (StaticString) -> Void) {
-        withCString {
-            let rawPointer = $0._rawValue
-            let byteSize = lengthOfBytes(using: .utf8)._builtinWordValue
-            let isASCII = true._getBuiltinLogicValue()
-            let staticString = StaticString(_builtinStringLiteral: rawPointer,
-                                            utf8CodeUnitCount: byteSize,
-                                            isASCII: isASCII)
-            closure(staticString)
+        let isASCII = string.utf8.allSatisfy { $0 < 0x7f }
+        string.utf8CString.dropLast().withUnsafeBytes {
+            let imitator = Imitator(startPtr: $0.baseAddress!, utf8CodeUnitCount: $0.count, isASCII: isASCII)
+            closure(imitator.staticString)
         }
+    }
+
+    struct Imitator {
+        let startPtr: UnsafeRawPointer
+        let utf8CodeUnitCount: Int
+        let flags: Int8
+
+        init(startPtr: UnsafeRawPointer, utf8CodeUnitCount: Int, isASCII: Bool) {
+            self.startPtr = startPtr
+            self.utf8CodeUnitCount = utf8CodeUnitCount
+            flags = isASCII ? 0x2 : 0x0
+        }
+
+        var staticString: StaticString {
+            return unsafeBitCast(self, to: StaticString.self)
+        }
+    }
+}
+
+private extension String {
+    func withStaticString(_ closure: (StaticString) -> Void) {
+        StaticStringImitator(string: self).withStaticString(closure)
     }
 }
 

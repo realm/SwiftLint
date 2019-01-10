@@ -85,6 +85,11 @@
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
   [#2538](https://github.com/realm/SwiftLint/issues/2538)
 
+* Fix false positives on `identical_operands` rule when the right side of the
+  operand does not terminate.
+  [Xavier Lowmiller](https://github.com/xavierLowmiller)
+  [#2467](https://github.com/realm/SwiftLint/issues/2467)
+
 ## 0.29.2: Washateria
 
 #### Breaking

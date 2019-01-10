@@ -26,10 +26,12 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 "lhs.identifier \(operation) rhs.identifier",
                 "i \(operation) index",
                 "$0 \(operation) 0",
-                "keyValues?.count ?? 0  \(operation) 0"
+                "keyValues?.count ?? 0  \(operation) 0",
+                "string \(operation) string.lowercased()"
             ]
         } + [
-            "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>"
+            "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
+            "let array = Array<Array<Int>>()"
         ],
         triggeringExamples: operators.flatMap { operation in
             [

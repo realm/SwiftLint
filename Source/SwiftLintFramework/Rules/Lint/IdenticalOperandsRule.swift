@@ -46,7 +46,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
 
     public func validate(file: File) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
-        let pattern = "(?<!\\.|\\$)(?:\\s|\\b|\\A)([\\$A-Za-z0-9_\\.]+)\\s*(\(operators))\\s*\\1\\b"
+        let pattern = "(?<!\\.|\\$)(?:\\s|\\b|\\A)([\\$A-Za-z0-9_\\.]+)\\s*(\(operators))\\s*\\1$"
         let syntaxKinds = SyntaxKind.commentKinds
         let excludingPattern = "\\?\\?\\s*" + pattern
 

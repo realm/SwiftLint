@@ -8019,6 +8019,10 @@ keyValues?.count ?? 0  == 0
 ```
 
 ```swift
+string == string.lowercased()
+```
+
+```swift
 1 != 2
 ```
 
@@ -8064,6 +8068,10 @@ $0 != 0
 
 ```swift
 keyValues?.count ?? 0  != 0
+```
+
+```swift
+string != string.lowercased()
 ```
 
 ```swift
@@ -8115,6 +8123,10 @@ keyValues?.count ?? 0  === 0
 ```
 
 ```swift
+string === string.lowercased()
+```
+
+```swift
 1 !== 2
 ```
 
@@ -8160,6 +8172,10 @@ $0 !== 0
 
 ```swift
 keyValues?.count ?? 0  !== 0
+```
+
+```swift
+string !== string.lowercased()
 ```
 
 ```swift
@@ -8211,6 +8227,10 @@ keyValues?.count ?? 0  > 0
 ```
 
 ```swift
+string > string.lowercased()
+```
+
+```swift
 1 >= 2
 ```
 
@@ -8256,6 +8276,10 @@ $0 >= 0
 
 ```swift
 keyValues?.count ?? 0  >= 0
+```
+
+```swift
+string >= string.lowercased()
 ```
 
 ```swift
@@ -8307,6 +8331,10 @@ keyValues?.count ?? 0  < 0
 ```
 
 ```swift
+string < string.lowercased()
+```
+
+```swift
 1 <= 2
 ```
 
@@ -8355,7 +8383,15 @@ keyValues?.count ?? 0  <= 0
 ```
 
 ```swift
+string <= string.lowercased()
+```
+
+```swift
 func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>
+```
+
+```swift
+let array = Array<Array<Int>>()
 ```
 
 </details>

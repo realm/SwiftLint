@@ -122,8 +122,8 @@ private extension Rule {
                 $0.disabledRuleIdentifiers.isDisjoint(with: allValidIdentifiers)
         }
 
-        return regions.compactMap { region in
-            region.disabledRuleIdentifiers.first(where: { !allValidIdentifiers.contains($0) }).map { id in
+        return regions.flatMap { region in
+            region.disabledRuleIdentifiers.filter({ !allValidIdentifiers.contains($0) }).map { id in
                 return StyleViolation(
                     ruleDescription: type(of: superfluousDisableCommandRule).description,
                     severity: superfluousDisableCommandRule.configuration.severity,

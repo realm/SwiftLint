@@ -44,7 +44,10 @@ private extension Rule {
         }
     }
 
+    // As we need the configuration to get custom identifiers.
+    // swiftlint:disable:next function_parameter_count
     func lint(file: File, regions: [Region], benchmark: Bool,
+              configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
@@ -80,6 +83,10 @@ private extension Rule {
             allViolations: violations
         )
 
+        let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
+            regions: regions, configuration: configuration,
+            superfluousDisableCommandRule: superfluousDisableCommandRule)
+
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
             enabledViolations = enabledViolationsAndRegions.compactMap { violation, _ in
@@ -94,8 +101,37 @@ private extension Rule {
             return identifiers.map { ($0, ruleID) }
         }
 
-        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations, ruleTime: ruleTime,
-                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+        return LintResult(
+            violations: enabledViolations + superfluousDisableCommandViolations + undefinedSuperfluousCommandViolations,
+            ruleTime: ruleTime,
+            deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+
+    private func undefinedSuperfluousCommandViolations(regions: [Region],
+                                                       configuration: Configuration,
+                                                       superfluousDisableCommandRule: SuperfluousDisableCommandRule?
+        ) -> [StyleViolation] {
+        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+            return []
+        }
+        let allCustomIdentifiers = configuration.customRuleIdentifiers.map { RuleIdentifier($0) }
+        let allRuleIdentifiers = masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) }
+        let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers)
+        let regions = regions.filter {
+            !$0.disabledRuleIdentifiers.contains(.all) &&
+                $0.disabledRuleIdentifiers.isDisjoint(with: allValidIdentifiers)
+        }
+
+        return regions.flatMap { region in
+            region.disabledRuleIdentifiers.filter({ !allValidIdentifiers.contains($0) }).map { id in
+                return StyleViolation(
+                    ruleDescription: type(of: superfluousDisableCommandRule).description,
+                    severity: superfluousDisableCommandRule.configuration.severity,
+                    location: region.start,
+                    reason: superfluousDisableCommandRule.reason(for: id.stringRepresentation)
+                )
+            }
+        }
     }
 }
 
@@ -128,6 +164,7 @@ public struct Linter {
         }) as? SuperfluousDisableCommandRule
         let validationResults = rules.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+                    configuration: self.configuration,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: self.compilerArguments)
         }

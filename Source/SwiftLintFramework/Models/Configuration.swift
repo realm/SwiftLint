@@ -38,6 +38,11 @@ public struct Configuration: Hashable {
 
     internal var computedCacheDescription: String?
 
+    internal var customRuleIdentifiers: [String] {
+        let customRule = rules.first(where: { $0 is CustomRules }) as? CustomRules
+        return customRule?.configuration.customRuleConfigurations.map { $0.identifier } ?? []
+    }
+
     // MARK: Rules Properties
 
     // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules

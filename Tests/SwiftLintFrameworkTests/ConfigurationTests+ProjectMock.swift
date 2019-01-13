@@ -26,8 +26,20 @@ extension ConfigurationTests {
         return projectMockPathLevel0.stringByAppendingPathComponent("custom.yml")
     }
 
+    var projectMockYAML0CustomRules: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("custom_rules.yml")
+    }
+
     var projectMockYAML2: String {
         return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
+    }
+
+    var projectMockYAML2CustomRules: String {
+        return projectMockPathLevel2.stringByAppendingPathComponent("custom_rules.yml")
+    }
+
+    var projectMockYAML2CustomRulesDisabled: String {
+        return projectMockPathLevel2.stringByAppendingPathComponent("custom_rules_disabled.yml")
     }
 
     var projectMockSwift0: String {
@@ -56,8 +68,23 @@ extension ConfigurationTests {
                              optional: false, quiet: true)
     }
 
+    var projectMockConfig0CustomRules: Configuration {
+        return Configuration(path: projectMockYAML0CustomRules, rootPath: projectMockPathLevel0,
+                             optional: false, quiet: true)
+    }
+
     var projectMockConfig2: Configuration {
         return Configuration(path: projectMockYAML2, optional: false, quiet: true)
+    }
+
+    var projectMockConfig2CustomRules: Configuration {
+        return Configuration(path: projectMockYAML2CustomRules, rootPath: projectMockPathLevel0,
+                             optional: false, quiet: true)
+    }
+
+    var projectMockConfig2CustomRulesDisabled: Configuration {
+        return Configuration(path: projectMockYAML2CustomRulesDisabled, rootPath: projectMockPathLevel0,
+                             optional: false, quiet: true)
     }
 
     var projectMockConfig3: Configuration {

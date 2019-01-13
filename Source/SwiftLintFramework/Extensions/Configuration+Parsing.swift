@@ -47,21 +47,11 @@ extension Configuration {
     }
 
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
-                 cachePath: String? = nil) {
-        func defaultStringArray(_ object: Any?) -> [String] {
-            return [String].array(of: object) ?? []
-        }
-
+                 cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
-        let optInRules = defaultStringArray(
-            dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue]
-        )
+        let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
 
-        // Log an error when supplying invalid keys in the configuration dictionary
-        let invalidKeys = Set(dict.keys).subtracting(Configuration.validKeys(ruleList: ruleList))
-        if !invalidKeys.isEmpty {
-            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
-        }
+        Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
 
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
@@ -99,7 +89,8 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-                  indentation: indentation)
+                  indentation: indentation,
+                  customRulesIdentifiers: customRulesIdentifiers)
     }
 
     private init?(disabledRules: [String],
@@ -115,7 +106,8 @@ extension Configuration {
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
                   cachePath: String?,
-                  indentation: IndentationStyle) {
+                  indentation: IndentationStyle,
+                  customRulesIdentifiers: [String]) {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
@@ -140,7 +132,8 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath,
-                  indentation: indentation)
+                  indentation: indentation,
+                  customRulesIdentifiers: customRulesIdentifiers)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],
@@ -177,4 +170,16 @@ extension Configuration {
                 "completely removed in a future release.")
         }
     }
+
+    private static func warnAboutInvalidKeys(configurationDictionary dict: [String: Any], ruleList: RuleList) {
+        // Log an error when supplying invalid keys in the configuration dictionary
+        let invalidKeys = Set(dict.keys).subtracting(self.validKeys(ruleList: ruleList))
+        if !invalidKeys.isEmpty {
+            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+        }
+    }
+}
+
+private func defaultStringArray(_ object: Any?) -> [String] {
+    return [String].array(of: object) ?? []
 }

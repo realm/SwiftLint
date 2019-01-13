@@ -56,7 +56,8 @@ public struct Configuration: Hashable {
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
-                 indentation: IndentationStyle = .default) {
+                 indentation: IndentationStyle = .default,
+                 customRulesIdentifiers: [String] = []) {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
@@ -71,7 +72,8 @@ public struct Configuration: Hashable {
 
         guard let rules = enabledRules(from: configuredRules,
                                        with: rulesMode,
-                                       aliasResolver: handleAliasWithRuleList) else {
+                                       aliasResolver: handleAliasWithRuleList,
+                                       customRulesIdentifiers: customRulesIdentifiers) else {
             return nil
         }
 
@@ -120,7 +122,8 @@ public struct Configuration: Hashable {
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
+                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false,
+                cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         let fullPath: String
         if let rootPath = rootPath, rootPath.isDirectory() {
             fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
@@ -141,7 +144,7 @@ public struct Configuration: Hashable {
         let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {
             if !optional { fail("File not found.") }
-            self.init(rulesMode: rulesMode, cachePath: cachePath)!
+            self.init(rulesMode: rulesMode, cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
             self.rootPath = rootPath
             return
         }
@@ -151,7 +154,8 @@ public struct Configuration: Hashable {
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
-            self.init(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)!
+            self.init(dict: dict, enableAllRules: enableAllRules,
+                      cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
             configurationPath = fullPath
             self.rootPath = rootPath
             setCached(atPath: fullPath)
@@ -161,7 +165,7 @@ public struct Configuration: Hashable {
         } catch {
             fail("\(error)")
         }
-        self.init(rulesMode: rulesMode, cachePath: cachePath)!
+        self.init(rulesMode: rulesMode, cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
         setCached(atPath: fullPath)
     }
 
@@ -213,8 +217,12 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
 
 private func enabledRules(from configuredRules: [Rule],
                           with mode: Configuration.RulesMode,
-                          aliasResolver: (String) -> String) -> [Rule]? {
-    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+                          aliasResolver: (String) -> String,
+                          customRulesIdentifiers: [String]) -> [Rule]? {
+    let regularRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+    let configurationCustomRulesIdentifiers = (configuredRules.first(where: { $0 is CustomRules }) as? CustomRules)?
+        .configuration.customRuleConfigurations.map { $0.identifier } ?? []
+    let validRuleIdentifiers = regularRuleIdentifiers + configurationCustomRulesIdentifiers + customRulesIdentifiers
 
     switch mode {
     case .allEnabled:

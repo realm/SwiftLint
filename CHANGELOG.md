@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix inaccessible custom rules in nested configurations.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#1815](https://github.com/realm/SwiftLint/issues/1815)
+  [#2441](https://github.com/realm/SwiftLint/issues/2441)
 
 ## 0.29.3: Entangled Agitator
 

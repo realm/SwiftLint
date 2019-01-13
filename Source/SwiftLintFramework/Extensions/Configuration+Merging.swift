@@ -21,8 +21,16 @@ extension Configuration {
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             let fullPath = pathNSString.absolutePathRepresentation()
+            let customRuleIdentifiers = (rules.first(where: { $0 is CustomRules }) as? CustomRules)?
+                .configuration.customRuleConfigurations.map { $0.identifier }
             let config = Configuration.getCached(atPath: fullPath) ??
-                Configuration(path: configurationSearchPath, rootPath: fullPath, optional: false, quiet: true)
+                Configuration(
+                    path: configurationSearchPath,
+                    rootPath: fullPath,
+                    optional: false,
+                    quiet: true,
+                    customRulesIdentifiers: customRuleIdentifiers ?? []
+                )
             return merge(with: config)
         }
 
@@ -66,16 +74,43 @@ extension Configuration {
         }
     }
 
+    private func mergeCustomRules(mergedRules: [Rule], configuration: Configuration) -> [Rule] {
+        guard
+            let thisCustomRules = rules.first(where: { $0 is CustomRules }) as? CustomRules,
+            let otherCustomRules = configuration.rules.first(where: { $0 is CustomRules }) as? CustomRules else {
+            return mergedRules
+        }
+        let customRulesFilter: (RegexConfiguration) -> (Bool)
+        switch configuration.rulesMode {
+        case .allEnabled:
+            customRulesFilter = { _ in true }
+        case let .whitelisted(whitelistedRules):
+            customRulesFilter = { whitelistedRules.contains($0.identifier) }
+        case let .default(disabledRules, _):
+            customRulesFilter = { !disabledRules.contains($0.identifier) }
+        }
+        var customRules = CustomRules()
+        var configuration = CustomRulesConfiguration()
+        configuration.customRuleConfigurations = Set(
+            thisCustomRules.configuration.customRuleConfigurations
+        ).union(
+            Set(otherCustomRules.configuration.customRuleConfigurations)
+        ).filter(customRulesFilter)
+        customRules.configuration = configuration
+        return mergedRules.filter { !($0 is CustomRules) } + [customRules]
+    }
+
     private func mergingRules(with configuration: Configuration) -> [Rule] {
+        let regularMergedRules: [Rule]
         switch configuration.rulesMode {
         case .allEnabled:
             // Technically not possible yet as it's not configurable in a .swiftlint.yml file,
             // but implemented for completeness
-            return configuration.rules
+            regularMergedRules = configuration.rules
         case .whitelisted(let whitelistedRules):
             // Use an intermediate set to filter out duplicate rules when merging configurations
             // (always use the nested rule first if it exists)
-            return Set(configuration.rules.map(HashableRule.init))
+            regularMergedRules = Set(configuration.rules.map(HashableRule.init))
                 .union(rules.map(HashableRule.init))
                 .map { $0.rule }
                 .filter { rule in
@@ -83,7 +118,7 @@ extension Configuration {
                 }
         case let .default(disabled, optIn):
             // Same here
-            return Set(
+            regularMergedRules = Set(
                 configuration.rules
                     // Enable rules that are opt-in by the nested configuration
                     .filter { rule in
@@ -99,6 +134,7 @@ extension Configuration {
                 )
                 .map { $0.rule }
         }
+        return mergeCustomRules(mergedRules: regularMergedRules, configuration: configuration)
     }
 
     internal func merge(with configuration: Configuration) -> Configuration {

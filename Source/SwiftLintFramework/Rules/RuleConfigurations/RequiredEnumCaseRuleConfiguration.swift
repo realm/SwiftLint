@@ -1,5 +1,5 @@
 public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
-    struct RequiredCase: Equatable, Hashable {
+    struct RequiredCase: Hashable {
         var name: String
         var severity: ViolationSeverity
 

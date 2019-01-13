@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Equatable, Hashable, CacheDescriptionProvider {
+public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."

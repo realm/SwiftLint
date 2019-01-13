@@ -74,7 +74,7 @@ extension Configuration {
         }
     }
 
-    private func mergingCustomRules(mergedRules: [Rule], configuration: Configuration) -> [Rule] {
+    private func mergeCustomRules(mergedRules: [Rule], configuration: Configuration) -> [Rule] {
         guard
             let thisCustomRules = rules.first(where: { $0 is CustomRules }) as? CustomRules,
             let otherCustomRules = configuration.rules.first(where: { $0 is CustomRules }) as? CustomRules else {
@@ -134,7 +134,7 @@ extension Configuration {
                 )
                 .map { $0.rule }
         }
-        return mergingCustomRules(mergedRules: regularMergedRules, configuration: configuration)
+        return mergeCustomRules(mergedRules: regularMergedRules, configuration: configuration)
     }
 
     internal func merge(with configuration: Configuration) -> Configuration {

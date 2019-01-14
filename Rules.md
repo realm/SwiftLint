@@ -127,6 +127,7 @@
 * [Statement Position](#statement-position)
 * [Static Operator](#static-operator)
 * [Strict fileprivate](#strict-fileprivate)
+* [Strong IBOutlet](#strong-iboutlet)
 * [Superfluous Disable Command](#superfluous-disable-command)
 * [Switch and Case Statement Alignment](#switch-and-case-statement-alignment)
 * [Switch Case on Newline](#switch-case-on-newline)
@@ -16837,6 +16838,57 @@ struct Outter {
   struct Inter {
     ↓fileprivate struct Inner {}
   }
+}
+```
+
+</details>
+
+
+
+## Strong IBOutlet
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`strong_iboutlet` | Disabled | No | lint | No | 3.0.0 
+
+@IBOutlets shouldn't be declared as weak.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet var label: UILabel?
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    weak var label: UILabel?
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet weak ↓var label: UILabel?
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet unowned ↓var label: UILabel!
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet weak ↓var textField: UITextField?
 }
 ```
 

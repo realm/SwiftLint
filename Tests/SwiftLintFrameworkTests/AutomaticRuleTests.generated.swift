@@ -582,6 +582,12 @@ class StrictFilePrivateRuleTests: XCTestCase {
     }
 }
 
+class StrongIBOutletRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StrongIBOutletRule.description)
+    }
+}
+
 class SwitchCaseOnNewlineRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseOnNewlineRule.description)

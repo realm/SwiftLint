@@ -1150,6 +1150,12 @@ extension StrictFilePrivateRuleTests {
     ]
 }
 
+extension StrongIBOutletRuleTests {
+    static var allTests: [(String, (StrongIBOutletRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension SwitchCaseAlignmentRuleTests {
     static var allTests: [(String, (SwitchCaseAlignmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
@@ -1541,6 +1547,7 @@ XCTMain([
     testCase(StatementPositionRuleTests.allTests),
     testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
+    testCase(StrongIBOutletRuleTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),

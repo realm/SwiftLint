@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Add `strong_iboutlet` opt-in rule to enforce that `@IBOutlet`s are not
+  declared as `weak`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2433](https://github.com/realm/SwiftLint/issues/2433)
 
 #### Bug Fixes
 

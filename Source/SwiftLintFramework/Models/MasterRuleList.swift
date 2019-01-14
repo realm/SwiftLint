@@ -128,6 +128,7 @@ public let masterRuleList = RuleList(rules: [
     StatementPositionRule.self,
     StaticOperatorRule.self,
     StrictFilePrivateRule.self,
+    StrongIBOutletRule.self,
     SuperfluousDisableCommandRule.self,
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,

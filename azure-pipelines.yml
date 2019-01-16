@@ -49,7 +49,7 @@ jobs:
         testResultsFiles: build/reports/**
       condition: succeededOrFailed()
 
-- job: macOS SwiftPM
+- job: SwiftPM
   pool:
     vmImage: 'macOS 10.13'
   strategy:

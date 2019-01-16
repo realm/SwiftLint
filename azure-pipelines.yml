@@ -74,7 +74,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.13'
   steps:
-    - script: sudo xcode-select -s /Applications/Xcode_9.4.1.app
+    - script: sudo xcode-select -s /Applications/Xcode_10.1.app
       displayName: xcode-select
     - script: bundle update --bundler
       displayName: Update bundler
@@ -87,7 +87,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.13'
   steps:
-    - script: sudo xcode-select -s /Applications/Xcode_9.4.1.app
+    - script: sudo xcode-select -s /Applications/Xcode_10.1.app
       displayName: xcode-select
     - script: bundle update --bundler
       displayName: Update bundler

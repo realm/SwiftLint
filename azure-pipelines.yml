@@ -74,6 +74,8 @@ jobs:
   steps:
     - script: sudo xcode-select -s /Applications/Xcode_9.4.1.app
       displayName: xcode-select
+    - script: bundle update --bundler
+      displayName: Update bundler
     - script: bundle install --path vendor/bundle
       displayName: bundle install
     - script: bundle exec pod lib lint SwiftLintFramework.podspec
@@ -85,6 +87,8 @@ jobs:
   steps:
     - script: sudo xcode-select -s /Applications/Xcode_9.4.1.app
       displayName: xcode-select
+    - script: bundle update --bundler
+      displayName: Update bundler
     - script: bundle install --path vendor/bundle
       displayName: bundle install
     - script: bundle exec danger --verbose

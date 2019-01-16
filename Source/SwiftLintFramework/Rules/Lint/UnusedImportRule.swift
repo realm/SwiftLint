@@ -29,8 +29,19 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         triggeringExamples: [
             """
             ↓import Dispatch
-            struct A {\n    static func dispatchMain() {}\n}
+            struct A {
+              static func dispatchMain() {}
+            }
             A.dispatchMain()
+            """,
+            """
+            ↓import Foundation
+            struct A {
+              static func dispatchMain() {}
+            }
+            A.dispatchMain()
+            ↓import Dispatch
+
             """,
             """
             ↓import Foundation
@@ -45,12 +56,32 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         corrections: [
             """
             ↓import Dispatch
-            struct A {\n    static func dispatchMain() {}\n}
+            struct A {
+              static func dispatchMain() {}
+            }
             A.dispatchMain()
             """:
             """
-            struct A {\n    static func dispatchMain() {}\n}
+            struct A {
+              static func dispatchMain() {}
+            }
             A.dispatchMain()
+            """,
+            """
+            ↓import Foundation
+            struct A {
+              static func dispatchMain() {}
+            }
+            A.dispatchMain()
+            ↓import Dispatch
+
+            """:
+            """
+            struct A {
+              static func dispatchMain() {}
+            }
+            A.dispatchMain()
+
             """,
             """
             ↓import Foundation
@@ -166,14 +197,16 @@ private extension File {
         if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
             unusedImports.remove("Foundation")
         }
-        return unusedImports.map { module in
-            let testableImportRange = contentsNSString.range(of: "@testable import \(module)\n")
-            if testableImportRange.location != NSNotFound {
-                return (module, testableImportRange)
-            }
+        return unusedImports
+            .map { module in
+                let testableImportRange = contentsNSString.range(of: "@testable import \(module)\n")
+                if testableImportRange.location != NSNotFound {
+                    return (module, testableImportRange)
+                }
 
-            return (module, contentsNSString.range(of: "import \(module)\n"))
-        }
+                return (module, contentsNSString.range(of: "import \(module)\n"))
+            }
+            .sorted(by: { $0.1.location < $1.1.location })
     }
 
     private func containsAttributesRequiringFoundation() -> Bool {

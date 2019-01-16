@@ -21804,9 +21804,19 @@ class A {}
 ```swift
 ↓import Dispatch
 struct A {
-    static func dispatchMain() {}
+  static func dispatchMain() {}
 }
 A.dispatchMain()
+```
+
+```swift
+↓import Foundation
+struct A {
+  static func dispatchMain() {}
+}
+A.dispatchMain()
+↓import Dispatch
+
 ```
 
 ```swift

@@ -6,7 +6,10 @@
 
 #### Experimental
 
-* None.
+* Fix `unused_import` correction deleting unrelated ranges when there are
+  multiple violations in a single file.  
+  [JP Simard](https://github.com/jpsim)
+  [#2561](https://github.com/realm/SwiftLint/issues/2561)
 
 #### Enhancements
 

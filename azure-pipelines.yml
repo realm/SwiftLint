@@ -35,6 +35,8 @@ jobs:
       xcode101:
         XCODE_APP: 'Xcode_10.1'
   steps:
+    - script: git submodule update --init --recursive
+      displayName: Update git submodules
     - script: |
         sudo xcode-select -s /Applications/$XCODE_APP.app
       displayName: xcode-select

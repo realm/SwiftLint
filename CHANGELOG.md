@@ -30,6 +30,11 @@
   [Kim de Vos](https://github.com/kimdv)
   [#2348](https://github.com/realm/SwiftLint/issues/2348)
 
+* Fix false positives on `identical_operands` rule when the right side of the
+  operand does not terminate.  
+  [Xavier Lowmiller](https://github.com/xavierLowmiller)
+  [#2467](https://github.com/realm/SwiftLint/issues/2467)
+
 ## 0.29.3: Entangled Agitator
 
 #### Breaking
@@ -84,11 +89,6 @@
   line is present but it contains trailing whitespace.  
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
   [#2538](https://github.com/realm/SwiftLint/issues/2538)
-
-* Fix false positives on `identical_operands` rule when the right side of the
-  operand does not terminate.
-  [Xavier Lowmiller](https://github.com/xavierLowmiller)
-  [#2467](https://github.com/realm/SwiftLint/issues/2467)
 
 ## 0.29.2: Washateria
 

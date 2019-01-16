@@ -80,7 +80,7 @@ jobs:
       displayName: Update bundler
     - script: bundle install --path vendor/bundle
       displayName: bundle install
-    - script: bundle exec pod lib lint SwiftLintFramework.podspec
+    - script: bundle exec pod lib lint --verbose SwiftLintFramework.podspec
       displayName: pod lib lint
 
 - job: OSSCheck

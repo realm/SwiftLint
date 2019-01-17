@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Add `duplicate_imports` rule to prevent importing the same module twice.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1881](https://github.com/realm/SwiftLint/issues/1881)
 
 #### Bug Fixes
 

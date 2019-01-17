@@ -2,8 +2,6 @@ import Commandant
 import Dispatch
 import SwiftLintFramework
 
-// TODO: Remove me. Force CI to run OSSCheck and trigger a lint failure.
-
 DispatchQueue.global().async {
     let registry = CommandRegistry<CommandantError<()>>()
     registry.register(LintCommand())

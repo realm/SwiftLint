@@ -1,0 +1,121 @@
+resources:
+  containers:
+  - container: '4.2.0'
+    image: norionomura/swift:42
+  - container: '4.2.1'
+    image: norionomura/swift:421
+
+trigger:
+- master
+
+jobs:
+- job: linux
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  strategy:
+    maxParallel: 10
+    matrix:
+      swift420:
+        containerResource: '4.2.0'
+      swift421:
+        containerResource: '4.2.1'
+  container: $[ variables['containerResource'] ]
+  steps:
+    - script: swift test --parallel
+      displayName: swift test
+
+- job: Xcode
+  pool:
+    vmImage: 'macOS 10.13'
+  strategy:
+    maxParallel: 10
+    matrix:
+      xcode10:
+        XCODE_APP: 'Xcode_10'
+      xcode101:
+        XCODE_APP: 'Xcode_10.1'
+  steps:
+    - script: git submodule update --init --recursive
+      displayName: Update git submodules
+    - script: |
+        sudo xcode-select -s /Applications/$XCODE_APP.app
+      displayName: xcode-select
+    - script: >
+        set -o pipefail &&
+        xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint test |
+        xcpretty -r junit -o build/reports/xcodebuild.xml
+      displayName: xcodebuild test
+    - task: PublishTestResults@2
+      inputs:
+        testRunner: JUnit
+        testResultsFiles: build/reports/**
+      condition: succeededOrFailed()
+
+- job: SwiftPM
+  pool:
+    vmImage: 'macOS 10.13'
+  strategy:
+    maxParallel: 10
+    matrix:
+      xcode10:
+        XCODE_APP: 'Xcode_10'
+      xcode101:
+        XCODE_APP: 'Xcode_10.1'
+  steps:
+    - script: |
+        sudo xcode-select -s /Applications/$XCODE_APP.app
+      displayName: xcode-select
+    - script: >
+        set -o pipefail &&
+        swift test --parallel
+      displayName: swift test
+
+- job: CocoaPods
+  pool:
+    vmImage: 'macOS 10.13'
+  steps:
+    - script: sudo xcode-select -s /Applications/Xcode_10.1.app
+      displayName: xcode-select
+    - script: bundle update --bundler
+      displayName: Update bundler
+    - script: bundle install --path vendor/bundle
+      displayName: bundle install
+    - script: bundle exec pod lib lint --verbose SwiftLintFramework.podspec
+      displayName: pod lib lint
+
+- job: OSSCheck
+  pool:
+    vmImage: 'macOS 10.13'
+  steps:
+    - script: sudo xcode-select -s /Applications/Xcode_10.1.app
+      displayName: xcode-select
+    - script: bundle update --bundler
+      displayName: Update bundler
+    - script: bundle install --path vendor/bundle
+      displayName: bundle install
+    - script: bundle exec danger --verbose
+      displayName: Run Danger
+      env:
+        DANGER_GITHUB_API_TOKEN: $(DANGER_GITHUB_API_TOKEN)
+
+- job: Analyze
+  pool:
+    vmImage: 'macOS 10.13'
+  steps:
+    - script: sudo xcode-select -s /Applications/Xcode_10.1.app
+      displayName: xcode-select
+    - script: make analyze
+      displayName: Run SwiftLint Analyze
+
+- job: TSan
+  pool:
+    vmImage: 'macOS 10.13'
+  steps:
+    - script: sudo xcode-select -s /Applications/Xcode_10.1.app
+      displayName: xcode-select
+    - script: swift run --sanitize=thread swiftlint lint --lenient
+      displayName: Pre-cache SwiftLint Run
+    - script: swift run --sanitize=thread swiftlint lint --lenient
+      displayName: Post-cache SwiftLint Run
+    - script: make test_tsan
+      displayName: Test With TSan

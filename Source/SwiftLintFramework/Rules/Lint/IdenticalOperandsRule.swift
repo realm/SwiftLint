@@ -26,8 +26,12 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 "lhs.identifier \(operation) rhs.identifier",
                 "i \(operation) index",
                 "$0 \(operation) 0",
-                "keyValues?.count ?? 0  \(operation) 0",
-                "string \(operation) string.lowercased()"
+                "keyValues?.count ?? 0 \(operation) 0",
+                "string \(operation) string.lowercased()",
+                """
+                let num: Int? = 0
+                _ = num != nil && num \(operation) num?.byteSwapped
+                """
             ]
         } + [
             "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
@@ -47,7 +51,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     public func validate(file: File) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
         let pattern = """
-        (?<!\\.|\\$)(?:\\s|\\b|\\A)([\\$A-Za-z0-9_\\.]+)\\s*(\(operators))\\s*\\1\\b(?!\\s*(\\.|\\>|\\<))
+        (?<!\\.|\\$)(?:\\s|\\b|\\A)([\\$A-Za-z0-9_\\.]+)\\s*(\(operators))\\s*\\1\\b(?!\\s*(\\.|\\>|\\<|\\?))
         """
         let syntaxKinds = SyntaxKind.commentKinds
         let excludingPattern = "\\?\\?\\s*" + pattern

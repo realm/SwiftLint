@@ -8016,11 +8016,16 @@ $0 == 0
 ```
 
 ```swift
-keyValues?.count ?? 0  == 0
+keyValues?.count ?? 0 == 0
 ```
 
 ```swift
 string == string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num == num?.byteSwapped
 ```
 
 ```swift
@@ -8068,11 +8073,16 @@ $0 != 0
 ```
 
 ```swift
-keyValues?.count ?? 0  != 0
+keyValues?.count ?? 0 != 0
 ```
 
 ```swift
 string != string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num != num?.byteSwapped
 ```
 
 ```swift
@@ -8120,11 +8130,16 @@ $0 === 0
 ```
 
 ```swift
-keyValues?.count ?? 0  === 0
+keyValues?.count ?? 0 === 0
 ```
 
 ```swift
 string === string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num === num?.byteSwapped
 ```
 
 ```swift
@@ -8172,11 +8187,16 @@ $0 !== 0
 ```
 
 ```swift
-keyValues?.count ?? 0  !== 0
+keyValues?.count ?? 0 !== 0
 ```
 
 ```swift
 string !== string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num !== num?.byteSwapped
 ```
 
 ```swift
@@ -8224,11 +8244,16 @@ $0 > 0
 ```
 
 ```swift
-keyValues?.count ?? 0  > 0
+keyValues?.count ?? 0 > 0
 ```
 
 ```swift
 string > string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num > num?.byteSwapped
 ```
 
 ```swift
@@ -8276,11 +8301,16 @@ $0 >= 0
 ```
 
 ```swift
-keyValues?.count ?? 0  >= 0
+keyValues?.count ?? 0 >= 0
 ```
 
 ```swift
 string >= string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num >= num?.byteSwapped
 ```
 
 ```swift
@@ -8328,11 +8358,16 @@ $0 < 0
 ```
 
 ```swift
-keyValues?.count ?? 0  < 0
+keyValues?.count ?? 0 < 0
 ```
 
 ```swift
 string < string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num < num?.byteSwapped
 ```
 
 ```swift
@@ -8380,11 +8415,16 @@ $0 <= 0
 ```
 
 ```swift
-keyValues?.count ?? 0  <= 0
+keyValues?.count ?? 0 <= 0
 ```
 
 ```swift
 string <= string.lowercased()
+```
+
+```swift
+let num: Int? = 0
+_ = num != nil && num <= num?.byteSwapped
 ```
 
 ```swift

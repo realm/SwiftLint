@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives on `identical_operands` rule when the right side of the
+  operand has a chained optional.  
+  [JP Simard](https://github.com/jpsim)
+  [#2564](https://github.com/realm/SwiftLint/issues/2564)
 
 ## 0.29.4: In-Unit Operands
 

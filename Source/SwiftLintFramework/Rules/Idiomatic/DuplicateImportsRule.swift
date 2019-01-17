@@ -23,31 +23,19 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
     )
 
     private func rangesInConditionalCompilation(file: File) -> [NSRange] {
-        let start = "#if"
-        let end = "#endif"
         let contents = file.contents.bridge()
 
         let ranges = file.syntaxMap.tokens
-            .filter { token -> Bool in
-                guard let kind = SyntaxKind(rawValue: token.type) else {
-                    return false
-                }
-                return kind == .buildconfigKeyword
-            }
+            .filter { SyntaxKind(rawValue: $0.type) == .buildconfigKeyword }
             .map { NSRange(location: $0.offset, length: $0.length) }
             .filter { range in
-                guard let keyword = contents.substringWithByteRange(start: range.location, length: range.length) else {
-                    return false
-                }
-                return keyword == start || keyword == end
+                let keyword = contents.substringWithByteRange(start: range.location, length: range.length)
+                return ["#if", "#endif"].contains(keyword)
             }
 
-        var result = [NSRange]()
-        for index in 0..<ranges.count where index % 2 == 0 {
-            let union = NSUnionRange(ranges[index], ranges[index + 1])
-            result.append(union)
+        return stride(from: 0, to: ranges.count, by: 2).reduce(into: []) { result, rangeIndex in
+            result.append(NSUnionRange(ranges[rangeIndex], ranges[rangeIndex + 1]))
         }
-        return result
     }
 
     public func validate(file: File) -> [StyleViolation] {
@@ -61,7 +49,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         // attributes(optional) import import-kind(optional) import-path
         let regex = "^(\\w\\s)?import(\\s(\(importKinds)))?\\s+[a-zA-Z0-9._]+$"
         let importRanges = file.match(pattern: regex)
-            .filter { $0.1.allSatisfying { $0 == .keyword || $0 == .identifier } }
+            .filter { $0.1.allSatisfy { [.keyword, .identifier].contains($0) } }
             .compactMap { contents.NSRangeToByteRange(start: $0.0.location, length: $0.0.length) }
             .filter { importRange -> Bool in
                 return !importRange.intersects(ignoredRanges)
@@ -103,18 +91,6 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
     }
 }
 
-private extension Array {
-    /// Returns true if all elements in array satisfy condition.
-    ///
-    /// - Parameter condition: in form of closure that is called on each element in array.
-    /// - Returns: true if all elements satisfy provided condition, otherwise false.
-    func allSatisfying(condition: (Array.Element) -> Bool) -> Bool {
-        return self.reduce(true) { (result: Bool, element: Array.Element) -> Bool in
-            return result ? condition(element) : result
-        }
-    }
-}
-
 private extension Line {
     /// Returns name of the module being imported.
     var importIdentifier: Substring? {
@@ -126,8 +102,6 @@ private extension Line {
             let secondImportIdentifiers = otherLine.importIdentifier?.split(separator: ".")
             else { return false }
 
-        return zip(firstImportIdentifiers, secondImportIdentifiers).reduce(true) { result, sequences in
-            return result && sequences.0 == sequences.1
-        }
+        return zip(firstImportIdentifiers, secondImportIdentifiers).allSatisfy { $0 == $1 }
     }
 }

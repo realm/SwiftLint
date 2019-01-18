@@ -152,6 +152,7 @@
 * [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
 * [Unused Private Declaration](#unused-private-declaration)
+* [Unused Setter Value](#unused-setter-value)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
@@ -22246,6 +22247,116 @@ _ = kConstant
 
 ```swift
 private let ↓kConstant = 0
+```
+
+</details>
+
+
+
+## Unused Setter Value
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_setter_value` | Enabled | No | lint | No | 3.0.0 
+
+Setter value is not used.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    set {
+        Persister.shared.aValue = newValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    set {
+        Persister.shared.aValue = newValue
+    }
+    get {
+        return Persister.shared.aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    set(value) {
+        Persister.shared.aValue = value
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    ↓set {
+        Persister.shared.aValue = aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    ↓set {
+        Persister.shared.aValue = aValue
+    }
+    get {
+        return Persister.shared.aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    ↓set {
+        Persister.shared.aValue = aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        let newValue = Persister.shared.aValue
+        return newValue
+    }
+    ↓set {
+        Persister.shared.aValue = aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    ↓set(value) {
+        Persister.shared.aValue = aValue
+    }
+}
 ```
 
 </details>

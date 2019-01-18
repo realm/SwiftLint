@@ -14,6 +14,11 @@
   [Samuel Susla](https://github.com/sammy-sc)
   [#1881](https://github.com/realm/SwiftLint/issues/1881)
 
+* Add `unused_setter_argument` rule to validate that setter arguments are
+  used in properties.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1136](https://github.com/realm/SwiftLint/issues/1136)
+
 #### Bug Fixes
 
 * Fix false positives on `identical_operands` rule when the right side of the

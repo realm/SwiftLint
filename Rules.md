@@ -22272,7 +22272,7 @@ var aValue: String {
         return Persister.shared.aValue
     }
     set {
-        Perister.shared.aValue = newValue
+        Persister.shared.aValue = newValue
     }
 }
 ```
@@ -22280,7 +22280,7 @@ var aValue: String {
 ```swift
 var aValue: String {
     set {
-        Perister.shared.aValue = newValue
+        Persister.shared.aValue = newValue
     }
     get {
         return Persister.shared.aValue
@@ -22294,7 +22294,7 @@ var aValue: String {
         return Persister.shared.aValue
     }
     set(value) {
-        Perister.shared.aValue = value
+        Persister.shared.aValue = value
     }
 }
 ```
@@ -22309,7 +22309,7 @@ var aValue: String {
         return Persister.shared.aValue
     }
     ↓set {
-        Perister.shared.aValue = aValue
+        Persister.shared.aValue = aValue
     }
 }
 ```
@@ -22317,7 +22317,7 @@ var aValue: String {
 ```swift
 var aValue: String {
     ↓set {
-        Perister.shared.aValue = aValue
+        Persister.shared.aValue = aValue
     }
     get {
         return Persister.shared.aValue
@@ -22331,7 +22331,7 @@ var aValue: String {
         return Persister.shared.aValue
     }
     ↓set {
-        Perister.shared.aValue = aValue
+        Persister.shared.aValue = aValue
     }
 }
 ```
@@ -22343,7 +22343,7 @@ var aValue: String {
         return newValue
     }
     ↓set {
-        Perister.shared.aValue = aValue
+        Persister.shared.aValue = aValue
     }
 }
 ```
@@ -22354,7 +22354,7 @@ var aValue: String {
         return Persister.shared.aValue
     }
     ↓set(value) {
-        Perister.shared.aValue = aValue
+        Persister.shared.aValue = aValue
     }
 }
 ```

@@ -18,14 +18,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
                 set {
-                    Perister.shared.aValue = newValue
+                    Persister.shared.aValue = newValue
                 }
             }
             """,
             """
             var aValue: String {
                 set {
-                    Perister.shared.aValue = newValue
+                    Persister.shared.aValue = newValue
                 }
                 get {
                     return Persister.shared.aValue
@@ -38,7 +38,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
                 set(value) {
-                    Perister.shared.aValue = value
+                    Persister.shared.aValue = value
                 }
             }
             """
@@ -50,14 +50,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
                 ↓set {
-                    Perister.shared.aValue = aValue
+                    Persister.shared.aValue = aValue
                 }
             }
             """,
             """
             var aValue: String {
                 ↓set {
-                    Perister.shared.aValue = aValue
+                    Persister.shared.aValue = aValue
                 }
                 get {
                     return Persister.shared.aValue
@@ -70,7 +70,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
                 ↓set {
-                    Perister.shared.aValue = aValue
+                    Persister.shared.aValue = aValue
                 }
             }
             """,
@@ -81,7 +81,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return newValue
                 }
                 ↓set {
-                    Perister.shared.aValue = aValue
+                    Persister.shared.aValue = aValue
                 }
             }
             """,
@@ -91,7 +91,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
                 ↓set(value) {
-                    Perister.shared.aValue = aValue
+                    Persister.shared.aValue = aValue
                 }
             }
             """

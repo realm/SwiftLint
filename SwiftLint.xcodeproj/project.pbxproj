@@ -282,7 +282,7 @@
 		D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
 		D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */; };
 		D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
-		D4B3409D21F16B110038C79A /* UnusedSetterArgumentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B3409C21F16B110038C79A /* UnusedSetterArgumentRule.swift */; };
+		D4B3409D21F16B110038C79A /* UnusedSetterValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */; };
 		D4B472411F66486300BD6EF1 /* FallthroughRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B472401F66486300BD6EF1 /* FallthroughRule.swift */; };
 		D4C0E46F1E3D973600C560F2 /* ForWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */; };
 		D4C27BFE1E12D53F00DF713E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C27BFD1E12D53F00DF713E /* Version.swift */; };
@@ -740,7 +740,7 @@
 		D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRule.swift; sourceTree = "<group>"; };
 		D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericTypeNameRule.swift; sourceTree = "<group>"; };
 		D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantVoidReturnRule.swift; sourceTree = "<group>"; };
-		D4B3409C21F16B110038C79A /* UnusedSetterArgumentRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedSetterArgumentRule.swift; sourceTree = "<group>"; };
+		D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedSetterValueRule.swift; sourceTree = "<group>"; };
 		D4B472401F66486300BD6EF1 /* FallthroughRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FallthroughRule.swift; sourceTree = "<group>"; };
 		D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForWhereRule.swift; sourceTree = "<group>"; };
 		D4C27BFD1E12D53F00DF713E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
@@ -1047,7 +1047,7 @@
 				D4D7320C21E15ED4001C07D9 /* UnusedControlFlowLabelRule.swift */,
 				8F715B82213B528B00427BD9 /* UnusedImportRule.swift */,
 				8F6B3153213CDCD100858E44 /* UnusedPrivateDeclarationRule.swift */,
-				D4B3409C21F16B110038C79A /* UnusedSetterArgumentRule.swift */,
+				D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */,
 				D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */,
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
 				1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */,
@@ -1967,7 +1967,7 @@
 				D4470D5D1EB8004B008A1B2E /* VerticalParameterAlignmentOnCallRule.swift in Sources */,
 				D4DABFD31E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */,
 				D4AB0EA21F8993DD00CEC380 /* NamespaceCollector.swift in Sources */,
-				D4B3409D21F16B110038C79A /* UnusedSetterArgumentRule.swift in Sources */,
+				D4B3409D21F16B110038C79A /* UnusedSetterValueRule.swift in Sources */,
 				75161FDF213B9D73009DE767 /* CollectionAlignmentConfiguration.swift in Sources */,
 				D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */,
 				3BCC04D21C4F56D3006073C3 /* NameConfiguration.swift in Sources */,

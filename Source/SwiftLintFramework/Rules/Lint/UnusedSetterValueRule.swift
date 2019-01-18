@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedSetterArgumentRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "unused_setter_argument",
-        name: "Unused Setter Argument",
-        description: "Setter argument is not used.",
+        identifier: "unused_setter_value",
+        name: "Unused Setter Value",
+        description: "Setter value is not used.",
         kind: .lint,
         nonTriggeringExamples: [
             """

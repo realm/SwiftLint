@@ -152,7 +152,7 @@
 * [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
 * [Unused Private Declaration](#unused-private-declaration)
-* [Unused Setter Argument](#unused-setter-argument)
+* [Unused Setter Value](#unused-setter-value)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
@@ -22253,13 +22253,13 @@ private let ↓kConstant = 0
 
 
 
-## Unused Setter Argument
+## Unused Setter Value
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`unused_setter_argument` | Enabled | No | lint | No | 3.0.0 
+`unused_setter_value` | Enabled | No | lint | No | 3.0.0 
 
-Setter argument is not used.
+Setter value is not used.
 
 ### Examples
 

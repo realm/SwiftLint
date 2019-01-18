@@ -684,9 +684,9 @@ class UnusedPrivateDeclarationRuleTests: XCTestCase {
     }
 }
 
-class UnusedSetterArgumentRuleTests: XCTestCase {
+class UnusedSetterValueRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(UnusedSetterArgumentRule.description)
+        verifyRule(UnusedSetterValueRule.description)
     }
 }
 

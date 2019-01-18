@@ -31,6 +31,16 @@ public struct UnusedSetterArgumentRule: ConfigurationProviderRule, AutomaticTest
                     return Persister.shared.aValue
                 }
             }
+            """,
+            """
+            var aValue: String {
+                get {
+                    return Persister.shared.aValue
+                }
+                set(value) {
+                    Perister.shared.aValue = value
+                }
+            }
             """
         ],
         triggeringExamples: [
@@ -74,6 +84,16 @@ public struct UnusedSetterArgumentRule: ConfigurationProviderRule, AutomaticTest
                     Perister.shared.aValue = aValue
                 }
             }
+            """,
+            """
+            var aValue: String {
+                get {
+                    return Persister.shared.aValue
+                }
+                ↓set(value) {
+                    Perister.shared.aValue = aValue
+                }
+            }
             """
         ]
     )
@@ -91,14 +111,28 @@ public struct UnusedSetterArgumentRule: ConfigurationProviderRule, AutomaticTest
                     return nil
             }
 
+            let argument = findNamedArgument(after: setToken, file: file)
+
             let propertyEndOffset = bodyOffset + bodyLength
             let setterByteRange: NSRange
             if setToken.offset > getToken.offset { // get {} set {}
-                setterByteRange = NSRange(location: setToken.offset,
-                                          length: propertyEndOffset - setToken.offset)
+                let startOfBody: Int
+                if let argumentToken = argument?.token {
+                    startOfBody = argumentToken.offset + argumentToken.length
+                } else {
+                    startOfBody = setToken.offset
+                }
+                setterByteRange = NSRange(location: startOfBody,
+                                          length: propertyEndOffset - startOfBody)
             } else { // set {} get {}
-                setterByteRange = NSRange(location: setToken.offset,
-                                          length: propertyEndOffset - setToken.offset)
+                let startOfBody: Int
+                if let argumentToken = argument?.token {
+                    startOfBody = argumentToken.offset + argumentToken.length
+                } else {
+                    startOfBody = setToken.offset
+                }
+                setterByteRange = NSRange(location: startOfBody,
+                                          length: getToken.offset - startOfBody)
             }
 
             guard let setterRange = contents.byteRangeToNSRange(start: setterByteRange.location,
@@ -106,7 +140,8 @@ public struct UnusedSetterArgumentRule: ConfigurationProviderRule, AutomaticTest
                 return nil
             }
 
-            guard file.match(pattern: "\\bnewValue\\b", with: [.identifier], range: setterRange).isEmpty else {
+            let argumentName = argument?.name ?? "newValue"
+            guard file.match(pattern: "\\b\(argumentName)\\b", with: [.identifier], range: setterRange).isEmpty else {
                 return nil
             }
 
@@ -118,6 +153,23 @@ public struct UnusedSetterArgumentRule: ConfigurationProviderRule, AutomaticTest
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset))
         }
+    }
+
+    private func findNamedArgument(after token: SyntaxToken,
+                                   file: File) -> (name: String, token: SyntaxToken)? {
+        guard let firstToken = file.syntaxMap.tokens.first(where: { $0.offset > token.offset }),
+            SyntaxKind(rawValue: firstToken.type) == .identifier else {
+                return nil
+        }
+
+        let declaration = file.structure.structures(forByteOffset: firstToken.offset)
+            .first(where: { $0.offset == firstToken.offset && $0.length == firstToken.length })
+
+        guard let name = declaration?.name else {
+            return nil
+        }
+
+        return (name, firstToken)
     }
 
     private func findGetToken(in range: NSRange, file: File,

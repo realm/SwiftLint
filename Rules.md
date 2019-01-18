@@ -22288,6 +22288,17 @@ var aValue: String {
 }
 ```
 
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    set(value) {
+        Perister.shared.aValue = value
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22332,6 +22343,17 @@ var aValue: String {
         return newValue
     }
     ↓set {
+        Perister.shared.aValue = aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    ↓set(value) {
         Perister.shared.aValue = aValue
     }
 }

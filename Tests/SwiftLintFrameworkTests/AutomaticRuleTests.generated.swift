@@ -612,12 +612,6 @@ class ToggleBoolRuleTests: XCTestCase {
     }
 }
 
-class TrailingClosureRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TrailingClosureRule.description)
-    }
-}
-
 class TrailingSemicolonRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingSemicolonRule.description)

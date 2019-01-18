@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
+    public var configuration = TrailingClosureConfiguration()
 
     public init() {}
 
@@ -30,7 +30,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, Automat
     public func validate(file: File) -> [StyleViolation] {
         return violationOffsets(for: file.structure.dictionary, file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: $0))
         }
     }
@@ -70,7 +70,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, Automat
         let arguments = dictionary.enclosedArguments
 
         // check if last parameter should be trailing closure
-        if !arguments.isEmpty,
+        if !configuration.onlySingleMutedParameter, !arguments.isEmpty,
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
             closureArguments.last?.bridge() == arguments.last?.bridge() {

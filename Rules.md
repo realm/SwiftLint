@@ -152,6 +152,7 @@
 * [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
 * [Unused Private Declaration](#unused-private-declaration)
+* [Unused Setter Argument](#unused-setter-argument)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
@@ -22246,6 +22247,94 @@ _ = kConstant
 
 ```swift
 private let ↓kConstant = 0
+```
+
+</details>
+
+
+
+## Unused Setter Argument
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_setter_argument` | Enabled | No | lint | No | 3.0.0 
+
+Setter argument is not used.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    set {
+        Perister.shared.aValue = newValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    set {
+        Perister.shared.aValue = newValue
+    }
+    get {
+        return Persister.shared.aValue
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    ↓set {
+        Perister.shared.aValue = aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    ↓set {
+        Perister.shared.aValue = aValue
+    }
+    get {
+        return Persister.shared.aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        return Persister.shared.aValue
+    }
+    ↓set {
+        Perister.shared.aValue = aValue
+    }
+}
+```
+
+```swift
+var aValue: String {
+    get {
+        let newValue = Persister.shared.aValue
+        return newValue
+    }
+    ↓set {
+        Perister.shared.aValue = aValue
+    }
+}
 ```
 
 </details>

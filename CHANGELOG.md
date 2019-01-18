@@ -19,6 +19,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1136](https://github.com/realm/SwiftLint/issues/1136)
 
+* Add `only_single_muted_parameter` configuration on `trailing_closure` rule
+  to only enforce using trailing closure on functions that take one single
+  muted parameter.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fix false positives on `identical_operands` rule when the right side of the

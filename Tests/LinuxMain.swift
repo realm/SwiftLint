@@ -1196,9 +1196,17 @@ extension ToggleBoolRuleTests {
     ]
 }
 
+extension TrailingClosureConfigurationTests {
+    static var allTests: [(String, (TrailingClosureConfigurationTests) -> () throws -> Void)] = [
+        ("testDefaultConfiguration", testDefaultConfiguration),
+        ("testApplyingCustomConfiguration", testApplyingCustomConfiguration)
+    ]
+}
+
 extension TrailingClosureRuleTests {
     static var allTests: [(String, (TrailingClosureRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testDefaultConfiguration", testDefaultConfiguration),
+        ("testWithOnlySingleMutedParameterEnabled", testWithOnlySingleMutedParameterEnabled)
     ]
 }
 
@@ -1566,6 +1574,7 @@ XCTMain([
     testCase(SyntacticSugarRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
     testCase(ToggleBoolRuleTests.allTests),
+    testCase(TrailingClosureConfigurationTests.allTests),
     testCase(TrailingClosureRuleTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
     testCase(TrailingSemicolonRuleTests.allTests),

@@ -1,3 +1,21 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.30.0: A New Washer and Dryer Set
 
 #### Breaking

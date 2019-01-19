@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* Exclude files defined in the `excluded` value of SwiftLint's configuration 
+  when `--use-script-input-files` and `--force-exclude` are specified.  
+  [Luis Valdés](https://github.com/luvacu)
 
 #### Experimental
 
@@ -14,7 +16,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives on `trailing_closure` rule when using anonymous closure
+  calls.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2159](https://github.com/realm/SwiftLint/issues/2159)
 
 ## 0.30.0: A New Washer and Dryer Set
 

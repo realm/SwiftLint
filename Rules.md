@@ -17785,6 +17785,18 @@ offsets.sorted { $0.offset < $1.offset }
 
 ```
 
+```swift
+foo.something({ return 1 }())
+```
+
+```swift
+foo.something({ return $0 }(1))
+```
+
+```swift
+foo.something(0, { return 1 }())
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives on `trailing_closure` rule when using anonymous closure
+  calls.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2159](https://github.com/realm/SwiftLint/issues/2159)
 
 ## 0.30.0: A New Washer and Dryer Set
 

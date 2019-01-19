@@ -17,7 +17,10 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             "foo.reduce(0) { $0 + 1 }\n",
             "if let foo = bar.map({ $0 + 1 }) { }\n",
             "foo.something(param1: { $0 }, param2: { $0 + 1 })\n",
-            "offsets.sorted { $0.offset < $1.offset }\n"
+            "offsets.sorted { $0.offset < $1.offset }\n",
+            "foo.something({ return 1 }())",
+            "foo.something({ return $0 }(1))",
+            "foo.something(0, { return 1 }())"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 + 1 })\n",
@@ -63,8 +66,9 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func shouldBeTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
-        func isTrailingClosure() -> Bool {
-            return isAlreadyTrailingClosure(dictionary: dictionary, file: file)
+        func shouldTrigger() -> Bool {
+            return !isAlreadyTrailingClosure(dictionary: dictionary, file: file) &&
+                !isAnonymousClosureCall(dictionary: dictionary, file: file)
         }
 
         let arguments = dictionary.enclosedArguments
@@ -74,7 +78,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
             closureArguments.last?.bridge() == arguments.last?.bridge() {
-            return !isTrailingClosure()
+            return shouldTrigger()
         }
 
         // check if there's only one unnamed parameter that is a closure
@@ -88,7 +92,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             let range = file.contents.bridge().byteRangeToNSRange(start: start, length: length),
             let match = regex("\\s*\\(\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location {
-            return !isTrailingClosure()
+            return shouldTrigger()
         }
 
         return false
@@ -117,5 +121,17 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         }
 
         return !text.hasSuffix(")")
+    }
+
+    private func isAnonymousClosureCall(dictionary: [String: SourceKitRepresentable],
+                                        file: File) -> Bool {
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+                return false
+        }
+
+        let pattern = regex("\\)\\s*\\)\\z")
+        return pattern.numberOfMatches(in: file.contents, range: range) > 0
     }
 }

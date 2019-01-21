@@ -38,12 +38,20 @@ struct LintOrAnalyzeCommand {
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
+        let rootPath = options.paths.first?.absolutePathStandardized() ?? ""
+        let baseline = Baseline(baselinePath: rootPath)
+        if options.useBaseline {
+            baseline.readBaseline()
+        }
         return configuration.visitLintableFiles(options: options, cache: cache, storage: storage) { linter in
-            let currentViolations: [StyleViolation]
+            var currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
                 let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes(using: storage)
                 currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
+                if options.useBaseline {
+                    currentViolations = filteredViolations(baseline: baseline, currentViolations: currentViolations)
+                }
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
@@ -51,6 +59,9 @@ struct LintOrAnalyzeCommand {
                 }
             } else {
                 currentViolations = applyLeniency(options: options, violations: linter.styleViolations(using: storage))
+                if options.useBaseline {
+                    currentViolations = filteredViolations(baseline: baseline, currentViolations: currentViolations)
+                }
                 visitorMutationQueue.sync {
                     violations += currentViolations
                 }
@@ -58,6 +69,9 @@ struct LintOrAnalyzeCommand {
             linter.file.invalidateCache()
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
+            if options.useBaseline {
+                baseline.saveBaseline(violations: violations)
+            }
             if isWarningThresholdBroken(configuration: configuration, violations: violations)
                 && !options.lenient {
                 violations.append(createThresholdViolation(threshold: configuration.warningThreshold!))
@@ -77,6 +91,17 @@ struct LintOrAnalyzeCommand {
             guard numberOfSeriousViolations == 0 else { exit(2) }
             return .success(())
         }
+    }
+
+    private static func filteredViolations(baseline: Baseline,
+                                           currentViolations: [StyleViolation]) -> [StyleViolation] {
+        var filteredViolations = [StyleViolation]()
+        for violation in currentViolations {
+            if !baseline.isInBaseline(violation: violation) {
+                filteredViolations.append(violation)
+            }
+        }
+        return filteredViolations
     }
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
@@ -175,6 +200,7 @@ struct LintOrAnalyzeOptions {
     let cachePath: String?
     let ignoreCache: Bool
     let enableAllRules: Bool
+    let useBaseline: Bool
     let autocorrect: Bool
     let compilerLogPath: String?
     let compileCommands: String?

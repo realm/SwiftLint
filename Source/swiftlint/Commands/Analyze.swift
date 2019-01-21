@@ -42,6 +42,7 @@ extension SwiftLint {
                 cachePath: nil,
                 ignoreCache: true,
                 enableAllRules: false,
+                useBaseline: false,
                 autocorrect: common.fix,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands

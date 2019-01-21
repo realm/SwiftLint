@@ -18,6 +18,12 @@ extension SwiftLint {
         var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
+        @Flag(help: """
+            Save a list of violations if there is no baseline file, and then use the list as a baseline to ignore old \
+            issues and only report new ones.
+            """
+        )
+        var useBaseline = false
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 
@@ -46,6 +52,7 @@ extension SwiftLint {
                 cachePath: cachePath,
                 ignoreCache: noCache,
                 enableAllRules: enableAllRules,
+                useBaseline: useBaseline,
                 autocorrect: common.fix,
                 compilerLogPath: nil,
                 compileCommands: nil

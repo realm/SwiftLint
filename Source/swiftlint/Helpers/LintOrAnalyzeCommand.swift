@@ -27,6 +27,7 @@ struct LintOrAnalyzeCommand {
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
+
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
@@ -46,6 +47,11 @@ struct LintOrAnalyzeCommand {
             }
             linter.file.invalidateCache()
             reporter.report(violations: currentViolations, realtimeCondition: true)
+
+            if let rootPath = options.paths.first?.absolutePathStandardized(),
+               options.useBaseline {
+                BaselineSaver.saveBaseline(violations: violations, baselinePath: "\(rootPath)/test")
+            }
         }.flatMap { files in
             if isWarningThresholdBroken(configuration: configuration, violations: violations)
                 && !options.lenient {
@@ -141,6 +147,7 @@ struct LintOrAnalyzeOptions {
     let cachePath: String
     let ignoreCache: Bool
     let enableAllRules: Bool
+    let useBaseline: Bool
     let autocorrect: Bool
     let compilerLogPath: String
 
@@ -159,6 +166,7 @@ struct LintOrAnalyzeOptions {
         cachePath = options.cachePath
         ignoreCache = options.ignoreCache
         enableAllRules = options.enableAllRules
+        useBaseline = options.useBaseline
         autocorrect = false
         compilerLogPath = ""
     }
@@ -178,6 +186,7 @@ struct LintOrAnalyzeOptions {
         cachePath = ""
         ignoreCache = true
         enableAllRules = options.enableAllRules
+        useBaseline = false
         autocorrect = options.autocorrect
         compilerLogPath = options.compilerLogPath
     }

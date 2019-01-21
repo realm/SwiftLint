@@ -127,7 +127,7 @@ private extension File {
             if kind == .enum,
                 cursorInfo.name == "CodingKeys",
                 let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
-                annotatedDecl.contains(">CodingKey<") {
+                annotatedDecl.contains("usr=\"s:s9CodingKeyP\">CodingKey<") {
                 return nil
             }
             return (usr, Int(offset))

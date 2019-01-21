@@ -6,7 +6,10 @@
 
 #### Experimental
 
-* None.
+* Silence `CodingKeys` violations in `unused_private_declaration` since these
+  should always be intentional violations.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#2573](https://github.com/realm/SwiftLint/issues/2573)
 
 #### Enhancements
 

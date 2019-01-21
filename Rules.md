@@ -22253,12 +22253,39 @@ private let kConstant = 0
 _ = kConstant
 ```
 
+```swift
+struct ResponseModel: Codable {
+    let items: [Item]
+
+    private enum CodingKeys: String, CodingKey {
+        case items = "ResponseItems"
+    }
+}
+```
+
+```swift
+class ResponseModel {
+    @objc private func foo() {
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
 private let ↓kConstant = 0
+```
+
+```swift
+struct ResponseModel: Codable {
+    let items: [Item]
+
+    private enum ↓CodingKeys: String {
+        case items = "ResponseItems"
+    }
+}
 ```
 
 </details>

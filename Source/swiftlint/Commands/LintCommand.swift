@@ -66,7 +66,7 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,
                                usage: "run all rules, even opt-in and disabled ones, ignoring `whitelist_rules`")
             <*> mode <| Option(key: "useBaseline", defaultValue: false,
-                               usage: "use baseline file to ignore old issues")
+                               usage: "save a list of violations if there is no baseline file, and then use the list as a baseline to ignore old issues and only report new ones")
             // This should go last to avoid eating other args
             <*> mode <| pathsArgument(action: "lint")
     }

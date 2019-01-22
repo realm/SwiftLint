@@ -20,3 +20,21 @@ extension SyntaxKind {
                                             .objectLiteral, .parameter, .placeholder, .string,
                                             .stringInterpolationAnchor, .typeidentifier]
 }
+
+extension Set where Element == SyntaxKind {
+    init(shortName: Swift.String) throws {
+        do {
+            self = try [SyntaxKind(shortName: shortName)]
+        } catch {
+            switch shortName {
+            case "comment_and_string_kinds":
+                self = SyntaxKind.commentAndStringKinds
+            case "comment_kinds":
+                self = SyntaxKind.commentKinds
+            case "all_kinds":
+                self = SyntaxKind.allKinds
+            default: throw error
+            }
+        }
+    }
+}

@@ -60,7 +60,8 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
 
     public init() {}
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation]
+    {
         var configurations = configuration.customRuleConfigurations
 
         guard !configurations.isEmpty else {
@@ -87,9 +88,24 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         }
 
         return configurations.flatMap { configuration -> [StyleViolation] in
+            let excludingSyntaxKinds = SyntaxKind.allKinds
+                .subtracting(configuration.matchKinds)
+                .union(configuration.excludeKinds)
+
             let pattern = configuration.regex.pattern
-            let excludingKinds = SyntaxKind.allKinds.subtracting(configuration.matchKinds)
-            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map({
+            let excludingPattern = configuration.excludeRegex?.pattern
+
+            let matches: [NSRange]
+            if let excludingPattern = excludingPattern {
+                matches = file.match(pattern: pattern,
+                                     excludingSyntaxKinds: excludingSyntaxKinds,
+                                     excludingPattern: excludingPattern)
+            } else {
+                matches = file.match(pattern: pattern,
+                                     excludingSyntaxKinds: excludingSyntaxKinds)
+            }
+
+            return matches.map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),

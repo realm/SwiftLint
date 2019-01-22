@@ -59,6 +59,9 @@ opt_in_rules:
   - xct_specific_matcher
   - yoda_condition
 
+disabled_rules:
+  - opening_brace
+
 identifier_name:
   excluded:
     - id
@@ -92,4 +95,11 @@ custom_rules:
     name: Rule Test Function
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
+    severity: error
+  rule_test_brace:
+    name: Opening Brace Rule
+    message: Opening braces should be preceded by a single space and on the same line as the declaration.
+    regex: "(?:[^( ]|[\\s(][\\s]+)\\{"
+    exclude_kinds: comment_and_string_kinds
+    exclude_regex: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{"
     severity: error

@@ -6,9 +6,12 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var name: String?
     public var message = "Regex matched."
     public var regex: NSRegularExpression!
+    public var excludeRegex: NSRegularExpression?
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
     public var matchKinds = SyntaxKind.allKinds
+    public var excludeKinds = Set<SyntaxKind>()
+
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
@@ -54,6 +57,10 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
 
         regex = try .cached(pattern: regexString)
 
+        if let excludeRegexString = configurationDict["exclude_regex"] as? String {
+            excludeRegex = try .cached(pattern: excludeRegexString)
+        }
+
         if let includedString = configurationDict["included"] as? String {
             included = try .cached(pattern: includedString)
         }
@@ -69,7 +76,10 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             self.message = message
         }
         if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
-            self.matchKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
+            self.matchKinds = Set(try matchKinds.flatMap({ try Set(shortName: $0) }))
+        }
+        if let excludeKinds = [String].array(of: configurationDict["exclude_kinds"]) {
+            self.excludeKinds = Set(try excludeKinds.flatMap({ try Set(shortName: $0) }))
         }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)

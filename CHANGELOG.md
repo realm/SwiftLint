@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* Exclude files defined in the `excluded` value of SwiftLint's configuration 
+  when `--use-script-input-files` and `--force-exclude` are specified.  
+  [Luis Valdés](https://github.com/luvacu)
 
 #### Experimental
 

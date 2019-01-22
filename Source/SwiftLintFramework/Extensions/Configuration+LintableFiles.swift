@@ -13,23 +13,34 @@ extension Configuration {
             return [path]
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let excludedPaths = excluded
+        let includedPaths = included.parallelFlatMap {
+            fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
+        }
+        return filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
+    }
+}
+
+extension Configuration {
+    public func filterExcludedPaths(fileManager: LintableFileManager = FileManager.default,
+                                    in paths: [String]...) -> [String] {
+#if os(Linux)
+        let allPaths = paths.reduce([], +)
+        let result = NSMutableOrderedSet(capacity: allPaths.count)
+        result.addObjects(from: allPaths)
+#else
+        let result = NSMutableOrderedSet(array: paths.reduce([], +))
+#endif
+        let excludedPaths = self.excludedPaths(fileManager: fileManager)
+        result.minusSet(Set(excludedPaths))
+        // swiftlint:disable:next force_cast
+        return result.map { $0 as! String }
+    }
+
+    internal func excludedPaths(fileManager: LintableFileManager) -> [String] {
+        return excluded
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap {
                 fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
             }
-        let includedPaths = included.parallelFlatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
-        }
-#if os(Linux)
-        let allPaths = pathsForPath + includedPaths
-        let result = NSMutableOrderedSet(capacity: allPaths.count)
-        result.addObjects(from: allPaths)
-#else
-        let result = NSMutableOrderedSet(array: pathsForPath + includedPaths)
-#endif
-        result.minusSet(Set(excludedPaths))
-        // swiftlint:disable:next force_cast
-        return result.map { $0 as! String }
     }
 }

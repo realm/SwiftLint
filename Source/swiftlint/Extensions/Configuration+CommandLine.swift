@@ -128,6 +128,15 @@ extension Configuration {
             return .failure(.usageError(description: "stdin isn't a UTF8-encoded string"))
         } else if visitor.useScriptInputFiles {
             return scriptInputFiles()
+                .map { files in
+                    guard visitor.forceExclude else {
+                        return files
+                    }
+
+                    let scriptInputPaths = files.compactMap { $0.path }
+                    return filterExcludedPaths(in: scriptInputPaths)
+                            .map(File.init(pathDeferringReading:))
+                }
         }
         if !visitor.quiet {
             let filesInfo: String

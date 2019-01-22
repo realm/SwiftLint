@@ -276,6 +276,16 @@ foo.something { RouteMapper.map($0) }
 
 ```
 
+```swift
+foo.map { !$0 }
+
+```
+
+```swift
+foo.map { /* a comment */ !$0 }
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -325,6 +335,11 @@ foo.something { RouteMapper.map($0) }
 
 ```swift
 ↓foo.map { $0 /* a comment */ }
+
+```
+
+```swift
+↓foo.map { /* a comment */ $0 }
 
 ```
 

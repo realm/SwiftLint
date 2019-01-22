@@ -22,6 +22,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2159](https://github.com/realm/SwiftLint/issues/2159)
 
+* Fix false positives on `array_init` rule when using prefix operators.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1877](https://github.com/realm/SwiftLint/issues/1877)
+
 ## 0.30.0: A New Washer and Dryer Set
 
 #### Breaking

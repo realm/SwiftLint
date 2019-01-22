@@ -28,7 +28,7 @@ struct LintOrAnalyzeCommand {
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         let rootPath = options.paths.first?.absolutePathStandardized() ?? ""
-        let baseline = Baseline(baselinePath: rootPath)
+        let baseline = Baseline(rootPath: rootPath)
 
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             var currentViolations: [StyleViolation]

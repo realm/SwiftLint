@@ -2,9 +2,7 @@
 
 #### Breaking
 
-* Exclude files defined in the `excluded` value of SwiftLint's configuration 
-  when `--use-script-input-files` and `--force-exclude` are specified.  
-  [Luis Valdés](https://github.com/luvacu)
+* None.
 
 #### Experimental
 
@@ -27,6 +25,11 @@
 * Fix false positives on `array_init` rule when using prefix operators.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1877](https://github.com/realm/SwiftLint/issues/1877)
+
+* Exclude files defined in the `excluded` value of SwiftLint's configuration
+  when `--use-script-input-files` and `--force-exclude` are specified.  
+  [Luis Valdés](https://github.com/luvacu)
+  [#591](https://github.com/realm/SwiftLint/issues/591)
 
 ## 0.30.0: A New Washer and Dryer Set
 

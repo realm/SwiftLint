@@ -9,8 +9,9 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var excludeRegex: NSRegularExpression?
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
-    public var matchKinds = SyntaxKind.allKinds
-    public var excludeKinds = Set<SyntaxKind>()
+    private var matchKinds = SyntaxKind.allKinds
+    private var excludeKinds = Set<SyntaxKind>()
+    public var correction: String?
 
     public var severityConfiguration = SeverityConfiguration(.warning)
 
@@ -84,6 +85,14 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
+
+        if let correction = configurationDict["correction"] as? String {
+            self.correction = correction
+        }
+    }
+
+    public var syntaxKinds: Set<SyntaxKind> {
+        return self.matchKinds.subtracting(self.excludeKinds)
     }
 
     public func hash(into hasher: inout Hasher) {

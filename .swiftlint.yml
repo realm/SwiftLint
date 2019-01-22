@@ -98,7 +98,7 @@ custom_rules:
     severity: error
   rule_test_brace:
     name: Opening Brace Rule
-    message: Opening braces should be preceded by a single space and on the same line as the declaration.
+    message: "[Custom] Opening braces should be preceded by a single space and on the same line as the declaration."
     regex: "(?:[^( ]|[\\s(][\\s]+)\\{"
     exclude_kinds: comment_and_string_kinds
     exclude_regex: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{"

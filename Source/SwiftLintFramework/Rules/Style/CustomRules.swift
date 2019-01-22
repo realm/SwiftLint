@@ -43,7 +43,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+public struct CustomRules: CorrectableRule, ConfigurationProviderRule, CacheDescriptionProvider {
     internal var cacheDescription: String {
         return configuration.cacheDescription
     }
@@ -60,8 +60,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
 
     public init() {}
 
-    public func validate(file: File) -> [StyleViolation]
-    {
+    internal func configurations(file: File) -> [RegexConfiguration] {
         var configurations = configuration.customRuleConfigurations
 
         guard !configurations.isEmpty else {
@@ -87,36 +86,80 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
             }
         }
 
-        return configurations.flatMap { configuration -> [StyleViolation] in
-            let excludingSyntaxKinds = SyntaxKind.allKinds
-                .subtracting(configuration.matchKinds)
-                .union(configuration.excludeKinds)
+        return configurations
+    }
 
-            let pattern = configuration.regex.pattern
-            let excludingPattern = configuration.excludeRegex?.pattern
-
-            let matches: [NSRange]
-            if let excludingPattern = excludingPattern {
-                matches = file.match(pattern: pattern,
-                                     excludingSyntaxKinds: excludingSyntaxKinds,
-                                     excludingPattern: excludingPattern)
-            } else {
-                matches = file.match(pattern: pattern,
-                                     excludingSyntaxKinds: excludingSyntaxKinds)
-            }
-
-            return matches.map({
+    public func validate(file: File) -> [StyleViolation] {
+        let configurations = self.configurations(file: file)
+        return configurations.flatMap { configuration in
+            return configuration.violatingRanges(inFile: file).map {
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),
                                reason: configuration.message)
-            }).filter { violation in
-                guard let region = file.regions().first(where: { $0.contains(violation.location) }) else {
-                    return true
-                }
-
-                return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
             }
         }
     }
+
+    public func correct(file: File) -> [Correction] {
+        let configurations = self.configurations(file: file)
+
+        var correctedContents = file.contents
+        var corrections = [Correction]()
+
+        for configuration in configurations {
+            guard let correction = configuration.correction else {
+                continue
+            }
+            let violatingRanges = configuration.violatingRanges(inFile: file)
+
+            for violatingRange in violatingRanges.reversed() {
+                correctedContents = regex(configuration.regex.pattern)
+                    .stringByReplacingMatches(in: correctedContents, options: [],
+                                              range: violatingRange,
+                                              withTemplate: correction)
+                let location = Location(file: file, characterOffset: violatingRange.location)
+                corrections.append(Correction(ruleDescription: configuration.description,
+                                              location: location))
+            }
+
+            file.write(correctedContents)
+        }
+
+        corrections.reverse()
+        corrections.sort { lhs, rhs in lhs.location < rhs.location }
+
+        return corrections
+    }
+
+}
+
+extension RegexConfiguration {
+
+    func violatingRanges(inFile file: File) -> [NSRange] {
+        let excludingSyntaxKinds = SyntaxKind.allKinds.subtracting(syntaxKinds)
+        let pattern = regex.pattern
+        let excludingPattern = excludeRegex?.pattern
+
+        let matches: [NSRange]
+        if let excludingPattern = excludingPattern {
+            matches = file.match(pattern: pattern,
+                                 excludingSyntaxKinds: excludingSyntaxKinds,
+                                 excludingPattern: excludingPattern)
+        } else {
+            matches = file.match(pattern: pattern,
+                                 excludingSyntaxKinds: excludingSyntaxKinds)
+        }
+
+        return matches.filter { isRuleEnabled(file: file, inRange: $0) }
+    }
+
+    private func isRuleEnabled(file: File, inRange range: NSRange) -> Bool {
+        let location = Location(file: file, characterOffset: range.location)
+        guard let region = file.regions().first(where: { $0.contains(location) }) else {
+            return true
+        }
+        return !region.isRuleDisabled(customRuleIdentifier: identifier)
+    }
+
 }

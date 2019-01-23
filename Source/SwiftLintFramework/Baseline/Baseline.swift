@@ -1,7 +1,6 @@
 import Foundation
 
 public class Baseline {
-
     private let kBaselineFileName = ".swiftlint_baseline"
     private let baselinePath: String
     private var baselineViolations = [BaselineViolation]()

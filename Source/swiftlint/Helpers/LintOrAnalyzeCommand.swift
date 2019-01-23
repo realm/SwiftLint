@@ -27,21 +27,14 @@ struct LintOrAnalyzeCommand {
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        let rootPath = options.paths.first?.absolutePathStandardized() ?? ""
-        let baseline = Baseline(rootPath: rootPath)
 
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             var currentViolations: [StyleViolation]
-            if options.useBaseline {
-                baseline.readBaseline()
-            }
+
             if options.benchmark {
                 let start = Date()
                 let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes
                 currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
-                if options.useBaseline {
-                    currentViolations = filteredViolations(baseline: baseline, currentViolations: currentViolations)
-                }
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
@@ -49,18 +42,13 @@ struct LintOrAnalyzeCommand {
                 }
             } else {
                 currentViolations = applyLeniency(options: options, violations: linter.styleViolations)
-                if options.useBaseline {
-                    currentViolations = filteredViolations(baseline: baseline, currentViolations: currentViolations)
-                }
                 visitorMutationQueue.sync {
                     violations += currentViolations
                 }
             }
+            violations = filteredViolationsWithBaseline(options: options, violations: violations)
             linter.file.invalidateCache()
-            reporter.report(violations: currentViolations, realtimeCondition: true)
-            if options.useBaseline {
-                baseline.saveBaseline(violations: violations)
-            }
+            reporter.report(violations: violations, realtimeCondition: true)
         }.flatMap { files in
             if isWarningThresholdBroken(configuration: configuration, violations: violations)
                 && !options.lenient {
@@ -83,9 +71,18 @@ struct LintOrAnalyzeCommand {
         }
     }
 
-    private static func filteredViolations(baseline: Baseline, currentViolations: [StyleViolation]) -> [StyleViolation] {
+    private static func filteredViolationsWithBaseline(options: LintOrAnalyzeOptions,
+                                                       violations: [StyleViolation]) -> [StyleViolation] {
+        guard options.useBaseline else {
+            return violations
+        }
+
+        let rootPath = options.paths.first?.absolutePathStandardized() ?? ""
+        let baseline = Baseline(rootPath: rootPath)
+        baseline.readBaseline()
+        baseline.saveBaseline(violations: violations)
         var filteredViolations = [StyleViolation]()
-        for violation in currentViolations {
+        for violation in violations {
             if !baseline.isInBaseline(violation: violation) {
                 filteredViolations.append(violation)
             }

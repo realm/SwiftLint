@@ -5,7 +5,7 @@ struct BaselineViolation: Equatable {
     let location: String
     let reason: String
 
-    static func ==(lhs: BaselineViolation, rhs: BaselineViolation) -> Bool {
+    static func == (lhs: BaselineViolation, rhs: BaselineViolation) -> Bool {
         return lhs.ruleIdentifier == rhs.ruleIdentifier &&
                 lhs.location == rhs.location &&
                 lhs.reason == rhs.reason

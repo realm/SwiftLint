@@ -13095,13 +13095,13 @@ Static strings should be used as key in NSLocalizedString in order to genstrings
 NSLocalizedString("key", comment: nil)
 ```
 
+```swift
+NSLocalizedString("key" + "2", comment: nil)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
-
-```swift
-NSLocalizedString(↓"key" + "2", comment: nil)
-```
 
 ```swift
 NSLocalizedString(↓method(), comment: nil)

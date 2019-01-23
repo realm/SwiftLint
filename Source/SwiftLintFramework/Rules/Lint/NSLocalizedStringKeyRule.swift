@@ -12,10 +12,10 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
         description: "Static strings should be used as key in NSLocalizedString in order to genstrings work.",
         kind: .lint,
         nonTriggeringExamples: [
-            "NSLocalizedString(\"key\", comment: nil)"
+            "NSLocalizedString(\"key\", comment: nil)",
+            "NSLocalizedString(\"key\" + \"2\", comment: nil)"
         ],
         triggeringExamples: [
-            "NSLocalizedString(↓\"key\" + \"2\", comment: nil)",
             "NSLocalizedString(↓method(), comment: nil)",
             "NSLocalizedString(↓\"key_\\(param)\", comment: nil)"
         ]
@@ -31,7 +31,7 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
             let offset = firstArgument.offset,
             let length = firstArgument.length,
             case let kinds = file.syntaxMap.kinds(inByteRange: NSRange(location: offset, length: length)),
-            kinds != [.string] else {
+            Set(kinds) != [.string] else {
                 return []
         }
 

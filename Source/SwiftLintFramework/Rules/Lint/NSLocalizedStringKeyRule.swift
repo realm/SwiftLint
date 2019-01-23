@@ -31,7 +31,7 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
             let offset = firstArgument.offset,
             let length = firstArgument.length,
             case let kinds = file.syntaxMap.kinds(inByteRange: NSRange(location: offset, length: length)),
-            Set(kinds) != [.string] else {
+            !kinds.allSatisfy({ $0 == .string }) else {
                 return []
         }
 

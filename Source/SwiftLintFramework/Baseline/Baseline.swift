@@ -2,17 +2,20 @@ import Foundation
 
 public class Baseline {
     private let kBaselineFileName = ".swiftlint_baseline"
-    private let baselinePath: String
-    private var baselineViolations = [BaselineViolation]()
+    private let rootPath: String
+    private var baselinePath: String {
+        return "\(rootPath)/\(kBaselineFileName)"
+    }
+    private(set) var baselineViolations = [BaselineViolation]()
 
     public init(rootPath: String) {
-        self.baselinePath = "\(rootPath)/\(kBaselineFileName)"
+        self.rootPath = rootPath
     }
 
     public func isInBaseline(violation: StyleViolation) -> Bool {
         let baselineViolation = BaselineViolation(
                 ruleIdentifier: violation.ruleDescription.identifier,
-                location: violation.location.description,
+                location: locationWithoutRoot(violation: violation),
                 reason: violation.reason
         )
         let contains = baselineViolations.contains(baselineViolation)
@@ -23,7 +26,8 @@ public class Baseline {
         let fileContent = violations.map(generateForSingleViolation).joined(separator: "\n")
         let fileManager = FileManager.default
         if !fileManager.fileExists(atPath: baselinePath) {
-            fileManager.createFile(atPath: baselinePath, contents: fileContent.data(using: .utf8))
+            let isFileCreated = fileManager.createFile(atPath: baselinePath, contents: fileContent.data(using: .utf8))
+            print("File was created: \(isFileCreated)")
         }
     }
 
@@ -53,7 +57,16 @@ public class Baseline {
         )
     }
 
+    private func locationWithoutRoot(violation: StyleViolation) -> String {
+        guard let rootRange = violation.location.description.range(of: rootPath) else {
+            return violation.location.description
+        }
+        let blah = String(violation.location.description[rootRange.upperBound...])
+        return blah
+    }
+
     private func generateForSingleViolation(_ violation: StyleViolation) -> String {
-        return "\(violation.location);\(violation.reason);\(violation.ruleDescription.identifier)"
+        let location = locationWithoutRoot(violation: violation)
+        return "\(location);\(violation.reason);\(violation.ruleDescription.identifier)"
     }
 }

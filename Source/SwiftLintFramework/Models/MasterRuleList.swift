@@ -87,6 +87,7 @@ public let masterRuleList = RuleList(rules: [
     MultilineParametersBracketsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
+    NSLocalizedStringKeyRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
     NoExtensionAccessModifierRule.self,

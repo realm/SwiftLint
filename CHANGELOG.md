@@ -13,7 +13,10 @@
 
 #### Enhancements
 
-* None.
+* Add `nslocalizedstring_key` opt-in rule to validate that keys used in
+  `NSLocalizedString` calls are static strings, so `genstrings` will be
+  able to find them.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

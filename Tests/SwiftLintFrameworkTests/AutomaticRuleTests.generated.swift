@@ -378,6 +378,12 @@ class MultipleClosuresWithTrailingClosureRuleTests: XCTestCase {
     }
 }
 
+class NSLocalizedStringKeyRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSLocalizedStringKeyRule.description)
+    }
+}
+
 class NestingRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)

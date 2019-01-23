@@ -793,6 +793,12 @@ extension MultipleClosuresWithTrailingClosureRuleTests {
     ]
 }
 
+extension NSLocalizedStringKeyRuleTests {
+    static var allTests: [(String, (NSLocalizedStringKeyRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension NestingRuleTests {
     static var allTests: [(String, (NestingRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1520,6 +1526,7 @@ XCTMain([
     testCase(MultilineParametersBracketsRuleTests.allTests),
     testCase(MultilineParametersRuleTests.allTests),
     testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
+    testCase(NSLocalizedStringKeyRuleTests.allTests),
     testCase(NestingRuleTests.allTests),
     testCase(NimbleOperatorRuleTests.allTests),
     testCase(NoExtensionAccessModifierRuleTests.allTests),

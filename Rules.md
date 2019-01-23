@@ -92,6 +92,7 @@
 * [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
+* [NSLocalizedString Key](#nslocalizedstring-key)
 * [Number Separator](#number-separator)
 * [Object Literal](#object-literal)
 * [Opening Brace Spacing](#opening-brace-spacing)
@@ -13071,6 +13072,43 @@ class Foo {
    }
 }
 
+```
+
+</details>
+
+
+
+## NSLocalizedString Key
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`nslocalizedstring_key` | Disabled | No | lint | No | 3.0.0 
+
+Static strings should be used as key in NSLocalizedString in order to genstrings work.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+NSLocalizedString("key", comment: nil)
+```
+
+```swift
+NSLocalizedString("key" + "2", comment: nil)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+NSLocalizedString(↓method(), comment: nil)
+```
+
+```swift
+NSLocalizedString(↓"key_\(param)", comment: nil)
 ```
 
 </details>

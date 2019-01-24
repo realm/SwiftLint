@@ -1,5 +1,3 @@
-import Foundation
-
 struct BaselineViolation: Equatable {
     let ruleIdentifier: String
     let location: String

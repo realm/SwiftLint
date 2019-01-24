@@ -48,6 +48,9 @@
   muted parameter.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Adds more fields to `custom_rules` including autocorrection capabilities.  
+  [therealbnut](https://github.com/therealbnut)
+
 #### Bug Fixes
 
 * Fix false positives on `identical_operands` rule when the right side of the

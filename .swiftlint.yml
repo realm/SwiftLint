@@ -103,3 +103,4 @@ custom_rules:
     exclude_kinds: comment_and_string_kinds
     exclude_regex: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{"
     severity: error
+    correction: "$1 {"

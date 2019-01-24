@@ -21,13 +21,13 @@ enum LintOrAnalyzeMode {
 struct LintOrAnalyzeCommand {
     private static var fileBenchmark = Benchmark(name: "files")
     private static var ruleBenchmark = Benchmark(name: "rules")
+    private static let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
 
     static func run(_ options: LintOrAnalyzeOptions) -> Result<(), CommandantError<()>> {
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
-        let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         let baseline = prepareBaseline(options: options, configuration: configuration)
 
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
@@ -75,8 +75,10 @@ struct LintOrAnalyzeCommand {
             let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes
             currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
             currentViolations = applyBaseline(baseline: baseline, options: options, violations: currentViolations)
-            fileBenchmark.record(file: linter.file, from: start)
-            currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+            visitorMutationQueue.sync {
+                fileBenchmark.record(file: linter.file, from: start)
+                currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+            }
             return currentViolations
         } else {
             currentViolations = applyLeniency(options: options, violations: linter.styleViolations)

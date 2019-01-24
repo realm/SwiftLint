@@ -10,16 +10,22 @@ class CustomRulesTests: XCTestCase {
                 "name": "MyCustomRule",
                 "message": "Message",
                 "regex": "regex",
-                "match_kinds": "comment",
-                "severity": "error"
+                "exclude_regex": "regex2",
+                "match_kinds": "comment_kinds",
+                "exclude_kinds": "all_kinds",
+                "severity": "error",
+                "correction": "abc"
             ]
         ]
         var comp = RegexConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
         comp.regex = regex("regex")
+        comp.excludeRegex = regex("regex2")
         comp.severityConfiguration = SeverityConfiguration(.error)
-        comp.matchKinds = Set([SyntaxKind.comment])
+        comp.matchKinds = SyntaxKind.commentKinds
+        comp.excludeKinds = SyntaxKind.allKinds
+        comp.correction = "abc"
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {

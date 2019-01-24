@@ -9,8 +9,8 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var excludeRegex: NSRegularExpression?
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
-    private var matchKinds = SyntaxKind.allKinds
-    private var excludeKinds = Set<SyntaxKind>()
+    internal var matchKinds = SyntaxKind.allKinds
+    internal var excludeKinds = Set<SyntaxKind>()
     public var correction: String?
 
     public var severityConfiguration = SeverityConfiguration(.warning)

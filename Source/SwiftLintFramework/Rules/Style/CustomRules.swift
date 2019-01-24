@@ -131,11 +131,9 @@ public struct CustomRules: CorrectableRule, ConfigurationProviderRule, CacheDesc
 
         return corrections
     }
-
 }
 
 extension RegexConfiguration {
-
     func violatingRanges(inFile file: File) -> [NSRange] {
         let excludingSyntaxKinds = SyntaxKind.allKinds.subtracting(syntaxKinds)
         let pattern = regex.pattern
@@ -161,5 +159,4 @@ extension RegexConfiguration {
         }
         return !region.isRuleDisabled(customRuleIdentifier: identifier)
     }
-
 }

@@ -2802,7 +2802,7 @@ class DummyClass {}
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`custom_rules` | Enabled | No | style | No | 3.0.0 
+`custom_rules` | Enabled | Yes | style | No | 3.0.0 
 
 Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, the severity level, and what message to display.
 

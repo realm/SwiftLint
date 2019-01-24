@@ -460,6 +460,12 @@ This command and related code in SwiftLint is subject to substantial changes at
 any time while this feature is marked as experimental. Analyzer rules also tend
 to be considerably slower than lint rules.
 
+### Baseline (experimental)
+
+When using `lint` command with `--use-baseline` flag SwiftLint creates a baseline file (if it's not created already) that contains all detected violations. All future `lint` executions as long as  `--use-baseline` flag is used will ignore the violations saved in the baseline file. 
+
+This can be useful for huge legacy projects. It allows to turn on SwiftLint for all future code and ignore existing issues when fixing those immediately would be too much effort.
+
 ## License
 
 [MIT licensed.](LICENSE)

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     public var configuration = ExplicitTypeInterfaceConfiguration()
 
     public init() {}
@@ -67,12 +67,36 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
+        return validate(file: file, dictionary: file.structure.dictionary, parentStructure: nil)
+    }
+
+    private func validate(file: File, dictionary: [String: SourceKitRepresentable],
+                          parentStructure: [String: SourceKitRepresentable]?) -> [StyleViolation] {
+        return dictionary.substructure.flatMap({ subDict -> [StyleViolation] in
+            var violations = validate(file: file, dictionary: subDict, parentStructure: dictionary)
+
+            if let kindString = subDict.kind,
+                let kind = SwiftDeclarationKind(rawValue: kindString) {
+                violations += validate(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
+            }
+
+            return violations
+        })
+    }
+
+    private func validate(file: File,
+                          kind: SwiftDeclarationKind,
+                          dictionary: [String: SourceKitRepresentable],
+                          parentStructure: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard configuration.allowedKinds.contains(kind),
-            !containsType(dictionary: dictionary),
-            (!configuration.allowRedundancy || !assigneeIsInitCall(file: file, dictionary: dictionary)),
-            let offset = dictionary.offset else {
+            let offset = dictionary.offset,
+            !dictionary.containsType,
+            (!configuration.allowRedundancy || !dictionary.isInitCall(file: file)),
+            !parentStructure.contains([.forEach, .guard]),
+            !parentStructure.caseStatementPatternRanges.contains(offset),
+            !parentStructure.caseExpressionRanges.contains(offset),
+            !file.captureGroupByteRanges.contains(offset) else {
                 return []
         }
 
@@ -82,25 +106,70 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
                            location: Location(file: file, byteOffset: offset))
         ]
     }
+}
 
-    private func containsType(dictionary: [String: SourceKitRepresentable]) -> Bool {
-        return dictionary.typeName != nil
+private extension Dictionary where Key == String, Value == SourceKitRepresentable {
+    var containsType: Bool {
+        return typeName != nil
     }
 
-    private func assigneeIsInitCall(file: File, dictionary: [String: SourceKitRepresentable]) -> Bool {
+    func isInitCall(file: File) -> Bool {
         guard
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let afterNameRange = file.contents.bridge().byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
-        else {
-            return false
+            let nameOffset = nameOffset,
+            let nameLength = nameLength,
+            case let contents = file.contents.bridge(),
+            let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            else {
+                return false
         }
 
-        let contentAfterName = file.contents.bridge().substring(from: afterNameRange.location)
-        let initCallRegex = regex(
-            "^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\("
-        )
+        let contentAfterName = contents.substring(from: afterNameRange.location)
+        let initCallRegex =
+            regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\(")
 
         return initCallRegex.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
+    }
+
+    var caseStatementPatternRanges: [NSRange] {
+        return ranges(with: StatementKind.case.rawValue, for: "source.lang.swift.structure.elem.pattern")
+    }
+
+    var caseExpressionRanges: [NSRange] {
+        return ranges(with: SwiftExpressionKind.tuple.rawValue, for: "source.lang.swift.structure.elem.expr")
+    }
+
+    func contains(_ statements: Set<StatementKind>) -> Bool {
+        guard let kind = kind,
+              let statement = StatementKind(rawValue: kind) else {
+                return false
+        }
+        return statements.contains(statement)
+    }
+
+    func ranges(with parentKind: String, for elementKind: String) -> [NSRange] {
+        guard parentKind == kind else {
+            return []
+        }
+
+        return elements
+            .filter { elementKind == $0.kind }
+            .compactMap {
+                guard let location = $0.offset, let length = $0.length else { return nil }
+                return NSRange(location: location, length: length)
+            }
+    }
+}
+
+private extension File {
+    var captureGroupByteRanges: [NSRange] {
+        return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
+                     excludingSyntaxKinds: SyntaxKind.commentKinds)
+                .compactMap { contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length) }
+    }
+}
+
+private extension Collection where Element == NSRange {
+    func contains(_ index: Int) -> Bool {
+        return contains { $0.contains(index) }
     }
 }

@@ -381,7 +381,11 @@ extension ExplicitTypeInterfaceRuleTests {
         ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExcludeLocalVars", testExcludeLocalVars),
         ("testExcludeClassVars", testExcludeClassVars),
-        ("testAllowRedundancy", testAllowRedundancy)
+        ("testAllowRedundancy", testAllowRedundancy),
+        ("testEmbededInStatements", testEmbededInStatements),
+        ("testCaptureGroup", testCaptureGroup),
+        ("testFastEnumerationDeclaration", testFastEnumerationDeclaration),
+        ("testSwitchCaseDeclarations", testSwitchCaseDeclarations)
     ]
 }
 

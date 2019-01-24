@@ -19,36 +19,28 @@ enum LintOrAnalyzeMode {
 }
 
 struct LintOrAnalyzeCommand {
+    private static var fileBenchmark = Benchmark(name: "files")
+    private static var ruleBenchmark = Benchmark(name: "rules")
+
     static func run(_ options: LintOrAnalyzeOptions) -> Result<(), CommandantError<()>> {
-        var fileBenchmark = Benchmark(name: "files")
-        var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
+        let baseline = prepareBaseline(options: options, configuration: configuration)
 
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
-            var currentViolations: [StyleViolation]
-
-            if options.benchmark {
-                let start = Date()
-                let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
-                visitorMutationQueue.sync {
-                    fileBenchmark.record(file: linter.file, from: start)
-                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
-                    violations += currentViolations
-                }
-            } else {
-                currentViolations = applyLeniency(options: options, violations: linter.styleViolations)
-                visitorMutationQueue.sync {
-                    violations += currentViolations
-                }
+            let currentViolations = preperaViolations(
+                linter: linter,
+                options: options,
+                baseline: baseline
+            )
+            visitorMutationQueue.sync {
+                violations += currentViolations
             }
-            violations = filteredViolationsWithBaseline(options: options, violations: violations)
             linter.file.invalidateCache()
-            reporter.report(violations: violations, realtimeCondition: true)
+            reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if isWarningThresholdBroken(configuration: configuration, violations: violations)
                 && !options.lenient {
@@ -65,22 +57,48 @@ struct LintOrAnalyzeCommand {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
+            if options.useBaseline {
+                baseline.saveBaseline(violations: violations)
+            }
             try? cache?.save()
             return successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                  strictWithViolations: options.strict && !violations.isEmpty)
         }
     }
 
-    private static func filteredViolationsWithBaseline(options: LintOrAnalyzeOptions,
-                                                       violations: [StyleViolation]) -> [StyleViolation] {
+    private static func preperaViolations(linter: Linter,
+                                          options: LintOrAnalyzeOptions,
+                                          baseline: Baseline) -> [StyleViolation] {
+        var currentViolations: [StyleViolation]
+        if options.benchmark {
+            let start = Date()
+            let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+            currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
+            currentViolations = applyBaseline(baseline: baseline, options: options, violations: currentViolations)
+            fileBenchmark.record(file: linter.file, from: start)
+            currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+            return currentViolations
+        } else {
+            currentViolations = applyLeniency(options: options, violations: linter.styleViolations)
+            currentViolations = applyBaseline(baseline: baseline, options: options, violations: currentViolations)
+            return currentViolations
+        }
+    }
+
+    private static func prepareBaseline(options: LintOrAnalyzeOptions, configuration: Configuration) -> Baseline {
+        let rootPath = configuration.rootPath ?? ""
+        let baseline = Baseline(rootPath: rootPath)
+        baseline.readBaseline()
+        return baseline
+    }
+
+    private static func applyBaseline(baseline: Baseline,
+                                      options: LintOrAnalyzeOptions,
+                                      violations: [StyleViolation]) -> [StyleViolation] {
         guard options.useBaseline else {
             return violations
         }
 
-        let rootPath = options.paths.first?.absolutePathStandardized() ?? ""
-        let baseline = Baseline(rootPath: rootPath)
-        baseline.readBaseline()
-        baseline.saveBaseline(violations: violations)
         var filteredViolations = [StyleViolation]()
         for violation in violations {
             if !baseline.isInBaseline(violation: violation) {

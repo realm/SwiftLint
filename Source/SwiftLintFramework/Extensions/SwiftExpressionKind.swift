@@ -5,4 +5,5 @@ public enum SwiftExpressionKind: String {
     case dictionary = "source.lang.swift.expr.dictionary"
     case objectLiteral = "source.lang.swift.expr.object_literal"
     case closure = "source.lang.swift.expr.closure"
+    case tuple = "source.lang.swift.expr.tuple"
 }

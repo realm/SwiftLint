@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix `explicit_type_interface` when used in statements.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2154](https://github.com/realm/SwiftLint/issues/2154)
   
 ## 0.30.1: Localized Stain Remover
 

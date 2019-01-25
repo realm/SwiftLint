@@ -10,7 +10,15 @@
 
 #### Enhancements
 
-* None.
+* Add `deployment_target` rule to validate that `@availability` attributes and
+  `#available` conditions are not using a version that is satisfied by the
+  deployment target. Since SwiftLint can't read an Xcode project, you need to
+  configure this rule with these keys: `iOS_deployment_target`,
+  `macOS_deployment_target`, `watchOS_deployment_target` and
+  `tvOS_deployment_target`. By default, these values are configured with the
+  minimum versions supported by Swift.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2589](https://github.com/realm/SwiftLint/issues/2589)
 
 #### Bug Fixes
 

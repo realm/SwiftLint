@@ -232,6 +232,21 @@ extension CyclomaticComplexityRuleTests {
     ]
 }
 
+extension DeploymentTargetConfigurationTests {
+    static var allTests: [(String, (DeploymentTargetConfigurationTests) -> () throws -> Void)] = [
+        ("testAppliesConfigurationFromDictionary", testAppliesConfigurationFromDictionary),
+        ("testThrowsOnBadConfig", testThrowsOnBadConfig)
+    ]
+}
+
+extension DeploymentTargetRuleTests {
+    static var allTests: [(String, (DeploymentTargetRuleTests) -> () throws -> Void)] = [
+        ("testRule", testRule),
+        ("testMacOSAttributeReason", testMacOSAttributeReason),
+        ("testWatchOSConditionReason", testWatchOSConditionReason)
+    ]
+}
+
 extension DisableAllTests {
     static var allTests: [(String, (DisableAllTests) -> () throws -> Void)] = [
         ("testViolatingPhrase", testViolatingPhrase),
@@ -1453,6 +1468,8 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(DeploymentTargetConfigurationTests.allTests),
+    testCase(DeploymentTargetRuleTests.allTests),
     testCase(DisableAllTests.allTests),
     testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),

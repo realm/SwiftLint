@@ -159,7 +159,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 
     private func isShortParameterStyleViolation(file: File, tokens: [SyntaxToken]) -> Bool {
-        let kinds = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
+        let kinds = tokens.kinds
         switch kinds {
         case [.identifier]:
             let identifier = file.contents(for: tokens[0])
@@ -189,7 +189,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             return !isKeyword || file.contents(for: token) != "in"
         })
 
-        let kinds = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
+        let kinds = tokens.kinds
         switch kinds {
         case [.keyword, .identifier]:
             let keyword = file.contents(for: tokens[0])
@@ -209,12 +209,5 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 private extension Array where Element == SyntaxKind {
     static func ~= (array: [SyntaxKind], value: [SyntaxKind]) -> Bool {
         return array == value
-    }
-}
-
-private extension File {
-    func contents(for token: SyntaxToken) -> String? {
-        return contents.bridge().substringWithByteRange(start: token.offset,
-                                                        length: token.length)
     }
 }

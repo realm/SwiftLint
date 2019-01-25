@@ -25,7 +25,7 @@ internal extension ColonRule {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = SyntaxKind.commentAndStringKinds
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
-            let syntaxKinds = syntaxTokens.compactMap { SyntaxKind(rawValue: $0.type) }
+            let syntaxKinds = syntaxTokens.kinds
 
             guard syntaxKinds.count == 2 else {
                 return false

@@ -179,7 +179,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
         let pattern = "\\{[^\\{]*?\\s+get\\b"
         let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
         let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
-            let kinds = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
+            let kinds = tokens.kinds
             guard let token = tokens.last,
                 SyntaxKind(rawValue: token.type) == .keyword,
                 attributesKinds.isDisjoint(with: kinds) else {

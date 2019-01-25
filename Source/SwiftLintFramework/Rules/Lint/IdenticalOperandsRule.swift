@@ -75,11 +75,11 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
 
                 return tokens
                     .filter { $0.offset >= byteRange.location }
-                    .compactMap { SyntaxKind(rawValue: $0.type) }
+                    .kinds
                     .filter(syntaxKinds.contains).isEmpty
             }
             .compactMap { result, tokens in
-                return (result, tokens.compactMap { SyntaxKind(rawValue: $0.type) })
+                return (result, tokens.kinds)
             }
             .compactMap { result, syntaxKinds -> StyleViolation? in
                 guard Set(syntaxKinds) != [.typeidentifier] else {

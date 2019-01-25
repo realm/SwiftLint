@@ -15677,7 +15677,7 @@ var myVar: Int? = nil; myVar↓??nil
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`redundant_objc_attribute` | Enabled | No | idiomatic | No | 4.1.0 
+`redundant_objc_attribute` | Enabled | Yes | idiomatic | No | 4.1.0 
 
 Objective-C attribute (@objc) is redundant in declaration.
 
@@ -15721,54 +15721,54 @@ private @GKInspectable var foo: String! {}
 ```swift
 @objcMembers
 class Foo {
-  var bar: Any?
-  @objc
-  class Bar {
+    var bar: Any?
     @objc
-    var foo: Any?
-  }
+    class Bar {
+        @objc
+        var foo: Any?
+    }
 }
 ```
 
 ```swift
 @objc
 extension Foo {
-  var bar: Int {
-    return 0
-  }
+    var bar: Int {
+        return 0
+    }
 }
 ```
 
 ```swift
 extension Foo {
-  @objc
-  var bar: Int { return 0 }
+    @objc
+    var bar: Int { return 0 }
 }
 ```
 
 ```swift
 @objc @IBDesignable
 extension Foo {
-  var bar: Int { return 0 }
+    var bar: Int { return 0 }
 }
 ```
 
 ```swift
 @IBDesignable
 extension Foo {
-  @objc
-  var bar: Int { return 0 }
-  var fooBar: Int { return 1 }
+    @objc
+    var bar: Int { return 0 }
+    var fooBar: Int { return 1 }
 }
 ```
 
 ```swift
 @objcMembers
 class Foo: NSObject {
-  @objc
-  private var bar: Int {
-    return 0
-  }
+    @objc
+    private var bar: Int {
+        return 0
+    }
 }
 ```
 
@@ -15793,78 +15793,78 @@ class Foo {
 <summary>Triggering Examples</summary>
 
 ```swift
-@objc @IBInspectable private ↓var foo: String? {}
+↓@objc @IBInspectable private var foo: String? {}
 ```
 
 ```swift
-@IBInspectable @objc private ↓var foo: String? {}
+@IBInspectable ↓@objc private var foo: String? {}
 ```
 
 ```swift
-@objc @IBAction private ↓func foo(_ sender: Any) {}
+↓@objc @IBAction private func foo(_ sender: Any) {}
 ```
 
 ```swift
-@IBAction @objc private ↓func foo(_ sender: Any) {}
+@IBAction ↓@objc private func foo(_ sender: Any) {}
 ```
 
 ```swift
-@objc @GKInspectable private ↓var foo: String! {}
+↓@objc @GKInspectable private var foo: String! {}
 ```
 
 ```swift
-@GKInspectable @objc private ↓var foo: String! {}
+@GKInspectable ↓@objc private var foo: String! {}
 ```
 
 ```swift
-@objc @NSManaged private ↓var foo: String!
+↓@objc @NSManaged private var foo: String!
 ```
 
 ```swift
-@NSManaged @objc private ↓var foo: String!
+@NSManaged ↓@objc private var foo: String!
 ```
 
 ```swift
-@objc @IBDesignable ↓class Foo {}
+↓@objc @IBDesignable class Foo {}
 ```
 
 ```swift
 @objcMembers
 class Foo {
-  @objc ↓var bar: Any?
+    ↓@objc var bar: Any?
 }
 ```
 
 ```swift
 @objcMembers
 class Foo {
-  @objc ↓var bar: Any?
-  @objc ↓var foo: Any?
-  @objc
-  class Bar {
+    ↓@objc var bar: Any?
+    ↓@objc var foo: Any?
     @objc
-    var foo: Any?
-  }
+    class Bar {
+        @objc
+        var foo: Any?
+    }
 }
 ```
 
 ```swift
 @objc
 extension Foo {
-  @objc
-  ↓var bar: Int {
-    return 0
-  }
+    ↓@objc
+    var bar: Int {
+        return 0
+    }
 }
 ```
 
 ```swift
 @objc @IBDesignable
 extension Foo {
-  @objc
-  ↓var bar: Int {
-    return 0
-  }
+    ↓@objc
+    var bar: Int {
+        return 0
+    }
 }
 ```
 
@@ -15873,7 +15873,7 @@ extension Foo {
 class Foo {
     @objcMembers
     class Bar: NSObject {
-        @objc ↓var foo: Any
+        ↓@objc var foo: Any
     }
 }
 ```
@@ -15881,8 +15881,8 @@ class Foo {
 ```swift
 @objc
 extension Foo {
-    @objc
-    private ↓var bar: Int {
+    ↓@objc
+    private var bar: Int {
         return 0
     }
 }

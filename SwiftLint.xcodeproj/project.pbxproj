@@ -20,6 +20,7 @@
 		125CE52F20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125CE52E20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift */; };
 		12E3D4DC2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */; };
 		181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */; };
+		183B6B4921FF672B00425134 /* RedundantObjcAttributeRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183B6B4721FF66B700425134 /* RedundantObjcAttributeRuleExamples.swift */; };
 		187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
 		188B3FF2207D61040073C2D6 /* ModifierOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B3FF1207D61040073C2D6 /* ModifierOrderRule.swift */; };
 		188B3FF4207D61230073C2D6 /* ModifierOrderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B3FF3207D61230073C2D6 /* ModifierOrderConfiguration.swift */; };
@@ -469,6 +470,7 @@
 		125CE52E20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceConfigurationTests.swift; sourceTree = "<group>"; };
 		12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceRuleTests.swift; sourceTree = "<group>"; };
 		181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntypedErrorInCatchRule.swift; sourceTree = "<group>"; };
+		183B6B4721FF66B700425134 /* RedundantObjcAttributeRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantObjcAttributeRuleExamples.swift; sourceTree = "<group>"; };
 		1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YodaConditionRule.swift; sourceTree = "<group>"; };
 		188B3FF1207D61040073C2D6 /* ModifierOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierOrderRule.swift; sourceTree = "<group>"; };
 		188B3FF3207D61230073C2D6 /* ModifierOrderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierOrderConfiguration.swift; sourceTree = "<group>"; };
@@ -1198,6 +1200,7 @@
 				1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				18B90B6A21ADD99800B60749 /* RedundantObjcAttributeRule.swift */,
+				183B6B4721FF66B700425134 /* RedundantObjcAttributeRuleExamples.swift */,
 				D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */,
 				D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */,
 				D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */,
@@ -1885,6 +1888,7 @@
 				1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */,
 				DAD3BE4A1D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift in Sources */,
 				188B3FF4207D61230073C2D6 /* ModifierOrderConfiguration.swift in Sources */,
+				183B6B4921FF672B00425134 /* RedundantObjcAttributeRuleExamples.swift in Sources */,
 				D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */,
 				2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */,
 				D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */,

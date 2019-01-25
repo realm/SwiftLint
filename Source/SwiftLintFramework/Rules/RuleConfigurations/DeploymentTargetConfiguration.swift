@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct DeploymentTargetConfiguration: RuleConfiguration, Equatable {
     public struct Version: Equatable, Comparable {
         public let major: Int

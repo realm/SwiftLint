@@ -80,7 +80,9 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     private func validateAttributes(file: File,
                                     kind: SwiftDeclarationKind,
                                     dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let attributes = dictionary.swiftAttributes.filter { $0.attribute == "source.decl.attribute.available" }
+        let attributes = dictionary.swiftAttributes.filter {
+            $0.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .available
+        }
         guard !attributes.isEmpty else {
             return []
         }

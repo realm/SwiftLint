@@ -21,6 +21,7 @@
 * [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
+* [Deployment Target](#deployment-target)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Discouraged Object Literal](#discouraged-object-literal)
@@ -2894,6 +2895,115 @@ if true {}; if true {}; if true {}; if true {}; if true {}
   }
 }
 
+```
+
+</details>
+
+
+
+## Deployment Target
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`deployment_target` | Enabled | No | lint | No | 4.1.0 
+
+Availability checks or attributes shouldn't be using older versions that are satisfied by the deployment target.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+@available(iOS 12.0, *)
+class A {}
+```
+
+```swift
+@available(watchOS 4.0, *)
+class A {}
+```
+
+```swift
+@available(swift 3.0.2)
+class A {}
+```
+
+```swift
+class A {}
+```
+
+```swift
+if #available(iOS 10.0, *) {}
+```
+
+```swift
+if #available(iOS 10, *) {}
+```
+
+```swift
+guard #available(iOS 12.0, *) else { return }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓@available(iOS 6.0, *)
+class A {}
+```
+
+```swift
+↓@available(iOS 7.0, *)
+class A {}
+```
+
+```swift
+↓@available(iOS 6, *)
+class A {}
+```
+
+```swift
+↓@available(iOS 6.0, macOS 10.12, *)
+ class A {}
+```
+
+```swift
+↓@available(macOS 10.12, iOS 6.0, *)
+ class A {}
+```
+
+```swift
+↓@available(macOS 10.7, *)
+class A {}
+```
+
+```swift
+↓@available(OSX 10.7, *)
+class A {}
+```
+
+```swift
+↓@available(watchOS 0.9, *)
+class A {}
+```
+
+```swift
+↓@available(tvOS 8, *)
+class A {}
+```
+
+```swift
+if ↓#available(iOS 6.0, *) {}
+```
+
+```swift
+if ↓#available(iOS 6, *) {}
+```
+
+```swift
+guard ↓#available(iOS 6.0, *) else { return }
 ```
 
 </details>

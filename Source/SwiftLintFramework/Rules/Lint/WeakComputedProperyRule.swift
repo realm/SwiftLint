@@ -14,7 +14,21 @@ public struct WeakComputedProperyRule: ASTRule, CorrectableRule, ConfigurationPr
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             "    weak var delegate: SomeProtocol?",
-            "    var delegate: SomeProtocol?"
+            "    var delegate: SomeProtocol?",
+            """
+                weak var delegate: SomeProtocol? {
+                    didSet {
+                        update(with: delegate)
+                    }
+                }
+            """,
+            """
+                weak var delegate: SomeProtocol? {
+                    willSet {
+                        update(with: delegate)
+                    }
+                }
+            """
         ].map(wrapExample),
         triggeringExamples: [
             "    weak var delegate: SomeProtocol? { return bar() }",
@@ -90,6 +104,8 @@ public struct WeakComputedProperyRule: ASTRule, CorrectableRule, ConfigurationPr
 
     // MARK: - Private
 
+    private let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
+
     private func violationRanges(in file: File) -> [NSRange] {
         return violationRanges(in: file, dictionary: file.structure.dictionary).sorted {
             $0.location > $1.location
@@ -114,24 +130,85 @@ public struct WeakComputedProperyRule: ASTRule, CorrectableRule, ConfigurationPr
     private func violationRanges(in file: File,
                                  kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard SwiftDeclarationKind.variableKinds.contains(kind),
-            dictionary.bodyOffset != nil,
+        guard allowedKinds.contains(kind),
+            let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength, bodyLength > 0,
             let weakAttribute = dictionary.swiftAttributes.first(where: { $0.isWeakAttribute }),
             let attributeOffset = weakAttribute.offset,
             let attributeLength = weakAttribute.length, attributeLength > 0,
             case let contents = file.contents.bridge(),
-            let range = contents.byteRangeToNSRange(start: attributeOffset, length: attributeLength) else {
+            let attributeRange = contents.byteRangeToNSRange(start: attributeOffset, length: attributeLength),
+            let bodyRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
+            !containsObserverToken(in: bodyRange, file: file, propertyStructure: dictionary) else {
                 return []
         }
 
-        return [range]
+        return [attributeRange]
+    }
+
+    private func containsObserverToken(in range: NSRange, file: File,
+                                       propertyStructure: [String: SourceKitRepresentable]) -> Bool {
+        let tokens = file.rangesAndTokens(matching: "\\b(?:didSet|willSet)\\b", range: range).keywordTokens()
+        return tokens.contains(where: { token -> Bool in
+            // the last element is the deepest structure
+            guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last,
+                propertyStructure.isEqualTo(dict) else {
+                    return false
+            }
+
+            return true
+        })
+    }
+
+    private func declarations(forByteOffset byteOffset: Int,
+                              structure: Structure) -> [[String: SourceKitRepresentable]] {
+        var results = [[String: SourceKitRepresentable]]()
+
+        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
+            // Only accepts declarations which contains a body and contains the
+            // searched byteOffset
+            guard let kindString = dictionary.kind,
+                let kind = SwiftDeclarationKind(rawValue: kindString),
+                let bodyOffset = dictionary.bodyOffset,
+                let bodyLength = dictionary.bodyLength,
+                case let byteRange = NSRange(location: bodyOffset, length: bodyLength),
+                NSLocationInRange(byteOffset, byteRange) else {
+                    return
+            }
+
+            if parentKind != .protocol && allowedKinds.contains(kind) {
+                results.append(dictionary)
+            }
+
+            for dictionary in dictionary.substructure {
+                parse(dictionary: dictionary, parentKind: kind)
+            }
+        }
+
+        for dictionary in structure.dictionary.substructure {
+            parse(dictionary: dictionary, parentKind: nil)
+        }
+
+        return results
     }
 }
 
 private extension Dictionary where Key == String, Value == SourceKitRepresentable {
     var isWeakAttribute: Bool {
         return attribute.flatMap(SwiftDeclarationAttributeKind.init) == .weak
+    }
+}
+
+private extension Array where Element == (NSRange, [SyntaxToken]) {
+    func keywordTokens() -> [SyntaxToken] {
+        return compactMap { _, tokens in
+            guard let token = tokens.last,
+                SyntaxKind(rawValue: token.type) == .keyword else {
+                    return nil
+            }
+
+            return token
+        }
     }
 }
 

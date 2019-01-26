@@ -23565,6 +23565,26 @@ class Foo {
 }
 ```
 
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? {
+        didSet {
+            update(with: delegate)
+        }
+    }
+}
+```
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? {
+        willSet {
+            update(with: delegate)
+        }
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

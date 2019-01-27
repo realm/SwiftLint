@@ -103,7 +103,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
 
             return caseSubstructures.compactMap { $0.name }.map { name in
                 if SwiftVersion.current > .fourDotOne,
-                    let parenIndex = name.index(of: "("),
+                    let parenIndex = name.firstIndex(of: "("),
                     parenIndex > name.startIndex {
                     let index = name.index(before: parenIndex)
                     return String(name[...index])

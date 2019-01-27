@@ -61,7 +61,7 @@ public extension SubstitutionCorrectableRule {
         let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
-        for range in violatingRanges {
+        for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
             let contentsNSString = contents.bridge()
 
             let (rangeToRemove, substitution) = self.substitution(for: range, in: file)
@@ -82,9 +82,7 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
 
 extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
     public func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted {
-            $0.location > $1.location
-        }
+        return violationRanges(in: file, dictionary: file.structure.dictionary)
     }
 
     private func violationRanges(in file: File,
@@ -92,7 +90,7 @@ extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
         let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
 
-            if let kind = subDict.kind.flatMap(KindType.init(rawValue:)) {
+            if let kind = subDict.kind.flatMap(KindType.init) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
 

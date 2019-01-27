@@ -47,6 +47,61 @@ public extension CorrectableRule {
     }
 }
 
+public protocol SubstitutionCorrectableRule: CorrectableRule {
+    func violationRanges(in file: File) -> [NSRange]
+    func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String)
+}
+
+public extension SubstitutionCorrectableRule {
+    func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
+        guard !violatingRanges.isEmpty else { return [] }
+
+        let description = type(of: self).description
+        var corrections = [Correction]()
+        var contents = file.contents
+        for range in violatingRanges {
+            let contentsNSString = contents.bridge()
+
+            let (rangeToRemove, substitution) = self.substitution(for: range, in: file)
+            contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: substitution)
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
+
+        file.write(contents)
+        return corrections
+    }
+}
+
+public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
+    func violationRanges(in file: File, kind: KindType,
+                         dictionary: [String: SourceKitRepresentable]) -> [NSRange]
+}
+
+extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
+    public func violationRanges(in file: File) -> [NSRange] {
+        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted {
+            $0.location > $1.location
+        }
+    }
+
+    private func violationRanges(in file: File,
+                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
+            var ranges = violationRanges(in: file, dictionary: subDict)
+
+            if let kind = subDict.kind.flatMap(KindType.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
+            }
+
+            return ranges
+        }
+
+        return ranges.unique
+    }
+}
+
 public protocol SourceKitFreeRule: Rule {}
 
 public protocol AnalyzerRule: OptInRule {}

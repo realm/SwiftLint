@@ -20,6 +20,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2589](https://github.com/realm/SwiftLint/issues/2589)
 
+* Add `weak_computed_property` rule to warn against using `weak` in a computed
+  property as it has no effect.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2596](https://github.com/realm/SwiftLint/issues/2596)
+
 #### Bug Fixes
 
 * Fix `explicit_type_interface` when used in statements.  

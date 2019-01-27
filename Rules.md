@@ -163,6 +163,7 @@
 * [Vertical Whitespace before Closing Braces](#vertical-whitespace-before-closing-braces)
 * [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
+* [Weak Computed Property](#weak-computed-property)
 * [Weak Delegate](#weak-delegate)
 * [XCTest Specific Matcher](#xctest-specific-matcher)
 * [XCTFail Message](#xctfail-message)
@@ -23533,6 +23534,76 @@ func foo(completion: () -> ↓(Void))
 ```swift
 let foo: (ConfigurationTests) -> () throws -> ↓())
 
+```
+
+</details>
+
+
+
+## Weak Computed Property
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`weak_computed_property` | Enabled | Yes | lint | No | 4.1.0 
+
+Adding weak to a computed property has no effect.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol?
+}
+```
+
+```swift
+class Foo {
+    var delegate: SomeProtocol?
+}
+```
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? {
+        didSet {
+            update(with: delegate)
+        }
+    }
+}
+```
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? {
+        willSet {
+            update(with: delegate)
+        }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? { return bar() }
+}
+```
+
+```swift
+class Foo {
+    private weak var _delegate: SomeProtocol?
+
+    ↓weak var delegate: SomeProtocol? {
+        get { return _delegate }
+        set { _delegate = newValue }
+    }
+}
 ```
 
 </details>

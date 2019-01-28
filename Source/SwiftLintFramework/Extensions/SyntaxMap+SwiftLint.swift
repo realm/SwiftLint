@@ -11,7 +11,7 @@ extension SyntaxMap {
                 .intersects(byteRange)
         }
 
-        guard let startIndex = tokens.index(where: intersect) else {
+        guard let startIndex = tokens.firstIndex(where: intersect) else {
             return []
         }
         let tokensBeginningIntersect = tokens.lazy.suffix(from: startIndex)

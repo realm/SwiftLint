@@ -41,14 +41,14 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
     private func validateACL(isHigherThan parentAccessibility: AccessControlLevel,
                              in substructure: [String: SourceKitRepresentable]) -> [Int] {
         return substructure.substructure.flatMap { element -> [Int] in
-            guard let elementKind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            guard let elementKind = element.kind.flatMap(SwiftDeclarationKind.init),
                 elementKind.isRelevantDeclaration else {
                 return []
             }
 
             var violationOffset: Int?
             let accessibility = element.accessibility.flatMap(AccessControlLevel.init(identifier:))
-                ?? .`internal`
+                ?? .internal
             if accessibility.priority > parentAccessibility.priority {
                 violationOffset = element.offset
             }
@@ -61,15 +61,15 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
 private extension SwiftDeclarationKind {
     var isRelevantDeclaration: Bool {
         switch self {
-        case .`associatedtype`, .enumcase, .enumelement, .`extension`, .`extensionClass`, .`extensionEnum`,
+        case .associatedtype, .enumcase, .enumelement, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .functionAccessorAddress, .functionAccessorDidset,
              .functionAccessorGetter, .functionAccessorMutableaddress, .functionAccessorSetter,
              .functionAccessorWillset, .functionDestructor, .genericTypeParam, .module, .precedenceGroup, .varLocal,
              .varParameter:
             return false
-        case .`class`, .`enum`, .functionConstructor, .functionFree, .functionMethodClass, .functionMethodInstance,
+        case .class, .enum, .functionConstructor, .functionFree, .functionMethodClass, .functionMethodInstance,
              .functionMethodStatic, .functionOperator, .functionOperatorInfix, .functionOperatorPostfix,
-             .functionOperatorPrefix, .functionSubscript, .`protocol`, .`struct`, .`typealias`, .varClass, .varGlobal,
+             .functionOperatorPrefix, .functionSubscript, .protocol, .struct, .typealias, .varClass, .varGlobal,
              .varInstance, .varStatic:
             return true
         }

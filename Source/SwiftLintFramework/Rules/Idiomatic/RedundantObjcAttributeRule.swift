@@ -4,7 +4,8 @@ import SourceKittenFramework
 private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
     [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
 
-public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
+    AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -30,7 +31,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     public func violationRanges(in file: File) -> [NSRange] {
         return violationRanges(file: file, dictionary: file.structure.dictionary, parentStructure: nil)
     }
-    
+
     private func violationRanges(file: File, dictionary: [String: SourceKitRepresentable],
                                  parentStructure: [String: SourceKitRepresentable]?) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
@@ -109,7 +110,7 @@ public extension RedundantObjcAttributeRule {
         }
 
         let withTrailingWhitespaceAndNewlineRange = NSRange(location: violationRange.location,
-                                                             length: violationRange.length + whitespaceAndNewlineOffset)
+                                                            length: violationRange.length + whitespaceAndNewlineOffset)
         return (withTrailingWhitespaceAndNewlineRange, "")
     }
 }

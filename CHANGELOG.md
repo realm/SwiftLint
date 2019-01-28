@@ -37,6 +37,10 @@
 * Fix `explicit_type_interface` when used in statements.  
   [Daniel Metzing](https://github.com/dirtydanee)
   [#2154](https://github.com/realm/SwiftLint/issues/2154)
+
+* Fix `lower_acl_than_parent` when linting with Swift 5.  
+  [JP Simard](https://github.com/jpsim)
+  [#2607](https://github.com/realm/SwiftLint/issues/2607)
   
 ## 0.30.1: Localized Stain Remover
 

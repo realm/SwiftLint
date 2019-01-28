@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
+public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SubstitutionCorrectableRule,
+                                                  AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -26,35 +27,18 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Cor
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRanges(file: file).map {
+        return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func violationRanges(file: File) -> [NSRange] {
+    public func violationRanges(in file: File) -> [NSRange] {
         return file.match(pattern: "\\bset\\s*get\\b", with: [.keyword, .keyword])
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: "get set")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "get set")
     }
 }

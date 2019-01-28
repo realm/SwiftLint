@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -44,21 +44,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violations = violationRanges(in: file)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
-
-        var contents = file.contents.bridge()
-        let description = type(of: self).description
-        var corrections = [Correction]()
-        for range in matches.reversed() {
-            contents = contents.replacingCharacters(in: range, with: ", ").bridge()
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-        file.write(contents.bridge())
-        return corrections
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, ", ")
     }
 
     // captures spaces and comma only
@@ -85,7 +72,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds.union([.objectLiteral])
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: nsstring.length)

@@ -1,14 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-private extension File {
-    func violatingRedundantNilCoalescingRanges() -> [NSRange] {
-        // {whitespace} ?? {whitespace} nil {word boundary}
-        return match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
-    }
-}
-
-public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
+                                          AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -33,31 +27,18 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.violatingRedundantNilCoalescingRanges().map {
+        return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRedundantNilCoalescingRanges(), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "")
+    }
 
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: "")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func violationRanges(in file: File) -> [NSRange] {
+        return file.match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
     }
 }

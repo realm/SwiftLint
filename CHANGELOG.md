@@ -29,6 +29,9 @@
   `SwiftVersion.current`.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `redundant_objc_attribute` rule autocorrectable.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+
 #### Bug Fixes
 
 * Fix `explicit_type_interface` when used in statements.  

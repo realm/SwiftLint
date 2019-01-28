@@ -11007,24 +11007,32 @@ private struct Foo { fileprivate func bar() {} }
 private func foo(id: String) {}
 ```
 
+```swift
+private class Foo { func bar() {} }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
-struct Foo { public func bar() {} }
+struct Foo { public ↓func bar() {} }
 ```
 
 ```swift
-enum Foo { public func bar() {} }
+enum Foo { public ↓func bar() {} }
 ```
 
 ```swift
-public class Foo { open func bar() }
+public class Foo { open ↓func bar() }
 ```
 
 ```swift
-class Foo { public private(set) var bar: String? }
+class Foo { public private(set) ↓var bar: String? }
+```
+
+```swift
+private class Foo { internal ↓func bar() {} }
 ```
 
 </details>
@@ -22876,6 +22884,11 @@ foo(param1: 1, param2: [
 ], param3: 0)
 ```
 
+```swift
+myFunc(foo: 0,
+       bar: baz == 0)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22911,6 +22924,11 @@ foo(param1: 1,
 ```swift
 foo(param1: 1, param2: { _ in },
        ↓param3: false, param4: true)
+```
+
+```swift
+myFunc(foo: 0,
+        ↓bar: baz == 0)
 ```
 
 </details>

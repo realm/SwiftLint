@@ -44,7 +44,11 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             "foo(param1: 1, param2: [\n" +
             "   0,\n" +
             "   1\n" +
-            "], param3: 0)"
+            "], param3: 0)",
+            """
+            myFunc(foo: 0,
+                   bar: baz == 0)
+            """
         ],
         triggeringExamples: [
             "foo(param1: 1, param2: bar\n" +
@@ -61,7 +65,11 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             "}, param3: 2,\n" +
             " ↓param4: 0)",
             "foo(param1: 1, param2: { _ in },\n" +
-            "       ↓param3: false, param4: true)"
+            "       ↓param3: false, param4: true)",
+            """
+            myFunc(foo: 0,
+                    ↓bar: baz == 0)
+            """
         ]
     )
 

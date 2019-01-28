@@ -3,7 +3,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-let config: Configuration = {
+private let config: Configuration = {
     let directory = #file.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
@@ -16,7 +16,7 @@ class IntegrationTests: XCTestCase {
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
-        XCTAssert(swiftFiles.map({ $0.path! }).contains(#file), "current file should be included")
+        XCTAssert(swiftFiles.contains(where: { #file == $0.path }), "current file should be included")
 
         let violations = swiftFiles.parallelFlatMap {
             Linter(file: $0, configuration: config).styleViolations

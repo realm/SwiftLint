@@ -30,7 +30,7 @@
   [JP Simard](https://github.com/jpsim)
 
 * Make `redundant_objc_attribute` rule autocorrectable.  
-    [Daniel Metzing](https://github.com/dirtydanee)
+  [Daniel Metzing](https://github.com/dirtydanee)
 
 #### Bug Fixes
 

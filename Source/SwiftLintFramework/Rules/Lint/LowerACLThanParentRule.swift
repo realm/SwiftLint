@@ -20,13 +20,15 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
             "private struct Foo { private func bar(id: String) }",
             "extension Foo { public func bar() {} }",
             "private struct Foo { fileprivate func bar() {} }",
-            "private func foo(id: String) {}"
+            "private func foo(id: String) {}",
+            "private class Foo { func bar() {} }"
         ],
         triggeringExamples: [
-            "struct Foo { public func bar() {} }",
-            "enum Foo { public func bar() {} }",
-            "public class Foo { open func bar() }",
-            "class Foo { public private(set) var bar: String? }"
+            "struct Foo { public ↓func bar() {} }",
+            "enum Foo { public ↓func bar() {} }",
+            "public class Foo { open ↓func bar() }",
+            "class Foo { public private(set) ↓var bar: String? }",
+            "private class Foo { internal ↓func bar() {} }"
         ]
     )
 

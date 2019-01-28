@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
+                                           AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -36,27 +37,11 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "_")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "_")
     }
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents.bridge()
         return file.match(pattern: "let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {

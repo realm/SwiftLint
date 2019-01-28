@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
+public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule,
                                            ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -63,27 +63,11 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "")
     }
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: File) -> [NSRange] {
         let typeAnnotationPattern = ":\\s?\\w+"
         let pattern = "(var|let)\\s?\\w+\(typeAnnotationPattern)\\s?=\\s?\\w+(\\(|.)"
         let foundRanges = file.match(pattern: pattern, with: [.keyword, .identifier, .typeidentifier, .identifier])

@@ -1,14 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private extension File {
-    func violatingTrailingSemicolonRanges() -> [NSRange] {
-        return match(pattern: "(;+([^\\S\\n]?)*)+;?$",
-                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-    }
-}
-
-public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -36,34 +29,19 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule,
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.violatingTrailingSemicolonRanges().map {
+        return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingTrailingSemicolonRanges(), for: self)
-        let adjustedRanges = violatingRanges.reduce([NSRange]()) { adjustedRanges, element in
-            let adjustedLocation = element.location - adjustedRanges.count
-            let adjustedRange = NSRange(location: adjustedLocation, length: element.length)
-            return adjustedRanges + [adjustedRange]
-        }
-        if adjustedRanges.isEmpty {
-            return []
-        }
-        var correctedContents = file.contents
-        for range in adjustedRanges {
-            if let indexRange = correctedContents.nsrangeToIndexRange(range) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: "")
-            }
-        }
-        file.write(correctedContents)
-        return adjustedRanges.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0.location))
-        }
+    public func violationRanges(in file: File) -> [NSRange] {
+        return file.match(pattern: "(;+([^\\S\\n]?)*)+;?$",
+                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+    }
+
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "")
     }
 }

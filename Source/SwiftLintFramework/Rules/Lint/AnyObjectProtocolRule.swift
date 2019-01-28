@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct AnyObjectProtocolRule: ASTRule, OptInRule, CorrectableRule,
+public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
                                      ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -48,52 +48,15 @@ public struct AnyObjectProtocolRule: ASTRule, OptInRule, CorrectableRule,
         }
     }
 
-    // MARK: - CorrectableRule
+    // MARK: - SubstitutionCorrectableASTRule
 
-    public func correct(file: File) -> [Correction] {
-        let matches = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations: [Int] = []
-
-        for violatingRange in matches.reversed() {
-            if let range = file.contents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: range, with: "AnyObject")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "AnyObject")
     }
 
-    // MARK: - Private
-
-    private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { $0.location < $1.location }
-    }
-
-    private func violationRanges(in file: File,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var ranges = violationRanges(in: file, dictionary: subDict)
-
-            if let kind = subDict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) {
-                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
-            }
-
-            return ranges
-        }
-
-        return ranges.unique
-    }
-
-    private func violationRanges(in file: File,
-                                 kind: SwiftDeclarationKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: File,
+                                kind: SwiftDeclarationKind,
+                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .protocol else { return [] }
 
         return dictionary.elements.compactMap { subDict -> NSRange? in

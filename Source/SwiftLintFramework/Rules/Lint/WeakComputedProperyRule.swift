@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct WeakComputedProperyRule: ASTRule, CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct WeakComputedProperyRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
+                                       AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -75,61 +76,24 @@ public struct WeakComputedProperyRule: ASTRule, CorrectableRule, ConfigurationPr
         }
     }
 
-    // MARK: - CorrectableRule
+    // MARK: - SubstitutionCorrectableASTRule
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard !violatingRanges.isEmpty else { return [] }
-
-        let description = type(of: self).description
-        var corrections = [Correction]()
-        var contents = file.contents
-        for range in violatingRanges {
-            var rangeToRemove = range
-            let contentsNSString = contents.bridge()
-            if let byteRange = contentsNSString.NSRangeToByteRange(start: range.location, length: range.length),
-                let nextToken = file.syntaxMap.tokens.first(where: { $0.offset > byteRange.location }),
-                let nextTokenLocation = contentsNSString.byteRangeToNSRange(start: nextToken.offset, length: 0) {
-                rangeToRemove.length = nextTokenLocation.location - range.location
-            }
-
-            contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: "")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        var rangeToRemove = violationRange
+        let contentsNSString = file.contents.bridge()
+        if let byteRange = contentsNSString.NSRangeToByteRange(start: violationRange.location,
+                                                               length: violationRange.length),
+            let nextToken = file.syntaxMap.tokens.first(where: { $0.offset > byteRange.location }),
+            let nextTokenLocation = contentsNSString.byteRangeToNSRange(start: nextToken.offset, length: 0) {
+            rangeToRemove.length = nextTokenLocation.location - violationRange.location
         }
 
-        file.write(contents)
-        return corrections
+        return (rangeToRemove, "")
     }
 
-    // MARK: - Private
-
-    private let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
-
-    private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted {
-            $0.location > $1.location
-        }
-    }
-
-    private func violationRanges(in file: File,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var ranges = violationRanges(in: file, dictionary: subDict)
-
-            if let kind = subDict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) {
-                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
-            }
-
-            return ranges
-        }
-
-        return ranges.unique
-    }
-
-    private func violationRanges(in file: File,
-                                 kind: SwiftDeclarationKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: File,
+                                kind: SwiftDeclarationKind,
+                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard allowedKinds.contains(kind),
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength, bodyLength > 0,
@@ -145,6 +109,10 @@ public struct WeakComputedProperyRule: ASTRule, CorrectableRule, ConfigurationPr
 
         return [attributeRange]
     }
+
+    // MARK: - Private
+
+    private let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
 
     private func containsObserverToken(in range: NSRange, file: File,
                                        propertyStructure: [String: SourceKitRepresentable]) -> Bool {

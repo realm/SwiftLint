@@ -25,6 +25,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2596](https://github.com/realm/SwiftLint/issues/2596)
 
+* Add `SwiftVersion.five` and automatically detect it when computing
+  `SwiftVersion.current`.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix `explicit_type_interface` when used in statements.  

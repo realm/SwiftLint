@@ -49,9 +49,10 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
             }
 
             var violationOffset: Int?
-            let accessibility = element.accessibility.flatMap(AccessControlLevel.init(identifier:))
-                ?? .internal
-            if accessibility.priority > parentAccessibility.priority {
+            let accessibility = element.accessibility.flatMap(AccessControlLevel.init(identifier:)) ?? .internal
+            // Swift 5 infers members of private types with no explicit ACL attribute to be `internal`.
+            let isInferredACL = accessibility == .internal && !element.enclosedSwiftAttributes.contains(.internal)
+            if !isInferredACL, accessibility.priority > parentAccessibility.priority {
                 violationOffset = element.offset
             }
 

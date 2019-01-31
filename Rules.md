@@ -12786,6 +12786,10 @@ expect(10) == 10
 ```
 
 ```swift
+expect(success) == true
+```
+
+```swift
 expect(object.asyncFunction()).toEventually(equal(1))
 
 ```
@@ -12848,6 +12852,16 @@ foo.method {
 
 ```swift
 ↓expect(x).to(beIdenticalTo(x))
+
+```
+
+```swift
+↓expect(success).to(beTrue())
+
+```
+
+```swift
+↓expect(success).to(beFalse())
 
 ```
 

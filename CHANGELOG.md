@@ -35,8 +35,8 @@
 #### Bug Fixes
 
 * Fix bug where SwiftLint ignores excluded files list in a nested configuration file.  
-    [Dylan Bruschi](https://github.com/Bruschidy54)
-    [#issue_number](https://github.com/realm/SwiftLint/issues/2447)
+  [Dylan Bruschi](https://github.com/Bruschidy54)
+  [#2447](https://github.com/realm/SwiftLint/issues/2447)
 
 * Fix `explicit_type_interface` when used in statements.  
   [Daniel Metzing](https://github.com/dirtydanee)

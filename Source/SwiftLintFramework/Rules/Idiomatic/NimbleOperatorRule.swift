@@ -182,18 +182,20 @@ private extension String {
                 continue
             }
 
-            let replacementPattern: String
+            let valueReplacementPattern: String
             switch predicateDescription.arity {
             case .nullary(let analogueValue):
-                replacementPattern = analogueValue
+                valueReplacementPattern = analogueValue
             case .withArguments:
-                replacementPattern = "$2"
+                valueReplacementPattern = "$2"
             }
+
+            let replacementPattern = "expect($1) \(operatorString) \(valueReplacementPattern)"
 
             return expression.stringByReplacingMatches(in: self,
                                                        options: [],
                                                        range: range,
-                                                       withTemplate: "expect($1) \(operatorString) \(replacementPattern)")
+                                                       withTemplate: replacementPattern)
         }
 
         return nil

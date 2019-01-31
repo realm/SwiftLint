@@ -185,9 +185,9 @@ private extension String {
             let replacementPattern: String
             switch predicateDescription.arity {
             case .nullary(let analogueValue):
-                valueReplacementPattern = analogueValue
+                replacementPattern = analogueValue
             case .withArguments:
-                valueReplacementPattern = "$2"
+                replacementPattern = "$2"
             }
 
             return expression.stringByReplacingMatches(in: self,

@@ -46,6 +46,17 @@ Note that this will add the SwiftLint binaries, its dependencies' binaries and t
 library distribution to the `Pods/` directory, so checking in this directory to SCM such as
 git is discouraged.
 
+### Using Swift Package Manager:
+
+Add the following line to your `Package.swift`:
+
+```swift
+dependencies: [
+    // ...
+    .package(url: "https://github.com/realm/SwiftLint.git"),
+],
+```
+
 ### Using [Mint](https://github.com/yonaskolb/mint):
 ```
 $ mint install realm/SwiftLint
@@ -90,6 +101,12 @@ Alternatively, if you've installed SwiftLint via CocoaPods the script should loo
 
 ```bash
 "${PODS_ROOT}/SwiftLint/swiftlint"
+```
+
+If you've installed via Swift Package Manager:
+
+```bash
+"${DWARF_DSYM_FOLDER_PATH}/swiftlint"
 ```
 
 #### Format on Save Xcode Plugin

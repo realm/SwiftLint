@@ -71,7 +71,7 @@ extension Configuration {
 
             var shouldSkip = false
             for excludedPath in excludedPaths {
-                if file.path?.starts(with: excludedPath) ?? false {
+                if file.path?.bridge().pathComponents.starts(with: excludedPath.bridge().pathComponents) ?? false {
                     shouldSkip = true
                     break
                 }

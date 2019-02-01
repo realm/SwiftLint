@@ -21,6 +21,7 @@
 * [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
+* [Deinit Required](#deinit-required)
 * [Deployment Target](#deployment-target)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
@@ -2895,6 +2896,76 @@ if true {}; if true {}; if true {}; if true {}; if true {}
   }
 }
 
+```
+
+</details>
+
+
+
+## Deinit Required
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`deinit_required` | Disabled | No | style | No | 3.0.0 
+
+Classes should have an explicit deinit method.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Apple {
+    deinit { }
+}
+```
+
+```swift
+enum Banana { }
+```
+
+```swift
+protocol Cherry { }
+```
+
+```swift
+struct Damson { }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class Apple { }
+```
+
+```swift
+↓class Banana: NSObject, Equatable { }
+```
+
+```swift
+↓class Cherry {
+    // deinit { }
+}
+```
+
+```swift
+↓class Damson {
+    func deinitialize() { }
+}
+```
+
+```swift
+class Outer {
+    func hello() -> String { return "outer" }
+    deinit { }
+
+    ↓class Inner {
+        func hello() -> String { return "inner" }
+    }
+}
 ```
 
 </details>

@@ -88,12 +88,8 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "lint --no-cache --config /Users/bestave/Desktop/deinit_required_test/swiftlint.yml"
+            argument = "lint --no-cache"
             isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "rules"
-            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <EnvironmentVariables>

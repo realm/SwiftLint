@@ -10714,13 +10714,13 @@ let a = 0
 ```
 
 ```swift
-@available(swift 4)
+#warning("TODO: remove it")
 let a = 0
 
 ```
 
 ```swift
-#warning("TODO: remove it")
+@available(swift 4)
 let a = 0
 
 ```

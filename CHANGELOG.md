@@ -38,6 +38,10 @@
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
   [#2620](https://github.com/realm/SwiftLint/issues/2620)
 
+* `nimble_operator` now warns about `beTrue()` and `beFalse()`.  
+  [Igor-Palaguta](https://github.com/Igor-Palaguta)
+  [#2613](https://github.com/realm/SwiftLint/issues/2613)
+  
 #### Bug Fixes
 
 * Fix `explicit_type_interface` when used in statements.  

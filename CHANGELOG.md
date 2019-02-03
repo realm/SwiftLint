@@ -35,7 +35,7 @@
 * `nimble_operator` now warns about `beTrue()` and `beFalse()`
   [Igor-Palaguta](https://github.com/Igor-Palaguta)
   [#2613](https://github.com/realm/SwiftLint/issues/2613)
-
+  
 #### Bug Fixes
 
 * Fix `explicit_type_interface` when used in statements.  
@@ -45,7 +45,7 @@
 * Fix `lower_acl_than_parent` when linting with Swift 5.  
   [JP Simard](https://github.com/jpsim)
   [#2607](https://github.com/realm/SwiftLint/issues/2607)
-
+  
 ## 0.30.1: Localized Stain Remover
 
 #### Breaking
@@ -201,7 +201,7 @@
   types.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2539](https://github.com/realm/SwiftLint/issues/2539)
-
+  
 * Fix false positives on `vertical_whitespace_between_cases` rule when a blank
   line is present but it contains trailing whitespace.  
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)

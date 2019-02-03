@@ -51,7 +51,11 @@
 * Fix `lower_acl_than_parent` when linting with Swift 5.  
   [JP Simard](https://github.com/jpsim)
   [#2607](https://github.com/realm/SwiftLint/issues/2607)
-  
+
+* Fix `let_var_whitespace` with `#warning`.  
+  [Igor-Palaguta](https://github.com/Igor-Palaguta)
+  [#2544](https://github.com/realm/SwiftLint/issues/2544)
+
 ## 0.30.1: Localized Stain Remover
 
 #### Breaking

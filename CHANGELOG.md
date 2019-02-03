@@ -32,7 +32,7 @@
 * Make `redundant_objc_attribute` rule autocorrectable.  
   [Daniel Metzing](https://github.com/dirtydanee)
 
-* `nimble_operator` now warns about `beTrue()` and `beFalse()`
+* `nimble_operator` now warns about `beTrue()` and `beFalse()`.  
   [Igor-Palaguta](https://github.com/Igor-Palaguta)
   [#2613](https://github.com/realm/SwiftLint/issues/2613)
   

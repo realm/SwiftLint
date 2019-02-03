@@ -31,7 +31,7 @@
 
 * Make `redundant_objc_attribute` rule autocorrectable.  
   [Daniel Metzing](https://github.com/dirtydanee)
-  
+
 * Add `required_deinit` opt-in rule to ensure that all classes have a deinit
   method. The purpose of this is to make memory leak debugging easier so all
   classes have a place to set a breakpoint to track deallocation.  
@@ -41,7 +41,11 @@
 * `nimble_operator` now warns about `beTrue()` and `beFalse()`.  
   [Igor-Palaguta](https://github.com/Igor-Palaguta)
   [#2613](https://github.com/realm/SwiftLint/issues/2613)
-  
+
+* Warn if a configured rule is not enabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1350](https://github.com/realm/SwiftLint/issues/1350)
+
 #### Bug Fixes
 
 * Fix `explicit_type_interface` when used in statements.  

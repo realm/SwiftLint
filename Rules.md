@@ -10721,6 +10721,12 @@ let a = 0
 ```
 
 ```swift
+#error("TODO: remove it")
+let a = 0
+
+```
+
+```swift
 @available(swift 4)
 let a = 0
 

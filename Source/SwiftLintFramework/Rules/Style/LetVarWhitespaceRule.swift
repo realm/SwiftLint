@@ -20,6 +20,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n",
             "#if os(macOS)\nlet a = 0\n#endif\n",
             "#warning(\"TODO: remove it\")\nlet a = 0\n",
+            "#error(\"TODO: remove it\")\nlet a = 0\n",
             "@available(swift 4)\nlet a = 0\n",
             "class C {\n\t@objc\n\tvar s: String = \"\"\n}",
             "class C {\n\t@objc\n\tfunc a() {}\n}",
@@ -190,7 +191,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             }
         }
 
-        let directives = ["#if", "#elseif", "#else", "#endif", "#!", "#warning", "#error"]
+        let directives: Set = ["#if", "#elseif", "#else", "#endif", "#!", "#warning", "#error"]
         let directiveLines = file.lines.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
             return directives.contains(where: trimmed.hasPrefix)

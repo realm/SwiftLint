@@ -16318,7 +16318,7 @@ protocol Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`required_deinit` | Disabled | No | style | No | 3.0.0 
+`required_deinit` | Disabled | No | lint | No | 3.0.0 
 
 Classes should have an explicit deinit method.
 

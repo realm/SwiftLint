@@ -13,7 +13,7 @@ public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule,
         identifier: "required_deinit",
         name: "Required Deinit",
         description: "Classes should have an explicit deinit method.",
-        kind: .style,
+        kind: .lint,
         nonTriggeringExamples: [
             """
             class Apple {

@@ -241,6 +241,11 @@ class CommandTests: XCTestCase {
             "superfluous_disable_command"
         )
 
+        XCTAssertEqual(
+            violations("print(123)\n// swiftlint:disable:previous nesting_foo \n").count,
+            1
+        )
+
         let multipleViolations = violations("// swiftlint:disable nesting this is a comment\n")
         XCTAssertEqual(multipleViolations.count, 5)
         XCTAssertTrue(multipleViolations.allSatisfy { $0.ruleDescription.identifier == "superfluous_disable_command" })

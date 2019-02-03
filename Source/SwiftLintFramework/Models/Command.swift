@@ -81,7 +81,9 @@ public struct Command: Equatable {
 
         let ruleTexts = scanner.string.bridge().substring(
             from: scanner.scanLocation + 1
-        ).components(separatedBy: .whitespaces)
+        ).components(separatedBy: .whitespaces).filter {
+            !$0.trimmingCharacters(in: .whitespaces).isEmpty
+        }
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier

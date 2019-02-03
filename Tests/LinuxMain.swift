@@ -232,12 +232,6 @@ extension CyclomaticComplexityRuleTests {
     ]
 }
 
-extension DeinitRequiredRuleTests {
-    static var allTests: [(String, (DeinitRequiredRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension DeploymentTargetConfigurationTests {
     static var allTests: [(String, (DeploymentTargetConfigurationTests) -> () throws -> Void)] = [
         ("testAppliesConfigurationFromDictionary", testAppliesConfigurationFromDictionary),
@@ -1057,6 +1051,12 @@ extension ReporterTests {
     ]
 }
 
+extension RequiredDeinitRuleTests {
+    static var allTests: [(String, (RequiredDeinitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RequiredEnumCaseRuleTestCase {
     static var allTests: [(String, (RequiredEnumCaseRuleTestCase) -> () throws -> Void)] = [
         ("testRequiredCaseHashValue", testRequiredCaseHashValue),
@@ -1484,7 +1484,6 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
-    testCase(DeinitRequiredRuleTests.allTests),
     testCase(DeploymentTargetConfigurationTests.allTests),
     testCase(DeploymentTargetRuleTests.allTests),
     testCase(DisableAllTests.allTests),
@@ -1596,6 +1595,7 @@ XCTMain([
     testCase(RedundantVoidReturnRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
+    testCase(RequiredDeinitRuleTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),

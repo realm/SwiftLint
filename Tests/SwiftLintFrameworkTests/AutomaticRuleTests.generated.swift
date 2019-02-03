@@ -84,12 +84,6 @@ class ConvenienceTypeRuleTests: XCTestCase {
     }
 }
 
-class DeinitRequiredRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DeinitRequiredRule.description)
-    }
-}
-
 class DiscardedNotificationCenterObserverRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
@@ -555,6 +549,12 @@ class RedundantTypeAnnotationRuleTests: XCTestCase {
 class RedundantVoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantVoidReturnRule.description)
+    }
+}
+
+class RequiredDeinitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RequiredDeinitRule.description)
     }
 }
 

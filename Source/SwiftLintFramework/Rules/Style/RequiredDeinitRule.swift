@@ -87,8 +87,10 @@ public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule,
             return []
         }
 
-        return [StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset))
+        ]
     }
 }

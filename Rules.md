@@ -121,6 +121,7 @@
 * [Redundant String Enum Value](#redundant-string-enum-value)
 * [Redundant Type Annotation](#redundant-type-annotation)
 * [Redundant Void Return](#redundant-void-return)
+* [Required Deinit](#required-deinit)
 * [Required Enum Case](#required-enum-case)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
@@ -16306,6 +16307,94 @@ func foo()↓ -> () {}
 ```swift
 protocol Foo {
   func foo()↓ -> ()
+}
+```
+
+</details>
+
+
+
+## Required Deinit
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`required_deinit` | Disabled | No | lint | No | 3.0.0 
+
+Classes should have an explicit deinit method.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Apple {
+    deinit { }
+}
+```
+
+```swift
+enum Banana { }
+```
+
+```swift
+protocol Cherry { }
+```
+
+```swift
+struct Damson { }
+```
+
+```swift
+class Outer {
+    deinit { print("Deinit Outer") }
+    class Inner {
+        deinit { print("Deinit Inner") }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class Apple { }
+```
+
+```swift
+↓class Banana: NSObject, Equatable { }
+```
+
+```swift
+↓class Cherry {
+    // deinit { }
+}
+```
+
+```swift
+↓class Damson {
+    func deinitialize() { }
+}
+```
+
+```swift
+class Outer {
+    func hello() -> String { return "outer" }
+    deinit { }
+    ↓class Inner {
+        func hello() -> String { return "inner" }
+    }
+}
+```
+
+```swift
+↓class Outer {
+    func hello() -> String { return "outer" }
+    class Inner {
+        func hello() -> String { return "inner" }
+        deinit { }
+    }
 }
 ```
 

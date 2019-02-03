@@ -31,6 +31,12 @@
 
 * Make `redundant_objc_attribute` rule autocorrectable.  
   [Daniel Metzing](https://github.com/dirtydanee)
+  
+* Add `required_deinit` opt-in rule to ensure that all classes have a deinit
+  method. The purpose of this is to make memory leak debugging easier so all
+  classes have a place to set a breakpoint to track deallocation.  
+  [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
+  [#2620](https://github.com/realm/SwiftLint/issues/2620)
 
 #### Bug Fixes
 

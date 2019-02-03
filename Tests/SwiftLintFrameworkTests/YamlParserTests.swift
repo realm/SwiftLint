@@ -53,4 +53,28 @@ class YamlParserTests: XCTestCase {
             _ = try YamlParser.parse("|\na", env: [:])
         }
     }
+
+    func testParseDuplicatedKeysInRootThrows() {
+        checkError(YamlParserError.yamlParsing("Duplicated keys found: 'excluded'.")) {
+            let yaml = """
+                      excluded:
+                        - foo
+                      excluded:
+                        - bar
+                      """
+            _ = try YamlParser.parse(yaml, env: [:])
+        }
+    }
+
+    func testParseDuplicatedKeysInNestedFieldThrows() {
+        let message = "Duplicated keys found: 'minimum_length'. Found inside keypath 'number_separator'."
+        checkError(YamlParserError.yamlParsing(message)) {
+            let yaml = """
+                      number_separator:
+                        minimum_length: 5
+                        minimum_length: 3
+                      """
+            _ = try YamlParser.parse(yaml, env: [:])
+        }
+    }
 }

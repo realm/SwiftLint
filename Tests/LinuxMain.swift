@@ -1437,7 +1437,9 @@ extension YamlParserTests {
         ("testParseTreatYesAsString", testParseTreatYesAsString),
         ("testParseTreatOnAsString", testParseTreatOnAsString),
         ("testParseTreatOffAsString", testParseTreatOffAsString),
-        ("testParseInvalidStringThrows", testParseInvalidStringThrows)
+        ("testParseInvalidStringThrows", testParseInvalidStringThrows),
+        ("testParseDuplicatedKeysInRootThrows", testParseDuplicatedKeysInRootThrows),
+        ("testParseDuplicatedKeysInNestedFieldThrows", testParseDuplicatedKeysInNestedFieldThrows)
     ]
 }
 

@@ -13,10 +13,41 @@ public struct YamlParser {
     public static func parse(_ yaml: String,
                              env: [String: String] = ProcessInfo.processInfo.environment) throws -> [String: Any] {
         do {
-            return try Yams.load(yaml: yaml, .default,
-                                 .swiftlintContructor(env: env)) as? [String: Any] ?? [:]
+            let parser = try Parser(yaml: yaml, resolver: .default, constructor: .swiftlintContructor(env: env))
+            guard let node = try parser.singleRoot() else {
+                return [:]
+            }
+
+            try node.validateDuplicates(keyPath: nil)
+
+            return node.any as? [String: Any] ?? [:]
+        } catch let error as YamlParserError {
+            throw error
         } catch {
             throw YamlParserError.yamlParsing("\(error)")
+        }
+    }
+}
+
+private extension Node {
+    func validateDuplicates(keyPath: String?) throws {
+        var visitedKeys: Set<String> = []
+        for (key, value) in mapping ?? [:] {
+            guard let key = key.string else {
+                continue
+            }
+
+            let (inserted, _) = visitedKeys.insert(key)
+            if !inserted {
+                var message = "Duplicated keys found: '\(key)'."
+                if let keyPath = keyPath {
+                    message += " Found inside keypath '\(keyPath)'."
+                }
+                throw YamlParserError.yamlParsing(message)
+            } else {
+                let updatedKeyPath = keyPath.map { $0 + "." + key } ?? key
+                try value.validateDuplicates(keyPath: updatedKeyPath)
+            }
         }
     }
 }

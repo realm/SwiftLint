@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* Configuration parsing will now fail if duplicated keys are present.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2191](https://github.com/realm/SwiftLint/issues/2191)
 
 #### Experimental
 

@@ -69,7 +69,6 @@ extension Configuration {
             let fileConfiguration = configuration(for: file)
             let excludedPaths = fileConfiguration.excluded.map { (fileConfiguration.rootPath ?? "").bridge().appendingPathComponent($0) }
 
-
             var shouldSkip = false
             for excludedPath in excludedPaths {
                 if file.path?.bridge().pathComponents.starts(with: excludedPath.bridge().pathComponents) ?? false {

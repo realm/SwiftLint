@@ -260,6 +260,8 @@ class CommandTests: XCTestCase {
             violations("print(123)\n// swiftlint:disable:previous nesting_foo\n")[0].reason,
             "'nesting_foo' is not a valid SwiftLint rule. Please remove it from the disable command."
         )
+
+        XCTAssertEqual(violations("/* swiftlint:disable nesting */\n").count, 1)
     }
 
     func testSuperfluousDisableCommandsDisabled() {

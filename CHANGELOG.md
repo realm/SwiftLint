@@ -60,6 +60,12 @@
   [Igor-Palaguta](https://github.com/Igor-Palaguta)
   [#2544](https://github.com/realm/SwiftLint/issues/2544)
 
+* Fix excessive `superfluous_disable_command` violations being reported when
+  using an invalid rule identifier in a disable command.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2623](https://github.com/realm/SwiftLint/issues/2623)
+
+  
 ## 0.30.1: Localized Stain Remover
 
 #### Breaking

@@ -26,4 +26,8 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
         return "SwiftLint rule '\(rule)' did not trigger a violation " +
         "in the disabled region. Please remove the disable command."
     }
+
+    public func reason(forNonExistentRule rule: String) -> String {
+        return "'\(rule)' is not a valid SwiftLint rule. Please remove it from the disable command."
+    }
 }

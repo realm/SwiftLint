@@ -1988,6 +1988,21 @@ class Foo: Bar {}
 ```
 
 ```swift
+class Foo<T>: Bar {}
+
+```
+
+```swift
+class Foo<T: Equatable>: Bar {}
+
+```
+
+```swift
+class Foo<T, U>: Bar {}
+
+```
+
+```swift
 class Foo<T: Equatable> {}
 
 ```
@@ -2227,6 +2242,26 @@ class ↓Foo : Bar {}
 
 ```swift
 class ↓Foo:Bar {}
+
+```
+
+```swift
+class ↓Foo<T> : Bar {}
+
+```
+
+```swift
+class ↓Foo<T>:Bar {}
+
+```
+
+```swift
+class ↓Foo<T, U>:Bar {}
+
+```
+
+```swift
+class ↓Foo<T: Equatable>:Bar {}
 
 ```
 

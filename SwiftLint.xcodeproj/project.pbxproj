@@ -306,6 +306,7 @@
 		D4C889711E385B7B00BAE88D /* RedundantDiscardableLetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */; };
 		D4CA758F1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */; };
 		D4CFC5D2209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CFC5D1209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift */; };
+		D4D0B8F42211428D0053A116 /* ColonRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0B8F32211428D0053A116 /* ColonRuleExamples.swift */; };
 		D4D1B9BB1EAC2C910028BE6A /* AccessControlLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */; };
 		D4D383852145F550000235BD /* StaticOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D383842145F550000235BD /* StaticOperatorRule.swift */; };
 		D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */; };
@@ -777,6 +778,7 @@
 		D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantDiscardableLetRule.swift; sourceTree = "<group>"; };
 		D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRuleTests.swift; sourceTree = "<group>"; };
 		D4CFC5D1209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDefaultParameterAtEndRule.swift; sourceTree = "<group>"; };
+		D4D0B8F32211428D0053A116 /* ColonRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColonRuleExamples.swift; sourceTree = "<group>"; };
 		D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessControlLevel.swift; sourceTree = "<group>"; };
 		D4D383842145F550000235BD /* StaticOperatorRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticOperatorRule.swift; sourceTree = "<group>"; };
 		D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShorthandOperatorRule.swift; sourceTree = "<group>"; };
@@ -1101,6 +1103,7 @@
 				1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */,
 				756B585C2138ECD300D1A4E9 /* CollectionAlignmentRule.swift */,
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
+				D4D0B8F32211428D0053A116 /* ColonRuleExamples.swift */,
 				D47EF4811F69E34D0012C4CA /* ColonRule+Dictionary.swift */,
 				D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */,
 				D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */,
@@ -2027,6 +2030,7 @@
 				D48AE2CC1DFB58C5001C6A4A /* AttributesRuleExamples.swift in Sources */,
 				C28B2B3D2106DF730009A0FE /* PrefixedConstantRuleConfiguration.swift in Sources */,
 				62A7127520F1178F00E604A6 /* AnyObjectProtocolRule.swift in Sources */,
+				D4D0B8F42211428D0053A116 /* ColonRuleExamples.swift in Sources */,
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				D43B046B1E075905004016AF /* ClosureEndIndentationRule.swift in Sources */,
 				D47EF4821F69E34D0012C4CA /* ColonRule+Dictionary.swift in Sources */,

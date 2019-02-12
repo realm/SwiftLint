@@ -143,8 +143,7 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
         }
 
         let contentAfterName = contents.substring(from: afterNameRange.location)
-        let typeAssignment =
-            regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?self")
+        let typeAssignment = regex("^\\s*=\\s*(?:\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\.)*self")
 
         return typeAssignment.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }

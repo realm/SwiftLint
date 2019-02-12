@@ -20,6 +20,7 @@
 * [Control Statement](#control-statement)
 * [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
+* [Custom Threshold Rules](#custom-threshold-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Deployment Target](#deployment-target)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
@@ -2823,6 +2824,16 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `custom_rules` | Enabled | No | style | No | 3.0.0 
 
 Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, the severity level, and what message to display.
+
+
+
+## Custom Threshold Rules
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`custom_threshold_rules` | Enabled | No | style | No | 3.0.0 
+
+Create custom rules by providing a regex string which are applied across the codebase and fire when threshold has been found. Optionally specify what syntax kinds to match against, the severity level, and what message to display.
 
 
 

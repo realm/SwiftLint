@@ -34,6 +34,7 @@
 		1EF115921EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */; };
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
 		201C780D2211B43F00B11371 /* ThresholdRegexConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201C780B2211B3F200B11371 /* ThresholdRegexConfiguration.swift */; };
+		201C78102212CFC100B11371 /* CustomThresholdRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201C780E2212CB8300B11371 /* CustomThresholdRuleTests.swift */; };
 		2067ED49221059B600B727DB /* CustomThresholdRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2067ED472210586900B727DB /* CustomThresholdRule.swift */; };
 		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
@@ -487,6 +488,7 @@
 		1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitTopLevelACLRule.swift; sourceTree = "<group>"; };
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
 		201C780B2211B3F200B11371 /* ThresholdRegexConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdRegexConfiguration.swift; sourceTree = "<group>"; };
+		201C780E2212CB8300B11371 /* CustomThresholdRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThresholdRuleTests.swift; sourceTree = "<group>"; };
 		2067ED472210586900B727DB /* CustomThresholdRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThresholdRule.swift; sourceTree = "<group>"; };
 		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
@@ -1381,6 +1383,7 @@
 				F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */,
 				F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */,
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
+				201C780E2212CB8300B11371 /* CustomThresholdRuleTests.swift */,
 				67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */,
 				67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */,
 				CCD8B87720559C4A00B75847 /* DisableAllTests.swift */,
@@ -2211,6 +2214,7 @@
 				C9802F2F1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift in Sources */,
 				3B63D46F1E1F09DF0057BE35 /* LineLengthRuleTests.swift in Sources */,
 				627C7A322004F9290053C79D /* XCTSpecificMatcherRuleTests.swift in Sources */,
+				201C78102212CFC100B11371 /* CustomThresholdRuleTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
 				8F2CC1CD20A6A189006ED34F /* FileNameRuleTests.swift in Sources */,

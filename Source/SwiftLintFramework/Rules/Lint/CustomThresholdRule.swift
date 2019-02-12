@@ -7,8 +7,27 @@ private extension Region {
     }
 }
 
-// MARK: - CustomRulesConfiguration
+public class ViolationTracker {
+    static let shared: ViolationTracker = ViolationTracker()
+    var violations: [StyleViolation] = []
+    private init() {
+        
+    }
+    
+    public func add(violation: StyleViolation) {
+        violations.append(violation)
+    }
+    
+    public func add(violations: [StyleViolation]) {
+        self.violations.append(contentsOf: violations)
+    }
+    
+    public func clear() {
+        violations = []
+    }
+}
 
+// MARK: - CustomThresholdRulesConfiguration
 public struct CustomThresholdRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public var consoleDescription: String { return "user-defined" }
     internal var cacheDescription: String {
@@ -31,7 +50,7 @@ public struct CustomThresholdRulesConfiguration: RuleConfiguration, Equatable, C
             do {
                 try ruleConfiguration.apply(configuration: value)
             } catch {
-                queuedPrintError("Invalid configuration for custom rule '\(key)'.")
+                queuedPrintError("Invalid configuration for custom threshold rule '\(key)'.")
                 continue
             }
             customThresholdRuleConfigurations.append(ruleConfiguration)
@@ -100,5 +119,10 @@ public struct CustomThresholdRule: Rule, ConfigurationProviderRule, CacheDescrip
                 return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
             }
         }
+        
+        ViolationTracker.shared.add(violations: violations)
+        
+        if ViolationTracker.shared.violations.count >= configuration.customThresholdRuleConfiguratio
+        
     }
 }

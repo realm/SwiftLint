@@ -61,7 +61,12 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             "hoge(arg: num) { ↓num in\n" +
             "}\n",
             "fooFunc { ↓아 in\n }",
-            "func foo () {\n bar { ↓number in\n return 3\n}\n"
+            "func foo () {\n bar { ↓number in\n return 3\n}\n",
+            """
+            viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
+                profileImageView.image = profileImage
+            }
+            """
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -155,7 +160,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                 }
 
                 let token = tokens.first(where: { token -> Bool in
-                    return SyntaxKind(rawValue: token.type) == .identifier &&
+                    return (SyntaxKind(rawValue: token.type) == .identifier || name == "self") &&
                         token.offset == byteRange.location &&
                         token.length == byteRange.length
                 })

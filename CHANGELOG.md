@@ -77,6 +77,9 @@
 * Fix `unused_closure_parameter` when argument is named `self`.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2437](https://github.com/realm/SwiftLint/issues/2437)
+* Fix `first_where` for some calls on Realm collection types.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1930](https://github.com/realm/SwiftLint/issues/1930)
 
 ## 0.30.1: Localized Stain Remover
 

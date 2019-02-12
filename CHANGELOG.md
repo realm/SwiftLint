@@ -77,6 +77,9 @@
 * Fix `unused_closure_parameter` when argument is named `self`.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2437](https://github.com/realm/SwiftLint/issues/2437)
+* Fix `number_separator` with year integer literals.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2637](https://github.com/realm/SwiftLint/issues/2637)
 
 ## 0.30.1: Localized Stain Remover
 

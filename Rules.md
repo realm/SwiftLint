@@ -22107,6 +22107,12 @@ withPostSideEffect { input in
 }
 ```
 
+```swift
+viewModel?.profileImage.didSet(weak: self) { (self, profileImage) in
+    self.profileImageView.image = profileImage
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22169,6 +22175,12 @@ func foo () {
  return 3
 }
 
+```
+
+```swift
+viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
+    profileImageView.image = profileImage
+}
 ```
 
 </details>

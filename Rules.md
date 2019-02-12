@@ -7591,6 +7591,14 @@ match(pattern: pattern).filter { $0.first == .identifier }
 collection.filter("stringCol = '3'").first
 ```
 
+```swift
+realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first
+```
+
+```swift
+} else if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first {
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

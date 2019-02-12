@@ -16,7 +16,9 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             "myList.first(where: { $0 % 2 == 0 })\n",
             "match(pattern: pattern).filter { $0.first == .identifier }\n",
             "(myList.filter { $0 == 1 }.suffix(2)).first\n",
-            "collection.filter(\"stringCol = '3'\").first"
+            "collection.filter(\"stringCol = '3'\").first",
+            "realm?.objects(User.self).filter(NSPredicate(format: \"email ==[c] %@\", email)).first",
+            "} else if let pause = timeTracker.pauses.filter(\"beginDate < %@\", beginDate).first {"
         ],
         triggeringExamples: [
             "↓myList.filter { $0 % 2 == 0 }.first\n",

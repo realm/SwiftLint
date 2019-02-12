@@ -82,6 +82,15 @@
 * Add `exclude_ranges` option to `number_separator` for exclusion.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2637](https://github.com/realm/SwiftLint/issues/2637)
+* Add new opt-in rule `file_types_order` to specify how the types in a file
+  should be sorted.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
+
+* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
+  properties, methods & more within a type.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
 #### Bug Fixes
 
@@ -315,15 +324,6 @@
   attribute.  
   [Kim de Vos](https://github.com/kimdv)
   [#2282](https://github.com/realm/SwiftLint/issues/2282)
-* Add new opt-in rule `file_types_order` to specify how the types in a file
-  should be sorted.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2294](https://github.com/realm/SwiftLint/issues/2294)
-
-* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
-  properties, methods & more within a type.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
 * Support glob patterns without the star.  
   [Maksym Grebenets](https://github.com/mgrebenets)

@@ -44,6 +44,11 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             withPostSideEffect { input in
                 if true { print("\\(input)") }
             }
+            """,
+            """
+            viewModel?.profileImage.didSet(weak: self) { (self, profileImage) in
+                self.profileImageView.image = profileImage
+            }
             """
         ],
         triggeringExamples: [

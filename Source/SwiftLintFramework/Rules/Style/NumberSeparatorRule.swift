@@ -27,9 +27,12 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     private func violatingRanges(in file: File) -> [(NSRange, String)] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
         return numberTokens.compactMap { (token: SyntaxToken) -> (NSRange, String)? in
-            guard let content = contentFrom(file: file, token: token),
-                isDecimal(number: content) else {
-                    return nil
+            guard
+                let content = contentFrom(file: file, token: token),
+                isDecimal(number: content),
+                !isYearLiteral(number: content)
+            else {
+                return nil
             }
 
             let signs = CharacterSet(charactersIn: "+-")
@@ -106,6 +109,14 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         let prefixes = ["0x", "0o", "0b"].flatMap { [$0, "-" + $0, "+" + $0] }
 
         return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
+    }
+
+    private func isYearLiteral(number: String) -> Bool {
+        if let integer = Int(number), (1500 ..< 2050).contains(integer) {
+            return true
+        }
+
+        return false
     }
 
     private func isValid(number: String, isFraction: Bool) -> (Bool, String) {

@@ -2,7 +2,11 @@ import Foundation
 import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
+    public var configuration = NumberSeparatorConfiguration(
+        minimumLength: 0,
+        minimumFractionLength: nil,
+        validRanges: []
+    )
 
     public init() {}
 
@@ -30,7 +34,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             guard
                 let content = contentFrom(file: file, token: token),
                 isDecimal(number: content),
-                !isYearLiteral(number: content)
+                !isInValidRanges(number: content)
             else {
                 return nil
             }
@@ -111,8 +115,8 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
     }
 
-    private func isYearLiteral(number: String) -> Bool {
-        if let integer = Int(number), (1500 ..< 2050).contains(integer) {
+    private func isInValidRanges(number: String) -> Bool {
+        if let double = Double(number), configuration.validRanges.contains(where: { $0.contains(double) }) {
             return true
         }
 

@@ -13,9 +13,7 @@ internal struct NumberSeparatorRuleExamples {
                 "let hex = \(sign)0xAA_BB",
                 "let octal = \(sign)0o21",
                 "let octal = \(sign)0o21_1",
-                "let exp = \(sign)1_000_000.000_000e2",
-                "let year = 2049",
-                "let year = 1912"
+                "let exp = \(sign)1_000_000.000_000e2"
             ]
         }
     }()

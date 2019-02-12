@@ -2,6 +2,7 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var minimumLength: Int
     private(set) var minimumFractionLength: Int?
+    private(set) var validRanges: [Range<Double>]
 
     public var consoleDescription: String {
         let minimumFractionLengthDescription: String
@@ -15,9 +16,10 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
             + minimumFractionLengthDescription
     }
 
-    public init(minimumLength: Int, minimumFractionLength: Int?) {
+    public init(minimumLength: Int, minimumFractionLength: Int?, validRanges: [Range<Double>]) {
         self.minimumLength = minimumLength
         self.minimumFractionLength = minimumFractionLength
+        self.validRanges = validRanges
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -31,6 +33,13 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
 
         if let minimumFractionLength = configuration["minimum_fraction_length"] as? Int {
             self.minimumFractionLength = minimumFractionLength
+        }
+
+        if let validRanges = configuration["valid_ranges"] as? [[String: Any]] {
+            self.validRanges = validRanges.compactMap { dict in
+                guard let min = dict["min"] as? Double, let max = dict["max"] as? Double else { return nil }
+                return min ..< max
+            }
         }
 
         if let severityString = configuration["severity"] as? String {

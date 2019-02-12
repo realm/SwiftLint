@@ -88,7 +88,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "lint --no-cache"
+            argument = "lint ~/Development/iOS/MVx"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

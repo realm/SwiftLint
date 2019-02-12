@@ -21,6 +21,7 @@ public let masterRuleList = RuleList(rules: [
     ControlStatementRule.self,
     ConvenienceTypeRule.self,
     CustomRules.self,
+    CustomThresholdRule.self,
     CyclomaticComplexityRule.self,
     DeploymentTargetRule.self,
     DiscardedNotificationCenterObserverRule.self,

@@ -33,6 +33,7 @@
 		1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
 		1EF115921EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */; };
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
+		201C780D2211B43F00B11371 /* ThresholdRegexConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201C780B2211B3F200B11371 /* ThresholdRegexConfiguration.swift */; };
 		2067ED49221059B600B727DB /* CustomThresholdRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2067ED472210586900B727DB /* CustomThresholdRule.swift */; };
 		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
@@ -485,6 +486,7 @@
 		1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRule.swift; sourceTree = "<group>"; };
 		1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitTopLevelACLRule.swift; sourceTree = "<group>"; };
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
+		201C780B2211B3F200B11371 /* ThresholdRegexConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdRegexConfiguration.swift; sourceTree = "<group>"; };
 		2067ED472210586900B727DB /* CustomThresholdRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThresholdRule.swift; sourceTree = "<group>"; };
 		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
@@ -945,8 +947,8 @@
 				D43B04671E07228D004016AF /* ColonConfiguration.swift */,
 				824AB64C2105C39F004B5A8F /* ConditionalReturnsOnNewlineConfiguration.swift */,
 				67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */,
-				62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */,
 				D41985EA21FAB63E003BE2B7 /* DeploymentTargetConfiguration.swift */,
+				62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */,
 				125AAC77203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift */,
 				D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */,
 				29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */,
@@ -973,8 +975,9 @@
 				3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */,
 				725094881D0855760039B353 /* StatementModeConfiguration.swift */,
 				787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */,
-				D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */,
+				201C780B2211B3F200B11371 /* ThresholdRegexConfiguration.swift */,
 				D450D1DA21F1992E00E60010 /* TrailingClosureConfiguration.swift */,
+				D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */,
 				BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */,
 				CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */,
 				006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */,
@@ -1912,6 +1915,7 @@
 				29FC197921382C07006D208C /* DuplicateImportsRule.swift in Sources */,
 				E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */,
 				8F2CC1CB20A6A070006ED34F /* FileNameConfiguration.swift in Sources */,
+				201C780D2211B43F00B11371 /* ThresholdRegexConfiguration.swift in Sources */,
 				D4CFC5D2209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift in Sources */,
 				E88198541BEA945100333A11 /* CommaRule.swift in Sources */,
 				D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */,

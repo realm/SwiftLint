@@ -17,25 +17,23 @@ public struct CustomThresholdRulesConfiguration: RuleConfiguration, Equatable, C
             .map { $0.cacheDescription }
             .joined(separator: "\n")
     }
-    public var customThresholdRuleConfigurations = [RegexConfiguration]()
-    
+    public var customThresholdRuleConfigurations = [ThresholdRegexConfiguration]()
+
     public init() {}
-    
+
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
-        
+
         for (key, value) in configurationDict {
-            var ruleConfiguration = RegexConfiguration(identifier: key)
-            
+            var ruleConfiguration = ThresholdRegexConfiguration(identifier: key)
             do {
                 try ruleConfiguration.apply(configuration: value)
             } catch {
                 queuedPrintError("Invalid configuration for custom rule '\(key)'.")
                 continue
             }
-            
             customThresholdRuleConfigurations.append(ruleConfiguration)
         }
     }
@@ -43,30 +41,30 @@ public struct CustomThresholdRulesConfiguration: RuleConfiguration, Equatable, C
 
 // MARK: - CustomRules
 
-public struct CustomThresholdRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+public struct CustomThresholdRule: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
     internal var cacheDescription: String {
         return configuration.cacheDescription
     }
-    
+
     public static let description = RuleDescription(
-        identifier: "custom_rules",
+        identifier: "custom_threshold_rules",
         name: "Custom Threshold Rules",
         description: "Create custom rules by providing a regex string which are applied across the codebase and fire when threshold has been found. " +
             "Optionally specify what syntax kinds to match against, the severity " +
         "level, and what message to display.",
         kind: .style)
-    
-    public var configuration = CustomRulesConfiguration()
-    
+
+    public var configuration = CustomThresholdRulesConfiguration()
+
     public init() {}
-    
+
     public func validate(file: File) -> [StyleViolation] {
-        var configurations = configuration.customRuleConfigurations
-        
+        var configurations = configuration.customThresholdRuleConfigurations
+
         guard !configurations.isEmpty else {
             return []
         }
-        
+
         if let path = file.path {
             let pathRange = NSRange(location: 0, length: path.bridge().length)
             configurations = configurations.filter { config in
@@ -85,7 +83,7 @@ public struct CustomThresholdRules: Rule, ConfigurationProviderRule, CacheDescri
                 return excludedRegex.matches(in: path, options: [], range: pathRange).isEmpty
             }
         }
-        
+
         return configurations.flatMap { configuration -> [StyleViolation] in
             let pattern = configuration.regex.pattern
             let excludingKinds = SyntaxKind.allKinds.subtracting(configuration.matchKinds)
@@ -98,10 +96,9 @@ public struct CustomThresholdRules: Rule, ConfigurationProviderRule, CacheDescri
                 guard let region = file.regions().first(where: { $0.contains(violation.location) }) else {
                     return true
                 }
-                
+
                 return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
             }
         }
     }
 }
-

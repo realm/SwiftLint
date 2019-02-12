@@ -32,12 +32,18 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.first",
-                        patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".filter",
-                        severity: configuration.severity) { dictionary in
-            if !dictionary.substructure.isEmpty {
+        return validate(
+            file: file,
+            pattern: "[\\}\\)]\\s*\\.first",
+            patternSyntaxKinds: [.identifier],
+            callNameSuffix: ".filter",
+            severity: configuration.severity
+        ) { dictionary in
+            if
+                !dictionary.substructure.isEmpty &&
+                dictionary.substructure.last!["key.kind"] as? String != "source.lang.swift.expr.argument" &&
+                dictionary.substructure.last!["key.name"] as? String != "NSPredicate"
+            {
                 return true // has a substructure, like a closure
             }
 

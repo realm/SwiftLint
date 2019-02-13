@@ -59,13 +59,18 @@ class NumberSeparatorRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
     }
 
-    func testNumberSeparatorWithValidRanges() {
+    func testNumberSeparatorWithExcludeRanges() {
         let nonTriggeringExamples = [
             "let foo = 1950",
+            "let foo = 1_950",
             "let foo = 1985",
+            "let foo = 1_985",
             "let foo = 2020",
+            "let foo = 2_020",
             "let foo = 2.10042",
-            "let foo = 2.833333"
+            "let foo = 2.100_42",
+            "let foo = 2.833333",
+            "let foo = 2.833_333"
         ]
         let triggeringExamples = [
             "let foo = ↓1000",
@@ -88,7 +93,7 @@ class NumberSeparatorRuleTests: XCTestCase {
         verifyRule(
             description,
             ruleConfiguration: [
-                "valid_ranges": [
+                "exclude_ranges": [
                     ["min": 1900, "max": 2030],
                     ["min": 2.0, "max": 3.0]
                 ]

@@ -5,7 +5,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     public var configuration = NumberSeparatorConfiguration(
         minimumLength: 0,
         minimumFractionLength: nil,
-        validRanges: []
+        excludeRanges: []
     )
 
     public init() {}
@@ -116,7 +116,8 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     }
 
     private func isInValidRanges(number: String) -> Bool {
-        if let double = Double(number), configuration.validRanges.contains(where: { $0.contains(double) }) {
+        let doubleValue = Double(number.replacingOccurrences(of: "_", with: ""))
+        if let doubleValue = doubleValue, configuration.excludeRanges.contains(where: { $0.contains(doubleValue) }) {
             return true
         }
 

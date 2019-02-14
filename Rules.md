@@ -7596,7 +7596,7 @@ realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).f
 ```
 
 ```swift
-} else if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first {
+if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }
 ```
 
 </details>

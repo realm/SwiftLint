@@ -32,11 +32,29 @@
 * Make `redundant_objc_attribute` rule autocorrectable.  
   [Daniel Metzing](https://github.com/dirtydanee)
 
+* Add `required_deinit` opt-in rule to ensure that all classes have a deinit
+  method. The purpose of this is to make memory leak debugging easier so all
+  classes have a place to set a breakpoint to track deallocation.  
+  [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
+  [#2620](https://github.com/realm/SwiftLint/issues/2620)
+
+* `nimble_operator` now warns about `beTrue()` and `beFalse()`.  
+  [Igor-Palaguta](https://github.com/Igor-Palaguta)
+  [#2613](https://github.com/realm/SwiftLint/issues/2613)
+
+* Warn if a configured rule is not enabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1350](https://github.com/realm/SwiftLint/issues/1350)
+
 #### Bug Fixes
 
 * Fix bug where SwiftLint ignores excluded files list in a nested configuration file.  
   [Dylan Bruschi](https://github.com/Bruschidy54)
   [#2447](https://github.com/realm/SwiftLint/issues/2447)
+
+* Fix false positives on `no_grouping_extension` rule when using `where`
+  clause.  
+  [Almaz Ibragimov](https://github.com/almazrafi)
 
 * Fix `explicit_type_interface` when used in statements.  
   [Daniel Metzing](https://github.com/dirtydanee)
@@ -45,7 +63,21 @@
 * Fix `lower_acl_than_parent` when linting with Swift 5.  
   [JP Simard](https://github.com/jpsim)
   [#2607](https://github.com/realm/SwiftLint/issues/2607)
-  
+
+* Fix `let_var_whitespace` with `#warning`.  
+  [Igor-Palaguta](https://github.com/Igor-Palaguta)
+  [#2544](https://github.com/realm/SwiftLint/issues/2544)
+
+* Fix excessive `superfluous_disable_command` violations being reported when
+  using an invalid rule identifier in a disable command.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2623](https://github.com/realm/SwiftLint/issues/2623)
+
+* Fix `explicit_type_interface` with `allow_redundancy` when assigning type
+  references to variables.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2636](https://github.com/realm/SwiftLint/issues/2636)
+
 ## 0.30.1: Localized Stain Remover
 
 #### Breaking
@@ -201,7 +233,7 @@
   types.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2539](https://github.com/realm/SwiftLint/issues/2539)
-  
+
 * Fix false positives on `vertical_whitespace_between_cases` rule when a blank
   line is present but it contains trailing whitespace.  
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)

@@ -48,7 +48,8 @@
 
 #### Bug Fixes
 
-* Fix false positives on `no_grouping_extension` rule when using `where` clause.
+* Fix false positives on `no_grouping_extension` rule when using `where`
+  clause.  
   [Almaz Ibragimov](https://github.com/almazrafi)
 
 * Fix `explicit_type_interface` when used in statements.  

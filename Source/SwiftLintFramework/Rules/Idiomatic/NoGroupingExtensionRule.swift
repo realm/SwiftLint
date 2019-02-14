@@ -34,7 +34,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
                 return nil
             }
 
-            guard !hasWhereClause(element: element, file: file) else {
+            guard !hasWhereClause(dictionary: element.dictionary, file: file) else {
                 return nil
             }
 
@@ -44,12 +44,12 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         }
     }
 
-    private func hasWhereClause(element: NamespaceCollector.Element, file: File) -> Bool {
+    private func hasWhereClause(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         let contents = file.contents.bridge()
 
-        guard let nameOffset = element.dictionary.nameOffset,
-            let nameLength = element.dictionary.nameLength,
-            let bodyOffset = element.dictionary.bodyOffset else {
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyOffset = dictionary.bodyOffset else {
             return false
         }
 
@@ -60,6 +60,6 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
             return false
         }
 
-        return (regex(" where ").firstMatch(in: file.contents, options: [], range: range) != nil)
+        return !file.match(pattern: "\\bwhere\\b", with: [.keyword], range: range).isEmpty
     }
 }

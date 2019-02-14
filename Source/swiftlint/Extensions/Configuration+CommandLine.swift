@@ -61,7 +61,34 @@ extension Configuration {
             let errorMessage = "No lintable files found at paths: '\(visitor.paths.joined(separator: ", "))'"
             return .failure(.usageError(description: errorMessage))
         }
-        return .success(Dictionary(grouping: files, by: configuration(for:)))
+
+        var groupedFiles = [Configuration: [File]]()
+        for file in files {
+            // Files whose configuration specifies they should be excluded will be skipped
+            let fileConfiguration = configuration(for: file)
+            let excludedPaths = fileConfiguration.excluded
+                .compactMap { fileConfiguration.rootPath?.bridge().appendingPathComponent($0) }
+
+
+            var shouldSkip = false
+            for excludedPath in excludedPaths {
+                if file.path?.bridge().pathComponents.starts(with: excludedPath.bridge().pathComponents) ?? false {
+                    shouldSkip = true
+                    break
+                }
+            }
+
+            if !shouldSkip {
+                if var configuredFiles = groupedFiles[fileConfiguration] {
+                    configuredFiles.append(file)
+                    groupedFiles[fileConfiguration] = configuredFiles
+                } else {
+                    groupedFiles[fileConfiguration] = [file]
+                }
+            }
+        }
+
+        return .success(groupedFiles)
     }
 
     private func visit(filesPerConfiguration: [Configuration: [File]],

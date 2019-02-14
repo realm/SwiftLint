@@ -13143,6 +13143,12 @@ extension Oranges {}
 
 ```
 
+```swift
+class Box<T> {}
+extension Box where T: Vegetable {}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -12,7 +12,8 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         kind: .idiomatic,
         nonTriggeringExamples: [
             "protocol Food {}\nextension Food {}\n",
-            "class Apples {}\nextension Oranges {}\n"
+            "class Apples {}\nextension Oranges {}\n",
+            "class Box<T> {}\nextension Box where T: Vegetable {}\n"
         ],
         triggeringExamples: [
             "enum Fruit {}\n↓extension Fruit {}\n",
@@ -28,12 +29,37 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
 
         let susceptibleNames = Set(elements.compactMap { $0.kind != .extension ? $0.name : nil })
 
-        return elements
-            .filter { $0.kind == .extension && susceptibleNames.contains($0.name) }
-            .map {
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0.offset))
+        return elements.compactMap { element in
+            guard element.kind == .extension, susceptibleNames.contains(element.name) else {
+                return nil
             }
+
+            guard !hasWhereClause(element: element, file: file) else {
+                return nil
+            }
+
+            return StyleViolation(ruleDescription: type(of: self).description,
+                                  severity: configuration.severity,
+                                  location: Location(file: file, byteOffset: element.offset))
+        }
+    }
+
+    private func hasWhereClause(element: NamespaceCollector.Element, file: File) -> Bool {
+        let contents = file.contents.bridge()
+
+        guard let nameOffset = element.dictionary.nameOffset,
+            let nameLength = element.dictionary.nameLength,
+            let bodyOffset = element.dictionary.bodyOffset else {
+            return false
+        }
+
+        let rangeStart = nameOffset + nameLength
+        let rangeLength = bodyOffset - rangeStart
+
+        guard let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength) else {
+            return false
+        }
+
+        return (regex(" where ").firstMatch(in: file.contents, options: [], range: range) != nil)
     }
 }

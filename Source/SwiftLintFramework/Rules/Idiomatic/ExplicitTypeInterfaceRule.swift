@@ -92,7 +92,9 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         guard configuration.allowedKinds.contains(kind),
             let offset = dictionary.offset,
             !dictionary.containsType,
-            (!configuration.allowRedundancy || !dictionary.isInitCall(file: file)),
+            (!configuration.allowRedundancy ||
+                (!dictionary.isInitCall(file: file) && !dictionary.isTypeReferenceAssignment(file: file))
+            ),
             !parentStructure.contains([.forEach, .guard]),
             !parentStructure.caseStatementPatternRanges.contains(offset),
             !parentStructure.caseExpressionRanges.contains(offset),
@@ -119,8 +121,8 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
             let nameLength = nameLength,
             case let contents = file.contents.bridge(),
             let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
-            else {
-                return false
+        else {
+            return false
         }
 
         let contentAfterName = contents.substring(from: afterNameRange.location)
@@ -128,6 +130,22 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
             regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\(")
 
         return initCallRegex.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
+    }
+
+    func isTypeReferenceAssignment(file: File) -> Bool {
+        guard
+            let nameOffset = nameOffset,
+            let nameLength = nameLength,
+            case let contents = file.contents.bridge(),
+            let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+        else {
+            return false
+        }
+
+        let contentAfterName = contents.substring(from: afterNameRange.location)
+        let typeAssignment = regex("^\\s*=\\s*(?:\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\.)*self")
+
+        return typeAssignment.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }
 
     var caseStatementPatternRanges: [NSRange] {

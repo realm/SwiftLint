@@ -74,6 +74,10 @@
   [Cihat Gündüz](https://github.com/Dschee)
   [#2636](https://github.com/realm/SwiftLint/issues/2636)
 
+* Fix `unused_closure_parameter` when argument is named `self`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2437](https://github.com/realm/SwiftLint/issues/2437)
+
 ## 0.30.1: Localized Stain Remover
 
 #### Breaking

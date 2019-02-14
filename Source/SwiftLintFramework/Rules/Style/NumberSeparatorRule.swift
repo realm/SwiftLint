@@ -2,7 +2,11 @@ import Foundation
 import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
+    public var configuration = NumberSeparatorConfiguration(
+        minimumLength: 0,
+        minimumFractionLength: nil,
+        excludeRanges: []
+    )
 
     public init() {}
 
@@ -27,9 +31,12 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     private func violatingRanges(in file: File) -> [(NSRange, String)] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
         return numberTokens.compactMap { (token: SyntaxToken) -> (NSRange, String)? in
-            guard let content = contentFrom(file: file, token: token),
-                isDecimal(number: content) else {
-                    return nil
+            guard
+                let content = contentFrom(file: file, token: token),
+                isDecimal(number: content),
+                !isInValidRanges(number: content)
+            else {
+                return nil
             }
 
             let signs = CharacterSet(charactersIn: "+-")
@@ -106,6 +113,15 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         let prefixes = ["0x", "0o", "0b"].flatMap { [$0, "-" + $0, "+" + $0] }
 
         return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
+    }
+
+    private func isInValidRanges(number: String) -> Bool {
+        let doubleValue = Double(number.replacingOccurrences(of: "_", with: ""))
+        if let doubleValue = doubleValue, configuration.excludeRanges.contains(where: { $0.contains(doubleValue) }) {
+            return true
+        }
+
+        return false
     }
 
     private func isValid(number: String, isFraction: Bool) -> (Bool, String) {

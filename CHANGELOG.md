@@ -46,6 +46,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1350](https://github.com/realm/SwiftLint/issues/1350)
 
+* Add `exclude_ranges` option to `number_separator` for exclusion.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2637](https://github.com/realm/SwiftLint/issues/2637)
+
 #### Bug Fixes
 
 * Fix false positives on `no_grouping_extension` rule when using `where`

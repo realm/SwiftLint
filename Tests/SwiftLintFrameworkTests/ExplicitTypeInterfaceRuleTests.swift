@@ -48,7 +48,8 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             "class Foo {\n  let regex = try? NSRegularExpression(pattern: \".*\")\n}\n",
             "class Foo {\n  let array = [String]()\n}\n",
             "class Foo {\n  let dict = [String: String]()\n}\n",
-            "class Foo {\n  let dict = [String: [String: Array<String>]]()\n}\n"
+            "class Foo {\n  let dict = [String: [String: Array<String>]]()\n}\n",
+            "class Foo {\n  let l10n = L10n.Communication.self\n}\n"
         ]
         let triggeringExamples = [
             "class Foo {\n  ↓var myVar = 0\n\n}\n",

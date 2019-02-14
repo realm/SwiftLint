@@ -1051,6 +1051,12 @@ extension ReporterTests {
     ]
 }
 
+extension RequiredDeinitRuleTests {
+    static var allTests: [(String, (RequiredDeinitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RequiredEnumCaseRuleTestCase {
     static var allTests: [(String, (RequiredEnumCaseRuleTestCase) -> () throws -> Void)] = [
         ("testRequiredCaseHashValue", testRequiredCaseHashValue),
@@ -1589,6 +1595,7 @@ XCTMain([
     testCase(RedundantVoidReturnRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
+    testCase(RequiredDeinitRuleTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),

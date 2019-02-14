@@ -552,6 +552,12 @@ class RedundantVoidReturnRuleTests: XCTestCase {
     }
 }
 
+class RequiredDeinitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RequiredDeinitRule.description)
+    }
+}
+
 class ReturnArrowWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)

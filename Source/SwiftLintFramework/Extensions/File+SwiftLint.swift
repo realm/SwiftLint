@@ -119,9 +119,10 @@ extension File {
         return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
     }
 
-    internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+    internal func match(pattern: String, range: NSRange? = nil,
+                        matchMapping: MatchMapping = { $0.range }) -> [(NSRange, [SyntaxKind])] {
         return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
-            (textCheckingResult.range, syntaxKinds)
+            (matchMapping(textCheckingResult), syntaxKinds)
         }
     }
 
@@ -200,8 +201,9 @@ extension File {
      */
     internal func match(pattern: String,
                         excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
-                        range: NSRange? = nil) -> [NSRange] {
-        return match(pattern: pattern, range: range)
+                        range: NSRange? = nil,
+                        matchMapping: MatchMapping = { $0.range }) -> [NSRange] {
+        return match(pattern: pattern, range: range, matchMapping: matchMapping)
             .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
             .map { $0.0 }
     }
@@ -217,9 +219,12 @@ extension File {
         if matches.isEmpty {
             return []
         }
+
         let range = range ?? NSRange(location: 0, length: contents.bridge().length)
-        let exclusionRanges = regex(excludingPattern).matches(in: contents, options: [],
-                                                              range: range).map(exclusionMapping)
+        let exclusionRanges = match(pattern: excludingPattern,
+                                    excludingSyntaxKinds: excludingSyntaxKinds,
+                                    range: range, matchMapping: exclusionMapping)
+
         return matches.filter { !$0.intersects(exclusionRanges) }
     }
 

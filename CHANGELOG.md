@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+* Add more configuration options to `opening_brace`. It's now possible to
+  configure the excluded keywords for multiline statements, previously
+  hardcoded to `if` `guard` and `while`.
+  [Vojta Stavik](https://github.com/VojtaStavik)
+  [#2635](https://github.com/realm/SwiftLint/issues/2635)
+
 * Add `deployment_target` rule to validate that `@availability` attributes and
   `#available` conditions are not using a version that is satisfied by the
   deployment target. Since SwiftLint can't read an Xcode project, you need to

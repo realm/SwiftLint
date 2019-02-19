@@ -4,10 +4,10 @@ import SourceKittenFramework
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 private extension File {
-    func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
+    func violatingOpeningBraceRanges(firstLineExludingRegex: String) -> [(range: NSRange, location: Int)] {
         return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").map {
+                     excludingPattern: "(?:\(firstLineExludingRegex))\\n[^\\{]+?[\\s\\t\\n]\\{").map {
             let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
             return ($0, branceRange.location)
         }
@@ -15,7 +15,8 @@ private extension File {
 }
 
 public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = OpeningBraceRuleConfiguration(severity: .warning,
+                                                             firstLineExcludingRegex: "if|guard|while")
 
     public init() {}
 
@@ -68,17 +69,20 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.violatingOpeningBraceRanges().map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+        return file.violatingOpeningBraceRanges(firstLineExludingRegex: configuration.firstLineExcludingRegex)
+            .map {
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severityConfiguration.severity,
+                               location: Location(file: file, characterOffset: $0.location))
+            }
     }
 
     public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.violatingOpeningBraceRanges().filter {
-            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
-        }
+        let violatingRanges = file
+            .violatingOpeningBraceRanges(firstLineExludingRegex: configuration.firstLineExcludingRegex)
+            .filter {
+                !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
+            }
         var correctedContents = file.contents
         var adjustedLocations = [Location]()
 

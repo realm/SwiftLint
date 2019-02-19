@@ -873,7 +873,9 @@ extension ObjectLiteralRuleTests {
 
 extension OpeningBraceRuleTests {
     static var allTests: [(String, (OpeningBraceRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testOpeningBraceRule", testOpeningBraceRule),
+        ("testMultilineFuncWhenAddedToExcluded", testMultilineFuncWhenAddedToExcluded),
+        ("testMultilineIfWhenRemovedFromExcluded", testMultilineIfWhenRemovedFromExcluded)
     ]
 }
 

@@ -13735,6 +13735,13 @@ func abc()
 ```
 
 ```swift
+func abc(
+	a: Int,
+	b: Int)
+↓{ }
+```
+
+```swift
 [].map()↓{ $0 }
 ```
 
@@ -13759,6 +13766,13 @@ if
 	let a = b,
 	let c = d
 	where a == c↓{ }
+```
+
+```swift
+if let a = b,
+   let c = d
+   where a == c
+↓{ }
 ```
 
 ```swift

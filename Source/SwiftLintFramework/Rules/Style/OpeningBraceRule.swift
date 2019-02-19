@@ -14,7 +14,7 @@ private extension File {
     }
 }
 
-public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = OpeningBraceRuleConfiguration(severity: .warning,
                                                              firstLineExcludingRegex: "if|guard|while")
 
@@ -42,12 +42,14 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         triggeringExamples: [
             "func abc()↓{\n}",
             "func abc()\n\t↓{ }",
+            "func abc(\n\ta: Int,\n\tb: Int)\n↓{ }",
             "[].map()↓{ $0 }",
             "[].map( ↓{ } )",
             "if let a = b↓{ }",
             "while a == b↓{ }",
             "guard let a = b else↓{ }",
             "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
+            "if let a = b,\n   let c = d\n   where a == c\n↓{ }",
             "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
             "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }",
             "struct Rule↓{}\n",

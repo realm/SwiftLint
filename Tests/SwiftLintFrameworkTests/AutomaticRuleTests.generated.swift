@@ -420,12 +420,6 @@ class NotificationCenterDetachmentRuleTests: XCTestCase {
     }
 }
 
-class OpeningBraceRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OpeningBraceRule.description)
-    }
-}
-
 class OperatorFunctionWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorFunctionWhitespaceRule.description)

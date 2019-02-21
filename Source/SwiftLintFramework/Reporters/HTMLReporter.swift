@@ -22,8 +22,8 @@ public struct HTMLReporter: Reporter {
     // swiftlint:disable:next function_body_length
     internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String,
                                         dateString: String) -> String {
-        let rows = violations.enumerated().reduce("") { rows, indexAndViolation in
-            return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
+        let rows = violations.enumerated().reduce(into: "") { rows, indexAndViolation in
+            rows.append(generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1))
         }
 
         let fileCount = Set(violations.compactMap({ $0.location.file })).count

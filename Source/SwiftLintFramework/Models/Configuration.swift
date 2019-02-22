@@ -212,7 +212,7 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
         return false
     }
 
-    let duplicateRules = identifiers.reduce(into: [String: Int]()) { $0[$1] = ($0[$1] ?? 0) + 1 }
+    let duplicateRules = identifiers.reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
         .filter { $0.1 > 1 }
     queuedPrintError(duplicateRules.map { rule in
         "configuration error: '\(rule.0)' is listed \(rule.1) times"

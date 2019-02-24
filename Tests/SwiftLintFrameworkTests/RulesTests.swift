@@ -2,6 +2,10 @@ import SwiftLintFramework
 import XCTest
 
 class RulesTests: XCTestCase {
+    func testDisableCommentsRationale() {
+        verifyRule(DisableCommentsRationaleRule.description, commentDoesntViolate: false, skipDisableCommandTests: true)
+    }
+
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
                    testMultiByteOffsets: false, testShebang: false)

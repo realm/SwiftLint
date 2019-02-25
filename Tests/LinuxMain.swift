@@ -1136,7 +1136,7 @@ extension RuleTests {
 
 extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] = [
-        ("testDisableCommentsRationale", testDisableCommentsRationale),
+        ("testDisableRationale", testDisableRationale),
         ("testLeadingWhitespace", testLeadingWhitespace),
         ("testMark", testMark),
         ("testRequiredEnumCase", testRequiredEnumCase),

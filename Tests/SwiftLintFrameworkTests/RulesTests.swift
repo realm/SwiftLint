@@ -2,7 +2,7 @@ import SwiftLintFramework
 import XCTest
 
 class RulesTests: XCTestCase {
-    func testDisableCommentsRationale() {
+    func testDisableRationale() {
         verifyRule(
             DisableRationaleRule.description,
             commentDoesntViolate: false,

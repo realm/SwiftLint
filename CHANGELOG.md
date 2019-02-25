@@ -34,6 +34,11 @@
 * None.
 
 #### Enhancements
+* Add `disable_rationale` rule, to ensure that all `swiftlint:disable` comments
+  have a rationale explaining them.
+  [Andrés Cecilia Luque](https://github.com/acecilia)
+  [#2655](https://github.com/realm/SwiftLint/issues/2655)
+  
 * Add `deployment_target` rule to validate that `@availability` attributes and
   `#available` conditions are not using a version that is satisfied by the
   deployment target. Since SwiftLint can't read an Xcode project, you need to

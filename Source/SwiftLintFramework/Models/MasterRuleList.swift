@@ -23,7 +23,7 @@ public let masterRuleList = RuleList(rules: [
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DeploymentTargetRule.self,
-    DisableCommentsRationaleRule.self,
+    DisableRationaleRule.self,
     DiscardedNotificationCenterObserverRule.self,
     DiscouragedDirectInitRule.self,
     DiscouragedObjectLiteralRule.self,

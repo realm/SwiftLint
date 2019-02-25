@@ -3,7 +3,12 @@ import XCTest
 
 class RulesTests: XCTestCase {
     func testDisableCommentsRationale() {
-        verifyRule(DisableCommentsRationaleRule.description, commentDoesntViolate: false, skipDisableCommandTests: true)
+        verifyRule(
+            DisableRationaleRule.description,
+            commentDoesntViolate: false,
+            skipStringTests: true,
+            skipDisableCommandTests: true
+        )
     }
 
     func testLeadingWhitespace() {

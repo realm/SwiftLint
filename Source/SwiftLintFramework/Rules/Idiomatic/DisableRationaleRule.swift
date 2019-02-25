@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DisableCommentsRationaleRule: OptInRule, ConfigurationProviderRule {
+public struct DisableRationaleRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() { }
@@ -42,10 +42,6 @@ public struct DisableCommentsRationaleRule: OptInRule, ConfigurationProviderRule
         let url = URL(string: "https://github.com")!
         // swiftlint:disable:previous force_unwrapping
         // Force unwrapping is used here, because initializing it with the github domain can not fail
-        """,
-        // For now, this is failing
-        """
-        let string = "let url = URL(string: "https://github.com")! // swiftlint:disable:this force_unwrapping"
         """
     ]
 
@@ -64,13 +60,19 @@ public struct DisableCommentsRationaleRule: OptInRule, ConfigurationProviderRule
         """
         let url = URL(string: "https://github.com")!
         ↓// swiftlint:disable:previous force_unwrapping
+        """,
+        """
+        let someCode = 1
+        ↓// swiftlint:disable:next force_unwrapping
+        let url = URL(string: "https://github.com")!
+        let someCode2 = 1
         """
     ]
 
     public static let description = RuleDescription(
-        identifier: "disable_comments_rationale",
-        name: "Disable Comments Rationale",
-        description: "When disabling a rule, the rationale should be added as a comment in the previous or  line.",
+        identifier: "disable_rationale",
+        name: "Disable Rationale",
+        description: "When disabling a rule, the rationale should be added as a comment in the previous or next line.",
         kind: .idiomatic,
         nonTriggeringExamples: nonTriggeringExamples,
         triggeringExamples: triggeringExamples

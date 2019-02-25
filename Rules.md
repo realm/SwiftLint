@@ -22,7 +22,7 @@
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Deployment Target](#deployment-target)
-* [Disable Comments Rationale](#disable-comments-rationale)
+* [Disable Rationale](#disable-rationale)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Discouraged Object Literal](#discouraged-object-literal)
@@ -3048,13 +3048,13 @@ guard ↓#available(iOS 6.0, *) else { return }
 
 
 
-## Disable Comments Rationale
+## Disable Rationale
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`disable_comments_rationale` | Disabled | No | idiomatic | No | 3.0.0 
+`disable_rationale` | Disabled | No | idiomatic | No | 3.0.0 
 
-When disabling a rule, the rationale should be added as a comment in the previous or  line.
+When disabling a rule, the rationale should be added as a comment in the previous or next line.
 
 ### Examples
 
@@ -3111,6 +3111,27 @@ let url = URL(string: "https://github.com")!
 ```swift
 ↓// swiftlint:disable force_unwrapping
 let url = URL(string: "https://github.com")!
+```
+
+```swift
+↓// swiftlint:disable:next force_unwrapping
+let url = URL(string: "https://github.com")!
+```
+
+```swift
+↓let url = URL(string: "https://github.com")! // swiftlint:disable:this force_unwrapping
+```
+
+```swift
+let url = URL(string: "https://github.com")!
+↓// swiftlint:disable:previous force_unwrapping
+```
+
+```swift
+let someCode = 1
+↓// swiftlint:disable:next force_unwrapping
+let url = URL(string: "https://github.com")!
+let someCode2 = 1
 ```
 
 </details>

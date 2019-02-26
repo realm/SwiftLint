@@ -6,7 +6,6 @@ class RulesTests: XCTestCase {
         verifyRule(
             DisableRationaleRule.description,
             commentDoesntViolate: false,
-            skipStringTests: true,
             skipDisableCommandTests: true
         )
     }

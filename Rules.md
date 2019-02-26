@@ -3076,13 +3076,6 @@ let url = URL(string: "https://github.com")!
 ```
 
 ```swift
-    // Force unwrapping is used here, because initializing it with the github domain can not fail
-        // swiftlint:disable force_unwrapping
-
-let url = URL(string: "https://github.com")!
-```
-
-```swift
 // Force unwrapping is used here, because initializing it with the github domain can not fail
 let url = URL(string: "https://github.com")! // swiftlint:disable:this force_unwrapping
 ```
@@ -3104,6 +3097,25 @@ let url = URL(string: "https://github.com")!
 // Force unwrapping is used here, because initializing it with the github domain can not fail
 ```
 
+```swift
+    // Force unwrapping is used here, because initializing it with the github domain can not fail
+        // swiftlint:disable force_unwrapping
+
+let url = URL(string: "https://github.com")!
+```
+
+```swift
+    // Force unwrapping is used here, because initializing it with the github domain can not fail
+        // swiftlint:disable:next force_unwrapping
+let url = URL(string: "https://github.com")!
+```
+
+```swift
+let url = URL(string: "https://github.com")!
+    // swiftlint:disable:previous force_unwrapping
+        // Force unwrapping is used here, because initializing it with the github domain can not fail
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -3114,12 +3126,12 @@ let url = URL(string: "https://github.com")!
 ```
 
 ```swift
-↓// swiftlint:disable:next force_unwrapping
-let url = URL(string: "https://github.com")!
+↓let url = URL(string: "https://github.com")! // swiftlint:disable:this force_unwrapping
 ```
 
 ```swift
-↓let url = URL(string: "https://github.com")! // swiftlint:disable:this force_unwrapping
+↓// swiftlint:disable:next force_unwrapping
+let url = URL(string: "https://github.com")!
 ```
 
 ```swift
@@ -3130,6 +3142,28 @@ let url = URL(string: "https://github.com")!
 ```swift
 let someCode = 1
 ↓// swiftlint:disable:next force_unwrapping
+let url = URL(string: "https://github.com")!
+let someCode2 = 1
+```
+
+```swift
+↓   // swiftlint:disable force_unwrapping
+let url = URL(string: "https://github.com")!
+```
+
+```swift
+↓   // swiftlint:disable:next force_unwrapping
+let url = URL(string: "https://github.com")!
+```
+
+```swift
+let url = URL(string: "https://github.com")!
+↓   // swiftlint:disable:previous force_unwrapping
+```
+
+```swift
+let someCode = 1
+↓   // swiftlint:disable:next force_unwrapping
 let url = URL(string: "https://github.com")!
 let someCode2 = 1
 ```

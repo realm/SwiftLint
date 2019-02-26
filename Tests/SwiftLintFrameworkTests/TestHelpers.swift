@@ -121,13 +121,9 @@ private extension Configuration {
 
 private extension String {
     func toStringLiteral() -> String {
-        // Putting the code (self) inside a multiline string
-        // automatically escapes the necesay characters
-        return """
-        \"""
-        \(self)
-        \"""
-        """
+        let escapedString = replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+        return "\"" + escapedString + "\""
     }
 }
 

@@ -16,7 +16,9 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             "myList.first(where: { $0 % 2 == 0 })\n",
             "match(pattern: pattern).filter { $0.first == .identifier }\n",
             "(myList.filter { $0 == 1 }.suffix(2)).first\n",
-            "collection.filter(\"stringCol = '3'\").first"
+            "collection.filter(\"stringCol = '3'\").first",
+            "realm?.objects(User.self).filter(NSPredicate(format: \"email ==[c] %@\", email)).first",
+            "if let pause = timeTracker.pauses.filter(\"beginDate < %@\", beginDate).first { print(pause) }"
         ],
         triggeringExamples: [
             "↓myList.filter { $0 % 2 == 0 }.first\n",
@@ -30,12 +32,18 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.first",
-                        patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".filter",
-                        severity: configuration.severity) { dictionary in
-            if !dictionary.substructure.isEmpty {
+        return validate(
+            file: file,
+            pattern: "[\\}\\)]\\s*\\.first",
+            patternSyntaxKinds: [.identifier],
+            callNameSuffix: ".filter",
+            severity: configuration.severity
+        ) { dictionary in
+            if
+                !dictionary.substructure.isEmpty &&
+                dictionary.substructure.last?.kind.flatMap(SwiftExpressionKind.init) != .argument &&
+                dictionary.substructure.last?.name != "NSPredicate"
+            {
                 return true // has a substructure, like a closure
             }
 

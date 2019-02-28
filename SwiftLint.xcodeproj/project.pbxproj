@@ -35,6 +35,8 @@
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
 		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
+		2882895F222975D00037CF5F /* NSObjectPreferIsEqualRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */; };
+		288289602229776C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */; };
 		29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */; };
 		29FC197921382C07006D208C /* DuplicateImportsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FC197721382C06006D208C /* DuplicateImportsRule.swift */; };
 		29FC197A21382C07006D208C /* DuplicateImportsRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FC197821382C07006D208C /* DuplicateImportsRuleExamples.swift */; };
@@ -486,6 +488,8 @@
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
 		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
+		2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRule.swift; sourceTree = "<group>"; };
+		2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRuleExamples.swift; sourceTree = "<group>"; };
 		29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsOverFirstNotNilRule.swift; sourceTree = "<group>"; };
 		29FC197721382C06006D208C /* DuplicateImportsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DuplicateImportsRule.swift; sourceTree = "<group>"; };
 		29FC197821382C07006D208C /* DuplicateImportsRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DuplicateImportsRuleExamples.swift; sourceTree = "<group>"; };
@@ -1052,6 +1056,8 @@
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
 				D41985E621F85014003BE2B7 /* NSLocalizedStringKeyRule.swift */,
+				2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */,
+				2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */,
 				78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */,
 				D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */,
 				62DEA1651FB21A9E00BCCCC6 /* PrivateActionRule.swift */,
@@ -1877,6 +1883,7 @@
 				181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */,
 				47FF3BE11E7C75B600187E6D /* ImplicitlyUnwrappedOptionalRule.swift in Sources */,
 				623E36F01F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift in Sources */,
+				288289602229776C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift in Sources */,
 				BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */,
 				3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */,
 				B25DCD0C1F7E9FA20028A199 /* MultilineArgumentsRule.swift in Sources */,
@@ -2026,6 +2033,7 @@
 				D93DA3D11E699E6300809827 /* NestingConfiguration.swift in Sources */,
 				CC26ED07204DEB510013BBBC /* RuleIdentifier.swift in Sources */,
 				C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */,
+				2882895F222975D00037CF5F /* NSObjectPreferIsEqualRule.swift in Sources */,
 				18B90B6B21ADD99800B60749 /* RedundantObjcAttributeRule.swift in Sources */,
 				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */,
 				D43DB1081DC573DA00281215 /* ImplicitGetterRule.swift in Sources */,

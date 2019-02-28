@@ -818,6 +818,12 @@ extension NSLocalizedStringKeyRuleTests {
     ]
 }
 
+extension NSObjectEqualsRuleTests {
+    static var allTests: [(String, (NSObjectEqualsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension NestingRuleTests {
     static var allTests: [(String, (NestingRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -858,7 +864,8 @@ extension NumberSeparatorRuleTests {
     static var allTests: [(String, (NumberSeparatorRuleTests) -> () throws -> Void)] = [
         ("testNumberSeparatorWithDefaultConfiguration", testNumberSeparatorWithDefaultConfiguration),
         ("testNumberSeparatorWithMinimumLength", testNumberSeparatorWithMinimumLength),
-        ("testNumberSeparatorWithMinimumFractionLength", testNumberSeparatorWithMinimumFractionLength)
+        ("testNumberSeparatorWithMinimumFractionLength", testNumberSeparatorWithMinimumFractionLength),
+        ("testNumberSeparatorWithExcludeRanges", testNumberSeparatorWithExcludeRanges)
     ]
 }
 
@@ -1560,6 +1567,7 @@ XCTMain([
     testCase(MultilineParametersRuleTests.allTests),
     testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
     testCase(NSLocalizedStringKeyRuleTests.allTests),
+    testCase(NSObjectEqualsRuleTests.allTests),
     testCase(NestingRuleTests.allTests),
     testCase(NimbleOperatorRuleTests.allTests),
     testCase(NoExtensionAccessModifierRuleTests.allTests),

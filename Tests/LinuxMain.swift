@@ -818,8 +818,8 @@ extension NSLocalizedStringKeyRuleTests {
     ]
 }
 
-extension NSObjectEqualsRuleTests {
-    static var allTests: [(String, (NSObjectEqualsRuleTests) -> () throws -> Void)] = [
+extension NSObjectPreferIsEqualRuleTests {
+    static var allTests: [(String, (NSObjectPreferIsEqualRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1567,7 +1567,7 @@ XCTMain([
     testCase(MultilineParametersRuleTests.allTests),
     testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
     testCase(NSLocalizedStringKeyRuleTests.allTests),
-    testCase(NSObjectEqualsRuleTests.allTests),
+    testCase(NSObjectPreferIsEqualRuleTests.allTests),
     testCase(NestingRuleTests.allTests),
     testCase(NimbleOperatorRuleTests.allTests),
     testCase(NoExtensionAccessModifierRuleTests.allTests),

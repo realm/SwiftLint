@@ -384,9 +384,9 @@ class NSLocalizedStringKeyRuleTests: XCTestCase {
     }
 }
 
-class NSObjectEqualsRuleTests: XCTestCase {
+class NSObjectPreferIsEqualRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(NSObjectEqualsRule.description)
+        verifyRule(NSObjectPreferIsEqualRule.description)
     }
 }
 

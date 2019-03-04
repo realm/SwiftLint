@@ -384,6 +384,12 @@ class NSLocalizedStringKeyRuleTests: XCTestCase {
     }
 }
 
+class NSObjectPreferIsEqualRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSObjectPreferIsEqualRule.description)
+    }
+}
+
 class NestingRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)

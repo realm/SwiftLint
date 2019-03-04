@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Add `nsobject_prefer_isequal` rule to warn against implementing `==` on an
+  `NSObject` subclass as calling `isEqual` (i.e. when using the class from
+  Objective-C) will will not use the defined `==` method.  
+  [Matthew Healy](https://github.com/matthew-healy)
+  [#2663](https://github.com/realm/SwiftLint/pull/2663)
 
 #### Bug Fixes
 
@@ -27,7 +31,6 @@
 * None.
 
 #### Enhancements
-
 * Add `deployment_target` rule to validate that `@availability` attributes and
   `#available` conditions are not using a version that is satisfied by the
   deployment target. Since SwiftLint can't read an Xcode project, you need to

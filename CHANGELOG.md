@@ -18,7 +18,10 @@
 
 #### Bug Fixes
 
-* None.
+* `colon` rule now catches violations when declaring generic types with
+  inheritance or protocol conformance.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2628](https://github.com/realm/SwiftLint/issues/2628)
 
 ## 0.31.0: Busy Laundromat
 

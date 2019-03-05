@@ -142,6 +142,7 @@
 		75161FDF213B9D73009DE767 /* CollectionAlignmentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75161FDD213B9D67009DE767 /* CollectionAlignmentConfiguration.swift */; };
 		7551DF6D21382C9A00AA1F4D /* ToggleBoolRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7551DF6C21382C9A00AA1F4D /* ToggleBoolRule.swift */; };
 		756B585D2138ECD300D1A4E9 /* CollectionAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 756B585C2138ECD300D1A4E9 /* CollectionAlignmentRule.swift */; };
+		756C0779222EA4F400A111F4 /* ReduceIntoRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 756C0777222EA49400A111F4 /* ReduceIntoRule.swift */; };
 		787CDE39208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */; };
 		787CDE3B208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */; };
 		78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
@@ -595,6 +596,7 @@
 		75161FDD213B9D67009DE767 /* CollectionAlignmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionAlignmentConfiguration.swift; sourceTree = "<group>"; };
 		7551DF6C21382C9A00AA1F4D /* ToggleBoolRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleBoolRule.swift; sourceTree = "<group>"; };
 		756B585C2138ECD300D1A4E9 /* CollectionAlignmentRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionAlignmentRule.swift; sourceTree = "<group>"; };
+		756C0777222EA49400A111F4 /* ReduceIntoRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReduceIntoRule.swift; sourceTree = "<group>"; };
 		7578C915214173BE0080FEC9 /* CollectionAlignmentRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionAlignmentRuleTests.swift; sourceTree = "<group>"; };
 		787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentConfiguration.swift; sourceTree = "<group>"; };
 		787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRuleTests.swift; sourceTree = "<group>"; };
@@ -1213,6 +1215,7 @@
 				D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */,
 				D403A4A21F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift */,
 				1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */,
+				756C0777222EA49400A111F4 /* ReduceIntoRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				18B90B6A21ADD99800B60749 /* RedundantObjcAttributeRule.swift */,
 				183B6B4721FF66B700425134 /* RedundantObjcAttributeRuleExamples.swift */,
@@ -2019,6 +2022,7 @@
 				D4DABFD31E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */,
 				D4AB0EA21F8993DD00CEC380 /* NamespaceCollector.swift in Sources */,
 				D4B3409D21F16B110038C79A /* UnusedSetterValueRule.swift in Sources */,
+				756C0779222EA4F400A111F4 /* ReduceIntoRule.swift in Sources */,
 				75161FDF213B9D73009DE767 /* CollectionAlignmentConfiguration.swift in Sources */,
 				D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */,
 				3BCC04D21C4F56D3006073C3 /* NameConfiguration.swift in Sources */,

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -116,6 +116,7 @@ public let masterRuleList = RuleList(rules: [
     QuickDiscouragedFocusedTestRule.self,
     QuickDiscouragedPendingTestRule.self,
     ReduceBooleanRule.self,
+    ReduceIntoRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantObjcAttributeRule.self,

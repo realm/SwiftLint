@@ -115,6 +115,7 @@
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
 * [Reduce Boolean](#reduce-boolean)
+* [Reduce Into](#reduce-into)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant @objc Attribute](#redundant-objc-attribute)
@@ -15839,6 +15840,51 @@ let allValid = validators.↓reduce(true, { $0 && $1(input) })
 
 ```swift
 let anyValid = validators.↓reduce(false, { $0 || $1(input) })
+```
+
+</details>
+
+
+
+## Reduce Into
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`reduce_into` | Disabled | No | performance | No | 3.0.0 
+
+Prefer `reduce(into:_:)` over `reduce(_:_:)`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let matches = lines.reduce(into: []) { matches, line in
+```
+
+```swift
+zip(group, group.dropFirst()).reduce(into: []) { result, pair in
+```
+
+```swift
+values.reduce(into: "") { $0.append("\($1)") }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let matches = lines.↓reduce([]) { matches, line in
+```
+
+```swift
+zip(group, group.dropFirst()).↓reduce([]) { result, pair in
+```
+
+```swift
+values.↓reduce("") { $0 + "\($1)" }
 ```
 
 </details>

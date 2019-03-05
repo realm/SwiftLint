@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -513,6 +513,12 @@ class QuickDiscouragedPendingTestRuleTests: XCTestCase {
 class ReduceBooleanRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceBooleanRule.description)
+    }
+}
+
+class ReduceIntoRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceIntoRule.description)
     }
 }
 

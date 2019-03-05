@@ -990,6 +990,12 @@ extension ReduceBooleanRuleTests {
     ]
 }
 
+extension ReduceIntoRuleTests {
+    static var allTests: [(String, (ReduceIntoRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RedundantDiscardableLetRuleTests {
     static var allTests: [(String, (RedundantDiscardableLetRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1600,6 +1606,7 @@ XCTMain([
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
     testCase(ReduceBooleanRuleTests.allTests),
+    testCase(ReduceIntoRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),
     testCase(RedundantNilCoalescingRuleTests.allTests),
     testCase(RedundantObjcAttributeRuleTests.allTests),

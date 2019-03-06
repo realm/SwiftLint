@@ -1036,6 +1036,7 @@
 				740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */,
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
 				D414D6AD21D22FF500960935 /* LastWhereRule.swift */,
+				756C0777222EA49400A111F4 /* ReduceIntoRule.swift */,
 				429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */,
 				4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */,
 			);
@@ -1215,7 +1216,6 @@
 				D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */,
 				D403A4A21F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift */,
 				1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */,
-				756C0777222EA49400A111F4 /* ReduceIntoRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				18B90B6A21ADD99800B60749 /* RedundantObjcAttributeRule.swift */,
 				183B6B4721FF66B700425134 /* RedundantObjcAttributeRuleExamples.swift */,

@@ -15860,15 +15860,29 @@ Prefer `reduce(into:_:)` over `reduce(_:_:)`
 <summary>Non Triggering Examples</summary>
 
 ```swift
-let matches = lines.reduce(into: []) { matches, line in
-```
-
-```swift
-zip(group, group.dropFirst()).reduce(into: []) { result, pair in
+let result = values.reduce(into: 0, +=)
 ```
 
 ```swift
 values.reduce(into: "") { $0.append("\($1)") }
+
+```
+
+```swift
+values.reduce(into: initial) { $0 *= $1 }
+
+```
+
+```swift
+let result = values.reduce(into: 0) { result, value in
+    result += value
+}
+```
+
+```swift
+zip(group, group.dropFirst()).reduce(into: []) { result, pair in
+    result.append(pair.0 + pair.1)
+}
 ```
 
 </details>
@@ -15876,15 +15890,30 @@ values.reduce(into: "") { $0.append("\($1)") }
 <summary>Triggering Examples</summary>
 
 ```swift
-let matches = lines.↓reduce([]) { matches, line in
-```
+let result = values.↓reduce(0, +)
 
-```swift
-zip(group, group.dropFirst()).↓reduce([]) { result, pair in
 ```
 
 ```swift
 values.↓reduce("") { $0 + "\($1)" }
+
+```
+
+```swift
+values.↓reduce(initial) { $0 * $1 }
+
+```
+
+```swift
+let result = values.↓reduce(0) { result, value in
+    result + value
+}
+```
+
+```swift
+zip(group, group.dropFirst()).↓reduce([]) { result, pair in
+    result + [pair.0 + pair.1]
+}
 ```
 
 </details>

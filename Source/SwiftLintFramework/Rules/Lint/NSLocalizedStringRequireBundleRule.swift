@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -46,6 +45,18 @@ public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, Configurat
     public func validate(file: File,
                          kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return []
+        let isBundleArgument: ([String: SourceKitRepresentable]) -> Bool = { $0.name == "bundle" }
+        guard kind == .call,
+            dictionary.name == "NSLocalizedString",
+            let offset = dictionary.offset,
+            !dictionary.enclosedArguments.contains(where: isBundleArgument) else {
+            return []
+        }
+
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset))
+        ]
     }
 }

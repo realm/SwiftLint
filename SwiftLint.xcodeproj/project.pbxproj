@@ -35,6 +35,7 @@
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
 		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
+		287F8B642230843000BDC504 /* NSLocalizedStringRequireBundleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */; };
 		2882895F222975D00037CF5F /* NSObjectPreferIsEqualRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */; };
 		288289602229776C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */; };
 		29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */; };
@@ -500,6 +501,7 @@
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
 		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
+		287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLocalizedStringRequireBundleRule.swift; sourceTree = "<group>"; };
 		2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRule.swift; sourceTree = "<group>"; };
 		2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRuleExamples.swift; sourceTree = "<group>"; };
 		29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsOverFirstNotNilRule.swift; sourceTree = "<group>"; };
@@ -1083,6 +1085,7 @@
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
 				D41985E621F85014003BE2B7 /* NSLocalizedStringKeyRule.swift */,
+				287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */,
 				2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */,
 				2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */,
 				78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */,
@@ -1939,6 +1942,7 @@
 				D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */,
 				D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */,
 				623675B01F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift in Sources */,
+				287F8B642230843000BDC504 /* NSLocalizedStringRequireBundleRule.swift in Sources */,
 				D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */,
 				E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */,
 				3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */,

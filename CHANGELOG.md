@@ -19,6 +19,7 @@
   Objective-C) will will not use the defined `==` method.  
   [Matthew Healy](https://github.com/matthew-healy)
   [#2663](https://github.com/realm/SwiftLint/pull/2663)
+
 * Add `reduce_into` opt-in rule to encourage the use of `reduce(into:_:)`
   instead of `reduce(_:_:)` which is less performant.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)

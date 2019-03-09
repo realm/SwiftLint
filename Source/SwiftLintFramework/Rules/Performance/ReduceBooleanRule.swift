@@ -16,14 +16,14 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
             "nums.reduce(0.0) { $0.0 + $0.1 }"
         ],
         triggeringExamples: [
-            "let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }", // should use allSatisfy instead
-            "let anyNines = nums.↓reduce(false) { $0.0 || $0.1 == 9 }", // should use contains instead
-            "let allValid = validators.↓reduce(true) { $0 && $1(input) }", // should use allSatisfy instead
-            "let anyValid = validators.↓reduce(false) { $0 || $1(input) }", // should use contains instead
-            "let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })", // should use allSatisfy instead
-            "let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })", // should use contains instead
-            "let allValid = validators.↓reduce(true, { $0 && $1(input) })", // should use allSatisfy instead
-            "let anyValid = validators.↓reduce(false, { $0 || $1(input) })" // should use contains instead
+            "let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }",
+            "let anyNines = nums.↓reduce(false) { $0.0 || $0.1 == 9 }",
+            "let allValid = validators.↓reduce(true) { $0 && $1(input) }",
+            "let anyValid = validators.↓reduce(false) { $0 || $1(input) }",
+            "let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })",
+            "let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })",
+            "let allValid = validators.↓reduce(true, { $0 && $1(input) })",
+            "let anyValid = validators.↓reduce(false, { $0 || $1(input) })"
         ]
     )
 
@@ -33,7 +33,12 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
             .match(pattern: pattern,
                    excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
             .compactMap { range in
-                let reason = ""
+                let reason: String
+                if file.contents[Range(range, in: file.contents)!].contains("true") {
+                    reason = "Use `allSatisfy` instead"
+                } else {
+                    reason = "Use `contains` instead"
+                }
 
                 return StyleViolation(
                     ruleDescription: type(of: self).description,

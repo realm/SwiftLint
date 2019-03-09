@@ -11,15 +11,27 @@ public protocol Rule {
     func validate(file: File, compilerArguments: [String]) -> [StyleViolation]
     func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
+
+    // These are called by the linter and are always implemented in extensions.
+    func collect(infoFor file: File, into storage: RuleStorage, compilerArguments: [String])
+    func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 }
 
 extension Rule {
+    public func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
+        return validate(file: file, compilerArguments: compilerArguments)
+    }
+
     public func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file)
     }
 
     public func isEqualTo(_ rule: Rule) -> Bool {
         return type(of: self).description == type(of: rule).description
+    }
+
+    public func collect(infoFor file: File, into storage: RuleStorage, compilerArguments: [String]) {
+        // no-op: only CollectingRules mutate their storage
     }
 
     internal var cacheDescription: String {
@@ -40,11 +52,17 @@ public protocol ConfigurationProviderRule: Rule {
 public protocol CorrectableRule: Rule {
     func correct(file: File, compilerArguments: [String]) -> [Correction]
     func correct(file: File) -> [Correction]
+
+    // Called by the linter and are always implemented in extensions.
+    func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
 }
 
 public extension CorrectableRule {
     func correct(file: File, compilerArguments: [String]) -> [Correction] {
         return correct(file: file)
+    }
+    func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
+        return correct(file: file, compilerArguments: compilerArguments)
     }
 }
 
@@ -117,7 +135,89 @@ public extension AnalyzerRule where Self: CorrectableRule {
     }
 }
 
-// MARK: - ConfigurationProviderRule conformance to Configurable
+// MARK: - CollectingRule
+
+public protocol CollectingRule: Rule {
+    associatedtype FileInfo
+    func collect(infoFor file: File, compilerArguments: [String]) -> FileInfo
+    func collect(infoFor file: File) -> FileInfo
+    func validate(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [StyleViolation]
+    func validate(file: File, collectedInfo: [File: FileInfo]) -> [StyleViolation]
+}
+
+public extension CollectingRule {
+    func collect(infoFor file: File, into storage: RuleStorage, compilerArguments: [String]) {
+        storage.collect(info: collect(infoFor: file, compilerArguments: compilerArguments),
+                        for: file, in: self)
+    }
+    func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
+        let info = storage.collectedInfo(for: self)
+        return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
+    }
+    func collect(infoFor file: File, compilerArguments: [String]) -> FileInfo {
+        return collect(infoFor: file)
+    }
+    func validate(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [StyleViolation] {
+        return validate(file: file, collectedInfo: collectedInfo)
+    }
+    func validate(file: File) -> [StyleViolation] {
+        queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
+    }
+    func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
+        queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
+    }
+}
+
+public extension CollectingRule where Self: AnalyzerRule {
+    func collect(infoFor file: File) -> FileInfo {
+        queuedFatalError(
+            "Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule"
+        )
+    }
+    func validate(file: File) -> [StyleViolation] {
+        queuedFatalError(
+            "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
+        )
+    }
+    func validate(file: File, collectedInfo: [File: FileInfo]) -> [StyleViolation] {
+        queuedFatalError(
+            "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
+        )
+    }
+}
+
+public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
+    func correct(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [Correction]
+    func correct(file: File, collectedInfo: [File: FileInfo]) -> [Correction]
+}
+
+public extension CollectingCorrectableRule {
+    func correct(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [Correction] {
+        return correct(file: file, collectedInfo: collectedInfo)
+    }
+    func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
+        let info = storage.collectedInfo(for: self)
+        return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
+    }
+    func correct(file: File) -> [Correction] {
+        queuedFatalError("Must call `correct(file:collectedInfo:)` for AnalyzerRule")
+    }
+    func correct(file: File, compilerArguments: [String]) -> [Correction] {
+        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
+    }
+}
+
+public extension CollectingCorrectableRule where Self: AnalyzerRule {
+    func correct(file: File) -> [Correction] {
+        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
+    }
+    func correct(file: File, compilerArguments: [String]) -> [Correction] {
+        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
+    }
+    func correct(file: File, collectedInfo: [File: FileInfo]) -> [Correction] {
+        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
+    }
+}
 
 public extension ConfigurationProviderRule {
     init(configuration: Any) throws {

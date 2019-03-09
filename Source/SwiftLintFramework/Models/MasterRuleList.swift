@@ -115,6 +115,7 @@ public let masterRuleList = RuleList(rules: [
     QuickDiscouragedCallRule.self,
     QuickDiscouragedFocusedTestRule.self,
     QuickDiscouragedPendingTestRule.self,
+    ReduceBooleanRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantObjcAttributeRule.self,

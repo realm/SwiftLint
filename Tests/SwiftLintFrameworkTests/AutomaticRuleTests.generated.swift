@@ -510,6 +510,12 @@ class QuickDiscouragedPendingTestRuleTests: XCTestCase {
     }
 }
 
+class ReduceBooleanRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceBooleanRule.description)
+    }
+}
+
 class RedundantDiscardableLetRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)

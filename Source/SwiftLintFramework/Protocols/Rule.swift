@@ -8,12 +8,29 @@ public protocol Rule {
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
 
+    // Storage methods always have provided implementations of these
+    func collect(infoFor file: File, into storage: inout RuleStorage)
+    func validate(file: File, using storage: RuleStorage) -> [StyleViolation]
+    func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
+
     func validate(file: File, compilerArguments: [String]) -> [StyleViolation]
     func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
 }
 
 extension Rule {
+    public func collect(infoFor file: File, into storage: inout RuleStorage) {
+        // Only CollectingRules mutate their storage
+    }
+
+    public func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
+        return validate(file: file, compilerArguments: compilerArguments)
+    }
+
+    public func validate(file: File, using storage: RuleStorage) -> [StyleViolation] {
+        return validate(file: file)
+    }
+
     public func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file)
     }
@@ -40,11 +57,19 @@ public protocol ConfigurationProviderRule: Rule {
 public protocol CorrectableRule: Rule {
     func correct(file: File, compilerArguments: [String]) -> [Correction]
     func correct(file: File) -> [Correction]
+    func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
+    func correct(file: File, using storage: RuleStorage) -> [Correction]
 }
 
 public extension CorrectableRule {
     func correct(file: File, compilerArguments: [String]) -> [Correction] {
         return correct(file: file)
+    }
+    func correct(file: File, using storage: RuleStorage) -> [Correction] {
+        return correct(file: file)
+    }
+    func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
+        return correct(file: file, compilerArguments: compilerArguments)
     }
 }
 
@@ -117,7 +142,51 @@ public extension AnalyzerRule where Self: CorrectableRule {
     }
 }
 
-// MARK: - ConfigurationProviderRule conformance to Configurable
+// MARK: - CollectingRule
+
+public protocol CollectingRule: Rule {
+    associatedtype FileInfo
+    func collect(file: File) -> FileInfo
+    func validate(fileInfo: [FileInfo], compilerArguments: [String]) -> [StyleViolation]
+    func validate(fileInfo: [FileInfo]) -> [StyleViolation]
+}
+
+public extension CollectingRule {
+    func collect(infoFor file: File, into storage: inout RuleStorage) {
+        storage.collect(info: collect(file: file), for: self)
+    }
+    func validate(fileInfo: [FileInfo], compilerArguments: [String]) -> [StyleViolation] {
+        return validate(fileInfo: fileInfo)
+    }
+
+    func validate(file: File) -> [StyleViolation] {
+        queuedFatalError("Must call `validate(fileInfo:)` for CollectingRule")
+    }
+}
+
+public extension CollectingRule where Self: AnalyzerRule {
+    func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
+        queuedFatalError("Must call `validate(fileInfo:compilerArguments:)` for AnalyzerPassing")
+    }
+}
+
+public protocol CollectingCorrectableRule: CollectingRule {
+    // TODO actually call these
+    func correct(fileInfo: [FileInfo], compilerArguments: [String]) -> [Correction]
+    func correct(fileInfo: [FileInfo]) -> [Correction]
+}
+
+public extension CollectingCorrectableRule {
+    func correct(fileInfo: [FileInfo], compilerArguments: [String]) -> [Correction] {
+        return correct(fileInfo: fileInfo)
+    }
+}
+
+public extension CollectingCorrectableRule where Self: AnalyzerRule {
+    func correct(fileInfo: [FileInfo]) -> [Correction] {
+        queuedFatalError("Must call `correct(fileInfo:compilerArguments:)` for AnalyzerPassingCorrectableRule")
+    }
+}
 
 public extension ConfigurationProviderRule {
     init(configuration: Any) throws {

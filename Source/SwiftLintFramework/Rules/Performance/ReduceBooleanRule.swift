@@ -30,8 +30,7 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\breduce\\((true|false)"
         return file
-            .match(pattern: pattern,
-                   excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+            .match(pattern: pattern, with: [.identifier, .keyword])
             .map { range in
                 let reason: String
                 if file.contents[Range(range, in: file.contents)!].contains("true") {

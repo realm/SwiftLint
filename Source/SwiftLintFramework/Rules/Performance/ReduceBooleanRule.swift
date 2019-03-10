@@ -32,7 +32,7 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
         return file
             .match(pattern: pattern,
                    excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-            .compactMap { range in
+            .map { range in
                 let reason: String
                 if file.contents[Range(range, in: file.contents)!].contains("true") {
                     reason = "Use `allSatisfy` instead"

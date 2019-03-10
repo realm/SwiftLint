@@ -114,6 +114,7 @@
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
+* [Reduce Boolean](#reduce-boolean)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant @objc Attribute](#redundant-@objc-attribute)
@@ -15777,6 +15778,67 @@ class TotoTests: QuickSpec {
    }
 }
 
+```
+
+</details>
+
+
+
+## Reduce Boolean
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`reduce_boolean` | Enabled | No | performance | No | 4.2.0 
+
+Prefer using `.allSatisfy()` or `.contains()` over `reduce(true)` or `reduce(false)`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+nums.reduce(0) { $0.0 + $0.1 }
+```
+
+```swift
+nums.reduce(0.0) { $0.0 + $0.1 }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }
+```
+
+```swift
+let anyNines = nums.↓reduce(false) { $0.0 || $0.1 == 9 }
+```
+
+```swift
+let allValid = validators.↓reduce(true) { $0 && $1(input) }
+```
+
+```swift
+let anyValid = validators.↓reduce(false) { $0 || $1(input) }
+```
+
+```swift
+let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })
+```
+
+```swift
+let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })
+```
+
+```swift
+let allValid = validators.↓reduce(true, { $0 && $1(input) })
+```
+
+```swift
+let anyValid = validators.↓reduce(false, { $0 || $1(input) })
 ```
 
 </details>

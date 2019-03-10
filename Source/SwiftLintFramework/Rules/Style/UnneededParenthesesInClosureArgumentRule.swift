@@ -83,11 +83,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
             }
 
             let parametersTokens = file.syntaxMap.tokens(inByteRange: parametersByteRange)
-            let parametersAreValid = parametersTokens.reduce(true) { isValid, token in
-                guard isValid else {
-                    return false
-                }
-
+            let parametersAreValid = parametersTokens.allSatisfy { token in
                 let kind = SyntaxKind(rawValue: token.type)
                 if kind == .identifier {
                     return true

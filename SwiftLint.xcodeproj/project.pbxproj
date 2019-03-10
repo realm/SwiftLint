@@ -85,6 +85,7 @@
 		4A9A3A3A1DC1D75F00DF5183 /* HTMLReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */; };
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
+		4E342B4C2215C793008E4EF8 /* ReduceBooleanRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */; };
 		57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
 		584B0D3A2112BA78002F7E25 /* SonarQubeReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584B0D392112BA78002F7E25 /* SonarQubeReporter.swift */; };
 		584B0D3C2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json in Resources */ = {isa = PBXBuildFile; fileRef = 584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */; };
@@ -539,6 +540,7 @@
 		4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLReporter.swift; sourceTree = "<group>"; };
 		4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyCGGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexHelpers.swift; sourceTree = "<group>"; };
+		4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReduceBooleanRule.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57ED82791CF65183002B3513 /* JUnitReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JUnitReporter.swift; sourceTree = "<group>"; };
@@ -1033,6 +1035,7 @@
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
 				D414D6AD21D22FF500960935 /* LastWhereRule.swift */,
 				429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */,
+				4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */,
 			);
 			path = Performance;
 			sourceTree = "<group>";
@@ -1762,7 +1765,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which sourcery >/dev/null; then\n  make Source/SwiftLintFramework/Models/MasterRuleList.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
+			shellScript = "if which sourcery >/dev/null; then\n  make Source/SwiftLintFramework/Models/MasterRuleList.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		6CF24C421FC99616008CB0B1 /* Update Tests/LinuxMain.swift */ = {
@@ -1779,7 +1782,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which sourcery >/dev/null; then\n  make Tests/LinuxMain.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
+			shellScript = "if which sourcery >/dev/null; then\n  make Tests/LinuxMain.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		C2265FAB1A4B86AC00158358 /* Check Xcode Version */ = {
@@ -1871,6 +1874,7 @@
 				E88198571BEA953300333A11 /* ForceCastRule.swift in Sources */,
 				D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */,
 				D41985E721F85014003BE2B7 /* NSLocalizedStringKeyRule.swift in Sources */,
+				4E342B4C2215C793008E4EF8 /* ReduceBooleanRule.swift in Sources */,
 				D286EC021E02DF6F0003CF72 /* SortedImportsRule.swift in Sources */,
 				D40E041C1F46E3B30043BC4E /* SuperfluousDisableCommandRule.swift in Sources */,
 				82F614F42106015100D23904 /* MultilineArgumentsBracketsRule.swift in Sources */,

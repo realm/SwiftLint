@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.
+  [Xavier Lowmiller](https://github.com/xavierLowmiller)
+  [#2675](https://github.com/realm/SwiftLint/issues/2675)
+
 * Add `nsobject_prefer_isequal` rule to warn against implementing `==` on an
   `NSObject` subclass as calling `isEqual` (i.e. when using the class from
   Objective-C) will will not use the defined `==` method.  

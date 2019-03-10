@@ -60,8 +60,8 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
 
     private func areAllArguments(toMethod method: [String: SourceKitRepresentable],
                                  ofType typeName: String) -> Bool {
-        return method.enclosedVarParameters.reduce(true) { soFar, param -> Bool in
-            soFar && (param.typeName == typeName)
+        return method.enclosedVarParameters.allSatisfy { param in
+            param.typeName == typeName
         }
     }
 }

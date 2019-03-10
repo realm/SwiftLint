@@ -7,7 +7,7 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
 
     public static let description = RuleDescription(
         identifier: "reduce_boolean",
-        name: "Prefer allSatisfy or contains over reduce(true) or reduce(false)",
+        name: "Reduce Boolean",
         description: "Prefer using `.allSatisfy()` or `.contains()` over `reduce(true)` or `reduce(false)`",
         kind: .performance,
         minSwiftVersion: .fourDotTwo,

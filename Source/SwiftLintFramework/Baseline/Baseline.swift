@@ -18,16 +18,19 @@ public class Baseline {
                 location: locationWithoutRoot(violation: violation),
                 reason: violation.reason
         )
-        let contains = baselineViolations.contains(baselineViolation)
-        return contains
+        return baselineViolations.contains(baselineViolation)
     }
 
     public func saveBaseline(violations: [StyleViolation]) {
         let fileContent = violations.map(generateForSingleViolation).joined(separator: "\n")
         let fileManager = FileManager.default
         if !fileManager.fileExists(atPath: baselinePath) {
-            let isFileCreated = fileManager.createFile(atPath: baselinePath, contents: fileContent.data(using: .utf8))
-            print("File was created: \(isFileCreated)")
+            do {
+                try fileManager.createDirectory(atPath: rootPath, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print("Error while creating a directory for baseline. \(error)")
+            }
+            fileManager.createFile(atPath: baselinePath, contents: fileContent.data(using: .utf8))
         }
     }
 
@@ -61,8 +64,7 @@ public class Baseline {
         guard let rootRange = violation.location.description.range(of: rootPath) else {
             return violation.location.description
         }
-        let blah = String(violation.location.description[rootRange.upperBound...])
-        return blah
+        return String(violation.location.description[rootRange.upperBound...])
     }
 
     private func generateForSingleViolation(_ violation: StyleViolation) -> String {

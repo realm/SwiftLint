@@ -83,10 +83,6 @@ private extension Rule {
             allViolations: violations
         )
 
-        let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
-            regions: regions, configuration: configuration,
-            superfluousDisableCommandRule: superfluousDisableCommandRule)
-
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
             enabledViolations = enabledViolationsAndRegions.compactMap { violation, _ in
@@ -101,37 +97,9 @@ private extension Rule {
             return identifiers.map { ($0, ruleID) }
         }
 
-        return LintResult(
-            violations: enabledViolations + superfluousDisableCommandViolations + undefinedSuperfluousCommandViolations,
-            ruleTime: ruleTime,
-            deprecatedToValidIDPairs: deprecatedToValidIDPairs)
-    }
-
-    private func undefinedSuperfluousCommandViolations(regions: [Region],
-                                                       configuration: Configuration,
-                                                       superfluousDisableCommandRule: SuperfluousDisableCommandRule?
-        ) -> [StyleViolation] {
-        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
-            return []
-        }
-        let allCustomIdentifiers = configuration.customRuleIdentifiers.map { RuleIdentifier($0) }
-        let allRuleIdentifiers = masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) }
-        let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers)
-        let regions = regions.filter {
-            !$0.disabledRuleIdentifiers.contains(.all) &&
-                $0.disabledRuleIdentifiers.isDisjoint(with: allValidIdentifiers)
-        }
-
-        return regions.flatMap { region in
-            region.disabledRuleIdentifiers.filter({ !allValidIdentifiers.contains($0) }).map { id in
-                return StyleViolation(
-                    ruleDescription: type(of: superfluousDisableCommandRule).description,
-                    severity: superfluousDisableCommandRule.configuration.severity,
-                    location: region.start,
-                    reason: superfluousDisableCommandRule.reason(for: id.stringRepresentation)
-                )
-            }
-        }
+        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
+                          ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 }
 
@@ -168,7 +136,11 @@ public struct Linter {
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: self.compilerArguments)
         }
-        let violations = validationResults.flatMap { $0.violations }
+        let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
+            regions: regions, configuration: configuration,
+            superfluousDisableCommandRule: superfluousDisableCommandRule)
+
+        let violations = validationResults.flatMap { $0.violations } + undefinedSuperfluousCommandViolations
         let ruleTimes = validationResults.compactMap { $0.ruleTime }
         var deprecatedToValidIdentifier = [String: String]()
         for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
@@ -245,6 +217,29 @@ public struct Linter {
                                                  indentWidth: indentWidth)
         if let formattedContents = formattedContents {
             file.write(formattedContents)
+        }
+    }
+
+    private func undefinedSuperfluousCommandViolations(regions: [Region],
+                                                       configuration: Configuration,
+                                                       superfluousDisableCommandRule: SuperfluousDisableCommandRule?
+        ) -> [StyleViolation] {
+        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+            return []
+        }
+        let allCustomIdentifiers = configuration.customRuleIdentifiers.map { RuleIdentifier($0) }
+        let allRuleIdentifiers = masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) }
+        let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers + [.all])
+
+        return regions.flatMap { region in
+            region.disabledRuleIdentifiers.filter({ !allValidIdentifiers.contains($0) }).map { id in
+                return StyleViolation(
+                    ruleDescription: type(of: superfluousDisableCommandRule).description,
+                    severity: superfluousDisableCommandRule.configuration.severity,
+                    location: region.start,
+                    reason: superfluousDisableCommandRule.reason(forNonExistentRule: id.stringRepresentation)
+                )
+            }
         }
     }
 }

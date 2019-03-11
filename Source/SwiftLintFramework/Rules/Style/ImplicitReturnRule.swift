@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, OptInRule, AutomaticTestableRule {
+public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule,
+                                  AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -54,27 +55,11 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: self.violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "")
     }
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: File) -> [NSRange] {
         let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
         let contents = file.contents.bridge()
 

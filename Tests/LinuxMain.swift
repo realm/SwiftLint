@@ -232,6 +232,21 @@ extension CyclomaticComplexityRuleTests {
     ]
 }
 
+extension DeploymentTargetConfigurationTests {
+    static var allTests: [(String, (DeploymentTargetConfigurationTests) -> () throws -> Void)] = [
+        ("testAppliesConfigurationFromDictionary", testAppliesConfigurationFromDictionary),
+        ("testThrowsOnBadConfig", testThrowsOnBadConfig)
+    ]
+}
+
+extension DeploymentTargetRuleTests {
+    static var allTests: [(String, (DeploymentTargetRuleTests) -> () throws -> Void)] = [
+        ("testRule", testRule),
+        ("testMacOSAttributeReason", testMacOSAttributeReason),
+        ("testWatchOSConditionReason", testWatchOSConditionReason)
+    ]
+}
+
 extension DisableAllTests {
     static var allTests: [(String, (DisableAllTests) -> () throws -> Void)] = [
         ("testViolatingPhrase", testViolatingPhrase),
@@ -381,7 +396,11 @@ extension ExplicitTypeInterfaceRuleTests {
         ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExcludeLocalVars", testExcludeLocalVars),
         ("testExcludeClassVars", testExcludeClassVars),
-        ("testAllowRedundancy", testAllowRedundancy)
+        ("testAllowRedundancy", testAllowRedundancy),
+        ("testEmbededInStatements", testEmbededInStatements),
+        ("testCaptureGroup", testCaptureGroup),
+        ("testFastEnumerationDeclaration", testFastEnumerationDeclaration),
+        ("testSwitchCaseDeclarations", testSwitchCaseDeclarations)
     ]
 }
 
@@ -793,6 +812,18 @@ extension MultipleClosuresWithTrailingClosureRuleTests {
     ]
 }
 
+extension NSLocalizedStringKeyRuleTests {
+    static var allTests: [(String, (NSLocalizedStringKeyRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NSObjectPreferIsEqualRuleTests {
+    static var allTests: [(String, (NSObjectPreferIsEqualRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension NestingRuleTests {
     static var allTests: [(String, (NestingRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -833,7 +864,8 @@ extension NumberSeparatorRuleTests {
     static var allTests: [(String, (NumberSeparatorRuleTests) -> () throws -> Void)] = [
         ("testNumberSeparatorWithDefaultConfiguration", testNumberSeparatorWithDefaultConfiguration),
         ("testNumberSeparatorWithMinimumLength", testNumberSeparatorWithMinimumLength),
-        ("testNumberSeparatorWithMinimumFractionLength", testNumberSeparatorWithMinimumFractionLength)
+        ("testNumberSeparatorWithMinimumFractionLength", testNumberSeparatorWithMinimumFractionLength),
+        ("testNumberSeparatorWithExcludeRanges", testNumberSeparatorWithExcludeRanges)
     ]
 }
 
@@ -952,6 +984,12 @@ extension QuickDiscouragedPendingTestRuleTests {
     ]
 }
 
+extension ReduceBooleanRuleTests {
+    static var allTests: [(String, (ReduceBooleanRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RedundantDiscardableLetRuleTests {
     static var allTests: [(String, (RedundantDiscardableLetRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1023,6 +1061,12 @@ extension ReporterTests {
         ("testHTMLReporter", testHTMLReporter),
         ("testSonarQubeReporter", testSonarQubeReporter),
         ("testMarkdownReporter", testMarkdownReporter)
+    ]
+}
+
+extension RequiredDeinitRuleTests {
+    static var allTests: [(String, (RequiredDeinitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1365,6 +1409,12 @@ extension VoidReturnRuleTests {
     ]
 }
 
+extension WeakComputedProperyRuleTests {
+    static var allTests: [(String, (WeakComputedProperyRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension WeakDelegateRuleTests {
     static var allTests: [(String, (WeakDelegateRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1447,6 +1497,8 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(DeploymentTargetConfigurationTests.allTests),
+    testCase(DeploymentTargetRuleTests.allTests),
     testCase(DisableAllTests.allTests),
     testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
@@ -1520,6 +1572,8 @@ XCTMain([
     testCase(MultilineParametersBracketsRuleTests.allTests),
     testCase(MultilineParametersRuleTests.allTests),
     testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
+    testCase(NSLocalizedStringKeyRuleTests.allTests),
+    testCase(NSObjectPreferIsEqualRuleTests.allTests),
     testCase(NestingRuleTests.allTests),
     testCase(NimbleOperatorRuleTests.allTests),
     testCase(NoExtensionAccessModifierRuleTests.allTests),
@@ -1545,6 +1599,7 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
+    testCase(ReduceBooleanRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),
     testCase(RedundantNilCoalescingRuleTests.allTests),
     testCase(RedundantObjcAttributeRuleTests.allTests),
@@ -1555,6 +1610,7 @@ XCTMain([
     testCase(RedundantVoidReturnRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
+    testCase(RequiredDeinitRuleTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),
@@ -1600,6 +1656,7 @@ XCTMain([
     testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
+    testCase(WeakComputedProperyRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),
     testCase(XCTSpecificMatcherRuleTests.allTests),

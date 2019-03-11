@@ -110,7 +110,7 @@ extension File {
     internal func matchesAndSyntaxKinds(matching pattern: String,
                                         range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
         return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
-            (textCheckingResult, tokens.compactMap { SyntaxKind(rawValue: $0.type) })
+            (textCheckingResult, tokens.kinds)
         }
     }
 
@@ -183,7 +183,7 @@ extension File {
             return nil
         }
 
-        return tokens.map { $0.compactMap { SyntaxKind(rawValue: $0.type) } }
+        return tokens.map { $0.kinds }
     }
 
     //Added by S2dent
@@ -325,5 +325,10 @@ extension File {
         let aclString = contents.bridge().substringWithByteRange(start: token.offset,
                                                                  length: token.length)
         return aclString.flatMap(AccessControlLevel.init(description:)) != nil
+    }
+
+    internal func contents(for token: SyntaxToken) -> String? {
+        return contents.bridge().substringWithByteRange(start: token.offset,
+                                                        length: token.length)
     }
 }

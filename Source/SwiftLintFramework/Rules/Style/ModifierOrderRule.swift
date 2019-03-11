@@ -132,14 +132,14 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     ) -> [(priority: Int, modifier: ModifierDescription)] {
         let prioritizedPreferredModifierGroups = ([.atPrefixed] + configuration.preferredModifierOrder).enumerated()
         return violatableModifiers.reduce(
-            [(priority: Int, modifier: ModifierDescription)]()
+            into: [(priority: Int, modifier: ModifierDescription)]()
         ) { prioritizedModifiers, modifier in
             guard let priority = prioritizedPreferredModifierGroups.first(
                 where: { _, group in modifier.group == group }
             )?.offset else {
-                return prioritizedModifiers
+                return
             }
-            return prioritizedModifiers + [(priority: priority, modifier: modifier)]
+            prioritizedModifiers.append((priority: priority, modifier: modifier))
         }
     }
 

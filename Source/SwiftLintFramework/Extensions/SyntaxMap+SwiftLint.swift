@@ -11,7 +11,7 @@ extension SyntaxMap {
                 .intersects(byteRange)
         }
 
-        guard let startIndex = tokens.index(where: intersect) else {
+        guard let startIndex = tokens.firstIndex(where: intersect) else {
             return []
         }
         let tokensBeginningIntersect = tokens.lazy.suffix(from: startIndex)
@@ -19,6 +19,6 @@ extension SyntaxMap {
     }
 
     internal func kinds(inByteRange byteRange: NSRange) -> [SyntaxKind] {
-        return tokens(inByteRange: byteRange).compactMap { SyntaxKind(rawValue: $0.type) }
+        return tokens(inByteRange: byteRange).kinds
     }
 }

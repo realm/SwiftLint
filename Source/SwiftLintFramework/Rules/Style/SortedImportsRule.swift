@@ -160,15 +160,15 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
 
     private func violatingOffsets(inGroups groups: [[Line]]) -> [Int] {
         return groups.flatMap { group in
-            return zip(group, group.dropFirst()).reduce([]) { violatingOffsets, groupPair in
+            return zip(group, group.dropFirst()).reduce(into: []) { violatingOffsets, groupPair in
                 let (previous, current) = groupPair
                 let isOrderedCorrectly = previous <= current
                 if isOrderedCorrectly {
-                    return violatingOffsets
+                    return
                 }
                 let distance = current.content.distance(from: current.content.startIndex,
                                                         to: current.importModuleRange().lowerBound)
-                return violatingOffsets + [current.range.location + distance]
+                violatingOffsets.append(current.range.location + distance)
             }
         }
     }

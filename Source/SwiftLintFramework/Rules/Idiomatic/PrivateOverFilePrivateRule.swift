@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, CorrectableRule {
+public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = PrivateOverFilePrivateRuleConfiguration()
 
     public init() {}
@@ -63,7 +63,7 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
         }
     }
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: File) -> [NSRange] {
         let syntaxTokens = file.syntaxMap.tokens
         let contents = file.contents.bridge()
 
@@ -90,23 +90,7 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "private")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "private")
     }
 }

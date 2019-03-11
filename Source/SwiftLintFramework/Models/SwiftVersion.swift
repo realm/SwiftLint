@@ -23,16 +23,25 @@ public extension SwiftVersion {
     static let four = SwiftVersion(rawValue: "4.0.0")
     static let fourDotOne = SwiftVersion(rawValue: "4.1.0")
     static let fourDotTwo = SwiftVersion(rawValue: "4.2.0")
+    static let five = SwiftVersion(rawValue: "5.0.0")
 
     static let current: SwiftVersion = {
         // Allow forcing the Swift version, useful in cases where SourceKit isn't available
         if let envVersion = ProcessInfo.processInfo.environment["SWIFTLINT_SWIFT_VERSION"] {
             switch envVersion {
+            case "5":
+                return .five
             case "4":
                 return .four
             default:
                 return .three
             }
+        }
+
+        if !Request.disableSourceKit,
+            case let dynamicCallableFile = File(contents: "@dynamicCallable"),
+            dynamicCallableFile.syntaxMap.tokens.compactMap({ SyntaxKind(rawValue: $0.type) }) == [.attributeID] {
+            return .five
         }
 
         let file = File(contents: """

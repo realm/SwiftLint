@@ -1,3 +1,155 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.
+  [Xavier Lowmiller](https://github.com/xavierLowmiller)
+  [#2675](https://github.com/realm/SwiftLint/issues/2675)
+
+* Add `nsobject_prefer_isequal` rule to warn against implementing `==` on an
+  `NSObject` subclass as calling `isEqual` (i.e. when using the class from
+  Objective-C) will will not use the defined `==` method.  
+  [Matthew Healy](https://github.com/matthew-healy)
+  [#2663](https://github.com/realm/SwiftLint/pull/2663)
+
+#### Bug Fixes
+
+* `colon` rule now catches violations when declaring generic types with
+  inheritance or protocol conformance.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2628](https://github.com/realm/SwiftLint/issues/2628)
+
+## 0.31.0: Busy Laundromat
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+* Add `deployment_target` rule to validate that `@availability` attributes and
+  `#available` conditions are not using a version that is satisfied by the
+  deployment target. Since SwiftLint can't read an Xcode project, you need to
+  configure this rule with these keys: `iOS_deployment_target`,
+  `macOS_deployment_target`, `watchOS_deployment_target` and
+  `tvOS_deployment_target`. By default, these values are configured with the
+  minimum versions supported by Swift.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2589](https://github.com/realm/SwiftLint/issues/2589)
+
+* Add `weak_computed_property` rule to warn against using `weak` in a computed
+  property as it has no effect.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2596](https://github.com/realm/SwiftLint/issues/2596)
+
+* Add `SwiftVersion.five` and automatically detect it when computing
+  `SwiftVersion.current`.  
+  [JP Simard](https://github.com/jpsim)
+
+* Make `redundant_objc_attribute` rule autocorrectable.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+
+* Add `required_deinit` opt-in rule to ensure that all classes have a deinit
+  method. The purpose of this is to make memory leak debugging easier so all
+  classes have a place to set a breakpoint to track deallocation.  
+  [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)
+  [#2620](https://github.com/realm/SwiftLint/issues/2620)
+
+* `nimble_operator` now warns about `beTrue()` and `beFalse()`.  
+  [Igor-Palaguta](https://github.com/Igor-Palaguta)
+  [#2613](https://github.com/realm/SwiftLint/issues/2613)
+
+* Warn if a configured rule is not enabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1350](https://github.com/realm/SwiftLint/issues/1350)
+
+* Add `exclude_ranges` option to `number_separator` for exclusion.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2637](https://github.com/realm/SwiftLint/issues/2637)
+
+#### Bug Fixes
+
+* Fix false positives on `no_grouping_extension` rule when using `where`
+  clause.  
+  [Almaz Ibragimov](https://github.com/almazrafi)
+
+* Fix `explicit_type_interface` when used in statements.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2154](https://github.com/realm/SwiftLint/issues/2154)
+
+* Fix `lower_acl_than_parent` when linting with Swift 5.  
+  [JP Simard](https://github.com/jpsim)
+  [#2607](https://github.com/realm/SwiftLint/issues/2607)
+
+* Fix `let_var_whitespace` with `#warning`.  
+  [Igor-Palaguta](https://github.com/Igor-Palaguta)
+  [#2544](https://github.com/realm/SwiftLint/issues/2544)
+
+* Fix excessive `superfluous_disable_command` violations being reported when
+  using an invalid rule identifier in a disable command.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2623](https://github.com/realm/SwiftLint/issues/2623)
+
+* Fix `explicit_type_interface` with `allow_redundancy` when assigning type
+  references to variables.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2636](https://github.com/realm/SwiftLint/issues/2636)
+
+* Fix `unused_closure_parameter` when argument is named `self`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2437](https://github.com/realm/SwiftLint/issues/2437)
+
+* Fix `first_where` for some calls on Realm collection types.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1930](https://github.com/realm/SwiftLint/issues/1930)
+
+## 0.30.1: Localized Stain Remover
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* Silence `CodingKeys` violations in `unused_private_declaration` since these
+  should always be intentional violations.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#2573](https://github.com/realm/SwiftLint/issues/2573)
+
+#### Enhancements
+
+* Add `nslocalizedstring_key` opt-in rule to validate that keys used in
+  `NSLocalizedString` calls are static strings, so `genstrings` will be
+  able to find them.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+#### Bug Fixes
+
+* Fix false positives on `trailing_closure` rule when using anonymous closure
+  calls.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2159](https://github.com/realm/SwiftLint/issues/2159)
+
+* Fix false positives on `array_init` rule when using prefix operators.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1877](https://github.com/realm/SwiftLint/issues/1877)
+
+* Exclude files defined in the `excluded` value of SwiftLint's configuration
+  when `--use-script-input-files` and `--force-exclude` are specified.  
+  [Luis Valdés](https://github.com/luvacu)
+  [#591](https://github.com/realm/SwiftLint/issues/591)
+
 ## 0.30.0: A New Washer and Dryer Set
 
 #### Breaking
@@ -118,7 +270,7 @@
   types.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2539](https://github.com/realm/SwiftLint/issues/2539)
-  
+
 * Fix false positives on `vertical_whitespace_between_cases` rule when a blank
   line is present but it contains trailing whitespace.  
   [Ben Staveley-Taylor](https://github.com/BenStaveleyTaylor)

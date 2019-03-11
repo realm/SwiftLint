@@ -1,13 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private extension File {
-    func violatingClosingBraceRanges() -> [NSRange] {
-        return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-    }
-}
-
-public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ClosingBraceRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -32,30 +26,18 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.violatingClosingBraceRanges().map {
+        return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingClosingBraceRanges(), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
+    public func violationRanges(in file: File) -> [NSRange] {
+        return file.match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+    }
 
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "})")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "})")
     }
 }

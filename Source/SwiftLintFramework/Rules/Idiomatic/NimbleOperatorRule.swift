@@ -20,6 +20,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             "expect(10) <= 10\n",
             "expect(x) === x",
             "expect(10) == 10",
+            "expect(success) == true",
             "expect(object.asyncFunction()).toEventually(equal(1))\n",
             "expect(actual).to(haveCount(expected))\n",
             """
@@ -39,6 +40,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             "↓expect(10).to(beLessThan(11))\n",
             "↓expect(10).to(beLessThanOrEqualTo(10))\n",
             "↓expect(x).to(beIdenticalTo(x))\n",
+            "↓expect(success).to(beTrue())\n",
+            "↓expect(success).to(beFalse())\n",
             "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n"
         ],
         corrections: [
@@ -53,20 +56,39 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             "↓expect(10).to(beLessThan(11))\n": "expect(10) < 11\n",
             "↓expect(10).to(beLessThanOrEqualTo(10))\n": "expect(10) <= 10\n",
             "↓expect(x).to(beIdenticalTo(x))\n": "expect(x) === x\n",
+            "↓expect(success).to(beTrue())\n": "expect(success) == true\n",
+            "↓expect(success).to(beFalse())\n": "expect(success) == false\n",
+            "↓expect(success).toNot(beFalse())\n": "expect(success) != false\n",
+            "↓expect(success).toNot(beTrue())\n": "expect(success) != true\n",
             "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n": "expect(10) > 2\n expect(10) > 2\n"
         ]
     )
 
-    fileprivate typealias Operators = (to: String?, toNot: String?)
     fileprivate typealias MatcherFunction = String
 
-    private let operatorsMapping: [MatcherFunction: Operators] = [
-        "equal": (to: "==", toNot: "!="),
-        "beIdenticalTo": (to: "===", toNot: "!=="),
-        "beGreaterThan": (to: ">", toNot: nil),
-        "beGreaterThanOrEqualTo": (to: ">=", toNot: nil),
-        "beLessThan": (to: "<", toNot: nil),
-        "beLessThanOrEqualTo": (to: "<=", toNot: nil)
+    fileprivate enum Arity {
+        case nullary(analogueValue: String)
+        case withArguments
+
+        var hasArguments: Bool {
+            guard case .withArguments = self else {
+                return false
+            }
+            return true
+        }
+    }
+
+    fileprivate typealias PredicateDescription = (to: String?, toNot: String?, arity: Arity)
+
+    private let predicatesMapping: [MatcherFunction: PredicateDescription] = [
+        "equal": (to: "==", toNot: "!=", .withArguments),
+        "beIdenticalTo": (to: "===", toNot: "!==", .withArguments),
+        "beGreaterThan": (to: ">", toNot: nil, .withArguments),
+        "beGreaterThanOrEqualTo": (to: ">=", toNot: nil, .withArguments),
+        "beLessThan": (to: "<", toNot: nil, .withArguments),
+        "beLessThanOrEqualTo": (to: "<=", toNot: nil, .withArguments),
+        "beTrue": (to: "==", toNot: "!=", .nullary(analogueValue: "true")),
+        "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: "false"))
     ]
 
     public func validate(file: File) -> [StyleViolation] {
@@ -79,11 +101,17 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 
     private func violationMatchesRanges(in file: File) -> [NSRange] {
-        let operatorNames = operatorsMapping.keys
-        let operatorsPattern = "(" + operatorNames.joined(separator: "|") + ")"
+        let operandPattern = "(.(?!expect\\())+?"
 
-        let variablePattern = "(.(?!expect\\())+?"
-        let pattern = "expect\\(\(variablePattern)\\)\\.to(Not)?\\(\(operatorsPattern)\\(\(variablePattern)\\)\\)"
+        let operatorsPattern = "(" + predicatesMapping.map { name, predicateDescription in
+            let argumentsPattern = predicateDescription.arity.hasArguments
+                ? operandPattern
+                : ""
+
+            return "\(name)\\(\(argumentsPattern)\\)"
+        }.joined(separator: "|") + ")"
+
+        let pattern = "expect\\(\(operandPattern)\\)\\.to(Not)?\\(\(operatorsPattern)\\)"
 
         let excludingKinds = SyntaxKind.commentKinds
 
@@ -117,7 +145,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         var contents = file.contents
 
         for range in matches.sorted(by: { $0.location > $1.location }) {
-            for (functionName, operatorCorrections) in operatorsMapping {
+            for (functionName, operatorCorrections) in predicatesMapping {
                 guard let correctedString = contents.replace(function: functionName,
                                                              with: operatorCorrections,
                                                              in: range)
@@ -141,26 +169,35 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 private extension String {
     /// Returns corrected string if the correction is possible, otherwise returns nil.
     func replace(function name: NimbleOperatorRule.MatcherFunction,
-                 with operators: NimbleOperatorRule.Operators,
+                 with predicateDescription: NimbleOperatorRule.PredicateDescription,
                  in range: NSRange) -> String? {
         let anything = "\\s*(.*?)\\s*"
 
-        let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", operators.to)
-        let toNotPattern = ("expect\\(\(anything)\\)\\.toNot\\(\(name)\\(\(anything)\\)\\)", operators.toNot)
-
-        var correctedString: String?
+        let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", predicateDescription.to)
+        let toNotPattern = ("expect\\(\(anything)\\)\\.toNot\\(\(name)\\(\(anything)\\)\\)", predicateDescription.toNot)
 
         for case let (pattern, operatorString?) in [toPattern, toNotPattern] {
             let expression = regex(pattern)
-            if !expression.matches(in: self, options: [], range: range).isEmpty {
-                correctedString = expression.stringByReplacingMatches(in: self,
-                                                                      options: [],
-                                                                      range: range,
-                                                                      withTemplate: "expect($1) \(operatorString) $2")
-                break
+            guard !expression.matches(in: self, options: [], range: range).isEmpty else {
+                continue
             }
+
+            let valueReplacementPattern: String
+            switch predicateDescription.arity {
+            case .nullary(let analogueValue):
+                valueReplacementPattern = analogueValue
+            case .withArguments:
+                valueReplacementPattern = "$2"
+            }
+
+            let replacementPattern = "expect($1) \(operatorString) \(valueReplacementPattern)"
+
+            return expression.stringByReplacingMatches(in: self,
+                                                       options: [],
+                                                       range: range,
+                                                       withTemplate: replacementPattern)
         }
 
-        return correctedString
+        return nil
     }
 }

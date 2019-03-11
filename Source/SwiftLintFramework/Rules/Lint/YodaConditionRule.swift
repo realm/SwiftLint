@@ -68,10 +68,10 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
                 return []
         }
 
-        let matches = file.lines.filter({ $0.byteRange.contains(offset) }).reduce([]) { matches, line in
+        let matches = file.lines.filter({ $0.byteRange.contains(offset) }).reduce(into: []) { matches, line in
             let range = NSRange(location: 0, length: line.content.bridge().length)
             let lineMatches = YodaConditionRule.regularExpression.matches(in: line.content, options: [], range: range)
-            return matches + lineMatches
+            matches.append(contentsOf: lineMatches)
         }
 
         return matches.map { _ -> StyleViolation in

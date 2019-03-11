@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
+public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
+                                          AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -43,6 +44,11 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             withPostSideEffect { input in
                 if true { print("\\(input)") }
             }
+            """,
+            """
+            viewModel?.profileImage.didSet(weak: self) { (self, profileImage) in
+                self.profileImageView.image = profileImage
+            }
             """
         ],
         triggeringExamples: [
@@ -55,7 +61,12 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "hoge(arg: num) { ↓num in\n" +
             "}\n",
             "fooFunc { ↓아 in\n }",
-            "func foo () {\n bar { ↓number in\n return 3\n}\n"
+            "func foo () {\n bar { ↓number in\n return 3\n}\n",
+            """
+            viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
+                profileImageView.image = profileImage
+            }
+            """
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -96,6 +107,15 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                                   location: Location(file: file, characterOffset: range.location),
                                   reason: reason)
         }
+    }
+
+    public func violationRanges(in file: File, kind: SwiftExpressionKind,
+                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+        return violationRanges(in: file, dictionary: dictionary, kind: kind).map { $0.range }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "_")
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable],
@@ -140,7 +160,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 }
 
                 let token = tokens.first(where: { token -> Bool in
-                    return SyntaxKind(rawValue: token.type) == .identifier &&
+                    return (SyntaxKind(rawValue: token.type) == .identifier
+                        || (SyntaxKind(rawValue: token.type) == .keyword && name == "self")) &&
                         token.offset == byteRange.location &&
                         token.length == byteRange.length
                 })
@@ -163,46 +184,5 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             let range = NSRange(location: 0, length: length)
             return regex("\\A[\\s\\(]*?\\{").firstMatch(in: name, options: [], range: range) != nil
         } ?? false
-    }
-
-    private func violationRanges(in file: File,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var ranges = violationRanges(in: file, dictionary: subDict)
-            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
-                ranges += violationRanges(in: file, dictionary: subDict, kind: kind).map { $0.0 }
-            }
-
-            return ranges
-        }
-
-        return ranges.unique
-    }
-
-    private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
-            lhs.location < rhs.location
-        }
-    }
-
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: "_")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
-        }
     }
 }

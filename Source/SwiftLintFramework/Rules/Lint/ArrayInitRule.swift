@@ -19,7 +19,9 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             "foo.map { ((), $0) }\n",
             "foo.map { $0! }\n",
             "foo.map { $0! /* force unwrap */ }\n",
-            "foo.something { RouteMapper.map($0) }\n"
+            "foo.something { RouteMapper.map($0) }\n",
+            "foo.map { !$0 }\n",
+            "foo.map { /* a comment */ !$0 }\n"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 })\n",
@@ -37,7 +39,8 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             "↓foo.map { elem -> String in\n" +
             "   elem\n" +
             "}\n",
-            "↓foo.map { $0 /* a comment */ }\n"
+            "↓foo.map { $0 /* a comment */ }\n",
+            "↓foo.map { /* a comment */ $0 }\n"
         ]
     )
 
@@ -68,7 +71,8 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             isParameterStyleViolation(file: file, dictionary: dictionary, tokens: tokens),
             let lastToken = tokens.last,
             case let bodyEndPosition = bodyOffset + bodyLength,
-            !containsTrailingContent(lastToken: lastToken, bodyEndPosition: bodyEndPosition, file: file) else {
+            !containsTrailingContent(lastToken: lastToken, bodyEndPosition: bodyEndPosition, file: file),
+            !containsLeadingContent(tokens: tokens, bodyStartPosition: bodyOffset, file: file) else {
                 return []
         }
 
@@ -98,10 +102,38 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
                                          file: File) -> Bool {
         let lastTokenEnd = lastToken.offset + lastToken.length
         let remainingLength = bodyEndPosition - lastTokenEnd
-        let nsstring = file.contents.bridge()
         let remainingRange = NSRange(location: lastTokenEnd, length: remainingLength)
-        let remainingTokens = file.syntaxMap.tokens(inByteRange: remainingRange)
-        let ranges = NSMutableIndexSet(indexesIn: remainingRange)
+        return containsContent(inByteRange: remainingRange, file: file)
+    }
+
+    private func containsLeadingContent(tokens: [SyntaxToken],
+                                        bodyStartPosition: Int,
+                                        file: File) -> Bool {
+        let inTokenPosition = tokens.firstIndex(where: { token in
+            SyntaxKind(rawValue: token.type) == .keyword && file.contents(for: token) == "in"
+        })
+
+        let firstToken: SyntaxToken
+        let start: Int
+        if let position = inTokenPosition {
+            let index = tokens.index(after: position)
+            firstToken = tokens[index]
+            let inToken = tokens[position]
+            start = inToken.offset + inToken.length
+        } else {
+            firstToken = tokens[0]
+            start = bodyStartPosition
+        }
+
+        let length = firstToken.offset - start
+        let remainingRange = NSRange(location: start, length: length)
+        return containsContent(inByteRange: remainingRange, file: file)
+    }
+
+    private func containsContent(inByteRange byteRange: NSRange, file: File) -> Bool {
+        let nsstring = file.contents.bridge()
+        let remainingTokens = file.syntaxMap.tokens(inByteRange: byteRange)
+        let ranges = NSMutableIndexSet(indexesIn: byteRange)
 
         for token in remainingTokens {
             ranges.remove(in: NSRange(location: token.offset, length: token.length))
@@ -127,7 +159,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 
     private func isShortParameterStyleViolation(file: File, tokens: [SyntaxToken]) -> Bool {
-        let kinds = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
+        let kinds = tokens.kinds
         switch kinds {
         case [.identifier]:
             let identifier = file.contents(for: tokens[0])
@@ -157,7 +189,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             return !isKeyword || file.contents(for: token) != "in"
         })
 
-        let kinds = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
+        let kinds = tokens.kinds
         switch kinds {
         case [.keyword, .identifier]:
             let keyword = file.contents(for: tokens[0])
@@ -177,12 +209,5 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 private extension Array where Element == SyntaxKind {
     static func ~= (array: [SyntaxKind], value: [SyntaxKind]) -> Bool {
         return array == value
-    }
-}
-
-private extension File {
-    func contents(for token: SyntaxToken) -> String? {
-        return contents.bridge().substringWithByteRange(start: token.offset,
-                                                        length: token.length)
     }
 }

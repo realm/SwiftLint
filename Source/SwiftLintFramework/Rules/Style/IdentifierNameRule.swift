@@ -90,7 +90,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
         if kind == .enumelement,
             SwiftVersion.current > .fourDotOne,
-            let parenIndex = name.index(of: "("),
+            let parenIndex = name.firstIndex(of: "("),
             parenIndex > name.startIndex {
             let index = name.index(before: parenIndex)
             name = String(name[...index])

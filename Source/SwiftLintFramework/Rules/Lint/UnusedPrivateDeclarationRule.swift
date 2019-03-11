@@ -15,11 +15,35 @@ public struct UnusedPrivateDeclarationRule: AutomaticTestableRule, Configuration
             """
             private let kConstant = 0
             _ = kConstant
+            """,
+            """
+            struct ResponseModel: Codable {
+                let items: [Item]
+
+                private enum CodingKeys: String, CodingKey {
+                    case items = "ResponseItems"
+                }
+            }
+            """,
+            """
+            class ResponseModel {
+                @objc private func foo() {
+                }
+            }
             """
         ],
         triggeringExamples: [
             """
             private let ↓kConstant = 0
+            """,
+            """
+            struct ResponseModel: Codable {
+                let items: [Item]
+
+                private enum ↓CodingKeys: String {
+                    case items = "ResponseItems"
+                }
+            }
             """
         ],
         requiresFileOnDisk: true
@@ -96,6 +120,14 @@ private extension File {
             // Skip declarations that override another. This works for both subclass overrides &
             // protocol extension overrides.
             if cursorInfo["key.overrides"] != nil {
+                return nil
+            }
+
+            // Skip CodingKeys as they are used
+            if kind == .enum,
+                cursorInfo.name == "CodingKeys",
+                let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
+                annotatedDecl.contains("usr=\"s:s9CodingKeyP\">CodingKey<") {
                 return nil
             }
             return (usr, Int(offset))

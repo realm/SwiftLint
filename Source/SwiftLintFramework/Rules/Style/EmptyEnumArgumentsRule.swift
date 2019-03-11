@@ -18,7 +18,7 @@ private func wrapInFunc(_ str: String) -> String {
     """
 }
 
-public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
+public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -63,8 +63,12 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         }
     }
 
-    private func violationRanges(in file: File, kind: StatementKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "")
+    }
+
+    public func violationRanges(in file: File, kind: StatementKind,
+                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .case else {
             return []
         }
@@ -116,43 +120,6 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
 
                 return parenthesesRange
             }
-        }
-    }
-
-    private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var ranges = violationRanges(in: file, dictionary: subDict)
-            if let kind = subDict.kind.flatMap(StatementKind.init(rawValue:)) {
-                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
-            }
-
-            return ranges
-        }
-    }
-
-    private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
-            lhs.location < rhs.location
-        }
-    }
-
-    public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for violatingRange in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "")
-                adjustedLocations.insert(violatingRange.location, at: 0)
-            }
-        }
-
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0))
         }
     }
 }

@@ -15,8 +15,8 @@ extension Configuration {
         case analyzerRules = "analyzer_rules"
     }
 
-    private static func validKeys(ruleList: RuleList) -> [String] {
-        return [
+    private static let validGlobalKeys: Set<String> = {
+        return Set([
             Key.cachePath,
             .disabledRules,
             .enabledRules,
@@ -30,7 +30,13 @@ extension Configuration {
             .whitelistRules,
             .indentation,
             .analyzerRules
-        ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
+        ].map({ $0.rawValue }))
+    }()
+
+    private static func validKeys(ruleList: RuleList) -> Set<String> {
+        var keys = validGlobalKeys
+        keys.formUnion(ruleList.allValidIdentifiers())
+        return keys
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
@@ -90,7 +96,8 @@ extension Configuration {
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
                   indentation: indentation,
-                  customRulesIdentifiers: customRulesIdentifiers)
+                  customRulesIdentifiers: customRulesIdentifiers,
+                  dict: dict)
     }
 
     private init?(disabledRules: [String],
@@ -107,7 +114,8 @@ extension Configuration {
                   swiftlintVersion: String?,
                   cachePath: String?,
                   indentation: IndentationStyle,
-                  customRulesIdentifiers: [String]) {
+                  customRulesIdentifiers: [String],
+                  dict: [String: Any]) {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
@@ -122,6 +130,9 @@ extension Configuration {
         } else {
             rulesMode = .default(disabled: disabledRules, optIn: optInRules + analyzerRules)
         }
+
+        Configuration.validateConfiguredRulesAreEnabled(configurationDictionary: dict, ruleList: ruleList,
+                                                        rulesMode: rulesMode)
 
         self.init(rulesMode: rulesMode,
                   included: included,
@@ -176,6 +187,37 @@ extension Configuration {
         let invalidKeys = Set(dict.keys).subtracting(self.validKeys(ruleList: ruleList))
         if !invalidKeys.isEmpty {
             queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+        }
+    }
+
+    private static func validateConfiguredRulesAreEnabled(configurationDictionary dict: [String: Any],
+                                                          ruleList: RuleList,
+                                                          rulesMode: RulesMode) {
+        for key in dict.keys where !validGlobalKeys.contains(key) {
+            guard let identifier = ruleList.identifier(for: key),
+                let rule = ruleList.list[identifier] else {
+                    continue
+            }
+
+            let message = "Found a configuration for '\(identifier)' rule"
+
+            switch rulesMode {
+            case .allEnabled:
+                return
+            case .whitelisted(let whitelist):
+                if Set(whitelist).isDisjoint(with: rule.description.allIdentifiers) {
+                    queuedPrintError("\(message), but it is not present on " +
+                        "'\(Key.whitelistRules.rawValue)'.")
+                }
+            case let .default(disabled: disabledRules, optIn: optInRules):
+                if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
+                    queuedPrintError("\(message), but it is not enabled on " +
+                        "'\(Key.optInRules.rawValue)'.")
+                } else if Set(disabledRules).isSuperset(of: rule.description.allIdentifiers) {
+                    queuedPrintError("\(message), but it is disabled on " +
+                        "'\(Key.disabledRules.rawValue)'.")
+                }
+            }
         }
     }
 }

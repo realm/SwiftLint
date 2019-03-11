@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableRule, OptInRule, AutomaticTestableRule {
+public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, OptInRule,
+                                AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -62,8 +63,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
     private let initializerWithType = regex("^[A-Z][^(]*\\.init$")
 
-    private func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: File, kind: SwiftExpressionKind,
+                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         func isExpected(_ name: String) -> Bool {
             let range = NSRange(location: 0, length: name.utf16.count)
             return !["super.init", "self.init"].contains(name)
@@ -82,40 +83,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         return [range]
     }
 
-    private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var ranges = violationRanges(in: file, dictionary: subDict)
-            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
-                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
-            }
-
-            return ranges
-        }
-
-        return ranges.unique
-    }
-
-    private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
-            lhs.location > rhs.location
-        }
-    }
-
-    public func correct(file: File) -> [Correction] {
-        let matches = violationRanges(in: file)
-            .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
-        guard !matches.isEmpty else { return [] }
-
-        let description = type(of: self).description
-        var corrections = [Correction]()
-        var contents = file.contents
-        for range in matches {
-            contents = contents.bridge().replacingCharacters(in: range, with: "")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents)
-        return corrections
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        return (violationRange, "")
     }
 }

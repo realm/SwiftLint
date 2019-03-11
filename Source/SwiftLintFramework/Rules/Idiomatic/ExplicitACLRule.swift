@@ -130,17 +130,17 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 private extension SwiftDeclarationKind {
     var childsAreExemptFromACL: Bool {
         switch self {
-        case .`associatedtype`, .enumcase, .enumelement, .functionAccessorAddress,
+        case .associatedtype, .enumcase, .enumelement, .functionAccessorAddress,
              .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
              .functionAccessorSetter, .functionAccessorWillset, .genericTypeParam, .module,
              .precedenceGroup, .varLocal, .varParameter, .varClass,
-             .varGlobal, .varInstance, .varStatic, .`typealias`, .functionConstructor, .functionDestructor,
+             .varGlobal, .varInstance, .varStatic, .typealias, .functionConstructor, .functionDestructor,
              .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
              .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
-             .functionSubscript, .`protocol`:
+             .functionSubscript, .protocol:
             return true
-        case .`class`, .`enum`, .`extension`, .`extensionClass`, .`extensionEnum`,
-             .extensionProtocol, .extensionStruct, .`struct`:
+        case .class, .enum, .extension, .extensionClass, .extensionEnum,
+             .extensionProtocol, .extensionStruct, .struct:
             return false
         }
     }

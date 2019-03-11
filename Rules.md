@@ -21,6 +21,7 @@
 * [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
+* [Deployment Target](#deployment-target)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Discouraged Object Literal](#discouraged-object-literal)
@@ -92,6 +93,8 @@
 * [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
+* [NSLocalizedString Key](#nslocalizedstring-key)
+* [NSObject Prefer isEqual](#nsobject-prefer-isequal)
 * [Number Separator](#number-separator)
 * [Object Literal](#object-literal)
 * [Opening Brace Spacing](#opening-brace-spacing)
@@ -111,6 +114,7 @@
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
+* [Reduce Boolean](#reduce-boolean)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant @objc Attribute](#redundant-@objc-attribute)
@@ -119,6 +123,7 @@
 * [Redundant String Enum Value](#redundant-string-enum-value)
 * [Redundant Type Annotation](#redundant-type-annotation)
 * [Redundant Void Return](#redundant-void-return)
+* [Required Deinit](#required-deinit)
 * [Required Enum Case](#required-enum-case)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
@@ -161,6 +166,7 @@
 * [Vertical Whitespace before Closing Braces](#vertical-whitespace-before-closing-braces)
 * [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
+* [Weak Computed Property](#weak-computed-property)
 * [Weak Delegate](#weak-delegate)
 * [XCTest Specific Matcher](#xctest-specific-matcher)
 * [XCTFail Message](#xctfail-message)
@@ -276,6 +282,16 @@ foo.something { RouteMapper.map($0) }
 
 ```
 
+```swift
+foo.map { !$0 }
+
+```
+
+```swift
+foo.map { /* a comment */ !$0 }
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -325,6 +341,11 @@ foo.something { RouteMapper.map($0) }
 
 ```swift
 ↓foo.map { $0 /* a comment */ }
+
+```
+
+```swift
+↓foo.map { /* a comment */ $0 }
 
 ```
 
@@ -1909,7 +1930,6 @@ func abc(def: Void, ghi: Void) {}
 ```
 
 ```swift
-// 周斌佳年周斌佳
 let abc: String = "abc:"
 ```
 
@@ -1965,6 +1985,21 @@ let abc: [String: Any]
 
 ```swift
 class Foo: Bar {}
+
+```
+
+```swift
+class Foo<T>: Bar {}
+
+```
+
+```swift
+class Foo<T: Equatable>: Bar {}
+
+```
+
+```swift
+class Foo<T, U>: Bar {}
 
 ```
 
@@ -2208,6 +2243,26 @@ class ↓Foo : Bar {}
 
 ```swift
 class ↓Foo:Bar {}
+
+```
+
+```swift
+class ↓Foo<T> : Bar {}
+
+```
+
+```swift
+class ↓Foo<T>:Bar {}
+
+```
+
+```swift
+class ↓Foo<T, U>:Bar {}
+
+```
+
+```swift
+class ↓Foo<T: Equatable>:Bar {}
 
 ```
 
@@ -2878,6 +2933,115 @@ if true {}; if true {}; if true {}; if true {}; if true {}
   }
 }
 
+```
+
+</details>
+
+
+
+## Deployment Target
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`deployment_target` | Enabled | No | lint | No | 4.1.0 
+
+Availability checks or attributes shouldn't be using older versions that are satisfied by the deployment target.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+@available(iOS 12.0, *)
+class A {}
+```
+
+```swift
+@available(watchOS 4.0, *)
+class A {}
+```
+
+```swift
+@available(swift 3.0.2)
+class A {}
+```
+
+```swift
+class A {}
+```
+
+```swift
+if #available(iOS 10.0, *) {}
+```
+
+```swift
+if #available(iOS 10, *) {}
+```
+
+```swift
+guard #available(iOS 12.0, *) else { return }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓@available(iOS 6.0, *)
+class A {}
+```
+
+```swift
+↓@available(iOS 7.0, *)
+class A {}
+```
+
+```swift
+↓@available(iOS 6, *)
+class A {}
+```
+
+```swift
+↓@available(iOS 6.0, macOS 10.12, *)
+ class A {}
+```
+
+```swift
+↓@available(macOS 10.12, iOS 6.0, *)
+ class A {}
+```
+
+```swift
+↓@available(macOS 10.7, *)
+class A {}
+```
+
+```swift
+↓@available(OSX 10.7, *)
+class A {}
+```
+
+```swift
+↓@available(watchOS 0.9, *)
+class A {}
+```
+
+```swift
+↓@available(tvOS 8, *)
+class A {}
+```
+
+```swift
+if ↓#available(iOS 6.0, *) {}
+```
+
+```swift
+if ↓#available(iOS 6, *) {}
+```
+
+```swift
+guard ↓#available(iOS 6.0, *) else { return }
 ```
 
 </details>
@@ -7464,6 +7628,14 @@ match(pattern: pattern).filter { $0.first == .identifier }
 collection.filter("stringCol = '3'").first
 ```
 
+```swift
+realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first
+```
+
+```swift
+if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -10588,6 +10760,18 @@ let a = 0
 ```
 
 ```swift
+#warning("TODO: remove it")
+let a = 0
+
+```
+
+```swift
+#error("TODO: remove it")
+let a = 0
+
+```
+
+```swift
 @available(swift 4)
 let a = 0
 
@@ -10880,24 +11064,32 @@ private struct Foo { fileprivate func bar() {} }
 private func foo(id: String) {}
 ```
 
+```swift
+private class Foo { func bar() {} }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
-struct Foo { public func bar() {} }
+struct Foo { public ↓func bar() {} }
 ```
 
 ```swift
-enum Foo { public func bar() {} }
+enum Foo { public ↓func bar() {} }
 ```
 
 ```swift
-public class Foo { open func bar() }
+public class Foo { open ↓func bar() }
 ```
 
 ```swift
-class Foo { public private(set) var bar: String? }
+class Foo { public private(set) ↓var bar: String? }
+```
+
+```swift
+private class Foo { internal ↓func bar() {} }
 ```
 
 </details>
@@ -12652,6 +12844,10 @@ expect(10) == 10
 ```
 
 ```swift
+expect(success) == true
+```
+
+```swift
 expect(object.asyncFunction()).toEventually(equal(1))
 
 ```
@@ -12714,6 +12910,16 @@ foo.method {
 
 ```swift
 ↓expect(x).to(beIdenticalTo(x))
+
+```
+
+```swift
+↓expect(success).to(beTrue())
+
+```
+
+```swift
+↓expect(success).to(beFalse())
 
 ```
 
@@ -12982,6 +13188,12 @@ extension Oranges {}
 
 ```
 
+```swift
+class Box<T> {}
+extension Box where T: Vegetable {}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -13056,6 +13268,168 @@ class Foo {
    }
 }
 
+```
+
+</details>
+
+
+
+## NSLocalizedString Key
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`nslocalizedstring_key` | Disabled | No | lint | No | 3.0.0 
+
+Static strings should be used as key in NSLocalizedString in order to genstrings work.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+NSLocalizedString("key", comment: nil)
+```
+
+```swift
+NSLocalizedString("key" + "2", comment: nil)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+NSLocalizedString(↓method(), comment: nil)
+```
+
+```swift
+NSLocalizedString(↓"key_\(param)", comment: nil)
+```
+
+</details>
+
+
+
+## NSObject Prefer isEqual
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`nsobject_prefer_isequal` | Enabled | No | lint | No | 3.0.0 
+
+NSObject subclasses should implement isEqual instead of ==.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class AClass: NSObject {
+}
+```
+
+```swift
+@objc class AClass: SomeNSObjectSubclass {
+}
+```
+
+```swift
+class AClass: Equatable {
+    static func ==(lhs: AClass, rhs: AClass) -> Bool {
+        return true
+    }
+```
+
+```swift
+class AClass: NSObject {
+    override func isEqual(_ object: Any?) -> Bool {
+        return true
+    }
+}
+```
+
+```swift
+@objc class AClass: SomeNSObjectSubclass {
+    override func isEqual(_ object: Any?) -> Bool {
+        return false
+    }
+}
+```
+
+```swift
+class AClass: NSObject {
+    func ==(lhs: AClass, rhs: AClass) -> Bool {
+        return true
+    }
+}
+```
+
+```swift
+class AClass: NSObject {
+    static func ==(lhs: AClass, rhs: BClass) -> Bool {
+        return true
+    }
+}
+```
+
+```swift
+struct AStruct: Equatable {
+    static func ==(lhs: AStruct, rhs: AStruct) -> Bool {
+        return false
+    }
+}
+```
+
+```swift
+enum AnEnum: Equatable {
+    static func ==(lhs: AnEnum, rhs: AnEnum) -> Bool {
+        return true
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class AClass: NSObject {
+    ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+        return false
+    }
+}
+```
+
+```swift
+@objc class AClass: SomeOtherNSObjectSubclass {
+    ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+        return true
+    }
+}
+```
+
+```swift
+class AClass: NSObject, Equatable {
+    ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+        return false
+    }
+}
+```
+
+```swift
+class AClass: NSObject {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AClass else {
+            return false
+        }
+        return true
+    }
+
+    ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+        return false
+    }
+}
 ```
 
 </details>
@@ -15410,6 +15784,67 @@ class TotoTests: QuickSpec {
 
 
 
+## Reduce Boolean
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`reduce_boolean` | Enabled | No | performance | No | 4.2.0 
+
+Prefer using `.allSatisfy()` or `.contains()` over `reduce(true)` or `reduce(false)`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+nums.reduce(0) { $0.0 + $0.1 }
+```
+
+```swift
+nums.reduce(0.0) { $0.0 + $0.1 }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }
+```
+
+```swift
+let anyNines = nums.↓reduce(false) { $0.0 || $0.1 == 9 }
+```
+
+```swift
+let allValid = validators.↓reduce(true) { $0 && $1(input) }
+```
+
+```swift
+let anyValid = validators.↓reduce(false) { $0 || $1(input) }
+```
+
+```swift
+let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })
+```
+
+```swift
+let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })
+```
+
+```swift
+let allValid = validators.↓reduce(true, { $0 && $1(input) })
+```
+
+```swift
+let anyValid = validators.↓reduce(false, { $0 || $1(input) })
+```
+
+</details>
+
+
+
 ## Redundant Discardable Let
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -15505,7 +15940,7 @@ var myVar: Int? = nil; myVar↓??nil
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`redundant_objc_attribute` | Enabled | No | idiomatic | No | 4.1.0 
+`redundant_objc_attribute` | Enabled | Yes | idiomatic | No | 4.1.0 
 
 Objective-C attribute (@objc) is redundant in declaration.
 
@@ -15549,54 +15984,54 @@ private @GKInspectable var foo: String! {}
 ```swift
 @objcMembers
 class Foo {
-  var bar: Any?
-  @objc
-  class Bar {
+    var bar: Any?
     @objc
-    var foo: Any?
-  }
+    class Bar {
+        @objc
+        var foo: Any?
+    }
 }
 ```
 
 ```swift
 @objc
 extension Foo {
-  var bar: Int {
-    return 0
-  }
+    var bar: Int {
+        return 0
+    }
 }
 ```
 
 ```swift
 extension Foo {
-  @objc
-  var bar: Int { return 0 }
+    @objc
+    var bar: Int { return 0 }
 }
 ```
 
 ```swift
 @objc @IBDesignable
 extension Foo {
-  var bar: Int { return 0 }
+    var bar: Int { return 0 }
 }
 ```
 
 ```swift
 @IBDesignable
 extension Foo {
-  @objc
-  var bar: Int { return 0 }
-  var fooBar: Int { return 1 }
+    @objc
+    var bar: Int { return 0 }
+    var fooBar: Int { return 1 }
 }
 ```
 
 ```swift
 @objcMembers
 class Foo: NSObject {
-  @objc
-  private var bar: Int {
-    return 0
-  }
+    @objc
+    private var bar: Int {
+        return 0
+    }
 }
 ```
 
@@ -15621,78 +16056,78 @@ class Foo {
 <summary>Triggering Examples</summary>
 
 ```swift
-@objc @IBInspectable private ↓var foo: String? {}
+↓@objc @IBInspectable private var foo: String? {}
 ```
 
 ```swift
-@IBInspectable @objc private ↓var foo: String? {}
+@IBInspectable ↓@objc private var foo: String? {}
 ```
 
 ```swift
-@objc @IBAction private ↓func foo(_ sender: Any) {}
+↓@objc @IBAction private func foo(_ sender: Any) {}
 ```
 
 ```swift
-@IBAction @objc private ↓func foo(_ sender: Any) {}
+@IBAction ↓@objc private func foo(_ sender: Any) {}
 ```
 
 ```swift
-@objc @GKInspectable private ↓var foo: String! {}
+↓@objc @GKInspectable private var foo: String! {}
 ```
 
 ```swift
-@GKInspectable @objc private ↓var foo: String! {}
+@GKInspectable ↓@objc private var foo: String! {}
 ```
 
 ```swift
-@objc @NSManaged private ↓var foo: String!
+↓@objc @NSManaged private var foo: String!
 ```
 
 ```swift
-@NSManaged @objc private ↓var foo: String!
+@NSManaged ↓@objc private var foo: String!
 ```
 
 ```swift
-@objc @IBDesignable ↓class Foo {}
+↓@objc @IBDesignable class Foo {}
 ```
 
 ```swift
 @objcMembers
 class Foo {
-  @objc ↓var bar: Any?
+    ↓@objc var bar: Any?
 }
 ```
 
 ```swift
 @objcMembers
 class Foo {
-  @objc ↓var bar: Any?
-  @objc ↓var foo: Any?
-  @objc
-  class Bar {
+    ↓@objc var bar: Any?
+    ↓@objc var foo: Any?
     @objc
-    var foo: Any?
-  }
+    class Bar {
+        @objc
+        var foo: Any?
+    }
 }
 ```
 
 ```swift
 @objc
 extension Foo {
-  @objc
-  ↓var bar: Int {
-    return 0
-  }
+    ↓@objc
+    var bar: Int {
+        return 0
+    }
 }
 ```
 
 ```swift
 @objc @IBDesignable
 extension Foo {
-  @objc
-  ↓var bar: Int {
-    return 0
-  }
+    ↓@objc
+    var bar: Int {
+        return 0
+    }
 }
 ```
 
@@ -15701,7 +16136,7 @@ extension Foo {
 class Foo {
     @objcMembers
     class Bar: NSObject {
-        @objc ↓var foo: Any
+        ↓@objc var foo: Any
     }
 }
 ```
@@ -15709,8 +16144,8 @@ class Foo {
 ```swift
 @objc
 extension Foo {
-    @objc
-    private ↓var bar: Int {
+    ↓@objc
+    private var bar: Int {
         return 0
     }
 }
@@ -16135,6 +16570,94 @@ func foo()↓ -> () {}
 ```swift
 protocol Foo {
   func foo()↓ -> ()
+}
+```
+
+</details>
+
+
+
+## Required Deinit
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`required_deinit` | Disabled | No | lint | No | 3.0.0 
+
+Classes should have an explicit deinit method.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Apple {
+    deinit { }
+}
+```
+
+```swift
+enum Banana { }
+```
+
+```swift
+protocol Cherry { }
+```
+
+```swift
+struct Damson { }
+```
+
+```swift
+class Outer {
+    deinit { print("Deinit Outer") }
+    class Inner {
+        deinit { print("Deinit Inner") }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class Apple { }
+```
+
+```swift
+↓class Banana: NSObject, Equatable { }
+```
+
+```swift
+↓class Cherry {
+    // deinit { }
+}
+```
+
+```swift
+↓class Damson {
+    func deinitialize() { }
+}
+```
+
+```swift
+class Outer {
+    func hello() -> String { return "outer" }
+    deinit { }
+    ↓class Inner {
+        func hello() -> String { return "inner" }
+    }
+}
+```
+
+```swift
+↓class Outer {
+    func hello() -> String { return "outer" }
+    class Inner {
+        func hello() -> String { return "inner" }
+        deinit { }
+    }
 }
 ```
 
@@ -17783,6 +18306,18 @@ foo.something(param1: { $0 }, param2: { $0 + 1 })
 ```swift
 offsets.sorted { $0.offset < $1.offset }
 
+```
+
+```swift
+foo.something({ return 1 }())
+```
+
+```swift
+foo.something({ return $0 }(1))
+```
+
+```swift
+foo.something(0, { return 1 }())
 ```
 
 </details>
@@ -21803,6 +22338,12 @@ withPostSideEffect { input in
 }
 ```
 
+```swift
+viewModel?.profileImage.didSet(weak: self) { (self, profileImage) in
+    self.profileImageView.image = profileImage
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -21865,6 +22406,12 @@ func foo () {
  return 3
 }
 
+```
+
+```swift
+viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
+    profileImageView.image = profileImage
+}
 ```
 
 </details>
@@ -22241,12 +22788,39 @@ private let kConstant = 0
 _ = kConstant
 ```
 
+```swift
+struct ResponseModel: Codable {
+    let items: [Item]
+
+    private enum CodingKeys: String, CodingKey {
+        case items = "ResponseItems"
+    }
+}
+```
+
+```swift
+class ResponseModel {
+    @objc private func foo() {
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
 private let ↓kConstant = 0
+```
+
+```swift
+struct ResponseModel: Codable {
+    let items: [Item]
+
+    private enum ↓CodingKeys: String {
+        case items = "ResponseItems"
+    }
+}
 ```
 
 </details>
@@ -22673,6 +23247,11 @@ foo(param1: 1, param2: [
 ], param3: 0)
 ```
 
+```swift
+myFunc(foo: 0,
+       bar: baz == 0)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22708,6 +23287,11 @@ foo(param1: 1,
 ```swift
 foo(param1: 1, param2: { _ in },
        ↓param3: false, param4: true)
+```
+
+```swift
+myFunc(foo: 0,
+        ↓bar: baz == 0)
 ```
 
 </details>
@@ -23331,6 +23915,76 @@ func foo(completion: () -> ↓(Void))
 ```swift
 let foo: (ConfigurationTests) -> () throws -> ↓())
 
+```
+
+</details>
+
+
+
+## Weak Computed Property
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`weak_computed_property` | Enabled | Yes | lint | No | 4.1.0 
+
+Adding weak to a computed property has no effect.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol?
+}
+```
+
+```swift
+class Foo {
+    var delegate: SomeProtocol?
+}
+```
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? {
+        didSet {
+            update(with: delegate)
+        }
+    }
+}
+```
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? {
+        willSet {
+            update(with: delegate)
+        }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo {
+    weak var delegate: SomeProtocol? { return bar() }
+}
+```
+
+```swift
+class Foo {
+    private weak var _delegate: SomeProtocol?
+
+    ↓weak var delegate: SomeProtocol? {
+        get { return _delegate }
+        set { _delegate = newValue }
+    }
+}
 ```
 
 </details>

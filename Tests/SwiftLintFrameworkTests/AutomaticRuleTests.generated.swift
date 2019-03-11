@@ -378,6 +378,18 @@ class MultipleClosuresWithTrailingClosureRuleTests: XCTestCase {
     }
 }
 
+class NSLocalizedStringKeyRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSLocalizedStringKeyRule.description)
+    }
+}
+
+class NSObjectPreferIsEqualRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSObjectPreferIsEqualRule.description)
+    }
+}
+
 class NestingRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)
@@ -498,6 +510,12 @@ class QuickDiscouragedPendingTestRuleTests: XCTestCase {
     }
 }
 
+class ReduceBooleanRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceBooleanRule.description)
+    }
+}
+
 class RedundantDiscardableLetRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)
@@ -543,6 +561,12 @@ class RedundantTypeAnnotationRuleTests: XCTestCase {
 class RedundantVoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantVoidReturnRule.description)
+    }
+}
+
+class RequiredDeinitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RequiredDeinitRule.description)
     }
 }
 
@@ -723,6 +747,12 @@ class VerticalWhitespaceOpeningBracesRuleTests: XCTestCase {
 class VoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)
+    }
+}
+
+class WeakComputedProperyRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(WeakComputedProperyRule.description)
     }
 }
 

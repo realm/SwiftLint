@@ -79,7 +79,7 @@ private func parseCLIArguments(_ string: String) -> [String] {
  more flags to remove in `.1`.
  */
 private func partiallyFilter(arguments args: [String]) -> ([String], Bool) {
-    guard let indexOfFlagToRemove = args.index(of: "-output-file-map") else {
+    guard let indexOfFlagToRemove = args.firstIndex(of: "-output-file-map") else {
         return (args, false)
     }
     var args = args

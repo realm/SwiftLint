@@ -28,10 +28,10 @@ extension SwiftDeclarationKind {
     ]
 
     internal static let typeKinds: Set<SwiftDeclarationKind> = [
-        .`class`,
-        .`struct`,
-        .`typealias`,
-        .`associatedtype`,
-        .`enum`
+        .class,
+        .struct,
+        .typealias,
+        .associatedtype,
+        .enum
     ]
 }

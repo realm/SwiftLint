@@ -83,13 +83,16 @@ class BaselineTests: XCTestCase {
         baseline.readBaseline()
 
         // Move baseline file and change root directory
-        try? fileManager.createDirectory(atPath: changedRootPath, withIntermediateDirectories: true, attributes: nil)
-        try? fileManager.moveItem(atPath: baselinePath, toPath: changedRootPath + "/.swiftlint_baseline")
+        try! fileManager.createDirectory(atPath: changedRootPath, withIntermediateDirectories: true, attributes: nil)
+        print("Created directory at \(changedRootPath)")
+        try! fileManager.moveItem(atPath: baselinePath, toPath: changedRootPath + "/.swiftlint_baseline")
+        print("Moved file to path: \(changedRootPath + "/.swiftlint_baseline")")
         baseline = Baseline(rootPath: changedRootPath)
         baseline.readBaseline()
 
         XCTAssertTrue(baseline.isInBaseline(violation: secondViolation))
-        try? fileManager.removeItem(atPath: changedRootPath)
+        try! fileManager.removeItem(atPath: changedRootPath)
+        print("Removed file at path: \(changedRootPath + "/.swiftlint_baseline")")
     }
 
     func testTwoFilesWithSameName() {

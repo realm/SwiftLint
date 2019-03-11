@@ -27,7 +27,6 @@ public class Baseline {
         let fileManager = FileManager.default
         if !fileManager.fileExists(atPath: baselinePath) {
             let isFileCreated = fileManager.createFile(atPath: baselinePath, contents: fileContent.data(using: .utf8))
-            print("File was created: \(isFileCreated)")
         }
     }
 

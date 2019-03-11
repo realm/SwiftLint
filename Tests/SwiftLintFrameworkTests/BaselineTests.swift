@@ -81,7 +81,7 @@ class BaselineTests: XCTestCase {
 
         baseline.saveBaseline(violations: [violation])
         baseline.readBaseline()
-
+        // swiftlint:disable force_try
         // Move baseline file and change root directory
         try! fileManager.createDirectory(atPath: changedRootPath, withIntermediateDirectories: true, attributes: nil)
         print("Created directory at \(changedRootPath)")
@@ -94,6 +94,7 @@ class BaselineTests: XCTestCase {
         try! fileManager.removeItem(atPath: changedRootPath)
         print("Removed file at path: \(changedRootPath + "/.swiftlint_baseline")")
     }
+    // swiftlint:enable force_try
 
     func testTwoFilesWithSameName() {
         let changedRootPath = "\(outputPath)/Second"

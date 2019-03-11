@@ -79,6 +79,9 @@ class BaselineTests: XCTestCase {
                 reason: "Violation Reason."
         )
 
+        try? fileManager.removeItem(atPath: baselinePath)
+        try? fileManager.removeItem(atPath: changedRootPath)
+
         baseline.saveBaseline(violations: [violation])
         baseline.readBaseline()
         // swiftlint:disable force_try

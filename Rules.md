@@ -5,6 +5,7 @@
 * [Array Init](#array-init)
 * [Attributes](#attributes)
 * [Block Based KVO](#block-based-kvo)
+* [Call Super Only](#call-super-only)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
 * [Closure Body Length](#closure-body-length)
@@ -758,6 +759,53 @@ class Foo: NSObject {
   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                               change: Dictionary<NSKeyValueChangeKey, Any>?,
                               context: UnsafeMutableRawPointer?) {}
+}
+```
+
+</details>
+
+
+
+## Call Super Only
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`call_super_only` | Enabled | No | lint | No | 3.0.0 
+
+Methods that don't do anything but call `super` can be removed
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func emptyImplementationForRequiredProtocolFunction() {}
+```
+
+```swift
+override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    print("View controller did disappear")
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    // Do any additional setup after loading the view.
+}
+```
+
+```swift
+override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
 }
 ```
 

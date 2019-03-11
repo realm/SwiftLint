@@ -33,6 +33,12 @@ extension BlockBasedKVORuleTests {
     ]
 }
 
+extension CallSuperOnlyRuleTests {
+    static var allTests: [(String, (CallSuperOnlyRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ClassDelegateProtocolRuleTests {
     static var allTests: [(String, (ClassDelegateProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1530,6 +1536,7 @@ XCTMain([
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
+    testCase(CallSuperOnlyRuleTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
     testCase(ClosureBodyLengthRuleTests.allTests),

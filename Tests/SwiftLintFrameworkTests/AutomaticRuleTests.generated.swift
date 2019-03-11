@@ -24,6 +24,12 @@ class BlockBasedKVORuleTests: XCTestCase {
     }
 }
 
+class CallSuperOnlyRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CallSuperOnlyRule.description)
+    }
+}
+
 class ClassDelegateProtocolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClassDelegateProtocolRule.description)

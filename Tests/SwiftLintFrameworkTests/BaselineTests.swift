@@ -6,7 +6,7 @@ class BaselineTests: XCTestCase {
     private var baseline: Baseline!
 
     private var outputPath: String {
-        return testResourcesPath
+        return testResourcesPath + "/BaselineTests"
     }
 
     private var baselinePath: String {
@@ -20,12 +20,13 @@ class BaselineTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        try? fileManager.removeItem(atPath: outputPath)
         baseline = Baseline(rootPath: outputPath)
     }
 
     override func tearDown() {
         super.tearDown()
-        try? fileManager.removeItem(atPath: baselinePath)
+        try? fileManager.removeItem(atPath: outputPath)
     }
 
     func testSaveBaseline() {
@@ -79,9 +80,6 @@ class BaselineTests: XCTestCase {
                 reason: "Violation Reason."
         )
 
-        try? fileManager.removeItem(atPath: baselinePath)
-        try? fileManager.removeItem(atPath: changedRootPath)
-
         baseline.saveBaseline(violations: [violation])
         baseline.readBaseline()
         // swiftlint:disable force_try
@@ -94,8 +92,6 @@ class BaselineTests: XCTestCase {
         baseline.readBaseline()
 
         XCTAssertTrue(baseline.isInBaseline(violation: secondViolation))
-        try! fileManager.removeItem(atPath: changedRootPath)
-        print("Removed file at path: \(changedRootPath + "/.swiftlint_baseline")")
     }
     // swiftlint:enable force_try
 
@@ -130,6 +126,5 @@ class BaselineTests: XCTestCase {
         baseline.readBaseline()
 
         XCTAssertFalse(baseline.isInBaseline(violation: secondViolation))
-        try? fileManager.removeItem(atPath: changedRootPath)
     }
 }

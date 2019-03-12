@@ -1,10 +1,10 @@
 import Foundation
 
 public class Baseline {
-    private let kBaselineFileName = ".swiftlint_baseline"
+    static let kBaselineFileName = ".swiftlint_baseline"
     private let rootPath: String
     private var baselinePath: String {
-        return "\(rootPath)/\(kBaselineFileName)"
+        return "\(rootPath)/\(Baseline.kBaselineFileName)"
     }
     private(set) var baselineViolations = [BaselineViolation]()
 

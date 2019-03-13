@@ -66,12 +66,6 @@ class CommaRuleTests: XCTestCase {
     }
 }
 
-class ContainsOverFirstNotNilRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ContainsOverFirstNotNilRule.description)
-    }
-}
-
 class ControlStatementRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)

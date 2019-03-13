@@ -10,7 +10,7 @@
 
 #### Enhancements
 
-* Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.
+* Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.  
   [Xavier Lowmiller](https://github.com/xavierLowmiller)
   [#2675](https://github.com/realm/SwiftLint/issues/2675)
 
@@ -42,6 +42,7 @@
 * None.
 
 #### Enhancements
+
 * Add `deployment_target` rule to validate that `@availability` attributes and
   `#available` conditions are not using a version that is satisfied by the
   deployment target. Since SwiftLint can't read an Xcode project, you need to

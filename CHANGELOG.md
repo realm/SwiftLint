@@ -20,6 +20,10 @@
   [Matthew Healy](https://github.com/matthew-healy)
   [#2663](https://github.com/realm/SwiftLint/pull/2663)
 
+* Remove @ mark to fix invalid link in Rules.md.  
+  [Hiroki Nagasawa](https://github.com/pixyzehn)
+  [#2669](https://github.com/realm/SwiftLint/pull/2669)
+
 #### Bug Fixes
 
 * `colon` rule now catches violations when declaring generic types with

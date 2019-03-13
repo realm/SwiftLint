@@ -88,7 +88,15 @@ extension RuleList {
     }
 
     private func summaryItem(_ text: String) -> String {
-        let anchor = text.lowercased().components(separatedBy: .whitespaces).joined(separator: "-")
+        var allowed = CharacterSet()
+        allowed.formUnion(.letters)
+        allowed.formUnion(.decimalDigits)
+        allowed.formUnion(.whitespaces)
+        allowed.insert(charactersIn: "-")
+
+        let anchor = text.lowercased()
+            .components(separatedBy: allowed.inverted).joined()
+            .components(separatedBy: .whitespaces).joined(separator: "-")
         return "* [\(text)](#\(anchor))\n"
     }
 }

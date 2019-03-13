@@ -117,7 +117,7 @@
 * [Reduce Boolean](#reduce-boolean)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
-* [Redundant @objc Attribute](#redundant-@objc-attribute)
+* [Redundant @objc Attribute](#redundant-objc-attribute)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
 * [Redundant Set Access Control Rule](#redundant-set-access-control-rule)
 * [Redundant String Enum Value](#redundant-string-enum-value)

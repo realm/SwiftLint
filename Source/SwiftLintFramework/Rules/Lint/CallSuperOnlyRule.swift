@@ -12,7 +12,9 @@ public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTesta
         kind: .lint,
         nonTriggeringExamples: [
             """
-            func emptyImplementationForRequiredProtocolFunction() {}
+            override func viewDidDisappear(_ animated: Bool) {
+                childViewController.viewDidDisappear(animated)
+            }
             """,
             """
             override func viewDidDisappear(_ animated: Bool) {
@@ -22,6 +24,9 @@ public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTesta
             """
         ],
         triggeringExamples: [
+            """
+            override func a(){/*comment*/super.a()}
+            """,
             """
             override func viewDidLoad() {
                 super.viewDidLoad()
@@ -34,15 +39,26 @@ public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTesta
                 super.didReceiveMemoryWarning()
                 // Dispose of any resources that can be recreated.
             }
+            """,
+            """
+            override func becomeFirstResponder() -> Bool {
+                return super.becomeFirstResponder()
+            }
             """
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "."
+        let paramsOrArguments = "(\\([\\w\\s,:_()=?\\->]*\\))"
+        let whitespaceOrComments = "(\\s|//[^\\n\\r]*|/\\*[^\\n\\r]*\\*/)*+"
+        let signature = "override[\\w,\\s]*func\\s(\\w+)\(paramsOrArguments)[\\w\\s\\->]*"
+        let body = "\\{\(whitespaceOrComments)(return\\s)?super\\.\\1\(paramsOrArguments)\(whitespaceOrComments)\\}"
+
+        let pattern = signature + body
+        print(pattern)
         return file
-            .match(pattern: pattern)
-            .map { range, syntaxKinds in
+            .match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+            .map { range in
                 StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severity,

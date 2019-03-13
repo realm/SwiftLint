@@ -55,11 +55,16 @@ public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTesta
         let body = "\\{\(whitespaceOrComments)(return\\s)?super\\.\\1\(paramsOrArguments)\(whitespaceOrComments)\\}"
 
         let pattern = signature + body
-        print(pattern)
+
         return file
-            .match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-            .map { range in
-                StyleViolation(
+            .match(pattern: pattern)
+            .compactMap { range, syntaxKinds in
+                // Skip matches that occur in strings and comments
+                guard syntaxKinds != [.string],
+                    syntaxKinds != [.comment]
+                    else { return nil }
+
+                return StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severity,
                     location: Location(file: file, characterOffset: range.location)

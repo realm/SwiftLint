@@ -780,7 +780,9 @@ Methods that don't do anything but call `super` can be removed
 <summary>Non Triggering Examples</summary>
 
 ```swift
-func emptyImplementationForRequiredProtocolFunction() {}
+override func viewDidDisappear(_ animated: Bool) {
+    childViewController.viewDidDisappear(animated)
+}
 ```
 
 ```swift
@@ -795,7 +797,11 @@ override func viewDidDisappear(_ animated: Bool) {
 <summary>Triggering Examples</summary>
 
 ```swift
-override func viewDidLoad() {
+↓override func a(){/*comment*/super.a()}
+```
+
+```swift
+↓override func viewDidLoad() {
     super.viewDidLoad()
 
     // Do any additional setup after loading the view.
@@ -803,9 +809,15 @@ override func viewDidLoad() {
 ```
 
 ```swift
-override func didReceiveMemoryWarning() {
+↓override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+}
+```
+
+```swift
+↓override func becomeFirstResponder() -> Bool {
+    return super.becomeFirstResponder()
 }
 ```
 

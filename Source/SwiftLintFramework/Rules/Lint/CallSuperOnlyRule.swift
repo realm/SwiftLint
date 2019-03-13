@@ -25,23 +25,23 @@ public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTesta
         ],
         triggeringExamples: [
             """
-            override func a(){/*comment*/super.a()}
+            ↓override func a(){/*comment*/super.a()}
             """,
             """
-            override func viewDidLoad() {
+            ↓override func viewDidLoad() {
                 super.viewDidLoad()
 
                 // Do any additional setup after loading the view.
             }
             """,
             """
-            override func didReceiveMemoryWarning() {
+            ↓override func didReceiveMemoryWarning() {
                 super.didReceiveMemoryWarning()
                 // Dispose of any resources that can be recreated.
             }
             """,
             """
-            override func becomeFirstResponder() -> Bool {
+            ↓override func becomeFirstResponder() -> Bool {
                 return super.becomeFirstResponder()
             }
             """

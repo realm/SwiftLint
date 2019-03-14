@@ -64,7 +64,7 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
         guard kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.override),
             !dictionary.enclosedSwiftAttributes.contains(.public),
-            onlyCallsSuper(dictionary),
+            file.onlyCallsSuper(dictionary),
             let offset = dictionary.offset
             else { return [] }
 
@@ -74,16 +74,28 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
             location: Location(file: file, characterOffset: offset)
         )]
     }
+}
 
-    private func onlyCallsSuper(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+private extension File {
+    func onlyCallsSuper(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
         if let name = dictionary.name?.split(separator: "(").first,
             dictionary.substructure.count == 1,
             let methodCall = dictionary.substructure.first,
-            methodCall.name == "super.\(name)" {
+            methodCall.name == "super.\(name)",
+            !hasAssignmentInBody(dictionary) {
             return true
         } else {
             return false
         }
+    }
+
+    private func hasAssignmentInBody(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength
+            else { return false }
+
+        let body = contents.substring(from: bodyOffset, length: bodyLength)
+        return body.contains(" = ")
     }
 }
 

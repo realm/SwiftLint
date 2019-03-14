@@ -26,6 +26,12 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
             public override init() {
                 super.init()
             }
+            """,
+            """
+            override func setUp() {
+                super.setUp()
+                urlString = "https://httpbin.org/basic-auth"
+            }
             """
         ].map(wrapInClass),
         triggeringExamples: [

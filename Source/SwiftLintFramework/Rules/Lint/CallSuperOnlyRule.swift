@@ -21,6 +21,11 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
                 super.viewDidDisappear(animated)
                 print("View controller did disappear")
             }
+            """,
+            """
+            public override init() {
+                super.init()
+            }
             """
         ].map(wrapInClass),
         triggeringExamples: [
@@ -52,6 +57,7 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.override),
+            !dictionary.enclosedSwiftAttributes.contains(.public),
             onlyCallsSuper(dictionary),
             let offset = dictionary.offset
             else { return [] }

@@ -78,7 +78,11 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
 private func wrapInClass(_ string: String) -> String {
     return """
     class ViewController: UIViewController {
-        \(string)
+    \(string
+        .split(separator: "\n")
+        .map { "    " + $0 }
+        .joined(separator: "\n")
+    )
     }
     """
 }

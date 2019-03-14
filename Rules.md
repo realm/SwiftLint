@@ -782,17 +782,17 @@ Methods that don't do anything but call `super` can be removed
 ```swift
 class ViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
-    childViewController.viewDidDisappear(animated)
-}
+        childViewController.viewDidDisappear(animated)
+    }
 }
 ```
 
 ```swift
 class ViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    print("View controller did disappear")
-}
+        super.viewDidDisappear(animated)
+        print("View controller did disappear")
+    }
 }
 ```
 
@@ -809,27 +809,26 @@ class ViewController: UIViewController {
 ```swift
 class ViewController: UIViewController {
     override func viewDidLoad() {
-    super.viewDidLoad()
-
-    // Do any additional setup after loading the view.
-}
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
 }
 ```
 
 ```swift
 class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-}
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
 }
 ```
 
 ```swift
 class ViewController: UIViewController {
     override func becomeFirstResponder() -> Bool {
-    return super.becomeFirstResponder()
-}
+        return super.becomeFirstResponder()
+    }
 }
 ```
 

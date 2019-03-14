@@ -780,15 +780,19 @@ Methods that don't do anything but call `super` can be removed
 <summary>Non Triggering Examples</summary>
 
 ```swift
-override func viewDidDisappear(_ animated: Bool) {
+class ViewController: UIViewController {
+    override func viewDidDisappear(_ animated: Bool) {
     childViewController.viewDidDisappear(animated)
+}
 }
 ```
 
 ```swift
-override func viewDidDisappear(_ animated: Bool) {
+class ViewController: UIViewController {
+    override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
     print("View controller did disappear")
+}
 }
 ```
 
@@ -797,27 +801,35 @@ override func viewDidDisappear(_ animated: Bool) {
 <summary>Triggering Examples</summary>
 
 ```swift
-↓override func a(){/*comment*/super.a()}
+class ViewController: UIViewController {
+    override func a(){/*comment*/super.a()}
+}
 ```
 
 ```swift
-↓override func viewDidLoad() {
+class ViewController: UIViewController {
+    override func viewDidLoad() {
     super.viewDidLoad()
 
     // Do any additional setup after loading the view.
 }
-```
-
-```swift
-↓override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
 }
 ```
 
 ```swift
-↓override func becomeFirstResponder() -> Bool {
+class ViewController: UIViewController {
+    override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+}
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func becomeFirstResponder() -> Bool {
     return super.becomeFirstResponder()
+}
 }
 ```
 

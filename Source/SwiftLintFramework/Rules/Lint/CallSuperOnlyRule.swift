@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -22,53 +22,63 @@ public struct CallSuperOnlyRule: Rule, ConfigurationProviderRule, AutomaticTesta
                 print("View controller did disappear")
             }
             """
-        ],
+        ].map(wrapInClass),
         triggeringExamples: [
             """
-            ↓override func a(){/*comment*/super.a()}
+            override func a(){/*comment*/super.a()}
             """,
             """
-            ↓override func viewDidLoad() {
+            override func viewDidLoad() {
                 super.viewDidLoad()
 
                 // Do any additional setup after loading the view.
             }
             """,
             """
-            ↓override func didReceiveMemoryWarning() {
+            override func didReceiveMemoryWarning() {
                 super.didReceiveMemoryWarning()
                 // Dispose of any resources that can be recreated.
             }
             """,
             """
-            ↓override func becomeFirstResponder() -> Bool {
+            override func becomeFirstResponder() -> Bool {
                 return super.becomeFirstResponder()
             }
             """
-        ]
+        ].map(wrapInClass)
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let paramsOrArguments = "(\\([\\w\\s,:_()=?\\->]*\\))"
-        let whitespaceOrComments = "(\\s|//[^\\n\\r]*|/\\*[^\\n\\r]*\\*/)*+"
-        let signature = "override[\\w,\\s]*func\\s(\\w+)\(paramsOrArguments)[\\w\\s\\->]*"
-        let body = "\\{\(whitespaceOrComments)(return\\s)?super\\.\\1\(paramsOrArguments)\(whitespaceOrComments)\\}"
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard kind == .functionMethodInstance,
+            dictionary.enclosedSwiftAttributes.contains(.override),
+            onlyCallsSuper(dictionary),
+            let offset = dictionary.offset
+            else { return [] }
 
-        let pattern = signature + body
-
-        return file
-            .match(pattern: pattern)
-            .compactMap { range, syntaxKinds in
-                // Skip matches that occur in strings and comments
-                guard syntaxKinds != [.string],
-                    syntaxKinds != [.comment]
-                    else { return nil }
-
-                return StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: range.location)
-                )
-            }
+        return [StyleViolation(
+            ruleDescription: type(of: self).description,
+            severity: configuration.severity,
+            location: Location(file: file, characterOffset: offset)
+        )]
     }
+
+    private func onlyCallsSuper(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+        if let name = dictionary.name?.split(separator: "(").first,
+            dictionary.substructure.count == 1,
+            let methodCall = dictionary.substructure.first,
+            methodCall.name == "super.\(name)" {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+private func wrapInClass(_ string: String) -> String {
+    return """
+    class ViewController: UIViewController {
+        \(string)
+    }
+    """
 }

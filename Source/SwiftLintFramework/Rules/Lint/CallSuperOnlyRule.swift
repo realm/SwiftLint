@@ -1,62 +1,71 @@
 import SourceKittenFramework
 
-public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct CallSuperOnlyRule: SubstitutionCorrectableASTRule,
+ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
+
+    static let nonTriggeringExamples = [
+        """
+        override func viewDidDisappear(_ animated: Bool) {
+            childViewController.viewDidDisappear(animated)
+        }
+        """,
+        """
+        override func viewDidDisappear(_ animated: Bool) {
+            super.viewDidDisappear(animated)
+            print("View controller did disappear")
+        }
+        """,
+        """
+        public override init() {
+            super.init()
+        }
+        """,
+        """
+        override func setUp() {
+            super.setUp()
+            urlString = "https://httpbin.org/basic-auth"
+        }
+        """
+    ].map(wrapInClass)
+
+    static let triggeringExamples = [
+        """
+        override ↓func a(){/*comment*/super.a()}
+        """,
+        """
+        override ↓func viewDidLoad() {
+            super.viewDidLoad()
+
+            // Do any additional setup after loading the view.
+        }
+        """,
+        """
+        override ↓func didReceiveMemoryWarning() {
+            super.didReceiveMemoryWarning()
+            // Dispose of any resources that can be recreated.
+        }
+        """,
+        """
+        override ↓func becomeFirstResponder() -> Bool {
+            return super.becomeFirstResponder()
+        }
+        """
+    ].map(wrapInClass)
+
+    static let corrections = Dictionary(uniqueKeysWithValues:
+        CallSuperOnlyRule.triggeringExamples.map { ($0, wrapInClass("")) })
 
     public static let description = RuleDescription(
         identifier: "call_super_only",
         name: "Call Super Only",
         description: "Methods that don't do anything but call `super` can be removed",
         kind: .lint,
-        nonTriggeringExamples: [
-            """
-            override func viewDidDisappear(_ animated: Bool) {
-                childViewController.viewDidDisappear(animated)
-            }
-            """,
-            """
-            override func viewDidDisappear(_ animated: Bool) {
-                super.viewDidDisappear(animated)
-                print("View controller did disappear")
-            }
-            """,
-            """
-            public override init() {
-                super.init()
-            }
-            """,
-            """
-            override func setUp() {
-                super.setUp()
-                urlString = "https://httpbin.org/basic-auth"
-            }
-            """
-        ].map(wrapInClass),
-        triggeringExamples: [
-            """
-            override ↓func a(){/*comment*/super.a()}
-            """,
-            """
-            override ↓func viewDidLoad() {
-                super.viewDidLoad()
-
-                // Do any additional setup after loading the view.
-            }
-            """,
-            """
-            override ↓func didReceiveMemoryWarning() {
-                super.didReceiveMemoryWarning()
-                // Dispose of any resources that can be recreated.
-            }
-            """,
-            """
-            override ↓func becomeFirstResponder() -> Bool {
-                return super.becomeFirstResponder()
-            }
-            """
-        ].map(wrapInClass)
+        nonTriggeringExamples: CallSuperOnlyRule.nonTriggeringExamples,
+        triggeringExamples: CallSuperOnlyRule.triggeringExamples,
+        corrections: CallSuperOnlyRule.corrections
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,

@@ -65,7 +65,7 @@ ConfigurationProviderRule, AutomaticTestableRule {
     ].map(wrapInClass)
 
     static let corrections = Dictionary(uniqueKeysWithValues:
-        CallSuperOnlyRule.triggeringExamples.map { ($0, wrapInClass(" ")) })
+        CallSuperOnlyRule.triggeringExamples.map { ($0, wrapInClass("")) })
 
     public static let description = RuleDescription(
         identifier: "call_super_only",
@@ -97,7 +97,7 @@ ConfigurationProviderRule, AutomaticTestableRule {
             .min() ?? offset
         let endIndex = offset + length
 
-        return [NSRange(startIndex...endIndex)]
+        return [NSRange(startIndex..<endIndex)]
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
@@ -114,7 +114,7 @@ ConfigurationProviderRule, AutomaticTestableRule {
     public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
         let range = file.contents.bridge()
             .byteRangeToNSRange(start: violationRange.location, length: violationRange.length)!
-        return (range, " \n")
+        return (range, "")
     }
 }
 
@@ -148,7 +148,7 @@ private extension File {
 private func wrapInClass(_ string: String) -> String {
     return """
     class ViewController: UIViewController {
-    \(string
+    \(string.isEmpty ? "    " : string
         .split(separator: "\n")
         .map { "    " + $0 }
         .joined(separator: "\n")

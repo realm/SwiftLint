@@ -91,10 +91,11 @@ private extension File {
 
     private func hasAssignmentInBody(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
         guard let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength
+            let bodyLength = dictionary.bodyLength,
+            let range = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength)
             else { return false }
 
-        let body = contents.substring(from: bodyOffset, length: bodyLength)
+        let body = contents.substring(from: range.location, length: range.length)
         let assignmentOperators = ["=", "*=", "/=", "%=", "+=", "-=",
                                    "<<=", ">>=", "&=", "|=", "^="]
 

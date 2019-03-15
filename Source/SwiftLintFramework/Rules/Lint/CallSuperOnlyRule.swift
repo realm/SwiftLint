@@ -99,7 +99,7 @@ private extension File {
         let assignmentOperators = ["=", "*=", "/=", "%=", "+=", "-=",
                                    "<<=", ">>=", "&=", "|=", "^="]
 
-        return assignmentOperators.first(where: body.contains) != nil
+        return assignmentOperators.contains(where: body.contains)
     }
 }
 

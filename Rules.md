@@ -770,7 +770,7 @@ class Foo: NSObject {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`call_super_only` | Enabled | No | lint | No | 3.0.0 
+`call_super_only` | Enabled | Yes | lint | No | 3.0.0 
 
 Methods that don't do anything but call `super` can be removed
 
@@ -819,13 +819,13 @@ class ViewController: UIViewController {
 
 ```swift
 class ViewController: UIViewController {
-    override ↓func a(){/*comment*/super.a()}
+    override func a(){/*comment*/super.a()}
 }
 ```
 
 ```swift
 class ViewController: UIViewController {
-    override ↓func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
@@ -834,7 +834,7 @@ class ViewController: UIViewController {
 
 ```swift
 class ViewController: UIViewController {
-    override ↓func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -843,8 +843,19 @@ class ViewController: UIViewController {
 
 ```swift
 class ViewController: UIViewController {
-    override ↓func becomeFirstResponder() -> Bool {
+    override func becomeFirstResponder() -> Bool {
         return super.becomeFirstResponder()
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    internal
+    class
+    override
+    func setUp() {
+        super.setUp()
     }
 }
 ```

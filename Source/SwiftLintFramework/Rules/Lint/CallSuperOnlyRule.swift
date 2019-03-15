@@ -33,30 +33,38 @@ ConfigurationProviderRule, AutomaticTestableRule {
 
     static let triggeringExamples = [
         """
-        override ↓func a(){/*comment*/super.a()}
+        override func a(){/*comment*/super.a()}
         """,
         """
-        override ↓func viewDidLoad() {
+        override func viewDidLoad() {
             super.viewDidLoad()
 
             // Do any additional setup after loading the view.
         }
         """,
         """
-        override ↓func didReceiveMemoryWarning() {
+        override func didReceiveMemoryWarning() {
             super.didReceiveMemoryWarning()
             // Dispose of any resources that can be recreated.
         }
         """,
         """
-        override ↓func becomeFirstResponder() -> Bool {
+        override func becomeFirstResponder() -> Bool {
             return super.becomeFirstResponder()
+        }
+        """,
+        """
+        internal
+        class
+        override
+        func setUp() {
+            super.setUp()
         }
         """
     ].map(wrapInClass)
 
     static let corrections = Dictionary(uniqueKeysWithValues:
-        CallSuperOnlyRule.triggeringExamples.map { ($0, wrapInClass("")) })
+        CallSuperOnlyRule.triggeringExamples.map { ($0, wrapInClass(" ")) })
 
     public static let description = RuleDescription(
         identifier: "call_super_only",
@@ -68,20 +76,44 @@ ConfigurationProviderRule, AutomaticTestableRule {
         corrections: CallSuperOnlyRule.corrections
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .functionMethodInstance,
+    public func violationRanges(in file: File, kind: SwiftDeclarationKind,
+                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+        let overridingKinds: [SwiftDeclarationKind] = [
+            .functionMethodInstance,
+            .functionMethodClass,
+            .functionMethodStatic
+        ]
+        guard overridingKinds.contains(kind),
             dictionary.enclosedSwiftAttributes.contains(.override),
             !dictionary.enclosedSwiftAttributes.contains(.public),
             file.onlyCallsSuper(dictionary),
-            let offset = dictionary.offset
+            let offset = dictionary.offset,
+            let length = dictionary.length
             else { return [] }
 
-        return [StyleViolation(
-            ruleDescription: type(of: self).description,
-            severity: configuration.severity,
-            location: Location(file: file, byteOffset: offset)
-        )]
+        let startIndex = dictionary.swiftAttributes
+            .compactMap { $0.offset }
+            .min() ?? offset
+        let endIndex = offset + length
+
+        return [NSRange(startIndex...endIndex)]
+    }
+
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
+            StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: configuration.severity,
+                location: Location(file: file, byteOffset: $0.location)
+            )
+        }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        let range = file.contents.bridge()
+            .byteRangeToNSRange(start: violationRange.location, length: violationRange.length)!
+        return (range, " \n")
     }
 }
 

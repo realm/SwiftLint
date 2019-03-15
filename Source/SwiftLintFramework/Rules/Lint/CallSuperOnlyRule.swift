@@ -95,7 +95,10 @@ private extension File {
             else { return false }
 
         let body = contents.substring(from: bodyOffset, length: bodyLength)
-        return body.contains(" = ")
+        let assignmentOperators = ["=", "*=", "/=", "%=", "+=", "-=",
+                                   "<<=", ">>=", "&=", "|=", "^="]
+
+        return assignmentOperators.first(where: body.contains) != nil
     }
 }
 

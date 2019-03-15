@@ -36,23 +36,23 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
         ].map(wrapInClass),
         triggeringExamples: [
             """
-            override func a(){/*comment*/super.a()}
+            override ↓func a(){/*comment*/super.a()}
             """,
             """
-            override func viewDidLoad() {
+            override ↓func viewDidLoad() {
                 super.viewDidLoad()
 
                 // Do any additional setup after loading the view.
             }
             """,
             """
-            override func didReceiveMemoryWarning() {
+            override ↓func didReceiveMemoryWarning() {
                 super.didReceiveMemoryWarning()
                 // Dispose of any resources that can be recreated.
             }
             """,
             """
-            override func becomeFirstResponder() -> Bool {
+            override ↓func becomeFirstResponder() -> Bool {
                 return super.becomeFirstResponder()
             }
             """
@@ -71,7 +71,7 @@ public struct CallSuperOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTe
         return [StyleViolation(
             ruleDescription: type(of: self).description,
             severity: configuration.severity,
-            location: Location(file: file, characterOffset: offset)
+            location: Location(file: file, byteOffset: offset)
         )]
     }
 }

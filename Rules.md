@@ -796,6 +796,23 @@ class ViewController: UIViewController {
 }
 ```
 
+```swift
+class ViewController: UIViewController {
+    public override init() {
+        super.init()
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func setUp() {
+        super.setUp()
+        urlString = "https://httpbin.org/basic-auth"
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

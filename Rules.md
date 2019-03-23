@@ -3078,6 +3078,12 @@ func foo() -> Any {
 
 ```
 
+```swift
+var obs: [Any?] = []
+obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

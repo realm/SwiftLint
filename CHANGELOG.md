@@ -31,6 +31,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2628](https://github.com/realm/SwiftLint/issues/2628)
 
+* `discarded_notification_center_observer` rule now checks if the observer is
+  appended to an array before triggering the violation.
+  [jsloop42](https://github.com/jsloop42)
+  [#2684](https://github.com/realm/SwiftLint/issues/2684)
+
 ## 0.31.0: Busy Laundromat
 
 #### Breaking

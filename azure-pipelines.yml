@@ -67,8 +67,6 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_10.1.app
   steps:
-    - script: bundle update --bundler
-      displayName: Update bundler
     - script: bundle install --path vendor/bundle
       displayName: bundle install
     - script: bundle exec pod lib lint --verbose SwiftLintFramework.podspec
@@ -80,8 +78,6 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_10.1.app
   steps:
-    - script: bundle update --bundler
-      displayName: Update bundler
     - script: bundle install --path vendor/bundle
       displayName: bundle install
     - script: bundle exec danger --verbose

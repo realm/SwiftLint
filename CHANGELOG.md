@@ -45,6 +45,10 @@
   added to any collection or passed to a function before triggering the violation.  
   [jsloop42](https://github.com/jsloop42)
   [#2684](https://github.com/realm/SwiftLint/issues/2684)
+* Fix false positives on `number_separator` when the number is wrapped in
+  parentheses.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#2683](https://github.com/realm/SwiftLint/issues/2683)
 
 ## 0.31.0: Busy Laundromat
 

@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {

@@ -8,60 +8,111 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
     public static var description = RuleDescription(
         identifier: "reduce_into",
         name: "Reduce Into",
-        description: "Prefer `reduce(into:_:)` over `reduce(_:_:)`",
+        description: "Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types",
         kind: .performance,
         minSwiftVersion: .three,
         nonTriggeringExamples: [
-            "let result = values.reduce(into: 0, +=)",
-            "values.reduce(into: \"\") { $0.append(\"\\($1)\") }\n",
-            "values.reduce(into: initial) { $0 *= $1 }\n",
             """
-            let result = values.reduce(into: 0) { result, value in
-                result += value
+            let foo = values.reduce(into: "abc") { $0 += "\\($1)" }
+            """,
+            """
+            values.reduce(into: Array<Int>()) { result, value in
+                result.append(value)
+            }
+            """,
+            """
+            let rows = violations.enumerated().reduce(into: "") { rows, indexAndViolation in
+                rows.append(generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1))
             }
             """,
             """
             zip(group, group.dropFirst()).reduce(into: []) { result, pair in
                 result.append(pair.0 + pair.1)
             }
+            """,
+            """
+            let foo = values.reduce(into: [String: Int]()) { result, value in
+                result["\\(value)"] = value
+            }
+            """,
+            """
+            let foo = values.reduce(into: Dictionary<String, Int>.init()) { result, value in
+                result["\\(value)"] = value
+            }
+            """,
+            """
+            let foo = values.reduce(into: [Int](repeating: 0, count: 10)) { result, value in
+                result.append(value)
+            }
+            """,
+            """
+            let foo = values.reduce(MyClass()) { result, value in
+                result.handleValue(value)
+                return result
+            }
             """
         ],
         triggeringExamples: [
-            "let result = values.↓reduce(0, +)\n",
-            "values.↓reduce(\"\") { $0 + \"\\($1)\" }\n",
-            "values.↓reduce(initial) { $0 * $1 }\n",
             """
-            let result = values.↓reduce(0) { result, value in
-                result + value
+            let bar = values.↓reduce("abc") { $0 + "\\($1)" }
+            """,
+            """
+            values.↓reduce(Array<Int>()) { result, value in
+                result += [value]
+            }
+            """,
+            """
+            let rows = violations.enumerated().↓reduce("") { rows, indexAndViolation in
+                return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
             }
             """,
             """
             zip(group, group.dropFirst()).↓reduce([]) { result, pair in
                 result + [pair.0 + pair.1]
             }
+            """,
+            """
+            let foo = values.↓reduce([String: Int]()) { result, value in
+                var result = result
+                result["\\(value)"] = value
+                return result
+            }
+            """,
+            """
+            let bar = values.↓reduce(Dictionary<String, Int>.init()) { result, value in
+                var result = result
+                result["\\(value)"] = value
+                return result
+            }
+            """,
+            """
+            let bar = values.↓reduce([Int](repeating: 0, count: 10)) { result, value in
+                return result + [value]
+            }
             """
         ]
     )
 
     private let reduceExpression = regex("(?<!\\w)reduce$")
+    private let initExpression = regex("^(?:\\[.+:?.*\\]|(?:Array|Dictionary)<.+>)(?:\\.init\\(|\\().*\\)$")
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard
             kind == .call,
-            let name = dictionary.name,
-            let match = reduceExpression.firstMatch(in: name, options: [], range: name.fullNSRange),
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let nameRange = file.contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
+            let match = reduceExpression.firstMatch(in: file.contents, options: [], range: nameRange),
             dictionary.enclosedArguments.count == 2,
             // would otherwise equal "into"
             dictionary.enclosedArguments[0].name == nil,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let nameRange = file.contents.bridge().byteRangeToNSRange(start: nameOffset, length: nameLength)
-            else { return [] }
+            argumentIsCopyOnWriteType(dictionary.enclosedArguments[0], file: file)
+        else { return [] }
 
         let location = Location(
             file: file,
-            characterOffset: nameRange.location + match.range.location
+            characterOffset: match.range.location
         )
         let violation = StyleViolation(
             ruleDescription: type(of: self).description,
@@ -69,5 +120,35 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
             location: location
         )
         return [violation]
+    }
+
+    private func argumentIsCopyOnWriteType(_ argument: [String: SourceKitRepresentable], file: File) -> Bool {
+        if let substructure = argument.substructure.first,
+            let kind = substructure.kind {
+            switch kind {
+            case SwiftExpressionKind.array.rawValue,
+                 SwiftExpressionKind.dictionary.rawValue:
+                return true
+            default:
+                break
+            }
+        }
+
+        let contents = file.contents
+        guard let offset = argument.offset,
+            let length = argument.length,
+            let range = contents.byteRangeToNSRange(start: offset, length: length)
+            else { return false }
+
+        // Check for string literal
+        let byteRange = NSRange(location: offset, length: length)
+        let kinds = file.syntaxMap.kinds(inByteRange: byteRange)
+        if kinds == [.string] {
+            return true
+        }
+
+        // check for Array or Dictionary init
+        let initMatch = initExpression.firstMatch(in: contents, options: [], range: range)
+        return initMatch != nil
     }
 }

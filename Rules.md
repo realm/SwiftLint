@@ -15852,7 +15852,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `reduce_into` | Disabled | No | performance | No | 3.0.0 
 
-Prefer `reduce(into:_:)` over `reduce(_:_:)`
+Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types
 
 ### Examples
 
@@ -15860,22 +15860,18 @@ Prefer `reduce(into:_:)` over `reduce(_:_:)`
 <summary>Non Triggering Examples</summary>
 
 ```swift
-let result = values.reduce(into: 0, +=)
+let foo = values.reduce(into: "abc") { $0 += "\($1)" }
 ```
 
 ```swift
-values.reduce(into: "") { $0.append("\($1)") }
-
+values.reduce(into: Array<Int>()) { result, value in
+    result.append(value)
+}
 ```
 
 ```swift
-values.reduce(into: initial) { $0 *= $1 }
-
-```
-
-```swift
-let result = values.reduce(into: 0) { result, value in
-    result += value
+let rows = violations.enumerated().reduce(into: "") { rows, indexAndViolation in
+    rows.append(generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1))
 }
 ```
 
@@ -15885,34 +15881,76 @@ zip(group, group.dropFirst()).reduce(into: []) { result, pair in
 }
 ```
 
+```swift
+let foo = values.reduce(into: [String: Int]()) { result, value in
+    result["\(value)"] = value
+}
+```
+
+```swift
+let foo = values.reduce(into: Dictionary<String, Int>.init()) { result, value in
+    result["\(value)"] = value
+}
+```
+
+```swift
+let foo = values.reduce(into: [Int](repeating: 0, count: 10)) { result, value in
+    result.append(value)
+}
+```
+
+```swift
+let foo = values.reduce(MyClass()) { result, value in
+    result.handleValue(value)
+    return result
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
-let result = values.↓reduce(0, +)
-
+let bar = values.↓reduce("abc") { $0 + "\($1)" }
 ```
 
 ```swift
-values.↓reduce("") { $0 + "\($1)" }
-
+values.↓reduce(Array<Int>()) { result, value in
+    result += [value]
+}
 ```
 
 ```swift
-values.↓reduce(initial) { $0 * $1 }
-
-```
-
-```swift
-let result = values.↓reduce(0) { result, value in
-    result + value
+let rows = violations.enumerated().↓reduce("") { rows, indexAndViolation in
+    return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
 }
 ```
 
 ```swift
 zip(group, group.dropFirst()).↓reduce([]) { result, pair in
     result + [pair.0 + pair.1]
+}
+```
+
+```swift
+let foo = values.↓reduce([String: Int]()) { result, value in
+    var result = result
+    result["\(value)"] = value
+    return result
+}
+```
+
+```swift
+let bar = values.↓reduce(Dictionary<String, Int>.init()) { result, value in
+    var result = result
+    result["\(value)"] = value
+    return result
+}
+```
+
+```swift
+let bar = values.↓reduce([Int](repeating: 0, count: 10)) { result, value in
+    return result + [value]
 }
 ```
 

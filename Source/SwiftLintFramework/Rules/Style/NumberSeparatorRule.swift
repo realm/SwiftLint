@@ -137,24 +137,27 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
         let shouldAddSeparators = clean.count >= minimumLength
 
-        for (idx, char) in reversedIfNeeded(Array(clean), reversed: !isFraction).enumerated() {
+        var idx = 0
+        for char in reversedIfNeeded(clean, reversed: !isFraction) {
+            defer { correctComponents.append(String(char)) }
+            guard char.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains) else { continue }
+
             if idx % 3 == 0 && idx > 0 && shouldAddSeparators {
                 correctComponents.append("_")
             }
-
-            correctComponents.append(String(char))
+            idx += 1
         }
 
         let expected = reversedIfNeeded(correctComponents, reversed: !isFraction).joined()
         return (expected == number, expected)
     }
 
-    private func reversedIfNeeded<T>(_ array: [T], reversed: Bool) -> [T] {
+    private func reversedIfNeeded<T>(_ collection: T, reversed: Bool) -> [T.Element] where T: Collection {
         if reversed {
-            return array.reversed()
+            return collection.reversed()
         }
 
-        return array
+        return Array(collection)
     }
 
     private func contentFrom(file: File, token: SyntaxToken) -> String? {

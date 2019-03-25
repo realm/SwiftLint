@@ -137,6 +137,10 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
         let shouldAddSeparators = clean.count >= minimumLength
 
+        // number may contain characters that are not digits, such as when it is
+        // wrapped in parentheses. We only want to insert a "_" between each third
+        // _digit_, not character, so idx is now only incremented if the character is
+        // a digit.
         var idx = 0
         for char in reversedIfNeeded(clean, reversed: !isFraction) {
             defer { correctComponents.append(String(char)) }

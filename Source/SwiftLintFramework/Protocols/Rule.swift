@@ -10,7 +10,6 @@ public protocol Rule {
 
     // Storage methods always have provided implementations of these
     func collect(infoFor file: File, into storage: inout RuleStorage)
-    func validate(file: File, using storage: RuleStorage) -> [StyleViolation]
     func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 
     func validate(file: File, compilerArguments: [String]) -> [StyleViolation]
@@ -25,10 +24,6 @@ extension Rule {
 
     public func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file, compilerArguments: compilerArguments)
-    }
-
-    public func validate(file: File, using storage: RuleStorage) -> [StyleViolation] {
-        return validate(file: file)
     }
 
     public func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
@@ -58,14 +53,10 @@ public protocol CorrectableRule: Rule {
     func correct(file: File, compilerArguments: [String]) -> [Correction]
     func correct(file: File) -> [Correction]
     func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
-    func correct(file: File, using storage: RuleStorage) -> [Correction]
 }
 
 public extension CorrectableRule {
     func correct(file: File, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file)
-    }
-    func correct(file: File, using storage: RuleStorage) -> [Correction] {
         return correct(file: file)
     }
     func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
@@ -146,45 +137,51 @@ public extension AnalyzerRule where Self: CorrectableRule {
 
 public protocol CollectingRule: Rule {
     associatedtype FileInfo
-    func collect(file: File) -> FileInfo
-    func validate(fileInfo: [FileInfo], compilerArguments: [String]) -> [StyleViolation]
-    func validate(fileInfo: [FileInfo]) -> [StyleViolation]
+    func collect(infoFor file: File) -> FileInfo
+    func validate(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [StyleViolation]
+    func validate(file: File, collectedInfo: [File: FileInfo]) -> [StyleViolation]
 }
 
 public extension CollectingRule {
     func collect(infoFor file: File, into storage: inout RuleStorage) {
-        storage.collect(info: collect(file: file), for: self)
+        storage.collect(info: collect(infoFor: file), for: file, in: self)
     }
-    func validate(fileInfo: [FileInfo], compilerArguments: [String]) -> [StyleViolation] {
-        return validate(fileInfo: fileInfo)
+    func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
+        let info = storage.collectedInfo(for: self)
+        return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
-
+    func validate(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [StyleViolation] {
+        return validate(file: file, collectedInfo: collectedInfo)
+    }
     func validate(file: File) -> [StyleViolation] {
-        queuedFatalError("Must call `validate(fileInfo:)` for CollectingRule")
+        queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
     }
 }
 
 public extension CollectingRule where Self: AnalyzerRule {
-    func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
-        queuedFatalError("Must call `validate(fileInfo:compilerArguments:)` for AnalyzerPassing")
+    func validate(file: File, collectedInfo: FileInfo) -> [StyleViolation] {
+        queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
     }
 }
 
 public protocol CollectingCorrectableRule: CollectingRule {
-    // TODO actually call these
-    func correct(fileInfo: [FileInfo], compilerArguments: [String]) -> [Correction]
-    func correct(fileInfo: [FileInfo]) -> [Correction]
+    func correct(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [Correction]
+    func correct(file: File, collectedInfo: [File: FileInfo]) -> [Correction]
 }
 
 public extension CollectingCorrectableRule {
-    func correct(fileInfo: [FileInfo], compilerArguments: [String]) -> [Correction] {
-        return correct(fileInfo: fileInfo)
+    func correct(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [Correction] {
+        return correct(file: file, collectedInfo: collectedInfo)
+    }
+    func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
+        let info = storage.collectedInfo(for: self)
+        return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
 }
 
 public extension CollectingCorrectableRule where Self: AnalyzerRule {
-    func correct(fileInfo: [FileInfo]) -> [Correction] {
-        queuedFatalError("Must call `correct(fileInfo:compilerArguments:)` for AnalyzerPassingCorrectableRule")
+    func correct(info: FileInfo, for file: File, against collectedInfo: [File: FileInfo]) -> [Correction] {
+        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for CollectingCorrectableRule")
     }
 }
 

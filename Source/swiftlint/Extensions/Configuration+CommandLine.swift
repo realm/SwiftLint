@@ -49,10 +49,10 @@ private func autoreleasepool(block: () -> Void) { block() }
 #endif
 
 extension Configuration {
-    func visitLintableFiles(with visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
+    func visitLintableFiles(with visitor: LintableFilesVisitor, storage: inout RuleStorage) -> Result<[File], CommandantError<()>> {
         return getFiles(with: visitor)
             .flatMap { groupFiles($0, visitor: visitor) }
-            .flatMap { visit(filesPerConfiguration: $0, visitor: visitor) }
+            .flatMap { visit(filesPerConfiguration: $0, visitor: visitor, storage: &storage) }
     }
 
     private func groupFiles(_ files: [File],
@@ -83,12 +83,16 @@ extension Configuration {
     }
 
     private func visit(filesPerConfiguration: [Configuration: [File]],
-                       visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
+                       visitor: LintableFilesVisitor,
+                       storage: inout RuleStorage) -> Result<[File], CommandantError<()>> {
+        var storage = RuleStorage()
         var index = 0
-        let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
-        let visit = { (file: File, config: Configuration) -> Void in
-            let skipFile = visitor.shouldSkipFile(atPath: file.path)
-            if !visitor.quiet, let filename = file.path?.bridge().lastPathComponent {
+        // TODO count collections and visitations separately
+        let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count } * 2
+
+        let collect = { (collecter: Linter) -> CollectedLinter? in
+            let skipFile = visitor.shouldSkipFile(atPath: collecter.file.path)
+            if !visitor.quiet, let filename = collecter.file.path?.bridge().lastPathComponent {
                 let increment = {
                     index += 1
                     if skipFile {
@@ -97,7 +101,7 @@ extension Configuration {
                             because its compiler arguments could not be found
                             """)
                     } else {
-                        queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                        queuedPrintError("Collecting '\(filename)' (\(index)/\(fileCount))")
                     }
                 }
                 if visitor.parallel {
@@ -108,15 +112,32 @@ extension Configuration {
             }
 
             guard !skipFile else {
-                return
+                return nil
+            }
+
+            return autoreleasepool {
+                linter.collect(into: &storage)
+            }
+        }
+        let visit = { (linter: CollectedLinter) -> Void in
+            if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
+                let increment = {
+                    index += 1
+                    queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                }
+                if visitor.parallel {
+                    indexIncrementerQueue.sync(execute: increment)
+                } else {
+                    increment()
+                }
             }
 
             autoreleasepool {
-                visitor.block(visitor.linter(forFile: file, configuration: config))
+                visitor.block(linter)
             }
         }
-        var filesAndConfigurations = [(File, Configuration)]()
-        filesAndConfigurations.reserveCapacity(fileCount)
+        var prelinters = [Linter]()
+        prelinters.reserveCapacity(fileCount)
         for (config, files) in filesPerConfiguration {
             let newConfig: Configuration
             if visitor.cache != nil {
@@ -124,17 +145,19 @@ extension Configuration {
             } else {
                 newConfig = config
             }
-            filesAndConfigurations += files.map { ($0, newConfig) }
+            prelinters += files.map { visitor.linter(forFile: $0, configuration: newConfig) }
         }
         if visitor.parallel {
+            let linters = prelinters.parallelCompactMap(transform: collect)
             DispatchQueue.concurrentPerform(iterations: fileCount) { index in
-                let (file, config) = filesAndConfigurations[index]
-                visit(file, config)
+                let linter = linters[index]
+                visit(linter)
             }
         } else {
-            filesAndConfigurations.forEach(visit)
+            let linters = prelinters.compactMap(collect)
+            linters.forEach(visit)
         }
-        return .success(filesAndConfigurations.compactMap({ $0.0 }))
+        return .success(prelinters.compactMap({ $0.file }))
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
@@ -185,9 +208,11 @@ extension Configuration {
                   cachePath: cachePath)
     }
 
-    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil,
-                            visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
-        return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap(visitLintableFiles)
+    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: inout RuleStorage,
+                            visitorBlock: @escaping (CollectedLinter) -> Void) -> Result<[File], CommandantError<()>> {
+        return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap({ visitor in
+            visitLintableFiles(with: visitor, storage: &storage)
+        })
     }
 
     // MARK: AutoCorrect Command

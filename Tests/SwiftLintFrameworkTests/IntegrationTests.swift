@@ -19,7 +19,7 @@ class IntegrationTests: XCTestCase {
         XCTAssert(swiftFiles.contains(where: { #file == $0.path }), "current file should be included")
 
         let violations = swiftFiles.parallelFlatMap {
-            Linter(file: $0, configuration: config).styleViolations
+            Linter(file: $0, configuration: config).collect(into: &storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
             violation.location.file!.withStaticString {
@@ -30,7 +30,10 @@ class IntegrationTests: XCTestCase {
 
     func testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
-        let corrections = swiftFiles.parallelFlatMap { Linter(file: $0, configuration: config).correct() }
+        var storage = RuleStorage()
+        let corrections = swiftFiles.parallelFlatMap {
+            Linter(file: $0, configuration: config).collect(into: &storage).correct(using: storage)
+        }
         for correction in corrections {
             correction.location.file!.withStaticString {
                 XCTFail(correction.ruleDescription.description,

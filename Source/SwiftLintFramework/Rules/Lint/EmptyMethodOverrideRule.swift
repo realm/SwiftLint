@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-
+public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule,
+        ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -83,7 +83,6 @@ public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule, Configura
         kind: SwiftDeclarationKind,
         dictionary: [String: SourceKitRepresentable]
     ) -> [NSRange] {
-
         let overridingKinds: [SwiftDeclarationKind] = [
             .functionMethodInstance,
             .functionMethodClass,
@@ -112,7 +111,6 @@ public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule, Configura
         kind: SwiftDeclarationKind,
         dictionary: [String: SourceKitRepresentable]
     ) -> [StyleViolation] {
-
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(
                 ruleDescription: type(of: self).description,

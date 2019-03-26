@@ -83,6 +83,7 @@ extension Configuration {
         return .success(groupedFiles)
     }
 
+    // swiftlint:disable:next function_body_length
     private func visit(filesPerConfiguration: [Configuration: [File]],
                        visitor: LintableFilesVisitor,
                        storage: RuleStorage) -> Result<[File], CommandantError<()>> {
@@ -95,14 +96,14 @@ extension Configuration {
             let skipFile = visitor.shouldSkipFile(atPath: collecter.file.path)
             if !visitor.quiet, let filename = collecter.file.path?.bridge().lastPathComponent {
                 let increment = {
-                    index += 1
+                    collected += 1
                     if skipFile {
                         queuedPrintError("""
-                            Skipping '\(filename)' (\(index)/\(fileCount)) \
+                            Skipping '\(filename)' (\(collected)/\(fileCount)) \
                             because its compiler arguments could not be found
                             """)
                     } else {
-                        queuedPrintError("Collecting '\(filename)' (\(index)/\(fileCount))")
+                        queuedPrintError("Collecting '\(filename)' (\(collected)/\(fileCount))")
                     }
                 }
                 if visitor.parallel {
@@ -123,8 +124,8 @@ extension Configuration {
         let visit = { (linter: CollectedLinter) -> Void in
             if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
                 let increment = {
-                    index += 1
-                    queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                    visited += 1
+                    queuedPrintError("\(visitor.action) '\(filename)' (\(visited)/\(fileCount))")
                 }
                 if visitor.parallel {
                     indexIncrementerQueue.sync(execute: increment)

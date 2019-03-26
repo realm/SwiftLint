@@ -24,7 +24,7 @@ extension Array where Element: Equatable {
     }
 }
 
-extension Array {
+public extension Array {
     static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array

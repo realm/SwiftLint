@@ -75,6 +75,7 @@ class IntegrationTests: XCTestCase {
             """
         let stderrWithoutCrash = """
             Linting Swift files at paths \n\
+            Collecting 'Test.swift' (1/1)
             Linting 'Test.swift' (1/1)
             Connection invalid
             Most rules will be skipped because sourcekitd has failed.
@@ -124,6 +125,7 @@ class IntegrationTests: XCTestCase {
             """)
         XCTAssertEqual(swiftlintResult.stderr, """
             Linting Swift files at paths \n\
+            Collecting 'Test.swift' (1/1)
             Linting 'Test.swift' (1/1)
             SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.
             Most rules will be skipped because sourcekitd has failed.

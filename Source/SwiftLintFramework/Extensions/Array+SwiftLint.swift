@@ -24,7 +24,7 @@ extension Array where Element: Equatable {
     }
 }
 
-extension Array {
+public extension Array {
     static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array
@@ -45,11 +45,11 @@ extension Array {
             return (copy[0..<pivot], copy[pivot..<count])
     }
 
-    func parallelFlatMap<T>(transform: @escaping ((Element) -> [T])) -> [T] {
+    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 
-    func parallelCompactMap<T>(transform: @escaping ((Element) -> T?)) -> [T] {
+    func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
         return parallelMap(transform: transform).compactMap { $0 }
     }
 

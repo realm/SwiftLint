@@ -158,50 +158,52 @@ public struct CollectedLinter {
         return getStyleViolations(using: storage).0
     }
 
-    public func styleViolationsAndRuleTimes(using storage: RuleStorage) -> ([StyleViolation], [(id: String, time: Double)]) {
-        return getStyleViolations(using: storage, benchmark: true)
+    public func styleViolationsAndRuleTimes(using storage: RuleStorage)
+        -> ([StyleViolation], [(id: String, time: Double)]) {
+            return getStyleViolations(using: storage, benchmark: true)
     }
 
-    private func getStyleViolations(using storage: RuleStorage, benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
-        if let cached = cachedStyleViolations(benchmark: benchmark) {
-            return cached
-        }
+    private func getStyleViolations(using storage: RuleStorage, benchmark: Bool = false)
+        -> ([StyleViolation], [(id: String, time: Double)]) {
+            if let cached = cachedStyleViolations(benchmark: benchmark) {
+                return cached
+            }
 
-        if file.sourcekitdFailed {
-            queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
-        }
-        let regions = file.regions()
-        let superfluousDisableCommandRule = rules.first(where: {
-            $0 is SuperfluousDisableCommandRule
-        }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelCompactMap {
-            $0.lint(file: self.file, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    configuration: self.configuration,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    compilerArguments: self.compilerArguments)
-        }
-        let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
-            regions: regions, configuration: configuration,
-            superfluousDisableCommandRule: superfluousDisableCommandRule)
+            if file.sourcekitdFailed {
+                queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
+            }
+            let regions = file.regions()
+            let superfluousDisableCommandRule = rules.first(where: {
+                $0 is SuperfluousDisableCommandRule
+            }) as? SuperfluousDisableCommandRule
+            let validationResults = rules.parallelCompactMap {
+                $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+                        storage: storage,
+                        configuration: self.configuration,
+                        superfluousDisableCommandRule: superfluousDisableCommandRule,
+                        compilerArguments: self.compilerArguments)
+            }
+            let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
+                regions: regions, configuration: configuration,
+                superfluousDisableCommandRule: superfluousDisableCommandRule)
 
-        let violations = validationResults.flatMap { $0.violations } + undefinedSuperfluousCommandViolations
-        let ruleTimes = validationResults.compactMap { $0.ruleTime }
-        var deprecatedToValidIdentifier = [String: String]()
-        for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
-            deprecatedToValidIdentifier[key] = value
-        }
+            let violations = validationResults.flatMap { $0.violations } + undefinedSuperfluousCommandViolations
+            let ruleTimes = validationResults.compactMap { $0.ruleTime }
+            var deprecatedToValidIdentifier = [String: String]()
+            for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
+                deprecatedToValidIdentifier[key] = value
+            }
 
-        if let cache = cache, let path = file.path {
-            cache.cache(violations: violations, forFile: path, configuration: configuration)
-        }
+            if let cache = cache, let path = file.path {
+                cache.cache(violations: violations, forFile: path, configuration: configuration)
+            }
 
-        for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
-            queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
-                "completely removed in a future release.")
-        }
+            for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
+                queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
+                    "completely removed in a future release.")
+            }
 
-        return (violations, ruleTimes)
+            return (violations, ruleTimes)
     }
 
     private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {

@@ -18,6 +18,7 @@ class IntegrationTests: XCTestCase {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         XCTAssert(swiftFiles.contains(where: { #file == $0.path }), "current file should be included")
 
+        var storage = RuleStorage()
         let violations = swiftFiles.parallelFlatMap {
             Linter(file: $0, configuration: config).collect(into: &storage).styleViolations(using: storage)
         }

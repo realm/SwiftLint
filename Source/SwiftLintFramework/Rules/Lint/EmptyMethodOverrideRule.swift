@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CallSuperOnlyRule: SubstitutionCorrectableASTRule,
+public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule,
 ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -65,16 +65,16 @@ ConfigurationProviderRule, AutomaticTestableRule {
     ].map(wrapInClass)
 
     static let corrections = Dictionary(uniqueKeysWithValues:
-        CallSuperOnlyRule.triggeringExamples.map { ($0, wrapInClass("")) })
+        EmptyMethodOverrideRule.triggeringExamples.map { ($0, wrapInClass("")) })
 
     public static let description = RuleDescription(
-        identifier: "call_super_only",
-        name: "Call Super Only",
+        identifier: "empty_method_override",
+        name: "Empty Method Override",
         description: "Methods that don't do anything but call `super` can be removed",
         kind: .lint,
-        nonTriggeringExamples: CallSuperOnlyRule.nonTriggeringExamples,
-        triggeringExamples: CallSuperOnlyRule.triggeringExamples,
-        corrections: CallSuperOnlyRule.corrections
+        nonTriggeringExamples: EmptyMethodOverrideRule.nonTriggeringExamples,
+        triggeringExamples: EmptyMethodOverrideRule.triggeringExamples,
+        corrections: EmptyMethodOverrideRule.corrections
     )
 
     public func violationRanges(in file: File, kind: SwiftDeclarationKind,

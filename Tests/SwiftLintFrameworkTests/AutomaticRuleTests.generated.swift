@@ -24,12 +24,6 @@ class BlockBasedKVORuleTests: XCTestCase {
     }
 }
 
-class CallSuperOnlyRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CallSuperOnlyRule.description)
-    }
-}
-
 class ClassDelegateProtocolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClassDelegateProtocolRule.description)
@@ -129,6 +123,12 @@ class EmptyCountRuleTests: XCTestCase {
 class EmptyEnumArgumentsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyEnumArgumentsRule.description)
+    }
+}
+
+class EmptyMethodOverrideRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(EmptyMethodOverrideRule.description)
     }
 }
 

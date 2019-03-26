@@ -33,12 +33,6 @@ extension BlockBasedKVORuleTests {
     ]
 }
 
-extension CallSuperOnlyRuleTests {
-    static var allTests: [(String, (CallSuperOnlyRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension ClassDelegateProtocolRuleTests {
     static var allTests: [(String, (ClassDelegateProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -339,6 +333,12 @@ extension EmptyCountRuleTests {
 
 extension EmptyEnumArgumentsRuleTests {
     static var allTests: [(String, (EmptyEnumArgumentsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyMethodOverrideRuleTests {
+    static var allTests: [(String, (EmptyMethodOverrideRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1536,7 +1536,6 @@ XCTMain([
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
-    testCase(CallSuperOnlyRuleTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
     testCase(ClosureBodyLengthRuleTests.allTests),
@@ -1571,6 +1570,7 @@ XCTMain([
     testCase(DynamicInlineRuleTests.allTests),
     testCase(EmptyCountRuleTests.allTests),
     testCase(EmptyEnumArgumentsRuleTests.allTests),
+    testCase(EmptyMethodOverrideRuleTests.allTests),
     testCase(EmptyParametersRuleTests.allTests),
     testCase(EmptyParenthesesWithTrailingClosureRuleTests.allTests),
     testCase(EmptyStringRuleTests.allTests),

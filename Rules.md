@@ -5,7 +5,6 @@
 * [Array Init](#array-init)
 * [Attributes](#attributes)
 * [Block Based KVO](#block-based-kvo)
-* [Call Super Only](#call-super-only)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
 * [Closure Body Length](#closure-body-length)
@@ -33,6 +32,7 @@
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
+* [Empty Method Override](#empty-method-override)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
 * [Empty String](#empty-string)
@@ -759,104 +759,6 @@ class Foo: NSObject {
   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                               change: Dictionary<NSKeyValueChangeKey, Any>?,
                               context: UnsafeMutableRawPointer?) {}
-}
-```
-
-</details>
-
-
-
-## Call Super Only
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
---- | --- | --- | --- | --- | ---
-`call_super_only` | Enabled | Yes | lint | No | 3.0.0 
-
-Methods that don't do anything but call `super` can be removed
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-class ViewController: UIViewController {
-    override func viewDidDisappear(_ animated: Bool) {
-        childViewController.viewDidDisappear(animated)
-    }
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        print("View controller did disappear")
-    }
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    public override init() {
-        super.init()
-    }
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    override func setUp() {
-        super.setUp()
-        urlString = "https://httpbin.org/basic-auth"
-    }
-}
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
-```swift
-class ViewController: UIViewController {
-    override func a(){/*comment*/super.a()}
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    override func becomeFirstResponder() -> Bool {
-        return super.becomeFirstResponder()
-    }
-}
-```
-
-```swift
-class ViewController: UIViewController {
-    internal
-    class
-    override
-    func setUp() {
-        super.setUp()
-    }
 }
 ```
 
@@ -5476,6 +5378,104 @@ func example(foo: Foo) {
     switch foo {
     case case .bar↓(_):
         break
+    }
+}
+```
+
+</details>
+
+
+
+## Empty Method Override
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`empty_method_override` | Enabled | Yes | lint | No | 3.0.0 
+
+Methods that don't do anything but call `super` can be removed
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    override func viewDidDisappear(_ animated: Bool) {
+        childViewController.viewDidDisappear(animated)
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("View controller did disappear")
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    public override init() {
+        super.init()
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func setUp() {
+        super.setUp()
+        urlString = "https://httpbin.org/basic-auth"
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    override func a(){/*comment*/super.a()}
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    override func becomeFirstResponder() -> Bool {
+        return super.becomeFirstResponder()
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    internal
+    class
+    override
+    func setUp() {
+        super.setUp()
     }
 }
 ```

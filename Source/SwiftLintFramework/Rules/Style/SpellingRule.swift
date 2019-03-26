@@ -1,7 +1,13 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SpellingRule: ASTRule, ConfigurationProviderRule {
+public struct SpellingRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+    private struct IdentifierComponents {
+        let identifier: String
+        let components: [String]
+        let offset: Int
+    }
+
     public var configuration = SpellingConfiguration(allowedExtraWords: [])
 
     let words: Set<String>
@@ -11,10 +17,10 @@ public struct SpellingRule: ASTRule, ConfigurationProviderRule {
         let path = "/usr/share/dict/words"
 
         guard manager.fileExists(atPath: path) else {
-            queuedFatalError("test")
+            queuedFatalError("Did not find dictionary at path: \(path)")
         }
         guard let validHandle = FileHandle(forReadingAtPath: path) else {
-            queuedFatalError("test")
+            queuedFatalError("Could not read file at path: \(path)")
         }
         let fileData = validHandle.readDataToEndOfFile()
         let fileString = String(data: fileData, encoding: .utf8)!
@@ -30,7 +36,8 @@ public struct SpellingRule: ASTRule, ConfigurationProviderRule {
         nonTriggeringExamples: [
             "let number = 5",
             "let camelCaseNumber = 4",
-            "let snake_case_number = 3"
+            "let snake_case_number = 3",
+            "func testRule_withUnderscore_shouldSpellCheck(label argument: Int) {\n}"
         ],
         triggeringExamples: [
             "let nuber = 5",
@@ -46,8 +53,11 @@ public struct SpellingRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.allowedExtraWords.contains(name) else {
+        return components(of: dictionary, kind: kind).map { identifierComponents in
+            let identifier = identifierComponents.identifier
+            let components = identifierComponents.components
+            let offset = identifierComponents.offset
+            guard !configuration.allowedExtraWords.contains(identifier) else {
                 return []
             }
 
@@ -55,10 +65,9 @@ public struct SpellingRule: ASTRule, ConfigurationProviderRule {
 
             let type = self.type(for: kind)
 
-            let components = name.splitBefore { $0.isUpperCase }
             for component in components {
-                if !words.contains(component.lowercased()) {
-                    let reason = "\(type) name should be spelled correctly: '\(name)': '\(component.lowercased())'"
+                if !words.contains(component) {
+                    let reason = "\(type) is not spelled correctly: '\(identifier)': '\(component)'"
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
@@ -72,8 +81,8 @@ public struct SpellingRule: ASTRule, ConfigurationProviderRule {
         } ?? []
     }
 
-    private func validateName(dictionary: [String: SourceKitRepresentable],
-                              kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
+    private func components(of dictionary: [String: SourceKitRepresentable],
+                            kind: SwiftDeclarationKind) -> IdentifierComponents? {
         guard var name = dictionary.name,
             let offset = dictionary.offset,
             kinds.contains(kind),
@@ -89,7 +98,14 @@ public struct SpellingRule: ASTRule, ConfigurationProviderRule {
             name = String(name[...index])
         }
 
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
+        let splittedName = name.split(whereSeparator: "_():".contains)
+        let components = splittedName.flatMap { nameComponent in
+            String(nameComponent).splitBefore { $0.isUpperCase }
+        }.map { $0.lowercased() }
+
+        return IdentifierComponents(identifier: name.nameStrippingLeadingUnderscoreIfPrivate(dictionary),
+                                    components: components,
+                                    offset: offset)
     }
 
     private let kinds: Set<SwiftDeclarationKind> = {

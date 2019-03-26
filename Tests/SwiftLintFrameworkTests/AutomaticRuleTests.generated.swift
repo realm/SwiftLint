@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -597,6 +597,12 @@ class SortedFirstLastRuleTests: XCTestCase {
 class SortedImportsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
+    }
+}
+
+class SpellingRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SpellingRule.description)
     }
 }
 

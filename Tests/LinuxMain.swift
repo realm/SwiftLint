@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -1181,6 +1181,12 @@ extension SourceKitCrashTests {
     ]
 }
 
+extension SpellingRuleTests {
+    static var allTests: [(String, (SpellingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension StatementPositionRuleTests {
     static var allTests: [(String, (StatementPositionRuleTests) -> () throws -> Void)] = [
         ("testStatementPosition", testStatementPosition),
@@ -1621,6 +1627,7 @@ XCTMain([
     testCase(SortedFirstLastRuleTests.allTests),
     testCase(SortedImportsRuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
+    testCase(SpellingRuleTests.allTests),
     testCase(StatementPositionRuleTests.allTests),
     testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),

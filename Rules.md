@@ -130,6 +130,7 @@
 * [Single Test Class](#single-test-class)
 * [Min or Max over Sorted First or Last](#min-or-max-over-sorted-first-or-last)
 * [Sorted Imports](#sorted-imports)
+* [SpellCheck Rule](#spellcheck-rule)
 * [Statement Position](#statement-position)
 * [Static Operator](#static-operator)
 * [Strict fileprivate](#strict-fileprivate)
@@ -17398,6 +17399,56 @@ import ↓CCC
 #endif
 import AAA
 import BBB
+```
+
+</details>
+
+
+
+## SpellCheck Rule
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`spell_check` | Enabled | No | style | No | 3.0.0 
+
+Identifiers should have correct spelling.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let number = 5
+```
+
+```swift
+let camelCaseNumber = 4
+```
+
+```swift
+let snake_case_number = 3
+```
+
+```swift
+func testRule_withUnderscore_shouldSpellCheck(label argument: Int) {
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let nuber = 5
+```
+
+```swift
+let camelCasenumber = 4
+```
+
+```swift
+let snake_casenumber = 3
 ```
 
 </details>

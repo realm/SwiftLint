@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule,
-ConfigurationProviderRule, AutomaticTestableRule {
+public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -64,8 +64,9 @@ ConfigurationProviderRule, AutomaticTestableRule {
         """
     ].map(wrapInClass)
 
-    static let corrections = Dictionary(uniqueKeysWithValues:
-        EmptyMethodOverrideRule.triggeringExamples.map { ($0, wrapInClass("")) })
+    static let corrections = Dictionary(
+        uniqueKeysWithValues: EmptyMethodOverrideRule.triggeringExamples.map { ($0, wrapInClass("")) }
+    )
 
     public static let description = RuleDescription(
         identifier: "empty_method_override",
@@ -77,20 +78,26 @@ ConfigurationProviderRule, AutomaticTestableRule {
         corrections: EmptyMethodOverrideRule.corrections
     )
 
-    public func violationRanges(in file: File, kind: SwiftDeclarationKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(
+        in file: File,
+        kind: SwiftDeclarationKind,
+        dictionary: [String: SourceKitRepresentable]
+    ) -> [NSRange] {
+
         let overridingKinds: [SwiftDeclarationKind] = [
             .functionMethodInstance,
             .functionMethodClass,
             .functionMethodStatic
         ]
-        guard overridingKinds.contains(kind),
+
+        guard
+            overridingKinds.contains(kind),
             dictionary.enclosedSwiftAttributes.contains(.override),
             !dictionary.enclosedSwiftAttributes.contains(.public),
             file.onlyCallsSuper(dictionary),
             let offset = dictionary.offset,
             let length = dictionary.length
-            else { return [] }
+        else { return [] }
 
         let startIndex = dictionary.swiftAttributes
             .compactMap { $0.offset }
@@ -100,8 +107,12 @@ ConfigurationProviderRule, AutomaticTestableRule {
         return [NSRange(startIndex..<endIndex)]
     }
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(
+        file: File,
+        kind: SwiftDeclarationKind,
+        dictionary: [String: SourceKitRepresentable]
+    ) -> [StyleViolation] {
+
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(
                 ruleDescription: type(of: self).description,
@@ -112,19 +123,23 @@ ConfigurationProviderRule, AutomaticTestableRule {
     }
 
     public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
-        let range = file.contents.bridge()
-            .byteRangeToNSRange(start: violationRange.location, length: violationRange.length)!
+        let range = file.contents.bridge().byteRangeToNSRange(
+            start: violationRange.location,
+            length: violationRange.length
+        )!
         return (range, "")
     }
 }
 
 private extension File {
     func onlyCallsSuper(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
-        if let name = dictionary.name?.split(separator: "(").first,
+        if
+            let name = dictionary.name?.split(separator: "(").first,
             dictionary.substructure.count == 1,
             let methodCall = dictionary.substructure.first,
             methodCall.name == "super.\(name)",
-            !hasAssignmentInBody(dictionary) {
+            !hasAssignmentInBody(dictionary)
+        {
             return true
         } else {
             return false
@@ -138,8 +153,9 @@ private extension File {
             else { return false }
 
         let body = contents.substring(from: range.location, length: range.length)
-        let assignmentOperators = ["=", "*=", "/=", "%=", "+=", "-=",
-                                   "<<=", ">>=", "&=", "|=", "^="]
+        let assignmentOperators = [
+            "=", "*=", "/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "|=", "^="
+        ]
 
         return assignmentOperators.contains(where: body.contains)
     }
@@ -147,12 +163,12 @@ private extension File {
 
 private func wrapInClass(_ string: String) -> String {
     return """
-    class ViewController: UIViewController {
-    \(string.isEmpty ? "    " : string
-        .split(separator: "\n")
-        .map { "    " + $0 }
-        .joined(separator: "\n")
-    )
-    }
-    """
+        class ViewController: UIViewController {
+        \(string.isEmpty ? "    " : string
+            .split(separator: "\n")
+            .map { "    " + $0 }
+            .joined(separator: "\n")
+        )
+        }
+        """
 }

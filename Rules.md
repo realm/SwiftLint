@@ -3078,6 +3078,32 @@ func foo() -> Any {
 
 ```
 
+```swift
+var obs: [Any?] = []
+obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+
+```
+
+```swift
+var obs: [String: Any?] = []
+obs["foo"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
+
+```
+
+```swift
+var obs: [Any?] = []
+obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+
+```
+
+```swift
+func foo(_ notif: Any) {
+   obs.append(notif)
+}
+foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

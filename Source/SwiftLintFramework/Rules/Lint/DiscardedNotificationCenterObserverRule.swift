@@ -17,7 +17,17 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             "let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",
             "func foo() -> Any {\n" +
             "   return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n" +
-            "}\n"
+            "}\n",
+            "var obs: [Any?] = []\n" +
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            "var obs: [String: Any?] = []\n" +
+            "obs[\"foo\"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",
+            "var obs: [Any?] = []\n" +
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            "func foo(_ notif: Any) {\n" +
+            "   obs.append(notif)\n" +
+            "}\n" +
+            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"
         ],
         triggeringExamples: [
             "↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
@@ -49,6 +59,11 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             let offset = dictionary.offset,
             let range = file.contents.bridge().byteRangeToNSRange(start: 0, length: offset) else {
                 return []
+        }
+
+        if let lastMatch = regex("\\b[^\\(]+").matches(in: file.contents, options: [], range: range).last?.range,
+            lastMatch.location == range.length - lastMatch.length - 1 {
+            return []
         }
 
         if let lastMatch = regex("\\s?=\\s*").matches(in: file.contents, options: [], range: range).last?.range,

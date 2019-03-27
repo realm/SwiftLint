@@ -24,6 +24,16 @@
   [Hiroki Nagasawa](https://github.com/pixyzehn)
   [#2669](https://github.com/realm/SwiftLint/pull/2669)
 
+* Add new opt-in rule `file_types_order` to specify how the types in a file
+  should be sorted.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
+
+* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
+  properties, methods & more within a type.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
+
 #### Bug Fixes
 
 * `colon` rule now catches violations when declaring generic types with
@@ -82,15 +92,6 @@
 * Add `exclude_ranges` option to `number_separator` for exclusion.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2637](https://github.com/realm/SwiftLint/issues/2637)
-* Add new opt-in rule `file_types_order` to specify how the types in a file
-  should be sorted.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2294](https://github.com/realm/SwiftLint/issues/2294)
-
-* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
-  properties, methods & more within a type.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
 #### Bug Fixes
 

@@ -6304,8 +6304,6 @@ Header comments should be consistent with project patterns. The SWIFTLINT_CURREN
 
 ### Examples
 
-=======
->>>>>>> Split new rule up into two separate rules
 <details>
 <summary>Non Triggering Examples</summary>
 
@@ -7628,23 +7626,9 @@ class TestViewController: UIViewController {
         // 3 lines
     }
 
-<<<<<<< HEAD
-```swift
-realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first
-```
-
-```swift
-if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-=======
     enum TestEnum {
         // 5 lines
     }
->>>>>>> Fix issues after rebase
 
     // Stored Type Properties
     static let cellIdentifier: String = "AmazingCell"
@@ -7854,6 +7838,14 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```swift
 collection.filter("stringCol = '3'").first
+```
+
+```swift
+realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first
+```
+
+```swift
+if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }
 ```
 
 </details>

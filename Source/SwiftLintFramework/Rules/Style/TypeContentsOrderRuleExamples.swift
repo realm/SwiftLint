@@ -1,5 +1,3 @@
-import Foundation
-
 // swiftlint:disable:next type_body_length
 internal struct TypeContentsOrderRuleExamples {
     static let defaultOrderParts = [

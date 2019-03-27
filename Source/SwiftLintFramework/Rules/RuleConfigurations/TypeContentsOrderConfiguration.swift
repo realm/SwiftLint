@@ -1,5 +1,3 @@
-import Foundation
-
 enum TypeContent: String {
     case `case` = "case"
     case typeAlias = "type_alias"

@@ -1,5 +1,3 @@
-import Foundation
-
 enum FileType: String {
     case supportingType = "supporting_type"
     case mainType = "main_type"

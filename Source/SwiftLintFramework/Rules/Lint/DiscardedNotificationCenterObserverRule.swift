@@ -20,11 +20,13 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             "}\n",
             "var obs: [Any?] = []\n" +
             "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            "var obs: [String: Any?] = []\n" +
+            "obs[\"foo\"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",
             "var obs: [Any?] = []\n" +
             "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
-            "func foo(_ notif: Any) {" +
-                "   obs.append(notif)" +
-                "}" +
+            "func foo(_ notif: Any) {\n" +
+            "   obs.append(notif)\n" +
+            "}\n" +
             "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"
         ],
         triggeringExamples: [

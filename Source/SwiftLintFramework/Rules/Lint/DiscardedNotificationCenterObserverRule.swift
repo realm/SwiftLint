@@ -19,7 +19,13 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             "   return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n" +
             "}\n",
             "var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            "var obs: [Any?] = []\n" +
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            "func foo(_ notif: Any) {" +
+                "   obs.append(notif)" +
+                "}" +
+            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"
         ],
         triggeringExamples: [
             "↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
@@ -53,8 +59,8 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
                 return []
         }
 
-        if let lastMatch = regex("append\\(").matches(in: file.contents, options: [], range: range).last?.range,
-            lastMatch.location == range.length - lastMatch.length {
+        if let lastMatch = regex("\\b[^\\(]+").matches(in: file.contents, options: [], range: range).last?.range,
+            lastMatch.location == range.length - lastMatch.length - 1 {
             return []
         }
 

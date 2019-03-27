@@ -112,7 +112,8 @@
   properties, methods & more within a type.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2294](https://github.com/realm/SwiftLint/issues/2294)
-* Add `call_super_only` rule to warn against methods that only call `super`.  
+
+* Add `empty_method_override` rule to warn against methods that only call `super`.  
   [Xavier Lowmiller](https://github.com/xavierLowmiller)
   [#2578](https://github.com/realm/SwiftLint/issues/2578)
 

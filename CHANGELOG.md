@@ -34,6 +34,11 @@
   [Cihat Gündüz](https://github.com/Dschee)
   [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
+* Add `nslocalizedstring_require_bundle` rule to ensure calls to
+  `NSLocalizedString` specify the bundle where the strings file is located.  
+  [Matthew Healy](https://github.com/matthew-healy)
+  [#2595](https://github.com/realm/SwiftLint/2595)
+
 #### Bug Fixes
 
 * `colon` rule now catches violations when declaring generic types with

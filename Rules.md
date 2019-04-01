@@ -95,6 +95,7 @@
 * [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
 * [NSLocalizedString Key](#nslocalizedstring-key)
+* [NSLocalizedString Require Bundle](#nslocalizedstring-require-bundle)
 * [NSObject Prefer isEqual](#nsobject-prefer-isequal)
 * [Number Separator](#number-separator)
 * [Object Literal](#object-literal)
@@ -13543,6 +13544,60 @@ NSLocalizedString(↓method(), comment: nil)
 
 ```swift
 NSLocalizedString(↓"key_\(param)", comment: nil)
+```
+
+</details>
+
+
+
+## NSLocalizedString Require Bundle
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`nslocalizedstring_require_bundle` | Disabled | No | lint | No | 3.0.0 
+
+Calls to NSLocalisedString should specify the bundle which contains the strings file.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+NSLocalizedString("someKey", bundle: .main, comment: "test")
+```
+
+```swift
+NSLocalizedString("someKey", tableName: "a",
+                  bundle: Bundle(for: A.self),
+                  comment: "test")
+```
+
+```swift
+NSLocalizedString("someKey", tableName: "xyz",
+                  bundle: someBundle, value: "test"
+                  comment: "test")
+```
+
+```swift
+arbitraryFunctionCall("something")
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓NSLocalizedString("someKey", comment: "test")
+```
+
+```swift
+↓NSLocalizedString("someKey", tableName: "a", comment: "test")
+```
+
+```swift
+↓NSLocalizedString("someKey", tableName: "xyz",
+                  value: "test", comment: "test")
 ```
 
 </details>

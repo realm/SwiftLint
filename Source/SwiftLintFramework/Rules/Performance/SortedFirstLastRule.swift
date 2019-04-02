@@ -17,7 +17,13 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
             "let max = myList.max()\n",
             "let max = myList.max(by: { $0 < $1 })\n",
             "let message = messages.sorted(byKeyPath: #keyPath(Message.timestamp)).last",
-            "let message = messages.sorted(byKeyPath: \"timestamp\", ascending: false).first"
+            "let message = messages.sorted(byKeyPath: \"timestamp\", ascending: false).first",
+            "myList.sorted().firstIndex(of: key)",
+            "myList.sorted().lastIndex(of: key)",
+            "myList.sorted().firstIndex(where: someFunction)",
+            "myList.sorted().lastIndex(where: someFunction)",
+            "myList.sorted().firstIndex { $0 == key }",
+            "myList.sorted().lastIndex { $0 == key }"
         ],
         triggeringExamples: [
             "↓myList.sorted().first\n",
@@ -38,7 +44,7 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
 
     public func validate(file: File) -> [StyleViolation] {
         return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.(first|last)",
+                        pattern: "[\\}\\)]\\s*\\.(first|last)(?!Index)",
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".sorted",
                         severity: configuration.severity) { dictionary in

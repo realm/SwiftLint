@@ -17577,6 +17577,30 @@ let message = messages.sorted(byKeyPath: #keyPath(Message.timestamp)).last
 let message = messages.sorted(byKeyPath: "timestamp", ascending: false).first
 ```
 
+```swift
+myList.sorted().firstIndex(of: key)
+```
+
+```swift
+myList.sorted().lastIndex(of: key)
+```
+
+```swift
+myList.sorted().firstIndex(where: someFunction)
+```
+
+```swift
+myList.sorted().lastIndex(where: someFunction)
+```
+
+```swift
+myList.sorted().firstIndex { $0 == key }
+```
+
+```swift
+myList.sorted().lastIndex { $0 == key }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

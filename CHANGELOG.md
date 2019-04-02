@@ -57,6 +57,11 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2683](https://github.com/realm/SwiftLint/issues/2683)
 
+* Fix false positives on `sorted_first_last` when calling `firstIndex` and
+  `lastIndex` method.
+  [Taiki Komaba](https://github.com/r-plus)
+  [#2700](https://github.com/realm/SwiftLint/issues/2700)
+
 ## 0.31.0: Busy Laundromat
 
 #### Breaking

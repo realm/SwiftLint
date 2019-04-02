@@ -14010,6 +14010,42 @@ let foo = ↓1_000_000.000000_1
 let foo = ↓1000000.000000_1
 ```
 
+```swift
+let foo: Double = ↓-(100000)
+```
+
+```swift
+let foo: Double = ↓-(10.000000_1)
+```
+
+```swift
+let foo: Double = ↓-(123456 / ↓447.214214)
+```
+
+```swift
+let foo: Double = +(↓100000)
+```
+
+```swift
+let foo: Double = +(↓10.000000_1)
+```
+
+```swift
+let foo: Double = +(↓123456 / ↓447.214214)
+```
+
+```swift
+let foo: Double = (↓100000)
+```
+
+```swift
+let foo: Double = (↓10.000000_1)
+```
+
+```swift
+let foo: Double = (↓123456 / ↓447.214214)
+```
+
 </details>
 
 

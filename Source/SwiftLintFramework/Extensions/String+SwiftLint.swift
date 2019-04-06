@@ -80,6 +80,9 @@ extension String {
     }
 
     internal var isFile: Bool {
+        if self.isEmpty {
+            return false
+        }
         var isDirectoryObjC: ObjCBool = false
         if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
             return !isDirectoryObjC.boolValue

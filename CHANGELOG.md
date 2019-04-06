@@ -62,6 +62,11 @@
   [Taiki Komaba](https://github.com/r-plus)
   [#2700](https://github.com/realm/SwiftLint/issues/2700)
 
+* Fix crash when running on Linux with Swift 5 without specifying a `--path`
+  value or specifying an empty string.  
+  [Keith Smiley](https://github.com/keith)
+  [#2703](https://github.com/realm/SwiftLint/issues/2703)
+
 ## 0.31.0: Busy Laundromat
 
 #### Breaking

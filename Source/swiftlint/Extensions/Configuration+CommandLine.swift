@@ -66,20 +66,16 @@ extension Configuration {
         for file in files {
             // Files whose configuration specifies they should be excluded will be skipped
             let fileConfiguration = configuration(for: file)
-            let excludedPaths = fileConfiguration.excluded
-                .map { (fileConfiguration.rootPath ?? "").bridge().appendingPathComponent($0) }
-
-            let shouldSkip: Bool = excludedPaths.contains {
-                file.path?.bridge().pathComponents.starts(with: $0.bridge().pathComponents) ?? false
+            let fileConfigurationRootPath = (fileConfiguration.rootPath ?? "").bridge()
+            let shouldSkip = fileConfiguration.excluded.contains { excludedRelativePath in
+                let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
+                let filePathComponents = file.path?.bridge().pathComponents ?? []
+                let excludedPathComponents = excludedPath.bridge().pathComponents
+                return filePathComponents.starts(with: excludedPathComponents)
             }
 
             if !shouldSkip {
-                if var configuredFiles = groupedFiles[fileConfiguration] {
-                    configuredFiles.append(file)
-                    groupedFiles[fileConfiguration] = configuredFiles
-                } else {
-                    groupedFiles[fileConfiguration] = [file]
-                }
+                groupedFiles[fileConfiguration, default: []].append(file)
             }
         }
 

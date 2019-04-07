@@ -41,6 +41,11 @@
 
 #### Bug Fixes
 
+* Fix bug where SwiftLint ignores excluded files list in a nested configuration
+  file.  
+  [Dylan Bruschi](https://github.com/Bruschidy54)
+  [#2447](https://github.com/realm/SwiftLint/issues/2447)
+
 * `colon` rule now catches violations when declaring generic types with
   inheritance or protocol conformance.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -120,10 +125,6 @@
   [#2637](https://github.com/realm/SwiftLint/issues/2637)
 
 #### Bug Fixes
-
-* Fix bug where SwiftLint ignores excluded files list in a nested configuration file.  
-  [Dylan Bruschi](https://github.com/Bruschidy54)
-  [#2447](https://github.com/realm/SwiftLint/issues/2447)
 
 * Fix false positives on `no_grouping_extension` rule when using `where`
   clause.  

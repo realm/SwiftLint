@@ -39,6 +39,10 @@
   [Matthew Healy](https://github.com/matthew-healy)
   [#2595](https://github.com/realm/SwiftLint/2595)
 
+* `contains_over_first_not_nil` rule now also checks for `firstIndex(where:)`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2678](https://github.com/realm/SwiftLint/issues/2678)
+
 #### Bug Fixes
 
 * Fix bug where SwiftLint ignores excluded files list in a nested configuration

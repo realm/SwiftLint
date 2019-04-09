@@ -332,6 +332,7 @@
 		D4DABFD91E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */; };
 		D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */; };
 		D4DB92251E628898005DE9C1 /* TodoRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB92241E628898005DE9C1 /* TodoRuleTests.swift */; };
+		D4DDFF9822396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DDFF9722396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift */; };
 		D4DE9133207B4750000FFAA8 /* UnavailableFunctionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DE9131207B4731000FFAA8 /* UnavailableFunctionRule.swift */; };
 		D4E2BA851F6CD77B00E8E184 /* ArrayInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */; };
 		D4E92D1F2137B4C9002EDD48 /* IdenticalOperandsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E92D1E2137B4C9002EDD48 /* IdenticalOperandsRule.swift */; };
@@ -817,6 +818,7 @@
 		D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterDetachmentRuleExamples.swift; sourceTree = "<group>"; };
 		D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NimbleOperatorRule.swift; sourceTree = "<group>"; };
 		D4DB92241E628898005DE9C1 /* TodoRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoRuleTests.swift; sourceTree = "<group>"; };
+		D4DDFF9722396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsOverFirstNotNilRuleTests.swift; sourceTree = "<group>"; };
 		D4DE9131207B4731000FFAA8 /* UnavailableFunctionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnavailableFunctionRule.swift; sourceTree = "<group>"; };
 		D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayInitRule.swift; sourceTree = "<group>"; };
 		D4E92D1E2137B4C9002EDD48 /* IdenticalOperandsRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdenticalOperandsRule.swift; sourceTree = "<group>"; };
@@ -1415,6 +1417,7 @@
 				E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */,
 				F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */,
 				F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */,
+				D4DDFF9722396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift */,
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
 				67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */,
 				67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */,
@@ -2198,6 +2201,7 @@
 				3B12C9C31C320A53000B423F /* YamlSwiftLintTests.swift in Sources */,
 				D41985ED21FAD033003BE2B7 /* DeploymentTargetConfigurationTests.swift in Sources */,
 				D450D1E221F19B1E00E60010 /* TrailingClosureConfigurationTests.swift in Sources */,
+				D4DDFF9822396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift in Sources */,
 				E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */,
 				D4C27C001E12DFF500DF713E /* LinterCacheTests.swift in Sources */,
 				D45255C81F0932F8003C9B56 /* RuleDescription+Examples.swift in Sources */,

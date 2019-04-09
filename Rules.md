@@ -2519,7 +2519,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `contains_over_first_not_nil` | Disabled | No | performance | No | 3.0.0 
 
-Prefer `contains` over `first(where:) != nil`
+Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.
 
 ### Examples
 
@@ -2533,6 +2533,16 @@ let first = myList.first(where: { $0 % 2 == 0 })
 
 ```swift
 let first = myList.first { $0 % 2 == 0 }
+
+```
+
+```swift
+let firstIndex = myList.firstIndex(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let firstIndex = myList.firstIndex { $0 % 2 == 0 }
 
 ```
 
@@ -2567,6 +2577,36 @@ let first = myList.first { $0 % 2 == 0 }
 
 ```swift
 (↓myList.first { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.firstIndex { $0 % 2 == 0 } != nil
+
+```
+
+```swift
+↓myList.firstIndex(where: { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.firstIndex(where: { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.firstIndex(where: someFunction) != nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.firstIndex { $0 % 2 == 0 } != nil
+
+```
+
+```swift
+(↓myList.firstIndex { $0 % 2 == 0 }) != nil
 
 ```
 

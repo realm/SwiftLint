@@ -72,6 +72,11 @@
   [Keith Smiley](https://github.com/keith)
   [#2703](https://github.com/realm/SwiftLint/issues/2703)
 
+* Fix false positives on `explicit_acl` and `explicit_top_level_acl` rules when
+  declaring extensions that add protocol conformances with Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2705](https://github.com/realm/SwiftLint/issues/2705)
+
 ## 0.31.0: Busy Laundromat
 
 #### Breaking

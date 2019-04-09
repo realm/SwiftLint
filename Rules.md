@@ -5728,6 +5728,10 @@ internal protocol A {
 internal class A { deinit {} }
 ```
 
+```swift
+extension A: Equatable {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -6032,6 +6036,10 @@ class Foo {}
 ```swift
 internal func a() {}
 
+```
+
+```swift
+extension A: Equatable {}
 ```
 
 </details>

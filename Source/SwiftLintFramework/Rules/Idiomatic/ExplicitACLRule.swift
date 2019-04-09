@@ -39,7 +39,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
               var b: Int
             }
             """,
-            "internal class A { deinit {} }"
+            "internal class A { deinit {} }",
+            "extension A: Equatable {}"
         ],
         triggeringExamples: [
             "enum A {}\n",
@@ -60,9 +61,18 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     private func offsetOfElements(from elements: [SourceKittenElement], in file: File,
                                   thatAreNotInRanges ranges: [NSRange]) -> [Int] {
+        let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
+                                                         .extensionProtocol, .extensionStruct]
+
         return elements.compactMap { element in
             guard let typeOffset = element.offset else {
                 return nil
+            }
+
+            guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+                case let isConformanceExtension = extensionKinds.contains(kind) && !element.inheritedTypes.isEmpty,
+                !isConformanceExtension else {
+                    return nil
             }
 
             // find the last "internal" token before the type

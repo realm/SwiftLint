@@ -18,7 +18,8 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
             "internal enum A {\n enum B {}\n}",
             "internal final class Foo {}",
             "internal\nclass Foo {}",
-            "internal func a() {}\n"
+            "internal func a() {}\n",
+            "extension A: Equatable {}"
         ],
         triggeringExamples: [
             "enum A {}\n",
@@ -30,8 +31,18 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
     )
 
     public func validate(file: File) -> [StyleViolation] {
+        let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
+                                                         .extensionProtocol, .extensionStruct]
+
         // find all top-level types marked as internal (either explictly or implictly)
         let internalTypesOffsets = file.structure.dictionary.substructure.compactMap { element -> Int? in
+            // ignore extensions that declare protocol conformance
+            guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+                case let isConformanceExtension = extensionKinds.contains(kind) && !element.inheritedTypes.isEmpty,
+                !isConformanceExtension else {
+                    return nil
+            }
+
             if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
                 return element.offset
             }

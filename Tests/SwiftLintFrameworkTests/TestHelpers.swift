@@ -42,11 +42,41 @@ func violations(_ string: String, config: Configuration = Configuration()!,
     var storage = RuleStorage()
     let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
     let linter = collecter.collect(into: &storage)
-    return linter.styleViolations(using: storage).map { violation in
-        let locationWithoutFile = Location(file: nil, line: violation.location.line,
-                                           character: violation.location.character)
-        return StyleViolation(ruleDescription: violation.ruleDescription, severity: violation.severity,
-                              location: locationWithoutFile, reason: violation.reason)
+    return linter.styleViolations(using: storage).withoutFiles()
+}
+
+extension Collection where Element == String {
+    func violations(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false)
+        -> [StyleViolation] {
+            let makeFile = requiresFileOnDisk ? File.init(contents:) : File.temporary
+            return map(makeFile).violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
+    }
+}
+
+extension Collection where Element: File {
+    func violations(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false)
+        -> [StyleViolation] {
+            var storage = RuleStorage()
+            let violations = map({ file in
+                Linter(file: file, configuration: config,
+                       compilerArguments: requiresFileOnDisk ? file.makeCompilerArguments() : [])
+            }).map({ linter in
+                linter.collect(into: &storage)
+            }).flatMap({ linter in
+                linter.styleViolations(using: storage)
+            })
+            return requiresFileOnDisk ? violations.withoutFiles() : violations
+    }
+}
+
+private extension Collection where Element == StyleViolation {
+    func withoutFiles() -> [StyleViolation] {
+        return map { violation in
+            let locationWithoutFile = Location(file: nil, line: violation.location.line,
+                                               character: violation.location.character)
+            return StyleViolation(ruleDescription: violation.ruleDescription, severity: violation.severity,
+                                  location: locationWithoutFile, reason: violation.reason)
+        }
     }
 }
 

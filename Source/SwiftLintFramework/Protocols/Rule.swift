@@ -159,8 +159,18 @@ public extension CollectingRule {
 }
 
 public extension CollectingRule where Self: AnalyzerRule {
-    func validate(file: File, collectedInfo: FileInfo) -> [StyleViolation] {
-        queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
+    func collect(infoFor file: File) -> FileInfo {
+        queuedFatalError("Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule")
+    }
+    func validate(file: File) -> [StyleViolation] {
+        queuedFatalError(
+            "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
+        )
+    }
+    func validate(file: File, collectedInfo: [File: FileInfo]) -> [StyleViolation] {
+        queuedFatalError(
+            "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
+        )
     }
 }
 

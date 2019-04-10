@@ -133,7 +133,7 @@ public struct Linter {
 
     public func collect(into storage: inout RuleStorage) -> CollectedLinter {
         DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
-            rules[idx].collect(infoFor: file, into: &storage)
+            rules[idx].collect(infoFor: file, into: &storage, compilerArguments: compilerArguments)
         }
         return CollectedLinter(from: self)
     }

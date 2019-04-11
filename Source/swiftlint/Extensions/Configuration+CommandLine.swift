@@ -138,8 +138,8 @@ extension Configuration {
                 visitor.block(linter)
             }
         }
-        var prelinters = [Linter]()
-        prelinters.reserveCapacity(fileCount)
+        var linters = [Linter]()
+        linters.reserveCapacity(fileCount)
         for (config, files) in filesPerConfiguration {
             let newConfig: Configuration
             if visitor.cache != nil {
@@ -147,19 +147,19 @@ extension Configuration {
             } else {
                 newConfig = config
             }
-            prelinters += files.map { visitor.linter(forFile: $0, configuration: newConfig) }
+            linters += files.map { visitor.linter(forFile: $0, configuration: newConfig) }
         }
         if visitor.parallel {
-            let linters = prelinters.parallelCompactMap(transform: collect)
+            let collectedLinters = linters.parallelCompactMap(transform: collect)
             DispatchQueue.concurrentPerform(iterations: fileCount) { index in
-                let linter = linters[index]
+                let linter = collectedLinters[index]
                 visit(linter)
             }
         } else {
-            let linters = prelinters.compactMap(collect)
-            linters.forEach(visit)
+            let collectedLinters = linters.compactMap(collect)
+            collectedLinters.forEach(visit)
         }
-        return .success(prelinters.compactMap({ $0.file }))
+        return .success(linters.compactMap({ $0.file }))
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {

@@ -19,7 +19,8 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],
         prefixPattern: "",
-        suffixPattern: "\\+.*"
+        suffixPattern: "\\+.*",
+        nestedTypeSeparator: "."
     )
 
     public init() {}
@@ -43,15 +44,20 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
 
         var typeInFileName = fileName.bridge().deletingPathExtension
 
+        // Process prefix
         if let match = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
             let range = typeInFileName.nsrangeToIndexRange(match.range) {
             typeInFileName.removeSubrange(range)
         }
 
+        // Process suffix
         if let match = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
             let range = typeInFileName.nsrangeToIndexRange(match.range) {
             typeInFileName.removeSubrange(range)
         }
+
+        // Process nested type separator
+        typeInFileName = typeInFileName.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
 
         let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames()
         guard !allDeclaredTypeNames.isEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {

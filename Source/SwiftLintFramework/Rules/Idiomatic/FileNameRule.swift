@@ -57,9 +57,10 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         }
 
         // Process nested type separator
-        typeInFileName = typeInFileName.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
+        let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames().map {
+            $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
+        }
 
-        let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames()
         guard !allDeclaredTypeNames.isEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
             return []
         }

@@ -462,6 +462,8 @@ extension FileNameRuleTests {
         ("testStructNameDoesntTrigger", testStructNameDoesntTrigger),
         ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
         ("testNestedExtensionDoesntTrigger", testNestedExtensionDoesntTrigger),
+        ("testNestedTypeSeparatorDoesntTrigger", testNestedTypeSeparatorDoesntTrigger),
+        ("testWrongNestedTypeSeparatorDoesTrigger", testWrongNestedTypeSeparatorDoesTrigger),
         ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
         ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
         ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride),

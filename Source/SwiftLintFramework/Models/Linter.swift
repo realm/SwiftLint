@@ -18,13 +18,16 @@ private extension Rule {
         let regionsDisablingCurrentRule = regions.filter { region in
             return region.isRuleDisabled(self.init())
         }
-        let regionsDisablingSuperflousDisableRule = regions.filter { region in
+        let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             return region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
         return regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
-            let isSuperflousRuleDisabled = regionsDisablingSuperflousDisableRule.contains { $0.contains(region.start) }
-            guard !isSuperflousRuleDisabled else {
+            let isSuperfluousRuleDisabled = regionsDisablingSuperfluousDisableRule.contains {
+                $0.contains(region.start)
+            }
+
+            guard !isSuperfluousRuleDisabled else {
                 return nil
             }
 
@@ -74,7 +77,8 @@ private extension Rule {
         }
 
         let ruleIDs = Self.description.allIdentifiers +
-            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? [])
+            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
+            [RuleIdentifier.all.stringRepresentation]
         let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
 
         let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(

@@ -223,6 +223,37 @@ class CommandTests: XCTestCase {
         )
     }
 
+    func testDisableAllOverridesSuperfluousDisableCommand() {
+        XCTAssert(
+            !violations(
+                "//swiftlint:disable all\n// swiftlint:disable nesting\nprint(123)\n"
+            ).contains {
+                $0.ruleDescription.identifier == "superfluous_disable_command"
+            }
+        )
+        XCTAssert(
+            !violations(
+                "//swiftlint:disable all\n// swiftlint:disable:next nesting\nprint(123)\n"
+            ).contains {
+                $0.ruleDescription.identifier == "superfluous_disable_command"
+            }
+        )
+        XCTAssert(
+            !violations(
+                "//swiftlint:disable all\n// swiftlint:disable:this nesting\nprint(123)\n"
+            ).contains {
+                $0.ruleDescription.identifier == "superfluous_disable_command"
+            }
+        )
+        XCTAssert(
+            !violations(
+                "//swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n"
+            ).contains {
+                $0.ruleDescription.identifier == "superfluous_disable_command"
+            }
+        )
+    }
+
     func testInvalidDisableCommands() {
         XCTAssertEqual(
             violations("// swiftlint:disable nesting_foo\nprint(123)\n")[0].ruleDescription.identifier,

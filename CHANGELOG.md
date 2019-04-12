@@ -80,6 +80,10 @@
   declaring extensions that add protocol conformances with Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2705](https://github.com/realm/SwiftLint/issues/2705)
+  
+* Let `disable all` command override `superfluous_disable_command` rule.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#2670](https://github.com/realm/SwiftLint/issues/2670)
 
 ## 0.31.0: Busy Laundromat
 

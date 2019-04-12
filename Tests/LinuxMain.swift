@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -109,6 +109,7 @@ extension CommandTests {
         ("testExpandThisCommand", testExpandThisCommand),
         ("testExpandNextCommand", testExpandNextCommand),
         ("testSuperfluousDisableCommands", testSuperfluousDisableCommands),
+        ("testDisableAllOverridesSuperfluousDisableCommand", testDisableAllOverridesSuperfluousDisableCommand),
         ("testInvalidDisableCommands", testInvalidDisableCommands),
         ("testSuperfluousDisableCommandsDisabled", testSuperfluousDisableCommandsDisabled),
         ("testSuperfluousDisableCommandsDisabledOnConfiguration", testSuperfluousDisableCommandsDisabledOnConfiguration)
@@ -184,7 +185,9 @@ extension ConfigurationTests {
 
 extension ContainsOverFirstNotNilRuleTests {
     static var allTests: [(String, (ContainsOverFirstNotNilRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testFirstReason", testFirstReason),
+        ("testFirstIndexReason", testFirstIndexReason)
     ]
 }
 

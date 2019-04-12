@@ -3,6 +3,8 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable type_body_length
+
 private extension Command {
     init?(string: String) {
         let nsString = string.bridge()
@@ -220,6 +222,29 @@ class CommandTests: XCTestCase {
         XCTAssertEqual(
             violations("print(123)\n// swiftlint:disable:previous nesting\n")[0].ruleDescription.identifier,
             "superfluous_disable_command"
+        )
+    }
+
+    func testDisableAllOverridesSuperfluousDisableCommand() {
+        XCTAssert(
+            violations(
+                "//swiftlint:disable all\n// swiftlint:disable nesting\nprint(123)\n"
+            ).isEmpty
+        )
+        XCTAssert(
+            violations(
+                "//swiftlint:disable all\n// swiftlint:disable:next nesting\nprint(123)\n"
+            ).isEmpty
+        )
+        XCTAssert(
+            violations(
+                "//swiftlint:disable all\n// swiftlint:disable:this nesting\nprint(123)\n"
+            ).isEmpty
+        )
+        XCTAssert(
+            violations(
+                "//swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n"
+            ).isEmpty
         )
     }
 

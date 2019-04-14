@@ -22917,7 +22917,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `unused_capture_list` | Enabled | No | lint | No | 3.0.0 
 
-Unused reference in capture list should be removed.
+Unused reference in a capture list should be removed.
 
 ### Examples
 
@@ -22931,9 +22931,17 @@ Unused reference in capture list should be removed.
 ```
 
 ```swift
-let failure: Failure = { [unowned delegate = self.delegate!] foo in
-    delegate.handle(foo)
+let failure: Failure = { [weak self, unowned delegate = self.delegate!] foo in
+    delegate.handle(foo, self)
 }
+```
+
+```swift
+{ [foo] in foo.bar() }()
+```
+
+```swift
+sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []
 ```
 
 </details>
@@ -22941,15 +22949,25 @@ let failure: Failure = { [unowned delegate = self.delegate!] foo in
 <summary>Triggering Examples</summary>
 
 ```swift
-[1, 2].map { [weak self] num in
+[1, 2].map { [↓weak self] num in
     print(num)
 }
 ```
 
 ```swift
-let failure: Failure = { [unowned delegate = self.delegate!] foo in
+let failure: Failure = { [weak self, ↓unowned delegate = self.delegate!] foo in
+    self?.handle(foo)
+}
+```
+
+```swift
+let failure: Failure = { [↓weak self, ↓unowned delegate = self.delegate!] foo in
     print(foo)
 }
+```
+
+```swift
+{ [↓foo] in _ }()
 ```
 
 </details>

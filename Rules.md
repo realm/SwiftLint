@@ -154,6 +154,7 @@
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Untyped Error in Catch](#untyped-error-in-catch)
+* [Unused Capture List](#unused-capture-list)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Control Flow Label](#unused-control-flow-label)
 * [Unused Enumerated](#unused-enumerated)
@@ -22904,6 +22905,51 @@ do {
 do {
   try foo()
 } ↓catch (let error) {}
+```
+
+</details>
+
+
+
+## Unused Capture List
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_capture_list` | Enabled | No | lint | No | 3.0.0 
+
+Unused reference in capture list should be removed.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+[1, 2].map { [weak self] num in
+    self?.handle(num)
+}
+```
+
+```swift
+let failure: Failure = { [unowned delegate = self.delegate!] foo in
+    delegate.handle(foo)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+[1, 2].map { [weak self] num in
+    print(num)
+}
+```
+
+```swift
+let failure: Failure = { [unowned delegate = self.delegate!] foo in
+    print(foo)
+}
 ```
 
 </details>

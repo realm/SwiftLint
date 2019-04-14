@@ -672,6 +672,12 @@ class UntypedErrorInCatchRuleTests: XCTestCase {
     }
 }
 
+class UnusedCaptureListRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedCaptureListRule.description)
+    }
+}
+
 class UnusedClosureParameterRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedClosureParameterRule.description)

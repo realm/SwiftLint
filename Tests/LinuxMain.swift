@@ -1339,6 +1339,12 @@ extension UntypedErrorInCatchRuleTests {
     ]
 }
 
+extension UnusedCaptureListRuleTests {
+    static var allTests: [(String, (UnusedCaptureListRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnusedClosureParameterRuleTests {
     static var allTests: [(String, (UnusedClosureParameterRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1669,6 +1675,7 @@ XCTMain([
     testCase(UnneededBreakInSwitchRuleTests.allTests),
     testCase(UnneededParenthesesInClosureArgumentRuleTests.allTests),
     testCase(UntypedErrorInCatchRuleTests.allTests),
+    testCase(UnusedCaptureListRuleTests.allTests),
     testCase(UnusedClosureParameterRuleTests.allTests),
     testCase(UnusedControlFlowLabelRuleTests.allTests),
     testCase(UnusedEnumeratedRuleTests.allTests),

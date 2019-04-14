@@ -71,26 +71,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             .NSRangeToByteRange(start: restOfClosureRange.location, length: restOfClosureRange.length)
             else { return [] }
 
-        let tokens = file.syntaxMap.tokens(inByteRange: restOfClosureByteRange)
-        let identifiers = tokens
-            .compactMap { token -> String? in
-                guard token.type == SyntaxKind.identifier.rawValue || token.type == SyntaxKind.keyword.rawValue,
-                    let range = contents.byteRangeToNSRange(start: token.offset, length: token.length)
-                    else { return nil }
-                return contents.substring(with: range)
-            }
-
-        return references.compactMap { reference, location -> StyleViolation? in
-            guard !identifiers.contains(reference) else { return nil }
-            let offset = captureListRange.location + location
-            let reason = "Unused reference \(reference) in a capture list should be removed."
-            return StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: offset),
-                reason: reason
-            )
-        }
+        let identifiers = identifierStrings(in: file, byteRange: restOfClosureByteRange)
+        return violations(in: file, references: references, identifiers: identifiers, captureListRange: captureListRange)
     }
 
     // MARK: - Private
@@ -114,5 +96,31 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                     referencesAndLocations.append((reference, location))
                 }
             }
+    }
+
+    private func identifierStrings(in file: File, byteRange: NSRange) -> [String] {
+        let contents = file.contents.bridge()
+        return file.syntaxMap
+            .tokens(inByteRange: byteRange)
+            .compactMap { token -> String? in
+                guard token.type == SyntaxKind.identifier.rawValue || token.type == SyntaxKind.keyword.rawValue,
+                    let range = contents.byteRangeToNSRange(start: token.offset, length: token.length)
+                    else { return nil }
+                return contents.substring(with: range)
+            }
+    }
+
+    private func violations(in file: File, references: [(String, Int)], identifiers: [String], captureListRange: NSRange) -> [StyleViolation] {
+        return references.compactMap { reference, location -> StyleViolation? in
+            guard !identifiers.contains(reference) else { return nil }
+            let offset = captureListRange.location + location
+            let reason = "Unused reference \(reference) in a capture list should be removed."
+            return StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: configuration.severity,
+                location: Location(file: file, characterOffset: offset),
+                reason: reason
+            )
+        }
     }
 }

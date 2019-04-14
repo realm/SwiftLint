@@ -72,7 +72,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             else { return [] }
 
         let identifiers = identifierStrings(in: file, byteRange: restOfClosureByteRange)
-        return violations(in: file, references: references, identifiers: identifiers, captureListRange: captureListRange)
+        return violations(in: file, references: references,
+                          identifiers: identifiers, captureListRange: captureListRange)
     }
 
     // MARK: - Private
@@ -110,7 +111,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             }
     }
 
-    private func violations(in file: File, references: [(String, Int)], identifiers: [String], captureListRange: NSRange) -> [StyleViolation] {
+    private func violations(in file: File, references: [(String, Int)],
+                            identifiers: [String], captureListRange: NSRange) -> [StyleViolation] {
         return references.compactMap { reference, location -> StyleViolation? in
             guard !identifiers.contains(reference) else { return nil }
             let offset = captureListRange.location + location

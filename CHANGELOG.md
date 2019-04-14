@@ -43,6 +43,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2678](https://github.com/realm/SwiftLint/issues/2678)
 
+* Add `unused_capture_list` rule to ensure that all references in a closure
+  capture list are used.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#2715](https://github.com/realm/SwiftLint/issues/2715)
+
 #### Bug Fixes
 
 * Fix bug where SwiftLint ignores excluded files list in a nested configuration

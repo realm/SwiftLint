@@ -75,6 +75,8 @@ jobs:
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
+    - script: bundle exec pod repo update
+      displayName: pod repo update
     - script: bundle exec pod lib lint --verbose SwiftLintFramework.podspec
       displayName: pod lib lint
 

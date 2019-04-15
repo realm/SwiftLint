@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+
+* Add `" - "` delimiter to allow commenting SwiftLint commands without triggering
+`superfluous_disable_command`.
+  [Kevin Randrup](https://github.com/kevinrandrup)
+  [#2720](https://github.com/realm/SwiftLint/pull/2720)
+
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
   condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 
   environment variable to test like:

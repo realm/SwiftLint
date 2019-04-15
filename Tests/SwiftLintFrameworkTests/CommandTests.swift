@@ -3,7 +3,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable type_body_length
+// swiftlint:disable type_body_length - Disable the rule and self-test commenting a command
 
 private extension Command {
     init?(string: String) {
@@ -86,6 +86,15 @@ class CommandTests: XCTestCase {
         let input = "// swiftlint:enable:next rule_id\n"
         let file = File(contents: input)
         let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 33, modifier: .next)
+        XCTAssertEqual(file.commands(), expected.expand())
+        XCTAssertEqual(Command(string: input), expected)
+    }
+
+    func testTrailingCOmment() {
+        let input = "// swiftlint:enable:next rule_id - Comment\n"
+        let file = File(contents: input)
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 43, modifier: .next,
+                               trailingComment: "Comment")
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -245,6 +254,26 @@ class CommandTests: XCTestCase {
             violations(
                 "//swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n"
             ).isEmpty
+        )
+    }
+
+    func testSuperfluousDisableCommandsIgnoreDelimiter() {
+        let longComment = "Comment with a large number of words that shouldn't register as superfluous"
+        XCTAssertEqual(
+            violations("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")[0].ruleDescription.identifier,
+            "superfluous_disable_command"
+        )
+        XCTAssertEqual(
+            violations("// swiftlint:disable:next nesting - Comment\nprint(123)\n")[0].ruleDescription.identifier,
+            "superfluous_disable_command"
+        )
+        XCTAssertEqual(
+            violations("print(123) // swiftlint:disable:this nesting - Comment\n")[0].ruleDescription.identifier,
+            "superfluous_disable_command"
+        )
+        XCTAssertEqual(
+            violations("print(123)\n// swiftlint:disable:previous nesting - Comment\n")[0].ruleDescription.identifier,
+            "superfluous_disable_command"
         )
     }
 

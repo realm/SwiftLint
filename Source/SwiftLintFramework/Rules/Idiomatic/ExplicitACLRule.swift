@@ -144,10 +144,10 @@ private extension SwiftDeclarationKind {
              .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
              .functionAccessorSetter, .functionAccessorWillset, .genericTypeParam, .module,
              .precedenceGroup, .varLocal, .varParameter, .varClass,
-             .varGlobal, .varInstance, .varStatic, .typealias, .functionConstructor, .functionDestructor,
-             .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
-             .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
-             .functionSubscript, .protocol:
+             .varGlobal, .varInstance, .varStatic, .typealias, .functionAccessorModify, .functionAccessorRead,
+             .functionConstructor, .functionDestructor, .functionFree, .functionMethodClass,
+             .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
+             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol:
             return true
         case .class, .enum, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .struct:

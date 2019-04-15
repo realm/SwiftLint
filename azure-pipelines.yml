@@ -12,6 +12,8 @@ jobs:
         containerImage: norionomura/swift:42
       swift421:
         containerImage: norionomura/swift:421
+      swift50:
+        containerImage: norionomura/swift:50
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel
@@ -27,6 +29,8 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_10.app
       xcode101:
         DEVELOPER_DIR: /Applications/Xcode_10.1.app
+      xcode102:
+        DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -53,6 +57,8 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_10.app
       xcode101:
         DEVELOPER_DIR: /Applications/Xcode_10.1.app
+      xcode102:
+        DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
     - script: xcodebuild -version
       displayName: xcodebuild -version
@@ -65,7 +71,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.13'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.1.app
+    DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -76,7 +82,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.13'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.1.app
+    DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -89,7 +95,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.13'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.1.app
+    DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
@@ -98,7 +104,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.13'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.1.app
+    DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run

@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Carthage/Commandant.git",
         "state": {
           "branch": null,
-          "revision": "ab68611013dec67413628ac87c1f29e8427bc8e4",
-          "version": "0.17.0"
+          "revision": "2cd0210f897fe46c6ce42f52ccfa72b3bbb621a0",
+          "version": "0.16.0"
         }
       },
       {
@@ -26,6 +26,15 @@
           "branch": null,
           "revision": "0b4ed6c706dd0cce923b5019a605a9bcc6b1b600",
           "version": "2.0.0"
+        }
+      },
+      {
+        "package": "Result",
+        "repositoryURL": "https://github.com/antitypical/Result.git",
+        "state": {
+          "branch": null,
+          "revision": "2ca499ba456795616fbc471561ff1d963e6ae160",
+          "version": "4.1.0"
         }
       },
       {

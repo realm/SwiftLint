@@ -5,6 +5,7 @@ private let nonSpace = "[^ ]"
 private let twoOrMoreSpace = " {2,}"
 private let mark = "MARK:"
 private let nonSpaceOrTwoOrMoreSpace = "(?:\(nonSpace)|\(twoOrMoreSpace))"
+
 private let nonSpaceOrTwoOrMoreSpaceOrNewline = "(?:[^ \n]|\(twoOrMoreSpace))"
 
 public struct MarkRule: CorrectableRule, ConfigurationProviderRule {

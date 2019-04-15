@@ -106,7 +106,7 @@ public struct Configuration: Hashable {
         self.excluded = excluded
         self.reporter = reporter
         self.cachePath = cachePath
-        self.rules = rules
+        self.rules = rules.sorted { type(of: $0).description.identifier < type(of: $1).description.identifier }
         self.rootPath = rootPath
         self.indentation = indentation
 

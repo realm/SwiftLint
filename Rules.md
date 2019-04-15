@@ -22915,7 +22915,7 @@ do {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`unused_capture_list` | Enabled | No | lint | No | 3.0.0 
+`unused_capture_list` | Enabled | No | lint | No | 4.2.0 
 
 Unused reference in a capture list should be removed.
 
@@ -22934,6 +22934,13 @@ Unused reference in a capture list should be removed.
 let failure: Failure = { [weak self, unowned delegate = self.delegate!] foo in
     delegate.handle(foo, self)
 }
+```
+
+```swift
+numbers.forEach({
+    [weak handler] in
+    handler?.handle($0)
+})
 ```
 
 ```swift
@@ -22964,6 +22971,13 @@ let failure: Failure = { [weak self, ↓unowned delegate = self.delegate!] foo i
 let failure: Failure = { [↓weak self, ↓unowned delegate = self.delegate!] foo in
     print(foo)
 }
+```
+
+```swift
+numbers.forEach({
+    [weak handler] in
+    print($0)
+})
 ```
 
 ```swift

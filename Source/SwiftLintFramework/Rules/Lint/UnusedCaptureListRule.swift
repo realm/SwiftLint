@@ -11,6 +11,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         name: "Unused Capture List",
         description: "Unused reference in a capture list should be removed.",
         kind: .lint,
+        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             """
             [1, 2].map { [weak self] num in
@@ -21,6 +22,12 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             let failure: Failure = { [weak self, unowned delegate = self.delegate!] foo in
                 delegate.handle(foo, self)
             }
+            """,
+            """
+            numbers.forEach({
+                [weak handler] in
+                handler?.handle($0)
+            })
             """,
             "{ [foo] in foo.bar() }()",
             "sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []"
@@ -41,11 +48,17 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                 print(foo)
             }
             """,
+            """
+            numbers.forEach({
+                [weak handler] in
+                print($0)
+            })
+            """,
             "{ [↓foo] in _ }()"
         ]
     )
 
-    private let captureListRegex = regex("^\\{\\h*\\[([^\\]]+)\\].*\\bin\\b")
+    private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\].*\\bin\\b")
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -99,9 +112,9 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             }
     }
 
-    private func identifierStrings(in file: File, byteRange: NSRange) -> [String] {
+    private func identifierStrings(in file: File, byteRange: NSRange) -> Set<String> {
         let contents = file.contents.bridge()
-        return file.syntaxMap
+        let identifiers = file.syntaxMap
             .tokens(inByteRange: byteRange)
             .compactMap { token -> String? in
                 guard token.type == SyntaxKind.identifier.rawValue || token.type == SyntaxKind.keyword.rawValue,
@@ -109,10 +122,11 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                     else { return nil }
                 return contents.substring(with: range)
             }
+        return Set(identifiers)
     }
 
     private func violations(in file: File, references: [(String, Int)],
-                            identifiers: [String], captureListRange: NSRange) -> [StyleViolation] {
+                            identifiers: Set<String>, captureListRange: NSRange) -> [StyleViolation] {
         return references.compactMap { reference, location -> StyleViolation? in
             guard !identifiers.contains(reference) else { return nil }
             let offset = captureListRange.location + location

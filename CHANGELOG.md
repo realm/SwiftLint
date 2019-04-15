@@ -20,6 +20,11 @@
   [Matthew Healy](https://github.com/matthew-healy)
   [#2663](https://github.com/realm/SwiftLint/pull/2663)
 
+* Add `reduce_into` opt-in rule to encourage the use of `reduce(into:_:)`
+  instead of `reduce(_:_:)` which is less performant.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#2658](https://github.com/realm/SwiftLint/issues/2658)
+
 * Remove @ mark to fix invalid link in Rules.md.  
   [Hiroki Nagasawa](https://github.com/pixyzehn)
   [#2669](https://github.com/realm/SwiftLint/pull/2669)

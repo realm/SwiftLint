@@ -516,6 +516,12 @@ class ReduceBooleanRuleTests: XCTestCase {
     }
 }
 
+class ReduceIntoRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceIntoRule.description)
+    }
+}
+
 class RedundantDiscardableLetRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)

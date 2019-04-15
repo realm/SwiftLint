@@ -117,6 +117,7 @@
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
 * [Reduce Boolean](#reduce-boolean)
+* [Reduce Into](#reduce-into)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant @objc Attribute](#redundant-objc-attribute)
@@ -16241,6 +16242,118 @@ let allValid = validators.↓reduce(true, { $0 && $1(input) })
 
 ```swift
 let anyValid = validators.↓reduce(false, { $0 || $1(input) })
+```
+
+</details>
+
+
+
+## Reduce Into
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`reduce_into` | Disabled | No | performance | No | 3.0.0 
+
+Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = values.reduce(into: "abc") { $0 += "\($1)" }
+```
+
+```swift
+values.reduce(into: Array<Int>()) { result, value in
+    result.append(value)
+}
+```
+
+```swift
+let rows = violations.enumerated().reduce(into: "") { rows, indexAndViolation in
+    rows.append(generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1))
+}
+```
+
+```swift
+zip(group, group.dropFirst()).reduce(into: []) { result, pair in
+    result.append(pair.0 + pair.1)
+}
+```
+
+```swift
+let foo = values.reduce(into: [String: Int]()) { result, value in
+    result["\(value)"] = value
+}
+```
+
+```swift
+let foo = values.reduce(into: Dictionary<String, Int>.init()) { result, value in
+    result["\(value)"] = value
+}
+```
+
+```swift
+let foo = values.reduce(into: [Int](repeating: 0, count: 10)) { result, value in
+    result.append(value)
+}
+```
+
+```swift
+let foo = values.reduce(MyClass()) { result, value in
+    result.handleValue(value)
+    return result
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let bar = values.↓reduce("abc") { $0 + "\($1)" }
+```
+
+```swift
+values.↓reduce(Array<Int>()) { result, value in
+    result += [value]
+}
+```
+
+```swift
+let rows = violations.enumerated().↓reduce("") { rows, indexAndViolation in
+    return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
+}
+```
+
+```swift
+zip(group, group.dropFirst()).↓reduce([]) { result, pair in
+    result + [pair.0 + pair.1]
+}
+```
+
+```swift
+let foo = values.↓reduce([String: Int]()) { result, value in
+    var result = result
+    result["\(value)"] = value
+    return result
+}
+```
+
+```swift
+let bar = values.↓reduce(Dictionary<String, Int>.init()) { result, value in
+    var result = result
+    result["\(value)"] = value
+    return result
+}
+```
+
+```swift
+let bar = values.↓reduce([Int](repeating: 0, count: 10)) { result, value in
+    return result + [value]
+}
 ```
 
 </details>

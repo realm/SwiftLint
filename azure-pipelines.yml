@@ -21,7 +21,7 @@ jobs:
 
 - job: Xcode
   pool:
-    vmImage: 'macOS 10.13'
+    vmImage: 'macOS 10.14'
   strategy:
     maxParallel: 10
     matrix:
@@ -49,7 +49,7 @@ jobs:
 
 - job: SwiftPM
   pool:
-    vmImage: 'macOS 10.13'
+    vmImage: 'macOS 10.14'
   strategy:
     maxParallel: 10
     matrix:
@@ -69,7 +69,7 @@ jobs:
 
 - job: CocoaPods
   pool:
-    vmImage: 'macOS 10.13'
+    vmImage: 'macOS 10.14'
   variables:
     DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
@@ -80,7 +80,7 @@ jobs:
 
 - job: OSSCheck
   pool:
-    vmImage: 'macOS 10.13'
+    vmImage: 'macOS 10.14'
   variables:
     DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
@@ -93,7 +93,7 @@ jobs:
 
 - job: Analyze
   pool:
-    vmImage: 'macOS 10.13'
+    vmImage: 'macOS 10.14'
   variables:
     DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
@@ -102,7 +102,7 @@ jobs:
 
 - job: TSan
   pool:
-    vmImage: 'macOS 10.13'
+    vmImage: 'macOS 10.14'
   variables:
     DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:

@@ -93,6 +93,7 @@
 * [No Extension Access Modifier](#no-extension-access-modifier)
 * [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
+* [No Return Void](#no-return-void)
 * [Notification Center Detachment](#notification-center-detachment)
 * [NSLocalizedString Key](#nslocalizedstring-key)
 * [NSLocalizedString Require Bundle](#nslocalizedstring-require-bundle)
@@ -13508,6 +13509,67 @@ class Ham { class Spam {}}
 ```swift
 extension External { struct Gotcha {}}
 ↓extension External.Gotcha {}
+
+```
+
+</details>
+
+
+
+## No Return Void
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`no_return_void` | Enabled | No | style | No | 3.0.0 
+
+Avoid returning a function.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let abc: () -> ↓() = {}
+
+```
+
+```swift
+let abc: () -> ↓(Void) = {}
+
+```
+
+```swift
+let abc: () -> ↓(   Void ) = {}
+
+```
+
+```swift
+func foo(completion: () -> ↓())
+
+```
+
+```swift
+func foo(completion: () -> ↓(   ))
+
+```
+
+```swift
+func foo(completion: () -> ↓(Void))
+
+```
+
+```swift
+let foo: (ConfigurationTests) -> () throws -> ↓())
 
 ```
 

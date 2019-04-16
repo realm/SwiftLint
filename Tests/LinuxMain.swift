@@ -871,6 +871,12 @@ extension NoGroupingExtensionRuleTests {
     ]
 }
 
+extension NoReturnVoidRuleTests {
+    static var allTests: [(String, (NoReturnVoidRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension NotificationCenterDetachmentRuleTests {
     static var allTests: [(String, (NotificationCenterDetachmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1618,6 +1624,7 @@ XCTMain([
     testCase(NoExtensionAccessModifierRuleTests.allTests),
     testCase(NoFallthroughOnlyRuleTests.allTests),
     testCase(NoGroupingExtensionRuleTests.allTests),
+    testCase(NoReturnVoidRuleTests.allTests),
     testCase(NotificationCenterDetachmentRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),

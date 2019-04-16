@@ -420,6 +420,12 @@ class NoGroupingExtensionRuleTests: XCTestCase {
     }
 }
 
+class NoReturnVoidRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoReturnVoidRule.description)
+    }
+}
+
 class NotificationCenterDetachmentRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)

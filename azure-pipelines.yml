@@ -34,8 +34,10 @@ jobs:
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
-    - script: xcodebuild -version
-      displayName: xcodebuild -version
+    - script: |
+        sw_vers
+        xcodebuild -version
+      displayName: Version Informations
     - script: >
         set -o pipefail &&
         xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint test |
@@ -60,8 +62,10 @@ jobs:
       xcode102:
         DEVELOPER_DIR: /Applications/Xcode_10.2.app
   steps:
-    - script: xcodebuild -version
-      displayName: xcodebuild -version
+    - script: |
+        sw_vers
+        xcodebuild -version
+      displayName: Version Informations
     - script: >
         set -o pipefail &&
         swift test --parallel

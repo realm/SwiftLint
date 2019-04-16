@@ -56,34 +56,33 @@ class IntegrationTests: XCTestCase {
         let swiftlintInSandboxArgs = ["sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
                                       "SWIFTLINT_SWIFT_VERSION=3 \(swiftlintURL.path) --no-cache"]
         let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
+        let statusWithoutCrash: Int32 = 0
+        let stdoutWithoutCrash = """
+            \(testSwiftURL.path):1:1: \
+            warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
+
+            """
+        let stderrWithoutCrash = """
+            Linting Swift files at paths \n\
+            Linting 'Test.swift' (1/1)
+            Connection invalid
+            Most rules will be skipped because sourcekitd has failed.
+            Done linting! Found 1 violation, 0 serious in 1 file.
+
+            """
         if #available(macOS 10.14.1, *) {
             // Within a sandbox on macOS 10.14.1+, `swiftlint` crashes with "Test::Unit::AssertionFailedError"
             // error in `libxpc.dylib` when calling `sourcekitd_send_request_sync`.
             //
             // Since Homebrew CI succeeded in bottling swiftlint 0.27.0 on release of macOS 10.14,
             // `swiftlint` may not crash on macOS 10.14. But that is not confirmed.
-            XCTAssertEqual(swiftlintResult.status, 11, "It is expected to crash.")
-            XCTAssertEqual(swiftlintResult.stdout, "")
-            XCTAssertEqual(swiftlintResult.stderr, """
-                Linting Swift files at paths \n\
-                Linting 'Test.swift' (1/1)
-
-                """)
+            XCTAssertNotEqual(swiftlintResult.status, statusWithoutCrash, "It is expected to crash.")
+            XCTAssertNotEqual(swiftlintResult.stdout, stdoutWithoutCrash)
+            XCTAssertNotEqual(swiftlintResult.stderr, stderrWithoutCrash)
         } else {
-            XCTAssertEqual(swiftlintResult.status, 0)
-            XCTAssertEqual(swiftlintResult.stdout, """
-                \(testSwiftURL.path):1:1: \
-                warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
-
-                """)
-            XCTAssertEqual(swiftlintResult.stderr, """
-                Linting Swift files at paths \n\
-                Linting 'Test.swift' (1/1)
-                Connection invalid
-                Most rules will be skipped because sourcekitd has failed.
-                Done linting! Found 1 violation, 0 serious in 1 file.
-
-                """)
+            XCTAssertEqual(swiftlintResult.status, statusWithoutCrash)
+            XCTAssertEqual(swiftlintResult.stdout, stdoutWithoutCrash)
+            XCTAssertEqual(swiftlintResult.stderr, stderrWithoutCrash)
         }
 #endif
     }

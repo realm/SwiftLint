@@ -53,6 +53,15 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2715](https://github.com/realm/SwiftLint/issues/2715)
 
+* SwiftLint can now be compiled in Xcode 10.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#2693](https://github.com/realm/SwiftLint/issues/2693)
+  
+* Fix issues in `explict_acl` and `redundant_set_access_control` rules when
+  using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fix bug where SwiftLint ignores excluded files list in a nested configuration

@@ -70,7 +70,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "~/Projects/Lyft-iOS"
+      customWorkingDirectory = "/Users/jsparks/src/Lyft-iOS/Modules/AccidentReporting"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "NO"
       debugXPCServices = "NO"

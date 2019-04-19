@@ -13531,7 +13531,38 @@ Avoid returning a function.
 
 ```swift
 
+```
 
+```swift
+func test() {}
+```
+
+```swift
+func test() -> Result<String, Error> {
+    func other() {}
+    func otherVoid() -> Void {}
+}
+```
+
+```swift
+func test() {
+    if X {
+        return Logger.assertionFailure("")
+    }
+
+    let asdf = [1, 2, 3].filter { return true }
+    return
+}
+```
+
+```swift
+func test() {
+    let file = File(path: "/nonexistent")
+    guard file.exists() > 4 else {
+        print("File doesn't exist")
+        return
+    }
+}
 ```
 
 </details>
@@ -13539,38 +13570,44 @@ Avoid returning a function.
 <summary>Triggering Examples</summary>
 
 ```swift
-let abc: () -> ↓() = {}
-
+func test(text: String?) {
+    guard let text = text else {
+        return↓ print("Should be non optional")
+    }
+}
 ```
 
 ```swift
-let abc: () -> ↓(Void) = {}
-
+func test() -> Result<String, Error> {
+    func other() {
+        guard false else {
+            return↓ assertionfailure("")
+        }
+    }
+    func otherVoid() -> Void {}
+}
 ```
 
 ```swift
-let abc: () -> ↓(   Void ) = {}
-
+func test() {
+    guard conditionIsTrue else {
+        sideEffects()
+        return // comment
+    }
+    guard otherCondition else {
+        return↓ assertionfailure("")
+    }
+    differentSideEffect()
+}
 ```
 
 ```swift
-func foo(completion: () -> ↓())
-
-```
-
-```swift
-func foo(completion: () -> ↓(   ))
-
-```
-
-```swift
-func foo(completion: () -> ↓(Void))
-
-```
-
-```swift
-let foo: (ConfigurationTests) -> () throws -> ↓())
-
+func test() {
+    guard otherCondition else {
+        return↓ assertionfailure(""); // comment
+    }
+    differentSideEffect()
+}
 ```
 
 </details>

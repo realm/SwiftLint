@@ -97,7 +97,7 @@ public let masterRuleList = RuleList(rules: [
     NoExtensionAccessModifierRule.self,
     NoFallthroughOnlyRule.self,
     NoGroupingExtensionRule.self,
-    NoReturnVoidRule.self,
+    NoGuardReturnVoidRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,

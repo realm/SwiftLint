@@ -13522,7 +13522,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `no_guard_return_void` | Enabled | No | style | No | 3.0.0 
 
-Guard statements in void functions should not have a statement after the return.
+No void return expressions in guard statments.
 
 ### Examples
 

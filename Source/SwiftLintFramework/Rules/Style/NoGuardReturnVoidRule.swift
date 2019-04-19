@@ -9,7 +9,7 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
     public static let description = RuleDescription(
         identifier: "no_guard_return_void",
         name: "No Guard Return Void",
-        description: "Guard statements in void functions should not have a statement after the return, add them to the previous line.",
+        description: "No void return expressions in guard statments.",
         kind: .style,
         nonTriggeringExamples: [
             """

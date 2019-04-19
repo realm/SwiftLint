@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+* Add `no_guard_return_void` rule preventing trailing expressions on functions
+  including a guard statments after the return, specifying they should be on
+  the line before.
+  [Johnny Sparks](https://github.com/johnnysparks)
+  [#2723](https://github.com/realm/SwiftLint/pull/2723)
+
 * Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.  
   [Xavier Lowmiller](https://github.com/xavierLowmiller)
   [#2675](https://github.com/realm/SwiftLint/issues/2675)

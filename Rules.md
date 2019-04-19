@@ -16252,7 +16252,7 @@ let anyValid = validators.↓reduce(false, { $0 || $1(input) })
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`reduce_into` | Disabled | No | performance | No | 3.0.0 
+`reduce_into` | Disabled | No | performance | No | 4.0.0 
 
 Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types
 

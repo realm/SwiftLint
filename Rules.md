@@ -93,7 +93,7 @@
 * [No Extension Access Modifier](#no-extension-access-modifier)
 * [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
-* [No Return Void](#no-return-void)
+* [No Guard Return Void](#no-guard-return-void)
 * [Notification Center Detachment](#notification-center-detachment)
 * [NSLocalizedString Key](#nslocalizedstring-key)
 * [NSLocalizedString Require Bundle](#nslocalizedstring-require-bundle)
@@ -13516,13 +13516,13 @@ extension External { struct Gotcha {}}
 
 
 
-## No Return Void
+## No Guard Return Void
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`no_return_void` | Enabled | No | style | No | 3.0.0 
+`no_guard_return_void` | Enabled | No | style | No | 3.0.0 
 
-Avoid returning a function.
+Guard statements in void functions should not have a statement after the return.
 
 ### Examples
 

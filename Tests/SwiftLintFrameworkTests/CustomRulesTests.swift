@@ -31,6 +31,35 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
+    func testCustomRuleConfigurationSetsCorrectlyWithIgnoreRegex() {
+        let configDict = [
+            "my_custom_rule": [
+                "name": "MyCustomRule",
+                "message": "Message",
+                "regex": "regex",
+                "regex_ignore": "regex2",
+                "match_kinds": "comment",
+                "severity": "error"
+            ]
+        ]
+        var comp = RegexConfiguration(identifier: "my_custom_rule")
+        comp.name = "MyCustomRule"
+        comp.message = "Message"
+        comp.regex = regex("regex")
+        comp.regexIgnore = regex("regex2")
+        comp.severityConfiguration = SeverityConfiguration(.error)
+        comp.matchKinds = Set([SyntaxKind.comment])
+        var compRules = CustomRulesConfiguration()
+        compRules.customRuleConfigurations = [comp]
+        do {
+            var configuration = CustomRulesConfiguration()
+            try configuration.apply(configuration: configDict)
+            XCTAssertEqual(configuration, compRules)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+    }
+
     func testCustomRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
@@ -61,6 +90,17 @@ class CustomRulesTests: XCTestCase {
         let (regexConfig, customRules) = getCustomRules()
 
         let file = File(contents: "// My file with\n// a pattern")
+        XCTAssertEqual(customRules.validate(file: file),
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 2, character: 6),
+                                       reason: regexConfig.message)])
+    }
+
+    func testCustomRulesWithIgnorePattern() {
+        let (regexConfig, customRules) = getCustomRules()
+
+        let file = File(contents: "// My file with\n// a pattern\n //but not XpatternX")
         XCTAssertEqual(customRules.validate(file: file),
                        [StyleViolation(ruleDescription: regexConfig.description,
                                        severity: .warning,
@@ -115,6 +155,7 @@ class CustomRulesTests: XCTestCase {
 
     private func getCustomRules(_ extraConfig: [String: String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
+                      "regex_ignore": "XpatternX",
                       "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }
 

@@ -6,6 +6,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var name: String?
     public var message = "Regex matched."
     public var regex: NSRegularExpression!
+    public var regexIgnore: NSRegularExpression?
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
     public var matchKinds = SyntaxKind.allKinds
@@ -25,6 +26,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             name ?? "",
             message,
             regex.pattern,
+            regexIgnore?.pattern ?? "",
             included?.pattern ?? "",
             excluded?.pattern ?? "",
             matchKinds.map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
@@ -53,6 +55,10 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         }
 
         regex = try .cached(pattern: regexString)
+
+        if let regexIgnoreString = configurationDict["regex_ignore"] as? String {
+            regexIgnore = try .cached(pattern: regexIgnoreString)
+        }
 
         if let includedString = configurationDict["included"] as? String {
             included = try .cached(pattern: includedString)

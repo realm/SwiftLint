@@ -12,8 +12,16 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
         description: "Guard statements in void functions should not have a statement after the return, add them to the previous line.",
         kind: .style,
         nonTriggeringExamples: [
+            """
+            func test() {
+                guard condition else {
+                    return
+                }
+            }
+            """,
             "",
             "func test() {}",
+
             """
             func test() -> Result<String, Error> {
                 func other() {}
@@ -38,13 +46,21 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
                     return
                 }
             }
+            """,
+            """
+            func test() {
+                guard condition else {
+                    onlyTriggerWithReturn("")
+                }
+            }
             """
         ],
         triggeringExamples: [
             """
-            func test(text: String?) {
-                guard let text = text else {
-                    return↓ print("Should be non optional")
+            // Leading comment
+            func test() {
+                guard condition else {
+                    return↓ assertionfailure("")
                 }
             }
             """,
@@ -97,13 +113,13 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
             })
             .compactMap({ tokens in
                 guard let last = tokens.last,
-                    let lastKeyword = tokens.last(where: { $0.isKeyword }),
-                    last != lastKeyword
+                    let lastReturn = tokens.last(where: { $0.isReturnKeyword(in: file) }),
+                    last != lastReturn
                 else {
                     return nil
                 }
 
-                let location = Location(file: file, characterOffset: lastKeyword.offset + lastKeyword.length)
+                let location = Location(file: file, byteOffset: lastReturn.offset + lastReturn.length)
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: configuration.severity,
                                       location: location)
@@ -120,18 +136,16 @@ private extension Dictionary where Dictionary == [String: SourceKitRepresentable
         let ranges = (self["key.substructure"] as? [[String: SourceKitRepresentable]])?
             .compactMap({ $0 })
             .filter({ $0.isGuardStatment() })
-            .compactMap({ $0.range() })
+            .compactMap({ $0.byteRange() })
 
         return ranges
     }
-}
 
-private extension SourceKitRepresentable where Self == [String: SourceKitRepresentable] {
     func isGuardStatment() -> Bool {
         return self["key.kind"] as? String == "source.lang.swift.stmt.guard"
     }
 
-    func range() -> NSRange? {
+    func byteRange() -> NSRange? {
         guard let offset = self["key.offset"] as? Int64, let length = self["key.length"] as? Int64 else {
             return nil
         }
@@ -147,5 +161,9 @@ private extension SyntaxToken {
 
     var isKeyword: Bool {
         return self.type == "source.lang.swift.syntaxtype.keyword"
+    }
+
+    func isReturnKeyword(in file: File) -> Bool {
+        return self.isKeyword && (file.contents(for: self) == "return")
     }
 }

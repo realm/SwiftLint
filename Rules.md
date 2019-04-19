@@ -13538,6 +13538,14 @@ init?() {
 ```
 
 ```swift
+init?(arg: String?) {
+    guard arg != nil else {
+        return nil
+    }
+}
+```
+
+```swift
 func test() {
     guard condition else {
         return
@@ -13592,6 +13600,14 @@ func test() {
 </details>
 <details>
 <summary>Triggering Examples</summary>
+
+```swift
+func initThing() {
+    guard condition else {
+        return↓ print("")
+    }
+}
+```
 
 ```swift
 // Leading comment

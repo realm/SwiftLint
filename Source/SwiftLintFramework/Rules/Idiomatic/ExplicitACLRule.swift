@@ -40,7 +40,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             }
             """,
             "internal class A { deinit {} }",
-            "extension A: Equatable {}"
+            "extension A: Equatable {}",
+            "extension A {}"
         ],
         triggeringExamples: [
             "enum A {}\n",
@@ -70,8 +71,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             }
 
             guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
-                case let isConformanceExtension = extensionKinds.contains(kind) && !element.inheritedTypes.isEmpty,
-                !isConformanceExtension else {
+                !extensionKinds.contains(kind) else {
                     return nil
             }
 

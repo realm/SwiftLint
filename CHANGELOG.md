@@ -57,10 +57,6 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [Norio Nomura](https://github.com/norio-nomura)
   [#2693](https://github.com/realm/SwiftLint/issues/2693)
-  
-* Fix issues in `explict_acl` and `redundant_set_access_control` rules when
-  using Swift 5.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 
@@ -103,6 +99,11 @@
 * Let `disable all` command override `superfluous_disable_command` rule.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2670](https://github.com/realm/SwiftLint/issues/2670)
+
+* Fix issues in `explict_acl`, `redundant_set_access_control` and
+  `explicit_top_level_acl` rules when using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2694](https://github.com/realm/SwiftLint/issues/2694)
 
 ## 0.31.0: Busy Laundromat
 

@@ -11,7 +11,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
         name: "Reduce Into",
         description: "Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types",
         kind: .performance,
-        minSwiftVersion: .three,
+        minSwiftVersion: .four,
         nonTriggeringExamples: [
             """
             let foo = values.reduce(into: "abc") { $0 += "\\($1)" }

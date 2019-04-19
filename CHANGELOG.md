@@ -10,6 +10,10 @@
 
 #### Enhancements
 
+* added `regex_ignore` parameter to custom rules.  
+  [Igor Chertenkov](https://github.com/dieworld)
+  [#2724](https://github.com/realm/SwiftLint/issues/2724)
+
 * Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.  
   [Xavier Lowmiller](https://github.com/xavierLowmiller)
   [#2675](https://github.com/realm/SwiftLint/issues/2675)

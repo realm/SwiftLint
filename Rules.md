@@ -13530,6 +13530,14 @@ Guard statements in void functions should not have a statement after the return.
 <summary>Non Triggering Examples</summary>
 
 ```swift
+init?() {
+    guard condition else {
+        return nil
+    }
+}
+```
+
+```swift
 func test() {
     guard condition else {
         return

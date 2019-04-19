@@ -13,6 +13,20 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
         kind: .style,
         nonTriggeringExamples: [
             """
+            init?() {
+                guard condition else {
+                    return nil
+                }
+            }
+            """,
+            """
+            init?(arg: String?) {
+                guard arg != nil else {
+                    return nil
+                }
+            }
+            """,
+            """
             func test() {
                 guard condition else {
                     return
@@ -57,6 +71,13 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
         ],
         triggeringExamples: [
             """
+            func initThing() {
+                guard condition else {
+                    return↓ print("")
+                }
+            }
+            """,
+            """
             // Leading comment
             func test() {
                 guard condition else {
@@ -100,7 +121,8 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
-            dictionary.isVoidDeclaration(),
+            dictionary.isVoid(),
+            !dictionary.isInit(),
             let guardRanges = dictionary.guardStatementRanges(),
             !guardRanges.isEmpty
         else {
@@ -128,8 +150,12 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
 }
 
 private extension Dictionary where Dictionary == [String: SourceKitRepresentable] {
-    func isVoidDeclaration() -> Bool {
+    func isVoid() -> Bool {
         return self["key.typename"] == nil || (self["key.typename"] as? String) == "Void"
+    }
+
+    func isInit() -> Bool {
+        return (self["key.name"] as? String)?.hasPrefix("init(") ?? false
     }
 
     func guardStatementRanges() -> [NSRange]? {

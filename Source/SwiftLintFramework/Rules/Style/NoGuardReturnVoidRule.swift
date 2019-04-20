@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

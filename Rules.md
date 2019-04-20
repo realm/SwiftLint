@@ -13520,7 +13520,7 @@ extension External { struct Gotcha {}}
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`no_guard_return_void` | Enabled | No | style | No | 3.0.0 
+`no_guard_return_void` | Disabled | No | style | No | 3.0.0 
 
 No void return expressions in guard statments.
 

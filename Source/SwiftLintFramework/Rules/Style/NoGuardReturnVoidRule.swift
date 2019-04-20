@@ -193,3 +193,4 @@ private extension SyntaxToken {
         return self.isKeyword && (file.contents(for: self) == "return")
     }
 }
+

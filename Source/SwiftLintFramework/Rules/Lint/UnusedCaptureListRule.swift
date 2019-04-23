@@ -29,7 +29,14 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                 handler?.handle($0)
             })
             """,
-            "{ [foo] in foo.bar() }()",
+            """
+            withEnvironment(apiService: MockService(fetchProjectResponse: project)) {
+                [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
+                    device.handle()
+                }
+            }
+            """,
+            "{ [foo] _ in foo.bar() }()",
             "sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []"
         ],
         triggeringExamples: [
@@ -54,11 +61,18 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                 print($0)
             })
             """,
+            """
+            withEnvironment(apiService: MockService(fetchProjectResponse: project)) { [↓foo] in
+                [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
+                    device.handle()
+                }
+            }
+            """,
             "{ [↓foo] in _ }()"
         ]
     )
 
-    private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\].*\\bin\\b")
+    private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\]")
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -66,8 +80,13 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         guard kind == .closure,
             let offset = dictionary.offset,
             let length = dictionary.length,
-            let closureRange = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = captureListRegex.firstMatch(in: file.contents, options: [], range: closureRange)
+            let closureRange = contents.byteRangeToNSRange(start: offset, length: length)
+            else { return [] }
+
+        let firstSubstructureOffset = dictionary.substructure.first?.offset ?? (offset + length)
+        let captureListSearchLength = firstSubstructureOffset - offset
+        guard let captureListSearchRange = contents.byteRangeToNSRange(start: offset, length: captureListSearchLength),
+            let match = captureListRegex.firstMatch(in: file.contents, options: [], range: captureListSearchRange)
             else { return [] }
 
         let captureListRange = match.range(at: 1)

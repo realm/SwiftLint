@@ -23057,7 +23057,15 @@ numbers.forEach({
 ```
 
 ```swift
-{ [foo] in foo.bar() }()
+withEnvironment(apiService: MockService(fetchProjectResponse: project)) {
+    [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
+        device.handle()
+    }
+}
+```
+
+```swift
+{ [foo] _ in foo.bar() }()
 ```
 
 ```swift
@@ -23091,6 +23099,14 @@ numbers.forEach({
     [weak handler] in
     print($0)
 })
+```
+
+```swift
+withEnvironment(apiService: MockService(fetchProjectResponse: project)) { [↓foo] in
+    [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
+        device.handle()
+    }
+}
 ```
 
 ```swift

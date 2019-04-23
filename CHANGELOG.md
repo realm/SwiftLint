@@ -95,6 +95,11 @@
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2670](https://github.com/realm/SwiftLint/issues/2670)
 
+* Fix false positives on `unused_capture_list` which resulted in an array
+  literal being mistaken for a capture list.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#2726](https://github.com/realm/SwiftLint/issues/2726)
+
 ## 0.31.0: Busy Laundromat
 
 #### Breaking

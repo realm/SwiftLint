@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Don't trigger `redundant_void_return` violations when using `subscript` as the
+  return type is required.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.32.0: Wash-N-Fold-N-Reduce
 

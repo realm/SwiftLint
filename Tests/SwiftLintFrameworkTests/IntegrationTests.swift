@@ -43,6 +43,14 @@ class IntegrationTests: XCTestCase {
         // Since this test uses the `swiftlint` binary built while building `SwiftLintPackageTests`,
         // we run it only on macOS using SwiftPM.
 #if os(macOS) && SWIFT_PACKAGE
+        let keyName = "SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST"
+        guard ProcessInfo.processInfo.environment[keyName] != nil else {
+            print("""
+                Skipping the opt-in test `\(#function)`.
+                Set the `\(keyName)` environment variable to test `\(#function)`.
+            """)
+            return
+        }
         guard let swiftlintURL = swiftlintBuiltBySwiftPM(),
             let (testSwiftURL, seatbeltURL) = prepareSandbox() else {
             return

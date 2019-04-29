@@ -66,9 +66,9 @@ private extension SwiftDeclarationKind {
         switch self {
         case .associatedtype, .enumcase, .enumelement, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .functionAccessorAddress, .functionAccessorDidset,
-             .functionAccessorGetter, .functionAccessorMutableaddress, .functionAccessorSetter,
-             .functionAccessorWillset, .functionDestructor, .genericTypeParam, .module, .precedenceGroup, .varLocal,
-             .varParameter:
+             .functionAccessorRead, .functionAccessorModify, .functionAccessorGetter,
+             .functionAccessorMutableaddress, .functionAccessorSetter, .functionAccessorWillset,
+             .functionDestructor, .genericTypeParam, .module, .precedenceGroup, .varLocal, .varParameter:
             return false
         case .class, .enum, .functionConstructor, .functionFree, .functionMethodClass, .functionMethodInstance,
              .functionMethodStatic, .functionOperator, .functionOperatorInfix, .functionOperatorPostfix,

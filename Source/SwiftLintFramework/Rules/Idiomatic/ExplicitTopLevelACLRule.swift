@@ -19,7 +19,8 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
             "internal final class Foo {}",
             "internal\nclass Foo {}",
             "internal func a() {}\n",
-            "extension A: Equatable {}"
+            "extension A: Equatable {}",
+            "extension A {}"
         ],
         triggeringExamples: [
             "enum A {}\n",
@@ -36,10 +37,9 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
 
         // find all top-level types marked as internal (either explictly or implictly)
         let internalTypesOffsets = file.structure.dictionary.substructure.compactMap { element -> Int? in
-            // ignore extensions that declare protocol conformance
+            // ignore extensions
             guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
-                case let isConformanceExtension = extensionKinds.contains(kind) && !element.inheritedTypes.isEmpty,
-                !isConformanceExtension else {
+                !extensionKinds.contains(kind) else {
                     return nil
             }
 

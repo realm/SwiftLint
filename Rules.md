@@ -5774,6 +5774,10 @@ internal class A { deinit {} }
 extension A: Equatable {}
 ```
 
+```swift
+extension A {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -6082,6 +6086,10 @@ internal func a() {}
 
 ```swift
 extension A: Equatable {}
+```
+
+```swift
+extension A {}
 ```
 
 </details>

@@ -40,7 +40,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             }
             """,
             "internal class A { deinit {} }",
-            "extension A: Equatable {}"
+            "extension A: Equatable {}",
+            "extension A {}"
         ],
         triggeringExamples: [
             "enum A {}\n",
@@ -70,8 +71,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             }
 
             guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
-                case let isConformanceExtension = extensionKinds.contains(kind) && !element.inheritedTypes.isEmpty,
-                !isConformanceExtension else {
+                !extensionKinds.contains(kind) else {
                     return nil
             }
 
@@ -125,7 +125,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                 return []
             }
 
-            let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL ? [] :
+            let isPrivate = element.accessibility.flatMap(AccessControlLevel.init(rawValue:))?.isPrivate ?? false
+            let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
             if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
@@ -144,10 +145,10 @@ private extension SwiftDeclarationKind {
              .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
              .functionAccessorSetter, .functionAccessorWillset, .genericTypeParam, .module,
              .precedenceGroup, .varLocal, .varParameter, .varClass,
-             .varGlobal, .varInstance, .varStatic, .typealias, .functionConstructor, .functionDestructor,
-             .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
-             .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
-             .functionSubscript, .protocol:
+             .varGlobal, .varInstance, .varStatic, .typealias, .functionAccessorModify, .functionAccessorRead,
+             .functionConstructor, .functionDestructor, .functionFree, .functionMethodClass,
+             .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
+             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol:
             return true
         case .class, .enum, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .struct:

@@ -53,6 +53,11 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2715](https://github.com/realm/SwiftLint/issues/2715)
 
+* SwiftLint can now be compiled in Xcode 10.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#2693](https://github.com/realm/SwiftLint/issues/2693)
+
 #### Bug Fixes
 
 * Fix bug where SwiftLint ignores excluded files list in a nested configuration
@@ -94,6 +99,11 @@
 * Let `disable all` command override `superfluous_disable_command` rule.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2670](https://github.com/realm/SwiftLint/issues/2670)
+
+* Fix issues in `explict_acl`, `redundant_set_access_control` and
+  `explicit_top_level_acl` rules when using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2694](https://github.com/realm/SwiftLint/issues/2694)
 
 ## 0.31.0: Busy Laundromat
 

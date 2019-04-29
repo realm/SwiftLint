@@ -17070,6 +17070,14 @@ func foo() -> Void!
 
 ```
 
+```swift
+struct A {
+    subscript(key: String) {
+        print(key)
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

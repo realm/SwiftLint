@@ -16,7 +16,7 @@
 
 * Add `nsobject_prefer_isequal` rule to warn against implementing `==` on an
   `NSObject` subclass as calling `isEqual` (i.e. when using the class from
-  Objective-C) will will not use the defined `==` method.  
+  Objective-C) will not use the defined `==` method.  
   [Matthew Healy](https://github.com/matthew-healy)
   [#2663](https://github.com/realm/SwiftLint/pull/2663)
 
@@ -53,7 +53,7 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2715](https://github.com/realm/SwiftLint/issues/2715)
 
-* SwiftLint can now be compiled in Xcode 10.2.  
+* SwiftLint can now be compiled using Xcode 10.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [Norio Nomura](https://github.com/norio-nomura)
   [#2693](https://github.com/realm/SwiftLint/issues/2693)

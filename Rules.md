@@ -13614,7 +13614,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `nslocalizedstring_require_bundle` | Disabled | No | lint | No | 3.0.0 
 
-Calls to NSLocalisedString should specify the bundle which contains the strings file.
+Calls to NSLocalizedString should specify the bundle which contains the strings file.
 
 ### Examples
 

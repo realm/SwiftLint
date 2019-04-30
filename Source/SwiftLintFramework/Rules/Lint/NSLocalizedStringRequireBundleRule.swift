@@ -8,7 +8,7 @@ public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, Configurat
     public static let description = RuleDescription(
         identifier: "nslocalizedstring_require_bundle",
         name: "NSLocalizedString Require Bundle",
-        description: "Calls to NSLocalisedString should specify the bundle which contains the strings file.",
+        description: "Calls to NSLocalizedString should specify the bundle which contains the strings file.",
         kind: .lint,
         nonTriggeringExamples: [
             """

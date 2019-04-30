@@ -24,6 +24,11 @@
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2717](https://github.com/realm/SwiftLint/issues/2717)
 
+* Add `unowned_variable_capture` opt-in rule to warn against unowned captures
+  in closures when using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2097](https://github.com/realm/SwiftLint/issues/2097)
+
 #### Bug Fixes
 
 * Don't trigger `redundant_void_return` violations when using `subscript` as the

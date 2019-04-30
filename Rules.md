@@ -154,6 +154,7 @@
 * [Unavailable Function](#unavailable-function)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
+* [Unowned Variable Capture](#unowned-variable-capture)
 * [Untyped Error in Catch](#untyped-error-in-catch)
 * [Unused Capture List](#unused-capture-list)
 * [Unused Closure Parameter](#unused-closure-parameter)
@@ -22944,6 +22945,63 @@ foo.bar { [weak self] ↓(x, y) in }
     }
     return false
 }
+```
+
+</details>
+
+
+
+## Unowned Variable Capture
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unowned_variable_capture` | Disabled | No | lint | No | 5.0.0 
+
+Prefer capturing references as weak to avoid potential crashes.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo { [weak self] in _ }
+```
+
+```swift
+foo { [weak self] param in _ }
+```
+
+```swift
+foo { [weak bar] in _ }
+```
+
+```swift
+foo { [weak bar] param in _ }
+```
+
+```swift
+foo { bar in _ }
+```
+
+```swift
+foo { $0 }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo { [↓unowned self] in _ }
+```
+
+```swift
+foo { [↓unowned bar] in _ }
+```
+
+```swift
+foo { [bar, ↓unowned self] in _ }
 ```
 
 </details>

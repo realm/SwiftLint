@@ -8,7 +8,8 @@ private let fixturesDirectory = #file.bridge()
 
 class FileNameRuleTests: XCTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
-                          prefixPattern: String? = nil, suffixPattern: String? = nil) throws -> [StyleViolation] {
+                          prefixPattern: String? = nil, suffixPattern: String? = nil,
+                          nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {
         let file = File(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameRule
         if let excluded = excludedOverride {
@@ -19,9 +20,12 @@ class FileNameRuleTests: XCTestCase {
             rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern])
         } else if let suffixPattern = suffixPattern {
             rule = try FileNameRule(configuration: ["suffix_pattern": suffixPattern])
+        } else if let nestedTypeSeparator = nestedTypeSeparator {
+            rule = try FileNameRule(configuration: ["nested_type_separator": nestedTypeSeparator])
         } else {
             rule = FileNameRule()
         }
+
         return rule.validate(file: file)
     }
 
@@ -47,6 +51,16 @@ class FileNameRuleTests: XCTestCase {
 
     func testNestedExtensionDoesntTrigger() {
         XCTAssert(try validate(fileName: "Notification.Name+Extension.swift").isEmpty)
+    }
+
+    func testNestedTypeSeparatorDoesntTrigger() {
+        XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "").isEmpty)
+        XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: "__").isEmpty)
+    }
+
+    func testWrongNestedTypeSeparatorDoesTrigger() {
+        XCTAssert(try !validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isEmpty)
+        XCTAssert(try !validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isEmpty)
     }
 
     func testMisspelledNameDoesTrigger() {

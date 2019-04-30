@@ -18,6 +18,11 @@
     swift test --filter testSimulateHomebrewTest
     ```  
   [Norio Nomura](https://github.com/norio-nomura)
+  
+* Add option to configure how nested types should be separated in file names by
+  introducting `nested_type_separator` configuration for the `file_name` rule.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#2717](https://github.com/realm/SwiftLint/issues/2717)
 
 #### Bug Fixes
 

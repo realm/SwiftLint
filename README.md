@@ -47,6 +47,7 @@ library distribution to the `Pods/` directory, so checking in this directory to 
 git is discouraged.
 
 ### Using [Mint](https://github.com/yonaskolb/mint):
+
 ```
 $ mint install realm/SwiftLint
 ```
@@ -61,6 +62,18 @@ running it.
 
 You can also build from source by cloning this project and running
 `git submodule update --init --recursive; make install` (Xcode 10.0 or later).
+
+### Known Installation Issues On MacOS Before 10.14.4
+
+Starting with [SwiftLint 0.32.0](https://github.com/realm/SwiftLint/releases/tag/0.32.0), if you get
+an error similar to `dyld: Symbol not found: _$s11SubSequenceSlTl` when running SwiftLint,
+you'll need to install the [Swift 5 Runtime Support for Command Line Tools](https://support.apple.com/kb/DL1998).
+
+Alternatively, you can:
+
+* Update to macOS 10.14.4 or later
+* Install Xcode 10.2 or later at `/Applications/Xcode.app`
+* Rebuild SwiftLint from source using Xcode 10.0 or later
 
 ## Usage
 

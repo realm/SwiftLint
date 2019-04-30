@@ -10,7 +10,14 @@
 
 #### Enhancements
 
-* None.
+* Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
+  condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 
+  environment variable to test like:
+    ```terminal.sh-session
+    $ SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST=1 \
+    swift test --filter testSimulateHomebrewTest
+    ```  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 #### Bug Fixes
 

@@ -30,6 +30,11 @@
   return type is required.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Don't trigger `colon` violations in object literals
+  (`#imageLiteral(name:"image")` for example).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2740](https://github.com/realm/SwiftLint/issues/2740)
+
 ## 0.32.0: Wash-N-Fold-N-Reduce
 
 #### Breaking

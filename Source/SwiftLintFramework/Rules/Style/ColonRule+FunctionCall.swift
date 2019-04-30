@@ -18,7 +18,7 @@ extension ColonRule {
     internal func functionCallColonViolationRanges(in file: File, kind: SwiftExpressionKind,
                                                    dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .argument,
-            let ranges = functionCallColonRanges(dictionary: dictionary) else {
+            let ranges = functionCallColonRanges(dictionary: dictionary, file: file) else {
                 return []
         }
 
@@ -37,12 +37,14 @@ extension ColonRule {
         }
     }
 
-    private func functionCallColonRanges(dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
+    private func functionCallColonRanges(dictionary: [String: SourceKitRepresentable], file: File) -> [NSRange]? {
         guard let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength, nameLength > 0,
             let bodyOffset = dictionary.bodyOffset,
             case let location = nameOffset + nameLength,
-            bodyOffset > location else {
+            bodyOffset > location,
+            case let nameRange = NSRange(location: nameOffset, length: nameLength),
+            file.syntaxMap.kinds(inByteRange: nameRange) != [.objectLiteral] else {
                 return nil
         }
 

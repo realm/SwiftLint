@@ -37,7 +37,8 @@ internal struct ColonRuleExamples {
         "func abc() { def(ghi: jkl) }",
         "func abc(def: Void) { ghi(jkl: mno) }",
         "class ABC { let def = ghi(jkl: mno) } }",
-        "func foo() { let dict = [1: 1] }"
+        "func foo() { let dict = [1: 1] }",
+        "#imageLiteral(resourceName:\"grayArrowUp\"))"
     ]
 
     static let triggeringExamples = [

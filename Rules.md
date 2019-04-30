@@ -2052,6 +2052,10 @@ class ABC { let def = ghi(jkl: mno) } }
 func foo() { let dict = [1: 1] }
 ```
 
+```swift
+#imageLiteral(resourceName:"grayArrowUp"))
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

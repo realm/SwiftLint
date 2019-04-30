@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = WeakDelegateConfiguration(variableNames: ["delegate"])
 
     public init() {}
 
@@ -38,10 +38,18 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
             return []
         }
 
-        // Check if name contains "delegate"
-        guard let name = dictionary.name,
-            name.lowercased().hasSuffix("delegate") else {
-                return []
+        // Check if name contains any of the triggering variable names
+        guard let name = dictionary.name else {
+            return []
+        }
+        var nameTriggers = false
+        for variableName in configuration.variableNames {
+            if name.lowercased().hasSuffix(variableName) {
+                nameTriggers = true
+            }
+        }
+        guard nameTriggers else {
+            return []
         }
 
         // Check if non-weak

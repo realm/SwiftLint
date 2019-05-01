@@ -45,7 +45,7 @@ private func scriptInputFiles() -> Result<[File], CommandantError<()>> {
 }
 
 #if os(Linux)
-private func autoreleasepool(block: () -> Void) { block() }
+private func autoreleasepool<V>(block: () -> V) -> V { return block() }
 #endif
 
 extension Configuration {

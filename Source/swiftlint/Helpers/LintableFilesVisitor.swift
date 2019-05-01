@@ -19,10 +19,10 @@ struct LintableFilesVisitor {
     let cache: LinterCache?
     let parallel: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
-    let block: (CollectedLinter) -> Void
+    let block: (CollectedLinter, RuleStorage) -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool,
-         cache: LinterCache?, parallel: Bool, block: @escaping (CollectedLinter) -> Void) {
+         cache: LinterCache?, parallel: Bool, block: @escaping (CollectedLinter, RuleStorage) -> Void) {
         self.paths = paths
         self.action = action
         self.useSTDIN = useSTDIN
@@ -37,7 +37,7 @@ struct LintableFilesVisitor {
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool,
                  forceExclude: Bool, cache: LinterCache?, compilerLogContents: String,
-                 block: @escaping (CollectedLinter) -> Void) {
+                 block: @escaping (CollectedLinter, RuleStorage) -> Void) {
         self.paths = paths
         self.action = action
         self.useSTDIN = useSTDIN
@@ -56,26 +56,27 @@ struct LintableFilesVisitor {
         self.block = block
     }
 
-    static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (CollectedLinter) -> Void)
+    static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?,
+                       block: @escaping (CollectedLinter, RuleStorage) -> Void)
         -> Result<LintableFilesVisitor, CommandantError<()>> {
-        let compilerLogContents: String
-        if options.mode == .lint {
-            compilerLogContents = ""
-        } else if let logContents = LintableFilesVisitor.compilerLogContents(logPath: options.compilerLogPath),
-            !logContents.isEmpty {
-            compilerLogContents = logContents
-        } else {
-            return .failure(
-                .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
-            )
-        }
+            let compilerLogContents: String
+            if options.mode == .lint {
+                compilerLogContents = ""
+            } else if let logContents = LintableFilesVisitor.compilerLogContents(logPath: options.compilerLogPath),
+                !logContents.isEmpty {
+                compilerLogContents = logContents
+            } else {
+                return .failure(
+                    .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
+                )
+            }
 
-        let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
-                                           useSTDIN: options.useSTDIN, quiet: options.quiet,
-                                           useScriptInputFiles: options.useScriptInputFiles,
-                                           forceExclude: options.forceExclude, cache: cache,
-                                           compilerLogContents: compilerLogContents, block: block)
-        return .success(visitor)
+            let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
+                                               useSTDIN: options.useSTDIN, quiet: options.quiet,
+                                               useScriptInputFiles: options.useScriptInputFiles,
+                                               forceExclude: options.forceExclude, cache: cache,
+                                               compilerLogContents: compilerLogContents, block: block)
+            return .success(visitor)
     }
 
     func shouldSkipFile(atPath path: String?) -> Bool {

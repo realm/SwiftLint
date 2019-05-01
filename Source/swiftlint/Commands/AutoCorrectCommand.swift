@@ -68,7 +68,7 @@ struct AutoCorrectOptions: OptionsProtocol {
         let cache = ignoreCache ? nil : LinterCache(configuration: configuration)
         return LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
                                     useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude, cache: cache,
-                                    parallel: true) { linter in
+                                    parallel: true) { linter, storage in
             if self.format {
                 switch configuration.indentation {
                 case .tabs:

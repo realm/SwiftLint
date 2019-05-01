@@ -90,7 +90,7 @@ extension Configuration {
         var storage = RuleStorage()
         var collected = 0
         var visited = 0
-        let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count } * 2
+        let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
 
         let collect = { (collecter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: collecter.file.path)
@@ -135,7 +135,7 @@ extension Configuration {
             }
 
             autoreleasepool {
-                visitor.block(linter)
+                visitor.block(linter, storage)
             }
         }
         var linters = [Linter]()
@@ -211,10 +211,11 @@ extension Configuration {
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: inout RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) -> Void) -> Result<[File], CommandantError<()>> {
-        return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap({ visitor in
-            visitLintableFiles(with: visitor, storage: &storage)
-        })
+                            visitorBlock: @escaping (CollectedLinter, RuleStorage) -> Void)
+        -> Result<[File], CommandantError<()>> {
+            return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap({ visitor in
+                visitLintableFiles(with: visitor, storage: &storage)
+            })
     }
 
     // MARK: AutoCorrect Command

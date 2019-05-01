@@ -28,7 +28,7 @@ struct LintOrAnalyzeCommand {
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        return configuration.visitLintableFiles(options: options, cache: cache, storage: &storage) { linter in
+        return configuration.visitLintableFiles(options: options, cache: cache, storage: &storage) { linter, storage in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()

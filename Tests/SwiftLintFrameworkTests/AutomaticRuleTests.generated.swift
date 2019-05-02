@@ -672,6 +672,12 @@ class UnneededParenthesesInClosureArgumentRuleTests: XCTestCase {
     }
 }
 
+class UnownedVariableCaptureRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnownedVariableCaptureRule.description)
+    }
+}
+
 class UntypedErrorInCatchRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UntypedErrorInCatchRule.description)

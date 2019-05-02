@@ -69,6 +69,14 @@ extension ClosureSpacingRuleTests {
     ]
 }
 
+extension CollectingRuleTests {
+    static var allTests: [(String, (CollectingRuleTests) -> () throws -> Void)] = [
+        ("testCollectsIntoStorage", testCollectsIntoStorage),
+        ("testCollectsAllFiles", testCollectsAllFiles),
+        ("testCollectsAnalyzerFiles", testCollectsAnalyzerFiles)
+    ]
+}
+
 extension CollectionAlignmentRuleTests {
     static var allTests: [(String, (CollectionAlignmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
@@ -1532,6 +1540,7 @@ XCTMain([
     testCase(ClosureEndIndentationRuleTests.allTests),
     testCase(ClosureParameterPositionRuleTests.allTests),
     testCase(ClosureSpacingRuleTests.allTests),
+    testCase(CollectingRuleTests.allTests),
     testCase(CollectionAlignmentRuleTests.allTests),
     testCase(ColonRuleTests.allTests),
     testCase(CommaRuleTests.allTests),

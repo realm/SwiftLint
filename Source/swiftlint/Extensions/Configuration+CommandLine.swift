@@ -49,10 +49,11 @@ private func autoreleasepool(block: () -> Void) { block() }
 #endif
 
 extension Configuration {
-    func visitLintableFiles(with visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
-        return getFiles(with: visitor)
-            .flatMap { groupFiles($0, visitor: visitor) }
-            .flatMap { visit(filesPerConfiguration: $0, visitor: visitor) }
+    func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage)
+        -> Result<[File], CommandantError<()>> {
+            return getFiles(with: visitor)
+                .flatMap { groupFiles($0, visitor: visitor) }
+                .flatMap { visit(filesPerConfiguration: $0, visitor: visitor, storage: storage) }
     }
 
     private func groupFiles(_ files: [File],
@@ -82,29 +83,62 @@ extension Configuration {
         return .success(groupedFiles)
     }
 
-    private func outputFilename(for path: NSString, in root: NSString, duplicateFileNames: Set<String>) -> String {
-        let basename = path.lastPathComponent
-        if !duplicateFileNames.contains(basename) {
-            return basename
-        }
-
-        var pathComponents = path.pathComponents
-        for component in root.pathComponents where pathComponents.first == component {
-            pathComponents.removeFirst()
-        }
-
-        return pathComponents.joined(separator: "/")
-    }
-
     private func visit(filesPerConfiguration: [Configuration: [File]],
-                       visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
-        var fileIndex = 0
+                       visitor: LintableFilesVisitor,
+                       storage: RuleStorage) -> Result<[File], CommandantError<()>> {
+        let storage = RuleStorage()
+        var collected = 0
+        var visited = 0
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
-        let root = FileManager.default.currentDirectoryPath.bridge().standardizingPath.bridge()
-        var filesAndConfigurations = [(File, Configuration)]()
-        var allFileNames = Set<String>()
-        var duplicateFileNames = Set<String>()
-        filesAndConfigurations.reserveCapacity(fileCount)
+
+        let collect = { (collecter: Linter) -> CollectedLinter? in
+            let skipFile = visitor.shouldSkipFile(atPath: collecter.file.path)
+            if !visitor.quiet, let filename = collecter.file.path?.bridge().lastPathComponent {
+                let increment = {
+                    index += 1
+                    if skipFile {
+                        queuedPrintError("""
+                            Skipping '\(filename)' (\(index)/\(fileCount)) \
+                            because its compiler arguments could not be found
+                            """)
+                    } else {
+                        queuedPrintError("Collecting '\(filename)' (\(index)/\(fileCount))")
+                    }
+                }
+                if visitor.parallel {
+                    indexIncrementerQueue.sync(execute: increment)
+                } else {
+                    increment()
+                }
+            }
+
+            guard !skipFile else {
+                return nil
+            }
+
+            return autoreleasepool {
+                collecter.collect(into: storage)
+            }
+        }
+        let visit = { (linter: CollectedLinter) -> Void in
+            if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
+                let increment = {
+                    index += 1
+                    queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                }
+                if visitor.parallel {
+                    indexIncrementerQueue.sync(execute: increment)
+                } else {
+                    increment()
+                }
+            }
+
+            autoreleasepool {
+                visitor.block(linter)
+            }
+        }
+        var linters = [Linter]()
+        linters.reserveCapacity(fileCount)
         for (config, files) in filesPerConfiguration {
             let newConfig: Configuration
             if visitor.cache != nil {
@@ -112,33 +146,19 @@ extension Configuration {
             } else {
                 newConfig = config
             }
-            filesAndConfigurations += files.map { ($0, newConfig) }
-            for file in files {
-                if let filename = file.path?.bridge().lastPathComponent {
-                    if allFileNames.contains(filename) {
-                        duplicateFileNames.insert(filename)
-                    }
-
-                    allFileNames.insert(filename)
-                }
-            }
-        }
-        let visit = { (file: File, configuration: Configuration) in
-            let printableFileName = (file.path?.bridge()).map { path in
-                self.outputFilename(for: path, in: root, duplicateFileNames: duplicateFileNames)
-            }
-            visitor.visit(file: file, config: configuration, outputFileName: printableFileName,
-                          incrementIndex: { fileIndex += 1 }, progress: { "(\(fileIndex)/\(fileCount))" })
+            linters += files.map { visitor.linter(forFile: $0, configuration: newConfig) }
         }
         if visitor.parallel {
+            let collectedLinters = linters.parallelCompactMap(transform: collect)
             DispatchQueue.concurrentPerform(iterations: fileCount) { index in
-                let (file, config) = filesAndConfigurations[index]
-                visit(file, config)
+                let linter = collectedLinters[index]
+                visit(linter)
             }
         } else {
-            filesAndConfigurations.forEach(visit)
+            let collectedLinters = linters.compactMap(collect)
+            collectedLinters.forEach(visit)
         }
-        return .success(filesAndConfigurations.compactMap({ $0.0 }))
+        return .success(linters.compactMap({ $0.file }))
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
@@ -189,9 +209,11 @@ extension Configuration {
                   cachePath: cachePath)
     }
 
-    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil,
-                            visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
-        return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap(visitLintableFiles)
+    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
+                            visitorBlock: @escaping (CollectedLinter) -> Void) -> Result<[File], CommandantError<()>> {
+        return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap({ visitor in
+            visitLintableFiles(with: visitor, storage: storage)
+        })
     }
 
     // MARK: AutoCorrect Command

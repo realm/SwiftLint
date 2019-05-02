@@ -38,6 +38,7 @@
 		287F8B642230843000BDC504 /* NSLocalizedStringRequireBundleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */; };
 		2882895F222975D00037CF5F /* NSObjectPreferIsEqualRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */; };
 		288289602229776C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */; };
+		264E080F2248BA2800ADC4C5 /* RuleStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E080E2248BA2800ADC4C5 /* RuleStorage.swift */; };
 		29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */; };
 		29FC197921382C07006D208C /* DuplicateImportsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FC197721382C06006D208C /* DuplicateImportsRule.swift */; };
 		29FC197A21382C07006D208C /* DuplicateImportsRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FC197821382C07006D208C /* DuplicateImportsRuleExamples.swift */; };
@@ -509,6 +510,7 @@
 		287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLocalizedStringRequireBundleRule.swift; sourceTree = "<group>"; };
 		2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRule.swift; sourceTree = "<group>"; };
 		2882895D22287E2C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRuleExamples.swift; sourceTree = "<group>"; };
+		264E080E2248BA2800ADC4C5 /* RuleStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleStorage.swift; sourceTree = "<group>"; };
 		29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsOverFirstNotNilRule.swift; sourceTree = "<group>"; };
 		29FC197721382C06006D208C /* DuplicateImportsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DuplicateImportsRule.swift; sourceTree = "<group>"; };
 		29FC197821382C07006D208C /* DuplicateImportsRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DuplicateImportsRuleExamples.swift; sourceTree = "<group>"; };
@@ -1598,6 +1600,7 @@
 				D4C27BFD1E12D53F00DF713E /* Version.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
 				3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */,
+				264E080E2248BA2800ADC4C5 /* RuleStorage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2125,6 +2128,7 @@
 				E88198421BEA929F00333A11 /* NestingRule.swift in Sources */,
 				D46A317F1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift in Sources */,
 				D4470D591EB6B4D1008A1B2E /* EmptyEnumArgumentsRule.swift in Sources */,
+				264E080F2248BA2800ADC4C5 /* RuleStorage.swift in Sources */,
 				627BC48D1F9405160004A6C2 /* QuickDiscouragedFocusedTestRule.swift in Sources */,
 				3BB47D851C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift in Sources */,
 				E881985B1BEA974E00333A11 /* StatementPositionRule.swift in Sources */,

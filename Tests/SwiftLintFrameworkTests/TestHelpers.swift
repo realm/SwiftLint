@@ -33,13 +33,16 @@ func violations(_ string: String, config: Configuration = Configuration()!,
     let stringStrippingMarkers = string.replacingOccurrences(of: violationMarker, with: "")
     guard requiresFileOnDisk else {
         let file = File(contents: stringStrippingMarkers)
-        let linter = Linter(file: file, configuration: config)
-        return linter.styleViolations
+        let storage = RuleStorage()
+        let linter = Linter(file: file, configuration: config).collect(into: storage)
+        return linter.styleViolations(using: storage)
     }
 
     let file = File.temporary(withContents: stringStrippingMarkers)
-    let linter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
-    return linter.styleViolations.map { violation in
+    let storage = RuleStorage()
+    let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
+    let linter = collecter.collect(into: storage)
+    return linter.styleViolations(using: storage).map { violation in
         let locationWithoutFile = Location(file: nil, line: violation.location.line,
                                            character: violation.location.character)
         return StyleViolation(ruleDescription: violation.ruleDescription, severity: violation.severity,
@@ -98,8 +101,10 @@ private extension Configuration {
         let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
         let includeCompilerArguments = self.rules.contains(where: { $0 is AnalyzerRule })
         let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
-        let linter = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
-        let corrections = linter.correct().sorted { $0.location < $1.location }
+        let storage = RuleStorage()
+        let collecter = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
+        let linter = collecter.collect(into: storage)
+        let corrections = linter.correct(using: storage).sorted { $0.location < $1.location }
         if expectedLocations.isEmpty {
             XCTAssertEqual(corrections.count, before != expected ? 1 : 0)
         } else {

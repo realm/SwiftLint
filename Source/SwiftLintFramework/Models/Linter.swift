@@ -50,6 +50,7 @@ private extension Rule {
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
     func lint(file: File, regions: [Region], benchmark: Bool,
+              storage: RuleStorage,
               configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
@@ -63,10 +64,10 @@ private extension Rule {
         let ruleTime: (String, Double)?
         if benchmark {
             let start = Date()
-            violations = validate(file: file, compilerArguments: compilerArguments)
+            violations = validate(file: file, using: storage, compilerArguments: compilerArguments)
             ruleTime = (ruleID, -start.timeIntervalSinceNow)
         } else {
-            violations = validate(file: file, compilerArguments: compilerArguments)
+            violations = validate(file: file, using: storage, compilerArguments: compilerArguments)
             ruleTime = nil
         }
 
@@ -109,20 +110,59 @@ private extension Rule {
 
 public struct Linter {
     public let file: File
+    fileprivate let rules: [Rule]
+    fileprivate let cache: LinterCache?
+    fileprivate let configuration: Configuration
+    fileprivate let compilerArguments: [String]
+
+    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil,
+                compilerArguments: [String] = []) {
+        self.file = file
+        self.cache = cache
+        self.configuration = configuration
+        self.compilerArguments = compilerArguments
+        let rules = configuration.rules.filter { rule in
+            if compilerArguments.isEmpty {
+                return !(rule is AnalyzerRule)
+            } else {
+                return rule is AnalyzerRule
+            }
+        }
+        self.rules = rules
+    }
+
+    public func collect(into storage: RuleStorage) -> CollectedLinter {
+        DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
+            rules[idx].collect(infoFor: file, into: storage, compilerArguments: compilerArguments)
+        }
+        return CollectedLinter(from: self)
+    }
+}
+
+public struct CollectedLinter {
+    public let file: File
     private let rules: [Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
 
-    public var styleViolations: [StyleViolation] {
-        return getStyleViolations().0
+    fileprivate init(from linter: Linter) {
+        file = linter.file
+        rules = linter.rules
+        cache = linter.cache
+        configuration = linter.configuration
+        compilerArguments = linter.compilerArguments
     }
 
-    public var styleViolationsAndRuleTimes: ([StyleViolation], [(id: String, time: Double)]) {
-        return getStyleViolations(benchmark: true)
+    public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
+        return getStyleViolations(using: storage).0
     }
 
-    private func getStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+    public func styleViolationsAndRuleTimes(using storage: RuleStorage) -> ([StyleViolation], [(id: String, time: Double)]) {
+        return getStyleViolations(using: storage, benchmark: true)
+    }
+
+    private func getStyleViolations(using storage: RuleStorage, benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         if let cached = cachedStyleViolations(benchmark: benchmark) {
             return cached
         }
@@ -136,6 +176,7 @@ public struct Linter {
         }) as? SuperfluousDisableCommandRule
         let validationResults = rules.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+                    storage: storage,
                     configuration: self.configuration,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: self.compilerArguments)
@@ -184,29 +225,14 @@ public struct Linter {
         return (cachedViolations, ruleTimes)
     }
 
-    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil,
-                compilerArguments: [String] = []) {
-        self.file = file
-        self.configuration = configuration
-        self.cache = cache
-        self.compilerArguments = compilerArguments
-        self.rules = configuration.rules.filter { rule in
-            if compilerArguments.isEmpty {
-                return !(rule is AnalyzerRule)
-            } else {
-                return rule is AnalyzerRule
-            }
-        }
-    }
-
-    public func correct() -> [Correction] {
+    public func correct(using storage: RuleStorage) -> [Correction] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
             return []
         }
 
         var corrections = [Correction]()
         for rule in rules.compactMap({ $0 as? CorrectableRule }) {
-            let newCorrections = rule.correct(file: file, compilerArguments: compilerArguments)
+            let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
             if !newCorrections.isEmpty {
                 file.invalidateCache()

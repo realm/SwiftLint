@@ -18,8 +18,9 @@ class IntegrationTests: XCTestCase {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         XCTAssert(swiftFiles.contains(where: { #file == $0.path }), "current file should be included")
 
+        let storage = RuleStorage()
         let violations = swiftFiles.parallelFlatMap {
-            Linter(file: $0, configuration: config).styleViolations
+            Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
             violation.location.file!.withStaticString {
@@ -30,7 +31,10 @@ class IntegrationTests: XCTestCase {
 
     func testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
-        let corrections = swiftFiles.parallelFlatMap { Linter(file: $0, configuration: config).correct() }
+        let storage = RuleStorage()
+        let corrections = swiftFiles.parallelFlatMap {
+            Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
+        }
         for correction in corrections {
             correction.location.file!.withStaticString {
                 XCTFail(correction.ruleDescription.description,
@@ -67,16 +71,14 @@ class IntegrationTests: XCTestCase {
         let statusWithoutCrash: Int32 = 0
         let stdoutWithoutCrash = """
             \(testSwiftURL.path):1:1: \
-            warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
-
+            warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)\n
             """
         let stderrWithoutCrash = """
             Linting Swift files at paths \n\
             Linting 'Test.swift' (1/1)
             Connection invalid
             Most rules will be skipped because sourcekitd has failed.
-            Done linting! Found 1 violation, 0 serious in 1 file.
-
+            Done linting! Found 1 violation, 0 serious in 1 file.\n
             """
         if #available(macOS 10.14.1, *) {
             // Within a sandbox on macOS 10.14.1+, `swiftlint` crashes with "Test::Unit::AssertionFailedError"

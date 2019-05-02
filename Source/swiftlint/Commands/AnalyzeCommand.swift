@@ -16,8 +16,10 @@ struct AnalyzeCommand: CommandProtocol {
     }
 
     private func autocorrect(_ options: LintOrAnalyzeOptions) -> Result<(), CommandantError<()>> {
-        return Configuration(options: options).visitLintableFiles(options: options, cache: nil) { linter in
-            let corrections = linter.correct()
+        let storage = RuleStorage()
+        let configuration = Configuration(options: options)
+        return configuration.visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
+            let corrections = linter.correct(using: storage)
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
                 queuedPrint(correctionLogs.joined(separator: "\n"))

@@ -8,8 +8,9 @@ struct AutoCorrectCommand: CommandProtocol {
 
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
         let configuration = Configuration(options: options)
-        let visitor = options.visitor(with: configuration)
-        return configuration.visitLintableFiles(with: visitor).flatMap { files in
+        let storage = RuleStorage()
+        let visitor = options.visitor(with: configuration, storage: storage)
+        return configuration.visitLintableFiles(with: visitor, storage: storage).flatMap { files in
             if !options.quiet {
                 let pluralSuffix = { (collection: [Any]) -> String in
                     return collection.count != 1 ? "s" : ""
@@ -63,7 +64,7 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| pathsArgument(action: "correct")
     }
 
-    fileprivate func visitor(with configuration: Configuration) -> LintableFilesVisitor {
+    fileprivate func visitor(with configuration: Configuration, storage: RuleStorage) -> LintableFilesVisitor {
         let cache = ignoreCache ? nil : LinterCache(configuration: configuration)
         return LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
                                     useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude, cache: cache,
@@ -76,7 +77,7 @@ struct AutoCorrectOptions: OptionsProtocol {
                     linter.format(useTabs: false, indentWidth: count)
                 }
             }
-            let corrections = linter.correct()
+            let corrections = linter.correct(using: storage)
             if !corrections.isEmpty && !self.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
                 queuedPrint(correctionLogs.joined(separator: "\n"))

@@ -19,10 +19,10 @@ struct LintableFilesVisitor {
     let cache: LinterCache?
     let parallel: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
-    let block: (Linter) -> Void
+    let block: (CollectedLinter) -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool,
-         cache: LinterCache?, parallel: Bool, block: @escaping (Linter) -> Void) {
+         cache: LinterCache?, parallel: Bool, block: @escaping (CollectedLinter) -> Void) {
         self.paths = paths
         self.action = action
         self.useSTDIN = useSTDIN
@@ -37,7 +37,7 @@ struct LintableFilesVisitor {
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool,
                  forceExclude: Bool, cache: LinterCache?, compilerLogContents: String,
-                 block: @escaping (Linter) -> Void) {
+                 block: @escaping (CollectedLinter) -> Void) {
         self.paths = paths
         self.action = action
         self.useSTDIN = useSTDIN
@@ -56,7 +56,7 @@ struct LintableFilesVisitor {
         self.block = block
     }
 
-    static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (Linter) -> Void)
+    static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, CommandantError<()>> {
         let compilerLogContents: String
         if options.mode == .lint {

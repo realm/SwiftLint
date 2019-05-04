@@ -35,6 +35,10 @@
   return type is required.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Skip module import if cursor info is missing module info.  
+  [alvarhansen](https://github.com/alvarhansen)
+  [#2746](https://github.com/realm/SwiftLint/issues/2746)
+
 ## 0.32.0: Wash-N-Fold-N-Reduce
 
 #### Breaking

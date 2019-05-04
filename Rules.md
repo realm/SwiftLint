@@ -23574,6 +23574,11 @@ import Foundation
 class A {}
 ```
 
+```swift
+import UnknownModule
+func foo(error: Swift.Error) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -23605,6 +23610,12 @@ dispatchMain()
 ↓import Foundation
 // @objc
 class A {}
+```
+
+```swift
+↓import Foundation
+import UnknownModule
+func foo(error: Swift.Error) {}
 ```
 
 </details>

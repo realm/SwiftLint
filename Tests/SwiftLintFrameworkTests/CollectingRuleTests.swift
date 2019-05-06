@@ -54,6 +54,61 @@ class CollectingRuleTests: XCTestCase {
 
         XCTAssertFalse(violations("", config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
     }
+
+    func testCorrects() {
+        struct Spec: MockCollectingRule & CollectingCorrectableRule {
+            func collect(infoFor file: File) -> String {
+                return file.contents
+            }
+
+            func validate(file: File, collectedInfo: [File: String]) -> [StyleViolation] {
+                if collectedInfo[file] == "baz" {
+                    return [StyleViolation(ruleDescription: Spec.description,
+                                           location: Location(file: file, byteOffset: 2))]
+                } else {
+                    return []
+                }
+            }
+
+            func correct(file: File, collectedInfo: [File: String]) -> [Correction] {
+                if collectedInfo[file] == "baz" {
+                    return [Correction(ruleDescription: Spec.description,
+                                       location: Location(file: file, byteOffset: 2))]
+                } else {
+                    return []
+                }
+            }
+        }
+
+        struct AnalyzerSpec: MockCollectingRule & AnalyzerRule & CollectingCorrectableRule {
+            func collect(infoFor file: File, compilerArguments: [String]) -> String {
+                return file.contents
+            }
+
+            func validate(file: File, collectedInfo: [File: String], compilerArguments: [String])
+                -> [StyleViolation] {
+                    if collectedInfo[file] == "baz" {
+                        return [StyleViolation(ruleDescription: Spec.description,
+                                               location: Location(file: file, byteOffset: 2))]
+                    } else {
+                        return []
+                    }
+            }
+
+            func correct(file: File, collectedInfo: [File: String], compilerArguments: [String]) -> [Correction] {
+                if collectedInfo[file] == "baz" {
+                    return [Correction(ruleDescription: Spec.description,
+                                       location: Location(file: file, byteOffset: 2))]
+                } else {
+                    return []
+                }
+            }
+        }
+
+        let inputs = ["foo", "baz"]
+        XCTAssertEqual(inputs.corrections(config: Spec.configuration!).count, 1)
+        XCTAssertEqual(inputs.corrections(config: AnalyzerSpec.configuration!, requiresFileOnDisk: true).count, 1)
+    }
 }
 
 private protocol MockCollectingRule: CollectingRule {}

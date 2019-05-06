@@ -79,7 +79,7 @@
 * Add `nslocalizedstring_require_bundle` rule to ensure calls to
   `NSLocalizedString` specify the bundle where the strings file is located.  
   [Matthew Healy](https://github.com/matthew-healy)
-  [#2595](https://github.com/realm/SwiftLint/2595)
+  [#2595](https://github.com/realm/SwiftLint/issues/2595)
 
 * `contains_over_first_not_nil` rule now also checks for `firstIndex(where:)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

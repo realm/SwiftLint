@@ -1,17 +1,19 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule, OptInRule {
+public struct NoReturnVoidRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "no_guard_return_void",
-        name: "No Guard Return Void",
-        description: "No void return expressions in guard statments.",
+        identifier: "no_return_void",
+        name: "No  Return Void",
+        description: "No expressions after return in void functions.",
         kind: .style,
         nonTriggeringExamples: [
+            "",
+            "func test() {}",
             """
             init?() {
                 guard condition else {
@@ -33,9 +35,6 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
                 }
             }
             """,
-            "",
-            "func test() {}",
-
             """
             func test() -> Result<String, Error> {
                 func other() {}
@@ -44,27 +43,20 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
             """,
             """
             func test() {
-                if X {
-                    return Logger.assertionFailure("")
+                if bar {
+                    print("")
+                    return
                 }
 
-                let asdf = [1, 2, 3].filter { return true }
+                let foo = [1, 2, 3].filter { return true }
                 return
             }
             """,
             """
             func test() {
-                let file = File(path: "/nonexistent")
-                guard file.exists() > 4 else {
-                    print("File doesn't exist")
+                guard foo else {
+                    bar()
                     return
-                }
-            }
-            """,
-            """
-            func test() {
-                guard condition else {
-                    onlyTriggerWithReturn("")
                 }
             }
             """
@@ -72,7 +64,7 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
         triggeringExamples: [
             """
             func initThing() {
-                guard condition else {
+                guard foo else {
                     return↓ print("")
                 }
             }
@@ -114,6 +106,69 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
                 }
                 differentSideEffect()
             }
+            """,
+            """
+            func test() {
+              if x {
+                return↓ foo()
+              }
+              bar()
+            }
+            """,
+            """
+            func test() {
+              switch x {
+                case .a:
+                  return↓ foo() // return to skip baz()
+                case .b:
+                  bar()
+              }
+              baz()
+            }
+            """,
+            """
+            func test() {
+              if check {
+                if otherCheck {
+                  return↓ foo()
+                }
+              }
+              bar()
+            }
+            """,
+            """
+            func test() {
+                return↓ foo()
+            }
+            """,
+            """
+            func test() {
+              return foo({
+                return bar()
+              })
+              return↓ foo()
+            }
+            """,
+            """
+            func test() {
+              guard x else {
+                return↓ foo()
+              }
+              bar()
+            }
+            """,
+            """
+            func test() {
+              let closure: () -> () = {
+                return assert()
+              }
+              if check {
+                if otherCheck {
+                  return // comments are fine
+                }
+              }
+              return↓ foo()
+            }
             """
         ]
     )
@@ -123,13 +178,21 @@ public struct NoGuardReturnVoidRule: ASTRule, ConfigurationProviderRule, Automat
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             dictionary.isVoid(),
             !dictionary.isInit(),
-            let guardRanges = dictionary.guardStatementRanges(),
-            !guardRanges.isEmpty
+            let bodyRange = dictionary.byteRange()
         else {
             return []
         }
 
-        return guardRanges
+        let statementRanges = dictionary.statementRanges()
+        var bodyRangeAfterLastStatement = bodyRange
+
+        if let lastStatement = statementRanges?.last {
+            bodyRangeAfterLastStatement.location = lastStatement.upperBound
+        }
+
+        let ranges: [NSRange] = [bodyRangeAfterLastStatement] + (statementRanges ?? [])
+
+        return ranges
             .map({ range in
                 return file.syntaxMap.tokens.filter { range.contains($0.offset) && !$0.isComment }
             })
@@ -158,17 +221,17 @@ private extension Dictionary where Dictionary == [String: SourceKitRepresentable
         return (self["key.name"] as? String)?.hasPrefix("init(") ?? false
     }
 
-    func guardStatementRanges() -> [NSRange]? {
+    func statementRanges() -> [NSRange]? {
         let ranges = (self["key.substructure"] as? [[String: SourceKitRepresentable]])?
-            .compactMap({ $0 })
-            .filter({ $0.isGuardStatment() })
-            .compactMap({ $0.byteRange() })
+            .compactMap { $0 }
+            .filter { $0.isStatement() }
+            .compactMap { $0.byteRange() }
 
         return ranges
     }
 
-    func isGuardStatment() -> Bool {
-        return self["key.kind"] as? String == "source.lang.swift.stmt.guard"
+    func isStatement() -> Bool {
+        return (self["key.kind"] as? String)?.starts(with: "source.lang.swift.stmt") == true
     }
 
     func byteRange() -> NSRange? {
@@ -193,4 +256,3 @@ private extension SyntaxToken {
         return self.isKeyword && (file.contents(for: self) == "return")
     }
 }
-

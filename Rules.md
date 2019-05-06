@@ -93,7 +93,7 @@
 * [No Extension Access Modifier](#no-extension-access-modifier)
 * [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
-* [No Guard Return Void](#no-guard-return-void)
+* [No  Return Void](#no--return-void)
 * [Notification Center Detachment](#notification-center-detachment)
 * [NSLocalizedString Key](#nslocalizedstring-key)
 * [NSLocalizedString Require Bundle](#nslocalizedstring-require-bundle)
@@ -13516,18 +13516,26 @@ extension External { struct Gotcha {}}
 
 
 
-## No Guard Return Void
+## No  Return Void
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`no_guard_return_void` | Disabled | No | style | No | 3.0.0 
+`no_return_void` | Disabled | No | style | No | 3.0.0 
 
-No void return expressions in guard statments.
+No expressions after return in void functions.
 
 ### Examples
 
 <details>
 <summary>Non Triggering Examples</summary>
+
+```swift
+
+```
+
+```swift
+func test() {}
+```
 
 ```swift
 init?() {
@@ -13554,14 +13562,6 @@ func test() {
 ```
 
 ```swift
-
-```
-
-```swift
-func test() {}
-```
-
-```swift
 func test() -> Result<String, Error> {
     func other() {}
     func otherVoid() -> Void {}
@@ -13570,29 +13570,21 @@ func test() -> Result<String, Error> {
 
 ```swift
 func test() {
-    if X {
-        return Logger.assertionFailure("")
+    if bar {
+        print("")
+        return
     }
 
-    let asdf = [1, 2, 3].filter { return true }
+    let foo = [1, 2, 3].filter { return true }
     return
 }
 ```
 
 ```swift
 func test() {
-    let file = File(path: "/nonexistent")
-    guard file.exists() > 4 else {
-        print("File doesn't exist")
+    guard foo else {
+        bar()
         return
-    }
-}
-```
-
-```swift
-func test() {
-    guard condition else {
-        onlyTriggerWithReturn("")
     }
 }
 ```
@@ -13603,7 +13595,7 @@ func test() {
 
 ```swift
 func initThing() {
-    guard condition else {
+    guard foo else {
         return↓ print("")
     }
 }
@@ -13648,6 +13640,76 @@ func test() {
         return↓ assertionfailure(""); // comment
     }
     differentSideEffect()
+}
+```
+
+```swift
+func test() {
+  if x {
+    return↓ foo()
+  }
+  bar()
+}
+```
+
+```swift
+func test() {
+  switch x {
+    case .a:
+      return↓ foo() // return to skip baz()
+    case .b:
+      bar()
+  }
+  baz()
+}
+```
+
+```swift
+func test() {
+  if check {
+    if otherCheck {
+      return↓ foo()
+    }
+  }
+  bar()
+}
+```
+
+```swift
+func test() {
+    return↓ foo()
+}
+```
+
+```swift
+func test() {
+  return foo({
+    return bar()
+  })
+  return↓ foo()
+}
+```
+
+```swift
+func test() {
+  guard x else {
+    return↓ foo()
+  }
+  bar()
+}
+```
+
+```swift
+func test() {
+  let closure: () -> () = {
+    return assert()
+  }
+  if check {
+    if otherCheck {
+      return // comments are fine
+    }
+  }
+  return↓ foo()
 }
 ```
 

@@ -420,9 +420,9 @@ class NoGroupingExtensionRuleTests: XCTestCase {
     }
 }
 
-class NoGuardReturnVoidRuleTests: XCTestCase {
+class NoReturnVoidRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(NoGuardReturnVoidRule.description)
+        verifyRule(NoReturnVoidRule.description)
     }
 }
 

@@ -1,12 +1,6 @@
 import Foundation
 import SourceKittenFramework
 
-private let nonSpace = "[^ ]"
-private let twoOrMoreSpace = " {2,}"
-private let mark = "MARK:"
-private let nonSpaceOrTwoOrMoreSpace = "(?:\(nonSpace)|\(twoOrMoreSpace))"
-private let nonSpaceOrTwoOrMoreSpaceOrNewline = "(?:[^ \n]|\(twoOrMoreSpace))"
-
 public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -201,3 +195,12 @@ private let issue1029Correction = "// MARK: - Top-Level bad mark\n" +
                                  "struct MarkTest {}\n" +
                                  "// MARK: - Bad mark\n" +
                                  "extension MarkTest {}\n"
+
+// These need to be at the bottom of the file to work around https://bugs.swift.org/browse/SR-10486
+
+private let nonSpace = "[^ ]"
+private let twoOrMoreSpace = " {2,}"
+private let mark = "MARK:"
+private let nonSpaceOrTwoOrMoreSpace = "(?:\(nonSpace)|\(twoOrMoreSpace))"
+
+private let nonSpaceOrTwoOrMoreSpaceOrNewline = "(?:[^ \n]|\(twoOrMoreSpace))"

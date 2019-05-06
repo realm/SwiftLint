@@ -462,6 +462,8 @@ extension FileNameRuleTests {
         ("testStructNameDoesntTrigger", testStructNameDoesntTrigger),
         ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
         ("testNestedExtensionDoesntTrigger", testNestedExtensionDoesntTrigger),
+        ("testNestedTypeSeparatorDoesntTrigger", testNestedTypeSeparatorDoesntTrigger),
+        ("testWrongNestedTypeSeparatorDoesTrigger", testWrongNestedTypeSeparatorDoesTrigger),
         ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
         ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
         ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride),
@@ -1345,6 +1347,12 @@ extension UnneededParenthesesInClosureArgumentRuleTests {
     ]
 }
 
+extension UnownedVariableCaptureRuleTests {
+    static var allTests: [(String, (UnownedVariableCaptureRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UntypedErrorInCatchRuleTests {
     static var allTests: [(String, (UntypedErrorInCatchRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1688,6 +1696,7 @@ XCTMain([
     testCase(UnavailableFunctionRuleTests.allTests),
     testCase(UnneededBreakInSwitchRuleTests.allTests),
     testCase(UnneededParenthesesInClosureArgumentRuleTests.allTests),
+    testCase(UnownedVariableCaptureRuleTests.allTests),
     testCase(UntypedErrorInCatchRuleTests.allTests),
     testCase(UnusedCaptureListRuleTests.allTests),
     testCase(UnusedClosureParameterRuleTests.allTests),

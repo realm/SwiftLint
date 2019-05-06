@@ -34,6 +34,11 @@ pod 'SwiftLint'
 
 请注意这会将 SwiftLint 二进制文件、所依赖的二进制文件和 Swift 二进制库安装到 `Pods/` 目录下，所以不推荐将此目录添加到版本控制系统（如 git）中进行跟踪。
 
+### 使用 [Mint](https://github.com/yonaskolb/mint)：
+```
+$ mint install realm/SwiftLint
+```
+
 ### 使用安装包：
 
 你也可以通过从[最新的 GitHub 发布地址](https://github.com/realm/SwiftLint/releases/latest)下载 `SwiftLint.pkg` 然后执行的方式安装 SwiftLint。
@@ -166,7 +171,7 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 | Swift 2.x       | SwiftLint 0.18.1            |
 | Swift 3.x       | SwiftLint 0.25.1            |
 | Swift 4.0-4.1.x | SwiftLint 0.28.2            |
-| Swift 4.2+      | 最新的                      |
+| Swift 4.2.x-5.0 | 最新的                      |
 
 ## 规则
 

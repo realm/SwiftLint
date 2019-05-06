@@ -10,11 +10,52 @@
 
 #### Enhancements
 
-* Add `no_guard_return_void` rule preventing trailing expressions on functions
-  including a guard statments after the return, specifying they should be on
-  the line before.
+* Add `no_return_void` rule preventing trailing expressions on void functions
+  after an explicit return.
   [Johnny Sparks](https://github.com/johnnysparks)
   [#2723](https://github.com/realm/SwiftLint/pull/2723)
+
+* Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
+  condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 
+  environment variable to test like:
+    ```terminal.sh-session
+    $ SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST=1 \
+    swift test --filter testSimulateHomebrewTest
+    ```  
+  [Norio Nomura](https://github.com/norio-nomura)
+  
+* Add option to configure how nested types should be separated in file names by
+  introducting `nested_type_separator` configuration for the `file_name` rule.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#2717](https://github.com/realm/SwiftLint/issues/2717)
+
+* Add `unowned_variable_capture` opt-in rule to warn against unowned captures
+  in closures when using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2097](https://github.com/realm/SwiftLint/issues/2097)
+
+#### Bug Fixes
+
+* Don't trigger `redundant_void_return` violations when using `subscript` as the
+  return type is required.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Skip module import if cursor info is missing module info.  
+  [alvarhansen](https://github.com/alvarhansen)
+  [#2746](https://github.com/realm/SwiftLint/issues/2746)
+
+## 0.32.0: Wash-N-Fold-N-Reduce
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
 
 * Add `reduce_boolean` rule to prefer simpler constructs over `reduce(Boolean)`.  
   [Xavier Lowmiller](https://github.com/xavierLowmiller)
@@ -22,7 +63,7 @@
 
 * Add `nsobject_prefer_isequal` rule to warn against implementing `==` on an
   `NSObject` subclass as calling `isEqual` (i.e. when using the class from
-  Objective-C) will will not use the defined `==` method.  
+  Objective-C) will not use the defined `==` method.  
   [Matthew Healy](https://github.com/matthew-healy)
   [#2663](https://github.com/realm/SwiftLint/pull/2663)
 
@@ -48,7 +89,7 @@
 * Add `nslocalizedstring_require_bundle` rule to ensure calls to
   `NSLocalizedString` specify the bundle where the strings file is located.  
   [Matthew Healy](https://github.com/matthew-healy)
-  [#2595](https://github.com/realm/SwiftLint/2595)
+  [#2595](https://github.com/realm/SwiftLint/issues/2595)
 
 * `contains_over_first_not_nil` rule now also checks for `firstIndex(where:)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -58,6 +99,11 @@
   capture list are used.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2715](https://github.com/realm/SwiftLint/issues/2715)
+
+* SwiftLint can now be compiled using Xcode 10.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#2693](https://github.com/realm/SwiftLint/issues/2693)
 
 #### Bug Fixes
 
@@ -100,6 +146,11 @@
 * Let `disable all` command override `superfluous_disable_command` rule.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2670](https://github.com/realm/SwiftLint/issues/2670)
+
+* Fix issues in `explict_acl`, `redundant_set_access_control` and
+  `explicit_top_level_acl` rules when using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2694](https://github.com/realm/SwiftLint/issues/2694)
 
 ## 0.31.0: Busy Laundromat
 

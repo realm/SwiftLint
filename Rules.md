@@ -155,6 +155,7 @@
 * [Unavailable Function](#unavailable-function)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
+* [Unowned Variable Capture](#unowned-variable-capture)
 * [Untyped Error in Catch](#untyped-error-in-catch)
 * [Unused Capture List](#unused-capture-list)
 * [Unused Closure Parameter](#unused-closure-parameter)
@@ -5775,6 +5776,10 @@ internal class A { deinit {} }
 extension A: Equatable {}
 ```
 
+```swift
+extension A {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -6083,6 +6088,10 @@ internal func a() {}
 
 ```swift
 extension A: Equatable {}
+```
+
+```swift
+extension A {}
 ```
 
 </details>
@@ -13808,7 +13817,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `nslocalizedstring_require_bundle` | Disabled | No | lint | No | 3.0.0 
 
-Calls to NSLocalisedString should specify the bundle which contains the strings file.
+Calls to NSLocalizedString should specify the bundle which contains the strings file.
 
 ### Examples
 
@@ -16454,7 +16463,7 @@ let anyValid = validators.↓reduce(false, { $0 || $1(input) })
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`reduce_into` | Disabled | No | performance | No | 3.0.0 
+`reduce_into` | Disabled | No | performance | No | 4.0.0 
 
 Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types
 
@@ -17262,6 +17271,14 @@ func foo() -> Void?
 ```swift
 func foo() -> Void!
 
+```
+
+```swift
+struct A {
+    subscript(key: String) {
+        print(key)
+    }
+}
 ```
 
 </details>
@@ -23136,6 +23153,63 @@ foo.bar { [weak self] ↓(x, y) in }
 
 
 
+## Unowned Variable Capture
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unowned_variable_capture` | Disabled | No | lint | No | 5.0.0 
+
+Prefer capturing references as weak to avoid potential crashes.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo { [weak self] in _ }
+```
+
+```swift
+foo { [weak self] param in _ }
+```
+
+```swift
+foo { [weak bar] in _ }
+```
+
+```swift
+foo { [weak bar] param in _ }
+```
+
+```swift
+foo { bar in _ }
+```
+
+```swift
+foo { $0 }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo { [↓unowned self] in _ }
+```
+
+```swift
+foo { [↓unowned bar] in _ }
+```
+
+```swift
+foo { [bar, ↓unowned self] in _ }
+```
+
+</details>
+
+
+
 ## Untyped Error in Catch
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -23259,7 +23333,15 @@ numbers.forEach({
 ```
 
 ```swift
-{ [foo] in foo.bar() }()
+withEnvironment(apiService: MockService(fetchProjectResponse: project)) {
+    [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
+        device.handle()
+    }
+}
+```
+
+```swift
+{ [foo] _ in foo.bar() }()
 ```
 
 ```swift
@@ -23293,6 +23375,14 @@ numbers.forEach({
     [weak handler] in
     print($0)
 })
+```
+
+```swift
+withEnvironment(apiService: MockService(fetchProjectResponse: project)) { [↓foo] in
+    [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
+        device.handle()
+    }
+}
 ```
 
 ```swift
@@ -23686,6 +23776,11 @@ import Foundation
 class A {}
 ```
 
+```swift
+import UnknownModule
+func foo(error: Swift.Error) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -23717,6 +23812,12 @@ dispatchMain()
 ↓import Foundation
 // @objc
 class A {}
+```
+
+```swift
+↓import Foundation
+import UnknownModule
+func foo(error: Swift.Error) {}
 ```
 
 </details>

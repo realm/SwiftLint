@@ -8,13 +8,15 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
     private(set) public var excluded: Set<String>
     private(set) public var prefixPattern: String
     private(set) public var suffixPattern: String
+    private(set) public var nestedTypeSeparator: String
 
     public init(severity: ViolationSeverity, excluded: [String] = [],
-                prefixPattern: String = "", suffixPattern: String = "\\+.*") {
+                prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {
         self.severity = SeverityConfiguration(severity)
         self.excluded = Set(excluded)
         self.prefixPattern = prefixPattern
         self.suffixPattern = suffixPattern
+        self.nestedTypeSeparator = nestedTypeSeparator
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -33,6 +35,9 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
         }
         if let suffixPattern = configurationDict["suffix_pattern"] as? String {
             self.suffixPattern = suffixPattern
+        }
+        if let nestedTypeSeparator = configurationDict["nested_type_separator"] as? String {
+            self.nestedTypeSeparator = nestedTypeSeparator
         }
     }
 }

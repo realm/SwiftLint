@@ -23,7 +23,14 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
             "func foo() -> ()?\n",
             "func foo() -> ()!\n",
             "func foo() -> Void?\n",
-            "func foo() -> Void!\n"
+            "func foo() -> Void!\n",
+            """
+            struct A {
+                subscript(key: String) {
+                    print(key)
+                }
+            }
+            """
         ],
         triggeringExamples: [
             "func foo()↓ -> Void {}\n",
@@ -51,6 +58,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
 
     private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))(?![?!])"
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
+    private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -63,7 +71,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
 
     public func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard SwiftDeclarationKind.functionKinds.contains(kind),
+        guard functionKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,

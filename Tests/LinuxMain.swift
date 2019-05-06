@@ -73,7 +73,8 @@ extension CollectingRuleTests {
     static var allTests: [(String, (CollectingRuleTests) -> () throws -> Void)] = [
         ("testCollectsIntoStorage", testCollectsIntoStorage),
         ("testCollectsAllFiles", testCollectsAllFiles),
-        ("testCollectsAnalyzerFiles", testCollectsAnalyzerFiles)
+        ("testCollectsAnalyzerFiles", testCollectsAnalyzerFiles),
+        ("testCorrects", testCorrects)
     ]
 }
 

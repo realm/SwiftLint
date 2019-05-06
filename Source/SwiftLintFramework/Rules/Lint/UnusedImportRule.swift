@@ -24,6 +24,10 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             import Foundation
             @objc
             class A {}
+            """,
+            """
+            import UnknownModule
+            func foo(error: Swift.Error) {}
             """
         ],
         triggeringExamples: [
@@ -51,6 +55,11 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             ↓import Foundation
             // @objc
             class A {}
+            """,
+            """
+            ↓import Foundation
+            import UnknownModule
+            func foo(error: Swift.Error) {}
             """
         ],
         corrections: [
@@ -181,9 +190,9 @@ private extension File {
                     imports.insert(importedModule)
                     nextIsModuleImport = false
                     continue
+                } else {
+                    nextIsModuleImport = false
                 }
-            } else {
-                nextIsModuleImport = false
             }
 
             if let usr = cursorInfo["key.modulename"] as? String {

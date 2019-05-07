@@ -73,7 +73,8 @@ extension ConfigurationTests {
     }
 
     var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
+        return Configuration(path: projectMockYAML2, rootPath: projectMockPathLevel2,
+                             optional: false, quiet: true)
     }
 
     var projectMockConfig2CustomRules: Configuration {
@@ -88,6 +89,11 @@ extension ConfigurationTests {
 
     var projectMockConfig3: Configuration {
         return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
+                             optional: false, quiet: true)
+    }
+
+    var projectMockLevel3WithLevel2Config: Configuration {
+        return Configuration(path: projectMockYAML2, rootPath: projectMockPathLevel3,
                              optional: false, quiet: true)
     }
 }

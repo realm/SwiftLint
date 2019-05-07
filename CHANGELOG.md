@@ -23,6 +23,10 @@
   [nvanfleet](https://github.com/nvanfleet)
   [#2866](https://github.com/realm/SwiftLint/issues/2866)
 
+* Always read root directory configuration.  
+  [alvarhansen](https://github.com/alvarhansen)
+  [#2747](https://github.com/realm/SwiftLint/issues/2747)
+
 #### Bug Fixes
 
 * None.

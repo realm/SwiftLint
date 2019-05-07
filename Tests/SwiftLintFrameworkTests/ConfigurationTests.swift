@@ -244,11 +244,16 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
+        let directoryConfiguration = Configuration(path: projectMockYAML0,
+                                                   optional: false, quiet: true)
         let configuration = Configuration(path: projectMockYAML0CustomPath,
                                           rootPath: projectMockSwift0,
                                           optional: false, quiet: true)
         let file = File(path: projectMockSwift0)!
-        XCTAssertEqual(configuration.configuration(for: file), configuration)
+        XCTAssertEqual(
+            configuration.configuration(for: file),
+            configuration.merge(with: directoryConfiguration)
+        )
     }
 
     // MARK: - Testing custom indentation

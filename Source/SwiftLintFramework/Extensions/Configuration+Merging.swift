@@ -10,12 +10,12 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
-        if path == rootDirectory {
-            return self
-        }
-
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
+
+        if configurationSearchPath == configurationPath {
+            return self
+        }
 
         // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
@@ -23,14 +23,13 @@ extension Configuration {
             let fullPath = pathNSString.absolutePathRepresentation()
             let customRuleIdentifiers = (rules.first(where: { $0 is CustomRules }) as? CustomRules)?
                 .configuration.customRuleConfigurations.map { $0.identifier }
-            let config = Configuration.getCached(atPath: fullPath) ??
-                Configuration(
-                    path: configurationSearchPath,
-                    rootPath: fullPath,
-                    optional: false,
-                    quiet: true,
-                    customRulesIdentifiers: customRuleIdentifiers ?? []
-                )
+            let config = Configuration(
+                path: configurationSearchPath,
+                rootPath: fullPath,
+                optional: false,
+                quiet: true,
+                customRulesIdentifiers: customRuleIdentifiers ?? []
+            )
             return merge(with: config)
         }
 
@@ -41,23 +40,6 @@ extension Configuration {
 
         // If nothing else, return self
         return self
-    }
-
-    private var rootDirectory: String? {
-        guard let rootPath = rootPath else {
-            return nil
-        }
-
-        var isDirectoryObjC: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectoryObjC) else {
-            return nil
-        }
-
-        if isDirectoryObjC.boolValue {
-            return rootPath
-        } else {
-            return rootPath.bridge().deletingLastPathComponent
-        }
     }
 
     private struct HashableRule: Hashable {

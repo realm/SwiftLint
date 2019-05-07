@@ -46,6 +46,33 @@ extension ConfigurationTests {
         XCTAssertEqual(projectMockConfig0.merge(with: projectMockConfig3).rootPath, projectMockConfig3.rootPath)
     }
 
+    func testNestedConfigurationWithCustomConfigurationPath() {
+        XCTAssertEqual(
+            projectMockLevel3WithLevel2Config.merge(with: projectMockConfig3),
+            projectMockLevel3WithLevel2Config.configuration(for: File(path: projectMockSwift3)!)
+        )
+    }
+
+    func testIssue1531() {
+        let issueProjectMockPath = testResourcesPath.stringByAppendingPathComponent("issue-1531")
+
+        let defaultConfig = Configuration(path: Configuration.fileName, rootPath: issueProjectMockPath,
+                                          optional: false, quiet: true)
+        let ciConfig = Configuration(path: ".swiftlint-ci.yml", rootPath: issueProjectMockPath,
+                                     optional: false, quiet: true)
+
+        XCTAssertEqual(defaultConfig.rootPath, ciConfig.rootPath)
+
+        let fileConfig = ciConfig.configuration(for:
+            File(path: issueProjectMockPath.stringByAppendingPathComponent("Foo.swift"))!
+        )
+
+        XCTAssertEqual(defaultConfig.merge(with: ciConfig), fileConfig)
+
+        XCTAssertTrue(defaultConfig.contains(rule: TodoRule.self))
+        XCTAssertFalse(fileConfig.contains(rule: TodoRule.self))
+    }
+
     func testMergedWarningThreshold() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             return Configuration(warningThreshold: warningThreshold,

@@ -39,6 +39,11 @@
   [alvarhansen](https://github.com/alvarhansen)
   [#2746](https://github.com/realm/SwiftLint/issues/2746)
 
+* Don't trigger `file_types_order` violations in files only containing 
+  extensions.  
+  [Sam Rayner](https://github.com/samrayner)
+  [#2749](https://github.com/realm/SwiftLint/issues/2749)
+
 ## 0.32.0: Wash-N-Fold-N-Reduce
 
 #### Breaking

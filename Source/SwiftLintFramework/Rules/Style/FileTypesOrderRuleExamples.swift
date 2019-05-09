@@ -123,7 +123,15 @@ internal struct FileTypesOrderRuleExamples {
         """
     ]
 
-    static let nonTriggeringExamples = [FileTypesOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n")]
+    static let nonTriggeringExamples = [
+        FileTypesOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n"),
+        """
+        // Only extensions
+        extension Foo {}
+        extension Bar {
+        }
+        """
+    ]
 
     static let triggeringExamples = [
         """

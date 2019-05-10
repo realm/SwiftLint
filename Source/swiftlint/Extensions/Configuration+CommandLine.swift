@@ -53,7 +53,9 @@ extension Configuration {
         -> Result<[File], CommandantError<()>> {
             return getFiles(with: visitor)
                 .flatMap { groupFiles($0, visitor: visitor) }
-                .flatMap { visit(filesPerConfiguration: $0, visitor: visitor, storage: storage) }
+                .map { linters(for: $0, visitor: visitor) }
+                .map { collect(linters: $0, visitor: visitor, storage: storage) }
+                .map { visit(linters: $0, visitor: visitor, storage: storage) }
     }
 
     private func groupFiles(_ files: [File],
@@ -83,27 +85,40 @@ extension Configuration {
         return .success(groupedFiles)
     }
 
-    // swiftlint:disable:next function_body_length
-    private func visit(filesPerConfiguration: [Configuration: [File]],
-                       visitor: LintableFilesVisitor,
-                       storage: RuleStorage) -> Result<[File], CommandantError<()>> {
-        let storage = RuleStorage()
-        var collected = 0
-        var visited = 0
+    private func linters(for filesPerConfiguration: [Configuration: [File]],
+                         visitor: LintableFilesVisitor) -> [Linter] {
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
 
-        let collect = { (collecter: Linter) -> CollectedLinter? in
-            let skipFile = visitor.shouldSkipFile(atPath: collecter.file.path)
-            if !visitor.quiet, let filename = collecter.file.path?.bridge().lastPathComponent {
+        var linters = [Linter]()
+        linters.reserveCapacity(fileCount)
+        for (config, files) in filesPerConfiguration {
+            let newConfig: Configuration
+            if visitor.cache != nil {
+                newConfig = config.withPrecomputedCacheDescription()
+            } else {
+                newConfig = config
+            }
+            linters += files.map { visitor.linter(forFile: $0, configuration: newConfig) }
+        }
+        return linters
+    }
+
+    private func collect(linters: [Linter],
+                         visitor: LintableFilesVisitor,
+                         storage: RuleStorage) -> [CollectedLinter] {
+        var collected = 0
+        let collect = { (linter: Linter) -> CollectedLinter? in
+            let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
+            if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
                 let increment = {
                     collected += 1
                     if skipFile {
                         queuedPrintError("""
-                            Skipping '\(filename)' (\(collected)/\(fileCount)) \
+                            Skipping '\(filename)' (\(collected)/\(linters.count)) \
                             because its compiler arguments could not be found
                             """)
                     } else {
-                        queuedPrintError("Collecting '\(filename)' (\(collected)/\(fileCount))")
+                        queuedPrintError("Collecting '\(filename)' (\(collected)/\(linters.count))")
                     }
                 }
                 if visitor.parallel {
@@ -118,14 +133,21 @@ extension Configuration {
             }
 
             return autoreleasepool {
-                collecter.collect(into: storage)
+                linter.collect(into: storage)
             }
         }
-        let visit = { (linter: CollectedLinter) -> Void in
+        return visitor.parallel ? linters.parallelCompactMap(transform: collect) : linters.compactMap(collect)
+    }
+
+    private func visit(linters: [CollectedLinter],
+                       visitor: LintableFilesVisitor,
+                       storage: RuleStorage) -> [File] {
+        var visited = 0
+        let visit = { (linter: CollectedLinter) -> File in
             if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
                 let increment = {
                     visited += 1
-                    queuedPrintError("\(visitor.action) '\(filename)' (\(visited)/\(fileCount))")
+                    queuedPrintError("\(visitor.action) '\(filename)' (\(visited)/\(linters.count))")
                 }
                 if visitor.parallel {
                     indexIncrementerQueue.sync(execute: increment)
@@ -137,29 +159,9 @@ extension Configuration {
             autoreleasepool {
                 visitor.block(linter)
             }
+            return linter.file
         }
-        var linters = [Linter]()
-        linters.reserveCapacity(fileCount)
-        for (config, files) in filesPerConfiguration {
-            let newConfig: Configuration
-            if visitor.cache != nil {
-                newConfig = config.withPrecomputedCacheDescription()
-            } else {
-                newConfig = config
-            }
-            linters += files.map { visitor.linter(forFile: $0, configuration: newConfig) }
-        }
-        if visitor.parallel {
-            let collectedLinters = linters.parallelCompactMap(transform: collect)
-            DispatchQueue.concurrentPerform(iterations: fileCount) { index in
-                let linter = collectedLinters[index]
-                visit(linter)
-            }
-        } else {
-            let collectedLinters = linters.compactMap(collect)
-            collectedLinters.forEach(visit)
-        }
-        return .success(linters.compactMap({ $0.file }))
+        return visitor.parallel ? linters.parallelMap(transform: visit) : linters.map(visit)
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {

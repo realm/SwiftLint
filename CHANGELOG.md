@@ -82,6 +82,8 @@
   [Elliott Williams](https://github.com/elliottwilliams)
   [#2431](https://github.com/realm/SwiftLint/issues/2431)
 
+#### Enhancements
+
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
   condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 
   environment variable to test like:

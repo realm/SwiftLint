@@ -47,24 +47,35 @@ public struct Command: Equatable {
         case next
     }
 
+    /// Text after this delimiter is not considered part of the rule.
+    /// The purpose of this delimiter is to allow swiftlint
+    /// commands to be documented in source code.
+    ///
+    ///     swiftlint:disable:next force_try - Explanation here
+    private static let commentDelimiter = " - "
+
     internal let action: Action
     internal let ruleIdentifiers: Set<RuleIdentifier>
     internal let line: Int
     internal let character: Int?
     internal let modifier: Modifier?
+    /// Currently unused but parsed separate from rule identifiers
+    internal let trailingComment: String?
 
     public init(action: Action, ruleIdentifiers: Set<RuleIdentifier>, line: Int = 0,
-                character: Int? = nil, modifier: Modifier? = nil) {
+                character: Int? = nil, modifier: Modifier? = nil, trailingComment: String? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
         self.line = line
         self.character = character
         self.modifier = modifier
+        self.trailingComment = trailingComment
     }
 
     public init?(string: NSString, range: NSRange) {
         let scanner = Scanner(string: string.substring(with: range))
         _ = scanner.scanString(string: "swiftlint:")
+        // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" ") else {
             return nil
         }
@@ -79,12 +90,20 @@ public struct Command: Equatable {
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let ruleTexts = scanner.string.bridge().substring(
-            from: scanner.scanLocation + 1
-        ).components(separatedBy: .whitespaces).filter {
+        let rawRuleTexts = scanner.scanUpToString(Command.commentDelimiter) ?? ""
+        if scanner.isAtEnd {
+            trailingComment = nil
+        } else {
+            // Store any text after the comment delimiter as the trailingComment.
+            // The addition to scanLocation is to move past the delimiter
+            let startOfCommentPastDelimiter = scanner.scanLocation + Command.commentDelimiter.count
+            trailingComment = scanner.string.bridge().substring(from: startOfCommentPastDelimiter)
+        }
+        let ruleTexts = rawRuleTexts.components(separatedBy: .whitespaces).filter {
             let component = $0.trimmingCharacters(in: .whitespaces)
             return !component.isEmpty && component != "*/"
         }
+
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier

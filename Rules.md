@@ -18260,7 +18260,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `superfluous_disable_command` | Enabled | No | lint | No | 3.0.0 
 
-SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region.
+SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region. Use " - " if you wish to document a command.
 
 
 

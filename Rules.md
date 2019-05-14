@@ -7812,6 +7812,13 @@ extension TestViewController: UITableViewDataSource {
 }
 ```
 
+```swift
+// Only extensions
+extension Foo {}
+extension Bar {
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

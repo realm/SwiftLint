@@ -140,16 +140,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             return (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
         }
 
-        guard let mainTypeSubstructure = substructuresSortedByBodyLength.first else {
-            let substructuresSortedByBodyLength = dict.substructure.sorted { lhs, rhs in
-                return (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
-            }
-
-            // specify substructure with longest body as main type if existent
-            return substructuresSortedByBodyLength.first
-        }
-
         // specify class, enum or struct with longest body as main type
-        return mainTypeSubstructure
+        return substructuresSortedByBodyLength.first
     }
 }

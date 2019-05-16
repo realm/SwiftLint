@@ -173,7 +173,6 @@ public let masterRuleList = RuleList(rules: [
     VerticalWhitespaceOpeningBracesRule.self,
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,
-    WeakComputedProperyRule.self,
     WeakDelegateRule.self,
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,

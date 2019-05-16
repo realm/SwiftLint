@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* Remove the `weak_computed_property` rule. Please see linked issue for
+  discussion and rationale.  
+  [JP Simard](https://github.com/jpsim)
+  [#2712](https://github.com/realm/SwiftLint/issues/2712)
 
 #### Experimental
 
@@ -10,9 +13,8 @@
 
 #### Enhancements
 
-
 * Add `" - "` delimiter to allow commenting SwiftLint commands without triggering
-`superfluous_disable_command`.  
+  `superfluous_disable_command`.  
   [Kevin Randrup](https://github.com/kevinrandrup)
 
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown

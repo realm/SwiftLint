@@ -103,6 +103,7 @@ extension CommandTests {
         ("testEnablePrevious", testEnablePrevious),
         ("testEnableThis", testEnableThis),
         ("testEnableNext", testEnableNext),
+        ("testTrailingCOmment", testTrailingCOmment),
         ("testActionInverse", testActionInverse),
         ("testNoModifierCommandExpandsToItself", testNoModifierCommandExpandsToItself),
         ("testExpandPreviousCommand", testExpandPreviousCommand),
@@ -110,6 +111,7 @@ extension CommandTests {
         ("testExpandNextCommand", testExpandNextCommand),
         ("testSuperfluousDisableCommands", testSuperfluousDisableCommands),
         ("testDisableAllOverridesSuperfluousDisableCommand", testDisableAllOverridesSuperfluousDisableCommand),
+        ("testSuperfluousDisableCommandsIgnoreDelimiter", testSuperfluousDisableCommandsIgnoreDelimiter),
         ("testInvalidDisableCommands", testInvalidDisableCommands),
         ("testSuperfluousDisableCommandsDisabled", testSuperfluousDisableCommandsDisabled),
         ("testSuperfluousDisableCommandsDisabledOnConfiguration", testSuperfluousDisableCommandsDisabledOnConfiguration)
@@ -1454,12 +1456,6 @@ extension VoidReturnRuleTests {
     ]
 }
 
-extension WeakComputedProperyRuleTests {
-    static var allTests: [(String, (WeakComputedProperyRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension WeakDelegateRuleTests {
     static var allTests: [(String, (WeakDelegateRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1707,7 +1703,6 @@ XCTMain([
     testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
-    testCase(WeakComputedProperyRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),
     testCase(XCTSpecificMatcherRuleTests.allTests),

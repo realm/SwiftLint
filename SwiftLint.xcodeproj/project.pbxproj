@@ -248,7 +248,6 @@
 		D41985EB21FAB63E003BE2B7 /* DeploymentTargetConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41985EA21FAB63E003BE2B7 /* DeploymentTargetConfiguration.swift */; };
 		D41985ED21FAD033003BE2B7 /* DeploymentTargetConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41985EC21FAD033003BE2B7 /* DeploymentTargetConfigurationTests.swift */; };
 		D41985EF21FAD5E8003BE2B7 /* DeploymentTargetRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41985EE21FAD5E8003BE2B7 /* DeploymentTargetRuleTests.swift */; };
-		D41985F121FC5AF7003BE2B7 /* WeakComputedProperyRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41985F021FC5AF7003BE2B7 /* WeakComputedProperyRule.swift */; };
 		D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */; };
 		D41E7E0B1DF9DABB0065259A /* RedundantStringEnumValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */; };
 		D4246D6D1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */; };
@@ -734,7 +733,6 @@
 		D41985EA21FAB63E003BE2B7 /* DeploymentTargetConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeploymentTargetConfiguration.swift; sourceTree = "<group>"; };
 		D41985EC21FAD033003BE2B7 /* DeploymentTargetConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeploymentTargetConfigurationTests.swift; sourceTree = "<group>"; };
 		D41985EE21FAD5E8003BE2B7 /* DeploymentTargetRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeploymentTargetRuleTests.swift; sourceTree = "<group>"; };
-		D41985F021FC5AF7003BE2B7 /* WeakComputedProperyRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakComputedProperyRule.swift; sourceTree = "<group>"; };
 		D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantStringEnumValueRule.swift; sourceTree = "<group>"; };
 		D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRuleConfiguration.swift; sourceTree = "<group>"; };
@@ -1119,7 +1117,6 @@
 				8F6B3153213CDCD100858E44 /* UnusedPrivateDeclarationRule.swift */,
 				D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */,
 				D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */,
-				D41985F021FC5AF7003BE2B7 /* WeakComputedProperyRule.swift */,
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
 				1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */,
 			);
@@ -2106,7 +2103,6 @@
 				D4130D971E16183F00242361 /* IdentifierNameRuleExamples.swift in Sources */,
 				7250948A1D0859260039B353 /* StatementModeConfiguration.swift in Sources */,
 				E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */,
-				D41985F121FC5AF7003BE2B7 /* WeakComputedProperyRule.swift in Sources */,
 				E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */,
 				D4B472411F66486300BD6EF1 /* FallthroughRule.swift in Sources */,
 				B25DCD0B1F7E9F9E0028A199 /* MultilineArgumentsRuleExamples.swift in Sources */,

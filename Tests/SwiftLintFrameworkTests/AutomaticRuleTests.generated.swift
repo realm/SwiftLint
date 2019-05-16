@@ -768,12 +768,6 @@ class VoidReturnRuleTests: XCTestCase {
     }
 }
 
-class WeakComputedProperyRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(WeakComputedProperyRule.description)
-    }
-}
-
 class WeakDelegateRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(WeakDelegateRule.description)

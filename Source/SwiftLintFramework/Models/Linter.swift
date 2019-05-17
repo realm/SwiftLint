@@ -108,6 +108,7 @@ private extension Rule {
     }
 }
 
+/// Represents a file that can be linted for style violations and corrections after being collected.
 public struct Linter {
     public let file: File
     fileprivate let rules: [Rule]
@@ -131,6 +132,7 @@ public struct Linter {
         self.rules = rules
     }
 
+    /// Returns a linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
         DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
             rules[idx].collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
@@ -139,6 +141,9 @@ public struct Linter {
     }
 }
 
+/// Represents a file that can compute style violations and corrections for a list of rules.
+///
+/// A `CollectedLinter` is only created after a `Linter` has run its collection steps in `Linter.collect(into:)`.
 public struct CollectedLinter {
     public let file: File
     private let rules: [Rule]

@@ -7,7 +7,7 @@ import XCTest
 class CollectingRuleTests: XCTestCase {
     func testCollectsIntoStorage() {
         struct Spec: MockCollectingRule {
-            func collect(infoFor file: File) -> Int {
+            func collectInfo(for file: File) -> Int {
                 return 42
             }
             func validate(file: File, collectedInfo: [File: Int]) -> [StyleViolation] {
@@ -22,7 +22,7 @@ class CollectingRuleTests: XCTestCase {
 
     func testCollectsAllFiles() {
         struct Spec: MockCollectingRule {
-            func collect(infoFor file: File) -> String {
+            func collectInfo(for file: File) -> String {
                 return file.contents
             }
             func validate(file: File, collectedInfo: [File: String]) -> [StyleViolation] {
@@ -41,7 +41,7 @@ class CollectingRuleTests: XCTestCase {
 
     func testCollectsAnalyzerFiles() {
         struct Spec: MockCollectingRule & AnalyzerRule {
-            func collect(infoFor file: File, compilerArguments: [String]) -> [String] {
+            func collectInfo(for file: File, compilerArguments: [String]) -> [String] {
                 return compilerArguments
             }
             func validate(file: File, collectedInfo: [File: [String]], compilerArguments: [String])
@@ -57,7 +57,7 @@ class CollectingRuleTests: XCTestCase {
 
     func testCorrects() {
         struct Spec: MockCollectingRule & CollectingCorrectableRule {
-            func collect(infoFor file: File) -> String {
+            func collectInfo(for file: File) -> String {
                 return file.contents
             }
 
@@ -81,7 +81,7 @@ class CollectingRuleTests: XCTestCase {
         }
 
         struct AnalyzerSpec: MockCollectingRule & AnalyzerRule & CollectingCorrectableRule {
-            func collect(infoFor file: File, compilerArguments: [String]) -> String {
+            func collectInfo(for file: File, compilerArguments: [String]) -> String {
                 return file.contents
             }
 

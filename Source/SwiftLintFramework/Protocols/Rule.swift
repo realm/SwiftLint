@@ -151,7 +151,9 @@ public extension CollectingRule {
                         for: file, in: self)
     }
     func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
-        let info = storage.collectedInfo(for: self)
+        guard let info = storage.collectedInfo(for: self) else {
+            queuedFatalError("Attempt to validate a CollectingRule before collecting info for it")
+        }
         return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
     func collectInfo(for file: File, compilerArguments: [String]) -> FileInfo {
@@ -196,7 +198,9 @@ public extension CollectingCorrectableRule {
         return correct(file: file, collectedInfo: collectedInfo)
     }
     func correct(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
-        let info = storage.collectedInfo(for: self)
+        guard let info = storage.collectedInfo(for: self) else {
+            queuedFatalError("Attempt to correct a CollectingRule before collecting info for it")
+        }
         return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
     func correct(file: File) -> [Correction] {

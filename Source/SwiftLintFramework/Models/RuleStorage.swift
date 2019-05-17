@@ -16,10 +16,9 @@ public class RuleStorage {
         }
     }
 
-    func collectedInfo<R: CollectingRule>(for rule: R) -> [File: R.FileInfo] {
+    func collectedInfo<R: CollectingRule>(for rule: R) -> [File: R.FileInfo]? {
         return access.sync {
-            // swiftlint:disable:next force_cast
-            storage[ObjectIdentifier(R.self)] as! [File: R.FileInfo]
+            storage[ObjectIdentifier(R.self)] as? [File: R.FileInfo]
         }
     }
 }

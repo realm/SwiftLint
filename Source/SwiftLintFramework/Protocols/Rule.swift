@@ -13,7 +13,7 @@ public protocol Rule {
     func isEqualTo(_ rule: Rule) -> Bool
 
     // These are called by the linter and are always implemented in extensions.
-    func collect(infoFor file: File, into storage: RuleStorage, compilerArguments: [String])
+    func collectInfo(for file: File, into storage: RuleStorage, compilerArguments: [String])
     func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 }
 
@@ -30,7 +30,7 @@ extension Rule {
         return type(of: self).description == type(of: rule).description
     }
 
-    public func collect(infoFor file: File, into storage: RuleStorage, compilerArguments: [String]) {
+    public func collectInfo(for file: File, into storage: RuleStorage, compilerArguments: [String]) {
         // no-op: only CollectingRules mutate their storage
     }
 
@@ -139,23 +139,23 @@ public extension AnalyzerRule where Self: CorrectableRule {
 
 public protocol CollectingRule: Rule {
     associatedtype FileInfo
-    func collect(infoFor file: File, compilerArguments: [String]) -> FileInfo
-    func collect(infoFor file: File) -> FileInfo
+    func collectInfo(for file: File, compilerArguments: [String]) -> FileInfo
+    func collectInfo(for file: File) -> FileInfo
     func validate(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [StyleViolation]
     func validate(file: File, collectedInfo: [File: FileInfo]) -> [StyleViolation]
 }
 
 public extension CollectingRule {
-    func collect(infoFor file: File, into storage: RuleStorage, compilerArguments: [String]) {
-        storage.collect(info: collect(infoFor: file, compilerArguments: compilerArguments),
+    func collectInfo(for file: File, into storage: RuleStorage, compilerArguments: [String]) {
+        storage.collect(info: collectInfo(for: file, compilerArguments: compilerArguments),
                         for: file, in: self)
     }
     func validate(file: File, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
         let info = storage.collectedInfo(for: self)
         return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
-    func collect(infoFor file: File, compilerArguments: [String]) -> FileInfo {
-        return collect(infoFor: file)
+    func collectInfo(for file: File, compilerArguments: [String]) -> FileInfo {
+        return collectInfo(for: file)
     }
     func validate(file: File, collectedInfo: [File: FileInfo], compilerArguments: [String]) -> [StyleViolation] {
         return validate(file: file, collectedInfo: collectedInfo)
@@ -169,7 +169,7 @@ public extension CollectingRule {
 }
 
 public extension CollectingRule where Self: AnalyzerRule {
-    func collect(infoFor file: File) -> FileInfo {
+    func collectInfo(for file: File) -> FileInfo {
         queuedFatalError(
             "Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )

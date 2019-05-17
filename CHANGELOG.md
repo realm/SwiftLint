@@ -78,7 +78,7 @@
   from all files before validating. Collecting rules implement a `collect`
   method which is called once for every file, before _any_ file is checked for
   violations. By collecting, rules can be written which validate across
-  multiple files for things like unused declarations.
+  multiple files for things like unused declarations.  
   [Elliott Williams](https://github.com/elliottwilliams)
   [#2431](https://github.com/realm/SwiftLint/issues/2431)
 

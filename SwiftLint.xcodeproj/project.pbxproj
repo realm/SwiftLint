@@ -37,7 +37,6 @@
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
 		260F66A0225C5B6D00407CF5 /* CollectingRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260F669F225C5B6D00407CF5 /* CollectingRuleTests.swift */; };
 		264E080F2248BA2800ADC4C5 /* RuleStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E080E2248BA2800ADC4C5 /* RuleStorage.swift */; };
-		26CE462A228531D100264485 /* File+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CE4629228531D100264485 /* File+Hashable.swift */; };
 		26CE462D228532CD00264485 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CE462C228532CD00264485 /* Array+SwiftLint.swift */; };
 		287F8B642230843000BDC504 /* NSLocalizedStringRequireBundleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */; };
 		2882895F222975D00037CF5F /* NSObjectPreferIsEqualRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */; };
@@ -512,7 +511,6 @@
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
 		260F669F225C5B6D00407CF5 /* CollectingRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectingRuleTests.swift; sourceTree = "<group>"; };
 		264E080E2248BA2800ADC4C5 /* RuleStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleStorage.swift; sourceTree = "<group>"; };
-		26CE4629228531D100264485 /* File+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "File+Hashable.swift"; sourceTree = "<group>"; };
 		26CE462C228532CD00264485 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Array+SwiftLint.swift"; path = "../../SwiftLintFramework/Extensions/Array+SwiftLint.swift"; sourceTree = "<group>"; };
 		287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLocalizedStringRequireBundleRule.swift; sourceTree = "<group>"; };
 		2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectPreferIsEqualRule.swift; sourceTree = "<group>"; };
@@ -1624,7 +1622,6 @@
 				E86623661F1D377900AAA3A2 /* Configuration+Parsing.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* File+Cache.swift */,
-				26CE4629228531D100264485 /* File+Hashable.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E832F10A1B17E2F5003F265F /* FileManager+SwiftLint.swift */,
 				3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */,
@@ -2190,7 +2187,6 @@
 				3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */,
 				8FD216CC205584AF008ED13F /* CharacterSet+SwiftLint.swift in Sources */,
 				F9E691282091952E0085B53E /* MissingDocsRule.swift in Sources */,
-				26CE462A228531D100264485 /* File+Hashable.swift in Sources */,
 				D43B04641E0620AB004016AF /* UnusedEnumeratedRule.swift in Sources */,
 				62A498561F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift in Sources */,
 				29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */,

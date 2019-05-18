@@ -30,7 +30,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
             "func foo(_ options: [AnyHashable: Any]!) {",
             "func foo() -> [Int]!",
             "func foo() -> [AnyHashable: Any]!",
-            "func foo() -> [Int]! { return [] }"
+            "func foo() -> [Int]! { return [] }",
+            "return self"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -49,7 +50,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
               var foo: [Bool]! = dict[\"abc\"]↓!
             }
             """,
-            "open var computed: String { return foo.bar↓! }"
+            "open var computed: String { return foo.bar↓! }",
+            "return self↓!"
         ]
     )
 
@@ -119,20 +121,18 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
                 .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
             else { return nil }
 
-        let kindsInFirstRange = syntaxMap.kinds(inByteRange: matchByteFirstRange)
-
         // check first captured range
-        // If not empty, first captured range is comment, string, keyword or typeidentifier.
+        // If not empty, first captured range is comment, string, typeidentifier or keyword that is not `self`.
         // We checks "not empty" because kinds may empty without filtering.
-        guard !kindsInFirstRange
-            .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains) else {
-                return nil
+        guard !isFirstRangeExcludedToken(byteRange: matchByteFirstRange, syntaxMap: syntaxMap, file: file) else {
+            return nil
         }
 
         let violationRange = NSRange(location: NSMaxRange(firstRange), length: 0)
+        let kindsInFirstRange = syntaxMap.kinds(inByteRange: matchByteFirstRange)
 
-        // if first captured range is identifier, generate violation
-        if kindsInFirstRange.contains(.identifier) {
+        // if first captured range is identifier or keyword (self), generate violation
+        if !Set(kindsInFirstRange).intersection([.identifier, .keyword]).isEmpty {
             return violationRange
         }
 
@@ -152,6 +152,22 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         }
 
         return nil
+    }
+
+    // check if first captured range is comment, string, typeidentifier, or a keyword that is not `self`.
+    private func isFirstRangeExcludedToken(byteRange: NSRange, syntaxMap: SyntaxMap, file: File) -> Bool {
+        let tokens = syntaxMap.tokens(inByteRange: byteRange)
+        let nsString = file.contents.bridge()
+        return tokens.contains { token in
+            guard let kind = SyntaxKind(rawValue: token.type),
+                ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains(kind)
+                else { return false }
+            // check for `self
+            guard kind == .keyword,
+                let nsRange = nsString.byteRangeToNSRange(start: token.offset, length: token.length)
+                else { return true }
+            return nsString.substring(with: nsRange) != "self"
+        }
     }
 
     // check deepest kind matching range in structure is a typeAnnotation

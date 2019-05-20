@@ -51,6 +51,11 @@
   [Sam Rayner](https://github.com/samrayner)
   [#2749](https://github.com/realm/SwiftLint/issues/2749)
 
+* Force-unwrapping `self` should trigger a violation of the `force_unwrapping`
+  rule.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#2759](https://github.com/realm/SwiftLint/issues/2759)
+
 ## 0.32.0: Wash-N-Fold-N-Reduce
 
 #### Breaking

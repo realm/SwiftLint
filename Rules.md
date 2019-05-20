@@ -8220,6 +8220,10 @@ func foo() -> [AnyHashable: Any]!
 func foo() -> [Int]! { return [] }
 ```
 
+```swift
+return self
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -8276,6 +8280,10 @@ context("abc") {
 
 ```swift
 open var computed: String { return foo.bar↓! }
+```
+
+```swift
+return self↓!
 ```
 
 </details>

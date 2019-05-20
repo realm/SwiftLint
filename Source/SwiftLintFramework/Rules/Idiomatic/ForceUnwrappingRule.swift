@@ -132,7 +132,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         let kindsInFirstRange = syntaxMap.kinds(inByteRange: matchByteFirstRange)
 
         // if first captured range is identifier or keyword (self), generate violation
-        if !Set(kindsInFirstRange).intersection([.identifier, .keyword]).isEmpty {
+        if !Set(kindsInFirstRange).isDisjoint(with: [.identifier, .keyword]) {
             return violationRange
         }
 

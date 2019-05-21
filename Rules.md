@@ -71,6 +71,7 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Indentation Width](#indentation-width)
 * [Inert Defer](#inert-defer)
 * [Is Disjoint](#is-disjoint)
 * [Joined Default Parameter](#joined-default-parameter)
@@ -10632,6 +10633,106 @@ let collection: AnyCollection<Int!>
 
 ```swift
 func foo(int: Int!) {}
+```
+
+</details>
+
+
+
+## Indentation Width
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`indentation_width` | Disabled | No | style | No | 3.0.0 
+
+Indent code using either one tab or the configured amount of spaces, unindent to match previous indentations. Don't indent the first line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+firstLine
+secondLine
+```
+
+```swift
+firstLine
+    secondLine
+```
+
+```swift
+firstLine
+	secondLine
+```
+
+```swift
+firstLine
+	secondLine
+		thirdLine
+
+		fourthLine
+```
+
+```swift
+firstLine
+	secondLine
+		thirdLine
+ 
+		fourthLine
+```
+
+```swift
+firstLine
+	secondLine
+		thirdLine
+//test
+		fourthLine
+```
+
+```swift
+firstLine
+    secondLine
+        thirdLine
+fourthLine
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+firstLine
+	    secondLine
+```
+
+```swift
+    firstLine
+```
+
+```swift
+firstLine
+        secondLine
+```
+
+```swift
+firstLine
+		secondLine
+```
+
+```swift
+firstLine
+	secondLine
+
+			fourthLine
+```
+
+```swift
+firstLine
+    secondLine
+        thirdLine
+ fourthLine
 ```
 
 </details>

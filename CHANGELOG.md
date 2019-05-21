@@ -444,6 +444,11 @@ This is the last release to support building with Swift 4.2.x.
   in closures when using Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2097](https://github.com/realm/SwiftLint/issues/2097)
+  
+* Add new indentation opt-in-rule checking for
+  super-basic additive indentation pattern.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#227](https://github.com/realm/SwiftLint/issues/227)
 
 * Don't trigger a `no_fallthrough_only` violation if next case is an
   `@unknown default`.  

@@ -82,22 +82,38 @@ extension Configuration {
         return .success(groupedFiles)
     }
 
+    private func outputFilename(for path: NSString, in root: NSString, duplicateFileNames: Set<String>) -> String {
+        let basename = path.lastPathComponent
+        if !duplicateFileNames.contains(basename) {
+            return basename
+        }
+
+        var pathComponents = path.pathComponents
+        for component in root.pathComponents where !pathComponents.isEmpty && pathComponents[0] == component {
+            pathComponents.removeFirst()
+        }
+
+        return NSString.path(withComponents: pathComponents)
+    }
+
     private func visit(filesPerConfiguration: [Configuration: [File]],
                        visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
         var index = 0
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
-        let visit = { (file: File, config: Configuration) -> Void in
+        let root = FileManager.default.currentDirectoryPath.bridge().standardizingPath.bridge()
+        let visit = { (file: File, config: Configuration, duplicateFileNames: Set<String>) -> Void in
             let skipFile = visitor.shouldSkipFile(atPath: file.path)
-            if !visitor.quiet, let filename = file.path?.bridge().lastPathComponent {
+            if !visitor.quiet, let filePath = file.path?.bridge() {
+                let outputFilename = self.outputFilename(for: filePath, in: root, duplicateFileNames: duplicateFileNames)
                 let increment = {
                     index += 1
                     if skipFile {
                         queuedPrintError("""
-                            Skipping '\(filename)' (\(index)/\(fileCount)) \
+                            Skipping '\(outputFilename)' (\(index)/\(fileCount)) \
                             because its compiler arguments could not be found
                             """)
                     } else {
-                        queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                        queuedPrintError("\(visitor.action) '\(outputFilename)' (\(index)/\(fileCount))")
                     }
                 }
                 if visitor.parallel {
@@ -116,6 +132,8 @@ extension Configuration {
             }
         }
         var filesAndConfigurations = [(File, Configuration)]()
+        var allFileNames = Set<String>()
+        var duplicateFileNames = Set<String>()
         filesAndConfigurations.reserveCapacity(fileCount)
         for (config, files) in filesPerConfiguration {
             let newConfig: Configuration
@@ -125,14 +143,23 @@ extension Configuration {
                 newConfig = config
             }
             filesAndConfigurations += files.map { ($0, newConfig) }
+            for file in files {
+                if let filename = file.path?.bridge().lastPathComponent {
+                    if allFileNames.contains(filename) {
+                        duplicateFileNames.insert(filename)
+                    }
+
+                    allFileNames.insert(filename)
+                }
+            }
         }
         if visitor.parallel {
             DispatchQueue.concurrentPerform(iterations: fileCount) { index in
                 let (file, config) = filesAndConfigurations[index]
-                visit(file, config)
+                visit(file, config, duplicateFileNames)
             }
         } else {
-            filesAndConfigurations.forEach(visit)
+            filesAndConfigurations.forEach { visit($0, $1, duplicateFileNames) }
         }
         return .success(filesAndConfigurations.compactMap({ $0.0 }))
     }

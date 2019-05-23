@@ -89,11 +89,11 @@ extension Configuration {
         }
 
         var pathComponents = path.pathComponents
-        for component in root.pathComponents where !pathComponents.isEmpty && pathComponents[0] == component {
+        for component in root.pathComponents where pathComponents.first == component {
             pathComponents.removeFirst()
         }
 
-        return NSString.path(withComponents: pathComponents)
+        return pathComponents.joined(separator: "/")
     }
 
     private func visit(filesPerConfiguration: [Configuration: [File]],
@@ -104,7 +104,8 @@ extension Configuration {
         let visit = { (file: File, config: Configuration, duplicateFileNames: Set<String>) -> Void in
             let skipFile = visitor.shouldSkipFile(atPath: file.path)
             if !visitor.quiet, let filePath = file.path?.bridge() {
-                let outputFilename = self.outputFilename(for: filePath, in: root, duplicateFileNames: duplicateFileNames)
+                let outputFilename = self.outputFilename(for: filePath, in: root,
+                                                         duplicateFileNames: duplicateFileNames)
                 let increment = {
                     index += 1
                     if skipFile {

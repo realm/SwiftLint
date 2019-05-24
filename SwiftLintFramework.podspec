@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.author              = { 'JP Simard' => 'jp@jpsim.com' }
   s.platform            = :osx, '10.10'
   s.source_files        = 'Source/SwiftLintFramework/**/*.swift'
-  s.swift_version       = '5.0' # TODO: Add Swift 4.2 when CocoaPods 1.7.0 is out.
+  s.swift_versions      = ['4.2', '5.0']
   s.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
   s.dependency            'SourceKittenFramework', '~> 0.23'
   s.dependency            'Yams', '~> 2.0'

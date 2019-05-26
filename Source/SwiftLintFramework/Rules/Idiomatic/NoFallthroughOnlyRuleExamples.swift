@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct NoFallthroughOnlyRuleExamples {
     static let nonTriggeringExamples: [String] = {
         let commonExamples = [

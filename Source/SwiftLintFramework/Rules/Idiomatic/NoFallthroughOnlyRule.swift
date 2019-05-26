@@ -50,7 +50,7 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
     }
 
     private func isNextTokenUnknownAttribute(afterOffset offset: Int, file: File) -> Bool {
-        let nextNonCommentToken = file.syntaxMap.tokens.lazy
+        let nextNonCommentToken = file.syntaxMap.tokens
             .first { token in
                 guard let kind = SyntaxKind(rawValue: token.type), !kind.isCommentLike else {
                     return false

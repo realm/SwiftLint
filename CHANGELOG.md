@@ -47,6 +47,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2676](https://github.com/realm/SwiftLint/issues/2676)
 
+* Add `legacy_multiple` opt-in rule to warn against using the remainder operator
+  (`%`) checking for a remainder of zero when using Swift 5.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2612](https://github.com/realm/SwiftLint/issues/2612)
+
 #### Bug Fixes
 
 * Don't trigger `redundant_void_return` violations when using `subscript` as the

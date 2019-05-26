@@ -9,7 +9,7 @@ private let projectRoot = #file.bridge()
 
 class DocumentationTests: XCTestCase {
     func testRulesDocumentationIsUpdated() throws {
-        guard SwiftVersion.current >= .fourDotOne else {
+        guard SwiftVersion.current >= .five else {
             return
         }
 

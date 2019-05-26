@@ -35,6 +35,11 @@
   in closures when using Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2097](https://github.com/realm/SwiftLint/issues/2097)
+  
+* Don't trigger a `no_fallthrough_only` violation if next case is an
+  `@unknown default`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2696](https://github.com/realm/SwiftLint/issues/2696)
 
 #### Bug Fixes
 

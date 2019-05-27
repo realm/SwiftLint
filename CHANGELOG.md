@@ -25,7 +25,7 @@
     swift test --filter testSimulateHomebrewTest
     ```  
   [Norio Nomura](https://github.com/norio-nomura)
-  
+
 * Add option to configure how nested types should be separated in file names by
   introducting `nested_type_separator` configuration for the `file_name` rule.  
   [Frederick Pietschmann](https://github.com/fredpi)
@@ -35,7 +35,7 @@
   in closures when using Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2097](https://github.com/realm/SwiftLint/issues/2097)
-  
+
 * Don't trigger a `no_fallthrough_only` violation if next case is an
   `@unknown default`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

@@ -55,7 +55,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     // MARK: - Methods: Validation
     public func validate(file: File) -> [StyleViolation] { // swiftlint:disable:this function_body_length
         var violations: [StyleViolation] = []
-        var previousLineIndentation: Indentation?
+        var previousLineIndentations: [Indentation] = []
 
         for line in file.lines {
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
@@ -92,8 +92,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
             // Catch indented first line
             let indentation: Indentation = tabCount != 0 ? .tabs(tabCount) : .spaces(spaceCount)
-            guard let lastIndentation = previousLineIndentation else {
-                previousLineIndentation = indentation
+            guard !previousLineIndentations.isEmpty else {
+                previousLineIndentations = [indentation]
 
                 if indentation != .spaces(0) {
                     // There's an indentation although this is the first line!
@@ -110,10 +110,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 continue
             }
 
+            let lineIsValid = previousLineIndentations.contains { validate(indentation: indentation, comparingTo: $0) }
+
             // Catch wrong indentation or wrong unindentation
-            if !validate(indentation: indentation, comparingTo: lastIndentation) {
-                let isIndentation = indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth) >=
-                    lastIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+            if !lineIsValid {
+                let isIndentation = previousLineIndentations.last.map {
+                    indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth) >=
+                        $0.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+                } ?? true
 
                 let indentWidth = configuration.indentationWidth
                 violations.append(
@@ -126,9 +130,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                             "Code should be unindented by multiples of one tab or multiples of \(indentWidth) spaces."
                     )
                 )
+
+                // If this line failed, we not only store this line's indentation, but also keep what was stored before
+                // Therefore, the next line can be indented  either according to the last valid line
+                // or any of the succeeding, failing lines
+                // This mechanism avoids duplicate warnings
+                previousLineIndentations.append(indentation)
             } else {
-                // Only store if validation went well, avoids a duplicate warning in consequential lines
-                previousLineIndentation = indentation
+                previousLineIndentations = [indentation]
             }
         }
 

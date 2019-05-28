@@ -692,7 +692,8 @@ extension ImplicitlyUnwrappedOptionalRuleTests {
 
 extension IndentationWidthRuleTests {
     static var allTests: [(String, (IndentationWidthRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testTriggeringExamples", testTriggeringExamples),
+        ("testNonTriggeringExamples", testNonTriggeringExamples)
     ]
 }
 

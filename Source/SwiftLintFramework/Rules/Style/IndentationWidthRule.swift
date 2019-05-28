@@ -28,24 +28,17 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             "unindent to match previous indentations. Don't indent the first line.",
         kind: .style,
         nonTriggeringExamples: [
-            "firstLine\nsecondLine", // It's okay to keep the same indentation
-            "firstLine\n    secondLine", // It's okay to indent using the specified indentationWidth
-            "firstLine\n\tsecondLine", // It's okay to indent using a tab
-            "firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine", // It's okay to have empty lines between
-            "firstLine\n\tsecondLine\n\t\tthirdLine\n \n\t\tfourthLine", // It's okay to have empty lines between
-            "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine", // It's okay to have comment lines between
+            "firstLine\nsecondLine",
+            "firstLine\n    secondLine",
+            "firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine",
+            "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
             "firstLine\n    secondLine\n        thirdLine\nfourthLine"
-            // It's okay to unindent indentationWidth * (1, 2, 3, ...)
         ],
         triggeringExamples: [
-            "firstLine\n\t    secondLine", // It's not okay to indent using both tabs and spaces in one line
-            "    firstLine", // It's not okay to have the first line indented
-            "firstLine\n        secondLine", // It's not okay to indent using neither one tab or indentationWidth spaces
-            "firstLine\n\t\tsecondLine", // It's not okay to indent using multiple tabs
+            "    firstLine",
+            "firstLine\n        secondLine",
             "firstLine\n\tsecondLine\n\n\t\t\tfourthLine",
-            // It's okay to have empty lines between, but then, the following indentation must obey the rules
             "firstLine\n    secondLine\n        thirdLine\n fourthLine"
-            // It's not okay to unindent indentationWidth * (1, 2, 3, ...) - 3
         ]
     )
 

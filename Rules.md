@@ -10665,21 +10665,8 @@ firstLine
 ```swift
 firstLine
 	secondLine
-```
-
-```swift
-firstLine
-	secondLine
 		thirdLine
 
-		fourthLine
-```
-
-```swift
-firstLine
-	secondLine
-		thirdLine
- 
 		fourthLine
 ```
 
@@ -10703,22 +10690,12 @@ fourthLine
 <summary>Triggering Examples</summary>
 
 ```swift
-firstLine
-	    secondLine
-```
-
-```swift
     firstLine
 ```
 
 ```swift
 firstLine
         secondLine
-```
-
-```swift
-firstLine
-		secondLine
 ```
 
 ```swift

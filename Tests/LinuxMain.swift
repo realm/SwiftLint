@@ -692,8 +692,14 @@ extension ImplicitlyUnwrappedOptionalRuleTests {
 
 extension IndentationWidthRuleTests {
     static var allTests: [(String, (IndentationWidthRuleTests) -> () throws -> Void)] = [
-        ("testTriggeringExamples", testTriggeringExamples),
-        ("testNonTriggeringExamples", testNonTriggeringExamples)
+        ("testFirstLineIndentation", testFirstLineIndentation),
+        ("testMixedTabSpaceIndentation", testMixedTabSpaceIndentation),
+        ("testKeepingIndentation", testKeepingIndentation),
+        ("testIndentationLength", testIndentationLength),
+        ("testUnindentation", testUnindentation),
+        ("testEmptyLinesBetween", testEmptyLinesBetween),
+        ("testCommentLines", testCommentLines),
+        ("testDuplicateWarningAvoidanceMechanism", testDuplicateWarningAvoidanceMechanism)
     ]
 }
 

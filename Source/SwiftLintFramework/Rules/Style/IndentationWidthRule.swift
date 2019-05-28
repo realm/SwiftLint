@@ -103,10 +103,12 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 continue
             }
 
-            let lineIsValid = previousLineIndentations.contains { validate(indentation: indentation, comparingTo: $0) }
+            let linesValidationResult = previousLineIndentations.map {
+                validate(indentation: indentation, comparingTo: $0)
+            }
 
             // Catch wrong indentation or wrong unindentation
-            if !lineIsValid {
+            if !linesValidationResult.contains(true) {
                 let isIndentation = previousLineIndentations.last.map {
                     indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth) >=
                         $0.spacesEquivalent(indentationWidth: configuration.indentationWidth)
@@ -123,14 +125,18 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                             "Code should be unindented by multiples of one tab or multiples of \(indentWidth) spaces."
                     )
                 )
+            }
 
-                // If this line failed, we not only store this line's indentation, but also keep what was stored before
-                // Therefore, the next line can be indented  either according to the last valid line
-                // or any of the succeeding, failing lines
-                // This mechanism avoids duplicate warnings
-                previousLineIndentations.append(indentation)
-            } else {
+            if linesValidationResult.first == true {
+                // Reset previousLineIndentations to this line only
+                // if this line's indentation matches the last valid line's indentation (first in the array)
                 previousLineIndentations = [indentation]
+            } else {
+                // We not only store this line's indentation, but also keep what was stored before.
+                // Therefore, the next line can be indented either according to the last valid line
+                // or any of the succeeding, failing lines.
+                // This mechanism avoids duplicate warnings.
+                previousLineIndentations.append(indentation)
             }
         }
 

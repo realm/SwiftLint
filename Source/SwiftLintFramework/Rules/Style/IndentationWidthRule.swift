@@ -16,7 +16,11 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     }
 
     // MARK: - Properties
-    public var configuration = IndentationWidthConfiguration(severity: .warning, indentationWidth: 4)
+    public var configuration = IndentationWidthConfiguration(
+        severity: .warning,
+        indentationWidth: 4,
+        includeComments: true
+    )
     public static let description = RuleDescription(
         identifier: "indentation_width",
         name: "Indentation Width",
@@ -56,8 +60,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         for line in file.lines {
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
 
-            // Skip line if it's a whitespace or comment line
-            if line.content.count == indentationCharacterCount || line.content.prefix(2) == "//" { continue }
+            if configuration.includeComments {
+                // Skip line if it's a whitespace-only line
+                if line.content.count == indentationCharacterCount { continue }
+            } else {
+                // Skip line if it only has whitespaces or is a part of a comment
+                let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
+                if SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
+            }
 
             // Get space and tab count in prefix
             let prefix = String(line.content.prefix(indentationCharacterCount))

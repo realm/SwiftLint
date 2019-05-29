@@ -122,10 +122,11 @@ public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule,
     }
 
     public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
-        let range = file.contents.bridge().byteRangeToNSRange(
+        guard let range = file.contents.bridge().byteRangeToNSRange(
             start: violationRange.location,
             length: violationRange.length
-        )!
+        ) else { return (NSRange(), "") }
+
         return (range, "")
     }
 }

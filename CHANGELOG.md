@@ -51,6 +51,9 @@
   (`%`) checking for a remainder of zero when using Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2612](https://github.com/realm/SwiftLint/issues/2612)
+* Add `empty_method_override` rule to warn against methods that only call `super`.  
+  [Xavier Lowmiller](https://github.com/xavierLowmiller)
+  [#2578](https://github.com/realm/SwiftLint/issues/2578)
 
 #### Bug Fixes
 
@@ -112,10 +115,6 @@
   properties, methods & more within a type.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2294](https://github.com/realm/SwiftLint/issues/2294)
-
-* Add `empty_method_override` rule to warn against methods that only call `super`.  
-  [Xavier Lowmiller](https://github.com/xavierLowmiller)
-  [#2578](https://github.com/realm/SwiftLint/issues/2578)
 
 * Add `nslocalizedstring_require_bundle` rule to ensure calls to
   `NSLocalizedString` specify the bundle where the strings file is located.  

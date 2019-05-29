@@ -111,6 +111,7 @@ private extension Rule {
 /// Represents a file that can be linted for style violations and corrections after being collected.
 public struct Linter {
     public let file: File
+    public var isCollecting: Bool
     fileprivate let rules: [Rule]
     fileprivate let cache: LinterCache?
     fileprivate let configuration: Configuration
@@ -130,6 +131,7 @@ public struct Linter {
             }
         }
         self.rules = rules
+        self.isCollecting = rules.contains(where: { $0 is AnyCollectingRule })
     }
 
     /// Returns a linter capable of checking for violations after running each rule's collection step.

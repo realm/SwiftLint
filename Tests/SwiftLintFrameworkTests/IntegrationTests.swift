@@ -71,15 +71,16 @@ class IntegrationTests: XCTestCase {
         let statusWithoutCrash: Int32 = 0
         let stdoutWithoutCrash = """
             \(testSwiftURL.path):1:1: \
-            warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)\n
+            warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
+
             """
         let stderrWithoutCrash = """
             Linting Swift files at paths \n\
-            Collecting 'Test.swift' (1/1)
             Linting 'Test.swift' (1/1)
             Connection invalid
             Most rules will be skipped because sourcekitd has failed.
-            Done linting! Found 1 violation, 0 serious in 1 file.\n
+            Done linting! Found 1 violation, 0 serious in 1 file.
+
             """
         if #available(macOS 10.14.1, *) {
             // Within a sandbox on macOS 10.14.1+, `swiftlint` crashes with "Test::Unit::AssertionFailedError"
@@ -125,7 +126,6 @@ class IntegrationTests: XCTestCase {
             """)
         XCTAssertEqual(swiftlintResult.stderr, """
             Linting Swift files at paths \n\
-            Collecting 'Test.swift' (1/1)
             Linting 'Test.swift' (1/1)
             SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.
             Most rules will be skipped because sourcekitd has failed.

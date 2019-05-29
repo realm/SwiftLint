@@ -135,9 +135,12 @@ public extension AnalyzerRule where Self: CorrectableRule {
     }
 }
 
-// MARK: - CollectingRule
+// MARK: - Collecting rules
 
-public protocol CollectingRule: Rule {
+/// Type-erased protocol used to check whether a rule is collectable.
+public protocol AnyCollectingRule: Rule { }
+
+public protocol CollectingRule: AnyCollectingRule {
     associatedtype FileInfo
     func collectInfo(for file: File, compilerArguments: [String]) -> FileInfo
     func collectInfo(for file: File) -> FileInfo

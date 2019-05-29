@@ -107,18 +107,19 @@ extension Configuration {
                          visitor: LintableFilesVisitor,
                          storage: RuleStorage) -> [CollectedLinter] {
         var collected = 0
+        let total = linters.filter({ $0.isCollecting }).count
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
-            if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
+            if !visitor.quiet, linter.isCollecting, let filename = linter.file.path?.bridge().lastPathComponent {
                 let increment = {
                     collected += 1
                     if skipFile {
                         queuedPrintError("""
-                            Skipping '\(filename)' (\(collected)/\(linters.count)) \
+                            Skipping '\(filename)' (\(collected)/\(total)) \
                             because its compiler arguments could not be found
                             """)
                     } else {
-                        queuedPrintError("Collecting '\(filename)' (\(collected)/\(linters.count))")
+                        queuedPrintError("Collecting '\(filename)' (\(collected)/\(total))")
                     }
                 }
                 if visitor.parallel {

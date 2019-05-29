@@ -93,6 +93,7 @@ public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule,
             overridingKinds.contains(kind),
             dictionary.enclosedSwiftAttributes.contains(.override),
             !dictionary.enclosedSwiftAttributes.contains(.public),
+            !dictionary.enclosedSwiftAttributes.contains(.open),
             file.onlyCallsSuper(dictionary),
             let offset = dictionary.offset,
             let length = dictionary.length

@@ -307,6 +307,12 @@ extension DocumentationTests {
     ]
 }
 
+extension DuplicateEnumCasesRuleTests {
+    static var allTests: [(String, (DuplicateEnumCasesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension DuplicateImportsRuleTests {
     static var allTests: [(String, (DuplicateImportsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1547,6 +1553,7 @@ XCTMain([
     testCase(DiscouragedOptionalBooleanRuleTests.allTests),
     testCase(DiscouragedOptionalCollectionRuleTests.allTests),
     testCase(DocumentationTests.allTests),
+    testCase(DuplicateEnumCasesRuleTests.allTests),
     testCase(DuplicateImportsRuleTests.allTests),
     testCase(DynamicInlineRuleTests.allTests),
     testCase(EmptyCountRuleTests.allTests),

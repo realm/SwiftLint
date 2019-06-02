@@ -96,6 +96,12 @@ class DiscouragedOptionalCollectionRuleTests: XCTestCase {
     }
 }
 
+class DuplicateEnumCasesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DuplicateEnumCasesRule.description)
+    }
+}
+
 class DuplicateImportsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateImportsRule.description)

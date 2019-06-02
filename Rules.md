@@ -27,6 +27,7 @@
 * [Discouraged Object Literal](#discouraged-object-literal)
 * [Discouraged Optional Boolean](#discouraged-optional-boolean)
 * [Discouraged Optional Collection](#discouraged-optional-collection)
+* [Duplicate Enum Cases](#duplicate-enum-cases)
 * [Duplicate Imports](#duplicate-imports)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
@@ -4853,6 +4854,51 @@ enum Foo {
 ```swift
 enum Foo {
 	static func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+</details>
+
+
+
+## Duplicate Enum Cases
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`duplicate_enum_cases` | Enabled | No | lint | No | 3.0.0 
+
+Enum can't contain multiple cases with the same name.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum PictureImport {
+    case addImage(image: UIImage)
+    case addData(data: Data)
+}
+```
+
+```swift
+enum A {
+    case add(image: UIImage)
+}
+enum B {
+    case add(image: UIImage)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum PictureImport {
+    case ↓add(image: UIImage)
+    case addURL(url: URL)
+    case ↓add(data: Data)
 }
 ```
 

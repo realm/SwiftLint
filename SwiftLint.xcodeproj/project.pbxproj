@@ -306,6 +306,7 @@
 		D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
 		D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */; };
 		D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
+		D4B31ADC22A0581B000300F1 /* DuplicateEnumCasesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B31ADB22A0581B000300F1 /* DuplicateEnumCasesRule.swift */; };
 		D4B3409D21F16B110038C79A /* UnusedSetterValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */; };
 		D4B472411F66486300BD6EF1 /* FallthroughRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B472401F66486300BD6EF1 /* FallthroughRule.swift */; };
 		D4BED5F82278AECC00D86BCE /* UnownedVariableCaptureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BED5F72278AECC00D86BCE /* UnownedVariableCaptureRule.swift */; };
@@ -792,6 +793,7 @@
 		D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRule.swift; sourceTree = "<group>"; };
 		D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericTypeNameRule.swift; sourceTree = "<group>"; };
 		D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantVoidReturnRule.swift; sourceTree = "<group>"; };
+		D4B31ADB22A0581B000300F1 /* DuplicateEnumCasesRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicateEnumCasesRule.swift; sourceTree = "<group>"; };
 		D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedSetterValueRule.swift; sourceTree = "<group>"; };
 		D4B472401F66486300BD6EF1 /* FallthroughRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FallthroughRule.swift; sourceTree = "<group>"; };
 		D4BED5F72278AECC00D86BCE /* UnownedVariableCaptureRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnownedVariableCaptureRule.swift; sourceTree = "<group>"; };
@@ -1089,6 +1091,7 @@
 				F9E691272091952E0085B53E /* MissingDocsRule.swift */,
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
+				D4B31ADB22A0581B000300F1 /* DuplicateEnumCasesRule.swift */,
 				D41985E621F85014003BE2B7 /* NSLocalizedStringKeyRule.swift */,
 				287F8B62223083ED00BDC504 /* NSLocalizedStringRequireBundleRule.swift */,
 				2882895B22287C9C0037CF5F /* NSObjectPreferIsEqualRule.swift */,
@@ -2162,6 +2165,7 @@
 				D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */,
 				29FFC37A1F15764D007E4825 /* FileLengthRuleConfiguration.swift in Sources */,
 				ED641C3820AA07B400212C62 /* NoFallthroughOnlyRule.swift in Sources */,
+				D4B31ADC22A0581B000300F1 /* DuplicateEnumCasesRule.swift in Sources */,
 				3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */,
 				8FD216CC205584AF008ED13F /* CharacterSet+SwiftLint.swift in Sources */,
 				F9E691282091952E0085B53E /* MissingDocsRule.swift in Sources */,

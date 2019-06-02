@@ -41,6 +41,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2696](https://github.com/realm/SwiftLint/issues/2696)
 
+* Add `duplicate_enum_cases` rule to validate that an enum doesn't contain
+  duplicated cases, as it's impossible to switch on it
+  (see [SR-10077](https://bugs.swift.org/browse/SR-10077) for details).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2676](https://github.com/realm/SwiftLint/issues/2676)
+
 #### Bug Fixes
 
 * Don't trigger `redundant_void_return` violations when using `subscript` as the

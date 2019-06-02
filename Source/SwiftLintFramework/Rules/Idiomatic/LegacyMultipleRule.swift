@@ -28,6 +28,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
         ],
         triggeringExamples: [
             "cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white",
+            "cell.contentView.backgroundColor = indexPath.row ↓% 2 != 0 ? .gray : .white",
             "guard count ↓% 2 == 0 else { throw DecodingError.dataCorrupted(...) }",
             "sanityCheck(bytes > 0 && bytes ↓% 4 == 0, \"capacity must be multiple of 4 bytes\")",
             "guard let i = reversedNumbers.firstIndex(where: { $0 ↓% 2 == 0 }) else { return }",
@@ -41,7 +42,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
     // MARK: - Rule
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "(?!\\b\\s*)%\(RegexHelpers.variableOrNumber)==\\s*0\\b"
+        let pattern = "(?!\\b\\s*)%\(RegexHelpers.variableOrNumber)[=!]=\\s*0\\b"
         return file.match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
             .map {
                 StyleViolation(ruleDescription: type(of: self).description,

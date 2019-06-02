@@ -10881,6 +10881,10 @@ cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white
 ```
 
 ```swift
+cell.contentView.backgroundColor = indexPath.row ↓% 2 != 0 ? .gray : .white
+```
+
+```swift
 guard count ↓% 2 == 0 else { throw DecodingError.dataCorrupted(...) }
 ```
 

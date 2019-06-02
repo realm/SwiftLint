@@ -73,6 +73,7 @@
 * [Legacy Constant](#legacy-constant)
 * [Legacy Constructor](#legacy-constructor)
 * [Legacy Hashing](#legacy-hashing)
+* [Legacy Multiple](#legacy-multiple)
 * [Legacy NSGeometry Functions](#legacy-nsgeometry-functions)
 * [Legacy Random](#legacy-random)
 * [Variable Declaration Whitespace](#variable-declaration-whitespace)
@@ -10822,6 +10823,78 @@ class Foo: Hashable {
         return bar
     }
 }
+```
+
+</details>
+
+
+
+## Legacy Multiple
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`legacy_multiple` | Disabled | No | idiomatic | No | 5.0.0 
+
+Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`).
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+cell.contentView.backgroundColor = indexPath.row.isMultiple(of: 2) ? .gray : .white
+```
+
+```swift
+guard count.isMultiple(of: 2) else { throw DecodingError.dataCorrupted(...) }
+```
+
+```swift
+sanityCheck(bytes > 0 && bytes.isMultiple(of: 4), "capacity must be multiple of 4 bytes")
+```
+
+```swift
+guard let i = reversedNumbers.firstIndex(where: { $0.isMultiple(of: 2) }) else { return }
+```
+
+```swift
+let constant = 56
+let isMultiple = value.isMultiple(of: constant)
+```
+
+```swift
+let constant = 56
+let secret = value % constant == 5
+```
+
+```swift
+let secretValue = (value % 3) + 2
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white
+```
+
+```swift
+guard count ↓% 2 == 0 else { throw DecodingError.dataCorrupted(...) }
+```
+
+```swift
+sanityCheck(bytes > 0 && bytes ↓% 4 == 0, "capacity must be multiple of 4 bytes")
+```
+
+```swift
+guard let i = reversedNumbers.firstIndex(where: { $0 ↓% 2 == 0 }) else { return }
+```
+
+```swift
+let constant = 56
+let isMultiple = value ↓% constant == 0
 ```
 
 </details>

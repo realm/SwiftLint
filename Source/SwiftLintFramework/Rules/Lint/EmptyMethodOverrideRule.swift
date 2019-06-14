@@ -29,6 +29,11 @@ public struct EmptyMethodOverrideRule: SubstitutionCorrectableASTRule,
             super.setUp()
             urlString = "https://httpbin.org/basic-auth"
         }
+        """,
+        """
+        override func foo() -> Bool {
+            return forceFoo || super.foo()
+        }
         """
     ].map(wrapInClass)
 

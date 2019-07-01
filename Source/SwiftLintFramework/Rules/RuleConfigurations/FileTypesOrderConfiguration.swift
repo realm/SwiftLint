@@ -4,7 +4,7 @@ enum FileType: String {
     case `extension` = "extension"
 }
 
-public struct FileTypesOrderConfiguration: RuleConfiguration {
+public struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order: [[FileType]] = [
         [.supportingType],
@@ -39,17 +39,5 @@ public struct FileTypesOrderConfiguration: RuleConfiguration {
         if !customOrder.isEmpty {
             self.order = customOrder
         }
-    }
-}
-
-extension FileTypesOrderConfiguration: Equatable {
-    public static func == (lhs: FileTypesOrderConfiguration, rhs: FileTypesOrderConfiguration) -> Bool {
-        guard lhs.order.count == rhs.order.count else { return false }
-
-        for (leftIndex, leftOrderEntry) in lhs.order.enumerated() {
-            guard rhs.order[leftIndex] == leftOrderEntry else { return false }
-        }
-
-        return lhs.severityConfiguration == rhs.severityConfiguration
     }
 }

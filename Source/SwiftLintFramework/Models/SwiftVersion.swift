@@ -24,6 +24,7 @@ public extension SwiftVersion {
     static let fourDotOne = SwiftVersion(rawValue: "4.1.0")
     static let fourDotTwo = SwiftVersion(rawValue: "4.2.0")
     static let five = SwiftVersion(rawValue: "5.0.0")
+    static let fiveDotOne = SwiftVersion(rawValue: "5.1.0")
 
     static let current: SwiftVersion = {
         // Allow forcing the Swift version, useful in cases where SourceKit isn't available
@@ -36,6 +37,13 @@ public extension SwiftVersion {
             default:
                 return .three
             }
+        }
+
+        if !Request.disableSourceKit,
+            case let opaqueReturnFile = File(contents: "func a() -> some A {}"),
+            case let expectedKinds: [SyntaxKind] = [.keyword, .identifier, .keyword, .typeidentifier],
+            opaqueReturnFile.syntaxMap.tokens.compactMap({ SyntaxKind(rawValue: $0.type) }) == expectedKinds {
+            return .fiveDotOne
         }
 
         if !Request.disableSourceKit,

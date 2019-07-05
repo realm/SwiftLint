@@ -10,39 +10,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         name: "Vertical Parameter Alignment",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a declaration.",
         kind: .style,
-        nonTriggeringExamples: [
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: [String: SourceKitRepresentable]) { }\n",
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]\n",
-            "func foo(bar: Int)\n",
-            "func foo(bar: Int) -> String \n",
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: [String: SourceKitRepresentable])\n" +
-            "                      -> [StyleViolation]\n",
-            "func validateFunction(\n" +
-            "   _ file: File, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]\n",
-            "func validateFunction(\n" +
-            "   _ file: File, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: [String: SourceKitRepresentable]\n" +
-            ") -> [StyleViolation]\n",
-            "func regex(_ pattern: String,\n" +
-            "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
-            "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n",
-            "func foo(a: Void,\n         b: [String: String] =\n           [:]) {\n}\n",
-            "func foo(data: (size: CGSize,\n" +
-            "                identifier: String)) {}"
-        ],
-        triggeringExamples: [
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                  ↓dictionary: [String: SourceKitRepresentable]) { }\n",
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                       ↓dictionary: [String: SourceKitRepresentable]) { }\n",
-            "func validateFunction(_ file: File,\n" +
-            "                  ↓kind: SwiftDeclarationKind,\n" +
-            "                  ↓dictionary: [String: SourceKitRepresentable]) { }\n"
-        ]
+        nonTriggeringExamples: VerticalParameterAlignmentRuleExamples.nonTriggeringExamples,
+        triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
@@ -64,17 +33,28 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         }
 
         let contents = file.contents.bridge()
-
-        let paramLocations = params.compactMap { paramDict -> Location? in
-            guard let byteOffset = paramDict.offset,
+        let calculateLocation = { (dict: [String: SourceKitRepresentable]) -> Location? in
+            guard let byteOffset = dict.offset,
                 let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
-                return nil
+                    return nil
             }
+
             return Location(file: file.path, line: lineAndChar.line, character: lineAndChar.character)
         }
 
+        let paramLocations = params.compactMap { paramDict -> Location? in
+            let paramLocation = calculateLocation(paramDict).map { [$0] } ?? []
+            let attributesLocations = paramDict.swiftAttributes.compactMap(calculateLocation)
+
+            return [paramLocation, attributesLocations].flatMap { $0 }.min()
+        }
+
+        return violations(for: paramLocations)
+    }
+
+    private func violations(for paramLocations: [Location]) -> [StyleViolation] {
         var violationLocations = [Location]()
-        let firstParamLoc = paramLocations[0]
+        guard let firstParamLoc = paramLocations.first else { return [] }
 
         for (index, paramLoc) in paramLocations.enumerated() where index > 0 && paramLoc.line! > firstParamLoc.line! {
             let previousParamLoc = paramLocations[index - 1]

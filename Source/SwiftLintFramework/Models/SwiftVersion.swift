@@ -24,6 +24,7 @@ public extension SwiftVersion {
     static let fourDotOne = SwiftVersion(rawValue: "4.1.0")
     static let fourDotTwo = SwiftVersion(rawValue: "4.2.0")
     static let five = SwiftVersion(rawValue: "5.0.0")
+    static let fiveDotOne = SwiftVersion(rawValue: "5.1.0")
 
     static let current: SwiftVersion = {
         // Allow forcing the Swift version, useful in cases where SourceKit isn't available
@@ -35,6 +36,14 @@ public extension SwiftVersion {
                 return .four
             default:
                 return .three
+            }
+        }
+
+        if !Request.disableSourceKit {
+            let params: SourceKitObject = ["key.request": UID("source.request.compiler_version")]
+            if let result = try? Request.customRequest(request: params).send(),
+                let major = result.versionMajor, let minor = result.versionMinor, let patch = result.versionPatch {
+                return SwiftVersion(rawValue: "\(major).\(minor).\(patch)")
             }
         }
 
@@ -102,4 +111,18 @@ public extension SwiftVersion {
 
         return .three
     }()
+}
+
+private extension Dictionary where Key == String {
+    var versionMajor: Int? {
+        return (self["key.version_major"] as? Int64).flatMap({ Int($0) })
+    }
+
+    var versionMinor: Int? {
+        return (self["key.version_minor"] as? Int64).flatMap({ Int($0) })
+    }
+
+    var versionPatch: Int? {
+        return (self["key.version_patch"] as? Int64).flatMap({ Int($0) })
+    }
 }

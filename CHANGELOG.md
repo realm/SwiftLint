@@ -1,3 +1,24 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Don't trigger `vertical_parameter_alignment` violations when using parameters
+  with attributes such as `@ViewBuilder` in function declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2792](https://github.com/realm/SwiftLint/issues/2792)
+
 ## 0.33.0: Worldwide Dryers Conference
 
 #### Breaking

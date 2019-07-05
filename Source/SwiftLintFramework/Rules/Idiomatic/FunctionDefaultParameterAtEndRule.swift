@@ -26,6 +26,10 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
             func foo(a: Int, b: CGFloat = 0) {
               let block = { (error: Error?) in }
             }
+            """,
+            """
+            func foo(a: String, b: String? = nil,
+                     c: String? = nil, d: @escaping AlertActionHandler = { _ in }) {}
             """
         ],
         triggeringExamples: [
@@ -43,13 +47,22 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         }
 
         let isNotClosure = { !self.isClosureParameter(dictionary: $0) }
-        let params = dictionary.enclosedVarParameters.filter(isNotClosure).filter { param in
-            guard let paramOffset = param.offset else {
-                return false
-            }
+        let params = dictionary.substructure
+            .flatMap { subDict -> [[String: SourceKitRepresentable]] in
+                guard subDict.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
+                    return []
+                }
 
-            return paramOffset < bodyOffset
-        }
+                return [subDict]
+            }
+            .filter(isNotClosure)
+            .filter { param in
+                guard let paramOffset = param.offset else {
+                    return false
+                }
+
+                return paramOffset < bodyOffset
+            }
 
         guard !params.isEmpty else {
             return []

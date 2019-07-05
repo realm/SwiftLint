@@ -8399,6 +8399,11 @@ func foo(a: Int, b: CGFloat = 0) {
 }
 ```
 
+```swift
+func foo(a: String, b: String? = nil,
+         c: String? = nil, d: @escaping AlertActionHandler = { _ in }) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

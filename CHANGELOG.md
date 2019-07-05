@@ -19,6 +19,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2792](https://github.com/realm/SwiftLint/issues/2792)
 
+* Fix false positive in `function_default_parameter_at_end` rule when using
+  a closure parameter with default value.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2788](https://github.com/realm/SwiftLint/issues/2788)
+
 ## 0.33.0: Worldwide Dryers Conference
 
 #### Breaking

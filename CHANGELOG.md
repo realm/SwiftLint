@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Split cache into one file per configuration.  
+  [Colton Schlosser](https://github.com/cltnschlosser)
+  [#2796](https://github.com/realm/SwiftLint/pull/2796)
 
 #### Bug Fixes
 

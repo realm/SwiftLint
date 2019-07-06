@@ -24262,6 +24262,11 @@ func foo(data: (size: CGSize,
                 identifier: String)) {}
 ```
 
+```swift
+func foo(data: Data,
+         @ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -24283,6 +24288,11 @@ func validateFunction(_ file: File,
                   ↓kind: SwiftDeclarationKind,
                   ↓dictionary: [String: SourceKitRepresentable]) { }
 
+```
+
+```swift
+func foo(data: Data,
+            ↓@ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
 ```
 
 </details>

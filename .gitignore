@@ -50,10 +50,12 @@ benchmark_*
 portable_swiftlint.zip
 osscheck/
 
-# SPM
-.build
-Packages
-Package.pins
+# Swift Package Manager
+#
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+Packages/
+.build/
+.swiftpm/
 
 # macOS
 .DS_Store

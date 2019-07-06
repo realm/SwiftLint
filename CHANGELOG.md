@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Significantly improve performance when running with a large number of cached
+  configurations.  
+  [Colton Schlosser](https://github.com/cltnschlosser)
 
 #### Bug Fixes
 

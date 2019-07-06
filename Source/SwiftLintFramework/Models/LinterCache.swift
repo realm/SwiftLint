@@ -18,6 +18,16 @@ private struct FileCache: Codable {
 }
 
 public final class LinterCache {
+#if canImport(Darwin)
+    private typealias Encoder = PropertyListEncoder
+    private typealias Decoder = PropertyListDecoder
+    private static let fileExtension = "plist"
+#else
+    private typealias Encoder = JSONEncoder
+    private typealias Decoder = JSONDecoder
+    private static let fileExtension = "json"
+#endif
+
     private typealias Cache = [String: FileCache]
 
     private var lazyReadCache: Cache
@@ -92,13 +102,13 @@ public final class LinterCache {
         let readCache = lazyReadCache
         readCacheLock.unlock()
 
-        let encoder = PropertyListEncoder()
+        let encoder = Encoder()
         for (description, writeFileCache) in writeCache where !writeFileCache.entries.isEmpty {
             let fileCacheEntries = readCache[description]?.entries.merging(writeFileCache.entries) { _, write in write }
             let fileCache = fileCacheEntries.map(FileCache.init) ?? writeFileCache
-            let plist = try encoder.encode(fileCache)
-            let file = url.appendingPathComponent(description).appendingPathExtension("plist")
-            try plist.write(to: file, options: .atomic)
+            let data = try encoder.encode(fileCache)
+            let file = url.appendingPathComponent(description).appendingPathExtension(LinterCache.fileExtension)
+            try data.write(to: file, options: .atomic)
         }
     }
 
@@ -120,8 +130,8 @@ public final class LinterCache {
             return .empty
         }
 
-        let decoder = PropertyListDecoder()
-        let file = location.appendingPathComponent(cacheDescription).appendingPathExtension("plist")
+        let decoder = Decoder()
+        let file = location.appendingPathComponent(cacheDescription).appendingPathExtension(LinterCache.fileExtension)
         let data = try? Data(contentsOf: file)
         let fileCache = data.flatMap { try? decoder.decode(FileCache.self, from: $0) } ?? .empty
         lazyReadCache[cacheDescription] = fileCache

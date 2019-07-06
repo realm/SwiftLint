@@ -126,7 +126,7 @@ public final class LinterCache {
             let fileCache = readCache[description]?.merging(writeFileCache) { _, write in write } ?? writeFileCache
             let json = try fileCache.toJSON()
             let file = url.appendingPathComponent(description).appendingPathExtension("json")
-            try json.write(to: file, atomically: true, encoding: .utf8)
+            try json.write(to: file, options: .atomic)
         }
     }
 
@@ -233,13 +233,8 @@ private extension StyleViolation {
 }
 
 internal extension Dictionary where Key == String {
-    func toJSON() throws -> String {
+    func toJSON() throws -> Data {
         // not using .sortedKeys to avoid crash
-        let prettyJSONData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
-        if let jsonString = String(data: prettyJSONData, encoding: .utf8) {
-            return jsonString
-        } else {
-            throw LinterCacheError.invalidFormat
-        }
+        return try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
     }
 }

@@ -118,11 +118,7 @@ public final class LinterCache {
         let readCache = lazyReadCache
         readCacheLock.unlock()
 
-        for (description, writeFileCache) in writeCache {
-            guard !writeFileCache.isEmpty else {
-                continue
-            }
-
+        for (description, writeFileCache) in writeCache where !writeFileCache.isEmpty {
             let fileCache = readCache[description]?.merging(writeFileCache) { _, write in write } ?? writeFileCache
             let json = try fileCache.toJSON()
             let file = url.appendingPathComponent(description).appendingPathExtension("json")

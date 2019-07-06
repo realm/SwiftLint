@@ -1,4 +1,4 @@
-public enum ViolationSeverity: String, Comparable {
+public enum ViolationSeverity: String, Comparable, Codable {
     case warning
     case error
 

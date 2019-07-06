@@ -727,9 +727,6 @@ extension LineLengthRuleTests {
 
 extension LinterCacheTests {
     static var allTests: [(String, (LinterCacheTests) -> () throws -> Void)] = [
-        ("testInitThrowsWhenUsingInvalidCacheFormat", testInitThrowsWhenUsingInvalidCacheFormat),
-        ("testSaveThrowsWithNoLocation", testSaveThrowsWithNoLocation),
-        ("testInitSucceeds", testInitSucceeds),
         ("testUnchangedFilesReusesCache", testUnchangedFilesReusesCache),
         ("testConfigFileReorderedReusesCache", testConfigFileReorderedReusesCache),
         ("testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache", testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache),
@@ -743,8 +740,7 @@ extension LinterCacheTests {
         ("testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted),
-        ("testDetectSwiftVersion", testDetectSwiftVersion),
-        ("testCacheToJSONDoesntCrash", testCacheToJSONDoesntCrash)
+        ("testDetectSwiftVersion", testDetectSwiftVersion)
     ]
 }
 

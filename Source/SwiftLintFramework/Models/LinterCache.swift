@@ -18,7 +18,7 @@ private struct FileCache: Codable {
 }
 
 public final class LinterCache {
-#if canImport(Darwin)
+#if canImport(Darwin) || compiler(>=5.1.0)
     private typealias Encoder = PropertyListEncoder
     private typealias Decoder = PropertyListDecoder
     private static let fileExtension = "plist"

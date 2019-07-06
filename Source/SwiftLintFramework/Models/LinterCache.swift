@@ -9,11 +9,10 @@ public final class LinterCache {
     private typealias FileCache = [String: [String: Any]]
     private typealias Cache = [String: FileCache]
 
-    private let readCacheLock = NSLock()
-
     private var lazyReadCache: Cache
+    private let readCacheLock = NSLock()
     private var writeCache = Cache()
-    private let lock = NSLock()
+    private let writeCacheLock = NSLock()
     internal let fileManager: LintableFileManager
     private let location: URL?
     private let swiftVersion: SwiftVersion
@@ -61,7 +60,7 @@ public final class LinterCache {
 
         let configurationDescription = configuration.cacheDescription
 
-        lock.lock()
+        writeCacheLock.lock()
         var filesCache = writeCache[configurationDescription] ?? [:]
         filesCache[file] = [
             Key.violations.rawValue: violations.map(dictionary(for:)),
@@ -69,7 +68,7 @@ public final class LinterCache {
             Key.swiftVersion.rawValue: swiftVersion.rawValue
         ]
         writeCache[configurationDescription] = filesCache
-        lock.unlock()
+        writeCacheLock.unlock()
     }
 
     internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
@@ -107,13 +106,24 @@ public final class LinterCache {
         guard let url = location else {
             throw LinterCacheError.noLocation
         }
-        // COLTON: split this based on files
+        writeCacheLock.lock()
+        defer {
+            writeCacheLock.unlock()
+        }
         guard !writeCache.isEmpty else {
             return
         }
 
-        let cache = mergeCaches()
-        for (description, fileCache) in cache {
+        readCacheLock.lock()
+        let readCache = lazyReadCache
+        readCacheLock.unlock()
+
+        for (description, writeFileCache) in writeCache {
+            guard !writeFileCache.isEmpty else {
+                continue
+            }
+
+            let fileCache = readCache[description]?.merging(writeFileCache) { _, write in write } ?? writeFileCache
             let json = try fileCache.toJSON()
             let file = url.appendingPathComponent(description).appendingPathExtension("json")
             try json.write(to: file, atomically: true, encoding: .utf8)
@@ -151,8 +161,10 @@ public final class LinterCache {
     }
 
     private func mergeCaches() -> Cache {
+        readCacheLock.lock()
         var cache = lazyReadCache
-        lock.lock()
+        readCacheLock.unlock()
+        writeCacheLock.lock()
         for (key, value) in writeCache {
             var filesCache = cache[key] ?? [:]
             for (file, fileCache) in value {
@@ -160,7 +172,7 @@ public final class LinterCache {
             }
             cache[key] = filesCache
         }
-        lock.unlock()
+        writeCacheLock.unlock()
 
         return cache
     }

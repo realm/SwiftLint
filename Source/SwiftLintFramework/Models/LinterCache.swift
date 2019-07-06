@@ -122,6 +122,7 @@ public final class LinterCache {
         defer {
             readCacheLock.unlock()
         }
+
         if let fileCache = lazyReadCache[cacheDescription] {
             return fileCache
         }
@@ -130,10 +131,9 @@ public final class LinterCache {
             return .empty
         }
 
-        let decoder = Decoder()
         let file = location.appendingPathComponent(cacheDescription).appendingPathExtension(LinterCache.fileExtension)
         let data = try? Data(contentsOf: file)
-        let fileCache = data.flatMap { try? decoder.decode(FileCache.self, from: $0) } ?? .empty
+        let fileCache = data.flatMap { try? Decoder().decode(FileCache.self, from: $0) } ?? .empty
         lazyReadCache[cacheDescription] = fileCache
         return fileCache
     }

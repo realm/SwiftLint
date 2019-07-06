@@ -10,9 +10,9 @@
 
 #### Enhancements
 
-* Split cache into one file per configuration.  
+* Significantly improve performance when running with a large number of cached
+  configurations.  
   [Colton Schlosser](https://github.com/cltnschlosser)
-  [#2796](https://github.com/realm/SwiftLint/pull/2796)
 
 #### Bug Fixes
 

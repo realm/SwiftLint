@@ -87,6 +87,6 @@ extension Configuration {
             queuedPrintError("Error while creating cache: " + error.localizedDescription)
         }
 
-        return folder.appendingPathComponent("cache.json")
+        return folder
     }
 }

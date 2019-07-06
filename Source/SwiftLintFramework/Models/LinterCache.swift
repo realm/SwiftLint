@@ -6,9 +6,12 @@ internal enum LinterCacheError: Error {
 }
 
 public final class LinterCache {
-    private typealias Cache = [String: [String: [String: Any]]]
+    private typealias FileCache = [String: [String: Any]]
+    private typealias Cache = [String: FileCache]
 
-    private let readCache: Cache
+    private let readCacheLock = NSLock()
+
+    private var lazyReadCache: Cache
     private var writeCache = Cache()
     private let lock = NSLock()
     internal let fileManager: LintableFileManager
@@ -19,7 +22,7 @@ public final class LinterCache {
                   swiftVersion: SwiftVersion = .current) {
         location = nil
         self.fileManager = fileManager
-        self.readCache = [:]
+        self.lazyReadCache = [:]
         self.swiftVersion = swiftVersion
     }
 
@@ -29,7 +32,7 @@ public final class LinterCache {
             throw LinterCacheError.invalidFormat
         }
 
-        self.readCache = dictionary
+        self.lazyReadCache = dictionary
         location = nil
         self.fileManager = fileManager
         self.swiftVersion = swiftVersion
@@ -38,20 +41,14 @@ public final class LinterCache {
     public init(configuration: Configuration,
                 fileManager: LintableFileManager = FileManager.default) {
         location = configuration.cacheURL
-        if let data = try? Data(contentsOf: location!),
-            let json = try? JSONSerialization.jsonObject(with: data),
-            let cache = json as? Cache {
-            readCache = cache
-        } else {
-            readCache = [:]
-        }
+        lazyReadCache = [:]
         self.fileManager = fileManager
         self.swiftVersion = .current
     }
 
     private init(cache: Cache, location: URL?, fileManager: LintableFileManager,
                  swiftVersion: SwiftVersion) {
-        self.readCache = cache
+        self.lazyReadCache = cache
         self.location = location
         self.fileManager = fileManager
         self.swiftVersion = swiftVersion
@@ -92,8 +89,8 @@ public final class LinterCache {
             return value as? TimeInterval
         }
 
-        guard let filesCache = readCache[configurationDescription],
-            let entry = filesCache[file],
+        let filesCache = fileCache(cacheDescription: configurationDescription)
+        guard let entry = filesCache[file],
             let cacheLastModification = getCacheLastModification(dict: entry),
             cacheLastModification == lastModification.timeIntervalSinceReferenceDate,
             let swiftVersion = (entry[.swiftVersion] as? String).flatMap(SwiftVersion.init(rawValue:)),
@@ -110,13 +107,17 @@ public final class LinterCache {
         guard let url = location else {
             throw LinterCacheError.noLocation
         }
+        // COLTON: split this based on files
         guard !writeCache.isEmpty else {
             return
         }
 
         let cache = mergeCaches()
-        let json = try cache.toJSON()
-        try json.write(to: url, atomically: true, encoding: .utf8)
+        for (description, fileCache) in cache {
+            let json = try fileCache.toJSON()
+            let file = url.appendingPathComponent(description).appendingPathExtension("json")
+            try json.write(to: file, atomically: true, encoding: .utf8)
+        }
     }
 
     internal func flushed() -> LinterCache {
@@ -124,8 +125,33 @@ public final class LinterCache {
                            fileManager: fileManager, swiftVersion: swiftVersion)
     }
 
+    private func fileCache(cacheDescription: String) -> FileCache {
+        readCacheLock.lock()
+        defer {
+            readCacheLock.unlock()
+        }
+        if let fileCache = lazyReadCache[cacheDescription] {
+            return fileCache
+        }
+
+        guard let location = location else {
+            return [:]
+        }
+
+        let file = location.appendingPathComponent(cacheDescription).appendingPathExtension("json")
+        if let data = try? Data(contentsOf: file),
+            let json = try? JSONSerialization.jsonObject(with: data),
+            let fileCache = json as? FileCache {
+            lazyReadCache[cacheDescription] = fileCache
+            return fileCache
+        } else {
+            lazyReadCache[cacheDescription] = [:]
+            return [:]
+        }
+    }
+
     private func mergeCaches() -> Cache {
-        var cache = readCache
+        var cache = lazyReadCache
         lock.lock()
         for (key, value) in writeCache {
             var filesCache = cache[key] ?? [:]

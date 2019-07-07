@@ -1,4 +1,4 @@
-public struct StyleViolation: CustomStringConvertible, Equatable {
+public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
     public let ruleDescription: RuleDescription
     public let severity: ViolationSeverity
     public let location: Location

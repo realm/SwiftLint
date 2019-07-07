@@ -11,8 +11,16 @@
 #### Enhancements
 
 * Significantly improve performance when running with a large number of cached
-  configurations.  
+  configurations or when running with many cached results.
+  This was done by splitting each configuration to have its own cache and by
+  encoding the cache as a binary property list instead of json.  
   [Colton Schlosser](https://github.com/cltnschlosser)
+  [JP Simard](https://github.com/jpsim)
+
+* Several public types in SwiftLintFramework have added `Codable` conformance:
+  Location, RuleDescription, RuleKind, StyleViolation, SwiftVersion,
+  ViolationSeverity.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes
 

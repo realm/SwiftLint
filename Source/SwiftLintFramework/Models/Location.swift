@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct Location: CustomStringConvertible, Comparable {
+public struct Location: CustomStringConvertible, Comparable, Codable {
     public let file: String?
     public let line: Int?
     public let character: Int?

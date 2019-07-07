@@ -1,4 +1,4 @@
-public struct RuleDescription: Equatable {
+public struct RuleDescription: Equatable, Codable {
     public let identifier: String
     public let name: String
     public let description: String

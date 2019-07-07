@@ -1,7 +1,6 @@
 import Foundation
 
 private enum LinterCacheError: Error {
-    case invalidFormat
     case noLocation
 }
 

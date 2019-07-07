@@ -4,11 +4,11 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
             "excluded: \(excluded.sorted())"
     }
 
-    private(set) public var severity: SeverityConfiguration
-    private(set) public var excluded: Set<String>
-    private(set) public var prefixPattern: String
-    private(set) public var suffixPattern: String
-    private(set) public var nestedTypeSeparator: String
+    public private(set) var severity: SeverityConfiguration
+    public private(set) var excluded: Set<String>
+    public private(set) var prefixPattern: String
+    public private(set) var suffixPattern: String
+    public private(set) var nestedTypeSeparator: String
 
     public init(severity: ViolationSeverity, excluded: [String] = [],
                 prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {

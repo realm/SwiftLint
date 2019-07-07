@@ -60,7 +60,7 @@ private func parseCLIArguments(_ string: String) -> [String] {
             str += result
         }
         _ = scanner.scanString("\"")
-        didStart = !didStart
+        didStart.toggle()
     }
     return filter(arguments:
         str.trimmingCharacters(in: .whitespaces)

@@ -23,12 +23,12 @@ extension Configuration {
 extension Configuration {
     public func filterExcludedPaths(fileManager: LintableFileManager = FileManager.default,
                                     in paths: [String]...) -> [String] {
+        let allPaths = paths.flatMap { $0 }
 #if os(Linux)
-        let allPaths = paths.reduce([], +)
         let result = NSMutableOrderedSet(capacity: allPaths.count)
         result.addObjects(from: allPaths)
 #else
-        let result = NSMutableOrderedSet(array: paths.reduce([], +))
+        let result = NSMutableOrderedSet(array: allPaths)
 #endif
         let excludedPaths = self.excludedPaths(fileManager: fileManager)
         result.minusSet(Set(excludedPaths))

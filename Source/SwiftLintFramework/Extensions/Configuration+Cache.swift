@@ -14,7 +14,7 @@ private extension String {
         CC_MD5_Update(context, self, CC_LONG(lengthOfBytes(using: .utf8)))
         CC_MD5_Final(&digest, context)
         context.deallocate()
-        return digest.reduce("") { $0 + String(format: "%02x", $1) }
+        return digest.reduce(into: "") { $0.append(String(format: "%02x", $1)) }
     }
 }
 #endif

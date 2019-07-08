@@ -98,40 +98,9 @@ extension Configuration {
 
     private func visit(filesPerConfiguration: [Configuration: [File]],
                        visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
-        var index = 0
+        var fileIndex = 0
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
         let root = FileManager.default.currentDirectoryPath.bridge().standardizingPath.bridge()
-        let visit = { (file: File, config: Configuration, duplicateFileNames: Set<String>) -> Void in
-            let skipFile = visitor.shouldSkipFile(atPath: file.path)
-            if !visitor.quiet, let filePath = file.path?.bridge() {
-                let outputFilename = self.outputFilename(for: filePath, in: root,
-                                                         duplicateFileNames: duplicateFileNames)
-                let increment = {
-                    index += 1
-                    if skipFile {
-                        queuedPrintError("""
-                            Skipping '\(outputFilename)' (\(index)/\(fileCount)) \
-                            because its compiler arguments could not be found
-                            """)
-                    } else {
-                        queuedPrintError("\(visitor.action) '\(outputFilename)' (\(index)/\(fileCount))")
-                    }
-                }
-                if visitor.parallel {
-                    indexIncrementerQueue.sync(execute: increment)
-                } else {
-                    increment()
-                }
-            }
-
-            guard !skipFile else {
-                return
-            }
-
-            autoreleasepool {
-                visitor.block(visitor.linter(forFile: file, configuration: config))
-            }
-        }
         var filesAndConfigurations = [(File, Configuration)]()
         var allFileNames = Set<String>()
         var duplicateFileNames = Set<String>()
@@ -154,13 +123,20 @@ extension Configuration {
                 }
             }
         }
+        let visit = { (file: File, configuration: Configuration) in
+            let printableFileName = (file.path?.bridge()).map { path in
+                self.outputFilename(for: path, in: root, duplicateFileNames: duplicateFileNames)
+            }
+            visitor.visit(file: file, config: configuration, outputFileName: printableFileName,
+                          incrementIndex: { fileIndex += 1 }, progress: { "(\(fileIndex)/\(fileCount))" })
+        }
         if visitor.parallel {
             DispatchQueue.concurrentPerform(iterations: fileCount) { index in
                 let (file, config) = filesAndConfigurations[index]
-                visit(file, config, duplicateFileNames)
+                visit(file, config)
             }
         } else {
-            filesAndConfigurations.forEach { visit($0, $1, duplicateFileNames) }
+            filesAndConfigurations.forEach(visit)
         }
         return .success(filesAndConfigurations.compactMap({ $0.0 }))
     }
@@ -235,4 +211,36 @@ extension Configuration {
 
 private func isConfigOptional() -> Bool {
     return !CommandLine.arguments.contains("--config")
+}
+
+private extension LintableFilesVisitor {
+    func visit(file: File, config: Configuration, outputFileName: String?, incrementIndex: @escaping () -> Void,
+               progress: @escaping () -> String) {
+        let skipFile = shouldSkipFile(atPath: file.path)
+        if !quiet, let outputFileName = outputFileName {
+            let increment = {
+                incrementIndex()
+                if skipFile {
+                    queuedPrintError("""
+                        Skipping '\(outputFileName)' \(progress()) because its compiler arguments could not be found
+                        """)
+                } else {
+                    queuedPrintError("\(self.action) '\(outputFileName)' \(progress())")
+                }
+            }
+            if parallel {
+                indexIncrementerQueue.sync(execute: increment)
+            } else {
+                increment()
+            }
+        }
+
+        guard !skipFile else {
+            return
+        }
+
+        autoreleasepool {
+            block(linter(forFile: file, configuration: config))
+        }
+    }
 }

@@ -82,40 +82,28 @@ extension Configuration {
         return .success(groupedFiles)
     }
 
+    private func outputFilename(for path: NSString, in root: NSString, duplicateFileNames: Set<String>) -> String {
+        let basename = path.lastPathComponent
+        if !duplicateFileNames.contains(basename) {
+            return basename
+        }
+
+        var pathComponents = path.pathComponents
+        for component in root.pathComponents where pathComponents.first == component {
+            pathComponents.removeFirst()
+        }
+
+        return pathComponents.joined(separator: "/")
+    }
+
     private func visit(filesPerConfiguration: [Configuration: [File]],
                        visitor: LintableFilesVisitor) -> Result<[File], CommandantError<()>> {
-        var index = 0
+        var fileIndex = 0
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
-        let visit = { (file: File, config: Configuration) -> Void in
-            let skipFile = visitor.shouldSkipFile(atPath: file.path)
-            if !visitor.quiet, let filename = file.path?.bridge().lastPathComponent {
-                let increment = {
-                    index += 1
-                    if skipFile {
-                        queuedPrintError("""
-                            Skipping '\(filename)' (\(index)/\(fileCount)) \
-                            because its compiler arguments could not be found
-                            """)
-                    } else {
-                        queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
-                    }
-                }
-                if visitor.parallel {
-                    indexIncrementerQueue.sync(execute: increment)
-                } else {
-                    increment()
-                }
-            }
-
-            guard !skipFile else {
-                return
-            }
-
-            autoreleasepool {
-                visitor.block(visitor.linter(forFile: file, configuration: config))
-            }
-        }
+        let root = FileManager.default.currentDirectoryPath.bridge().standardizingPath.bridge()
         var filesAndConfigurations = [(File, Configuration)]()
+        var allFileNames = Set<String>()
+        var duplicateFileNames = Set<String>()
         filesAndConfigurations.reserveCapacity(fileCount)
         for (config, files) in filesPerConfiguration {
             let newConfig: Configuration
@@ -125,6 +113,22 @@ extension Configuration {
                 newConfig = config
             }
             filesAndConfigurations += files.map { ($0, newConfig) }
+            for file in files {
+                if let filename = file.path?.bridge().lastPathComponent {
+                    if allFileNames.contains(filename) {
+                        duplicateFileNames.insert(filename)
+                    }
+
+                    allFileNames.insert(filename)
+                }
+            }
+        }
+        let visit = { (file: File, configuration: Configuration) in
+            let printableFileName = (file.path?.bridge()).map { path in
+                self.outputFilename(for: path, in: root, duplicateFileNames: duplicateFileNames)
+            }
+            visitor.visit(file: file, config: configuration, outputFileName: printableFileName,
+                          incrementIndex: { fileIndex += 1 }, progress: { "(\(fileIndex)/\(fileCount))" })
         }
         if visitor.parallel {
             DispatchQueue.concurrentPerform(iterations: fileCount) { index in
@@ -207,4 +211,36 @@ extension Configuration {
 
 private func isConfigOptional() -> Bool {
     return !CommandLine.arguments.contains("--config")
+}
+
+private extension LintableFilesVisitor {
+    func visit(file: File, config: Configuration, outputFileName: String?, incrementIndex: @escaping () -> Void,
+               progress: @escaping () -> String) {
+        let skipFile = shouldSkipFile(atPath: file.path)
+        if !quiet, let outputFileName = outputFileName {
+            let increment = {
+                incrementIndex()
+                if skipFile {
+                    queuedPrintError("""
+                        Skipping '\(outputFileName)' \(progress()) because its compiler arguments could not be found
+                        """)
+                } else {
+                    queuedPrintError("\(self.action) '\(outputFileName)' \(progress())")
+                }
+            }
+            if parallel {
+                indexIncrementerQueue.sync(execute: increment)
+            } else {
+                increment()
+            }
+        }
+
+        guard !skipFile else {
+            return
+        }
+
+        autoreleasepool {
+            block(linter(forFile: file, configuration: config))
+        }
+    }
 }

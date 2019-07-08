@@ -22,6 +22,10 @@
   ViolationSeverity.  
   [JP Simard](https://github.com/jpsim)
 
+* Print full relative path to file in log output when it matches the file name
+  of another path being linted.  
+  [Keith Smiley](https://github.com/keith)
+
 #### Bug Fixes
 
 * Don't trigger `vertical_parameter_alignment` violations when using parameters

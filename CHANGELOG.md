@@ -6,7 +6,13 @@
 
 #### Experimental
 
-* None.
+* Add a two-stage `CollectingRule` protocol to support rules that collect data
+  from all files before validating. Collecting rules implement a `collect`
+  method which is called once for every file, before _any_ file is checked for
+  violations. By collecting, rules can be written which validate across
+  multiple files for things like unused declarations.  
+  [Elliott Williams](https://github.com/elliottwilliams)
+  [#2431](https://github.com/realm/SwiftLint/issues/2431)
 
 #### Enhancements
 
@@ -74,15 +80,6 @@
 * Add `" - "` delimiter to allow commenting SwiftLint commands without triggering
   `superfluous_disable_command`.  
   [Kevin Randrup](https://github.com/kevinrandrup)
-* Add a two-stage `CollectingRule` protocol to support rules that collect data
-  from all files before validating. Collecting rules implement a `collect`
-  method which is called once for every file, before _any_ file is checked for
-  violations. By collecting, rules can be written which validate across
-  multiple files for things like unused declarations.  
-  [Elliott Williams](https://github.com/elliottwilliams)
-  [#2431](https://github.com/realm/SwiftLint/issues/2431)
-
-#### Enhancements
 
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
   condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 

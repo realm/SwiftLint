@@ -4,8 +4,8 @@ included:
 excluded:
   - Tests/SwiftLintFrameworkTests/Resources
 analyzer_rules:
+  - unused_declaration
   - unused_import
-  - unused_private_declaration
 opt_in_rules:
   - anyobject_protocol
   - array_init

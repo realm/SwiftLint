@@ -714,6 +714,12 @@ class UnusedControlFlowLabelRuleTests: XCTestCase {
     }
 }
 
+class UnusedDeclarationRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedDeclarationRule.description)
+    }
+}
+
 class UnusedEnumeratedRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedEnumeratedRule.description)
@@ -723,12 +729,6 @@ class UnusedEnumeratedRuleTests: XCTestCase {
 class UnusedImportRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedImportRule.description)
-    }
-}
-
-class UnusedPrivateDeclarationRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedPrivateDeclarationRule.description)
     }
 }
 

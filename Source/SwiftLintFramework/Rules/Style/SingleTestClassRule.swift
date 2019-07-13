@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public static let description = RuleDescription(
         identifier: "single_test_class",

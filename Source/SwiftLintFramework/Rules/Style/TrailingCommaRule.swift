@@ -10,6 +10,7 @@ private typealias CommaRuleViolation = (index: Int, reason: TrailingCommaReason)
 
 public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = TrailingCommaConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

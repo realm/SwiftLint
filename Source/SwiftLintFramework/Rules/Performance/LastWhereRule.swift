@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

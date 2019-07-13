@@ -435,16 +435,43 @@ are all the possible syntax kinds:
 
 If using custom rules alongside a whitelist, make sure to add `custom_rules` as an item under `whitelist_rules`.
 
+#### Sub Configurations
+
+In addition to supporting [nested configurations](#nested-configurations),
+SwiftLint also allows to specify a `sub_config` file in any configuration file.
+
+* The `sub_config` file must be one the same level as the configuration file referencing it.
+* A file referenced as a `sub_config` can also specify its own `sub_config`,
+  as long as no reference cycles are created.
+* As all configuration files are in the same directory, `excluded` and `included` will also be merged together.
+
+Here's an example where the `sub_config` restores a rule that was originally disabled by the parent config:
+
+`.swiftlint.yml`:
+
+```yaml
+disabled_rules:
+  - force_cast
+
+sub_config: .swiftlint_sub.yml
+```
+
+`.swiftlint_sub.yml`:
+
+```yaml
+opt_in_rules:
+  - force_cast
+```
+
 #### Nested Configurations
 
 SwiftLint supports nesting configuration files for more granular control over
 the linting process.
 
-* Include additional `.swiftlint.yml` files where necessary in your directory
-  structure.
+* Include additional `.swiftlint.yml` files where necessary in your directory structure.
 * Each file will be linted using the configuration file that is in its
-  directory or at the deepest level of its parent directories. Otherwise the
-  root configuration will be used.
+  directory or at the deepest level of its parent directories, merged into the root configuration.
+  If there isn't an additional configuration file, the root configuration will be used.
 * `included` is ignored for nested configurations.
 
 ### Auto-correct

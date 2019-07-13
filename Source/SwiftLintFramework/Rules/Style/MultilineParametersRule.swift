@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     private typealias ParameterRange = (offset: Int, length: Int)
 

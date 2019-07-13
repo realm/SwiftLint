@@ -7,7 +7,7 @@ final class ConfigurationAliasesTests: XCTestCase {
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {
         let ruleConfiguration = [1, 2]
         let config = ["mock": ruleConfiguration]
-        let rules = try testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.allRules(configurationDict: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 

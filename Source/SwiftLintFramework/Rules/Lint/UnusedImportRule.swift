@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

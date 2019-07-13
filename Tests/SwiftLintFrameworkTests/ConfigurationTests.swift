@@ -5,17 +5,7 @@ import XCTest
 
 private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
-private extension Configuration {
-    var disabledRules: [String] {
-        let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
-        let defaultRuleIDs = Set(masterRuleList.list.values.filter({
-            !($0.init() is OptInRule)
-        }).map({ $0.description.identifier }))
-        return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
-    }
-}
-
-class ConfigurationTests: XCTestCase {
+class ConfigurationTests: XCTestCase, ProjectMock {
     func testInit() {
         XCTAssert(Configuration(dict: [:]) != nil,
                   "initializing Configuration with empty Dictionary should succeed")
@@ -28,7 +18,7 @@ class ConfigurationTests: XCTestCase {
             XCTFail("empty YAML string should yield non-nil Configuration")
             return
         }
-        XCTAssertEqual(config.disabledRules, [])
+        XCTAssertEqual(config.rulesStorage.disabledRuleIdentifiers, [])
         XCTAssertEqual(config.included, [])
         XCTAssertEqual(config.excluded, [])
         XCTAssertEqual(config.indentation, .spaces(count: 4))
@@ -45,7 +35,7 @@ class ConfigurationTests: XCTestCase {
         let config = Configuration(path: ".swiftlint.yml", rootPath: rootPath,
                                    optional: false, quiet: true)
 
-        XCTAssertEqual(config.disabledRules, expectedConfig.disabledRules)
+        XCTAssertEqual(config.rulesStorage.disabledRuleIdentifiers, expectedConfig.rulesStorage.disabledRuleIdentifiers)
         XCTAssertEqual(config.included, expectedConfig.included)
         XCTAssertEqual(config.excluded, expectedConfig.excluded)
         XCTAssertEqual(config.indentation, expectedConfig.indentation)
@@ -99,7 +89,7 @@ class ConfigurationTests: XCTestCase {
 
     func testDisabledRules() {
         let disabledConfig = Configuration(dict: ["disabled_rules": ["nesting", "todo"]])!
-        XCTAssertEqual(disabledConfig.disabledRules,
+        XCTAssertEqual(disabledConfig.rulesStorage.disabledRuleIdentifiers,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
         let expectedIdentifiers = Set(masterRuleList.list.keys
@@ -115,7 +105,7 @@ class ConfigurationTests: XCTestCase {
         let bogusRule = "no_sprites_with_elf_shoes"
         let configuration = Configuration(dict: ["disabled_rules": [validRule, bogusRule]])!
 
-        XCTAssertEqual(configuration.disabledRules,
+        XCTAssertEqual(configuration.rulesStorage.disabledRuleIdentifiers,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
         let expectedIdentifiers = Set(masterRuleList.list.keys
@@ -128,16 +118,21 @@ class ConfigurationTests: XCTestCase {
 
     func testDuplicatedRules() {
         let duplicateConfig1 = Configuration(dict: ["whitelist_rules": ["todo", "todo"]])
-        XCTAssertNil(duplicateConfig1, "initializing Configuration with duplicate rules in " +
-            "Dictionary should fail")
+        XCTAssertEqual(
+            duplicateConfig1?.rules.count, 1, "duplicate rules should be removed when initializing Configuration"
+        )
 
         let duplicateConfig2 = Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
-        XCTAssertNil(duplicateConfig2, "initializing Configuration with duplicate rules in " +
-            "Dictionary should fail")
+        XCTAssertEqual(
+            duplicateConfig2?.rules.filter { type(of: $0).description.identifier == optInRules.first! }.count, 1,
+            "duplicate rules should be removed when initializing Configuration"
+        )
 
         let duplicateConfig3 = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
-        XCTAssertNil(duplicateConfig3, "initializing Configuration with duplicate rules in " +
-            "Dictionary should fail")
+        XCTAssertEqual(
+            duplicateConfig3?.rulesStorage.disabledRuleIdentifiers.count, 1,
+            "duplicate rules should be removed when initializing Configuration"
+        )
     }
 
     private class TestFileManager: LintableFileManager {
@@ -162,13 +157,13 @@ class ConfigurationTests: XCTestCase {
     func testExcludedPaths() {
         let configuration = Configuration(included: ["directory"],
                                           excluded: ["directory/excluded",
-                                                     "directory/ExcludedFile.swift"])!
+                                                     "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "", forceExclude: false, fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
     func testForceExcludesFile() {
-        let configuration = Configuration(excluded: ["directory/ExcludedFile.swift"])!
+        let configuration = Configuration(excluded: ["directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory/ExcludedFile.swift", forceExclude: true,
                                                 fileManager: TestFileManager())
         XCTAssertEqual([], paths)
@@ -176,43 +171,45 @@ class ConfigurationTests: XCTestCase {
 
     func testForceExcludesFileNotPresentInExcluded() {
         let configuration = Configuration(included: ["directory"],
-                                          excluded: ["directory/ExcludedFile.swift", "directory/excluded"])!
+                                          excluded: ["directory/ExcludedFile.swift", "directory/excluded"])
         let paths = configuration.lintablePaths(inPath: "", forceExclude: true, fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
     func testForceExcludesDirectory() {
-        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
                                                 fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
     func testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
-        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])
         let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
                                                 fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
     func testLintablePaths() {
-        let paths = Configuration()!.lintablePaths(inPath: projectMockPathLevel0, forceExclude: false)
+        let paths = Configuration().lintablePaths(inPath: projectMockPathLevel0, forceExclude: false)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",
             "Level0.swift",
             "Level1.swift",
             "Level2.swift",
-            "Level3.swift"
+            "Level3.swift",
+            "Valid1.swift",
+            "Valid2.swift"
         ]
 
-        XCTAssertEqual(expectedFilenames, filenames)
+        XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }
 
     func testGlobExcludePaths() {
         let configuration = Configuration(
             included: [projectMockPathLevel3],
-            excluded: [projectMockPathLevel3.stringByAppendingPathComponent("*.swift")])!
+            excluded: [projectMockPathLevel3.stringByAppendingPathComponent("*.swift")])
 
         XCTAssertEqual(configuration.lintablePaths(inPath: "", forceExclude: false), [])
     }
@@ -275,13 +272,13 @@ class ConfigurationTests: XCTestCase {
     func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = try testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.allRules(configurationDict: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = try testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.allRules(configurationDict: config)
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }
 }

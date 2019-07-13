@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

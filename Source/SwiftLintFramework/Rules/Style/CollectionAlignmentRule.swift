@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = CollectionAlignmentConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

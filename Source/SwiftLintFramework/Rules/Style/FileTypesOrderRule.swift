@@ -5,6 +5,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias FileTypeOffset = (fileType: FileType, offset: Int)
 
     public var configuration = FileTypesOrderConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

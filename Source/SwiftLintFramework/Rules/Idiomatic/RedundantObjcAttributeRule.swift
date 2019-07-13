@@ -7,6 +7,7 @@ private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
 public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
     AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

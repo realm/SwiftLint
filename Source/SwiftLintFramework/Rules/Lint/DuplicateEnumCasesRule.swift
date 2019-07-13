@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

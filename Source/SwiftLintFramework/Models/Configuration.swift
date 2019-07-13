@@ -2,15 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct Configuration: Hashable {
-    // Represents how a Configuration object can be configured with regards to rules.
-    public enum RulesMode {
-        case `default`(disabled: [String], optIn: [String])
-        case whitelisted([String])
-        case allEnabled
-    }
-
-    // MARK: Properties
-
+    // MARK: - Properties
     public static let fileName = ".swiftlint.yml"
 
     public let indentation: IndentationStyle           // style to use when indenting
@@ -22,91 +14,68 @@ public struct Configuration: Hashable {
     public private(set) var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
 
-    public func hash(into hasher: inout Hasher) {
-        if let configurationPath = configurationPath {
-            hasher.combine(configurationPath)
-        } else if let rootPath = rootPath {
-            hasher.combine(rootPath)
-        } else if let cachePath = cachePath {
-            hasher.combine(cachePath)
-        } else {
-            hasher.combine(included)
-            hasher.combine(excluded)
-            hasher.combine(reporter)
-        }
-    }
-
     internal var computedCacheDescription: String?
 
-    internal var customRuleIdentifiers: [String] {
-        let customRule = rules.first(where: { $0 is CustomRules }) as? CustomRules
-        return customRule?.configuration.customRuleConfigurations.map { $0.identifier } ?? []
-    }
+    class ConfigurationWrapper { var wrapped: Configuration? }
+    private var unmergedSubConfig = ConfigurationWrapper()
 
     // MARK: Rules Properties
+    public var rulesStorage: RulesStorage
 
-    // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
-    public let rules: [Rule]
+    /// Shortcut for rulesStorage.resultingRules
+    public var rules: [Rule] { return rulesStorage.resultingRules }
 
-    internal let rulesMode: RulesMode
-
-    // MARK: Initializers
-
-    public init?(rulesMode: RulesMode = .default(disabled: [], optIn: []),
-                 included: [String] = [],
-                 excluded: [String] = [],
-                 warningThreshold: Int? = nil,
-                 reporter: String = XcodeReporter.identifier,
-                 ruleList: RuleList = masterRuleList,
-                 configuredRules: [Rule]? = nil,
-                 swiftlintVersion: String? = nil,
-                 cachePath: String? = nil,
-                 indentation: IndentationStyle = .default,
-                 customRulesIdentifiers: [String] = []) {
+    // MARK: - Initializers
+    public init(
+        rulesMode: RulesStorage.Mode = .default(disabled: [], optIn: []),
+        included: [String] = [],
+        excluded: [String] = [],
+        warningThreshold: Int? = nil,
+        reporter: String = XcodeReporter.identifier,
+        ruleList: RuleList = masterRuleList,
+        allRulesWithConfigurations: [Rule]? = nil,
+        swiftlintVersion: String? = nil,
+        cachePath: String? = nil,
+        indentation: IndentationStyle = .default
+    ) {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
             exit(2)
         }
 
-        let configuredRules = configuredRules
-            ?? (try? ruleList.configuredRules(with: [:]))
-            ?? []
+        let rulesStorage = RulesStorage(
+            mode: rulesMode,
+            allRulesWithConfigurations: allRulesWithConfigurations ?? (try? ruleList.allRules()) ?? [],
+            aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
+        )
 
-        let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }
-
-        guard let rules = enabledRules(from: configuredRules,
-                                       with: rulesMode,
-                                       aliasResolver: handleAliasWithRuleList,
-                                       customRulesIdentifiers: customRulesIdentifiers) else {
-            return nil
-        }
-
-        self.init(rulesMode: rulesMode,
-                  included: included,
-                  excluded: excluded,
-                  warningThreshold: warningThreshold,
-                  reporter: reporter,
-                  rules: rules,
-                  cachePath: cachePath,
-                  indentation: indentation)
+        self.init(
+            rulesStorage: rulesStorage,
+            included: included,
+            excluded: excluded,
+            warningThreshold: warningThreshold,
+            reporter: reporter,
+            cachePath: cachePath,
+            indentation: indentation
+        )
     }
 
-    internal init(rulesMode: RulesMode,
-                  included: [String],
-                  excluded: [String],
-                  warningThreshold: Int?,
-                  reporter: String,
-                  rules: [Rule],
-                  cachePath: String?,
-                  rootPath: String? = nil,
-                  indentation: IndentationStyle) {
-        self.rulesMode = rulesMode
+    internal init(
+        rulesStorage: RulesStorage,
+        included: [String],
+        excluded: [String],
+        warningThreshold: Int?,
+        reporter: String,
+        cachePath: String?,
+        rootPath: String? = nil,
+        indentation: IndentationStyle
+    ) {
+        self.rulesStorage = rulesStorage
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
         self.cachePath = cachePath
-        self.rules = rules.sorted { type(of: $0).description.identifier < type(of: $1).description.identifier }
         self.rootPath = rootPath
         self.indentation = indentation
 
@@ -115,20 +84,26 @@ public struct Configuration: Hashable {
     }
 
     private init(_ configuration: Configuration) {
-        rulesMode = configuration.rulesMode
+        rulesStorage = configuration.rulesStorage
         included = configuration.included
         excluded = configuration.excluded
         warningThreshold = configuration.warningThreshold
         reporter = configuration.reporter
-        rules = configuration.rules
         cachePath = configuration.cachePath
         rootPath = configuration.rootPath
         indentation = configuration.indentation
     }
 
-    public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false,
-                cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
+    public init(
+        path: String = Configuration.fileName,
+        rootPath: String?, // This does not have a default value, so that Configuration() isn't confused with this init
+        optional: Bool = true,
+        quiet: Bool = false,
+        enableAllRules: Bool = false,
+        cachePath: String? = nil,
+        isSubConfig: Bool = false,
+        subConfigPreviousPaths: [String] = []
+    ) {
         let fullPath: String
         if let rootPath = rootPath, rootPath.isDirectory() {
             fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
@@ -146,10 +121,10 @@ public struct Configuration: Hashable {
             queuedPrintError("\(fullPath):\(msg)")
             queuedFatalError("Could not read configuration file at path '\(fullPath)'")
         }
-        let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
+        let rulesMode: RulesStorage.Mode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {
             if !optional { fail("File not found.") }
-            self.init(rulesMode: rulesMode, cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
+            self.init(rulesMode: rulesMode, cachePath: cachePath)
             self.rootPath = rootPath
             return
         }
@@ -160,7 +135,16 @@ public struct Configuration: Hashable {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
             self.init(dict: dict, enableAllRules: enableAllRules,
-                      cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
+                      cachePath: cachePath)!
+
+            // Merge sub config if needed
+            if let subConfigFile = dict[Key.subConfig.rawValue] as? String {
+                merge(
+                    subConfigFile: subConfigFile, currentFilePath: fullPath, quiet: quiet,
+                    isSubConfig: isSubConfig, subConfigPreviousPaths: subConfigPreviousPaths
+                )
+            }
+
             configurationPath = fullPath
             self.rootPath = rootPath
             setCached(atPath: fullPath)
@@ -170,12 +154,93 @@ public struct Configuration: Hashable {
         } catch {
             fail("\(error)")
         }
-        self.init(rulesMode: rulesMode, cachePath: cachePath, customRulesIdentifiers: customRulesIdentifiers)!
+        self.init(rulesMode: rulesMode, cachePath: cachePath)
         setCached(atPath: fullPath)
     }
 
-    // MARK: Equatable
+    // MARK: - Methods
+    public func hash(into hasher: inout Hasher) {
+        if let configurationPath = configurationPath {
+            hasher.combine(configurationPath)
+        } else if let rootPath = rootPath {
+            hasher.combine(rootPath)
+        } else if let cachePath = cachePath {
+            hasher.combine(cachePath)
+        } else {
+            hasher.combine(included)
+            hasher.combine(excluded)
+            hasher.combine(reporter)
+        }
+    }
 
+    private mutating func merge(
+        subConfigFile: String,
+        currentFilePath: String,
+        quiet: Bool,
+        isSubConfig: Bool,
+        subConfigPreviousPaths: [String]
+    ) {
+        let fail = { (message: String, severity: ViolationSeverity) in
+            var overallMessage: String
+            if let firstSubConfigFilePath = subConfigPreviousPaths.first {
+                // Print entire stack of config file references
+                overallMessage = "\(severity.rawValue): Issue reading `sub_config` file ('\(currentFilePath)')"
+                    + subConfigPreviousPaths.dropFirst().reversed().reduce("") {
+                        $0 + " originating from `sub_config` file ('\($1)')"
+                    }
+                    + " originating from main config file ('\(firstSubConfigFilePath)')"
+            } else {
+                overallMessage = "\(severity.rawValue): Issue reading configuration file ('\(currentFilePath))')"
+            }
+
+            overallMessage += ": \(message)"
+
+            if severity == .error {
+                queuedFatalError(overallMessage)
+            } else {
+                queuedPrintError(overallMessage)
+            }
+        }
+
+        let subConfigPath = currentFilePath.bridge().deletingLastPathComponent
+            .bridge().appendingPathComponent(subConfigFile)
+
+        if subConfigFile.contains("/") {
+            return fail("The file specified as `sub_config` must be on the same level as the base config file", .error)
+        } else if !FileManager.default.fileExists(atPath: subConfigPath) {
+            fail("Unable to find file specified as `sub_config` (\(subConfigPath))", .warning)
+        } else if subConfigPreviousPaths.contains(subConfigPath) { // Avoid cyclomatic references
+            let cycleDescription = (subConfigPreviousPaths + [currentFilePath, subConfigPath]).map {
+                $0.bridge().lastPathComponent
+            }.reduce("") { $0 + " => " + $1 }.dropFirst(4)
+            return fail("Invalid cycle of `sub_config` references: \(cycleDescription)", .error)
+        } else {
+            unmergedSubConfig.wrapped = Configuration(
+                path: subConfigPath,
+                rootPath: rootPath,
+                optional: false,
+                quiet: quiet,
+                isSubConfig: true,
+                subConfigPreviousPaths: subConfigPreviousPaths + [currentFilePath]
+            )
+        }
+
+        // Let the topmost configuration do the merging in the end
+        // This results in a semantically correct ((A <- B) <- C) merge, instead of a wrong (A <- (B <- C)) merge
+        if !isSubConfig {
+            func mergeUnmergedSubconfigs(of subConfig: Configuration, into primaryConfig: inout Configuration) {
+                if let unmergedSubConfig = subConfig.unmergedSubConfig.wrapped {
+                    subConfig.unmergedSubConfig.wrapped = nil
+                    primaryConfig = primaryConfig.merged(with: unmergedSubConfig)
+                    mergeUnmergedSubconfigs(of: unmergedSubConfig, into: &primaryConfig)
+                }
+            }
+
+            mergeUnmergedSubconfigs(of: self, into: &self)
+        }
+    }
+
+    // MARK: Equatable
     public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
         return (lhs.warningThreshold == rhs.warningThreshold) &&
             (lhs.reporter == rhs.reporter) &&
@@ -189,80 +254,6 @@ public struct Configuration: Hashable {
     }
 }
 
-// MARK: Identifier Validation
-
-private func validateRuleIdentifiers(ruleIdentifiers: [String], validRuleIdentifiers: [String]) -> [String] {
-    // Validate that all rule identifiers map to a defined rule
-    let invalidRuleIdentifiers = ruleIdentifiers.filter { !validRuleIdentifiers.contains($0) }
-    if !invalidRuleIdentifiers.isEmpty {
-        for invalidRuleIdentifier in invalidRuleIdentifiers {
-            queuedPrintError("configuration error: '\(invalidRuleIdentifier)' is not a valid rule identifier")
-        }
-        let listOfValidRuleIdentifiers = validRuleIdentifiers.sorted().joined(separator: "\n")
-        queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
-    }
-
-    return ruleIdentifiers.filter(validRuleIdentifiers.contains)
-}
-
-private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
-    // Validate that rule identifiers aren't listed multiple times
-
-    guard Set(identifiers).count != identifiers.count else {
-        return false
-    }
-
-    let duplicateRules = identifiers.reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
-        .filter { $0.1 > 1 }
-    queuedPrintError(duplicateRules.map { rule in
-        "configuration error: '\(rule.0)' is listed \(rule.1) times"
-    }.joined(separator: "\n"))
-    return true
-}
-
-private func enabledRules(from configuredRules: [Rule],
-                          with mode: Configuration.RulesMode,
-                          aliasResolver: (String) -> String,
-                          customRulesIdentifiers: [String]) -> [Rule]? {
-    let regularRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
-    let configurationCustomRulesIdentifiers = (configuredRules.first(where: { $0 is CustomRules }) as? CustomRules)?
-        .configuration.customRuleConfigurations.map { $0.identifier } ?? []
-    let validRuleIdentifiers = regularRuleIdentifiers + configurationCustomRulesIdentifiers + customRulesIdentifiers
-
-    switch mode {
-    case .allEnabled:
-        return configuredRules
-    case .whitelisted(let whitelistedRuleIdentifiers):
-        let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
-            ruleIdentifiers: whitelistedRuleIdentifiers.map(aliasResolver),
-            validRuleIdentifiers: validRuleIdentifiers)
-        // Validate that rule identifiers aren't listed multiple times
-        if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
-            return nil
-        }
-        return configuredRules.filter { rule in
-            return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
-        }
-    case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
-        let validDisabledRuleIdentifiers = validateRuleIdentifiers(
-            ruleIdentifiers: disabledRuleIdentifiers.map(aliasResolver),
-            validRuleIdentifiers: validRuleIdentifiers)
-        let validOptInRuleIdentifiers = validateRuleIdentifiers(
-            ruleIdentifiers: optInRuleIdentifiers.map(aliasResolver),
-            validRuleIdentifiers: validRuleIdentifiers)
-        // Same here
-        if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
-            || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
-            return nil
-        }
-        return configuredRules.filter { rule in
-            let id = type(of: rule).description.identifier
-            if validDisabledRuleIdentifiers.contains(id) { return false }
-            return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
-        }
-    }
-}
-
 private extension String {
     func isDirectory() -> Bool {
         var isDir: ObjCBool = false
@@ -271,5 +262,21 @@ private extension String {
         }
 
         return false
+    }
+}
+
+extension Configuration: CustomStringConvertible {
+    public var description: String {
+        return "Configuration: \n"
+            + "- Indentation Style: \(indentation)\n"
+            + "- Included: \(included)\n"
+            + "- Excluded: \(excluded)\n"
+            + "- Warning Treshold: \(warningThreshold as Optional)\n"
+            + "- Root Path: \(rootPath as Optional)\n"
+            + "- Configuration Path: \(configurationPath as Optional)\n"
+            + "- Reporter: \(reporter)\n"
+            + "- Cache Path: \(cachePath as Optional)\n"
+            + "- Computed Cache Description: \(computedCacheDescription as Optional)\n"
+            + "- Rules: \(rules.map { type(of: $0).description.identifier })"
     }
 }

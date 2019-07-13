@@ -1059,7 +1059,9 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 
 #### Enhancements
 
-* None.
+* Add option to specify a `sub_config` file in any SwiftLint configuration file. Recursive sub configs are also possible.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 #### Bug Fixes
 

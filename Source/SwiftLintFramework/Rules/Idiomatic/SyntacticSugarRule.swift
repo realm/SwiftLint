@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     private var pattern: String {
         let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]

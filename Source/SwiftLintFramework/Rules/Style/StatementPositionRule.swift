@@ -4,6 +4,7 @@ import SourceKittenFramework
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = StatementConfiguration(statementMode: .default,
                                                       severity: SeverityConfiguration(.warning))
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

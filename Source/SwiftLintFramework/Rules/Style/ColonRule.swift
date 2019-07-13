@@ -9,6 +9,7 @@ private enum ColonKind {
 
 public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = ColonConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

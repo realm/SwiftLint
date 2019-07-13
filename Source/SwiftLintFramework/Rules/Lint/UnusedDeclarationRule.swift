@@ -11,6 +11,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
     public typealias FileInfo = FileUSRs
 
     public var configuration = UnusedDeclarationConfiguration(severity: .error, includePublicAndOpen: false)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

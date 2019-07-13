@@ -4,6 +4,7 @@ import SourceKittenFramework
 public struct DeploymentTargetRule: ConfigurationProviderRule {
     private typealias Version = DeploymentTargetConfiguration.Version
     public var configuration = DeploymentTargetConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

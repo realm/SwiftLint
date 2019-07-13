@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = PrivateOverFilePrivateRuleConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

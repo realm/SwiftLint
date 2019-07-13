@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

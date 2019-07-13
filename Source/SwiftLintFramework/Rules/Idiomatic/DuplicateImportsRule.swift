@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     // List of all possible import kinds
     static let importKinds = [

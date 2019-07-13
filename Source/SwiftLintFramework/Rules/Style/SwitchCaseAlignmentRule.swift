@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SwitchCaseAlignmentConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

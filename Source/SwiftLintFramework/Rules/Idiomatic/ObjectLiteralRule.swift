@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = ObjectLiteralConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

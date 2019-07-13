@@ -17,6 +17,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
             .owned
         ]
     )
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

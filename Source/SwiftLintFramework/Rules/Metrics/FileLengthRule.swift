@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct FileLengthRule: ConfigurationProviderRule {
     public var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

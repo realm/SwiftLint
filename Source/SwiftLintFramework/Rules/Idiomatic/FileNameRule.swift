@@ -22,6 +22,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         suffixPattern: "\\+.*",
         nestedTypeSeparator: "."
     )
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

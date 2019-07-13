@@ -5,6 +5,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
                                                     typeLevelError: nil,
                                                     statementLevelWarning: 5,
                                                     statementLevelError: nil)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

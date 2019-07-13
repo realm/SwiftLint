@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 
@@ -93,9 +94,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             """
         ]
 
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
+        guard SwiftVersion.current >= .fourDotOne else { return commonExamples }
 
         return commonExamples + [
             """
@@ -158,9 +157,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             """
         ]
 
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
+        guard SwiftVersion.current >= .fourDotOne else { return commonExamples }
 
         return commonExamples + [
             """

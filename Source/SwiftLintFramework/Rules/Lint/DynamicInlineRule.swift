@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

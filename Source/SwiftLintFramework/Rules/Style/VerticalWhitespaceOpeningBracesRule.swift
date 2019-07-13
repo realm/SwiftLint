@@ -9,6 +9,7 @@ private extension SwiftLintFile {
 
 public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

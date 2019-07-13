@@ -7,6 +7,7 @@ private func wrapInSwitch(_ str: String) -> String {
 
 public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

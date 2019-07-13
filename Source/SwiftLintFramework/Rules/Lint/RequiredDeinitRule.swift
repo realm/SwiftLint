@@ -8,6 +8,7 @@ import SourceKittenFramework
 /// a place to put a breakpoint when chasing down leaks.
 public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public static let description = RuleDescription(
         identifier: "required_deinit",

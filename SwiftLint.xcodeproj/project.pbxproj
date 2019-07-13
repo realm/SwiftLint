@@ -246,6 +246,8 @@
 		CC6D28592292F0380052B682 /* IndentationWidthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D28572292EF460052B682 /* IndentationWidthRule.swift */; };
 		CC6D285B2292F0600052B682 /* IndentationWidthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */; };
 		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
+		CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* RulesStorage.swift */; };
+		CCB97C3A22E8D7EC002F5458 /* SubConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
 		CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -455,7 +457,7 @@
 		F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
 		F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */; };
 		F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */; };
-		F480DC831F2609D700099465 /* ConfigurationTests+ProjectMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */; };
+		F480DC831F2609D700099465 /* ProjectMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC821F2609D700099465 /* ProjectMock.swift */; };
 		F90DBD7F2092E669002CC310 /* MissingDocsRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */; };
 		F90DBD812092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DBD802092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift */; };
 		F9D73F031D0CF15E00222FC4 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = F9D73F021D0CF15E00222FC4 /* test.txt */; };
@@ -748,6 +750,8 @@
 		CC6D28572292EF460052B682 /* IndentationWidthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRule.swift; sourceTree = "<group>"; usesTabs = 0; };
 		CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthConfiguration.swift; sourceTree = "<group>"; };
 		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
+		CCB97C3422E89257002F5458 /* RulesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesStorage.swift; sourceTree = "<group>"; };
+		CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubConfigTests.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
 		CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingConfiguration.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -979,7 +983,7 @@
 		F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyNSGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Nested.swift"; sourceTree = "<group>"; };
 		F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+BundlePath.swift"; sourceTree = "<group>"; };
-		F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+ProjectMock.swift"; sourceTree = "<group>"; };
+		F480DC821F2609D700099465 /* ProjectMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectMock.swift; sourceTree = "<group>"; };
 		F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingDocsRuleConfiguration.swift; sourceTree = "<group>"; };
 		F90DBD802092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingDocsRuleConfigurationTests.swift; sourceTree = "<group>"; };
 		F9D73F021D0CF15E00222FC4 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
@@ -1517,7 +1521,6 @@
 				C2B3C15F2106F78100088928 /* ConfigurationAliasesTests.swift */,
 				E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */,
 				F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */,
-				F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */,
 				D4DDFF9722396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift */,
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
 				67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */,
@@ -1558,6 +1561,7 @@
 				C25EBBDD210787B200E27603 /* PrefixedTopLevelConstantRuleTests.swift */,
 				D4F5851820E99B5A0085C6D8 /* PrivateOutletRuleTests.swift */,
 				D4246D6E1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift */,
+				F480DC821F2609D700099465 /* ProjectMock.swift */,
 				E81ADD711ED5ED9D000CD451 /* RegionTests.swift */,
 				E86396C61BADAFE6002C9E88 /* ReporterTests.swift */,
 				B89F3BCB1FD5EDA900931E59 /* RequiredEnumCaseRuleTestCase.swift */,
@@ -1568,6 +1572,7 @@
 				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				D4F5851620E99B260085C6D8 /* StatementPositionRuleTests.swift */,
+				CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */,
 				D0D1217C19E87B05005E4BAA /* Supporting Files */,
 				787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */,
 				E81224991B04F85B001783D2 /* TestHelpers.swift */,
@@ -1685,6 +1690,7 @@
 				D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */,
 				D401D9251ED85EF0005DA5D4 /* RuleKind.swift */,
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
+				CCB97C3422E89257002F5458 /* RulesStorage.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E4EA064B23688EB4002531D7 /* SwiftLintFile.swift */,
 				E48F715C23789823003E1775 /* SwiftLintSyntaxMap.swift */,
@@ -2064,6 +2070,7 @@
 				E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */,
 				3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */,
 				827009FF20FE26C500ECA185 /* TypeContentsOrderRule.swift in Sources */,
+				CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */,
 				E88198551BEA949A00333A11 /* ControlStatementRule.swift in Sources */,
 				584B0D3A2112BA78002F7E25 /* SonarQubeReporter.swift in Sources */,
 				E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */,
@@ -2364,13 +2371,14 @@
 				D4CA758F1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift in Sources */,
 				D4DB92251E628898005DE9C1 /* TodoRuleTests.swift in Sources */,
 				D4348EEA1C46122C007707FB /* FunctionBodyLengthRuleTests.swift in Sources */,
-				F480DC831F2609D700099465 /* ConfigurationTests+ProjectMock.swift in Sources */,
+				F480DC831F2609D700099465 /* ProjectMock.swift in Sources */,
 				820F451C2107292500AA056A /* TypeContentsOrderRuleTests.swift in Sources */,
 				3B63D46D1E1F05160057BE35 /* LineLengthConfigurationTests.swift in Sources */,
 				D41985EF21FAD5E8003BE2B7 /* DeploymentTargetRuleTests.swift in Sources */,
 				6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */,
 				820F451E21073D7200AA056A /* ConditionalReturnsOnNewlineRuleTests.swift in Sources */,
 				D4246D6F1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift in Sources */,
+				CCB97C3A22E8D7EC002F5458 /* SubConfigTests.swift in Sources */,
 				B25DCD101F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift in Sources */,
 				3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */,
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,

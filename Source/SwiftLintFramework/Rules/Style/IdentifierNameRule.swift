@@ -6,6 +6,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                                                  minLengthError: 2,
                                                  maxLengthWarning: 40,
                                                  maxLengthError: 60)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

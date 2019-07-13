@@ -12,6 +12,7 @@ private enum RangeKind {
 
 public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
     public var configuration = ConditionalReturnsOnNewlineConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

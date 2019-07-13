@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     public var configuration = TrailingClosureConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

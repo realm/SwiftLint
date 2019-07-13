@@ -4,6 +4,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: Int)
 
     public var configuration = TypeContentsOrderConfiguration()
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

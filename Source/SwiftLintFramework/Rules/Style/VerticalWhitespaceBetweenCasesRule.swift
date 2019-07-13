@@ -9,6 +9,7 @@ private extension SwiftLintFile {
 
 public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

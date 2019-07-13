@@ -10,6 +10,7 @@ private func example(_ type: String,
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

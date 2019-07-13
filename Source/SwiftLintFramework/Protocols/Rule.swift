@@ -4,6 +4,7 @@ import SourceKittenFramework
 public protocol Rule {
     static var description: RuleDescription { get }
     var configurationDescription: String { get }
+    var initializedWithNonEmptyConfiguration: Bool { get }
 
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
@@ -35,6 +36,10 @@ extension Rule {
         // no-op: only CollectingRules mutate their storage
     }
 
+    public var initializedWithNonEmptyConfiguration: Bool {
+        return false
+    }
+
     internal var cacheDescription: String {
         return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
     }
@@ -44,7 +49,11 @@ public protocol OptInRule: Rule {}
 
 public protocol AutomaticTestableRule: Rule {}
 
-public protocol ConfigurationProviderRule: Rule {
+public protocol InitializedWithNonEmptyConfigurationSettableRule: Rule {
+    var initializedWithNonEmptyConfiguration: Bool { get set }
+}
+
+public protocol ConfigurationProviderRule: InitializedWithNonEmptyConfigurationSettableRule {
     associatedtype ConfigurationType: RuleConfiguration
 
     var configuration: ConfigurationType { get set }

@@ -288,6 +288,11 @@ This is the last release to support building with Swift 4.2.x.
   comparison to `[]` or `[:]`.  
   [Colton Schlosser](https://github.com/cltnschlosser)
   [#2807](https://github.com/realm/SwiftLint/issues/2807)
+  
+* Add new indentation opt-in-rule checking for
+  super-basic additive indentation pattern.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#227](https://github.com/realm/SwiftLint/issues/227)
 
 #### Bug Fixes
 

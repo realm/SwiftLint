@@ -9,7 +9,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
         func spacesEquivalent(indentationWidth: Int) -> Int {
             switch self {
-            case let .tabs(tabs): return tabs & indentationWidth
+            case let .tabs(tabs): return tabs & indentationWidth // Fix
             case let .spaces(spaces): return spaces
             }
         }
@@ -67,8 +67,10 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             let tabCount = prefix.filter { $0 == "\t" }.count
             let spaceCount = prefix.filter { $0 == " " }.count
 
-            // Catch mixed indentation
+            // Determine indentation
+            let indentation: Indentation
             if tabCount != 0 && spaceCount != 0 {
+                // Catch mixed indentation
                 violations.append(
                     StyleViolation(
                         ruleDescription: IndentationWidthRule.description,
@@ -79,12 +81,15 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                     )
                 )
 
-                // Break as next line cannot be parsed without knowing this line's exact indentation
-                break
+                // Model this line's indentation using spaces (although it's tabs & spaces) to let parsing continue
+                indentation = .spaces(spaceCount + tabCount * configuration.indentationWidth)
+            } else if tabCount != 0 {
+                indentation = .tabs(tabCount)
+            } else {
+                indentation = .spaces(spaceCount)
             }
 
             // Catch indented first line
-            let indentation: Indentation = tabCount != 0 ? .tabs(tabCount) : .spaces(spaceCount)
             guard !previousLineIndentations.isEmpty else {
                 previousLineIndentations = [indentation]
 

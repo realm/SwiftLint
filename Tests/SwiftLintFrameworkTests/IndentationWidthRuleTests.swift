@@ -16,8 +16,9 @@ class IndentationWidthRuleTests: XCTestCase {
 
     /// It's not okay to indent using both tabs and spaces in one line.
     func testMixedTabSpaceIndentation() {
-        assert1Violation(in: "firstLine\n\t    secondLine")
-        assert1Violation(in: "firstLine\n    \tsecondLine")
+        // Expect 2 violations as secondLine is also indented by 8 spaces (which isn't valid)
+        assertViolations(in: "firstLine\n\t    secondLine", equals: 2)
+        assertViolations(in: "firstLine\n    \tsecondLine", equals: 2)
     }
 
     /// It's okay to keep the same indentation.

@@ -54,8 +54,9 @@ extension Configuration {
             return getFiles(with: visitor)
                 .flatMap { groupFiles($0, visitor: visitor) }
                 .map { linters(for: $0, visitor: visitor) }
-                .map { collect(linters: $0, visitor: visitor, storage: storage) }
-                .map { visit(linters: $0, visitor: visitor, storage: storage) }
+                .map { ($0, $0.duplicateFileNames) }
+                .map { collect(linters: $0.0, visitor: visitor, storage: storage, duplicateFileNames: $0.1) }
+                .map { visit(linters: $0.0, visitor: visitor, storage: storage, duplicateFileNames: $0.1) }
     }
 
     private func groupFiles(_ files: [File],
@@ -85,6 +86,25 @@ extension Configuration {
         return .success(groupedFiles)
     }
 
+    private func outputFilename(for path: String, duplicateFileNames: Set<String>) -> String {
+        guard !duplicateFileNames.isEmpty else {
+            return path
+        }
+
+        let root = self.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
+        let basename = path.bridge().lastPathComponent
+        if !duplicateFileNames.contains(basename) {
+            return basename
+        }
+
+        var pathComponents = path.bridge().pathComponents
+        for component in root.bridge().pathComponents where pathComponents.first == component {
+            pathComponents.removeFirst()
+        }
+
+        return pathComponents.joined(separator: "/")
+    }
+
     private func linters(for filesPerConfiguration: [Configuration: [File]],
                          visitor: LintableFilesVisitor) -> [Linter] {
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
@@ -105,21 +125,23 @@ extension Configuration {
 
     private func collect(linters: [Linter],
                          visitor: LintableFilesVisitor,
-                         storage: RuleStorage) -> [CollectedLinter] {
+                         storage: RuleStorage,
+                         duplicateFileNames: Set<String>) -> ([CollectedLinter], Set<String>) {
         var collected = 0
         let total = linters.filter({ $0.isCollecting }).count
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
-            if !visitor.quiet, linter.isCollecting, let filename = linter.file.path?.bridge().lastPathComponent {
+            if !visitor.quiet, linter.isCollecting, let filePath = linter.file.path {
+                let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
                 let increment = {
                     collected += 1
                     if skipFile {
                         queuedPrintError("""
-                            Skipping '\(filename)' (\(collected)/\(total)) \
+                            Skipping '\(outputFilename)' (\(collected)/\(total)) \
                             because its compiler arguments could not be found
                             """)
                     } else {
-                        queuedPrintError("Collecting '\(filename)' (\(collected)/\(total))")
+                        queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
                     }
                 }
                 if visitor.parallel {
@@ -137,18 +159,24 @@ extension Configuration {
                 linter.collect(into: storage)
             }
         }
-        return visitor.parallel ? linters.parallelCompactMap(transform: collect) : linters.compactMap(collect)
+
+        let collectedLinters = visitor.parallel ?
+            linters.parallelCompactMap(transform: collect) :
+            linters.compactMap(collect)
+        return (collectedLinters, duplicateFileNames)
     }
 
     private func visit(linters: [CollectedLinter],
                        visitor: LintableFilesVisitor,
-                       storage: RuleStorage) -> [File] {
+                       storage: RuleStorage,
+                       duplicateFileNames: Set<String>) -> [File] {
         var visited = 0
         let visit = { (linter: CollectedLinter) -> File in
-            if !visitor.quiet, let filename = linter.file.path?.bridge().lastPathComponent {
+            if !visitor.quiet, let filePath = linter.file.path {
+                let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
                 let increment = {
                     visited += 1
-                    queuedPrintError("\(visitor.action) '\(filename)' (\(visited)/\(linters.count))")
+                    queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
                 }
                 if visitor.parallel {
                     indexIncrementerQueue.sync(execute: increment)
@@ -239,34 +267,22 @@ private func isConfigOptional() -> Bool {
     return !CommandLine.arguments.contains("--config")
 }
 
-private extension LintableFilesVisitor {
-    func visit(file: File, config: Configuration, outputFileName: String?, incrementIndex: @escaping () -> Void,
-               progress: @escaping () -> String) {
-        let skipFile = shouldSkipFile(atPath: file.path)
-        if !quiet, let outputFileName = outputFileName {
-            let increment = {
-                incrementIndex()
-                if skipFile {
-                    queuedPrintError("""
-                        Skipping '\(outputFileName)' \(progress()) because its compiler arguments could not be found
-                        """)
-                } else {
-                    queuedPrintError("\(self.action) '\(outputFileName)' \(progress())")
+private struct DuplicateCollector {
+    var all = Set<String>()
+    var duplicates = Set<String>()
+}
+
+private extension Collection where Element == Linter {
+    var duplicateFileNames: Set<String> {
+        let collector = reduce(into: DuplicateCollector()) { result, linter in
+            if let filename = linter.file.path?.bridge().lastPathComponent {
+                if result.all.contains(filename) {
+                    result.duplicates.insert(filename)
                 }
-            }
-            if parallel {
-                indexIncrementerQueue.sync(execute: increment)
-            } else {
-                increment()
+
+                result.all.insert(filename)
             }
         }
-
-        guard !skipFile else {
-            return
-        }
-
-        autoreleasepool {
-            block(linter(forFile: file, configuration: config))
-        }
+        return collector.duplicates
     }
 }

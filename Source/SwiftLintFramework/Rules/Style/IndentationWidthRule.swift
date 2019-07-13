@@ -9,7 +9,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
         func spacesEquivalent(indentationWidth: Int) -> Int {
             switch self {
-            case let .tabs(tabs): return tabs & indentationWidth // Fix
+            case let .tabs(tabs): return tabs * indentationWidth
             case let .spaces(spaces): return spaces
             }
         }
@@ -153,30 +153,16 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     ///
     /// Returns a Bool determining the validity of the indentation.
     private func validate(indentation: Indentation, comparingTo lastIndentation: Indentation) -> Bool {
-        switch indentation {
-        case let .spaces(currentSpaceCount):
-            let previousSpacesCount = lastIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
-            guard
-                currentSpaceCount == previousSpacesCount + configuration.indentationWidth ||
-                (
-                    (previousSpacesCount - currentSpaceCount) >= 0 &&
-                    (previousSpacesCount - currentSpaceCount) % configuration.indentationWidth == 0
-                )
-            else { return false }
+        let currentSpaceEquivalent = indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+        let lastSpaceEquivalent = lastIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
 
-        case let .tabs(currentTabCount):
-            switch lastIndentation {
-            case let .spaces(previousSpacesCount):
-                guard
-                    currentTabCount * configuration.indentationWidth - previousSpacesCount
-                        <= configuration.indentationWidth
-                else { return false }
-
-            case let .tabs(previousTabCount):
-                guard currentTabCount - previousTabCount <= 1 else { return false }
-            }
-        }
-
-        return true
+        return (
+            // Allow indent by indentationWidth
+            currentSpaceEquivalent == lastSpaceEquivalent + configuration.indentationWidth ||
+            (
+                (lastSpaceEquivalent - currentSpaceEquivalent) >= 0 &&
+                (lastSpaceEquivalent - currentSpaceEquivalent) % configuration.indentationWidth == 0
+            ) // Allow unindent if it stays in the grid
+        )
     }
 }

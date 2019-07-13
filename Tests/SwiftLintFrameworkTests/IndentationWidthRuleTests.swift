@@ -21,6 +21,13 @@ class IndentationWidthRuleTests: XCTestCase {
         assertViolations(in: "firstLine\n    \tsecondLine", equals: 2)
     }
 
+    /// It's okay to indent using either tabs or spaces in different lines.
+    func testMixedTabsAndSpacesIndentation() {
+        assertNoViolation(in: "firstLine\n\tsecondLine\n        thirdLine")
+        assertNoViolation(in: "firstLine\n    secondLine\n\t\tthirdLine")
+        assertNoViolation(in: "firstLine\n\tsecondLine\n        thirdLine\n\t\t\tfourthLine")
+    }
+
     /// It's okay to keep the same indentation.
     func testKeepingIndentation() {
         assertNoViolation(in: "firstLine\nsecondLine")

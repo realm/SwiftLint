@@ -77,17 +77,17 @@ struct RulesCommand: CommandProtocol {
 
 struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
-    let configurationFile: String
+    let configurationFiles: [String]
     fileprivate let onlyEnabledRules: Bool
     fileprivate let onlyDisabledRules: Bool
     fileprivate let onlyCorrectableRules: Bool
     fileprivate let verbose: Bool
 
     // swiftlint:disable line_length
-    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> (_ onlyCorrectableRules: Bool) -> (_ verbose: Bool) -> RulesOptions {
+    static func create(_ configurationFiles: [String]) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> (_ onlyCorrectableRules: Bool) -> (_ verbose: Bool) -> RulesOptions {
         return { ruleID in { onlyEnabledRules in { onlyDisabledRules in { onlyCorrectableRules in { verbose in
             self.init(ruleID: (ruleID.isEmpty ? nil : ruleID),
-                      configurationFile: configurationFile,
+                      configurationFiles: configurationFiles,
                       onlyEnabledRules: onlyEnabledRules,
                       onlyDisabledRules: onlyDisabledRules,
                       onlyCorrectableRules: onlyCorrectableRules,

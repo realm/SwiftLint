@@ -1,6 +1,6 @@
 public extension Configuration {
     /// The style of indentation used in a Swift project.
-    enum IndentationStyle: Equatable {
+    enum IndentationStyle: Hashable {
         /// Swift source code should be indented using tabs.
         case tabs
         /// Swift source code should be indented using spaces with `count` spaces per indentation level.

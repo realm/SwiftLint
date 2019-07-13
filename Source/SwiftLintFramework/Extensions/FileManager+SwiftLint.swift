@@ -23,9 +23,8 @@ public protocol LintableFileManager {
 
 extension FileManager: LintableFileManager {
     public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
-        let rootPath = rootDirectory ?? currentDirectoryPath
         let absolutePath = path.bridge()
-            .absolutePathRepresentation(rootDirectory: rootPath).bridge()
+            .absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath).bridge()
             .standardizingPath
 
         // if path is a file, it won't be returned in `enumerator(atPath:)`

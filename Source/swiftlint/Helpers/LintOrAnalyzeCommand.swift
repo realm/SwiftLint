@@ -131,7 +131,7 @@ struct LintOrAnalyzeOptions {
     let mode: LintOrAnalyzeMode
     let paths: [String]
     let useSTDIN: Bool
-    let configurationFile: String
+    let configurationFiles: [String]
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
@@ -151,7 +151,7 @@ struct LintOrAnalyzeOptions {
         mode = .lint
         paths = options.paths
         useSTDIN = options.useSTDIN
-        configurationFile = options.configurationFile
+        configurationFiles = options.configurationFiles
         strict = options.strict
         lenient = options.lenient
         forceExclude = options.forceExclude
@@ -172,7 +172,7 @@ struct LintOrAnalyzeOptions {
         mode = .analyze
         paths = options.paths
         useSTDIN = false
-        configurationFile = options.configurationFile
+        configurationFiles = options.configurationFiles
         strict = options.strict
         lenient = options.lenient
         forceExclude = options.forceExclude

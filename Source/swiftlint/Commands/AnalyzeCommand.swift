@@ -37,7 +37,7 @@ struct AnalyzeCommand: CommandProtocol {
 
 struct AnalyzeOptions: OptionsProtocol {
     let paths: [String]
-    let configurationFile: String
+    let configurationFiles: [String]
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
@@ -52,17 +52,18 @@ struct AnalyzeOptions: OptionsProtocol {
     let compileCommands: String
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ excludeByPrefix: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ enableAllRules: Bool) -> (_ autocorrect: Bool) -> (_ compilerLogPath: String) -> (_ compileCommands: String) -> (_ paths: [String]) -> AnalyzeOptions {
-        return { configurationFile in { strict in { lenient in { forceExclude in { excludeByPrefix in { useScriptInputFiles in { benchmark in { reporter in { quiet in { enableAllRules in { autocorrect in { compilerLogPath in { compileCommands in { paths in
+    static func create(_ path: String) -> (_ configurationFiles: [String]) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ excludeByPrefix: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ enableAllRules: Bool) -> (_ autocorrect: Bool) -> (_ compilerLogPath: String) -> (_ compileCommands: String) -> (_ paths: [String]) -> AnalyzeOptions {
+        return { configurationFiles in { strict in { lenient in { forceExclude in { excludeByPrefix in { useScriptInputFiles in { benchmark in { reporter in { quiet in { enableAllRules in { autocorrect in { compilerLogPath in { compileCommands in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, enableAllRules: enableAllRules, autocorrect: autocorrect, compilerLogPath: compilerLogPath, compileCommands: compileCommands)
+
+            return self.init(paths: allPaths, configurationFiles: configurationFiles, strict: strict, lenient: lenient, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, enableAllRules: enableAllRules, autocorrect: autocorrect, compilerLogPath: compilerLogPath, compileCommands: compileCommands)
             // swiftlint:enable line_length
-            }}}}}}}}}}}}}}
+        }}}}}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AnalyzeOptions, CommandantError<CommandantError<()>>> {

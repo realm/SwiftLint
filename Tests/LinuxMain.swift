@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -180,6 +180,7 @@ extension ConfigurationAliasesTests {
 extension ConfigurationTests {
     static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] = [
         ("testInit", testInit),
+        ("testNoConfiguration", testNoConfiguration),
         ("testEmptyConfiguration", testEmptyConfiguration),
         ("testInitWithRelativePathAndRootPath", testInitWithRelativePathAndRootPath),
         ("testEnableAllRulesConfiguration", testEnableAllRulesConfiguration),
@@ -215,16 +216,25 @@ extension ConfigurationTests {
         ("testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre", testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre),
         ("testExcludeByPrefixGlobExcludePaths", testExcludeByPrefixGlobExcludePaths),
         ("testMerge", testMerge),
+        ("testWarningThresholdMerging", testWarningThresholdMerging),
+        ("testOnlyRulesMerging", testOnlyRulesMerging),
+        ("testCustomRulesMerging", testCustomRulesMerging),
+        ("testMergingAllowsDisablingParentsCustomRules", testMergingAllowsDisablingParentsCustomRules),
         ("testLevel0", testLevel0),
         ("testLevel1", testLevel1),
         ("testLevel2", testLevel2),
         ("testLevel3", testLevel3),
-        ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
         ("testNestedConfigurationForOnePathPassedIn", testNestedConfigurationForOnePathPassedIn),
-        ("testMergedWarningThreshold", testMergedWarningThreshold),
-        ("testNestedOnlyRules", testNestedOnlyRules),
-        ("testNestedConfigurationsWithCustomRulesMerge", testNestedConfigurationsWithCustomRulesMerge),
-        ("testNestedConfigurationAllowsDisablingParentsCustomRules", testNestedConfigurationAllowsDisablingParentsCustomRules)
+        ("testParentConfigIsIgnoredAsNestedConfiguration", testParentConfigIsIgnoredAsNestedConfiguration),
+        ("testValidChildConfig", testValidChildConfig),
+        ("testValidParentConfig", testValidParentConfig),
+        ("testCommandLineChildConfigs", testCommandLineChildConfigs),
+        ("testConfigCycleDetection", testConfigCycleDetection),
+        ("testCommandLineConfigsCycleDetection", testCommandLineConfigsCycleDetection),
+        ("testValidRemoteChildConfig", testValidRemoteChildConfig),
+        ("testValidRemoteParentConfig", testValidRemoteParentConfig),
+        ("testsRemoteConfigNotAllowedToReferenceLocalConfig", testsRemoteConfigNotAllowedToReferenceLocalConfig),
+        ("testRemoteConfigCycleDetection", testRemoteConfigCycleDetection)
     ]
 }
 
@@ -1308,11 +1318,11 @@ extension ReporterTests {
         ("testJSONReporter", testJSONReporter),
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),
+        ("testCodeClimateReporter", testCodeClimateReporter),
         ("testJunitReporter", testJunitReporter),
         ("testHTMLReporter", testHTMLReporter),
         ("testSonarQubeReporter", testSonarQubeReporter),
-        ("testMarkdownReporter", testMarkdownReporter),
-        ("testCodeClimateReporter", testCodeClimateReporter)
+        ("testMarkdownReporter", testMarkdownReporter)
     ]
 }
 
@@ -1451,6 +1461,12 @@ extension StaticOperatorRuleTests {
 extension StrictFilePrivateRuleTests {
     static var allTests: [(String, (StrictFilePrivateRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension StringExtensionTests {
+    static var allTests: [(String, (StringExtensionTests) -> () throws -> Void)] = [
+        ("testRelativePathExpression", testRelativePathExpression)
     ]
 }
 
@@ -1935,6 +1951,7 @@ XCTMain([
     testCase(StatementPositionRuleTests.allTests),
     testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
+    testCase(StringExtensionTests.allTests),
     testCase(StrongIBOutletRuleTests.allTests),
     testCase(SwiftVersionTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),

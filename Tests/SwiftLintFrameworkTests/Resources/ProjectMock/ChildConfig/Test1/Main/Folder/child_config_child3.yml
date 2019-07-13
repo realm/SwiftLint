@@ -1,0 +1,4 @@
+included:
+  - SomeFile
+
+child_config: ../../child_config_child4.yml

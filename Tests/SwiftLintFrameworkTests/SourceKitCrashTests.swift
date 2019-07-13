@@ -62,7 +62,7 @@ class SourceKitCrashTests: XCTestCase {
         file.assertHandler = {
             XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")
         }
-        let configuration = Configuration(rulesMode: .only(allRuleIdentifiers))!
+        let configuration = Configuration(rulesMode: .only(allRuleIdentifiers))
         let storage = RuleStorage()
         _ = Linter(file: file, configuration: configuration).collect(into: storage).styleViolations(using: storage)
         file.sourcekitdFailed = false

@@ -1,0 +1,23 @@
+opt_in_rules:
+  - private_action
+  - private_outlet
+  - trailing_closure
+  - empty_count
+
+disabled_rules:
+  - force_cast
+  - identifier_name
+
+line_length: 160
+
+included:
+  - Test/Test1
+  - Test/Test2
+
+excluded:
+  - Test/Test1/Test
+  - Test/Test2/Test
+
+identifier_name:
+  excluded:
+    - id

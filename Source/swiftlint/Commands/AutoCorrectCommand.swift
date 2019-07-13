@@ -23,7 +23,7 @@ struct AutoCorrectCommand: CommandProtocol {
 
 struct AutoCorrectOptions: OptionsProtocol {
     let paths: [String]
-    let configurationFile: String
+    let configurationFiles: [String]
     let useScriptInputFiles: Bool
     let quiet: Bool
     let forceExclude: Bool
@@ -33,16 +33,16 @@ struct AutoCorrectOptions: OptionsProtocol {
     let ignoreCache: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) ->
+    static func create(_ path: String) -> (_ configurationFiles: [String]) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) ->
     (_ excludeByPrefix: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
-    return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { excludeByPrefix in { format in { cachePath in { ignoreCache in { paths in
+        return { configurationFiles in { useScriptInputFiles in { quiet in { forceExclude in { excludeByPrefix in { format in { cachePath in { ignoreCache in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude,
+            return self.init(paths: allPaths, configurationFiles: configurationFiles, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude,
                              excludeByPrefix: excludeByPrefix, format: format, cachePath: cachePath, ignoreCache: ignoreCache)
             // swiftlint:enable line_length
             }}}}}}}}}

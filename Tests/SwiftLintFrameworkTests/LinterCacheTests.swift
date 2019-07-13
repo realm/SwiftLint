@@ -17,7 +17,7 @@ private struct CacheTestHelper {
     fileprivate init(dict: [String: Any], cache: LinterCache) {
         ruleList = RuleList(rules: RuleWithLevelsMock.self)
         ruleDescription = ruleList.list.values.first!.description
-        configuration = Configuration(dict: dict, ruleList: ruleList)!
+        configuration = try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
         self.cache = cache
     }
 
@@ -36,7 +36,7 @@ private struct CacheTestHelper {
     }
 
     fileprivate func makeConfig(dict: [String: Any]) -> Configuration {
-        return Configuration(dict: dict, ruleList: ruleList)!
+        return try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
     }
 
     fileprivate func touch(file: String) {
@@ -94,7 +94,7 @@ class LinterCacheTests: XCTestCase {
 
     private func validateNewConfigDoesntHitCache(dict: [String: Any], initialConfig: Configuration,
                                                  file: StaticString = #file, line: UInt = #line) {
-        let newConfig = Configuration(dict: dict)!
+        let newConfig = try! Configuration(dict: dict) // swiftlint:disable:this force_try
         let (file1, file2) = ("file1.swift", "file2.swift")
 
         XCTAssertNil(cache.violations(forFile: file1, configuration: newConfig), file: file, line: line)
@@ -188,13 +188,13 @@ class LinterCacheTests: XCTestCase {
     // MARK: All-File Cache Invalidation
 
     func testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(
+        let initialConfig = try! Configuration( // swiftlint:disable:this force_try
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]inja)"]]
             ],
             ruleList: RuleList(rules: CustomRules.self)
-        )!
+        )
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change
@@ -220,7 +220,8 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(dict: ["disabled_rules": ["nesting"]])!
+        // swiftlint:disable:next force_try
+        let initialConfig = try! Configuration(dict: ["disabled_rules": ["nesting"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change
@@ -232,7 +233,8 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(dict: ["opt_in_rules": ["attributes"]])!
+        // swiftlint:disable:next force_try
+        let initialConfig = try! Configuration(dict: ["opt_in_rules": ["attributes"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change
@@ -245,7 +247,8 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(dict: ["enabled_rules": ["attributes"]])!
+        // swiftlint:disable:next force_try
+        let initialConfig = try! Configuration(dict: ["enabled_rules": ["attributes"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change
@@ -258,7 +261,8 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(dict: ["whitelist_rules": ["nesting"]])!
+        // swiftlint:disable:next force_try
+        let initialConfig = try! Configuration(dict: ["whitelist_rules": ["nesting"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change
@@ -270,7 +274,7 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(dict: ["line_length": 120])!
+        let initialConfig = try! Configuration(dict: ["line_length": 120]) // swiftlint:disable:this force_try
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change

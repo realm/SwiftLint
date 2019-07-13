@@ -231,7 +231,7 @@ Here's a reference of which SwiftLint version to use for a given Swift version.
 
 ## Rules
 
-Over 75 rules are included in SwiftLint and the Swift community (that's you!)
+Over 100 rules are included in SwiftLint and the Swift community (that's you!)
 continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
 
@@ -435,18 +435,6 @@ are all the possible syntax kinds:
 
 If using custom rules alongside a whitelist, make sure to add `custom_rules` as an item under `whitelist_rules`.
 
-#### Nested Configurations
-
-SwiftLint supports nesting configuration files for more granular control over
-the linting process.
-
-* Include additional `.swiftlint.yml` files where necessary in your directory
-  structure.
-* Each file will be linted using the configuration file that is in its
-  directory or at the deepest level of its parent directories. Otherwise the
-  root configuration will be used.
-* `included` is ignored for nested configurations.
-
 ### Auto-correct
 
 SwiftLint can automatically correct certain violations. Files on disk are
@@ -474,6 +462,109 @@ with a clean `DerivedData` folder.
 This command and related code in SwiftLint is subject to substantial changes at
 any time while this feature is marked as experimental. Analyzer rules also tend
 to be considerably slower than lint rules.
+
+## Using Multiple Configuration Files
+
+SwiftLint offers a variety of ways to include multiple configuration files.
+Multiple configuration files get merged into one single configuration that is then applied
+just as a single configuration file would get applied.
+
+There are quite a lot of use cases where using multiple configuration files could be helpful:
+
+For instance, one could use a team-wide shared SwiftLint configuration while allowing overrrides
+in each project via a child configuration file.
+
+Team-Wide Configuration:
+
+```yaml
+disabled_rules:
+- force_cast
+```
+
+Project-Specific Configuration :
+
+```yaml
+opt_in_rules:
+- force_cast
+```
+
+### Child / Parent Configs (Locally)
+
+You can specify a `child_config`  and / or a `parent_config` reference within a configuration file.
+These references should be local paths relative to the folder of the configuration file they are specified in.
+This even works recursively, as long as there are no cycles and no ambiguities.
+
+**A child config is treated as a refinement and therefore has a higher priority**,
+while a parent config is considered a base with lower priority in case of conflicts.
+
+Here's an example, assuming you have the following file structure:
+
+```
+ProjectRoot
+    |_ .swiftlint.yml
+    |_ .swiftlint_refinement.yml
+    |_ Base
+        |_ .swiftlint_base.yml
+```
+
+To include both the refinement and the base file, your `.swiftlint.yml` should look like this:
+
+```yaml
+child_config: .swiftlint_refinement.yml
+parent_config: Base/.swiftlint_base.yml
+```
+
+When merging parent and child configs, `included` and `excluded` configurations
+are processed carefully to account for differences in root paths.
+
+### Child / Parent Configs (Remotely)
+
+Just as you can provide local `child_config` / `parent_config` references, instead of
+referencing local paths, you can just put urls that lead to configuration files.
+In order for SwiftLint to detect these remote references, they must start with `http://` or `https://`.
+
+The referenced remote configuration files may even recursively reference other
+remote configuration files, but aren't allowed to include local references.
+
+Using a remote reference, your `.swiftlint.yml` could look like this:
+
+```yaml
+parent_config: https://myteamserver.com/our-base-swiftlint-config.yml
+```
+
+Every time you run SwiftLint and have an internet connection, SwiftLint tries to get a new version of
+every remote configuration that is referenced. If this request times out, a cached version is
+used if available. If there is no cached version available, SwiftLint fails – but no worries, a cached version
+should be there once SwiftLint has run successfully at least once.
+
+If needed, the timeouts for the remote configuration fetching can be specified manually via the
+configuration file(s) using the `remote_timeout` / `remote_timeout_if_cached` specifiers.
+These values default to 2 / 1 second(s).
+
+### Command Line
+
+Instead of just providing one configuration file when running SwiftLin via the command line,
+you can also pass a hierarchy, where the first configuration is treated as a parent,
+while the last one is treated as the highest-priority child.
+
+A simple example including just two configuration files looks like this:
+
+`swiftlint --config ".swiftlint.yml .swiftlint_child.yml"`
+
+### Nested Configurations
+
+In addition to a main configuration that is defined by one file or a hierarchy of files,
+you can put other configuration files named `.swiftlint.yml` into the directory structure
+that then get merged as a child config, but only with an effect for those files
+that are within the same directory as the config or in a deeper directory where
+there isn't another configuration file. In other words: Nested configurations don't work 
+recursively – there's a maximum number of one nested configuration per file 
+that may be applied in addition to the main configuration.
+
+ `.swiftlint.yml` files are only considered as a nested configuration if they have not been
+ used to build the main configuration already (e. g. by having been referenced via something
+ like `child_config: Folder/.swiftlint.yml`). Also, `parent_config` / `child_config`
+specifications of nested configurations are getting ignored because there's no sense to that.
 
 ## License
 

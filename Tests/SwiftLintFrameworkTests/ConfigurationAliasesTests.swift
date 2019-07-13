@@ -7,24 +7,25 @@ final class ConfigurationAliasesTests: XCTestCase {
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {
         let ruleConfiguration = [1, 2]
         let config = ["mock": ruleConfiguration]
-        let rules = try testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testReturnsNilWithDuplicatedConfiguration() {
         let dict = ["mock": [1, 2], "severity_level_mock": [1, 3]]
-        let configuration = Configuration(dict: dict, ruleList: testRuleList)
+        let configuration = try? Configuration(dict: dict, ruleList: testRuleList)
         XCTAssertNil(configuration)
     }
 
     func testInitsFromDeprecatedAlias() {
         let ruleConfiguration = [1, 2]
-        let configuration = Configuration(dict: ["mock": ruleConfiguration], ruleList: testRuleList)
+        let configuration = try? Configuration(dict: ["mock": ruleConfiguration], ruleList: testRuleList)
         XCTAssertNotNil(configuration)
     }
 
     func testWhitelistRulesFromDeprecatedAlias() {
-        let configuration = Configuration(dict: ["whitelist_rules": ["mock"]], ruleList: testRuleList)!
+        // swiftlint:disable:next force_try
+        let configuration = try! Configuration(dict: ["whitelist_rules": ["mock"]], ruleList: testRuleList)
         let configuredIdentifiers = configuration.rules.map {
             type(of: $0).description.identifier
         }
@@ -32,7 +33,8 @@ final class ConfigurationAliasesTests: XCTestCase {
     }
 
     func testDisabledRulesFromDeprecatedAlias() {
-        let configuration = Configuration(dict: ["disabled_rules": ["mock"]], ruleList: testRuleList)!
+        // swiftlint:disable:next force_try
+        let configuration = try! Configuration(dict: ["disabled_rules": ["mock"]], ruleList: testRuleList)
         XCTAssert(configuration.rules.isEmpty)
     }
 }

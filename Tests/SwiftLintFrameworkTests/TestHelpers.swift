@@ -27,9 +27,9 @@ extension String {
     }
 }
 
-let allRuleIdentifiers = Array(masterRuleList.list.keys)
+let allRuleIdentifiers = Set(masterRuleList.list.keys)
 
-func violations(_ example: Example, config: Configuration = Configuration()!,
+func violations(_ example: Example, config: Configuration = Configuration.default,
                 requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
     let stringStrippingMarkers = example.removingViolationMarkers()
@@ -48,20 +48,20 @@ func violations(_ example: Example, config: Configuration = Configuration()!,
 }
 
 extension Collection where Element == String {
-    func violations(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false)
+    func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
             return map(makeFile).violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
-    func corrections(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
         return map(makeFile).corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 }
 
 extension Collection where Element: SwiftLintFile {
-    func violations(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false)
+    func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let storage = RuleStorage()
             let violations = map({ file in
@@ -75,7 +75,7 @@ extension Collection where Element: SwiftLintFile {
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
 
-    func corrections(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let storage = RuleStorage()
         let corrections = map({ file in
             Linter(file: file, configuration: config,
@@ -222,13 +222,17 @@ private extension String {
 internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
                          skipDisableCommandTests: Bool = false) -> Configuration? {
     let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
-    let identifiers = skipDisableCommandTests ? [identifier] : [identifier, superfluousDisableCommandRuleIdentifier]
+    let identifiers: Set<String> = skipDisableCommandTests ? [identifier]
+        : [identifier, superfluousDisableCommandRuleIdentifier]
 
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
             let rules = skipDisableCommandTests ? [configuredRule] : [configuredRule, SuperfluousDisableCommandRule()]
-            return Configuration(rulesMode: .whitelisted(identifiers), configuredRules: rules)
+            return Configuration(
+                rulesMode: .whitelisted(identifiers),
+                allRulesWrapped: rules.map { ($0, false) }
+            )
         }
     }
     return Configuration(rulesMode: .whitelisted(identifiers))

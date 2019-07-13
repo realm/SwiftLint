@@ -69,8 +69,8 @@ extension Configuration {
         for file in files {
             // Files whose configuration specifies they should be excluded will be skipped
             let fileConfiguration = configuration(for: file)
-            let fileConfigurationRootPath = (fileConfiguration.rootPath ?? "").bridge()
-            let shouldSkip = fileConfiguration.excluded.contains { excludedRelativePath in
+            let fileConfigurationRootPath = (fileConfiguration.rootDirectory ?? "").bridge()
+            let shouldSkip = fileConfiguration.excludedPaths.contains { excludedRelativePath in
                 let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
                 let filePathComponents = file.path?.bridge().pathComponents ?? []
                 let excludedPathComponents = excludedPath.bridge().pathComponents
@@ -92,7 +92,7 @@ extension Configuration {
         }
 
         var pathComponents = path.bridge().pathComponents
-        let root = self.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
+        let root = rootDirectory ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
         for component in root.bridge().pathComponents where pathComponents.first == component {
             pathComponents.removeFirst()
         }
@@ -231,9 +231,14 @@ extension Configuration {
 
     init(options: LintOrAnalyzeOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile, rootPath: type(of: self).rootPath(from: options.paths),
-                  optional: isConfigOptional(), quiet: options.quiet, enableAllRules: options.enableAllRules,
-                  cachePath: cachePath)
+        self.init(
+            configurationFiles: options.configurationFiles,
+            rootPath: type(of: self).rootPath(from: options.paths),
+            optional: isConfigOptional(),
+            quiet: options.quiet,
+            enableAllRules: options.enableAllRules,
+            cachePath: cachePath
+        )
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
@@ -251,14 +256,21 @@ extension Configuration {
 
     init(options: AutoCorrectOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile, rootPath: type(of: self).rootPath(from: options.paths),
-                  optional: isConfigOptional(), quiet: options.quiet, cachePath: cachePath)
+        self.init(
+            configurationFiles: options.configurationFiles,
+            rootPath: type(of: self).rootPath(from: options.paths),
+            optional: isConfigOptional(),
+            quiet: options.quiet,
+            cachePath: cachePath
+        )
     }
 
     // MARK: Rules command
-
     init(options: RulesOptions) {
-        self.init(path: options.configurationFile, optional: isConfigOptional())
+        self.init(
+            configurationFiles: options.configurationFiles,
+            optional: isConfigOptional()
+        )
     }
 }
 

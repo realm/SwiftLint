@@ -9,7 +9,7 @@ private let config: Configuration = {
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
     _ = FileManager.default.changeCurrentDirectoryPath(directory)
-    return Configuration(path: Configuration.fileName)
+    return Configuration(configurationFiles: [Configuration.fileName])
 }()
 
 class IntegrationTests: XCTestCase {
@@ -124,7 +124,7 @@ class IntegrationTests: XCTestCase {
             warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
 
             """)
-        XCTAssertEqual(swiftlintResult.stderr, """
+        XCTAssertEqual(swiftlintResult.stderr.components(separatedBy: "\n").dropFirst().joined(separator: "\n"), """
             Linting Swift files at paths \n\
             Linting 'Test.swift' (1/1)
             SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.

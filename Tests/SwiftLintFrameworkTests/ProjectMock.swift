@@ -1,6 +1,10 @@
 @testable import SwiftLintFramework
 
-extension ConfigurationTests {
+protocol ProjectMock {
+    var testResourcesPath: String { get }
+}
+
+extension ProjectMock {
     var projectMockPathLevel0: String {
         return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }
@@ -15,6 +19,14 @@ extension ConfigurationTests {
 
     var projectMockPathLevel3: String {
         return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
+    }
+
+    var projectMockPathChildConfigValid1: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("ChildConfig/Valid1")
+    }
+
+    var projectMockPathChildConfigValid2: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("ChildConfig/Valid2")
     }
 
     var projectMockYAML0: String {
@@ -58,36 +70,36 @@ extension ConfigurationTests {
     }
 
     var projectMockConfig0: Configuration {
-        return Configuration(path: projectMockYAML0, rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML0], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig0CustomPath: Configuration {
-        return Configuration(path: projectMockYAML0CustomPath, rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML0CustomPath], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig0CustomRules: Configuration {
-        return Configuration(path: projectMockYAML0CustomRules, rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML0CustomRules], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
+        return Configuration(configurationFiles: [projectMockYAML2], optional: false, quiet: true)
     }
 
     var projectMockConfig2CustomRules: Configuration {
-        return Configuration(path: projectMockYAML2CustomRules, rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML2CustomRules], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig2CustomRulesDisabled: Configuration {
-        return Configuration(path: projectMockYAML2CustomRulesDisabled, rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML2CustomRulesDisabled], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig3: Configuration {
-        return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
+        return Configuration(configurationFiles: [Configuration.fileName], rootPath: projectMockPathLevel3,
                              optional: false, quiet: true)
     }
 }

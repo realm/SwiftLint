@@ -20,21 +20,20 @@ private extension String {
 #endif
 
 extension Configuration {
-    // MARK: Caching Configurations By Path (In-Memory)
+    // MARK: Caching Configurations By Identifier (In-Memory)
+    private static var cachedConfigurationsByIdentifier = [String: Configuration]()
+    private static var cachedConfigurationsByIdentifierLock = NSLock()
 
-    private static var cachedConfigurationsByPath = [String: Configuration]()
-    private static var cachedConfigurationsByPathLock = NSLock()
-
-    internal func setCached(atPath path: String) {
-        Configuration.cachedConfigurationsByPathLock.lock()
-        Configuration.cachedConfigurationsByPath[path] = self
-        Configuration.cachedConfigurationsByPathLock.unlock()
+    internal func setCached(forIdentifier identifier: String) {
+        Configuration.cachedConfigurationsByIdentifierLock.lock()
+        Configuration.cachedConfigurationsByIdentifier[identifier] = self
+        Configuration.cachedConfigurationsByIdentifierLock.unlock()
     }
 
-    internal static func getCached(atPath path: String) -> Configuration? {
-        cachedConfigurationsByPathLock.lock()
-        defer { cachedConfigurationsByPathLock.unlock() }
-        return cachedConfigurationsByPath[path]
+    internal static func getCached(forIdentifier identifier: String) -> Configuration? {
+        cachedConfigurationsByIdentifierLock.lock()
+        defer { cachedConfigurationsByIdentifierLock.unlock() }
+        return cachedConfigurationsByIdentifier[identifier]
     }
 
     /// Returns a copy of the current `Configuration` with its `computedCacheDescription` property set to the value of
@@ -47,22 +46,33 @@ extension Configuration {
         return result
     }
 
-    // MARK: SwiftLint Cache (On-Disk)
+    // MARK: Nested Config Is Self Cache
+    private static var nestedConfigIsSelfByIdentifier = [String: Bool]()
+    private static var nestedConfigIsSelfByIdentifierLock = NSLock()
 
+    internal static func setIsNestedConfigurationSelf(forIdentifier identifier: String, value: Bool) {
+        Configuration.nestedConfigIsSelfByIdentifierLock.lock()
+        Configuration.nestedConfigIsSelfByIdentifier[identifier] = value
+        Configuration.nestedConfigIsSelfByIdentifierLock.unlock()
+    }
+
+    internal static func getIsNestedConfigurationSelf(forIdentifier identifier: String) -> Bool? {
+        Configuration.nestedConfigIsSelfByIdentifierLock.lock()
+        defer { Configuration.nestedConfigIsSelfByIdentifierLock.unlock() }
+        return Configuration.nestedConfigIsSelfByIdentifier[identifier]
+    }
+
+    // MARK: SwiftLint Cache (On-Disk)
     internal var cacheDescription: String {
         if let computedCacheDescription = computedCacheDescription {
             return computedCacheDescription
         }
 
         let cacheRulesDescriptions = rules
-            .map { rule in
-                return [type(of: rule).description.identifier, rule.cacheDescription]
-            }
-            .sorted { rule1, rule2 in
-                return rule1[0] < rule2[0]
-            }
+            .map { rule in [type(of: rule).description.identifier, rule.cacheDescription] }
+            .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [
-            rootPath ?? FileManager.default.currentDirectoryPath,
+            rootDirectory ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath,
             cacheRulesDescriptions
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
@@ -77,11 +87,11 @@ extension Configuration {
         if let path = cachePath {
             baseURL = URL(fileURLWithPath: path)
         } else {
-#if os(Linux)
+            #if os(Linux)
             baseURL = URL(fileURLWithPath: "/var/tmp/")
-#else
+            #else
             baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-#endif
+            #endif
         }
         let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
 

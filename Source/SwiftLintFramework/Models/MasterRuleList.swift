@@ -162,6 +162,7 @@ public let masterRuleList = RuleList(rules: [
     UnusedCaptureListRule.self,
     UnusedClosureParameterRule.self,
     UnusedControlFlowLabelRule.self,
+    UnusedDeclarationRule.self,
     UnusedEnumeratedRule.self,
     UnusedImportRule.self,
     UnusedOptionalBindingRule.self,

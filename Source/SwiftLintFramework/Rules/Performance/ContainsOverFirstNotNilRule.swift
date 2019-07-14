@@ -17,19 +17,21 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
             ]
         },
         triggeringExamples: ["first", "firstIndex"].flatMap { method in
-            return [
-                "↓myList.\(method) { $0 % 2 == 0 } != nil\n",
-                "↓myList.\(method)(where: { $0 % 2 == 0 }) != nil\n",
-                "↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) != nil\n",
-                "↓myList.\(method)(where: someFunction) != nil\n",
-                "↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } != nil\n",
-                "(↓myList.\(method) { $0 % 2 == 0 }) != nil\n"
-            ]
+            return ["!=", "=="].flatMap { comparison in
+                return [
+                    "↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil\n",
+                    "↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n",
+                    "↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n",
+                    "↓myList.\(method)(where: someFunction) \(comparison) nil\n",
+                    "↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil\n",
+                    "(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil\n"
+                ]
+            }
         }
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*!=\\s*nil"
+        let pattern = "[\\}\\)]\\s*(==|!=)\\s*nil"
         let firstViolations = validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
                                        callNameSuffix: ".first", severity: configuration.severity,
                                        reason: "Prefer `contains` over `first(where:) != nil`")

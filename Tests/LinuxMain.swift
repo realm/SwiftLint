@@ -346,6 +346,12 @@ extension DynamicInlineRuleTests {
     ]
 }
 
+extension EmptyCollectionLiteralRuleTests {
+    static var allTests: [(String, (EmptyCollectionLiteralRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension EmptyCountRuleTests {
     static var allTests: [(String, (EmptyCountRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1582,6 +1588,7 @@ XCTMain([
     testCase(DuplicateEnumCasesRuleTests.allTests),
     testCase(DuplicateImportsRuleTests.allTests),
     testCase(DynamicInlineRuleTests.allTests),
+    testCase(EmptyCollectionLiteralRuleTests.allTests),
     testCase(EmptyCountRuleTests.allTests),
     testCase(EmptyEnumArgumentsRuleTests.allTests),
     testCase(EmptyParametersRuleTests.allTests),

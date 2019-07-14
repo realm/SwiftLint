@@ -32,6 +32,7 @@
 * [Duplicate Enum Cases](#duplicate-enum-cases)
 * [Duplicate Imports](#duplicate-imports)
 * [Dynamic Inline](#dynamic-inline)
+* [Empty Collection Literal](#empty-collection-literal)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
@@ -5392,6 +5393,75 @@ class C {
 dynamic
 ↓func f() {}
 }
+```
+
+</details>
+
+
+
+## Empty Collection Literal
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`empty_collection_literal` | Disabled | No | performance | No | 3.0.0 
+
+Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+myArray = []
+```
+
+```swift
+myArray.isEmpty
+```
+
+```swift
+!myArray.isEmpy
+```
+
+```swift
+myDict = [:]
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+myArray↓ == []
+```
+
+```swift
+myArray↓ != []
+```
+
+```swift
+myArray↓ == [ ]
+```
+
+```swift
+myDict↓ == [:]
+```
+
+```swift
+myDict↓ != [:]
+```
+
+```swift
+myDict↓ == [: ]
+```
+
+```swift
+myDict↓ == [ :]
+```
+
+```swift
+myDict↓ == [ : ]
 ```
 
 </details>

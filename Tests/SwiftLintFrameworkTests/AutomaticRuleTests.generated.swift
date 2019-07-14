@@ -126,6 +126,12 @@ class DynamicInlineRuleTests: XCTestCase {
     }
 }
 
+class EmptyCollectionLiteralRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(EmptyCollectionLiteralRule.description)
+    }
+}
+
 class EmptyCountRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)

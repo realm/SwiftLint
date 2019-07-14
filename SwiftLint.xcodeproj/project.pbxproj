@@ -90,6 +90,7 @@
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
 		4E342B4C2215C793008E4EF8 /* ReduceBooleanRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */; };
+		550DA0E022DB95AD00B67F03 /* EmptyCollectionLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550DA0DE22DB958400B67F03 /* EmptyCollectionLiteralRule.swift */; };
 		57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
 		584B0D3A2112BA78002F7E25 /* SonarQubeReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584B0D392112BA78002F7E25 /* SonarQubeReporter.swift */; };
 		584B0D3C2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json in Resources */ = {isa = PBXBuildFile; fileRef = 584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */; };
@@ -569,6 +570,7 @@
 		4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReduceBooleanRule.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		550DA0DE22DB958400B67F03 /* EmptyCollectionLiteralRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionLiteralRule.swift; sourceTree = "<group>"; };
 		57ED82791CF65183002B3513 /* JUnitReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JUnitReporter.swift; sourceTree = "<group>"; };
 		584B0D392112BA78002F7E25 /* SonarQubeReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonarQubeReporter.swift; sourceTree = "<group>"; };
 		584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CannedSonarQubeReporterOutput.json; sourceTree = "<group>"; };
@@ -1079,6 +1081,7 @@
 				29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */,
 				D489B546231233490090BAA0 /* ContainsOverFilterCountRule.swift */,
 				D489B549231383350090BAA0 /* ContainsOverFilterIsEmptyRule.swift */,
+				550DA0DE22DB958400B67F03 /* EmptyCollectionLiteralRule.swift */,
 				E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */,
 				740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */,
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
@@ -2025,6 +2028,7 @@
 				125AAC78203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift in Sources */,
 				1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */,
 				D42D2B381E09CC0D00CD7A2E /* FirstWhereRule.swift in Sources */,
+				550DA0E022DB95AD00B67F03 /* EmptyCollectionLiteralRule.swift in Sources */,
 				D4B0226F1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift in Sources */,
 				E8BDE3FF1EDF91B6002EC12F /* RuleList.swift in Sources */,
 				E889D8C71F1D357B00058332 /* Configuration+Merging.swift in Sources */,

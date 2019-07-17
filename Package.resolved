@@ -39,11 +39,11 @@
       },
       {
         "package": "SourceKitten",
-        "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
+        "repositoryURL": "https://github.com/cltnschlosser/SourceKitten.git",
         "state": {
-          "branch": null,
-          "revision": "fd9091759201473aa234c22322a3939615aef59a",
-          "version": "0.23.2"
+          "branch": "cs_sourceKitMemoryLeak2",
+          "revision": "b6c9c6c56a898faabe2671152dfa963bb8d6f5e9",
+          "version": null
         }
       },
       {

@@ -23660,6 +23660,7 @@ let ↓kConstant = 0
 ```
 
 ```swift
+struct Item {}
 struct ↓ResponseModel: Codable {
     let ↓items: [Item]
 

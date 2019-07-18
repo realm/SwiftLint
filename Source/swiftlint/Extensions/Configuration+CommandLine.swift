@@ -87,17 +87,13 @@ extension Configuration {
     }
 
     private func outputFilename(for path: String, duplicateFileNames: Set<String>) -> String {
-        guard !duplicateFileNames.isEmpty else {
-            return path
-        }
-
-        let root = self.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
         let basename = path.bridge().lastPathComponent
         if !duplicateFileNames.contains(basename) {
             return basename
         }
 
         var pathComponents = path.bridge().pathComponents
+        let root = self.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
         for component in root.bridge().pathComponents where pathComponents.first == component {
             pathComponents.removeFirst()
         }

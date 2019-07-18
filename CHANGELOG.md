@@ -2,7 +2,17 @@
 
 #### Breaking
 
-* None.
+* To enable collecting rules, many breaking changes to `SwiftLintFramework`'s
+  public API were made the `Linter` type was significantely changed, and a new
+  `CollectedLinter` type was introduced. Many public `SwiftLintFramework` APIs
+  that interacted with `Linter` have also been affected. More new types and
+  protocols were added such as `RuleStorage`, `AnyCollectingRule`,
+  `CollectingRule`, `CollectingCorrectableRule`.
+  We are not aware of any significant users of the `SwiftLintFramework` library,
+  so if you are affected by this, please reach out to SwiftLint contributors by
+  filing a GitHub issue about your use case.  
+  [Elliott Williams](https://github.com/elliottwilliams)
+  [JP Simard](https://github.com/jpsim)
 
 #### Experimental
 

@@ -49,6 +49,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             let ↓kConstant = 0
             """,
             """
+            struct Item {}
             struct ↓ResponseModel: Codable {
                 let ↓items: [Item]
 

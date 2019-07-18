@@ -7,10 +7,6 @@ private func funcWithParameters(_ parameters: String, violates: Bool = false) ->
     return "func \(marker)abc(\(parameters)) {}\n"
 }
 
-private func violatingFuncWithParameters(_ parameters: String) -> String {
-    return funcWithParameters(parameters, violates: true)
-}
-
 class FunctionParameterCountRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionParameterCountRule.description)
@@ -47,11 +43,5 @@ class FunctionParameterCountRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["ignores_default_parameters": false])
-    }
-
-    private func violations(_ string: String) -> [StyleViolation] {
-        let config = makeConfig(nil, FunctionParameterCountRule.description.identifier)!
-
-        return SwiftLintFrameworkTests.violations(string, config: config)
     }
 }

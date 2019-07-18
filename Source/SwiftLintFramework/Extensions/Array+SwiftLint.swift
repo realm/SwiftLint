@@ -45,11 +45,11 @@ extension Array {
             return (copy[0..<pivot], copy[pivot..<count])
     }
 
-    func parallelFlatMap<T>(transform: @escaping ((Element) -> [T])) -> [T] {
+    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 
-    func parallelCompactMap<T>(transform: @escaping ((Element) -> T?)) -> [T] {
+    func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
         return parallelMap(transform: transform).compactMap { $0 }
     }
 

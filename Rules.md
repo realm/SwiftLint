@@ -161,10 +161,10 @@
 * [Unused Capture List](#unused-capture-list)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Control Flow Label](#unused-control-flow-label)
+* [Unused Declaration](#unused-declaration)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
-* [Unused Private Declaration](#unused-private-declaration)
 * [Unused Setter Value](#unused-setter-value)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
@@ -23612,6 +23612,75 @@ default: break
 
 
 
+## Unused Declaration
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_declaration` | Disabled | No | lint | Yes | 3.0.0 
+
+Declarations should be referenced at least once within all files linted.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let kConstant = 0
+_ = kConstant
+```
+
+```swift
+struct Item {}
+struct ResponseModel: Codable {
+    let items: [Item]
+
+    enum CodingKeys: String, CodingKey {
+        case items = "ResponseItems"
+    }
+}
+
+_ = ResponseModel(items: [Item()]).items
+```
+
+```swift
+class ResponseModel {
+    @objc func foo() {
+    }
+}
+_ = ResponseModel()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let ↓kConstant = 0
+```
+
+```swift
+struct Item {}
+struct ↓ResponseModel: Codable {
+    let ↓items: [Item]
+
+    enum ↓CodingKeys: String {
+        case items = "ResponseItems"
+    }
+}
+```
+
+```swift
+class ↓ResponseModel {
+    func ↓foo() {
+    }
+}
+```
+
+</details>
+
+
+
 ## Unused Enumerated
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -23879,63 +23948,6 @@ if let ↓_ = bar {
 
 ```swift
 if case .some(let ↓_) = self {}
-```
-
-</details>
-
-
-
-## Unused Private Declaration
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
---- | --- | --- | --- | --- | ---
-`unused_private_declaration` | Disabled | No | lint | Yes | 3.0.0 
-
-Private declarations should be referenced in that file.
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-private let kConstant = 0
-_ = kConstant
-```
-
-```swift
-struct ResponseModel: Codable {
-    let items: [Item]
-
-    private enum CodingKeys: String, CodingKey {
-        case items = "ResponseItems"
-    }
-}
-```
-
-```swift
-class ResponseModel {
-    @objc private func foo() {
-    }
-}
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
-```swift
-private let ↓kConstant = 0
-```
-
-```swift
-struct ResponseModel: Codable {
-    let items: [Item]
-
-    private enum ↓CodingKeys: String {
-        case items = "ResponseItems"
-    }
-}
 ```
 
 </details>

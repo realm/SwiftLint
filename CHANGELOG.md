@@ -24,6 +24,16 @@
   [Elliott Williams](https://github.com/elliottwilliams)
   [#2431](https://github.com/realm/SwiftLint/issues/2431)
 
+* Add a new `unused_declaration` analyzer rule to lint for unused declarations.
+  By default, detects unused `fileprivate`, `private` and `internal`
+  declarations. Configure the rule with `include_public_and_open: true` to
+  also detect unused `public` and `open` declarations.  
+  [JP Simard](https://github.com/jpsim)
+
+* Completely remove the `unused_private_declaration` rule. Please use
+  `unused_declaration` instead.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Enhancements
 
 * None.

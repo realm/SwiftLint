@@ -1,4 +1,4 @@
-## Master
+## 0.34.0: Anti-Static Wool Dryer Balls
 
 #### Breaking
 

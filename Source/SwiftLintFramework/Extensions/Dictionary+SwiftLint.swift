@@ -45,22 +45,6 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     var typeName: String? {
         return self["key.typename"] as? String
     }
-    /// Column where the token's declaration begins.
-    var docColumn: Int? {
-        return (self["key.doc.column"] as? Int64).flatMap({ Int($0) })
-    }
-    /// Line where the token's declaration begins.
-    var docLine: Int? {
-        return (self["key.doc.line"] as? Int64).flatMap({ Int($0) })
-    }
-    /// Parsed scope start.
-    var docType: Int? {
-        return (self["key.doc.type"] as? Int64).flatMap({ Int($0) })
-    }
-    /// Parsed scope start end.
-    var usr: Int? {
-        return (self["key.usr"] as? Int64).flatMap({ Int($0) })
-    }
     /// Documentation length.
     var docLength: Int? {
         return (self["key.doclength"] as? Int64).flatMap({ Int($0) })

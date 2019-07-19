@@ -1,4 +1,3 @@
-import Foundation
 @testable import SwiftLintFramework
 import XCTest
 

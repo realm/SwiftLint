@@ -1,5 +1,4 @@
 import Foundation
-@testable import SwiftLintFramework
 import XCTest
 import Yams
 

@@ -17,6 +17,8 @@
 * Release memory created for sourcekitd requests.  
   [Colton Schlosser](https://github.com/cltnschlosser)
   [#2812](https://github.com/realm/SwiftLint/issues/2812)
+* Fix UnusedDeclaration false positive - captured variable.  
+  [Colton Schlosser](https://github.com/cltnschlosser)
 
 ## 0.34.0: Anti-Static Wool Dryer Balls
 

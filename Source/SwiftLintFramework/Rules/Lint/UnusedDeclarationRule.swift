@@ -42,6 +42,12 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
                 }
             }
             _ = ResponseModel()
+            """,
+            """
+            private let limit = 5
+            [].forEach { [limit] in
+                print(limit)
+            }
             """
         ],
         triggeringExamples: [
@@ -62,6 +68,11 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             class ↓ResponseModel {
                 func ↓foo() {
                 }
+            }
+            """,
+            """
+            private let limit = 5
+            [].forEach { [limit] in
             }
             """
         ],
@@ -158,7 +169,7 @@ private extension File {
     }
 
     static func referencedUSRs(allCursorInfo: [[String: SourceKitRepresentable]]) -> [String] {
-        return allCursorInfo.compactMap(referencedUSR)
+        return allCursorInfo.flatMap(referencedUSR)
     }
 
     static func testCaseUSRs(allCursorInfo: [[String: SourceKitRepresentable]]) -> Set<String> {
@@ -212,14 +223,18 @@ private extension File {
         return nil
     }
 
-    private static func referencedUSR(cursorInfo: [String: SourceKitRepresentable]) -> String? {
+    private static func referencedUSR(cursorInfo: [String: SourceKitRepresentable]) -> [String] {
         if let usr = cursorInfo["key.usr"] as? String,
             let kind = cursorInfo["key.kind"] as? String,
             kind.contains("source.lang.swift.ref") {
-            return usr
+            if let relatedDecls = cursorInfo["key.related_decls"] as? [[String: SourceKitRepresentable]] {
+                return [usr] + relatedDecls.compactMap { ($0["key.annotated_decl"] as? String)?.usrFromXml }
+            } else {
+                return [usr]
+            }
         }
 
-        return nil
+        return []
     }
 
     private static func testCaseUSR(cursorInfo: [String: SourceKitRepresentable]) -> String? {
@@ -276,3 +291,14 @@ private let syntaxKindsToSkip: Set<SyntaxKind> = [
     .string,
     .stringInterpolationAnchor
 ]
+
+private extension String {
+    var usrFromXml: String? {
+        guard let usrIndex = lastIndex(of: "usr=\""),
+            let end = lastIndex(of: "\">") else {
+                return nil
+        }
+        let start = usrIndex + 5
+        return substring(from: start, length: end - start)
+    }
+}

@@ -23651,6 +23651,13 @@ class ResponseModel {
 _ = ResponseModel()
 ```
 
+```swift
+private let limit = 5
+[].forEach { [limit] in
+    print(limit)
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -23674,6 +23681,12 @@ struct ↓ResponseModel: Codable {
 class ↓ResponseModel {
     func ↓foo() {
     }
+}
+```
+
+```swift
+private let limit = 5
+[].forEach { [limit] in
 }
 ```
 

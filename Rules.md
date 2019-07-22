@@ -15095,6 +15095,18 @@ switch foo {
 }
 ```
 
+```swift
+switch foo {
+    case .foo(↓let x, (↓let y, ↓let z)): break
+}
+```
+
+```swift
+switch foo {
+    case (↓let .yamlParsing(x), ↓let .yamlParsing(y)): break
+}
+```
+
 </details>
 
 

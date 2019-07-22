@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -465,12 +465,6 @@ class OverriddenSuperCallRuleTests: XCTestCase {
 class OverrideInExtensionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OverrideInExtensionRule.description)
-    }
-}
-
-class PatternMatchingKeywordsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PatternMatchingKeywordsRule.description)
     }
 }
 

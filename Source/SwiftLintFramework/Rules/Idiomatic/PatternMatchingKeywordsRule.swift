@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, OptInRule {
+    public var configuration = PatternMatchingKeywordsRuleConfiguration(maxDeclarations: 1)
 
     public init() {}
 
@@ -30,7 +30,8 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
             "case (.yamlParsing(↓let x), .yamlParsing(↓let y))",
             "case (↓var x,  ↓var y)",
             "case .foo(↓var x, ↓var y)",
-            "case (.yamlParsing(↓var x), .yamlParsing(↓var y))"
+            "case (.yamlParsing(↓var x), .yamlParsing(↓var y))",
+            "case .foo(↓let x, (↓let y, ↓let z))",
         ].map(wrapInSwitch)
     )
 
@@ -49,20 +50,27 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
                     return []
             }
 
-            let letMatches = file.match(pattern: "\\blet\\b", with: [.keyword], range: caseRange)
-            let varMatches = file.match(pattern: "\\bvar\\b", with: [.keyword], range: caseRange)
+            let parametersRanges = file.match(pattern: "\\([^\\)]*\\)", range: caseRange).map { $0.0 }
+
+            var letMatches: [NSRange] = []
+            var varMatches: [NSRange] = []
+            for range in parametersRanges {
+                letMatches += file.match(pattern: "\\blet\\b", with: [.keyword], range: range)
+                varMatches += file.match(pattern: "\\bvar\\b", with: [.keyword], range: range)
+            }
 
             if !letMatches.isEmpty && !varMatches.isEmpty {
                 return []
             }
 
-            guard letMatches.count > 1 || varMatches.count > 1 else {
+            guard letMatches.count > configuration.maxDeclarations ||
+                varMatches.count > configuration.maxDeclarations else {
                 return []
             }
 
             return (letMatches + varMatches).map {
                 StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
+                               severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, characterOffset: $0.location))
             }
         }

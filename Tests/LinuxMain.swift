@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -948,7 +948,8 @@ extension OverrideInExtensionRuleTests {
 
 extension PatternMatchingKeywordsRuleTests {
     static var allTests: [(String, (PatternMatchingKeywordsRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithZeroMaxDeclarations", testWithZeroMaxDeclarations)
     ]
 }
 

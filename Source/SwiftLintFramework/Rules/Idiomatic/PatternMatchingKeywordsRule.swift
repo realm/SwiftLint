@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, OptInRule {
+    public var configuration = PatternMatchingKeywordsRuleConfiguration(maxDeclarations: 1)
 
     public init() {}
 
@@ -30,7 +30,9 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
             Example("case (.yamlParsing(↓let x), .yamlParsing(↓let y))"),
             Example("case (↓var x,  ↓var y)"),
             Example("case .foo(↓var x, ↓var y)"),
-            Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))")
+            Example("case (.yamlParsing(↓var x), .yamlParsing(↓var y))"),
+            Example("case .foo(↓let x, (↓let y, ↓let z))"),
+            Example("case (↓let .yamlParsing(x), ↓let .yamlParsing(y))")
         ].map(wrapInSwitch)
     )
 
@@ -49,6 +51,10 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
                 return []
             }
 
+            guard file.match(pattern: "^(let|var)", range: caseRange).isEmpty else {
+                return []
+            }
+
             let letMatches = file.match(pattern: "\\blet\\b", with: [.keyword], range: caseRange)
             let varMatches = file.match(pattern: "\\bvar\\b", with: [.keyword], range: caseRange)
 
@@ -56,14 +62,17 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
                 return []
             }
 
-            guard letMatches.count > 1 || varMatches.count > 1 else {
+            guard letMatches.count > configuration.maxDeclarations ||
+                varMatches.count > configuration.maxDeclarations else {
                 return []
             }
 
             return (letMatches + varMatches).map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: configuration.severityConfiguration.severity,
+                    location: Location(file: file, characterOffset: $0.location)
+                )
             }
         }
     }

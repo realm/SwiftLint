@@ -527,12 +527,6 @@ class OverrideInExtensionRuleTests: XCTestCase {
     }
 }
 
-class PatternMatchingKeywordsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PatternMatchingKeywordsRule.description)
-    }
-}
-
 class PreferNimbleRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)

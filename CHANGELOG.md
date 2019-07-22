@@ -11,7 +11,10 @@
 
 #### Enhancements
 
-* None.
+* Add `max_declarations` configuration option to `pattern_matching_keywords` 
+  rule to set number of declarations allowed inside tuples in a `switch`.  
+  [Marcin Podeszwa](https://github.com/mpodeszwa)
+  [#3566](https://github.com/realm/SwiftLint/pull/3566)
 
 #### Bug Fixes
 

@@ -1162,7 +1162,8 @@ extension ParserDiagnosticsTests {
 
 extension PatternMatchingKeywordsRuleTests {
     static var allTests: [(String, (PatternMatchingKeywordsRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithZeroMaxDeclarations", testWithZeroMaxDeclarations)
     ]
 }
 

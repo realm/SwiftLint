@@ -18,6 +18,10 @@
   [Colton Schlosser](https://github.com/cltnschlosser)
   [#2812](https://github.com/realm/SwiftLint/issues/2812)
 
+* Fix `swiftlinit rules` output table formatting.  
+  [JP Simard](https://github.com/jpsim)
+  [#2787](https://github.com/realm/SwiftLint/issues/2787)
+
 ## 0.34.0: Anti-Static Wool Dryer Balls
 
 #### Breaking

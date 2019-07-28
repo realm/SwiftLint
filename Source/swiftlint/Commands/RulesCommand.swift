@@ -122,7 +122,7 @@ extension TextTable {
         func truncate(_ string: String) -> String {
             let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
             let minWidth = "configuration".count - "...".count
-            let configurationStartColumn = 112
+            let configurationStartColumn = 124
             let truncatedEndIndex = stringWithNoNewlines.index(
                 stringWithNoNewlines.startIndex,
                 offsetBy: max(minWidth, Terminal.currentWidth() - configurationStartColumn),

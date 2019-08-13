@@ -2054,6 +2054,13 @@ class ABC { let def = ghi(jkl: mno) } }
 func foo() { let dict = [1: 1] }
 ```
 
+```swift
+let aaa = Self.bbb ? Self.ccc : Self.ddd else {
+return nil
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -45,7 +45,7 @@ internal extension ColonRule {
             return false
         }
 
-        let validKinds: Bool
+        var validKinds: Bool
         switch (syntaxKinds[0], syntaxKinds[1]) {
         case (.identifier, .typeidentifier),
              (.typeidentifier, .typeidentifier):
@@ -53,6 +53,11 @@ internal extension ColonRule {
         case (.identifier, .keyword),
              (.typeidentifier, .keyword):
             validKinds = file.isTypeLike(token: syntaxTokens[1])
+            //Exclude explicit "Self" type because of static variables
+            if syntaxKinds[0] == .identifier,
+                file.getTokenText(token: syntaxTokens[1]) == "Self" {
+                validKinds = false
+            }
         case (.keyword, .typeidentifier):
             validKinds = file.isTypeLike(token: syntaxTokens[0])
         default:
@@ -69,12 +74,16 @@ internal extension ColonRule {
 
 private extension File {
     func isTypeLike(token: SyntaxToken) -> Bool {
-        let nsstring = contents.bridge()
-        guard let text = nsstring.substringWithByteRange(start: token.offset, length: token.length),
+        guard let text = getTokenText(token: token),
             let firstLetter = text.unicodeScalars.first else {
                 return false
         }
 
         return CharacterSet.uppercaseLetters.contains(firstLetter)
+    }
+
+    func getTokenText(token: SyntaxToken) -> String? {
+        let nsstring = contents.bridge()
+        return nsstring.substringWithByteRange(start: token.offset, length: token.length)
     }
 }

@@ -14,6 +14,10 @@
 
 #### Bug Fixes
 
+* Fixed false positive in `colon` rule inside guard and ternary operator.
+  [Andrey Uryadov](https://github.com/a-25)
+  [#2806](https://github.com/realm/SwiftLint/issues/2806)
+
 * Release memory created for sourcekitd requests.  
   [Colton Schlosser](https://github.com/cltnschlosser)
   [#2812](https://github.com/realm/SwiftLint/issues/2812)

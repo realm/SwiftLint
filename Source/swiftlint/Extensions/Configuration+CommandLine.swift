@@ -254,7 +254,7 @@ extension Configuration {
 
     // MARK: Rules command
     init(options: RulesOptions) {
-        self.init(path: options.configurationFile, rootPath: nil, optional: isConfigOptional())
+        self.init(path: options.configurationFile, optional: isConfigOptional())
     }
 }
 

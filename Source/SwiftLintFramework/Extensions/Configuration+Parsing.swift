@@ -1,5 +1,6 @@
 extension Configuration {
-    internal enum Key: String {
+    // MARK: - Subtypes
+    internal enum Key: String, CaseIterable {
         case cachePath = "cache_path"
         case disabledRules = "disabled_rules"
         case enabledRules = "enabled_rules" // deprecated in favor of optInRules
@@ -14,31 +15,68 @@ extension Configuration {
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case subConfig = "sub_config"
+        case parentConfig = "parent_config"
     }
 
-    private static let validGlobalKeys: Set<String> = {
-        return Set([
-            Key.cachePath,
-            .disabledRules,
-            .enabledRules,
-            .excluded,
-            .included,
-            .optInRules,
-            .reporter,
-            .swiftlintVersion,
-            .useNestedConfigs,
-            .warningThreshold,
-            .whitelistRules,
-            .indentation,
-            .analyzerRules,
-            .subConfig
-        ].map({ $0.rawValue }))
-    }()
+    // MARK: - Properties
+    private static let validGlobalKeys: Set<String> = Set(Key.allCases.map { $0.rawValue })
 
+    // MARK: - Initializers
+    public init?(
+        dict: [String: Any],
+        ruleList: RuleList = masterRuleList,
+        enableAllRules: Bool = false,
+        cachePath: String? = nil
+    ) {
+        func defaultStringArray(_ object: Any?) -> [String] { return [String].array(of: object) ?? [] }
+
+        let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
+        Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
+        let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
+        let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
+        let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
+        let included = defaultStringArray(dict[Key.included.rawValue])
+        let excluded = defaultStringArray(dict[Key.excluded.rawValue])
+        let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
+        Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
+                                            optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
+
+        let allRulesWithConfigurations: [Rule]
+        do {
+            allRulesWithConfigurations = try ruleList.allRules(configurationDict: dict)
+        } catch let RuleListError.duplicatedConfigurations(ruleType) {
+            let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
+            let identifier = ruleType.description.identifier
+            queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
+            return nil
+        } catch {
+            return nil
+        }
+
+        guard let rulesMode = RulesStorage.Mode(enableAllRules: enableAllRules, whitelistRules: whitelistRules,
+                                                optInRules: optInRules, disabledRules: disabledRules,
+                                                analyzerRules: analyzerRules) else { return nil }
+
+        Configuration.validateConfiguredRulesAreEnabled(configurationDictionary: dict,
+                                                        ruleList: ruleList, rulesMode: rulesMode)
+
+        self.init(
+            rulesMode: rulesMode,
+            ruleList: ruleList,
+            allRulesWithConfigurations: allRulesWithConfigurations,
+            pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
+            included: included,
+            excluded: excluded,
+            warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
+            reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
+            cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
+            indentation: indentation
+        )
+    }
+
+    // MARK: - Methods: Validations
     private static func validKeys(ruleList: RuleList) -> Set<String> {
-        var keys = validGlobalKeys
-        keys.formUnion(ruleList.allValidIdentifiers())
-        return keys
+        return validGlobalKeys.union(ruleList.allValidIdentifiers())
     }
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
@@ -52,104 +90,6 @@ extension Configuration {
         }
 
         return .default
-    }
-
-    public init?(
-        dict: [String: Any],
-        ruleList: RuleList = masterRuleList,
-        enableAllRules: Bool = false,
-        cachePath: String? = nil
-    ) {
-        // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
-        let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
-
-        Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
-
-        let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
-        let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
-        let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
-        let included = defaultStringArray(dict[Key.included.rawValue])
-        let excluded = defaultStringArray(dict[Key.excluded.rawValue])
-        let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
-
-        Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
-                                            optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
-
-        let allRulesWithConfigurations: [Rule]
-        do {
-            allRulesWithConfigurations = try ruleList.allRules(configurationDict: dict)
-        } catch RuleListError.duplicatedConfigurations(let ruleType) {
-            let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
-            let identifier = ruleType.description.identifier
-            queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
-            return nil
-        } catch {
-            return nil
-        }
-
-        let swiftlintVersion = dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) }
-        self.init(
-            disabledRules: disabledRules,
-            optInRules: optInRules,
-            enableAllRules: enableAllRules,
-            whitelistRules: whitelistRules,
-            analyzerRules: analyzerRules,
-            included: included,
-            excluded: excluded,
-            warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
-            reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
-            ruleList: ruleList,
-            allRulesWithConfigurations: allRulesWithConfigurations,
-            swiftlintVersion: swiftlintVersion,
-            cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-            indentation: indentation,
-            dict: dict
-        )
-    }
-
-    private init?(
-        disabledRules: [String],
-        optInRules: [String],
-        enableAllRules: Bool,
-        whitelistRules: [String],
-        analyzerRules: [String],
-        included: [String],
-        excluded: [String],
-        warningThreshold: Int?,
-        reporter: String = XcodeReporter.identifier,
-        ruleList: RuleList = masterRuleList,
-        allRulesWithConfigurations: [Rule]?,
-        swiftlintVersion: String?,
-        cachePath: String?,
-        indentation: IndentationStyle,
-        dict: [String: Any]
-    ) {
-        guard let rulesMode = RulesStorage.Mode(
-            enableAllRules: enableAllRules,
-            whitelistRules: whitelistRules,
-            optInRules: optInRules,
-            disabledRules: disabledRules,
-            analyzerRules: analyzerRules
-        ) else { return nil }
-
-        Configuration.validateConfiguredRulesAreEnabled(
-            configurationDictionary: dict,
-            ruleList: ruleList,
-            rulesMode: rulesMode
-        )
-
-        self.init(
-            rulesMode: rulesMode,
-            included: included,
-            excluded: excluded,
-            warningThreshold: warningThreshold,
-            reporter: reporter,
-            ruleList: ruleList,
-            allRulesWithConfigurations: allRulesWithConfigurations,
-            swiftlintVersion: swiftlintVersion,
-            cachePath: cachePath,
-            indentation: indentation
-        )
     }
 
     private static func warnAboutDeprecations(
@@ -229,8 +169,4 @@ extension Configuration {
             }
         }
     }
-}
-
-private func defaultStringArray(_ object: Any?) -> [String] {
-    return [String].array(of: object) ?? []
 }

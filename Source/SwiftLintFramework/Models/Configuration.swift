@@ -26,19 +26,56 @@ public struct Configuration: Hashable {
     public var rules: [Rule] { return rulesStorage.resultingRules }
 
     // MARK: - Initializers
+    /// Initialize with all properties.
+    internal init(
+        rulesStorage: RulesStorage,
+        included: [String],
+        excluded: [String],
+        warningThreshold: Int?,
+        reporter: String,
+        cachePath: String?,
+        rootPath: String?,
+        indentation: IndentationStyle
+    ) {
+        self.rulesStorage = rulesStorage
+        self.included = included
+        self.excluded = excluded
+        self.warningThreshold = warningThreshold
+        self.reporter = reporter
+        self.cachePath = cachePath
+        self.rootPath = rootPath
+        self.indentation = indentation
+    }
+
+    /// Initialize by copying a given configuration
+    private init(copying configuration: Configuration) {
+        rulesStorage = configuration.rulesStorage
+        included = configuration.included
+        excluded = configuration.excluded
+        warningThreshold = configuration.warningThreshold
+        reporter = configuration.reporter
+        cachePath = configuration.cachePath
+        rootPath = configuration.rootPath
+        indentation = configuration.indentation
+    }
+
+    /// Initialize with all properties,
+    /// except that rulesStorage is still to be synthesized from rulesMode, ruleList & allRulesWithConfigurations
+    /// and a check against the pinnedVersion is performed if given.
     public init(
         rulesMode: RulesStorage.Mode = .default(disabled: [], optIn: []),
+        ruleList: RuleList = masterRuleList,
+        allRulesWithConfigurations: [Rule]? = nil,
+        pinnedVersion: String? = nil,
         included: [String] = [],
         excluded: [String] = [],
         warningThreshold: Int? = nil,
         reporter: String = XcodeReporter.identifier,
-        ruleList: RuleList = masterRuleList,
-        allRulesWithConfigurations: [Rule]? = nil,
-        swiftlintVersion: String? = nil,
         cachePath: String? = nil,
+        rootPath: String? = nil,
         indentation: IndentationStyle = .default
     ) {
-        if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
+        if let pinnedVersion = pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
             exit(2)
@@ -57,46 +94,15 @@ public struct Configuration: Hashable {
             warningThreshold: warningThreshold,
             reporter: reporter,
             cachePath: cachePath,
+            rootPath: rootPath,
             indentation: indentation
         )
     }
 
-    internal init(
-        rulesStorage: RulesStorage,
-        included: [String],
-        excluded: [String],
-        warningThreshold: Int?,
-        reporter: String,
-        cachePath: String?,
-        rootPath: String? = nil,
-        indentation: IndentationStyle
-    ) {
-        self.rulesStorage = rulesStorage
-        self.included = included
-        self.excluded = excluded
-        self.reporter = reporter
-        self.cachePath = cachePath
-        self.rootPath = rootPath
-        self.indentation = indentation
-
-        // set the config threshold to the threshold provided in the config file
-        self.warningThreshold = warningThreshold
-    }
-
-    private init(_ configuration: Configuration) {
-        rulesStorage = configuration.rulesStorage
-        included = configuration.included
-        excluded = configuration.excluded
-        warningThreshold = configuration.warningThreshold
-        reporter = configuration.reporter
-        cachePath = configuration.cachePath
-        rootPath = configuration.rootPath
-        indentation = configuration.indentation
-    }
-
+    /// Initialize based on a path to a configuration file.
     public init(
-        path: String = Configuration.fileName,
-        rootPath: String?, // This does not have a default value, so that Configuration() isn't confused with this init
+        path: String, // This does not have a default value, so that Configuration() isn't confused with this init
+        rootPath: String? = nil,
         optional: Bool = true,
         quiet: Bool = false,
         enableAllRules: Bool = false,
@@ -112,7 +118,7 @@ public struct Configuration: Hashable {
         }
 
         if let cachedConfig = Configuration.getCached(atPath: fullPath) {
-            self.init(cachedConfig)
+            self.init(copying: cachedConfig)
             configurationPath = fullPath
             return
         }

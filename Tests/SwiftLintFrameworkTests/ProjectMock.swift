@@ -85,7 +85,7 @@ extension ProjectMock {
     }
 
     var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, rootPath: nil, optional: false, quiet: true)
+        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
     }
 
     var projectMockConfig2CustomRules: Configuration {

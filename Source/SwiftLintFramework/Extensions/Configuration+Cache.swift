@@ -21,7 +21,6 @@ private extension String {
 
 extension Configuration {
     // MARK: Caching Configurations By Path (In-Memory)
-
     private static var cachedConfigurationsByPath = [String: Configuration]()
     private static var cachedConfigurationsByPathLock = NSLock()
 
@@ -51,12 +50,8 @@ extension Configuration {
         }
 
         let cacheRulesDescriptions = rules
-            .map { rule in
-                return [type(of: rule).description.identifier, rule.cacheDescription]
-            }
-            .sorted { rule1, rule2 in
-                return rule1[0] < rule2[0]
-            }
+            .map { rule in [type(of: rule).description.identifier, rule.cacheDescription] }
+            .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [
             rootPath ?? FileManager.default.currentDirectoryPath,
             cacheRulesDescriptions
@@ -73,11 +68,11 @@ extension Configuration {
         if let path = cachePath {
             baseURL = URL(fileURLWithPath: path)
         } else {
-#if os(Linux)
+            #if os(Linux)
             baseURL = URL(fileURLWithPath: "/var/tmp/")
-#else
+            #else
             baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-#endif
+            #endif
         }
         let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
 

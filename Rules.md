@@ -23808,6 +23808,13 @@ import UnknownModule
 func foo(error: Swift.Error) {}
 ```
 
+```swift
+import Foundation
+import ObjectiveC
+let 👨‍👩‍👧‍👦 = #selector(NSArray.contains(_:))
+👨‍👩‍👧‍👦 == 👨‍👩‍👧‍👦
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

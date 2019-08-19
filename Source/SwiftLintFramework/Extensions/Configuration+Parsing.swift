@@ -22,24 +22,24 @@ extension Configuration {
     private static let validGlobalKeys: Set<String> = Set(Key.allCases.map { $0.rawValue })
 
     // MARK: - Initializers
-    public init?(
+    public init(
         dict: [String: Any],
         ruleList: RuleList = masterRuleList,
         enableAllRules: Bool = false,
         cachePath: String? = nil
-    ) {
+    ) throws {
         func defaultStringArray(_ object: Any?) -> [String] { return [String].array(of: object) ?? [] }
 
         let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
-        Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
-        let included = defaultStringArray(dict[Key.included.rawValue])
-        let excluded = defaultStringArray(dict[Key.excluded.rawValue])
-        let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
-        Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
-                                            optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
+
+        Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
+        Configuration.warnAboutDeprecations(
+            configurationDictionary: dict, disabledRules: disabledRules,
+            optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList
+        )
 
         let allRulesWithConfigurations: [Rule]
         do {
@@ -47,30 +47,34 @@ extension Configuration {
         } catch let RuleListError.duplicatedConfigurations(ruleType) {
             let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
             let identifier = ruleType.description.identifier
-            queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
-            return nil
-        } catch {
-            return nil
+            throw ConfigurationError.generic(
+                "Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases)."
+            )
         }
 
-        guard let rulesMode = RulesStorage.Mode(enableAllRules: enableAllRules, whitelistRules: whitelistRules,
-                                                optInRules: optInRules, disabledRules: disabledRules,
-                                                analyzerRules: analyzerRules) else { return nil }
+        let rulesMode = try RulesStorage.Mode(
+            enableAllRules: enableAllRules,
+            whitelistRules: whitelistRules,
+            optInRules: optInRules,
+            disabledRules: disabledRules,
+            analyzerRules: analyzerRules
+        )
 
-        Configuration.validateConfiguredRulesAreEnabled(configurationDictionary: dict,
-                                                        ruleList: ruleList, rulesMode: rulesMode)
+        Configuration.validateConfiguredRulesAreEnabled(
+            configurationDictionary: dict, ruleList: ruleList, rulesMode: rulesMode
+        )
 
         self.init(
             rulesMode: rulesMode,
             ruleList: ruleList,
             allRulesWithConfigurations: allRulesWithConfigurations,
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
-            included: included,
-            excluded: excluded,
+            included: defaultStringArray(dict[Key.included.rawValue]),
+            excluded: defaultStringArray(dict[Key.excluded.rawValue]),
             warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-            indentation: indentation
+            indentation: Configuration.getIndentationLogIfInvalid(from: dict)
         )
     }
 

@@ -16,7 +16,7 @@ extension Configuration {
 
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
         let includedPaths = included.parallelFlatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
+            fileManager.filesToLint(inPath: $0, rootDirectory: graph.rootPath)
         }
 
         return filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
@@ -44,6 +44,6 @@ extension Configuration {
     private func excludedPaths(fileManager: LintableFileManager) -> [String] {
         return excluded
             .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath) }
+            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: graph.rootPath) }
     }
 }

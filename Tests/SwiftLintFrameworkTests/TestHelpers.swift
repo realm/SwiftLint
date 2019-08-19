@@ -27,7 +27,7 @@ extension String {
 
 let allRuleIdentifiers = Set(masterRuleList.list.keys)
 
-func violations(_ string: String, config: Configuration = Configuration(),
+func violations(_ string: String, config: Configuration = Configuration.default,
                 requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
     let stringStrippingMarkers = string.replacingOccurrences(of: violationMarker, with: "")
@@ -46,20 +46,20 @@ func violations(_ string: String, config: Configuration = Configuration(),
 }
 
 extension Collection where Element == String {
-    func violations(config: Configuration = Configuration(), requiresFileOnDisk: Bool = false)
+    func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
             return map(makeFile).violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
-    func corrections(config: Configuration = Configuration(), requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
         return map(makeFile).corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 }
 
 extension Collection where Element: SwiftLintFile {
-    func violations(config: Configuration = Configuration(), requiresFileOnDisk: Bool = false)
+    func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let storage = RuleStorage()
             let violations = map({ file in
@@ -73,7 +73,7 @@ extension Collection where Element: SwiftLintFile {
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
 
-    func corrections(config: Configuration = Configuration(), requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let storage = RuleStorage()
         let corrections = map({ file in
             Linter(file: file, configuration: config,

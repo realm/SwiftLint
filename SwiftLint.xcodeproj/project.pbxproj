@@ -246,6 +246,7 @@
 		CC6D28592292F0380052B682 /* IndentationWidthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D28572292EF460052B682 /* IndentationWidthRule.swift */; };
 		CC6D285B2292F0600052B682 /* IndentationWidthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */; };
 		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
+		CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB336F42303FA7400C52023 /* Configuration+Graph.swift */; };
 		CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* RulesStorage.swift */; };
 		CCB97C3A22E8D7EC002F5458 /* SubConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
@@ -750,6 +751,7 @@
 		CC6D28572292EF460052B682 /* IndentationWidthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRule.swift; sourceTree = "<group>"; usesTabs = 0; };
 		CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthConfiguration.swift; sourceTree = "<group>"; };
 		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
+		CCB336F42303FA7400C52023 /* Configuration+Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Graph.swift"; sourceTree = "<group>"; };
 		CCB97C3422E89257002F5458 /* RulesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesStorage.swift; sourceTree = "<group>"; };
 		CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubConfigTests.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
@@ -1709,6 +1711,7 @@
 			children = (
 				3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */,
 				E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */,
+				CCB336F42303FA7400C52023 /* Configuration+Graph.swift */,
 				8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */,
 				E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */,
 				E889D8C61F1D357B00058332 /* Configuration+Merging.swift */,
@@ -2049,6 +2052,7 @@
 				B25DCD0C1F7E9FA20028A199 /* MultilineArgumentsRule.swift in Sources */,
 				6258783B1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift in Sources */,
 				62A3E95D209E084000547A86 /* EmptyXCTestMethodRule.swift in Sources */,
+				CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */,
 				D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */,
 				29FC197A21382C07006D208C /* DuplicateImportsRuleExamples.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,

@@ -7,13 +7,13 @@ public class RulesStorage {
         case whitelisted(Set<String>)
         case allEnabled
 
-        init?(
+        init(
             enableAllRules: Bool,
             whitelistRules: [String],
             optInRules: [String],
             disabledRules: [String],
             analyzerRules: [String]
-        ) {
+        ) throws {
             func warnAboutDuplicates(in identifiers: [String]) {
                 if Set(identifiers).count != identifiers.count {
                     let duplicateRules = identifiers.reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
@@ -28,10 +28,11 @@ public class RulesStorage {
                 self = .allEnabled
             } else if !whitelistRules.isEmpty {
                 if !disabledRules.isEmpty || !optInRules.isEmpty {
-                    queuedPrintError("'\(Configuration.Key.disabledRules.rawValue)' or " +
-                        "'\(Configuration.Key.optInRules.rawValue)' cannot be used in combination " +
-                        "with '\(Configuration.Key.whitelistRules.rawValue)'")
-                    return nil
+                    throw ConfigurationError.generic(
+                        "'\(Configuration.Key.disabledRules.rawValue)' or " +
+                            "'\(Configuration.Key.optInRules.rawValue)' cannot be used in combination " +
+                        "with '\(Configuration.Key.whitelistRules.rawValue)'"
+                    )
                 }
 
                 warnAboutDuplicates(in: whitelistRules + analyzerRules)

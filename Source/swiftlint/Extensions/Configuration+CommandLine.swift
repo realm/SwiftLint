@@ -69,7 +69,7 @@ extension Configuration {
         for file in files {
             // Files whose configuration specifies they should be excluded will be skipped
             let fileConfiguration = configuration(for: file)
-            let fileConfigurationRootPath = (fileConfiguration.rootPath ?? "").bridge()
+            let fileConfigurationRootPath = (fileConfiguration.graph.rootPath ?? "").bridge()
             let shouldSkip = fileConfiguration.excluded.contains { excludedRelativePath in
                 let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
                 let filePathComponents = file.path?.bridge().pathComponents ?? []
@@ -92,7 +92,7 @@ extension Configuration {
         }
 
         var pathComponents = path.bridge().pathComponents
-        let root = self.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
+        let root = graph.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
         for component in root.bridge().pathComponents where pathComponents.first == component {
             pathComponents.removeFirst()
         }
@@ -231,7 +231,7 @@ extension Configuration {
 
     init(options: LintOrAnalyzeOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile, rootPath: type(of: self).rootPath(from: options.paths),
+        self.init(subConfigQueue: [options.configurationFile], rootPath: type(of: self).rootPath(from: options.paths),
                   optional: isConfigOptional(), quiet: options.quiet, enableAllRules: options.enableAllRules,
                   cachePath: cachePath)
     }
@@ -248,13 +248,13 @@ extension Configuration {
 
     init(options: AutoCorrectOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile, rootPath: type(of: self).rootPath(from: options.paths),
+        self.init(subConfigQueue: [options.configurationFile], rootPath: type(of: self).rootPath(from: options.paths),
                   optional: isConfigOptional(), quiet: options.quiet, cachePath: cachePath)
     }
 
     // MARK: Rules command
     init(options: RulesOptions) {
-        self.init(path: options.configurationFile, optional: isConfigOptional())
+        self.init(subConfigQueue: [options.configurationFile], rootPath: nil, optional: isConfigOptional())
     }
 }
 

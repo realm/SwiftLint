@@ -21,19 +21,19 @@ private extension String {
 
 extension Configuration {
     // MARK: Caching Configurations By Path (In-Memory)
-    private static var cachedConfigurationsByPath = [String: Configuration]()
-    private static var cachedConfigurationsByPathLock = NSLock()
+    private static var cachedConfigurationsByIdentifier = [String: Configuration]()
+    private static var cachedConfigurationsByIdentifierLock = NSLock()
 
-    internal func setCached(atPath path: String) {
-        Configuration.cachedConfigurationsByPathLock.lock()
-        Configuration.cachedConfigurationsByPath[path] = self
-        Configuration.cachedConfigurationsByPathLock.unlock()
+    internal func setCached(forIdentifier identifier: String) {
+        Configuration.cachedConfigurationsByIdentifierLock.lock()
+        Configuration.cachedConfigurationsByIdentifier[identifier] = self
+        Configuration.cachedConfigurationsByIdentifierLock.unlock()
     }
 
-    internal static func getCached(atPath path: String) -> Configuration? {
-        cachedConfigurationsByPathLock.lock()
-        defer { cachedConfigurationsByPathLock.unlock() }
-        return cachedConfigurationsByPath[path]
+    internal static func getCached(forIdentifier identifier: String) -> Configuration? {
+        cachedConfigurationsByIdentifierLock.lock()
+        defer { cachedConfigurationsByIdentifierLock.unlock() }
+        return cachedConfigurationsByIdentifier[identifier]
     }
 
     public func withPrecomputedCacheDescription() -> Configuration {
@@ -53,7 +53,7 @@ extension Configuration {
             .map { rule in [type(of: rule).description.identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [
-            rootPath ?? FileManager.default.currentDirectoryPath,
+            graph.rootPath ?? FileManager.default.currentDirectoryPath,
             cacheRulesDescriptions
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),

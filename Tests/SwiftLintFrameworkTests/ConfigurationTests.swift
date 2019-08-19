@@ -191,7 +191,7 @@ class ConfigurationTests: XCTestCase, ProjectMock {
     }
 
     func testLintablePaths() {
-        let paths = Configuration().lintablePaths(inPath: projectMockPathLevel0, forceExclude: false)
+        let paths = Configuration.default.lintablePaths(inPath: projectMockPathLevel0, forceExclude: false)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",

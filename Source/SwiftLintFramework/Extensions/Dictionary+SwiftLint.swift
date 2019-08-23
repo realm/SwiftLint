@@ -75,6 +75,11 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
     }
 
+    var entities: [[String: SourceKitRepresentable]] {
+        let entities = self["key.entities"] as? [SourceKitRepresentable] ?? []
+        return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
+    }
+
     var enclosedVarParameters: [[String: SourceKitRepresentable]] {
         return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
             guard let kindString = subDict.kind else {

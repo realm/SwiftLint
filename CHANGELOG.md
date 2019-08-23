@@ -26,6 +26,11 @@
   [JP Simard](https://github.com/jpsim)
   [#2787](https://github.com/realm/SwiftLint/issues/2787)
 
+* Fix `unused_import` rule false positive when only operators from the module
+  are used.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2737](https://github.com/realm/SwiftLint/issues/2737)
+
 ## 0.34.0: Anti-Static Wool Dryer Balls
 
 #### Breaking

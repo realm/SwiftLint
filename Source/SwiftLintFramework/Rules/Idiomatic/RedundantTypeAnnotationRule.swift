@@ -14,7 +14,8 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         kind: .idiomatic,
         nonTriggeringExamples: [
             "var url = URL()",
-            "var url: CustomStringConvertible = URL()"
+            "var url: CustomStringConvertible = URL()",
+            "@IBInspectable var color: UIColor = UIColor.white"
         ],
         triggeringExamples: [
             "var url↓:URL=URL()",
@@ -72,7 +73,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         let pattern = "(var|let)\\s?\\w+\(typeAnnotationPattern)\\s?=\\s?\\w+(\\(|.)"
         let foundRanges = file.match(pattern: pattern, with: [.keyword, .identifier, .typeidentifier, .identifier])
         return foundRanges
-            .filter { !isFalsePositive(in: file, range: $0) }
+            .filter { !isFalsePositive(in: file, range: $0) && !isIBInspectable(range: $0, file: file) }
             .compactMap {
                 file.match(pattern: typeAnnotationPattern,
                            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds, range: $0).first
@@ -94,5 +95,16 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
 
         let rhsTypeName = components[1].trimmingCharacters(in: charactersToTrimFromRhs)
         return lhsTypeName != rhsTypeName
+    }
+
+    private func isIBInspectable(range: NSRange, file: File) -> Bool {
+        guard let byteRange = file.contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
+            let dict = file.structure.structures(forByteOffset: byteRange.location).last,
+            let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            SwiftDeclarationKind.variableKinds.contains(kind) else {
+                return false
+        }
+
+        return dict.enclosedSwiftAttributes.contains(.ibinspectable)
     }
 }

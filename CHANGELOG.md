@@ -31,6 +31,11 @@
   [Timofey Solonin](https://github.com/biboran)
   [#2737](https://github.com/realm/SwiftLint/issues/2737)
 
+* Avoid triggering `redundant_type_annotation` rule when declaring
+  `IBInspectable` properties.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2842](https://github.com/realm/SwiftLint/issues/2842)
+
 ## 0.34.0: Anti-Static Wool Dryer Balls
 
 #### Breaking

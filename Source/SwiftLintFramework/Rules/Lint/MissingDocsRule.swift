@@ -10,7 +10,9 @@ private extension File {
         let substructureOffsets = dictionary.substructure.flatMap {
             missingDocOffsets(in: $0, acls: acls)
         }
-        guard (dictionary.kind).flatMap(SwiftDeclarationKind.init) != nil,
+        guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+            case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
+            !isDeinit,
             let offset = dictionary.offset,
             let accessibility = dictionary.accessibility,
             let acl = AccessControlLevel(identifier: accessibility),
@@ -46,7 +48,13 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             "/// docs\npublic class B: A { override public func b() {} }\n",
             // externally-defined superclass member is documented, but subclass member is not
             "import Foundation\n/// docs\npublic class B: NSObject {\n" +
-            "// no docs\noverride public var description: String { fatalError() } }\n"
+            "// no docs\noverride public var description: String { fatalError() } }\n",
+            """
+            /// docs
+            public class A {
+                deinit {}
+            }
+            """
         ],
         triggeringExamples: [
             // public, undocumented

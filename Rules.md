@@ -17123,6 +17123,10 @@ var url = URL()
 var url: CustomStringConvertible = URL()
 ```
 
+```swift
+@IBInspectable var color: UIColor = UIColor.white
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

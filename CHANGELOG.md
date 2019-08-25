@@ -26,6 +26,10 @@
   [JP Simard](https://github.com/jpsim)
   [#2787](https://github.com/realm/SwiftLint/issues/2787)
 
+* Don't trigger `missing_docs` violations when implementing `deinit`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2690](https://github.com/realm/SwiftLint/issues/2690)
+
 * Fix `unused_import` rule false positive when only operators from the module
   are used.  
   [Timofey Solonin](https://github.com/biboran)

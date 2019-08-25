@@ -11717,6 +11717,13 @@ override public var description: String { fatalError() } }
 
 ```
 
+```swift
+/// docs
+public class A {
+    deinit {}
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

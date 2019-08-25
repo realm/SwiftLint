@@ -194,6 +194,12 @@ extension ConfigurationTests {
     ]
 }
 
+extension ContainsOverFilterCountRuleTests {
+    static var allTests: [(String, (ContainsOverFilterCountRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ContainsOverFirstNotNilRuleTests {
     static var allTests: [(String, (ContainsOverFirstNotNilRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
@@ -1550,6 +1556,7 @@ XCTMain([
     testCase(ConditionalReturnsOnNewlineRuleTests.allTests),
     testCase(ConfigurationAliasesTests.allTests),
     testCase(ConfigurationTests.allTests),
+    testCase(ContainsOverFilterCountRuleTests.allTests),
     testCase(ContainsOverFirstNotNilRuleTests.allTests),
     testCase(ControlStatementRuleTests.allTests),
     testCase(ConvenienceTypeRuleTests.allTests),

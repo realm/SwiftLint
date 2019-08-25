@@ -66,6 +66,12 @@ class CommaRuleTests: XCTestCase {
     }
 }
 
+class ContainsOverFilterCountRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ContainsOverFilterCountRule.description)
+    }
+}
+
 class ControlStatementRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)

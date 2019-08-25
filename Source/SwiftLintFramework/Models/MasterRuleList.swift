@@ -17,6 +17,7 @@ public let masterRuleList = RuleList(rules: [
     CommaRule.self,
     CompilerProtocolInitRule.self,
     ConditionalReturnsOnNewlineRule.self,
+    ContainsOverFilterCountRule.self,
     ContainsOverFirstNotNilRule.self,
     ControlStatementRule.self,
     ConvenienceTypeRule.self,

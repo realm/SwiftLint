@@ -77,7 +77,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         let matches = file.matchesAndSyntaxKinds(matching: letUnderscore, range: range)
 
         return matches
-            .filter { $0.1.filter(kinds.contains).isEmpty }
+            .filter { kinds.isDisjoint(with: $0.1) }
             .filter { kind != .guard || !containsOptionalTry(at: $0.0.range, of: file) }
             .map { $0.0.range(at: 1) }
     }

@@ -202,7 +202,7 @@ extension File {
                         excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
                         range: NSRange? = nil) -> [NSRange] {
         return match(pattern: pattern, range: range)
-            .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
+            .filter { syntaxKinds.isDisjoint(with: $0.1) }
             .map { $0.0 }
     }
 
@@ -274,7 +274,7 @@ extension File {
     fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
         let commentKinds = SyntaxKind.commentKinds
         return syntaxKindsByLines[startLine...endLine].filter { kinds in
-            kinds.filter { !commentKinds.contains($0) }.isEmpty
+            commentKinds.isSuperset(of: kinds)
         }.count
     }
 

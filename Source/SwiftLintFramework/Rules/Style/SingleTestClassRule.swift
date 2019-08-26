@@ -23,7 +23,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
         ]
     )
 
-    private let testClasses = ["QuickSpec", "XCTestCase"]
+    private let testClasses: Set = ["QuickSpec", "XCTestCase"]
 
     public init() {}
 
@@ -49,7 +49,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
                 SwiftDeclarationKind(rawValue: kind) == .class
                 else { return false }
 
-            return !dictionary.inheritedTypes.filter { testClasses.contains($0) }.isEmpty
+            return !testClasses.isDisjoint(with: dictionary.inheritedTypes)
         }
     }
 }

@@ -131,6 +131,6 @@ private extension String {
 
     var isOperator: Bool {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
-        return !operators.filter(hasPrefix).isEmpty
+        return operators.contains(where: hasPrefix)
     }
 }

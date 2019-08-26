@@ -70,6 +70,6 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
     // MARK: - Private
 
     private func isRange(_ range: ParameterRange, withinRanges ranges: [ParameterRange]) -> Bool {
-        return ranges.filter { $0 != range && ($0.offset..<($0.offset + $0.length)).contains(range.offset) }.isEmpty
+        return !ranges.contains { $0 != range && ($0.offset..<($0.offset + $0.length)).contains(range.offset) }
     }
 }

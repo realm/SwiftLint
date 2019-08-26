@@ -73,10 +73,10 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                     return false
                 }
 
-                return tokens
+                let kinds = tokens
                     .filter { $0.offset >= byteRange.location }
                     .kinds
-                    .filter(syntaxKinds.contains).isEmpty
+                return syntaxKinds.isDisjoint(with: kinds)
             }
             .compactMap { result, tokens in
                 return (result, tokens.kinds)

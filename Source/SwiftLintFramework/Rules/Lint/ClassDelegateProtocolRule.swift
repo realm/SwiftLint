@@ -49,12 +49,12 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
         }
 
         // Check if inherits from another Delegate protocol
-        guard dictionary.inheritedTypes.filter(isDelegateProtocol).isEmpty else {
+        guard !dictionary.inheritedTypes.contains(where: isDelegateProtocol) else {
             return []
         }
 
         // Check if inherits from a known reference type protocol
-        guard dictionary.inheritedTypes.filter(isReferenceTypeProtocol).isEmpty else {
+        guard !dictionary.inheritedTypes.contains(where: isReferenceTypeProtocol) else {
             return []
         }
 

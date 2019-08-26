@@ -117,7 +117,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 
         return file.match(pattern: pattern)
             .filter { _, kinds in
-                kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
+                excludingKinds.isDisjoint(with: kinds) && kinds.first == .identifier
             }.map { $0.0 }
             .filter { range in
                 let contents = file.contents.bridge()

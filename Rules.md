@@ -2549,6 +2549,11 @@ let result = myList.filter { $0 % 2 == 0 }.count > 1
 ```
 
 ```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count > 01
+
+```
+
+```swift
 let result = myList.filter(where: { $0 % 2 == 0 }).count == 1
 
 ```
@@ -2559,12 +2564,22 @@ let result = myList.filter { $0 % 2 == 0 }.count == 1
 ```
 
 ```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count == 01
+
+```
+
+```swift
 let result = myList.filter(where: { $0 % 2 == 0 }).count != 1
 
 ```
 
 ```swift
 let result = myList.filter { $0 % 2 == 0 }.count != 1
+
+```
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count != 01
 
 ```
 

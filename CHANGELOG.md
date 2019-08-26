@@ -16,7 +16,7 @@
 
 #### Bug Fixes
 
-* Fixed false positive in `colon` rule inside guard and ternary operator.
+* Fixed false positive in `colon` rule inside guard and ternary operator.  
   [Andrey Uryadov](https://github.com/a-25)
   [#2806](https://github.com/realm/SwiftLint/issues/2806)
 

@@ -13,7 +13,8 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             return [
                 "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n",
-                "let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n"
+                "let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n",
+                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01\n"
             ]
         } +  [
             "let result = myList.contains(where: { $0 % 2 == 0 })\n",
@@ -30,7 +31,7 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.count\\s*(?:!=|==|>)\\s*0"
+        let pattern = "[\\}\\)]\\s*\\.count\\s*(?:!=|==|>)\\s*0\\b"
         return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier, .number],
                         callNameSuffix: ".filter", severity: configuration.severity)
     }

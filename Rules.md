@@ -22733,6 +22733,14 @@ class AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift
+class MyView_Previews: PreviewProvider
+```
+
+```swift
+private class _MyView_Previews: PreviewProvider
+```
+
+```swift
 struct MyType {}
 ```
 
@@ -22745,6 +22753,14 @@ struct AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift
+struct MyView_Previews: PreviewProvider
+```
+
+```swift
+private struct _MyView_Previews: PreviewProvider
+```
+
+```swift
 enum MyType {}
 ```
 
@@ -22754,6 +22770,14 @@ private enum _MyType {}
 
 ```swift
 enum AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
+```
+
+```swift
+enum MyView_Previews: PreviewProvider
+```
+
+```swift
+private enum _MyView_Previews: PreviewProvider
 ```
 
 ```swift
@@ -22807,6 +22831,18 @@ class ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift
+class ↓MyView_Previews
+```
+
+```swift
+private class ↓_MyView_Previews
+```
+
+```swift
+class ↓MyView_Previews_Previews: PreviewProvider
+```
+
+```swift
 struct ↓myType {}
 ```
 
@@ -22827,6 +22863,18 @@ struct ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift
+struct ↓MyView_Previews
+```
+
+```swift
+private struct ↓_MyView_Previews
+```
+
+```swift
+struct ↓MyView_Previews_Previews: PreviewProvider
+```
+
+```swift
 enum ↓myType {}
 ```
 
@@ -22844,6 +22892,18 @@ enum ↓My {}
 
 ```swift
 enum ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
+```
+
+```swift
+enum ↓MyView_Previews
+```
+
+```swift
+private enum ↓_MyView_Previews
+```
+
+```swift
+enum ↓MyView_Previews_Previews: PreviewProvider
 ```
 
 ```swift

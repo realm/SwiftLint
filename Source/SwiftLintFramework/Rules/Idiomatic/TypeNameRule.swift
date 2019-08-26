@@ -68,7 +68,9 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
+        let name = name
+            .nameStrippingLeadingUnderscoreIfPrivate(dictionary)
+            .nameStrippingTrailingSwiftUIPreviewProvider(dictionary)
         let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
         if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
             return [StyleViolation(ruleDescription: type(of: self).description,
@@ -90,5 +92,16 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return []
+    }
+}
+
+private extension String {
+    func nameStrippingTrailingSwiftUIPreviewProvider(_ dictionary: [String: SourceKitRepresentable]) -> String {
+        guard dictionary.inheritedTypes.contains("PreviewProvider"),
+            hasSuffix("_Previews"),
+            let lastPreviewsIndex = lastIndex(of: "_Previews")
+            else { return self }
+
+        return substring(from: 0, length: lastPreviewsIndex)
     }
 }

@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Type name rules considers SwiftUI template code.
+  [atfelix](https://github.com/atfelix)
+  [#2791](https://github.com/realm/SwiftLint/issues/2791)
 
 #### Bug Fixes
 

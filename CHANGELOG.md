@@ -19,6 +19,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2803](https://github.com/realm/SwiftLint/issues/2803)
 
+* Add `contains_over_filter_is_empty` opt-in rule to warn against using
+  expressions like `filter(where:).isEmpty` instead of `contains(where:)`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fixed false positive in `colon` rule inside guard and ternary operator.  

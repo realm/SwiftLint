@@ -18,6 +18,7 @@ public let masterRuleList = RuleList(rules: [
     CompilerProtocolInitRule.self,
     ConditionalReturnsOnNewlineRule.self,
     ContainsOverFilterCountRule.self,
+    ContainsOverFilterIsEmptyRule.self,
     ContainsOverFirstNotNilRule.self,
     ControlStatementRule.self,
     ConvenienceTypeRule.self,

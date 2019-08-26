@@ -17,6 +17,7 @@
 * [Compiler Protocol Init](#compiler-protocol-init)
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
 * [Contains Over Filter Count](#contains-over-filter-count)
+* [Contains Over Filter Is Empty](#contains-over-filter-is-empty)
 * [Contains over first not nil](#contains-over-first-not-nil)
 * [Control Statement](#control-statement)
 * [Convenience Type](#convenience-type)
@@ -2644,6 +2645,92 @@ let result = ↓myList.filter { $0 % 2 == 0 }.count != 0
 
 ```swift
 let result = ↓myList.filter(where: someFunction).count != 0
+
+```
+
+</details>
+
+
+
+## Contains Over Filter Is Empty
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`contains_over_filter_is_empty` | Disabled | No | performance | No | 3.0.0 
+
+Prefer `contains` over using `filter(where:).isEmpty`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count > 1
+
+```
+
+```swift
+let result = myList.filter { $0 % 2 == 0 }.count > 1
+
+```
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count == 1
+
+```
+
+```swift
+let result = myList.filter { $0 % 2 == 0 }.count == 1
+
+```
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count != 1
+
+```
+
+```swift
+let result = myList.filter { $0 % 2 == 0 }.count != 1
+
+```
+
+```swift
+let result = myList.contains(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let result = !myList.contains(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let result = myList.contains(10)
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty
+
+```
+
+```swift
+let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty
+
+```
+
+```swift
+let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty
+
+```
+
+```swift
+let result = ↓myList.filter(where: someFunction).isEmpty
 
 ```
 

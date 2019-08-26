@@ -72,6 +72,12 @@ class ContainsOverFilterCountRuleTests: XCTestCase {
     }
 }
 
+class ContainsOverFilterIsEmptyRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ContainsOverFilterIsEmptyRule.description)
+    }
+}
+
 class ControlStatementRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)

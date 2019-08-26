@@ -16,6 +16,7 @@
 * [Comma Spacing](#comma-spacing)
 * [Compiler Protocol Init](#compiler-protocol-init)
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
+* [Contains Over Filter Count](#contains-over-filter-count)
 * [Contains over first not nil](#contains-over-first-not-nil)
 * [Control Statement](#control-statement)
 * [Convenience Type](#convenience-type)
@@ -2518,6 +2519,117 @@ if true { // return }
 
 ```swift
 ↓if true { return "YES" } else { return "NO" }
+```
+
+</details>
+
+
+
+## Contains Over Filter Count
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`contains_over_filter_count` | Disabled | No | performance | No | 3.0.0 
+
+Prefer `contains` over comparing `filter(where:).count` to 0.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count > 1
+
+```
+
+```swift
+let result = myList.filter { $0 % 2 == 0 }.count > 1
+
+```
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count == 1
+
+```
+
+```swift
+let result = myList.filter { $0 % 2 == 0 }.count == 1
+
+```
+
+```swift
+let result = myList.filter(where: { $0 % 2 == 0 }).count != 1
+
+```
+
+```swift
+let result = myList.filter { $0 % 2 == 0 }.count != 1
+
+```
+
+```swift
+let result = myList.contains(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let result = !myList.contains(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let result = myList.contains(10)
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let result = ↓myList.filter(where: { $0 % 2 == 0 }).count > 0
+
+```
+
+```swift
+let result = ↓myList.filter { $0 % 2 == 0 }.count > 0
+
+```
+
+```swift
+let result = ↓myList.filter(where: someFunction).count > 0
+
+```
+
+```swift
+let result = ↓myList.filter(where: { $0 % 2 == 0 }).count == 0
+
+```
+
+```swift
+let result = ↓myList.filter { $0 % 2 == 0 }.count == 0
+
+```
+
+```swift
+let result = ↓myList.filter(where: someFunction).count == 0
+
+```
+
+```swift
+let result = ↓myList.filter(where: { $0 % 2 == 0 }).count != 0
+
+```
+
+```swift
+let result = ↓myList.filter { $0 % 2 == 0 }.count != 0
+
+```
+
+```swift
+let result = ↓myList.filter(where: someFunction).count != 0
+
 ```
 
 </details>

@@ -13,6 +13,7 @@ opt_in_rules:
   - closure_end_indentation
   - closure_spacing
   - collection_alignment
+  - contains_over_filter_count
   - contains_over_first_not_nil
   - empty_count
   - empty_string

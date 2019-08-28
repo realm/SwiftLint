@@ -31,17 +31,17 @@ private extension Sequence where Element == Line {
     // Groups lines, so that lines that are one after the other
     // will end up in same group.
     func grouped() -> [[Line]] {
-        return reduce([[]]) { result, line in
+        return reduce(into: [[]]) { result, line in
             guard let last = result.last?.last else {
-                return [[line]]
+                result = [[line]]
+                return
             }
-            var copy = result
+
             if last.index == line.index - 1 {
-                copy[copy.count - 1].append(line)
+                result[result.count - 1].append(line)
             } else {
-                copy.append([line])
+                result.append([line])
             }
-            return copy
         }
     }
 }

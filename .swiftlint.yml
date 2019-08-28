@@ -16,6 +16,7 @@ opt_in_rules:
   - contains_over_filter_count
   - contains_over_filter_is_empty
   - contains_over_first_not_nil
+  - discouraged_object_literal
   - empty_count
   - empty_string
   - empty_xctest_method
@@ -28,11 +29,14 @@ opt_in_rules:
   - first_where
   - identical_operands
   - joined_default_parameter
+  - legacy_random
   - let_var_whitespace
   - last_where
   - literal_expression_end_indentation
   - lower_acl_than_parent
+  - modifier_order
   - nimble_operator
+  - nslocalizedstring_key
   - number_separator
   - object_literal
   - operator_usage_whitespace
@@ -46,14 +50,18 @@ opt_in_rules:
   - quick_discouraged_call
   - quick_discouraged_focused_test
   - quick_discouraged_pending_test
+  - reduce_into
   - redundant_nil_coalescing
   - redundant_type_annotation
   - single_test_class
   - sorted_first_last
   - sorted_imports
   - static_operator
+  - strong_iboutlet
+  - toggle_bool
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
   - untyped_error_in_catch
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces

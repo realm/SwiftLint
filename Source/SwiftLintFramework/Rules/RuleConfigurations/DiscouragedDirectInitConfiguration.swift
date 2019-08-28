@@ -13,7 +13,7 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
         return severityConfiguration.severity
     }
 
-    private(set) public var discouragedInits: Set<String>
+    public private(set) var discouragedInits: Set<String>
 
     private let defaultDiscouragedInits = [
         "Bundle",

@@ -18,8 +18,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let substructures = file.structure.dictionary.substructure
-        return substructures.reduce([StyleViolation]()) { violations, substructure -> [StyleViolation] in
-            return violations + validateTypeSubstructure(substructure, in: file)
+        return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
+            violations.append(contentsOf: validateTypeSubstructure(substructure, in: file))
         }
     }
 

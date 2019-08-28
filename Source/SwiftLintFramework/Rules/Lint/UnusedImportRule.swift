@@ -283,16 +283,14 @@ private extension File {
     }
 
     func offsetPerLine() -> [Int: Int64] {
-        return [Int: Int64](
+        return Dictionary(
             uniqueKeysWithValues: contents.bridge()
                 .components(separatedBy: "\n")
-                .map {
-                    Int64($0.bridge().lengthOfBytes(using: .utf8))
-                }
-                .reduce([Int64(0)]) { result, length in
+                .map { Int64($0.bridge().lengthOfBytes(using: .utf8)) }
+                .reduce(into: [0]) { result, length in
                     let newLineCharacterLength = Int64(1)
                     let lineLength = length + newLineCharacterLength
-                    return result + [(result.last ?? 0) + lineLength]
+                    result.append(contentsOf: [(result.last ?? 0) + lineLength])
                 }
                 .enumerated()
                 .map { ($0.offset, $0.element) }

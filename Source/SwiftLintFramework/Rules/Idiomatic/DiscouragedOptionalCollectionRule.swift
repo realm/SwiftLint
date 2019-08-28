@@ -9,7 +9,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
     public static let description = RuleDescription(
         identifier: "discouraged_optional_collection",
         name: "Discouraged Optional Collection",
-        description: "Prefer empty collection over optional collection.",
+        description: "Prefer non-optional collections over optional collections (favour `isEmpty` check over `nil` checks).",
         kind: .idiomatic,
         nonTriggeringExamples: DiscouragedOptionalCollectionExamples.nonTriggeringExamples,
         triggeringExamples: DiscouragedOptionalCollectionExamples.triggeringExamples

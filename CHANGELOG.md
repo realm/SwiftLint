@@ -23,6 +23,10 @@
   expressions like `filter(where:).isEmpty` instead of `contains(where:)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `empty_collection_literal` opt-in rule to prefer using `isEmpty` to comparison to `[]` or `[:]`.  
+  [Colton Schlosser](https://github.com/cltnschlosser)
+  [#2807](https://github.com/realm/SwiftLint/issues/2807)
+
 #### Bug Fixes
 
 * Fixed false positive in `colon` rule inside guard and ternary operator.  

@@ -12008,6 +12008,10 @@ public class A {
 }
 ```
 
+```swift
+public extension A {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

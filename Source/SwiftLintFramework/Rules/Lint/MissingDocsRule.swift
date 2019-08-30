@@ -10,7 +10,10 @@ private extension File {
         let substructureOffsets = dictionary.substructure.flatMap {
             missingDocOffsets(in: $0, acls: acls)
         }
+        let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
+                                                         .extensionStruct, .extensionProtocol]
         guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+            !extensionKinds.contains(kind),
             case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
             !isDeinit,
             let offset = dictionary.offset,
@@ -54,6 +57,9 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             public class A {
                 deinit {}
             }
+            """,
+            """
+            public extension A {}
             """
         ],
         triggeringExamples: [

@@ -56,6 +56,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2842](https://github.com/realm/SwiftLint/issues/2842)
 
+* Don't trigger `missing_docs` violations on extensions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2851](https://github.com/realm/SwiftLint/issues/2851)
+
 ## 0.34.0: Anti-Static Wool Dryer Balls
 
 #### Breaking

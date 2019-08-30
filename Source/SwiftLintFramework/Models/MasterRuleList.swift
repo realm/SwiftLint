@@ -101,6 +101,7 @@ public let masterRuleList = RuleList(rules: [
     MultilineParametersBracketsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
+    NPathComplexityRule.self,
     NSLocalizedStringKeyRule.self,
     NSLocalizedStringRequireBundleRule.self,
     NSObjectPreferIsEqualRule.self,

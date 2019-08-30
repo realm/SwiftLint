@@ -333,6 +333,10 @@ This is the last release to support building with Swift 4.2.x.
 * Add `contains_over_filter_is_empty` opt-in rule to warn against using
   expressions like `filter(where:).isEmpty` instead of `contains(where:)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  
+  * Add `npath_complexity` opt-in rule to warn against overly complex functions.  
+  [Niil Öhlin](https://github.com/niilohlin)
+  [#1188](https://github.com/realm/SwiftLint/issues/1188)
 
 * Add `empty_collection_literal` opt-in rule to prefer using `isEmpty` to
   comparison to `[]` or `[:]`.  

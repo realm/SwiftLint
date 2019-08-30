@@ -925,6 +925,24 @@ extension MultipleClosuresWithTrailingClosureRuleTests {
     ]
 }
 
+extension NPathComplexityRuleTests {
+    static var allTests: [(String, (NPathComplexityRuleTests) -> () throws -> Void)] = [
+        ("testNPathComplexityRule", testNPathComplexityRule),
+        ("testSimpleNPathComplexity", testSimpleNPathComplexity),
+        ("testSimpleNestedIfExample", testSimpleNestedIfExample),
+        ("testMoreComplexIfExample", testMoreComplexIfExample),
+        ("testGuardExample", testGuardExample),
+        ("testIfGuardExample", testIfGuardExample),
+        ("testGuardIfExample", testGuardIfExample),
+        ("testGuardWithInnerIfExample", testGuardWithInnerIfExample),
+        ("testSimpleCaseExample", testSimpleCaseExample),
+        ("testCaseExample", testCaseExample),
+        ("testCaseIfExample", testCaseIfExample),
+        ("testCaseNestedIfExample", testCaseNestedIfExample),
+        ("testForExample", testForExample)
+    ]
+}
+
 extension NSLocalizedStringKeyRuleTests {
     static var allTests: [(String, (NSLocalizedStringKeyRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1750,6 +1768,7 @@ XCTMain([
     testCase(MultilineParametersBracketsRuleTests.allTests),
     testCase(MultilineParametersRuleTests.allTests),
     testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
+    testCase(NPathComplexityRuleTests.allTests),
     testCase(NSLocalizedStringKeyRuleTests.allTests),
     testCase(NSLocalizedStringRequireBundleRuleTests.allTests),
     testCase(NSObjectPreferIsEqualRuleTests.allTests),

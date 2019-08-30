@@ -69,6 +69,7 @@ opt_in_rules:
   - vertical_whitespace_opening_braces
   - xct_specific_matcher
   - yoda_condition
+  - npath_complexity
 
 identifier_name:
   excluded:

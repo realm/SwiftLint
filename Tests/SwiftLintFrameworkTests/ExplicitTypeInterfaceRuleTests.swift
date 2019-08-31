@@ -178,6 +178,17 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
                 case var (x, y): break
                 }
             }
+            """,
+            """
+            enum Foo {
+              case caseOne(propOne: Int)
+            }
+
+            let testA: Foo = .caseOne(propOne: 2)
+
+            if case let Foo.caseOne(propOne) = testA { }
+
+            if case Foo.caseOne(let propOne) = testA { }
             """
         ]
 

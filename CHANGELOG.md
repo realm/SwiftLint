@@ -37,7 +37,9 @@
 
 #### Bug Fixes
 
-* None.
+
+* Don't trigger `explicit_type_interface` on `if case let` statements.  
+  [Carlos Millani](https://github.com/cmillani)
 
 ## 0.35.0: Secondary Lint Trap
 

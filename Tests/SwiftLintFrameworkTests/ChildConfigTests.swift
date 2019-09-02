@@ -2,22 +2,22 @@ import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
-class SubConfigTests: XCTestCase, ProjectMock {
+class ChildConfigTests: XCTestCase, ProjectMock {
     // MARK: - Methods
-    func testValidSubConfig() {
+    func testValidChildConfig() {
         let previousWorkingDir = FileManager.default.currentDirectoryPath
 
-        for path in [projectMockPathSubConfigValid1, projectMockPathSubConfigValid2] {
+        for path in [projectMockPathChildConfigValid1, projectMockPathChildConfigValid2] {
             FileManager.default.changeCurrentDirectoryPath(path)
             let config = Configuration(
-                path: "sub_config_main.yml",
+                childConfigQueue: ["child_config_main.yml"],
                 rootPath: path,
                 optional: false,
                 quiet: true
             )
 
             let expectedConfig = Configuration(
-                path: "sub_config_expected.yml",
+                childConfigQueue: ["child_config_expected.yml"],
                 rootPath: path,
                 optional: false,
                 quiet: true

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -231,12 +231,6 @@ class FatalErrorMessageRuleTests: XCTestCase {
 class FirstWhereRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FirstWhereRule.description)
-    }
-}
-
-class FlatMapOverMapReduceRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FlatMapOverMapReduceRule.description)
     }
 }
 

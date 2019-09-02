@@ -14,7 +14,7 @@ extension Configuration {
         case whitelistRules = "whitelist_rules"
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
-        case subConfig = "sub_config"
+        case childConfig = "child_config"
         case parentConfig = "parent_config"
     }
 

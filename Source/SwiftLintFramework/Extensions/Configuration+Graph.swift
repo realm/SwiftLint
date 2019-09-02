@@ -70,9 +70,9 @@ public extension Configuration {
         }
 
         public enum EdgeType: Hashable { // swiftlint:disable:this nesting
-            case subConfig
+            case childConfig
             case parentConfig
-            case commandLineSubConfig
+            case commandLineChildConfig
         }
 
         // MARK: - Properties
@@ -81,10 +81,10 @@ public extension Configuration {
         public var rootPath: String?
 
         // MARK: - Initializers
-        public init(commandLineSubConfigs: [String], rootPath: String?) throws {
-            vertices = Set(try commandLineSubConfigs.map { try Vertix(string: $0, rootPath: rootPath) })
+        public init(commandLineChildConfigs: [String], rootPath: String?) throws {
+            vertices = Set(try commandLineChildConfigs.map { try Vertix(string: $0, rootPath: rootPath) })
             edges = Set(zip(vertices, vertices.dropFirst()).map {
-                Edge(edgeType: .commandLineSubConfig, origin: $0.0, target: $0.1)
+                Edge(edgeType: .commandLineChildConfig, origin: $0.0, target: $0.1)
             })
 
             self.rootPath = rootPath
@@ -105,12 +105,13 @@ public extension Configuration {
         // MARK: - Methods
         public mutating func build() throws {
             func process(vertix: Vertix) throws {
-                if let subConfigReference = vertix.configurationDict[Configuration.Key.subConfig.rawValue] as? String {
-                    let subVertix = try Vertix(string: subConfigReference, rootPath: rootPath)
-                    vertices.insert(subVertix)
-                    let subEdge = Edge(edgeType: .subConfig, origin: vertix, target: subVertix)
-                    edges.insert(subEdge)
-                    try process(vertix: subVertix)
+                if let childConfigReference =
+                    vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String {
+                    let childVertix = try Vertix(string: childConfigReference, rootPath: rootPath)
+                    vertices.insert(childVertix)
+                    let childEdge = Edge(edgeType: .childConfig, origin: vertix, target: childVertix)
+                    edges.insert(childEdge)
+                    try process(vertix: childVertix)
                 }
 
                 if let parentConfigReference
@@ -142,7 +143,7 @@ public extension Configuration {
 
             // Detect ambiguities
             if (edges.contains { edge in edges.filter { $0.origin == edge.origin }.count > 1 }) {
-                throw ConfigurationError.generic("Ambiguous sub config..") // TODO
+                throw ConfigurationError.generic("Ambiguous child config..") // TODO
             }
 
             if (edges.contains { edge in edges.filter { $0.target == edge.target }.count > 1 }) {

@@ -4,7 +4,7 @@ import SourceKittenFramework
 extension Configuration {
     // MARK: - Properties
     private var rootDirectory: String? {
-        guard let rootPath = rootPath else { return nil }
+        guard let rootPath = graph.rootPath else { return nil }
 
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectory) else { return nil }
@@ -26,7 +26,7 @@ extension Configuration {
             } ?? configuration.warningThreshold,
             reporter: reporter, // Always use the parent reporter
             cachePath: cachePath, // Always use the parent cache path
-            rootPath: configuration.rootPath,
+            graph: configuration.graph,
             indentation: configuration.indentation
         )
     }
@@ -57,35 +57,38 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
-        if path == rootDirectory {
-            return self
-        }
-
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
+        let fullPath = pathNSString.absolutePathRepresentation()
+        let cacheIdentifier = "nestedPath" + (graph.rootPath ?? "") + configurationSearchPath
 
-        // If a configuration exists and it isn't us, load and merge the configurations
-        if
-            configurationSearchPath != configurationPath
-            && FileManager.default.fileExists(atPath: configurationSearchPath)
-        {
-            let fullPath = pathNSString.absolutePathRepresentation()
-            let config = Configuration.getCached(atPath: fullPath) ??
-                Configuration(
-                    path: configurationSearchPath,
-                    rootPath: fullPath,
-                    optional: false,
-                    quiet: true
+        if let cached = Configuration.getCached(forIdentifier: cacheIdentifier) {
+            return cached
+        } else {
+            if path == rootDirectory || configurationSearchPath == configurationPath {
+                // Use self if at level self
+                return self
+            } else if FileManager.default.fileExists(atPath: configurationSearchPath) {
+                // Use self merged with the config that was found
+                let config = merged(
+                    with: Configuration(
+                        childConfigQueue: [configurationSearchPath],
+                        rootPath: fullPath,
+                        optional: false,
+                        quiet: true
+                    )
                 )
-            return merged(with: config)
-        }
 
-        // If we are not at the root path, continue down the tree
-        if path != rootPath && path != "/" {
-            return configuration(forPath: pathNSString.deletingLastPathComponent)
+                // Cache merged result to circumvent heavy merge recomputations
+                config.setCached(forIdentifier: cacheIdentifier)
+                return config
+            } else if path != "/" {
+                // If we are not at the root path, continue down the tree
+                return configuration(forPath: pathNSString.deletingLastPathComponent)
+            } else {
+                // Fallback to self
+                return self
+            }
         }
-
-        // If nothing else, return self
-        return self
     }
 }

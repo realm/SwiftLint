@@ -248,7 +248,7 @@
 		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
 		CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB336F42303FA7400C52023 /* Configuration+Graph.swift */; };
 		CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* RulesStorage.swift */; };
-		CCB97C3A22E8D7EC002F5458 /* SubConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */; };
+		CCB97C3A22E8D7EC002F5458 /* ChildConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
 		CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -753,7 +753,7 @@
 		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
 		CCB336F42303FA7400C52023 /* Configuration+Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Graph.swift"; sourceTree = "<group>"; };
 		CCB97C3422E89257002F5458 /* RulesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesStorage.swift; sourceTree = "<group>"; };
-		CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubConfigTests.swift; sourceTree = "<group>"; };
+		CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildConfigTests.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
 		CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingConfiguration.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -1574,7 +1574,7 @@
 				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				D4F5851620E99B260085C6D8 /* StatementPositionRuleTests.swift */,
-				CCB97C3722E8D7E6002F5458 /* SubConfigTests.swift */,
+				CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */,
 				D0D1217C19E87B05005E4BAA /* Supporting Files */,
 				787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */,
 				E81224991B04F85B001783D2 /* TestHelpers.swift */,
@@ -2382,7 +2382,7 @@
 				6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */,
 				820F451E21073D7200AA056A /* ConditionalReturnsOnNewlineRuleTests.swift in Sources */,
 				D4246D6F1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift in Sources */,
-				CCB97C3A22E8D7EC002F5458 /* SubConfigTests.swift in Sources */,
+				CCB97C3A22E8D7EC002F5458 /* ChildConfigTests.swift in Sources */,
 				B25DCD101F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift in Sources */,
 				3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */,
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,

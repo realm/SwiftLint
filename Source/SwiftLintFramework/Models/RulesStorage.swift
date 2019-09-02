@@ -185,29 +185,29 @@ public class RulesStorage {
     }
 
     // MARK: Merging
-    internal func merged(with sub: RulesStorage) -> RulesStorage {
+    internal func merged(with child: RulesStorage) -> RulesStorage {
         // Merge allRulesWithConfigurations
-        let newAllRulesWithConfigurations = mergedAllRulesWithConfigurations(with: sub)
+        let newAllRulesWithConfigurations = mergedAllRulesWithConfigurations(with: child)
 
         // Merge mode
-        let validRuleIdentifiers = self.validRuleIdentifiers.union(sub.validRuleIdentifiers)
+        let validRuleIdentifiers = self.validRuleIdentifiers.union(child.validRuleIdentifiers)
         let newMode: Mode
-        switch sub.mode {
-        case var .default(subDisabled, subOptIn):
-            subDisabled = sub.validate(ruleIds: subDisabled, valid: validRuleIdentifiers)
-            subOptIn = sub.validate(ruleIds: subOptIn, valid: validRuleIdentifiers)
+        switch child.mode {
+        case var .default(childDisabled, childOptIn):
+            childDisabled = child.validate(ruleIds: childDisabled, valid: validRuleIdentifiers)
+            childOptIn = child.validate(ruleIds: childOptIn, valid: validRuleIdentifiers)
 
             switch mode {
             case var .default(disabled, optIn):
                 disabled = validate(ruleIds: disabled, valid: validRuleIdentifiers)
-                optIn = sub.validate(ruleIds: optIn, valid: validRuleIdentifiers)
+                optIn = child.validate(ruleIds: optIn, valid: validRuleIdentifiers)
 
-                // Only use parent disabled / optIn if sub config doesn't tell the opposite
+                // Only use parent disabled / optIn if child config doesn't tell the opposite
                 newMode = .default(
-                    disabled: Set(subDisabled).union(Set(disabled.filter { !subOptIn.contains($0) }))
+                    disabled: Set(childDisabled).union(Set(disabled.filter { !childOptIn.contains($0) }))
                         // (. != true) means (. == false) || (. == nil)
                         .filter { isOptInRule($0, allRulesWithConfigurations: newAllRulesWithConfigurations) != true },
-                    optIn: Set(subOptIn).union(Set(optIn.filter { !subDisabled.contains($0) }))
+                    optIn: Set(childOptIn).union(Set(optIn.filter { !childDisabled.contains($0) }))
                         // (. != false) means (. == true) || (. == nil)
                         .filter { isOptInRule($0, allRulesWithConfigurations: newAllRulesWithConfigurations) != false }
                 )
@@ -215,30 +215,31 @@ public class RulesStorage {
             case var .whitelisted(whitelisted):
                 whitelisted = validate(ruleIds: whitelisted, valid: validRuleIdentifiers)
 
-                // Allow parent whitelist rules that weren't disabled via the sub config & opt-ins from the sub config
+                // Allow parent whitelist rules that weren't disabled via the child config
+                // & opt-ins from the child config
                 newMode = .whitelisted(Set(
-                    subOptIn + whitelisted.filter { !subDisabled.contains($0) }
+                    childOptIn + whitelisted.filter { !childDisabled.contains($0) }
                 ))
 
             case .allEnabled:
-                // Opt-in to every rule that isn't disabled via sub config
+                // Opt-in to every rule that isn't disabled via child config
                 newMode = .default(
-                    disabled: subDisabled
+                    disabled: childDisabled
                         .filter { isOptInRule($0, allRulesWithConfigurations: newAllRulesWithConfigurations) == false },
                     optIn: Set(newAllRulesWithConfigurations.map { type(of: $0).description.identifier }
                         .filter {
-                            !subDisabled.contains($0)
+                            !childDisabled.contains($0)
                                 && isOptInRule($0, allRulesWithConfigurations: newAllRulesWithConfigurations) == true
                         }
                     )
                 )
             }
 
-        case var .whitelisted(subWhitelisted):
-            subWhitelisted = sub.validate(ruleIds: subWhitelisted, valid: validRuleIdentifiers)
+        case var .whitelisted(childWhitelisted):
+            childWhitelisted = child.validate(ruleIds: childWhitelisted, valid: validRuleIdentifiers)
 
-            // Always use the sub whitelist
-            newMode = .whitelisted(subWhitelisted)
+            // Always use the child whitelist
+            newMode = .whitelisted(childWhitelisted)
 
         case .allEnabled:
             // Always use .allEnabled mode
@@ -248,28 +249,28 @@ public class RulesStorage {
         // Assemble & return merged RulesStorage
         return RulesStorage(
             mode: newMode,
-            allRulesWithConfigurations: merged(customRules: newAllRulesWithConfigurations, mode: newMode, with: sub),
-            aliasResolver: { sub.aliasResolver(self.aliasResolver($0)) }
+            allRulesWithConfigurations: merged(customRules: newAllRulesWithConfigurations, mode: newMode, with: child),
+            aliasResolver: { child.aliasResolver(self.aliasResolver($0)) }
         )
     }
 
     private func mergedAllRulesWithConfigurations(with sub: RulesStorage) -> [Rule] {
         let mainConfigSet = Set(allRulesWithConfigurations.map(HashableRuleWrapper.init))
-        let subConfigSet = Set(sub.allRulesWithConfigurations.map(HashableRuleWrapper.init))
-        let subConfigRulesWithConfig = subConfigSet.filter { $0.rule.initializedWithNonEmptyConfiguration }
-        let rulesUniqueToSubConfig = subConfigSet.subtracting(mainConfigSet)
-        return subConfigRulesWithConfig // Include, if rule is configured in sub
-            .union(rulesUniqueToSubConfig) // Include, if rule is in sub config only
+        let childConfigSet = Set(sub.allRulesWithConfigurations.map(HashableRuleWrapper.init))
+        let childConfigRulesWithConfig = childConfigSet.filter { $0.rule.initializedWithNonEmptyConfiguration }
+        let rulesUniqueToChildConfig = childConfigSet.subtracting(mainConfigSet)
+        return childConfigRulesWithConfig // Include, if rule is configured in child
+            .union(rulesUniqueToChildConfig) // Include, if rule is in child config only
             .union(mainConfigSet) // Use configurations from parent for remaining rules
             .map { $0.rule }
     }
 
-    private func merged(customRules rules: [Rule], mode: Mode, with sub: RulesStorage) -> [Rule] {
+    private func merged(customRules rules: [Rule], mode: Mode, with child: RulesStorage) -> [Rule] {
         guard
             let customRulesRule = (allRulesWithConfigurations.first { $0 is CustomRules }) as? CustomRules,
-            let subCustomRulesRule = (sub.allRulesWithConfigurations.first { $0 is CustomRules }) as? CustomRules
+            let childCustomRulesRule = (child.allRulesWithConfigurations.first { $0 is CustomRules }) as? CustomRules
         else {
-            // Merging is only needed if both parent & sub have a custom rules rule
+            // Merging is only needed if both parent & child have a custom rules rule
             return rules
         }
 
@@ -287,7 +288,7 @@ public class RulesStorage {
 
         var configuration = CustomRulesConfiguration()
         configuration.customRuleConfigurations = Set(customRulesRule.configuration.customRuleConfigurations)
-            .union(Set(subCustomRulesRule.configuration.customRuleConfigurations))
+            .union(Set(childCustomRulesRule.configuration.customRuleConfigurations))
             .filter(customRulesFilter)
 
         var customRules = CustomRules()

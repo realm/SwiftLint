@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -30,6 +30,12 @@ extension AttributesRuleTests {
 extension BlockBasedKVORuleTests {
     static var allTests: [(String, (BlockBasedKVORuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ChildConfigTests {
+    static var allTests: [(String, (ChildConfigTests) -> () throws -> Void)] = [
+        ("testValidChildConfig", testValidChildConfig)
     ]
 }
 
@@ -556,12 +562,6 @@ extension FileTypesOrderRuleTests {
 
 extension FirstWhereRuleTests {
     static var allTests: [(String, (FirstWhereRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
-extension FlatMapOverMapReduceRuleTests {
-    static var allTests: [(String, (FlatMapOverMapReduceRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1363,12 +1363,6 @@ extension StrongIBOutletRuleTests {
     ]
 }
 
-extension SubConfigTests {
-    static var allTests: [(String, (SubConfigTests) -> () throws -> Void)] = [
-        ("testValidSubConfig", testValidSubConfig)
-    ]
-}
-
 extension SwitchCaseAlignmentRuleTests {
     static var allTests: [(String, (SwitchCaseAlignmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
@@ -1654,6 +1648,7 @@ XCTMain([
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
+    testCase(ChildConfigTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
     testCase(ClosureBodyLengthRuleTests.allTests),
@@ -1716,7 +1711,6 @@ XCTMain([
     testCase(FileNameRuleTests.allTests),
     testCase(FileTypesOrderRuleTests.allTests),
     testCase(FirstWhereRuleTests.allTests),
-    testCase(FlatMapOverMapReduceRuleTests.allTests),
     testCase(ForWhereRuleTests.allTests),
     testCase(ForceCastRuleTests.allTests),
     testCase(ForceTryRuleTests.allTests),
@@ -1822,7 +1816,6 @@ XCTMain([
     testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
     testCase(StrongIBOutletRuleTests.allTests),
-    testCase(SubConfigTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),

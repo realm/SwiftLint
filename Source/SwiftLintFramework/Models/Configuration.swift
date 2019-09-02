@@ -100,7 +100,7 @@ public struct Configuration {
 
     /// Initialize based on a path to a configuration file.
     public init(
-        subConfigQueue: [String] = [Configuration.fileName],
+        childConfigQueue: [String] = [Configuration.fileName],
         rootPath: String?, // Doesn't have a default value so that the Configuration() init isn't ambiguous
         optional: Bool = true,
         quiet: Bool = false,
@@ -108,7 +108,7 @@ public struct Configuration {
         cachePath: String? = nil
     ) {
         let rulesMode: RulesStorage.Mode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
-        let cacheIdentifier = "\(subConfigQueue) - \(String(describing: rootPath))"
+        let cacheIdentifier = "\(childConfigQueue) - \(String(describing: rootPath))"
 
         if let cachedConfig = Configuration.getCached(forIdentifier: cacheIdentifier) {
             self.init(copying: cachedConfig)
@@ -120,7 +120,7 @@ public struct Configuration {
         }
 
         do {
-            var graph = try Graph(commandLineSubConfigs: subConfigQueue, rootPath: rootPath)
+            var graph = try Graph(commandLineChildConfigs: childConfigQueue, rootPath: rootPath)
             try graph.build()
             try graph.validate()
             let resultingConfiguration = try graph.merged { dict -> Configuration in

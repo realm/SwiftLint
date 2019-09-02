@@ -694,6 +694,7 @@ extension IndentationWidthRuleTests {
     static var allTests: [(String, (IndentationWidthRuleTests) -> () throws -> Void)] = [
         ("testFirstLineIndentation", testFirstLineIndentation),
         ("testMixedTabSpaceIndentation", testMixedTabSpaceIndentation),
+        ("testMixedTabsAndSpacesIndentation", testMixedTabsAndSpacesIndentation),
         ("testKeepingIndentation", testKeepingIndentation),
         ("testIndentationLength", testIndentationLength),
         ("testUnindentation", testUnindentation),

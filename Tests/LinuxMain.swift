@@ -888,6 +888,12 @@ extension MissingDocsRuleTests {
     ]
 }
 
+extension MissingImportResultRuleTests {
+    static var allTests: [(String, (MissingImportResultRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ModifierOrderTests {
     static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
@@ -1765,6 +1771,7 @@ XCTMain([
     testCase(LowerACLThanParentRuleTests.allTests),
     testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(MissingDocsRuleTests.allTests),
+    testCase(MissingImportResultRuleTests.allTests),
     testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsBracketsRuleTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),

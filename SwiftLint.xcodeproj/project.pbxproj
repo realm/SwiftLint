@@ -255,6 +255,7 @@
 		CC6D28592292F0380052B682 /* IndentationWidthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D28572292EF460052B682 /* IndentationWidthRule.swift */; };
 		CC6D285B2292F0600052B682 /* IndentationWidthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */; };
 		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
+		CC7C3DC7231D461E00AE6C48 /* MissingImportResultRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7C3DC4231D42AA00AE6C48 /* MissingImportResultRule.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
 		CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -765,6 +766,7 @@
 		CC6D28572292EF460052B682 /* IndentationWidthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRule.swift; sourceTree = "<group>"; usesTabs = 0; };
 		CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthConfiguration.swift; sourceTree = "<group>"; };
 		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
+		CC7C3DC4231D42AA00AE6C48 /* MissingImportResultRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissingImportResultRule.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
 		CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingConfiguration.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -1187,6 +1189,7 @@
 				C26330352073DAA200D7B4FD /* LowerACLThanParentRule.swift */,
 				856651A61D6B395F005E6B29 /* MarkRule.swift */,
 				F9E691272091952E0085B53E /* MissingDocsRule.swift */,
+				CC7C3DC4231D42AA00AE6C48 /* MissingImportResultRule.swift */,
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
 				D4B31ADB22A0581B000300F1 /* DuplicateEnumCasesRule.swift */,
@@ -2107,6 +2110,7 @@
 				E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */,
 				8F2CC1CB20A6A070006ED34F /* FileNameConfiguration.swift in Sources */,
 				D4CFC5D2209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift in Sources */,
+				CC7C3DC7231D461E00AE6C48 /* MissingImportResultRule.swift in Sources */,
 				E88198541BEA945100333A11 /* CommaRule.swift in Sources */,
 				22A36FE123578CC10037B47D /* ExpiringTodoConfiguration.swift in Sources */,
 				D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */,

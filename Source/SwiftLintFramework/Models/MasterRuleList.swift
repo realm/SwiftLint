@@ -93,6 +93,7 @@ public let masterRuleList = RuleList(rules: [
     LowerACLThanParentRule.self,
     MarkRule.self,
     MissingDocsRule.self,
+    MissingImportResultRule.self,
     ModifierOrderRule.self,
     MultilineArgumentsBracketsRule.self,
     MultilineArgumentsRule.self,

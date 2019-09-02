@@ -372,6 +372,12 @@ class MissingDocsRuleTests: XCTestCase {
     }
 }
 
+class MissingImportResultRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MissingImportResultRule.description)
+    }
+}
+
 class MultilineArgumentsBracketsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsBracketsRule.description)

@@ -438,7 +438,7 @@ This is the last release to support building with Swift 5.0.x.
   using `flatMap` over `map { ... }.reduce([], +)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
-  
+
 * Add autocorrection to `syntactic_sugar`.  
   [Ivan Vavilov](https://github.com/vani2)
 
@@ -452,14 +452,24 @@ This is the last release to support building with Swift 5.0.x.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
 
-* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values 
+* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values
   for camel cased Codable String enum cases.  
   [Marko Pejovic](https://github.com/00FA9A)
   [#2888](https://github.com/realm/SwiftLint/issues/2888)
 
 * Speedup `LetVarWhiteSpacesRule`.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
-  [#2901](https://github.com/realm/SwiftLint/issues/2901)  
+  [#2901](https://github.com/realm/SwiftLint/issues/2901)
+
+* Add `missing_import_result` opt-in rule to warn when using a version of
+  [Result](https://github.com/antitypical/Result) that is not compatible with
+  Swift 5's `Result` type. If your code still depends on the `Result` (v4.0.1 and
+  earlier) framework, then you must import it or your code will either not
+  compile or silently compile with the intrinsic `Result` type.
+  Turn this rule on in a project that depends on this framework to avoid
+  missing this crucial import. NB: Version 5.0 of `Result` makes it compatible
+  with Swift 5's `Result` type.  
+  [Gus Verdun](https://github.com/ghv)
 
 #### Bug Fixes
 

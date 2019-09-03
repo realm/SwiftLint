@@ -9,7 +9,7 @@ jobs:
     maxParallel: 10
     matrix:
       swift50:
-        containerImage: swift:50
+        containerImage: swift:5.0
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel

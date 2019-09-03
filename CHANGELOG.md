@@ -19,6 +19,9 @@
   grouping it with initializers.  
   [Steven Magdy](https://github.com/StevenMagdy)
 
+* Cleanup examples for cyclomatic complexity.
+  [niilohlin](https://github.com/niilohlin)  
+
 #### Bug Fixes
 
 * None.

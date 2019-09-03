@@ -12,22 +12,75 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         description: "Complexity of function bodies should be limited.",
         kind: .metrics,
         nonTriggeringExamples: [
-            "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}",
-            "func f(code: Int) -> Int {" +
-                "switch code {\n case 0: fallthrough\ncase 0: return 1\ncase 0: return 1\n" +
-                "case 0: return 1\ncase 0: return 1\ncase 0: return 1\ncase 0: return 1\n" +
-                "case 0: return 1\ncase 0: return 1\ndefault: return 1}}",
-            "func f1() {" +
-            "if true {}; if true {}; if true {}; if true {}; if true {}; if true {}\n" +
-                "func f2() {\n" +
-                    "if true {}; if true {}; if true {}; if true {}; if true {}\n" +
-                "}}"
+            """
+            func nonTriggering() {
+                if true {
+                    for _ in 1..5 {
+                    }
+                }
+                if false {
+                }
+            }
+            """,
+            """
+            func switchFunction(code: Int) -> Int {
+                switch code {
+                case 0: fallthrough
+                case 1: return 1
+                case 2: return 1
+                case 3: return 1
+                case 4: return 1
+                case 5: return 1
+                case 6: return 1
+                case 7: return 1
+                case 8: return 1
+                default: return 1
+                }
+            }
+            """,
+            """
+            func outer() {
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                func inner() {
+                    if true {}
+                    if true {}
+                    if true {}
+                    if true {}
+                    if true {}
+                }
+            }
+            """
         ],
         triggeringExamples: [
-            "↓func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
-                "  }\n  if false {}\n  let i = 0\n\n  switch i {\n  case 1: break\n" +
-                "  case 2: break\n  case 3: break\n  case 4: break\n default: break\n  }\n" +
-                "  for _ in 1...5 {\n    guard true else {\n      return\n    }\n  }\n}\n"
+            """
+            ↓func triggering() {
+                if true {
+                    if true {
+                        if false {}
+                    }
+                }
+                if false {}
+                let i = 0
+
+                switch i {
+                case 1: break
+                case 2: break
+                case 3: break
+                case 4: break
+                default: break
+                }
+                for _ in 1...5 {
+                    guard true else {
+                        return
+                    }
+                }
+            }
+            """
         ]
     )
 

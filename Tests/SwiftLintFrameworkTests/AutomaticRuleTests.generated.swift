@@ -450,6 +450,12 @@ class NoGroupingExtensionRuleTests: XCTestCase {
     }
 }
 
+class NoSpaceInMethodCallRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoSpaceInMethodCallRule.description)
+    }
+}
+
 class NotificationCenterDetachmentRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)

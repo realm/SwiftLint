@@ -300,6 +300,7 @@
 		D48AE2CC1DFB58C5001C6A4A /* AttributesRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRuleExamples.swift */; };
 		D48B51211F4F5DEF0068AB98 /* RuleList+Documentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */; };
 		D48B51231F4F5E4B0068AB98 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */; };
+		D48EE14B231CD34200DBB779 /* NoSpaceInMethodCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48EE14A231CD34200DBB779 /* NoSpaceInMethodCallRule.swift */; };
 		D495B1A221165DAA00E2CD7B /* FileNameRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */; };
 		D495B1A321165DAA00E2CD7B /* FileHeaderRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */; };
 		D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */; };
@@ -796,6 +797,7 @@
 		D48AE2CB1DFB58C5001C6A4A /* AttributesRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRuleExamples.swift; sourceTree = "<group>"; };
 		D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Documentation.swift"; sourceTree = "<group>"; };
 		D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationTests.swift; sourceTree = "<group>"; };
+		D48EE14A231CD34200DBB779 /* NoSpaceInMethodCallRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoSpaceInMethodCallRule.swift; sourceTree = "<group>"; };
 		D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileNameRuleFixtures; sourceTree = "<group>"; };
 		D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileHeaderRuleFixtures; sourceTree = "<group>"; };
 		D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantSetAccessControlRule.swift; sourceTree = "<group>"; };
@@ -1195,6 +1197,7 @@
 				6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */,
 				621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */,
 				BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */,
+				D48EE14A231CD34200DBB779 /* NoSpaceInMethodCallRule.swift */,
 				D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */,
 				D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */,
 				692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */,
@@ -2113,6 +2116,7 @@
 				621061BF1ED57E640082D51E /* MultilineParametersRuleExamples.swift in Sources */,
 				D41985EB21FAB63E003BE2B7 /* DeploymentTargetConfiguration.swift in Sources */,
 				D48AE2CC1DFB58C5001C6A4A /* AttributesRuleExamples.swift in Sources */,
+				D48EE14B231CD34200DBB779 /* NoSpaceInMethodCallRule.swift in Sources */,
 				C28B2B3D2106DF730009A0FE /* PrefixedConstantRuleConfiguration.swift in Sources */,
 				62A7127520F1178F00E604A6 /* AnyObjectProtocolRule.swift in Sources */,
 				D4D0B8F42211428D0053A116 /* ColonRuleExamples.swift in Sources */,

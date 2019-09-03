@@ -98,6 +98,7 @@
 * [No Extension Access Modifier](#no-extension-access-modifier)
 * [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
+* [No Space in Method Call](#no-space-in-method-call)
 * [Notification Center Detachment](#notification-center-detachment)
 * [NSLocalizedString Key](#nslocalizedstring-key)
 * [NSLocalizedString Require Bundle](#nslocalizedstring-require-bundle)
@@ -13973,6 +13974,79 @@ class Ham { class Spam {}}
 extension External { struct Gotcha {}}
 ↓extension External.Gotcha {}
 
+```
+
+</details>
+
+
+
+## No Space in Method Call
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`no_space_in_method_call` | Enabled | Yes | style | No | 4.2.0 
+
+Don't add a space between the method name and the parentheses.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo()
+```
+
+```swift
+object.foo()
+```
+
+```swift
+object.foo(1)
+```
+
+```swift
+object.foo(value: 1)
+```
+
+```swift
+object.foo { print($0 }
+```
+
+```swift
+list.sorted { $0.0 < $1.0 }.map { $0.value }
+```
+
+```swift
+self.init(rgb: (Int) (colorInt))
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo↓ ()
+```
+
+```swift
+object.foo↓ ()
+```
+
+```swift
+object.foo↓ (1)
+```
+
+```swift
+object.foo↓ (value: 1)
+```
+
+```swift
+object.foo↓ () {}
+```
+
+```swift
+object.foo↓     ()
 ```
 
 </details>

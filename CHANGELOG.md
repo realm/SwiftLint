@@ -14,6 +14,10 @@
   [atfelix](https://github.com/atfelix)
   [#2791](https://github.com/realm/SwiftLint/issues/2791)
 
+* Add `no_space_in_method_call` rule to validate that there're no spaces
+  between the method name and parentheses in a method call.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Add `contains_over_filter_count` opt-in rule to warn against using
   expressions like `filter(where:).count > 0` instead of `contains(where:)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

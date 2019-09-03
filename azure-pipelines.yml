@@ -8,12 +8,8 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift420:
-        containerImage: norionomura/swift:42
-      swift421:
-        containerImage: norionomura/swift:421
       swift50:
-        containerImage: norionomura/swift:50
+        containerImage: swift:5.0
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel
@@ -25,12 +21,10 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode10:
-        DEVELOPER_DIR: /Applications/Xcode_10.app
-      xcode101:
-        DEVELOPER_DIR: /Applications/Xcode_10.1.app
       xcode102:
         DEVELOPER_DIR: /Applications/Xcode_10.2.app
+      xcode103:
+        DEVELOPER_DIR: /Applications/Xcode_10.3.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -55,12 +49,10 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode10:
-        DEVELOPER_DIR: /Applications/Xcode_10.app
-      xcode101:
-        DEVELOPER_DIR: /Applications/Xcode_10.1.app
       xcode102:
         DEVELOPER_DIR: /Applications/Xcode_10.2.app
+      xcode103:
+        DEVELOPER_DIR: /Applications/Xcode_10.3.app
   steps:
     - script: |
         sw_vers
@@ -75,7 +67,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.2.app
+    DEVELOPER_DIR: /Applications/Xcode_10.3.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -88,7 +80,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.2.app
+    DEVELOPER_DIR: /Applications/Xcode_10.3.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -101,7 +93,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.2.app
+    DEVELOPER_DIR: /Applications/Xcode_10.3.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
@@ -110,7 +102,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.2.app
+    DEVELOPER_DIR: /Applications/Xcode_10.3.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run

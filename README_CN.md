@@ -45,7 +45,7 @@ $ mint install realm/SwiftLint
 
 ### 编译源代码：
 
-你也可以通过 Clone SwiftLint 的 Git 仓库到本地然后执行 `git submodule update --init --recursive; make install` (Xcode 8.3+) 编译源代码的方式来安装。
+你也可以通过 Clone SwiftLint 的 Git 仓库到本地然后执行 `git submodule update --init --recursive; make install` (Xcode 10.2+) 编译源代码的方式来安装。
 
 ## 用法
 
@@ -171,7 +171,8 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 | Swift 2.x       | SwiftLint 0.18.1            |
 | Swift 3.x       | SwiftLint 0.25.1            |
 | Swift 4.0-4.1.x | SwiftLint 0.28.2            |
-| Swift 4.2.x-5.0 | 最新的                      |
+| Swift 4.2.x     | SwiftLint 0.35.0            |
+| Swift 5.0       | 最新的                      |
 
 ## 规则
 

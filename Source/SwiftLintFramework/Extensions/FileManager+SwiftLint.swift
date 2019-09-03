@@ -17,19 +17,11 @@ extension FileManager: LintableFileManager {
             return [absolutePath]
         }
 
-#if os(Linux)
-        return enumerator(atPath: absolutePath)?.compactMap { element -> String? in
-            guard let element = element as? String, element.bridge().isSwiftFile() else { return nil }
-            let absoluteElementPath = absolutePath.bridge().appendingPathComponent(element)
-            return absoluteElementPath.isFile ? absoluteElementPath : nil
-        } ?? []
-#else
         return subpaths(atPath: absolutePath)?.parallelCompactMap { element -> String? in
             guard element.bridge().isSwiftFile() else { return nil }
             let absoluteElementPath = absolutePath.bridge().appendingPathComponent(element)
             return absoluteElementPath.isFile ? absoluteElementPath : nil
         } ?? []
-#endif
     }
 
     public func modificationDate(forFileAtPath path: String) -> Date? {

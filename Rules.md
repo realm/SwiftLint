@@ -19,6 +19,7 @@
 * [Contains Over Filter Count](#contains-over-filter-count)
 * [Contains Over Filter Is Empty](#contains-over-filter-is-empty)
 * [Contains over first not nil](#contains-over-first-not-nil)
+* [Contains over range(of:) comparison to nil](#contains-over-rangeof-comparison-to-nil)
 * [Control Statement](#control-statement)
 * [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
@@ -2808,6 +2809,36 @@ let firstIndex = myList.firstIndex { $0 % 2 == 0 }
 ```
 
 ```swift
+↓myList.first { $0 % 2 == 0 } == nil
+
+```
+
+```swift
+↓myList.first(where: { $0 % 2 == 0 }) == nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.first(where: { $0 % 2 == 0 }) == nil
+
+```
+
+```swift
+↓myList.first(where: someFunction) == nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.first { $0 % 2 == 0 } == nil
+
+```
+
+```swift
+(↓myList.first { $0 % 2 == 0 }) == nil
+
+```
+
+```swift
 ↓myList.firstIndex { $0 % 2 == 0 } != nil
 
 ```
@@ -2835,6 +2866,81 @@ let firstIndex = myList.firstIndex { $0 % 2 == 0 }
 ```swift
 (↓myList.firstIndex { $0 % 2 == 0 }) != nil
 
+```
+
+```swift
+↓myList.firstIndex { $0 % 2 == 0 } == nil
+
+```
+
+```swift
+↓myList.firstIndex(where: { $0 % 2 == 0 }) == nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.firstIndex(where: { $0 % 2 == 0 }) == nil
+
+```
+
+```swift
+↓myList.firstIndex(where: someFunction) == nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.firstIndex { $0 % 2 == 0 } == nil
+
+```
+
+```swift
+(↓myList.firstIndex { $0 % 2 == 0 }) == nil
+
+```
+
+</details>
+
+
+
+## Contains over range(of:) comparison to nil
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`contains_over_range_nil_comparison` | Disabled | No | performance | No | 3.0.0 
+
+Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let range = myString.range(of: "Test")
+```
+
+```swift
+myString.contains("Test")
+```
+
+```swift
+!myString.contains("Test")
+```
+
+```swift
+resourceString.range(of: rule.regex, options: .regularExpression) != nil
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myString.range(of: "Test") != nil
+```
+
+```swift
+↓myString.range(of: "Test") == nil
 ```
 
 </details>

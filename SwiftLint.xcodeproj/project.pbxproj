@@ -91,6 +91,7 @@
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
 		4E342B4C2215C793008E4EF8 /* ReduceBooleanRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E342B4A2215C6DF008E4EF8 /* ReduceBooleanRule.swift */; };
 		550DA0E022DB95AD00B67F03 /* EmptyCollectionLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550DA0DE22DB958400B67F03 /* EmptyCollectionLiteralRule.swift */; };
+		55CE0585231899100023BA72 /* ContainsOverRangeNilComparisonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550DA0E122DB9E6B00B67F03 /* ContainsOverRangeNilComparisonRule.swift */; };
 		57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
 		584B0D3A2112BA78002F7E25 /* SonarQubeReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584B0D392112BA78002F7E25 /* SonarQubeReporter.swift */; };
 		584B0D3C2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json in Resources */ = {isa = PBXBuildFile; fileRef = 584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */; };
@@ -571,6 +572,7 @@
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		550DA0DE22DB958400B67F03 /* EmptyCollectionLiteralRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionLiteralRule.swift; sourceTree = "<group>"; };
+		550DA0E122DB9E6B00B67F03 /* ContainsOverRangeNilComparisonRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsOverRangeNilComparisonRule.swift; sourceTree = "<group>"; };
 		57ED82791CF65183002B3513 /* JUnitReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JUnitReporter.swift; sourceTree = "<group>"; };
 		584B0D392112BA78002F7E25 /* SonarQubeReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonarQubeReporter.swift; sourceTree = "<group>"; };
 		584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CannedSonarQubeReporterOutput.json; sourceTree = "<group>"; };
@@ -1081,6 +1083,7 @@
 				29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */,
 				D489B546231233490090BAA0 /* ContainsOverFilterCountRule.swift */,
 				D489B549231383350090BAA0 /* ContainsOverFilterIsEmptyRule.swift */,
+				550DA0E122DB9E6B00B67F03 /* ContainsOverRangeNilComparisonRule.swift */,
 				550DA0DE22DB958400B67F03 /* EmptyCollectionLiteralRule.swift */,
 				E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */,
 				740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */,
@@ -2065,6 +2068,7 @@
 				D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,
 				C3D23F1D21E3A33700E9BD1B /* UnusedControlFlowLabelRule.swift in Sources */,
+				55CE0585231899100023BA72 /* ContainsOverRangeNilComparisonRule.swift in Sources */,
 				6C1D763221A4E69600DEF783 /* Request+DisableSourceKit.swift in Sources */,
 				47ACC8981E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */,
 				787CDE39208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift in Sources */,

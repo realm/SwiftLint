@@ -20,6 +20,7 @@ public let masterRuleList = RuleList(rules: [
     ContainsOverFilterCountRule.self,
     ContainsOverFilterIsEmptyRule.self,
     ContainsOverFirstNotNilRule.self,
+    ContainsOverRangeNilComparisonRule.self,
     ControlStatementRule.self,
     ConvenienceTypeRule.self,
     CustomRules.self,

@@ -78,6 +78,12 @@ class ContainsOverFilterIsEmptyRuleTests: XCTestCase {
     }
 }
 
+class ContainsOverRangeNilComparisonRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ContainsOverRangeNilComparisonRule.description)
+    }
+}
+
 class ControlStatementRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)

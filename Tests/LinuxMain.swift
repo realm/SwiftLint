@@ -214,6 +214,12 @@ extension ContainsOverFirstNotNilRuleTests {
     ]
 }
 
+extension ContainsOverRangeNilComparisonRuleTests {
+    static var allTests: [(String, (ContainsOverRangeNilComparisonRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ControlStatementRuleTests {
     static var allTests: [(String, (ControlStatementRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1577,6 +1583,7 @@ XCTMain([
     testCase(ContainsOverFilterCountRuleTests.allTests),
     testCase(ContainsOverFilterIsEmptyRuleTests.allTests),
     testCase(ContainsOverFirstNotNilRuleTests.allTests),
+    testCase(ContainsOverRangeNilComparisonRuleTests.allTests),
     testCase(ControlStatementRuleTests.allTests),
     testCase(ConvenienceTypeRuleTests.allTests),
     testCase(CustomRulesTests.allTests),

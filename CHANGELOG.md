@@ -1,4 +1,4 @@
-## Master
+## 0.35.0: Secondary Lint Trap
 
 This is the last release to support building with Swift 4.2.x.
 

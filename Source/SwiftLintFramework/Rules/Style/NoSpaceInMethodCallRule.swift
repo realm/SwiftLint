@@ -19,7 +19,8 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
             "object.foo(1)",
             "object.foo(value: 1)",
             "object.foo { print($0 }",
-            "list.sorted { $0.0 < $1.0 }.map { $0.value }"
+            "list.sorted { $0.0 < $1.0 }.map { $0.value }",
+            "self.init(rgb: (Int) (colorInt))"
         ],
         triggeringExamples: [
             "foo↓ ()",
@@ -78,6 +79,11 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
             subDict.kind.flatMap(SwiftExpressionKind.init) == .closure,
             let closureBodyOffset = subDict.bodyOffset,
             closureBodyOffset == bodyOffset {
+            return []
+        }
+
+        // Don't trigger if it's a typecast
+        if let name = dictionary.name, name.hasPrefix("("), name.hasSuffix(")") {
             return []
         }
 

@@ -14017,6 +14017,10 @@ object.foo { print($0 }
 list.sorted { $0.0 < $1.0 }.map { $0.value }
 ```
 
+```swift
+self.init(rgb: (Int) (colorInt))
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

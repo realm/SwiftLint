@@ -2,27 +2,26 @@ import SwiftLintFramework
 import XCTest
 
 class NPathComplexityRuleTests: XCTestCase {
-    // NPath complexity: 8
     private lazy var simpleIfExample: String = {
         return """
-        func ifsInALine() {
-            if true != false {
-                print("true")
-            }
-            if false != true {
-                print("false")
-            }
-            if 2 + 2 == 5 {
-                print("maybe")
-            }
-        }
-
-        """
+               // NPath complexity: 8
+               func ifsInALine() {
+                   if true != false {
+                       print("true")
+                   }
+                   if false != true {
+                       print("false")
+                   }
+                   if 2 + 2 == 5 {
+                       print("maybe")
+                   }
+               }
+               """
     }()
 
-    // NPath complexity: 4
     private lazy var simpleNestedIfExample: String = {
         return """
+               // NPath complexity: 4
                func nestedIfs() {
                    if true != false {
                        print("true")
@@ -37,30 +36,29 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 8
     private lazy var nestedIfExample: String = {
         return """
-                func nestedIfs() {
-                    if true != false {
-                        print("true")
-                        if false != true {
-                            print("false")
-                            if 2 + 2 == 5 {
-                                print("maybe")
-                            }
-                        }
-                    }
-                    if Bool.random() {
-                        print("random")
-                    }
-                }
-
+               // NPath complexity: 8
+               func nestedIfs() {
+                   if true != false {
+                       print("true")
+                       if false != true {
+                           print("false")
+                           if 2 + 2 == 5 {
+                               print("maybe")
+                           }
+                       }
+                   }
+                   if Bool.random() {
+                       print("random")
+                   }
+               }
                """
     }()
 
-    // NPath complexity: 4
     private lazy var guardExample: String = {
         return """
+               // NPath complexity: 4
                func guardFunction() {
                    guard true != false else {
                        return
@@ -77,9 +75,9 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 3
     private lazy var guardIfExample: String = {
         return """
+               // NPath complexity: 3
                func guardIfFunction() {
                    guard true != false else {
                        return
@@ -91,9 +89,9 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 4
     private lazy var ifGuardExample: String = {
         return """
+               // NPath complexity: 4
                func ifGuardFunction() {
                    if false == true {
                        print("here")
@@ -105,9 +103,9 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 4
     private lazy var guardWithInnerIf: String = {
         return """
+               // NPath complexity: 4
                func guardWithInnerIfFunction() {
                    guard true != false else {
                        if false == true {
@@ -122,9 +120,9 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 2
     private lazy var simpleCaseExample: String = {
         return """
+               // NPath complexity: 2
                func simpleCaseFunction() {
                    switch true {
                    case false:
@@ -136,10 +134,10 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 3
     // fallthrough does not affect NPath complexity
     private lazy var caseExample: String = {
         return """
+               // NPath complexity: 3
                func caseFunction() {
                    switch 3 {
                    case 0:
@@ -153,9 +151,9 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 4
     private lazy var caseIfExample: String = {
         return """
+               // NPath complexity: 4
                 func caseIfFunction() {
                     switch true {
                     case false:
@@ -169,46 +167,30 @@ class NPathComplexityRuleTests: XCTestCase {
                """
     }()
 
-    // NPath complexity: 3
     private lazy var caseNestedIfExample: String = {
         return """
-                func caseNestedIfFunction() {
-                    switch true {
-                    case false:
-                        if true {}
-                        break
-                    case true:
-                        break
-                    }
-                }
-
+               // NPath complexity: 3
+               func caseNestedIfFunction() {
+                   switch true {
+                   case false:
+                       if true {}
+                       break
+                   case true:
+                       break
+                   }
+               }
                """
     }()
 
     private lazy var forExample: String = {
         return """
-            func forFunction() {
-                for _ in (0 ... 100) {
-                }
-            }
-            """
+               // NPath complexity: 2
+               func forFunction() {
+                   for _ in (0 ... 100) {
+                   }
+               }
+               """
     }()
-
-    private func verify(that example: String, hasComplexity complexity: Int) {
-        let baseDescription = NPathComplexityRule.description
-
-        let nonTriggeringDescription = baseDescription.with(nonTriggeringExamples: [example])
-            .with(triggeringExamples: [])
-
-        verifyRule(nonTriggeringDescription, ruleConfiguration: ["warning": complexity],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
-
-        let triggeringDescription = baseDescription.with(nonTriggeringExamples: [])
-            .with(triggeringExamples: [example])
-
-        verifyRule(triggeringDescription, ruleConfiguration: ["warning": complexity - 1],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
-    }
 
     func testNPathComplexityRule() {
         verifyRule(NPathComplexityRule.description, commentDoesntViolate: true, stringDoesntViolate: true)
@@ -260,5 +242,23 @@ class NPathComplexityRuleTests: XCTestCase {
 
     func testForExample() {
         verify(that: forExample, hasComplexity: 2)
+    }
+}
+
+private extension XCTestCase {
+    func verify(that example: String, hasComplexity complexity: Int) {
+        let baseDescription = NPathComplexityRule.description
+
+        let nonTriggeringDescription = baseDescription.with(nonTriggeringExamples: [example])
+            .with(triggeringExamples: [])
+
+        verifyRule(nonTriggeringDescription, ruleConfiguration: ["warning": complexity],
+                   commentDoesntViolate: true, stringDoesntViolate: true)
+
+        let triggeringDescription = baseDescription.with(nonTriggeringExamples: [])
+            .with(triggeringExamples: [example])
+
+        verifyRule(triggeringDescription, ruleConfiguration: ["warning": complexity - 1],
+                   commentDoesntViolate: true, stringDoesntViolate: true)
     }
 }

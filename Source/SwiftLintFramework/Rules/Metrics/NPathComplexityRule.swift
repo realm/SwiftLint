@@ -11,20 +11,68 @@ public struct NPathComplexityRule: ASTRule, ConfigurationProviderRule, OptInRule
         description: "The number of paths of function bodies should be limited.",
         kind: .metrics,
         nonTriggeringExamples: [
-            "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}",
-            "func f(code: Int) -> Int {\n" +
-                "switch code {\n case 0: fallthrough\n case 0: return 1\n case 0: return 1\n" +
-                " case 0: return 1\n case 0: return 1\n case 0: return 1\n case 0: return 1\n" +
-                " case 0: return 1\n case 0: return 1\n default: return 1\n }\n}",
-            "func f1() {" +
-                "if true {}; if true {}; if true {}; if true {}; if true {}; if true {}\n" +
-                "func f2() {\n" +
-                "if true {}; if true {}; if true {}; if true {}; if true {}\n" +
-            "}}"
+            """
+            // NPath Complexity: 6
+            func nonTriggering() {
+                if true {
+                    for _ in 1..5 {
+                        print("non triggering")
+                    }
+                }
+                if false {
+                    print("non triggering")
+                }
+            }
+            """,
+            """
+            // NPath Complexity: 11
+            func switchCase(code: Int) -> Int {
+                switch code {
+                case 0: fallthrough
+                case 1: return 1
+                case 2: return 2
+                case 3: return 3
+                case 4: return 4
+                case 5: return 5
+                case 6: return 6
+                case 7: return 7
+                case 8: return 8
+                case 9: return 9
+                default: return 0
+                }
+            }
+            """,
+            """
+            // NPath Complexity: 64
+            func nestedFunctions() {
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                // NPath Complexity: 4
+                func innerFunction() {
+                    if true {}
+                    if true {}
+                }
+            }
+            """
         ],
         triggeringExamples: [
-            "↓func f1() {\n if true {}\n if true {}\n if true {}\n if true {}\n if true {}\n if true {}\n" +
-                " if true {}\n if true {}\n}"
+            """
+            // NPath Complexity: 256
+            ↓func triggeringFunction() {
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+                if true {}
+            }
+            """
         ]
     )
 

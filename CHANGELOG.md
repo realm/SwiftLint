@@ -11,7 +11,13 @@
 
 #### Enhancements
 
-* None.
+* Add `contains_over_range_nil_comparison` opt-in rule to prefer
+  using `contains` over comparison of `range(of:)` to `nil`.  
+  [Colton Schlosser](https://github.com/cltnschlosser)
+  [#2776](https://github.com/realm/SwiftLint/issues/2776)
+
+* Make `contains_over_first_not_nil` rule also match `first(where:) == nil`.  
+  [Colton Schlosser](https://github.com/cltnschlosser)
 
 #### Bug Fixes
 
@@ -52,14 +58,6 @@ This is the last release to support building with Swift 4.2.x.
   comparison to `[]` or `[:]`.  
   [Colton Schlosser](https://github.com/cltnschlosser)
   [#2807](https://github.com/realm/SwiftLint/issues/2807)
-
-* Add `contains_over_range_nil_comparison` opt-in rule to prefer
-  using `contains` over comparison of `range(of:)` to `nil`.  
-  [Colton Schlosser](https://github.com/cltnschlosser)
-  [#2776](https://github.com/realm/SwiftLint/issues/2776)
-
-* Make `contains_over_first_not_nil` rule also match `first(where:) == nil`.  
-  [Colton Schlosser](https://github.com/cltnschlosser)
 
 #### Bug Fixes
 

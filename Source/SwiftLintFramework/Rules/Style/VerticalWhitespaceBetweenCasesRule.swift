@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private extension File {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentKinds)
     }
 }
 
@@ -108,6 +108,28 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
             case .invalid:
                 print("multiple ...")
                 print("... lines")
+            }
+        """,
+        """
+            switch string {
+            case "Idle":
+                self = .idle
+        ↓    case "Connecting":
+                self = .connecting
+
+            default:
+                return nil
+            }
+        """: """
+            switch string {
+            case "Idle":
+                self = .idle
+
+            case "Connecting":
+                self = .connecting
+
+            default:
+                return nil
             }
         """
     ]

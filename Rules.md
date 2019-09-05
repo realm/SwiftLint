@@ -25112,6 +25112,19 @@ Include a single empty line between switch cases.
 <summary>Non Triggering Examples</summary>
 
 ```swift
+    switch string {
+    case "Idle":
+        self = .idle
+
+    case "Connecting":
+        self = .connecting
+
+    default:
+        return nil
+    }
+```
+
+```swift
     switch x {
     case .valid:
         print("multiple ...")
@@ -25192,6 +25205,18 @@ default:
 </details>
 <details>
 <summary>Triggering Examples</summary>
+
+```swift
+    switch string {
+    case "Idle":
+        self = .idle
+↓    case "Connecting":
+        self = .connecting
+
+    default:
+        return nil
+    }
+```
 
 ```swift
     switch x {

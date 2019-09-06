@@ -184,11 +184,22 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
               case caseOne(propOne: Int)
             }
 
+            enum Bar: Error {
+              case testError
+              case multiVariable(foo: Int, bar: String)
+            }
+
             let testA: Foo = .caseOne(propOne: 2)
 
             if case let Foo.caseOne(propOne) = testA { }
 
             if case Foo.caseOne(let propOne) = testA { }
+
+            if 5 > 2, case Foo.caseOne(let propOne) = testA { }
+
+            let multiVariable: Error = Bar.multiVariable(foo: 10, bar: "")
+
+            if case Bar.multiVariable(let foo, _) = multiVariable { }
             """
         ]
 

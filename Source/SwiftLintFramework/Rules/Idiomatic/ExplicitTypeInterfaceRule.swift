@@ -95,8 +95,8 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
             (!configuration.allowRedundancy ||
                 (!dictionary.isInitCall(file: file) && !dictionary.isTypeReferenceAssignment(file: file))
             ),
-            !dictionary.isIfCaseCall(file: file, parentStructure: parentStructure),
             !parentStructure.contains([.forEach, .guard]),
+            !parentStructure.isIfCaseCall(),
             !parentStructure.caseStatementPatternRanges.contains(offset),
             !parentStructure.caseExpressionRanges.contains(offset),
             !file.captureGroupByteRanges.contains(offset) else {
@@ -116,18 +116,10 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
         return typeName != nil
     }
 
-    func isIfCaseCall(file: File, parentStructure: [String: SourceKitRepresentable]) -> Bool {
-        guard parentStructure.kind == SwiftExpressionKind.call.rawValue,
-            let parentOffset = parentStructure.offset,
-            case let contents = file.contents.bridge(),
-            let beforeParentRange = contents.byteRangeToNSRange(start: parentOffset, length: 0) else {
-            return false
-        }
-
-        let fileUpToParent = contents.substring(to: beforeParentRange.location)
-        let isCaseRegex = regex("if\\s+case\\s+(let|var)?\\s*$")
-
-        return isCaseRegex.firstMatch(in: fileUpToParent, options: [], range: fileUpToParent.fullNSRange) != nil
+    func isIfCaseCall() -> Bool {
+        let isOnlyArgumentInCall = self.kind == SwiftExpressionKind.call.rawValue
+        let isOneOfManyArguments = self.kind == SwiftExpressionKind.argument.rawValue
+        return isOnlyArgumentInCall || isOneOfManyArguments
     }
 
     func isInitCall(file: File) -> Bool {

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.16.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -562,6 +562,12 @@ extension FileTypesOrderRuleTests {
 
 extension FirstWhereRuleTests {
     static var allTests: [(String, (FirstWhereRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension FlatMapOverMapReduceRuleTests {
+    static var allTests: [(String, (FlatMapOverMapReduceRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1711,6 +1717,7 @@ XCTMain([
     testCase(FileNameRuleTests.allTests),
     testCase(FileTypesOrderRuleTests.allTests),
     testCase(FirstWhereRuleTests.allTests),
+    testCase(FlatMapOverMapReduceRuleTests.allTests),
     testCase(ForWhereRuleTests.allTests),
     testCase(ForceCastRuleTests.allTests),
     testCase(ForceTryRuleTests.allTests),

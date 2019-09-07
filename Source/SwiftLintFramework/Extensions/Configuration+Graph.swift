@@ -134,7 +134,9 @@ public extension Configuration {
             func walkDown(stack: [Vertix]) throws {
                 let neighbours = edges.filter { $0.origin == stack.last }.map { $0.target! }
                 if stack.contains(where: neighbours.contains) {
-                    throw ConfigurationError.generic("Reference cycle...") // TODO
+                    throw ConfigurationError.generic("There's a cycle of child / parent config references. "
+                        + "Please check the hierarchy of configuration files passed via the command line "
+                        + "and the childConfig / parentConfig entries within them.")
                 }
                 try neighbours.forEach { try walkDown(stack: stack + [$0]) }
             }
@@ -143,11 +145,15 @@ public extension Configuration {
 
             // Detect ambiguities
             if (edges.contains { edge in edges.filter { $0.origin == edge.origin }.count > 1 }) {
-                throw ConfigurationError.generic("Ambiguous child config..") // TODO
+                throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
+                    + "More than one parent is declared for a specific configuration, "
+                    + "where there should only be exactly one.")
             }
 
             if (edges.contains { edge in edges.filter { $0.target == edge.target }.count > 1 }) {
-                throw ConfigurationError.generic("Ambiguous parent config..") // TODO
+                throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
+                    + "More than one child is declared for a specific configuration, "
+                    + "where there should only be exactly one.")
             }
         }
 

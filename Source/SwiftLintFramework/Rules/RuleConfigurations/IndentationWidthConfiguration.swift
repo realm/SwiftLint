@@ -5,9 +5,9 @@ public struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
             + "include_comments: \(includeComments)"
     }
 
-    private(set) public var severityConfiguration: SeverityConfiguration
-    private(set) public var indentationWidth: Int
-    private(set) public var includeComments: Bool
+    public private(set) var severityConfiguration: SeverityConfiguration
+    public private(set) var indentationWidth: Int
+    public private(set) var includeComments: Bool
 
     public init(
         severity: ViolationSeverity,

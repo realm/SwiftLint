@@ -37,7 +37,7 @@ struct AnalyzeCommand: CommandProtocol {
 
 struct AnalyzeOptions: OptionsProtocol {
     let paths: [String]
-    let configurationFile: String
+    let configurationFiles: [String]
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
@@ -51,8 +51,8 @@ struct AnalyzeOptions: OptionsProtocol {
     let compileCommands: String
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ enableAllRules: Bool) -> (_ autocorrect: Bool) -> (_ compilerLogPath: String) -> (_ compileCommands: String) -> (_ paths: [String]) -> AnalyzeOptions {
-        return { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { enableAllRules in { autocorrect in { compilerLogPath in { compileCommands in { paths in
+    static func create(_ path: String) -> (_ configurationFiles: [String]) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ enableAllRules: Bool) -> (_ autocorrect: Bool) -> (_ compilerLogPath: String) -> (_ compileCommands: String) -> (_ paths: [String]) -> AnalyzeOptions {
+        return { configurationFiles in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { enableAllRules in { autocorrect in { compilerLogPath in { compileCommands in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]

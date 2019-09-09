@@ -37,7 +37,7 @@
 
 #### Bug Fixes
 
-* Fixed `vertical_whitespace_between_cases` rule containing strings.
+* Fixed `vertical_whitespace_between_cases` rule containing strings.  
   [Andrey Uryadov](https://github.com/a-25)
   [#2760](https://github.com/realm/SwiftLint/issues/2760)
 

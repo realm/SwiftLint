@@ -37,6 +37,10 @@ This is the last release to support building with Swift 4.2.x.
 
 #### Enhancements
 
+* Add two new cases to the Mark rule to detect a Mark using three slashes.
+  [nvanfleet] (https://github.com/nvanfleet)
+  [#2866](https://github.com/realm/SwiftLint/issues/2866)
+
 * Type name rules considers SwiftUI template code.  
   [atfelix](https://github.com/atfelix)
   [#2791](https://github.com/realm/SwiftLint/issues/2791)

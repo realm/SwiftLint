@@ -12063,6 +12063,14 @@ MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'
 ```
 
 ```swift
+↓/// MARK:
+```
+
+```swift
+↓/// MARK bad
+```
+
+```swift
 ↓//MARK:- Top-Level bad mark
 ↓//MARK:- Another bad mark
 struct MarkTest {}
@@ -24827,6 +24835,11 @@ func foo(data: (size: CGSize,
                 identifier: String)) {}
 ```
 
+```swift
+func foo(data: Data,
+         @ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -24848,6 +24861,11 @@ func validateFunction(_ file: File,
                   ↓kind: SwiftDeclarationKind,
                   ↓dictionary: [String: SourceKitRepresentable]) { }
 
+```
+
+```swift
+func foo(data: Data,
+            ↓@ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
 ```
 
 </details>

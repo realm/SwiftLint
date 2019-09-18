@@ -87,8 +87,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private let oneOrMoreSpacesBeforeColonPattern = "(?:// ?MARK +:)"
     private let nonWhitespaceBeforeColonPattern = "(?:// ?MARK\\S+:)"
     private let nonWhitespaceNorColonBeforeSpacesPattern = "(?:// ?MARK[^\\s:]* +)"
-    private let threeSlashesInsteadOfTwo = "/// MARK:"
-    private let threeSlashesInsteadOfTwoNoColon = "/// MARK[^:]"
+    private let threeSlashesInsteadOfTwo = "/// MARK:?"
 
     private var pattern: String {
         return [
@@ -97,8 +96,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             invalidSpacesAfterHyphenPattern,
             invalidLowercasePattern,
             missingColonPattern,
-            threeSlashesInsteadOfTwo,
-            threeSlashesInsteadOfTwoNoColon
+            threeSlashesInsteadOfTwo
         ].joined(separator: "|")
     }
 
@@ -156,10 +154,6 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
         result.append(contentsOf: correct(file: file,
                                           pattern: threeSlashesInsteadOfTwo,
-                                          replaceString: "// MARK:"))
-
-        result.append(contentsOf: correct(file: file,
-                                          pattern: threeSlashesInsteadOfTwoNoColon,
                                           replaceString: "// MARK:"))
 
         return result.unique

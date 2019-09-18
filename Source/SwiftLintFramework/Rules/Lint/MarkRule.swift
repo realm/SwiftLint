@@ -98,7 +98,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             invalidLowercasePattern,
             missingColonPattern,
             threeSlashesInsteadOfTwo,
-            threeSlashesInsteadOfTwoNoColon,
+            threeSlashesInsteadOfTwoNoColon
         ].joined(separator: "|")
     }
 

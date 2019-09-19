@@ -41,6 +41,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓// MARKL:",
             "↓// MARKR ",
             "↓// MARKK -",
+            "↓/// MARK:",
+            "↓/// MARK bad",
             issue1029Example
         ],
         corrections: [
@@ -60,6 +62,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓// MARKL: -": "// MARK: -",
             "↓// MARKK ": "// MARK: ",
             "↓// MARKK -": "// MARK: -",
+            "↓/// MARK:": "// MARK:",
+            "↓/// MARK comment": "// MARK: comment",
             issue1029Example: issue1029Correction
         ]
     )
@@ -83,6 +87,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private let oneOrMoreSpacesBeforeColonPattern = "(?:// ?MARK +:)"
     private let nonWhitespaceBeforeColonPattern = "(?:// ?MARK\\S+:)"
     private let nonWhitespaceNorColonBeforeSpacesPattern = "(?:// ?MARK[^\\s:]* +)"
+    private let threeSlashesInsteadOfTwo = "/// MARK:?"
 
     private var pattern: String {
         return [
@@ -90,7 +95,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             invalidEndSpacesPattern,
             invalidSpacesAfterHyphenPattern,
             invalidLowercasePattern,
-            missingColonPattern
+            missingColonPattern,
+            threeSlashesInsteadOfTwo
         ].joined(separator: "|")
     }
 
@@ -146,6 +152,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
                                           pattern: invalidLowercasePattern,
                                           replaceString: "// MARK:"))
 
+        result.append(contentsOf: correct(file: file,
+                                          pattern: threeSlashesInsteadOfTwo,
+                                          replaceString: "// MARK:"))
+
         return result.unique
     }
 
@@ -175,7 +185,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private func violationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
-            return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
+            guard let syntaxKind = SyntaxKind(rawValue: syntaxTokens[0].type) else {
+                return false
+            }
+            return !syntaxTokens.isEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
         }.compactMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)

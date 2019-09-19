@@ -12063,6 +12063,14 @@ MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'
 ```
 
 ```swift
+↓/// MARK:
+```
+
+```swift
+↓/// MARK bad
+```
+
+```swift
 ↓//MARK:- Top-Level bad mark
 ↓//MARK:- Another bad mark
 struct MarkTest {}

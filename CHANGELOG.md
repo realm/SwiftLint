@@ -19,6 +19,10 @@
 * Make `contains_over_first_not_nil` rule also match `first(where:) == nil`.  
   [Colton Schlosser](https://github.com/cltnschlosser)
 
+* Add two new cases to the Mark rule to detect a Mark using three slashes.  
+  [nvanfleet](https://github.com/nvanfleet)
+  [#2866](https://github.com/realm/SwiftLint/issues/2866)
+
 #### Bug Fixes
 
 * None.

@@ -151,6 +151,7 @@ public let masterRuleList = RuleList(rules: [
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
+    TodoAttributionRule.self,
     TodoRule.self,
     ToggleBoolRule.self,
     TrailingClosureRule.self,

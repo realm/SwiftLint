@@ -1312,6 +1312,17 @@ extension SyntacticSugarRuleTests {
     ]
 }
 
+extension TodoAttributionRuleTests {
+    static var allTests: [(String, (TodoAttributionRuleTests) -> () throws -> Void)] = [
+        ("testTodoAttribution", testTodoAttribution),
+        ("testTodoMessage", testTodoMessage),
+        ("testFixmeMessage", testFixmeMessage),
+        ("testOwnerExpectedFormatMessage", testOwnerExpectedFormatMessage),
+        ("testIssueExpectedFormatMessage", testIssueExpectedFormatMessage),
+        ("testIssueAndOwnerExpectedFormatMessage", testIssueAndOwnerExpectedFormatMessage)
+    ]
+}
+
 extension TodoRuleTests {
     static var allTests: [(String, (TodoRuleTests) -> () throws -> Void)] = [
         ("testTodo", testTodo),
@@ -1741,6 +1752,7 @@ XCTMain([
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),
+    testCase(TodoAttributionRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
     testCase(ToggleBoolRuleTests.allTests),
     testCase(TrailingClosureConfigurationTests.allTests),

@@ -151,6 +151,7 @@
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
+* [Todo Attribution](#todo-attribution)
 * [Toggle Bool](#toggle-bool)
 * [Trailing Closure](#trailing-closure)
 * [Trailing Comma](#trailing-comma)
@@ -19610,6 +19611,87 @@ TODOs and FIXMEs should be resolved.
 
 ```swift
 /** ↓TODO: */
+
+```
+
+</details>
+
+
+
+## Todo Attribution
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`todo_attribution` | Disabled | No | lint | No | 3.0.0 
+
+TODOs and FIXMEs should be attributed to an owner or related issue
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+// TODO: @gituser 
+```
+
+```swift
+// FIXME: @GitUser this assumes 64 bit words
+```
+
+```swift
+// TODO: #4 Implement
+```
+
+```swift
+// FIXME: #134
+```
+
+```swift
+// TODO: @gituser #27 make async
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+// ↓TODO:  @gituser
+
+```
+
+```swift
+// ↓FIXME:  #2871
+
+```
+
+```swift
+// ↓TODO(#2871)
+
+```
+
+```swift
+// ↓FIXME(@gituser)
+
+```
+
+```swift
+/* ↓fixme: @gituser*/
+
+```
+
+```swift
+/* ↓todo: */
+
+```
+
+```swift
+/** ↓FIX_ME: */
+
+```
+
+```swift
+/** ↓TO-DO: */
 
 ```
 

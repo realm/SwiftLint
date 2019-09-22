@@ -71,6 +71,10 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2901](https://github.com/realm/SwiftLint/issues/2901)  
 
+* Add `todo_attribution` opt-in rule to enforce TODOs and FIXMEs attribution.
+  [Hèctor Marquès](https://github.com/hectr)
+  [#2871](https://github.com/realm/SwiftLint/issues/2871)
+
 #### Bug Fixes
 
 * Fix running analyzer rules on the output of builds performed with

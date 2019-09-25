@@ -32,7 +32,8 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
             "foo().catch(all: true) {}",
             "if max(a, b) < c {\n",
             "switch (lhs, rhs) {\n",
-            "if !(a && b) {}"
+            "if !(a && b) {}",
+            "if !(a is Foo) {}"
         ],
         triggeringExamples: [
             "↓if (condition) {\n",
@@ -99,8 +100,11 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
             return false
         }
 
-        if content.contains("!(") && (content.contains("&&") || content.contains("||")) {
-            return true
+        let operators: Set = ["&&", "||", " is ", "~=", "??"]
+        if content.contains("!(") {
+            for operation in operators where content.contains(operation) {
+                return true
+            }
         }
 
         var depth = 0

@@ -3059,6 +3059,10 @@ switch (lhs, rhs) {
 if !(a && b) {}
 ```
 
+```swift
+if !(a is Foo) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -31,7 +31,8 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
             "do {\n} catch let error as NSError {\n}",
             "foo().catch(all: true) {}",
             "if max(a, b) < c {\n",
-            "switch (lhs, rhs) {\n"
+            "switch (lhs, rhs) {\n",
+            "if !(a && b) {}"
         ],
         triggeringExamples: [
             "↓if (condition) {\n",
@@ -52,7 +53,8 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
             "do { ; } ↓while (condition) {\n",
             "↓switch (foo) {\n",
             "do {\n} ↓catch(let error as NSError) {\n}",
-            "↓if (max(a, b) < c) {\n"
+            "↓if (max(a, b) < c) {\n",
+            "↓if !(a) {}"
         ]
     )
 
@@ -63,7 +65,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
             let isSwitch = statement == "switch"
             let elsePattern = isGuard ? "else\\s*" : ""
             let clausePattern = isSwitch ? "[^,{]*" : "[^{]*"
-            return "\(statement)\\s*\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
+            return "\(statement)\\s*\\!?\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
         }
         return statementPatterns.flatMap { pattern -> [StyleViolation] in
             return file.match(pattern: pattern)
@@ -95,6 +97,10 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
 
         guard let lastClosingParenthesePosition = content.lastIndex(of: ")") else {
             return false
+        }
+
+        if content.contains("!(") && (content.contains("&&") || content.contains("||")) {
+            return true
         }
 
         var depth = 0

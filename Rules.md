@@ -3055,6 +3055,10 @@ switch (lhs, rhs) {
 
 ```
 
+```swift
+if !(a && b) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -3153,6 +3157,10 @@ do {
 ```swift
 ↓if (max(a, b) < c) {
 
+```
+
+```swift
+↓if !(a) {}
 ```
 
 </details>

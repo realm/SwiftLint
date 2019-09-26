@@ -228,6 +228,12 @@ class FirstWhereRuleTests: XCTestCase {
     }
 }
 
+class FlatMapOverMapReduceRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FlatMapOverMapReduceRule.description)
+    }
+}
+
 class ForWhereRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForWhereRule.description)

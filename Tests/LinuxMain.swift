@@ -528,6 +528,12 @@ extension FirstWhereRuleTests {
     ]
 }
 
+extension FlatMapOverMapReduceRuleTests {
+    static var allTests: [(String, (FlatMapOverMapReduceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ForWhereRuleTests {
     static var allTests: [(String, (ForWhereRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1624,6 +1630,7 @@ XCTMain([
     testCase(FileNameRuleTests.allTests),
     testCase(FileTypesOrderRuleTests.allTests),
     testCase(FirstWhereRuleTests.allTests),
+    testCase(FlatMapOverMapReduceRuleTests.allTests),
     testCase(ForWhereRuleTests.allTests),
     testCase(ForceCastRuleTests.allTests),
     testCase(ForceTryRuleTests.allTests),

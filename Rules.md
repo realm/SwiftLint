@@ -54,6 +54,7 @@
 * [File Name](#file-name)
 * [File Types Order](#file-types-order)
 * [First Where](#first-where)
+* [FlatMap over map and reduce](#flatmap-over-map-and-reduce)
 * [For Where](#for-where)
 * [Force Cast](#force-cast)
 * [Force Try](#force-try)
@@ -8423,6 +8424,39 @@ if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { pr
 ```swift
 (↓myList.filter { $0 == 1 }).first
 
+```
+
+</details>
+
+
+
+## FlatMap over map and reduce
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`flatmap_over_map_reduce` | Disabled | No | performance | No | 3.0.0 
+
+Prefer `flatMap` over `map` followed by `reduce([], +)`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = bar.map { $0.count }.reduce(0, +)
+```
+
+```swift
+let foo = bar.flatMap { $0.array }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let foo = ↓bar.map { $0.array }.reduce([], +)
 ```
 
 </details>

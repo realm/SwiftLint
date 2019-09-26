@@ -282,6 +282,7 @@
 		D45255C81F0932F8003C9B56 /* RuleDescription+Examples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45255C71F0932F8003C9B56 /* RuleDescription+Examples.swift */; };
 		D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */; };
 		D46252541DF63FB200BE2CA1 /* NumberSeparatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */; };
+		D466B620233D229F0068190B /* FlatMapOverMapReduceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D466B61F233D229F0068190B /* FlatMapOverMapReduceRule.swift */; };
 		D46A317F1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46A317E1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift */; };
 		D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */; };
 		D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */; };
@@ -779,6 +780,7 @@
 		D45255C71F0932F8003C9B56 /* RuleDescription+Examples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleDescription+Examples.swift"; sourceTree = "<group>"; };
 		D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRuleExamples.swift; sourceTree = "<group>"; };
 		D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRule.swift; sourceTree = "<group>"; };
+		D466B61F233D229F0068190B /* FlatMapOverMapReduceRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatMapOverMapReduceRule.swift; sourceTree = "<group>"; };
 		D46A317E1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnneededParenthesesInClosureArgumentRule.swift; sourceTree = "<group>"; };
 		D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaRule.swift; sourceTree = "<group>"; };
 		D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParenthesesWithTrailingClosureRule.swift; sourceTree = "<group>"; };
@@ -1088,6 +1090,7 @@
 				E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */,
 				740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */,
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
+				D466B61F233D229F0068190B /* FlatMapOverMapReduceRule.swift */,
 				D414D6AD21D22FF500960935 /* LastWhereRule.swift */,
 				756C0777222EA49400A111F4 /* ReduceIntoRule.swift */,
 				429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */,
@@ -2198,6 +2201,7 @@
 				4A9A3A3A1DC1D75F00DF5183 /* HTMLReporter.swift in Sources */,
 				D40F83881DE9179200524C62 /* TrailingCommaConfiguration.swift in Sources */,
 				827169B31F488181003FB9AF /* ExplicitEnumRawValueRule.swift in Sources */,
+				D466B620233D229F0068190B /* FlatMapOverMapReduceRule.swift in Sources */,
 				D41985E921FAB62F003BE2B7 /* DeploymentTargetRule.swift in Sources */,
 				62FE5D32200CABDD00F68793 /* DiscouragedOptionalCollectionExamples.swift in Sources */,
 				D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */,

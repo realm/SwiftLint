@@ -23,6 +23,11 @@
   [nvanfleet](https://github.com/nvanfleet)
   [#2866](https://github.com/realm/SwiftLint/issues/2866)
 
+* Add `flatmap_over_map_reduce` opt-in rule to prefer
+  using `flatMap` over `map { ... }.reduce([], +)`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2883](https://github.com/realm/SwiftLint/issues/2883)
+
 #### Bug Fixes
 
 * None.

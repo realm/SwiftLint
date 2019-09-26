@@ -25,6 +25,8 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_10.2.app
       xcode103:
         DEVELOPER_DIR: /Applications/Xcode_10.3.app
+      xcode110:
+        DEVELOPER_DIR: /Applications/Xcode_11.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -53,6 +55,8 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_10.2.app
       xcode103:
         DEVELOPER_DIR: /Applications/Xcode_10.3.app
+      xcode110:
+        DEVELOPER_DIR: /Applications/Xcode_11.app
   steps:
     - script: |
         sw_vers
@@ -67,7 +71,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.3.app
+    DEVELOPER_DIR: /Applications/Xcode_11.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -80,7 +84,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.3.app
+    DEVELOPER_DIR: /Applications/Xcode_11.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -93,7 +97,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.3.app
+    DEVELOPER_DIR: /Applications/Xcode_11.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
@@ -102,7 +106,7 @@ jobs:
   pool:
     vmImage: 'macOS 10.14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_10.3.app
+    DEVELOPER_DIR: /Applications/Xcode_11.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run

@@ -1765,10 +1765,9 @@
 			};
 			buildConfigurationList = D0D1211319E87861005E4BAA /* Build configuration list for PBXProject "SwiftLint" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);

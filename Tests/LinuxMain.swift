@@ -1058,6 +1058,12 @@ extension QuickDiscouragedPendingTestRuleTests {
     ]
 }
 
+extension RawValueForCamelCasedCodableEnumRuleTests {
+    static var allTests: [(String, (RawValueForCamelCasedCodableEnumRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ReduceBooleanRuleTests {
     static var allTests: [(String, (ReduceBooleanRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1704,6 +1710,7 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
+    testCase(RawValueForCamelCasedCodableEnumRuleTests.allTests),
     testCase(ReduceBooleanRuleTests.allTests),
     testCase(ReduceIntoRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),

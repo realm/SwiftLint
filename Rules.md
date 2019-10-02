@@ -124,6 +124,7 @@
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
+* [Raw Value For Camel Cased Codable String Enum](#raw-alue-for-camel-cased-codable-enum)
 * [Reduce Boolean](#reduce-boolean)
 * [Reduce Into](#reduce-into)
 * [Redundant Discardable Let](#redundant-discardable-let)
@@ -16867,6 +16868,105 @@ class TotoTests: QuickSpec {
    }
 }
 
+```
+
+</details>
+
+
+
+
+## Raw Value For Camel Cased Codable Enum
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`raw_value_for_camel_cased_codable_enum` | Disabled | No | lint | No | 3.0.0 
+
+Camel cased Codable String enum cases should have explicitly assigned raw value.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+
+```swift
+enum Numbers: Codable {
+  case int(Int)
+  case short(Int16)
+}
+```
+
+```swift
+enum Numbers: Int, Codable {
+  case one = 1
+  case two = 2
+}
+```
+
+```swift
+enum Numbers: Double, Codable {
+  case one = 1.1
+  case two = 2.2
+}
+```
+
+```swift
+enum Numbers: String, Codable {
+  case one = "one"
+  case two = "two"
+}
+```
+
+```swift
+enum Status: String {
+    case ok
+    case notAcceptable
+    case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: Int, Codable {
+    case ok
+    case notAcceptable
+    case maybeAcceptable = -1
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Status: String, Codable {
+    case ok
+    case ↓notAcceptable
+    case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: String, Decodable {
+   case ok
+   case ↓notAcceptable
+   case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: String, Encodable {
+   case ok
+   case ↓notAcceptable
+   case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: String, Codable {
+    case ok
+    case ↓notAcceptable
+    case maybeAcceptable = "maybe_acceptable"
+}
 ```
 
 </details>

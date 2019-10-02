@@ -34,6 +34,10 @@
 * Support building with Swift 5.1 on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
+* Add `snake_case_raw_value_codable_string_enum` opt-in rule to enforce snake 
+  cased raw values for camel cased Codable String enum cases.
+ [Marko Pejovic](https://github.com/00FA9A)
+ [#2888](https://github.com/realm/SwiftLint/issues/2888)
 
 * Speedup `LetVarWhiteSpacesRule`.  
   [PaulTaykalo](https://github.com/PaulTaykalo)

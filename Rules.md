@@ -124,7 +124,7 @@
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
-* [Raw Value For Camel Cased Codable String Enum](#raw-alue-for-camel-cased-codable-enum)
+* [Raw Value For Camel Cased Codable Enum](#raw-value-for-camel-cased-codable-enum)
 * [Reduce Boolean](#reduce-boolean)
 * [Reduce Into](#reduce-into)
 * [Redundant Discardable Let](#redundant-discardable-let)

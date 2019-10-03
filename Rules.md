@@ -16940,7 +16940,7 @@ enum Status: Int, Codable {
 ```swift
 enum Status: String, Codable {
     case ok
-    case ↓notAcceptable
+    case notAcceptable
     case maybeAcceptable = "maybe_acceptable"
 }
 ```
@@ -16948,7 +16948,7 @@ enum Status: String, Codable {
 ```swift
 enum Status: String, Decodable {
    case ok
-   case ↓notAcceptable
+   case notAcceptable
    case maybeAcceptable = "maybe_acceptable"
 }
 ```
@@ -16956,7 +16956,7 @@ enum Status: String, Decodable {
 ```swift
 enum Status: String, Encodable {
    case ok
-   case ↓notAcceptable
+   case notAcceptable
    case maybeAcceptable = "maybe_acceptable"
 }
 ```
@@ -16964,7 +16964,7 @@ enum Status: String, Encodable {
 ```swift
 enum Status: String, Codable {
     case ok
-    case ↓notAcceptable
+    case notAcceptable
     case maybeAcceptable = "maybe_acceptable"
 }
 ```

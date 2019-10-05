@@ -60,8 +60,18 @@ running it.
 
 ### Compiling from source:
 
-You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 10.2 or later).
+You can also build from source by cloning this project and following the steps according to the Xcode version (10.2 or later)
+
+#### Xcode 10.2.x or 10.3.x
+
+- Run `git submodule update --init --recursive; make install`
+- Build SwiftLint to a Mac device from SwiftLint.xcworkspace
+
+#### Xcode 11
+
+- Run `swift package update; swift package generate-xcodeproj`
+	- Alternatively, make sure to open with Xcode the SwiftLint _folder_ (**not** the xcworkspace) and wait for the Swift Package Dependencies to finish loading.
+- Build SwiftLint to a Mac device (may need to manually select "My Mac" as the target device)
 
 ### Known Installation Issues On MacOS Before 10.14.4
 

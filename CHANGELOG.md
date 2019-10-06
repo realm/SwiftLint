@@ -28,6 +28,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
 
+* Make `toggle_bool` rule substitution correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
 #### Bug Fixes
 
 * None.

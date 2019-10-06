@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -22,16 +22,32 @@ public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTes
             "↓isHidden = !isHidden\n",
             "↓view.clipsToBounds = !view.clipsToBounds\n",
             "func foo() { ↓abc = !abc }"
+        ],
+        corrections: [
+            "↓isHidden = !isHidden\n": "isHidden.toggle()\n",
+            "↓view.clipsToBounds = !view.clipsToBounds\n": "view.clipsToBounds.toggle()\n",
+            "func foo() { ↓abc = !abc }": "func foo() { abc.toggle() }"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
+        return violationRanges(in: file).map {
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location)
+            )
+        }
+    }
+
+    public func violationRanges(in file: File) -> [NSRange] {
         let pattern = "(?<![\\w.])([\\w.]+) = !\\1\\b"
         let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds)
+    }
+
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        let violationString = file.contents.bridge().substring(with: violationRange)
+        let identifier = violationString.components(separatedBy: .whitespaces).first { !$0.isEmpty }
+        return (violationRange, identifier! + ".toggle()")
     }
 }

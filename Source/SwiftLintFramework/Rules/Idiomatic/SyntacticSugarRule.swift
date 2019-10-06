@@ -53,11 +53,15 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         ],
         corrections: [
             "let x: Array<String>": "let x: [String]",
+            "let x: Array< String >": "let x: [ String ]",
             "let x: Dictionary<Int, String>": "let x: [Int: String]",
+            "let x: Dictionary<Int , String>": "let x: [Int : String]",
             "let x: Optional<Int>": "let x: Int?",
+            "let x: Optional< Int >": "let x: Int?",
             "let x: ImplicitlyUnwrappedOptional<Int>": "let x: Int!",
+            "let x: ImplicitlyUnwrappedOptional< Int >": "let x: Int!",
             "func x(a: Array<Int>, b: Int) -> [Int: Any]": "func x(a: [Int], b: Int) -> [Int: Any]",
-            "func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>": "func x(a: [Int], b: Int) -> [Int: String]",
+            "func x(a: [Int], b: Int) -> Dictionary<Int, String>": "func x(a: [Int], b: Int) -> [Int: String]",
             "let x = Array<String>.array(of: object)": "let x = [String].array(of: object)",
             "let x: Swift.Optional<String>": "let x: String?"
         ]

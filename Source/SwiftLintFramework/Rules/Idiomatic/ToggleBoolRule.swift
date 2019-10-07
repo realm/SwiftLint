@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {

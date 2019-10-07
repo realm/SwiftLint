@@ -32,7 +32,7 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
 
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
+            StyleViolation(ruleDescription: ToggleBoolRule.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location)
             )

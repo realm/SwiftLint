@@ -30,6 +30,10 @@
 
 * Make `toggle_bool` rule substitution correctable.  
   [MaxHaertwig](https://github.com/maxhaertwig)
+  
+* Include `count < 1` check for `empty_count` rule.
+  [Ivan Vavilov](https://github.com/vani2)
+  [#2872](https://github.com/realm/SwiftLint/issues/2872)
 
 #### Bug Fixes
 

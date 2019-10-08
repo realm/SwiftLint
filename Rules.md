@@ -5678,6 +5678,11 @@ order.discount == 0
 
 ```
 
+```swift
+[Int]().↓count < 1
+
+```
+
 </details>
 
 

@@ -27,6 +27,7 @@
   using `flatMap` over `map { ... }.reduce([], +)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
+  
 * Add autocorrection to `syntactic_sugar`.  
   [Ivan Vavilov](https://github.com/vani2)
 

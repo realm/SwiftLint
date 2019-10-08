@@ -19447,7 +19447,7 @@ TODOs and FIXMEs should be resolved.
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`toggle_bool` | Disabled | No | idiomatic | No | 4.2.0 
+`toggle_bool` | Disabled | Yes | idiomatic | No | 4.2.0 
 
 Prefer `someBool.toggle()` over `someBool = !someBool`.
 

@@ -1,2 +1,2 @@
-github "jpsim/SourceKitten" ~> 0.24.0
+github "jpsim/SourceKitten" ~> 0.26.0
 github "scottrhoyt/SwiftyTextTable" ~> 0.9.0

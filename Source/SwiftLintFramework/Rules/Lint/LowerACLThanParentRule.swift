@@ -68,7 +68,7 @@ private extension SwiftDeclarationKind {
              .extensionProtocol, .extensionStruct, .functionAccessorAddress, .functionAccessorDidset,
              .functionAccessorRead, .functionAccessorModify, .functionAccessorGetter,
              .functionAccessorMutableaddress, .functionAccessorSetter, .functionAccessorWillset,
-             .functionDestructor, .genericTypeParam, .module, .precedenceGroup, .varLocal, .varParameter:
+             .functionDestructor, .genericTypeParam, .module, .precedenceGroup, .varLocal, .varParameter, .opaqueType:
             return false
         case .class, .enum, .functionConstructor, .functionFree, .functionMethodClass, .functionMethodInstance,
              .functionMethodStatic, .functionOperator, .functionOperatorInfix, .functionOperatorPostfix,

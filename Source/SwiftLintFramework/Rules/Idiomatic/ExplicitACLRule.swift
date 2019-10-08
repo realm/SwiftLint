@@ -148,7 +148,7 @@ private extension SwiftDeclarationKind {
              .varGlobal, .varInstance, .varStatic, .typealias, .functionAccessorModify, .functionAccessorRead,
              .functionConstructor, .functionDestructor, .functionFree, .functionMethodClass,
              .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
-             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol:
+             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol, .opaqueType:
             return true
         case .class, .enum, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .struct:

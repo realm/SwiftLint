@@ -19263,7 +19263,7 @@ switch foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`syntactic_sugar` | Enabled | No | idiomatic | No | 3.0.0 
+`syntactic_sugar` | Enabled | Yes | idiomatic | No | 3.0.0 
 
 Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.
 

@@ -61,11 +61,12 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         if file.ruleEnabled(violatingRanges: [lastLineRange], for: self).isEmpty {
             return []
         }
-        if count < 1 {
-            file.append("\n")
-        } else {
+
+        if count >= 1 {
             let index = file.contents.index(file.contents.endIndex, offsetBy: 1 - count)
             file.write(file.contents[..<index])
+        } else {
+            file.append("\n")
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: type(of: self).description, location: location)]

@@ -195,15 +195,15 @@ def build(branch)
     perform("git fetch && git worktree add --detach #{dir} #{target}")
   end
 
+  Dir.chdir(dir) do
+    FileUtils.rm_rf %w[Packages .build]
+  end
+
   build_command = "cd #{dir}; swift build -c release"
 
   perform(build_command)
   return if $?.success?
 
-  # Couldn't build, start fresh
-  Dir.chdir(dir) do
-    FileUtils.rm_rf %w[Packages .build]
-  end
   return_value = nil
   puts build_command if @options[:verbose]
   Open3.popen3(build_command) do |_, stdout, _, wait_thr|

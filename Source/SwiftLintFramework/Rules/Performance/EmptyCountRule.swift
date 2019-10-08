@@ -29,12 +29,16 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTes
             "[Int]().↓count == 0x00_00\n",
             "[Int]().↓count == 0b00\n",
             "[Int]().↓count == 0o00\n",
-            "↓count == 0\n"
+            "↓count == 0\n",
+            "[Int]().↓count < 1\n",
+            "[Int]().↓count < 0x001\n",
+            "[Int]().↓count < 0b1\n",
+            "[Int]().↓count < 0o01\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "\\bcount\\s*(==|!=|<|<=|>|>=)\\s*0(\\b|([box][0_]+\\b){1})"
+        let pattern = "\\bcount\\s*(((==|!=|<|<=|>|>=)\\s*0(\\b|([box][0_]+\\b){1}))|<\\s*(1|0[box]0*1){1}\\b)"
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,

@@ -26,7 +26,6 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         let contents = file.contents.bridge()
 
         let ranges = file.syntaxMap.tokens
-            .lazy
             .filter { SyntaxKind(rawValue: $0.type) == .buildconfigKeyword }
             .map { NSRange(location: $0.offset, length: $0.length) }
             .filter { range in

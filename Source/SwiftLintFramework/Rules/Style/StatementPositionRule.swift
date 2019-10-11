@@ -192,8 +192,9 @@ private extension StatementPositionRule {
         let validator = type(of: self).uncuddledMatchValidator(contents: contents)
         let filterRanges = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
-        let validMatches = matches.compactMap(validator).filter(filterRanges)
-                  .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }
+        let validMatches = file.ruleEnabled(violatingItems: matches.compactMap(validator).filter(filterRanges),
+                                            selector: { $0.range },
+                                            for: self)
         if validMatches.isEmpty { return [] }
         let description = type(of: self).uncuddledDescription
         var corrections = [Correction]()

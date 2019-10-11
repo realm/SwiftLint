@@ -256,15 +256,19 @@ extension File {
     }
 
     internal func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {
+        return ruleEnabled(violatingItems: violatingRanges, selector: { $0 }, for: rule)
+    }
+
+    internal func ruleEnabled<T>(violatingItems: [T], selector: (T) -> NSRange, for rule: Rule) -> [T] {
         let fileRegions = regions()
-        if fileRegions.isEmpty { return violatingRanges }
-        let violatingRanges = violatingRanges.filter { range in
+        if fileRegions.isEmpty { return violatingItems }
+        let violatingItems = violatingItems.filter { range in
             let region = fileRegions.first {
-                $0.contains(Location(file: self, characterOffset: range.location))
+                $0.contains(Location(file: self, characterOffset: selector(range).location))
             }
             return region?.isRuleEnabled(rule) ?? true
         }
-        return violatingRanges
+        return violatingItems
     }
 
     internal func ruleEnabled(violatingRange: NSRange, for rule: Rule) -> NSRange? {

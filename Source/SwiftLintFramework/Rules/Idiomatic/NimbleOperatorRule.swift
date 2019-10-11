@@ -137,8 +137,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 
     public func correct(file: File) -> [Correction] {
-        let matches = violationMatchesRanges(in: file)
-            .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
+        let matches = file.ruleEnabled(violatingRanges: violationMatchesRanges(in: file), for: self)
         guard !matches.isEmpty else { return [] }
 
         let description = type(of: self).description

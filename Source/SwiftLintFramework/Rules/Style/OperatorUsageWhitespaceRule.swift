@@ -152,9 +152,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     public func correct(file: File) -> [Correction] {
-        let violatingRanges = violationRanges(file: file).filter { range, _ in
-            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
-        }
+        let violatingRanges = file.ruleEnabled(violatingItems: self.violationRanges(file: file),
+                                               selector: { $0.0 },
+                                               for: self)
 
         var correctedContents = file.contents
         var adjustedLocations = [Int]()

@@ -149,9 +149,9 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     public func correct(file: File) -> [Correction] {
-        var matches = removeNested(findViolations(file: file)).filter {
-            !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty
-        }
+        let violatingRanges = removeNested(findViolations(file: file))
+        var matches = file.ruleEnabled(violatingRanges: violatingRanges, for: self)
+
         guard !matches.isEmpty else { return [] }
 
         // `matches` should be sorted by location from `findViolations`.

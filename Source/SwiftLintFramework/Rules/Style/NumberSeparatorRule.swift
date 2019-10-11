@@ -96,13 +96,13 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         for (violatingRange, correction) in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
                 correctedContents = correctedContents.replacingCharacters(in: indexRange, with: correction)
-                adjustedLocations.insert(violatingRange.location, at: 0)
+                adjustedLocations.append(violatingRange.location)
             }
         }
 
         file.write(correctedContents)
 
-        return adjustedLocations.map {
+        return adjustedLocations.reversed().map {
             Correction(ruleDescription: type(of: self).description,
                        location: Location(file: file, characterOffset: $0))
         }

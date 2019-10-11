@@ -157,13 +157,13 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
                 contents = correctedString
                 let correction = Correction(ruleDescription: description,
                                             location: Location(file: file, characterOffset: range.location))
-                corrections.insert(correction, at: 0)
+                corrections.append(correction)
                 break
             }
         }
 
         file.write(contents)
-        return corrections
+        return corrections.reversed()
     }
 }
 

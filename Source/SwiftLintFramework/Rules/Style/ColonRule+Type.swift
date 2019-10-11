@@ -24,7 +24,7 @@ internal extension ColonRule {
 
     func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
-        return file.matchesAndTokens(matching: pattern).filter { match, syntaxTokens in
+        return file.matchesAndTokens(matching: pattern).lazy.filter { match, syntaxTokens in
             if match.range(at: 2).length > 0 && syntaxTokens.count > 2 { // captured a generic definition
                 let tokens = [syntaxTokens.first, syntaxTokens.last].compactMap { $0 }
                 return isValidMatch(syntaxTokens: tokens, file: file)

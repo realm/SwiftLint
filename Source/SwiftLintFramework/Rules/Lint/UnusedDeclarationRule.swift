@@ -109,6 +109,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         // 3. minus all XCTestCase subclasses
         // 4. minus all XCTest test functions
         let unusedDeclarations = declaredUSRs
+            .lazy
             .filter { !allReferencedUSRs.contains($0.usr) }
             .filter { !allTestCaseUSRs.contains($0.usr) }
             .filter { declaredUSR in

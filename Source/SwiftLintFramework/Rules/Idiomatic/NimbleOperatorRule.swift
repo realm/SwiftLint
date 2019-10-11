@@ -116,6 +116,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         let excludingKinds = SyntaxKind.commentKinds
 
         return file.match(pattern: pattern)
+            .lazy
             .filter { _, kinds in
                 excludingKinds.isDisjoint(with: kinds) && kinds.first == .identifier
             }.map { $0.0 }

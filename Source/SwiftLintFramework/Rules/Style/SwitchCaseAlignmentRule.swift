@@ -55,6 +55,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
         let indentation = configuration.indentedCases ? firstCaseCharacter - switchCharacter : 0
 
         return caseLocations
+            .lazy
             .filter { $0.character != switchCharacter + indentation }
             .map(locationToViolation)
     }

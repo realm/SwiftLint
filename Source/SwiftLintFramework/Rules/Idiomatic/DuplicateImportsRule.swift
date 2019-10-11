@@ -26,6 +26,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         let contents = file.contents.bridge()
 
         let ranges = file.syntaxMap.tokens
+            .lazy
             .filter { SyntaxKind(rawValue: $0.type) == .buildconfigKeyword }
             .map { NSRange(location: $0.offset, length: $0.length) }
             .filter { range in
@@ -49,6 +50,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         // attributes(optional) import import-kind(optional) import-path
         let regex = "^(\\w\\s)?import(\\s(\(importKinds)))?\\s+[a-zA-Z0-9._]+$"
         let importRanges = file.match(pattern: regex)
+            .lazy
             .filter { $0.1.allSatisfy { [.keyword, .identifier].contains($0) } }
             .compactMap { contents.NSRangeToByteRange(start: $0.0.location, length: $0.0.length) }
             .filter { importRange -> Bool in

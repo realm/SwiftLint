@@ -38,6 +38,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
         let susceptibleNames = Set(elements.compactMap { $0.kind == .class ? $0.name : nil })
 
         return elements
+            .lazy   
             .filter { $0.kind == .extension && !susceptibleNames.contains($0.name) }
             .flatMap { element in
                 return element.dictionary.substructure.compactMap { element -> Int? in

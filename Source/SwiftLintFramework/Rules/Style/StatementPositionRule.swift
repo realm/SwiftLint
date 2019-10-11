@@ -99,7 +99,7 @@ private extension StatementPositionRule {
     }
 
     func defaultViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
-        return file.match(pattern: pattern).filter { _, syntaxKinds in
+        return file.match(pattern: pattern).lazy.filter { _, syntaxKinds in
             return syntaxKinds.starts(with: [.keyword])
         }.compactMap { $0.0 }
     }

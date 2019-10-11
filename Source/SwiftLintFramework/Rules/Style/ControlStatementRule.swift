@@ -67,6 +67,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         }
         return statementPatterns.flatMap { pattern -> [StyleViolation] in
             return file.match(pattern: pattern)
+                .lazy
                 .filter { match, syntaxKinds -> Bool in
                     let matchString = file.contents.substring(from: match.location, length: match.length)
                     return !isFalsePositive(matchString, syntaxKind: syntaxKinds.first)

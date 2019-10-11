@@ -27,10 +27,10 @@ internal extension ColonRule {
         return file.matchesAndTokens(matching: pattern).lazy.filter { match, syntaxTokens in
             if match.range(at: 2).length > 0 && syntaxTokens.count > 2 { // captured a generic definition
                 let tokens = [syntaxTokens.first, syntaxTokens.last].compactMap { $0 }
-                return isValidMatch(syntaxTokens: tokens, file: file)
+                return self.isValidMatch(syntaxTokens: tokens, file: file)
             }
 
-            return isValidMatch(syntaxTokens: syntaxTokens, file: file)
+            return self.isValidMatch(syntaxTokens: syntaxTokens, file: file)
         }.compactMap { match, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)

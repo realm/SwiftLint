@@ -79,7 +79,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         return matches
             .lazy
             .filter { kinds.isDisjoint(with: $0.1) }
-            .filter { kind != .guard || !containsOptionalTry(at: $0.0.range, of: file) }
+            .filter { kind != .guard || !self.containsOptionalTry(at: $0.0.range, of: file) }
             .map { $0.0.range(at: 1) }
     }
 

@@ -107,14 +107,18 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
 
             let isMultiline = functionName.contains("\n")
 
-            let parameters = substructure.substructure.filter { $0.kind == SwiftDeclarationKind.varParameter.rawValue }
-            if isMultiline && !parameters.isEmpty {
-                if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
-                    violations.append(openingBracketViolation)
+            if isMultiline {
+                let parameters = substructure.substructure.filter {
+                    $0.kind == SwiftDeclarationKind.varParameter.rawValue
                 }
+                if !parameters.isEmpty {
+                    if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
+                        violations.append(openingBracketViolation)
+                    }
 
-                if let closingBracketViolation = closingBracketViolation(parameters: parameters, file: file) {
-                    violations.append(closingBracketViolation)
+                    if let closingBracketViolation = closingBracketViolation(parameters: parameters, file: file) {
+                        violations.append(closingBracketViolation)
+                    }
                 }
             }
         }

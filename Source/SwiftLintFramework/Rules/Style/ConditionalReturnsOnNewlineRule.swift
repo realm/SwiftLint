@@ -39,9 +39,9 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
                         return false
             }
 
-            let searchTokens = configuration.ifOnly ? ["if"] : ["if", "guard"]
-            return searchTokens.contains(content(for: firstToken, file: file)) &&
-                content(for: lastToken, file: file) == "return"
+            let searchTokens = self.configuration.ifOnly ? ["if"] : ["if", "guard"]
+            return searchTokens.contains(self.content(for: firstToken, file: file)) &&
+                self.content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,

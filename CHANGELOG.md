@@ -35,7 +35,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
   
-  * Speedup Swiftlint a little.  
+* Speedup Swiftlint a little.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2898](https://github.com/realm/SwiftLint/issues/2898)
 

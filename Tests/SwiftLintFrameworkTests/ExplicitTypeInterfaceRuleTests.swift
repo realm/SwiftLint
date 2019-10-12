@@ -1,6 +1,7 @@
 import SwiftLintFramework
 import XCTest
 
+//swiftlint:disable type_body_length
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
     func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
@@ -123,6 +124,27 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
+        verifyRule(description)
+    }
+
+    func testTryCatchDeclarations() {
+        let nonTriggeringExaples = [
+            """
+            enum FooError: Error {
+                case errorWithValue(value: Int)
+            }
+            do {
+                throw FooError.errorWithValue(value: 2)
+            } catch FooError.errorWithValue(let value) {
+                print(value)
+            }
+            """
+        ]
+
+        let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExaples)
         verifyRule(description)
     }
 

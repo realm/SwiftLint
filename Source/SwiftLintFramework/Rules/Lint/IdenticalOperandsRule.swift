@@ -61,6 +61,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                                                               range: range).map { $0.range }
 
         return file.matchesAndTokens(matching: pattern)
+            .lazy
             .filter { result, _ in
                 let range = result.range(at: 1)
                 return !range.intersects(exclusionRanges)

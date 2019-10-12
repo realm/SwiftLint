@@ -26,6 +26,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule, Au
         let pattern = "\\b" + LegacyConstantRule.legacyConstants.joined(separator: "|")
 
         return file.match(pattern: pattern, range: nil)
+            .lazy
             .filter { Set($0.1).isSubset(of: [.identifier]) }
             .map { $0.0 }
             .map {

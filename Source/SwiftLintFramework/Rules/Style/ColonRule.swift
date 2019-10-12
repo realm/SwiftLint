@@ -41,10 +41,9 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correct(file: File) -> [Correction] {
-        let violations = correctionRanges(in: file)
-        let matches = violations.filter {
-            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
-        }
+        let matches = file.ruleEnabled(violatingItems: correctionRanges(in: file),
+                                       selector: { $0.range },
+                                       for: self)
 
         guard !matches.isEmpty else { return [] }
         let regularExpression = regex(pattern)

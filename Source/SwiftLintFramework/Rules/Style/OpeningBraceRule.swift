@@ -84,12 +84,12 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
 
         for (violatingRange, location) in violatingRanges.reversed() {
             correctedContents = correct(contents: correctedContents, violatingRange: violatingRange)
-            adjustedLocations.insert(Location(file: file, characterOffset: location), at: 0)
+            adjustedLocations.append(Location(file: file, characterOffset: location))
         }
 
         file.write(correctedContents)
 
-        return adjustedLocations.map {
+        return adjustedLocations.reversed().map {
             Correction(ruleDescription: type(of: self).description,
                        location: $0)
         }

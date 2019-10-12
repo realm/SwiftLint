@@ -47,7 +47,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 }
             }
 
-            let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
+            let violatingIndexes = potentialViolatingIndexes.lazy.filter { $0 < lastMatchingIndex }
             violatingIndexes.forEach { index in
                 let typeContentOffset = orderedTypeContentOffsets[index]
 

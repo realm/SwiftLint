@@ -32,16 +32,16 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = configuration.ifOnly ? "(if)[^\n]*return" : "(guard|if)[^\n]*return"
 
-        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
+        return file.rangesAndTokens(matching: pattern).lazy.filter { _, tokens in
             guard let firstToken = tokens.first, let lastToken = tokens.last,
                 SyntaxKind(rawValue: firstToken.type) == .keyword &&
                     SyntaxKind(rawValue: lastToken.type) == .keyword else {
                         return false
             }
 
-            let searchTokens = configuration.ifOnly ? ["if"] : ["if", "guard"]
-            return searchTokens.contains(content(for: firstToken, file: file)) &&
-                content(for: lastToken, file: file) == "return"
+            let searchTokens = self.configuration.ifOnly ? ["if"] : ["if", "guard"]
+            return searchTokens.contains(self.content(for: firstToken, file: file)) &&
+                self.content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,

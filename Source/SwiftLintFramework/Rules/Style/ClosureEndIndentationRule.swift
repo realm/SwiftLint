@@ -38,9 +38,9 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
 
 extension ClosureEndIndentationRule: CorrectableRule {
     public func correct(file: File) -> [Correction] {
-        let allViolations = violations(in: file).reversed().filter {
-            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
-        }
+        let allViolations = file.ruleEnabled(violatingItems: violations(in: file).reversed(),
+                                             selector: { $0.range },
+                                             for: self)
 
         guard !allViolations.isEmpty else {
             return []

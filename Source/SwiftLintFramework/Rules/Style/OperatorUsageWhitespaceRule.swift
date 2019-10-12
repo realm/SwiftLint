@@ -152,9 +152,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     public func correct(file: File) -> [Correction] {
-        let violatingRanges = violationRanges(file: file).filter { range, _ in
-            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
-        }
+        let violatingRanges = file.ruleEnabled(violatingItems: self.violationRanges(file: file),
+                                               selector: { $0.0 },
+                                               for: self)
 
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
@@ -163,13 +163,13 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
                 correctedContents = correctedContents
                     .replacingCharacters(in: indexRange, with: correction)
-                adjustedLocations.insert(violatingRange.location, at: 0)
+                adjustedLocations.append(violatingRange.location)
             }
         }
 
         file.write(correctedContents)
 
-        return adjustedLocations.map {
+        return adjustedLocations.reversed().map {
             Correction(ruleDescription: type(of: self).description,
                        location: Location(file: file, characterOffset: $0))
         }

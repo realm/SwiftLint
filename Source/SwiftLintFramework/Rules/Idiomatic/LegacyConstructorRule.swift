@@ -200,11 +200,11 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
                 let joinedArguments = zip(expectedArguments, arguments).map { "\($0): \($1)" }.joined(separator: ", ")
                 let replacement = correctedName + "(" + joinedArguments + ")"
                 correctedContents = correctedContents.replacingCharacters(in: indexRange, with: replacement)
-                adjustedLocations.insert(range.location, at: 0)
+                adjustedLocations.append(range.location)
             }
         }
 
-        let corrections = adjustedLocations.map {
+        let corrections = adjustedLocations.reversed().map {
             Correction(ruleDescription: type(of: self).description,
                        location: Location(file: file, characterOffset: $0))
         }

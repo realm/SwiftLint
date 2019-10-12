@@ -15,8 +15,9 @@ private extension Rule {
             return []
         }
 
+        let rule = self.init()
         let regionsDisablingCurrentRule = regions.filter { region in
-            return region.isRuleDisabled(self.init())
+            return region.isRuleDisabled(rule)
         }
         let regionsDisablingSuperfluousDisableRule = regions.filter { region in
             return region.isRuleDisabled(superfluousDisableCommandRule)

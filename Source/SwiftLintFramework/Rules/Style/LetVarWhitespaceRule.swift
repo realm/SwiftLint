@@ -192,7 +192,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
         }
 
         let directives: Set = ["#if", "#elseif", "#else", "#endif", "#!", "#warning", "#error"]
-        let directiveLines = file.lines.filter {
+        let directiveLines = file.lines.lazy.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
             return directives.contains(where: trimmed.hasPrefix)
         }

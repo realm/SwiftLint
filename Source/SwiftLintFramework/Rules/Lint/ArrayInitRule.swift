@@ -184,7 +184,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         }
 
         let parameterEnd = offset + length
-        let tokens = Array(tokens.filter { $0.offset >= parameterEnd }.drop { token in
+        let tokens = Array(tokens.lazy.filter { $0.offset >= parameterEnd }.drop { token in
             let isKeyword = SyntaxKind(rawValue: token.type) == .keyword
             return !isKeyword || file.contents(for: token) != "in"
         })

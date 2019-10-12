@@ -116,13 +116,13 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                 let updatedArguments = correctedContents[updatedRange]
                 correctedContents = correctedContents.replacingCharacters(in: indexRange,
                                                                           with: String(updatedArguments))
-                adjustedLocations.insert(violatingRange.location, at: 0)
+                adjustedLocations.append(violatingRange.location)
             }
         }
 
         file.write(correctedContents)
 
-        return adjustedLocations.map {
+        return adjustedLocations.reversed().map {
             Correction(ruleDescription: type(of: self).description,
                        location: Location(file: file, characterOffset: $0))
         }

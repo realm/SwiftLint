@@ -174,11 +174,11 @@ def generate_reports(branch)
         durations << Time.now - start
       end
       puts ''
-      average_duration = (durations.reduce(:+) / iterations).round(2)
+      best_duration = durations.min.round(2)
       if branch == 'branch'
-        repo.branch_duration = average_duration
+        repo.branch_duration = best_duration
       else
-        repo.master_duration = average_duration
+        repo.master_duration = best_duration
       end
     end
   end

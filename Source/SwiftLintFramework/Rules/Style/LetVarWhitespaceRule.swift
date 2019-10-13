@@ -225,8 +225,12 @@ private extension SwiftDeclarationKind {
 }
 
 private extension File {
-    // Zero-based line number for the given a byte offset
     func line(byteOffset: Int, startFrom: Int = 0) -> Int {
+        return lineFast(byteOffset: byteOffset, startFrom: startFrom)
+    }
+
+    // Zero-based line number for the given a byte offset
+    func lineSlow(byteOffset: Int, startFrom: Int = 0) -> Int {
         for index in startFrom..<lines.count {
             let line = lines[index]
 
@@ -235,5 +239,41 @@ private extension File {
             }
         }
         return -1
+    }
+
+    // Zero-based line number for the given a byte offset,
+    // Using binary search
+    func lineFast(byteOffset: Int, startFrom: Int = 0) -> Int {
+        let n = lines.count - startFrom
+
+        // The idxe, which definitely beyound byteOffset
+        var bad = -1
+
+        // The index which is definitely after byteOffset
+        var good = n
+        var mid = (bad + good) / 2
+
+        // 0 0 0 0 0 1 1 1 1 1
+        //           ^
+        // The idea is to get _first_ *good* index, where byteOffset > line.byteRange.location + line.byteRange.length
+        func isGoodLine(at index: Int) -> Bool {
+            let line = lines[index]
+            return line.byteRange.location + line.byteRange.length > byteOffset
+        }
+
+        while bad + 1 < good {
+            if isGoodLine(at: startFrom + mid) {
+                good = mid
+            } else {
+                bad = mid
+            }
+            mid = (bad + good) / 2
+        }
+
+        // Corner case, we' re out of bound, no good items in array
+        if mid == n {
+            return -1
+        }
+        return startFrom + good
     }
 }

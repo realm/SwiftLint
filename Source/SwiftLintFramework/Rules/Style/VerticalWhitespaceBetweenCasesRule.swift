@@ -54,7 +54,19 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
         "    \n" +
         "default:    \n" +
         "    print(\"not one\")    \n" +
-        "}    "
+        "}    ",
+        """
+            switch string {
+            case "Idle":
+                self = .idle
+
+            case "Connecting":
+                self = .connecting
+
+            default:
+                return nil
+            }
+        """
     ]
 
     private static let violatingToValidExamples: [String: String] = [

@@ -299,8 +299,11 @@ class LinterCacheTests: XCTestCase {
         XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
     }
 
+    // swiftlint:disable:next function_body_length
     func testDetectSwiftVersion() {
-        #if compiler(>=5.1.0)
+        #if compiler(>=5.1.1)
+            let version = "5.1.1"
+        #elseif compiler(>=5.1.0)
             let version = "5.1.0"
         #elseif compiler(>=5.0.0)
             let version = "5.0.0"

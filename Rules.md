@@ -9632,6 +9632,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+XCTAssertTrue(↓s1 == s2)
+```
+
+```swift
 ↓1 != 1
 ```
 
@@ -9649,6 +9653,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 != $0
+```
+
+```swift
+XCTAssertTrue(↓s1 != s2)
 ```
 
 ```swift
@@ -9672,6 +9680,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+XCTAssertTrue(↓s1 === s2)
+```
+
+```swift
 ↓1 !== 1
 ```
 
@@ -9689,6 +9701,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 !== $0
+```
+
+```swift
+XCTAssertTrue(↓s1 !== s2)
 ```
 
 ```swift
@@ -9712,6 +9728,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+XCTAssertTrue(↓s1 > s2)
+```
+
+```swift
 ↓1 >= 1
 ```
 
@@ -9729,6 +9749,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 >= $0
+```
+
+```swift
+XCTAssertTrue(↓s1 >= s2)
 ```
 
 ```swift
@@ -9752,6 +9776,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+XCTAssertTrue(↓s1 < s2)
+```
+
+```swift
 ↓1 <= 1
 ```
 
@@ -9769,6 +9797,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 <= $0
+```
+
+```swift
+XCTAssertTrue(↓s1 <= s2)
 ```
 
 </details>

@@ -229,28 +229,16 @@ private extension File {
         return lineFast(byteOffset: byteOffset, startFrom: startFrom)
     }
 
-    // Zero-based line number for the given a byte offset
-    func lineSlow(byteOffset: Int, startFrom: Int = 0) -> Int {
-        for index in startFrom..<lines.count {
-            let line = lines[index]
-
-            if line.byteRange.location + line.byteRange.length > byteOffset {
-                return index
-            }
-        }
-        return -1
-    }
-
     // Zero-based line number for the given a byte offset,
     // Using binary search
     func lineFast(byteOffset: Int, startFrom: Int = 0) -> Int {
-        let n = lines.count - startFrom
+        let maxIndex = lines.count - startFrom
 
-        // The idxe, which definitely beyound byteOffset
+        // The index, which definitely beyond byteOffset
         var bad = -1
 
         // The index which is definitely after byteOffset
-        var good = n
+        var good = maxIndex
         var mid = (bad + good) / 2
 
         // 0 0 0 0 0 1 1 1 1 1
@@ -271,7 +259,7 @@ private extension File {
         }
 
         // Corner case, we' re out of bound, no good items in array
-        if mid == n {
+        if mid == maxIndex {
             return -1
         }
         return startFrom + good

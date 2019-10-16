@@ -49,6 +49,13 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         }
     )
 
+    private struct OperandsMatch {
+        let leftOperandRange: NSRange
+        let operatorRange: NSRange
+        let rightOperandRange: NSRange
+        let fullRange: NSRange
+    }
+
     public func validate(file: File) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
 
@@ -56,50 +63,37 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         (?:\\s*)(\(operators))\\s*([\\$A-Za-z0-9_\\.]+)(?!\\s*(\\.|\\>|\\<|\\?))
         """
 
-        struct IdenticalMatch {
-            let firstIdentifierRange: NSRange
-            let operatorRange: NSRange
-            let secondIndentifierRange: NSRange
-            let fullRange: NSRange
-        }
-
         return file.matchesAndTokens(matching: findOperators)
-            .compactMap { result, tokens -> (IdenticalMatch, [SyntaxToken])? in
-                let secondIdentifierRange = result.range(at: 2)
-                let identifierLength = secondIdentifierRange.length
-                guard let secondIdentifier = file.contents.validSubstring(range: secondIdentifierRange) else { return nil }
+            .compactMap { result, tokens -> (OperandsMatch, [SyntaxToken])? in
+                let rightOperandRange = result.range(at: 2)
+                let operandLength = rightOperandRange.length
+                guard let rightOperand = file.contents.validSubstring(range: rightOperandRange) else { return nil }
 
                 // Check what was before
-                let firstIdentifierLocation = result.range.location - identifierLength
-                guard firstIdentifierLocation >= 0 else {
+                let leftOperandLocation = result.range.location - operandLength
+                guard leftOperandLocation >= 0 else {
                     // Not enough place to match firs Identifier
                     return nil
                 }
 
                 // Skip if we cannot convert range to nstrange
-                let firstIdentifierRange = NSRange(location: firstIdentifierLocation, length: identifierLength)
-                guard let firstIdentifier = file.contents.validSubstring(range: firstIdentifierRange) else { return nil }
+                let leftOperandRange = NSRange(location: leftOperandLocation, length: operandLength)
+                guard let leftOperand = file.contents.validSubstring(range: leftOperandRange) else { return nil }
 
-                guard firstIdentifier == secondIdentifier else { return nil }
+                guard leftOperand == rightOperand else { return nil }
 
-                // make sure that previous one is a word boundary
-                if firstIdentifierLocation != 0 {
-                    guard let previousCharacter = file.contents.validSubstring(from: firstIdentifierLocation - 1, length: 1) else { return nil }
-                    guard [" ", "\n", "\t", "\r", "(", "{", "[" ].contains(previousCharacter) else { return nil }
-                }
+                // Check if previous identifier is a word boundary
+                guard isWordBoundary(in: file, before: leftOperandLocation) else { return nil }
 
                 // Make sure that we doesn't have ??
-                // We'll skip multiple whitespaces before ?? for now and let's see how it performs
-                if firstIdentifierLocation > 3 {
-                    guard let previousCharacters = file.contents.validSubstring(from: firstIdentifierLocation - 3, length: 2) else { return nil }
-                    guard previousCharacters != "??" else { return nil }
-                }
-                let fullMatchRange = NSRange(location: firstIdentifierLocation, length: identifierLength + result.range.length)
+                guard !isNilCoalesingOperator(in: file, before: leftOperandLocation) else { return nil }
 
-                let identicalMatch = IdenticalMatch(
-                    firstIdentifierRange: firstIdentifierRange,
+                let fullMatchRange = NSRange(location: leftOperandLocation, length: operandLength + result.range.length)
+
+                let identicalMatch = OperandsMatch(
+                    leftOperandRange: leftOperandRange,
                     operatorRange: result.range(at: 1),
-                    secondIndentifierRange: secondIdentifierRange,
+                    rightOperandRange: rightOperandRange,
                     fullRange: fullMatchRange
                 )
                 return (identicalMatch, tokens)
@@ -125,14 +119,28 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                                       location: Location(file: file, characterOffset: result.fullRange.location))
              }
     }
+
+    private func isWordBoundary(in file: File, before index: Int) -> Bool {
+        guard index != 0 else { return true }
+        guard let previousCharacter = file.contents.validSubstring(from: index - 1, length: 1) else { return false }
+        guard [" ", "\n", "\t", "\r", "(", "{", "[" ].contains(previousCharacter) else { return false }
+        return true
+    }
+
+    private func isNilCoalesingOperator(in file: File, before index: Int) -> Bool {
+        // We'll skip multiple whitespaces before ?? for now and let's see how it performs
+        guard index > 3 else { return false }
+        guard let previousCharacters = file.contents.validSubstring(from: index - 3, length: 2) else { return false }
+        return previousCharacters == "??"
+    }
 }
 
 private extension String {
-    internal func validSubstring(from: Int, length: Int) -> String? {
+    func validSubstring(from: Int, length: Int) -> String? {
         return validSubstring(range: NSRange(location: from, length: length))
     }
 
-    internal func validSubstring(range: NSRange) -> String? {
+    func validSubstring(range: NSRange) -> String? {
         guard let indexRange = nsrangeToIndexRange(range) else { return nil }
         return String(self[indexRange])
     }

@@ -15,7 +15,7 @@ require 'erb'
 
 @options = {
   branch: 'HEAD',
-  iterations: 5,
+  iterations: 8,
   skip_clean: false,
   verbose: false
 }

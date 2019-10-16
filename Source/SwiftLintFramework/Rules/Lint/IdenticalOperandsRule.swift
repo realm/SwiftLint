@@ -44,7 +44,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 "↓foo.aProperty \(operation) foo.aProperty",
                 "↓self.aProperty \(operation) self.aProperty",
                 "↓$0 \(operation) $0",
-                "XCTAssertTrue(↓s1 \(operation) s2)"
+                "XCTAssertTrue(↓s1 \(operation) s1)"
             ]
         }
     )

@@ -9632,7 +9632,7 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
-XCTAssertTrue(↓s1 == s2)
+XCTAssertTrue(↓s1 == s1)
 ```
 
 ```swift
@@ -9656,7 +9656,7 @@ XCTAssertTrue(↓s1 == s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 != s2)
+XCTAssertTrue(↓s1 != s1)
 ```
 
 ```swift
@@ -9680,7 +9680,7 @@ XCTAssertTrue(↓s1 != s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 === s2)
+XCTAssertTrue(↓s1 === s1)
 ```
 
 ```swift
@@ -9704,7 +9704,7 @@ XCTAssertTrue(↓s1 === s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 !== s2)
+XCTAssertTrue(↓s1 !== s1)
 ```
 
 ```swift
@@ -9728,7 +9728,7 @@ XCTAssertTrue(↓s1 !== s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 > s2)
+XCTAssertTrue(↓s1 > s1)
 ```
 
 ```swift
@@ -9752,7 +9752,7 @@ XCTAssertTrue(↓s1 > s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 >= s2)
+XCTAssertTrue(↓s1 >= s1)
 ```
 
 ```swift
@@ -9776,7 +9776,7 @@ XCTAssertTrue(↓s1 >= s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 < s2)
+XCTAssertTrue(↓s1 < s1)
 ```
 
 ```swift
@@ -9800,7 +9800,7 @@ XCTAssertTrue(↓s1 < s2)
 ```
 
 ```swift
-XCTAssertTrue(↓s1 <= s2)
+XCTAssertTrue(↓s1 <= s1)
 ```
 
 </details>

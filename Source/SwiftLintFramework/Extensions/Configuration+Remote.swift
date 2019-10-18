@@ -73,7 +73,11 @@ public extension Configuration.Graph.FilePath {
         }
 
         // Handle wrong data
-        guard let configString = (taskResult.0.flatMap { String(data: $0, encoding: .utf8) }) else {
+        guard
+            taskResult.2 == nil, // No error
+            (taskResult.1 as? HTTPURLResponse)?.statusCode == 200,
+            let configString = (taskResult.0.flatMap { String(data: $0, encoding: .utf8) })
+        else {
             return try handleWrongData(urlString: urlString, cachedFilePath: cachedFilePath, taskDone: taskDone)
         }
 
@@ -90,14 +94,14 @@ public extension Configuration.Graph.FilePath {
     private mutating func handleMissingNetwork(urlString: String, cachedFilePath: String?) throws -> String {
         if let cachedFilePath = cachedFilePath {
             queuedPrint(
-                "No internet connectivity: Unable to load remote config \"\(urlString)\"."
+                "No internet connectivity: Unable to load remote config from \"\(urlString)\". "
                     + "Using cached version as a fallback."
             )
             self = .existing(path: cachedFilePath)
             return cachedFilePath
         } else {
             throw ConfigurationError.generic(
-                "No internet connectivity: Unable to load remote config \"\(urlString)\"."
+                "No internet connectivity: Unable to load remote config from \"\(urlString)\". "
                     + "Also didn't found cached version to fallback to."
             )
         }
@@ -106,10 +110,10 @@ public extension Configuration.Graph.FilePath {
     private mutating func handleWrongData(urlString: String, cachedFilePath: String?, taskDone: Bool) throws -> String {
         if let cachedFilePath = cachedFilePath {
             if taskDone {
-                queuedPrint("Unable to load remote config \"\(urlString)\". Using cached version as a fallback.")
+                queuedPrint("Unable to load remote config from \"\(urlString)\". Using cached version as a fallback.")
             } else {
                 queuedPrint(
-                    "Timeout: Unable to load remote config \"\(urlString)\". Using cached version as a fallback."
+                    "Timeout: Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
                 )
             }
 
@@ -118,11 +122,12 @@ public extension Configuration.Graph.FilePath {
         } else {
             if taskDone {
                 throw ConfigurationError.generic(
-                    "Unable to load remote config \"\(urlString)\". Also didn't found cached version to fallback to."
+                    "Unable to load remote config from \"\(urlString)\". "
+                        + "Also didn't found cached version to fallback to."
                 )
             } else {
                 throw ConfigurationError.generic(
-                    "Timeout: Unable to load remote config \"\(urlString)\"."
+                    "Timeout: Unable to load remote config from \"\(urlString)\". "
                         + "Also didn't found cached version to fallback to."
                 )
             }
@@ -131,12 +136,12 @@ public extension Configuration.Graph.FilePath {
 
     private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: String?) throws -> String {
         if let cachedFilePath = cachedFilePath {
-            queuedPrint("Unable to cache remote config \"\(urlString)\". Using cached version as a fallback.")
+            queuedPrint("Unable to cache remote config from \"\(urlString)\". Using cached version as a fallback.")
             self = .existing(path: cachedFilePath)
             return cachedFilePath
         } else {
             throw ConfigurationError.generic(
-                "Unable to cache remote config \"\(urlString)\". Also didn't found cached version to fallback to."
+                "Unable to cache remote config from \"\(urlString)\". Also didn't found cached version to fallback to."
             )
         }
     }
@@ -150,12 +155,26 @@ public extension Configuration.Graph.FilePath {
     private func cache(configString: String, from urlString: String, rootPath: String?) -> String? {
         // Add comment line at the top of the config string
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
+        formatter.dateFormat = "dd/MM/yyyy 'at' HH:mm:ss"
         let configString =
-            "# Automatically downloaded from \"\(urlString)\" by SwiftLint on \(formatter.string(from: Date()))\n"
+            "# Automatically downloaded from \"\(urlString)\" by SwiftLint on \(formatter.string(from: Date())).\n"
             + configString
 
+        // Get path
         let path = filePath(for: urlString, rootPath: rootPath)
+
+        // Create directory if needed
+        let directory = path.components(separatedBy: "/").dropLast().joined(separator: "/")
+        if !FileManager.default.fileExists(atPath: directory) {
+            do {
+                try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
+            }
+            catch {
+                return nil
+            }
+        }
+
+        // Create file
         return FileManager.default.createFile(
             atPath: path,
             contents: Data(configString.utf8),
@@ -164,7 +183,15 @@ public extension Configuration.Graph.FilePath {
     }
 
     private func filePath(for urlString: String, rootPath: String?) -> String {
-        let path = "/.swiftlint/RemoteConfigCache/swiftlint_cache_\(urlString).yml"
+        let adjustUrlString = urlString
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: ":", with: "-")
+            .replacingOccurrences(of: ".", with: "+")
+
+        // If this string or caching is changed in the future,
+        // update the version in the string and delete caches from the previous versions
+        let versionNum = "v1"
+        let path = "/.swiftlint/RemoteConfigCache/swiftlint_cache_\(versionNum)_\(adjustUrlString).yml"
         var isDir: ObjCBool = false
         if
             let rootPath = rootPath,

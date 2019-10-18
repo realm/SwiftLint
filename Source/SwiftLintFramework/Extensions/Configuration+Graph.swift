@@ -15,8 +15,9 @@ public extension Configuration {
 
             init(string: String) {
                 // Get file path
-                if string.contains("remote:"), let urlString = string.components(separatedBy: "remote:").first {
-                    filePath = .promised(urlString: urlString)
+                let remotePrefix = "remote:"
+                if string.hasPrefix(remotePrefix) {
+                    filePath = .promised(urlString: String(string.dropFirst(remotePrefix.count)))
                 } else {
                     filePath = .existing(path: string)
                 }
@@ -106,7 +107,7 @@ public extension Configuration {
         }
 
         // MARK: - Methods
-        public mutating func getResultingConfiguration(
+        public mutating func resultingConfiguration(
             configurationFactory: (([String: Any]) throws -> Configuration),
             remoteConfigLoadingTimeout: Double,
             remoteConfigLoadingTimeoutIfCached: Double
@@ -135,8 +136,10 @@ public extension Configuration {
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
                 )
 
-                if let childConfigReference =
-                    vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String {
+                if
+                    let childConfigReference =
+                        vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String
+                {
                     let childVertix = Vertix(string: childConfigReference)
                     vertices.insert(childVertix)
                     let childEdge = Edge(edgeType: .childConfig, origin: vertix, target: childVertix)
@@ -144,8 +147,10 @@ public extension Configuration {
                     try process(vertix: childVertix)
                 }
 
-                if let parentConfigReference
-                    = vertix.configurationDict[Configuration.Key.parentConfig.rawValue] as? String {
+                if
+                    let parentConfigReference =
+                        vertix.configurationDict[Configuration.Key.parentConfig.rawValue] as? String
+                {
                     let parentVertix = Vertix(string: parentConfigReference)
                     vertices.insert(parentVertix)
                     let parentEdge = Edge(edgeType: .parentConfig, origin: parentVertix, target: vertix)
@@ -192,7 +197,7 @@ public extension Configuration {
             var verticesToMerge = [vertices.first { vertix in !edges.contains { $0.target == vertix } }!]
 
             // Get array of vertices (the graph should be like an array if validation passed)
-            while let vertix = (edges.first { $0.origin == verticesToMerge.last }?.origin) {
+            while let vertix = (edges.first { $0.origin == verticesToMerge.last }?.target) {
                 verticesToMerge.append(vertix)
             }
 

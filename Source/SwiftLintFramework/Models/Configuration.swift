@@ -121,7 +121,7 @@ public struct Configuration {
 
         do {
             var graph = Graph(commandLineChildConfigs: childConfigQueue, rootPath: rootPath)
-            let resultingConfiguration = try graph.getResultingConfiguration(
+            let resultingConfiguration = try graph.resultingConfiguration(
                 configurationFactory: {
                     try Configuration(dict: $0, enableAllRules: enableAllRules, cachePath: cachePath)
                 },
@@ -132,7 +132,8 @@ public struct Configuration {
             self.init(copying: resultingConfiguration)
             self.graph = graph
         } catch let ConfigurationError.generic(message) {
-            guard optional else { fail(message) }
+            guard optional else { fail("error: SwiftLint Configuration Error: \(message)") }
+            queuedPrintError("warning: SwiftLint Configuration Error: \(message)")
             self.init(rulesMode: rulesMode, cachePath: cachePath, graph: Graph(rootPath: rootPath))
         } catch let YamlParserError.yamlParsing(message) {
             fail(message)

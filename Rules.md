@@ -40,6 +40,7 @@
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
 * [Empty String](#empty-string)
 * [Empty XCTest Method](#empty-xctest-method)
+* [ExpiringTodo](#expiringtodo)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
@@ -6133,6 +6134,82 @@ class FooTests: XCTestCase {
 class BarTests: XCTestCase {
     ↓func testFoo() {}
 }
+```
+
+</details>
+
+
+
+## ExpiringTodo
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`expiring_todo` | Disabled | No | lint | No | 3.0.0 
+
+TODOs and FIXMEs should be resolved prior to their expiry date.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+// notaTODO:
+
+```
+
+```swift
+// notaFIXME:
+
+```
+
+```swift
+// TODO: [12/31/9999]
+
+```
+
+```swift
+// TODO(note)
+
+```
+
+```swift
+// FIXME(note)
+
+```
+
+```swift
+/* FIXME: */
+
+```
+
+```swift
+/* TODO: */
+
+```
+
+```swift
+/** FIXME: */
+
+```
+
+```swift
+/** TODO: */
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+// TODO: [10/14/2019]
+
+```
+
+```swift
+// FIXME: [10/14/2019]
+
 ```
 
 </details>

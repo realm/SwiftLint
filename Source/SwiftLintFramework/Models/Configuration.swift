@@ -120,10 +120,14 @@ public struct Configuration {
         }
 
         do {
-            var graph = try Graph(commandLineChildConfigs: childConfigQueue, rootPath: rootPath)
-            let resultingConfiguration = try graph.getResultingConfiguration { dict -> Configuration in
-                try Configuration(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)
-            }
+            var graph = Graph(commandLineChildConfigs: childConfigQueue, rootPath: rootPath)
+            let resultingConfiguration = try graph.getResultingConfiguration(
+                configurationFactory: {
+                    try Configuration(dict: $0, enableAllRules: enableAllRules, cachePath: cachePath)
+                },
+                remoteConfigLoadingTimeout: 2,
+                remoteConfigLoadingTimeoutIfCached: 1
+            )
 
             self.init(copying: resultingConfiguration)
             self.graph = graph

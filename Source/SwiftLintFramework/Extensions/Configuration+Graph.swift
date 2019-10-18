@@ -3,43 +3,45 @@ import Foundation
 public extension Configuration {
     struct Graph: Hashable {
         // MARK: - Subtypes
+        public enum FilePath: Hashable { // swiftlint:disable:this nesting
+            case promised(urlString: String)
+            case existing(path: String)
+        }
+
         public class Vertix: Hashable { // swiftlint:disable:this nesting
-            private(set) var filePath: String = ""
+            private(set) var filePath: FilePath
             private(set) var configurationString: String = ""
             private(set) var configurationDict: [String: Any] = [:]
 
-            init(string: String, rootPath: String?) throws {
+            init(string: String) {
                 // Get file path
-                if string.contains("remote:") {
-                    // Download from remote...
-                    filePath = "todo" // TODO
+                if string.contains("remote:"), let urlString = string.components(separatedBy: "remote:").first {
+                    filePath = .promised(urlString: urlString)
                 } else {
-                    filePath = string
+                    filePath = .existing(path: string)
                 }
+            }
 
-                // Get contents
-                configurationString = try read(at: filePath, rootPath: rootPath)
+            public func build(
+                rootPath: String?,
+                remoteConfigLoadingTimeout: Double,
+                remoteConfigLoadingTimeoutIfCached: Double
+            ) throws {
+                let path = try filePath.resolve(
+                    remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
+                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached,
+                    rootPath: rootPath
+                )
+                configurationString = try read(at: path)
                 configurationDict = try YamlParser.parse(configurationString)
             }
 
-            private func read(at path: String, rootPath: String?) throws -> String {
-                let fullPath: String
-                var isDir: ObjCBool = false
-                if
-                    let rootPath = rootPath,
-                    FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDir) && isDir.boolValue
-                {
-                    // rootPath is Directory
-                    fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
-                } else {
-                    fullPath = path.bridge().absolutePathRepresentation()
-                }
-
-                guard !path.isEmpty && FileManager.default.fileExists(atPath: fullPath) else {
+            private func read(at path: String) throws -> String {
+                guard !path.isEmpty && FileManager.default.fileExists(atPath: path) else {
                     throw ConfigurationError.generic("File \(path) can't be found.")
                 }
 
-                return try String(contentsOfFile: fullPath, encoding: .utf8)
+                return try String(contentsOfFile: path, encoding: .utf8)
             }
 
             public static func == (lhs: Vertix, rhs: Vertix) -> Bool {
@@ -78,12 +80,12 @@ public extension Configuration {
         // MARK: - Properties
         private(set) var vertices: Set<Vertix>
         private(set) var edges: Set<Edge>
-        private(set) var rootPath: String?
+        public let rootPath: String?
         private var isBuiltAndValidated: Bool = false
 
         // MARK: - Initializers
-        public init(commandLineChildConfigs: [String], rootPath: String?) throws {
-            vertices = Set(try commandLineChildConfigs.map { try Vertix(string: $0, rootPath: rootPath) })
+        public init(commandLineChildConfigs: [String], rootPath: String?) {
+            vertices = Set(commandLineChildConfigs.map { Vertix(string: $0) })
             edges = Set(zip(vertices, vertices.dropFirst()).map {
                 Edge(edgeType: .commandLineChildConfig, origin: $0.0, target: $0.1)
             })
@@ -92,7 +94,7 @@ public extension Configuration {
         }
 
         public init(singleConfig: String, rootPath: String?) throws {
-            vertices = [try Vertix(string: singleConfig, rootPath: rootPath)]
+            vertices = [Vertix(string: singleConfig)]
             edges = []
             self.rootPath = rootPath
         }
@@ -104,9 +106,16 @@ public extension Configuration {
         }
 
         // MARK: - Methods
-        public mutating func getResultingConfiguration(configurationFactory: (([String: Any]) throws -> Configuration)) throws -> Configuration {
+        public mutating func getResultingConfiguration(
+            configurationFactory: (([String: Any]) throws -> Configuration),
+            remoteConfigLoadingTimeout: Double,
+            remoteConfigLoadingTimeoutIfCached: Double
+        ) throws -> Configuration {
             if !isBuiltAndValidated {
-                try build()
+                try build(
+                    remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
+                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
+                )
                 try validate()
                 isBuiltAndValidated = true
             }
@@ -115,11 +124,20 @@ public extension Configuration {
         }
 
         // MARK: Private
-        private mutating func build() throws {
+        private mutating func build(
+            remoteConfigLoadingTimeout: Double,
+            remoteConfigLoadingTimeoutIfCached: Double
+        ) throws {
             func process(vertix: Vertix) throws {
+                try vertix.build(
+                    rootPath: rootPath,
+                    remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
+                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
+                )
+
                 if let childConfigReference =
                     vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String {
-                    let childVertix = try Vertix(string: childConfigReference, rootPath: rootPath)
+                    let childVertix = Vertix(string: childConfigReference)
                     vertices.insert(childVertix)
                     let childEdge = Edge(edgeType: .childConfig, origin: vertix, target: childVertix)
                     edges.insert(childEdge)
@@ -128,7 +146,7 @@ public extension Configuration {
 
                 if let parentConfigReference
                     = vertix.configurationDict[Configuration.Key.parentConfig.rawValue] as? String {
-                    let parentVertix = try Vertix(string: parentConfigReference, rootPath: rootPath)
+                    let parentVertix = Vertix(string: parentConfigReference)
                     vertices.insert(parentVertix)
                     let parentEdge = Edge(edgeType: .parentConfig, origin: parentVertix, target: vertix)
                     edges.insert(parentEdge)

@@ -246,6 +246,8 @@
 		CC6D28592292F0380052B682 /* IndentationWidthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D28572292EF460052B682 /* IndentationWidthRule.swift */; };
 		CC6D285B2292F0600052B682 /* IndentationWidthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */; };
 		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
+		CC30F4502359F4F5006E14B9 /* Configuration+Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC30F44F2359F4F5006E14B9 /* Configuration+Remote.swift */; };
+		CC30F4522359F89A006E14B9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC30F4512359F89A006E14B9 /* Reachability.swift */; };
 		CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB336F42303FA7400C52023 /* Configuration+Graph.swift */; };
 		CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* RulesStorage.swift */; };
 		CCB97C3A22E8D7EC002F5458 /* ChildConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */; };
@@ -751,6 +753,8 @@
 		CC6D28572292EF460052B682 /* IndentationWidthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRule.swift; sourceTree = "<group>"; usesTabs = 0; };
 		CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthConfiguration.swift; sourceTree = "<group>"; };
 		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
+		CC30F44F2359F4F5006E14B9 /* Configuration+Remote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Remote.swift"; sourceTree = "<group>"; };
+		CC30F4512359F89A006E14B9 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		CCB336F42303FA7400C52023 /* Configuration+Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Graph.swift"; sourceTree = "<group>"; };
 		CCB97C3422E89257002F5458 /* RulesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesStorage.swift; sourceTree = "<group>"; };
 		CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildConfigTests.swift; sourceTree = "<group>"; };
@@ -1103,6 +1107,7 @@
 			children = (
 				C25EBBE321078DC700E27603 /* Glob.swift */,
 				D4AB0EA11F8993DD00CEC380 /* NamespaceCollector.swift */,
+				CC30F4512359F89A006E14B9 /* Reachability.swift */,
 				4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */,
 			);
 			path = Helpers;
@@ -1716,6 +1721,7 @@
 				E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */,
 				E889D8C61F1D357B00058332 /* Configuration+Merging.swift */,
 				E86623661F1D377900AAA3A2 /* Configuration+Parsing.swift */,
+				CC30F44F2359F4F5006E14B9 /* Configuration+Remote.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* SwiftLintFile+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* SwiftLintFile+Regex.swift */,
@@ -1728,8 +1734,10 @@
 				E4A365D123653648003B4141 /* SourceKittenDictionary+Swiftlint.swift */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				B39353F28BCCA39247B316BD /* String+XML.swift */,
+                6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */,
 				E816194B1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift */,
 				1894D740207D57AD00BD94CF /* SwiftDeclarationAttributeKind+Swiftlint.swift */,
+				E816194B1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift */,
 				D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */,
 				E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */,
 			);
@@ -2013,6 +2021,7 @@
 				4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */,
 				D4F10614229A2F5E00FDE319 /* NoFallthroughOnlyRuleExamples.swift in Sources */,
 				3ABE19CF20B7CE32009C2EC2 /* MultilineFunctionChainsRule.swift in Sources */,
+				CC30F4522359F89A006E14B9 /* Reachability.swift in Sources */,
 				82FE253F20F604AD00295958 /* VerticalWhitespaceOpeningBracesRule.swift in Sources */,
 				827169B51F48D712003FB9AF /* NoGroupingExtensionRule.swift in Sources */,
 				D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */,
@@ -2027,6 +2036,7 @@
 				69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */,
 				C26330382073DAC500D7B4FD /* LowerACLThanParentRule.swift in Sources */,
 				78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */,
+				CC30F4502359F4F5006E14B9 /* Configuration+Remote.swift in Sources */,
 				E80E018D1B92C0F60078EB70 /* Command.swift in Sources */,
 				E88198571BEA953300333A11 /* ForceCastRule.swift in Sources */,
 				D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */,

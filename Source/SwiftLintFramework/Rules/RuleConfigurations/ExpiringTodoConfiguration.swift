@@ -29,7 +29,7 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         approachingExpirySeverity: SeverityConfiguration,
         expiredSeverity: SeverityConfiguration,
         approachingExpiryThreshold: Int = 15,
-        dateFormat: String = "mm/DD/yyyy",
+        dateFormat: String = "MM/dd/yyyy",
         dateDelimiters: DelimiterConfiguration = .default,
         dateSeparator: Character = "/") {
         self.approachingExpirySeverity = approachingExpirySeverity

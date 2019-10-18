@@ -57,6 +57,7 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
+        // Include nested configurations, but ignore their parent_config / child_config specifications!
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
         let fullPath = pathNSString.absolutePathRepresentation()

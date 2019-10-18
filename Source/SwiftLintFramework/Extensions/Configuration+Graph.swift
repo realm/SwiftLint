@@ -78,7 +78,8 @@ public extension Configuration {
         // MARK: - Properties
         private(set) var vertices: Set<Vertix>
         private(set) var edges: Set<Edge>
-        public var rootPath: String?
+        private(set) var rootPath: String?
+        private var isBuiltAndValidated: Bool = false
 
         // MARK: - Initializers
         public init(commandLineChildConfigs: [String], rootPath: String?) throws {
@@ -103,7 +104,18 @@ public extension Configuration {
         }
 
         // MARK: - Methods
-        public mutating func build() throws {
+        public mutating func getResultingConfiguration(configurationFactory: (([String: Any]) throws -> Configuration)) throws -> Configuration {
+            if !isBuiltAndValidated {
+                try build()
+                try validate()
+                isBuiltAndValidated = true
+            }
+
+            return try merged(configurationFactory: configurationFactory)
+        }
+
+        // MARK: Private
+        private mutating func build() throws {
             func process(vertix: Vertix) throws {
                 if let childConfigReference =
                     vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String {
@@ -129,7 +141,7 @@ public extension Configuration {
             }
         }
 
-        public func validate() throws {
+        private func validate() throws {
             // Detect cycles via back-edge detection during DFS
             func walkDown(stack: [Vertix]) throws {
                 let neighbours = edges.filter { $0.origin == stack.last }.map { $0.target! }
@@ -157,13 +169,16 @@ public extension Configuration {
             }
         }
 
-        public func merged(configurationFactory: (([String: Any]) throws -> Configuration)) throws -> Configuration {
-            // There must be a starting vertix
+        private func merged(configurationFactory: (([String: Any]) throws -> Configuration)) throws -> Configuration {
+            // Get starting vertix (that isn't the target of any edge)
             var verticesToMerge = [vertices.first { vertix in !edges.contains { $0.target == vertix } }!]
+
+            // Get array of vertices (the graph should be like an array if validation passed)
             while let vertix = (edges.first { $0.origin == verticesToMerge.last }?.origin) {
                 verticesToMerge.append(vertix)
             }
 
+            // Merge all these configurations into on Configuration
             let configuration = try configurationFactory(verticesToMerge.first!.configurationDict)
             verticesToMerge = Array(verticesToMerge.dropFirst())
             return try verticesToMerge.reduce(configuration) {

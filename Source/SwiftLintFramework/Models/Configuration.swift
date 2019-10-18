@@ -98,7 +98,7 @@ public struct Configuration {
         )
     }
 
-    /// Initialize based on a path to a configuration file.
+    /// Initialize based on paths to configuration files
     public init(
         childConfigQueue: [String] = [Configuration.fileName],
         rootPath: String?, // Doesn't have a default value so that the Configuration() init isn't ambiguous
@@ -121,9 +121,7 @@ public struct Configuration {
 
         do {
             var graph = try Graph(commandLineChildConfigs: childConfigQueue, rootPath: rootPath)
-            try graph.build()
-            try graph.validate()
-            let resultingConfiguration = try graph.merged { dict -> Configuration in
+            let resultingConfiguration = try graph.getResultingConfiguration { dict -> Configuration in
                 try Configuration(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)
             }
 

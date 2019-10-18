@@ -394,6 +394,16 @@ extension EmptyXCTestMethodRuleTests {
     ]
 }
 
+extension ExpiringTodoRuleTests {
+    static var allTests: [(String, (ExpiringTodoRuleTests) -> () throws -> Void)] = [
+        ("testExpiringTodo", testExpiringTodo),
+        ("testExpiredTodo", testExpiredTodo),
+        ("testExpiredFixMe", testExpiredFixMe),
+        ("testApproachingExpiryTodo", testApproachingExpiryTodo),
+        ("testNonExpiredTodo", testNonExpiredTodo)
+    ]
+}
+
 extension ExplicitACLRuleTests {
     static var allTests: [(String, (ExplicitACLRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1621,6 +1631,7 @@ XCTMain([
     testCase(EmptyParenthesesWithTrailingClosureRuleTests.allTests),
     testCase(EmptyStringRuleTests.allTests),
     testCase(EmptyXCTestMethodRuleTests.allTests),
+    testCase(ExpiringTodoRuleTests.allTests),
     testCase(ExplicitACLRuleTests.allTests),
     testCase(ExplicitEnumRawValueRuleTests.allTests),
     testCase(ExplicitInitRuleTests.allTests),

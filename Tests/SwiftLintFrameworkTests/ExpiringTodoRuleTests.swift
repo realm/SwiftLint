@@ -53,12 +53,12 @@ class ExpiringTodoRuleTests: XCTestCase {
         let daysToAdvance: Int
 
         switch status {
+        case .approachingExpiry?:
+            daysToAdvance = rule.configuration.approachingExpiryThreshold
+        case .expired?:
+            daysToAdvance = 0
         case nil:
             daysToAdvance = rule.configuration.approachingExpiryThreshold + 1
-        case .approachingExpiry:
-            daysToAdvance = rule.configuration.approachingExpiryThreshold
-        case .expired:
-            daysToAdvance = 0
         }
 
         return Calendar.current

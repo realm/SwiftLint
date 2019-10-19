@@ -99,7 +99,7 @@
 
 #### Enhancements
 
-* Add `expiring_todo` opt-in rule to allow developers to mark their todos with an expiration date.
+* Add `expiring_todo` opt-in rule to allow developers to mark their todos with an expiration date.  
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
 

@@ -168,8 +168,7 @@ public extension Configuration.Graph.FilePath {
         if !FileManager.default.fileExists(atPath: directory) {
             do {
                 try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
-            }
-            catch {
+            } catch {
                 return nil
             }
         }

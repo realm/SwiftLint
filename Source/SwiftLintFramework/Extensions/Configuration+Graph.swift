@@ -82,7 +82,7 @@ public extension Configuration {
         private(set) var vertices: Set<Vertix>
         private(set) var edges: Set<Edge>
         public let rootPath: String?
-        private var isBuiltAndValidated: Bool = false
+        private var isBuilt: Bool = false
 
         // MARK: - Initializers
         public init(commandLineChildConfigs: [String], rootPath: String?) {
@@ -112,16 +112,18 @@ public extension Configuration {
             remoteConfigLoadingTimeout: Double,
             remoteConfigLoadingTimeoutIfCached: Double
         ) throws -> Configuration {
-            if !isBuiltAndValidated {
+            if !isBuilt {
                 try build(
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
                 )
-                try validate()
-                isBuiltAndValidated = true
+                isBuilt = true
             }
 
-            return try merged(configurationFactory: configurationFactory)
+            return try merged(
+                configurationDicts: try validate(),
+                configurationFactory: configurationFactory
+            )
         }
 
         // MARK: Private
@@ -164,7 +166,9 @@ public extension Configuration {
             }
         }
 
-        private func validate() throws {
+        /// Validates the Graph and throws failures
+        /// If successful, returns array of configuration dicts that represents the graph
+        private func validate() throws -> [[String: Any]] {
             // Detect cycles via back-edge detection during DFS
             func walkDown(stack: [Vertix]) throws {
                 let neighbours = edges.filter { $0.origin == stack.last }.map { $0.target! }
@@ -190,22 +194,38 @@ public extension Configuration {
                     + "More than one child is declared for a specific configuration, "
                     + "where there should only be exactly one.")
             }
-        }
 
-        private func merged(configurationFactory: (([String: Any]) throws -> Configuration)) throws -> Configuration {
-            // Get starting vertix (that isn't the target of any edge)
-            var verticesToMerge = [vertices.first { vertix in !edges.contains { $0.target == vertix } }!]
+            // The graph should be like an array if validation passed -> return that array
+            guard
+                let startingVertix = (vertices.first { vertix in !edges.contains { $0.target == vertix } })
+            else {
+                throw ConfigurationError.generic("Unknown Configuration Error")
+            }
 
-            // Get array of vertices (the graph should be like an array if validation passed)
+            var verticesToMerge = [startingVertix]
             while let vertix = (edges.first { $0.origin == verticesToMerge.last }?.target) {
+                guard !verticesToMerge.contains(vertix) else {
+                    // This shouldn't happen on a cycle free graph but let's safeguard
+                    throw ConfigurationError.generic("Unknown Configuration Error")
+                }
+
                 verticesToMerge.append(vertix)
             }
 
-            // Merge all these configurations into on Configuration
-            let configuration = try configurationFactory(verticesToMerge.first!.configurationDict)
-            verticesToMerge = Array(verticesToMerge.dropFirst())
-            return try verticesToMerge.reduce(configuration) {
-                $0.merged(with: try configurationFactory($1.configurationDict))
+            return verticesToMerge.map { $0.configurationDict }
+        }
+
+        private func merged(
+            configurationDicts: [[String: Any]],
+            configurationFactory: (([String: Any] ) throws -> Configuration)
+        ) throws -> Configuration {
+            guard let firstConfigurationDict = configurationDicts.first else {
+                throw ConfigurationError.generic("Unknown Configuration Error")
+            }
+
+            let configurationDicts = Array(configurationDicts.dropFirst())
+            return try configurationDicts.reduce(try configurationFactory(firstConfigurationDict)) {
+                $0.merged(with: try configurationFactory($1))
             }
         }
     }

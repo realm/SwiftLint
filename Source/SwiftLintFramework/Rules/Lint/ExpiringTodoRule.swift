@@ -71,7 +71,6 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func expiryDate(file: File, range: NSRange) -> Date? {
-        // Get the date of expiry
         let expiryDateString = file.contents.bridge()
             .substring(with: range)
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -110,6 +109,6 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
 
 private extension Date {
     var isAfterToday: Bool {
-        Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
+        return Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
     }
 }

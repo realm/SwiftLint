@@ -40,6 +40,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
             }
             """,
             "func foo()↓ -> () {}\n",
+            "func foo()↓ -> ( ) {}",
             """
             protocol Foo {
               func foo()↓ -> ()
@@ -72,6 +73,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     public func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard functionKinds.contains(kind),
+            containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,
@@ -90,5 +92,17 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
 
     public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
         return (violationRange, "")
+    }
+
+    private func containsVoidReturnTypeBasedOnTypeName(dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard SwiftVersion.current >= .fourDotOne else {
+            return true
+        }
+
+        guard let typeName = dictionary.typeName else {
+            return false
+        }
+
+        return typeName == "Void" || typeName.components(separatedBy: .whitespaces).joined() == "()"
     }
 }

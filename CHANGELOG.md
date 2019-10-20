@@ -37,7 +37,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix running analyzer rules on the output of builds performed with
+  Xcode 11 or later.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.35.0: Secondary Lint Trap
 

@@ -35,6 +35,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
 
+* Speedup `LetVarWhiteSpacesRule`.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2901](https://github.com/realm/SwiftLint/issues/2901)  
+
 #### Bug Fixes
 
 * Fix running analyzer rules on the output of builds performed with

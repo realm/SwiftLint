@@ -118,8 +118,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
               let length = statement.length else {
             return nil
         }
-        let startLine = file.line(byteOffset: offset, startFrom: 0)
-        let endLine = file.line(byteOffset: offset + length, startFrom: max(startLine, 0))
+        let startLine = file.line(byteOffset: offset)
+        let endLine = file.line(byteOffset: offset + length)
 
         return (startLine, endLine)
     }
@@ -155,8 +155,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
                 // Exclude the body where the accessors are
                 if let bodyOffset = statement.bodyOffset,
                    let bodyLength = statement.bodyLength {
-                    let bodyStart = file.line(byteOffset: bodyOffset, startFrom: startLine) + 1
-                    let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength, startFrom: bodyStart) - 1
+                    let bodyStart = file.line(byteOffset: bodyOffset) + 1
+                    let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength) - 1
 
                     if bodyStart <= bodyEnd {
                         lines.subtract(Set(bodyStart...bodyEnd))
@@ -183,8 +183,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
 
         for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue ||
                                             token.type == SyntaxKind.docComment.rawValue {
-            let startLine = file.line(byteOffset: token.offset, startFrom: 0)
-            let endLine = file.line(byteOffset: token.offset + token.length, startFrom: startLine)
+            let startLine = file.line(byteOffset: token.offset)
+            let endLine = file.line(byteOffset: token.offset + token.length)
 
             if startLine <= endLine {
                 result.formUnion(Set(startLine...endLine))
@@ -225,15 +225,9 @@ private extension SwiftDeclarationKind {
 }
 
 private extension File {
-    // Zero-based line number for the given a byte offset
-    func line(byteOffset: Int, startFrom: Int = 0) -> Int {
-        for index in startFrom..<lines.count {
-            let line = lines[index]
-
-            if line.byteRange.location + line.byteRange.length > byteOffset {
-                return index
-            }
-        }
-        return -1
+    // Zero based line number for specified byte offset
+    func line(byteOffset: Int) -> Int {
+        guard let line = contents.bridge().lineAndCharacter(forByteOffset: byteOffset)?.line else { return -1 }
+        return line - 1
     }
 }

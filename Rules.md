@@ -16874,20 +16874,18 @@ class TotoTests: QuickSpec {
 
 
 
-
 ## Raw Value For Camel Cased Codable Enum
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
 `raw_value_for_camel_cased_codable_enum` | Disabled | No | lint | No | 3.0.0 
 
-Camel cased Codable String enum cases should have explicitly assigned raw value.
+Camel cased cases of Codable String enums should have raw value.
 
 ### Examples
 
 <details>
 <summary>Non Triggering Examples</summary>
-
 
 ```swift
 enum Numbers: Codable {
@@ -16940,7 +16938,7 @@ enum Status: Int, Codable {
 ```swift
 enum Status: String, Codable {
     case ok
-    case notAcceptable
+    case ↓notAcceptable
     case maybeAcceptable = "maybe_acceptable"
 }
 ```
@@ -16948,7 +16946,7 @@ enum Status: String, Codable {
 ```swift
 enum Status: String, Decodable {
    case ok
-   case notAcceptable
+   case ↓notAcceptable
    case maybeAcceptable = "maybe_acceptable"
 }
 ```
@@ -16956,7 +16954,7 @@ enum Status: String, Decodable {
 ```swift
 enum Status: String, Encodable {
    case ok
-   case notAcceptable
+   case ↓notAcceptable
    case maybeAcceptable = "maybe_acceptable"
 }
 ```
@@ -16964,7 +16962,7 @@ enum Status: String, Encodable {
 ```swift
 enum Status: String, Codable {
     case ok
-    case notAcceptable
+    case ↓notAcceptable
     case maybeAcceptable = "maybe_acceptable"
 }
 ```

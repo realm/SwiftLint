@@ -1,8 +1,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SyntacticSugarRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+
+    private var pattern: String {
+        let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
+        let negativeLookBehind = "(?:(?<!\\.)|Swift\\.)"
+        return negativeLookBehind + "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
+    }
 
     public init() {}
 
@@ -44,13 +50,81 @@ public struct SyntacticSugarRule: ConfigurationProviderRule, AutomaticTestableRu
             "func x(a: ↓Array<Int>, b: Int) -> ↓Dictionary<Int, String>",
             "let x = ↓Array<String>.array(of: object)",
             "let x: ↓Swift.Optional<String>"
+        ],
+        corrections: [
+            "let x: Array<String>": "let x: [String]",
+            "let x: Array< String >": "let x: [ String ]",
+            "let x: Dictionary<Int, String>": "let x: [Int: String]",
+            "let x: Dictionary<Int , String>": "let x: [Int : String]",
+            "let x: Optional<Int>": "let x: Int?",
+            "let x: Optional< Int >": "let x: Int?",
+            "let x: ImplicitlyUnwrappedOptional<Int>": "let x: Int!",
+            "let x: ImplicitlyUnwrappedOptional< Int >": "let x: Int!",
+            "func x(a: Array<Int>, b: Int) -> [Int: Any]": "func x(a: [Int], b: Int) -> [Int: Any]",
+            "func x(a: [Int], b: Int) -> Dictionary<Int, String>": "func x(a: [Int], b: Int) -> [Int: String]",
+            "let x = Array<String>.array(of: object)": "let x = [String].array(of: object)",
+            "let x: Swift.Optional<String>": "let x: String?"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
-        let negativeLookBehind = "(?:(?<!\\.)|Swift\\.)"
-        let pattern = negativeLookBehind + "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
+        let contents = file.contents.bridge()
+        return violationResults(in: file).map {
+            let typeString = contents.substring(with: $0.range(at: 1))
+            return StyleViolation(ruleDescription: type(of: self).description,
+                                  severity: configuration.severity,
+                                  location: Location(file: file, characterOffset: $0.range.location),
+                                  reason: message(for: typeString))
+        }
+    }
+
+    public func violationRanges(in file: File) -> [NSRange] {
+        return violationResults(in: file).map { $0.range }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+        let contents = file.contents.bridge()
+        let declaration = contents.substring(with: violationRange)
+        let originalRange = NSRange(location: 0, length: declaration.count)
+        var substitutionResult = declaration
+        guard
+            let typeRange = regex(pattern).firstMatch(in: declaration, options: [], range: originalRange)?.range(at: 1)
+            else {
+                return (violationRange, substitutionResult)
+        }
+
+        let containerType = declaration.bridge().substring(with: typeRange)
+
+        switch containerType {
+        case "Optional":
+            let genericType = declaration.bridge().substring(from: typeRange.upperBound)
+                .replacingOccurrences(of: " ", with: "")
+                .replacingOccurrences(of: "<", with: "")
+                .replacingOccurrences(of: ">", with: "")
+            substitutionResult = "\(genericType)?"
+        case "ImplicitlyUnwrappedOptional":
+            let genericType = declaration.bridge().substring(from: typeRange.upperBound)
+                .replacingOccurrences(of: " ", with: "")
+                .replacingOccurrences(of: "<", with: "")
+                .replacingOccurrences(of: ">", with: "")
+            substitutionResult = "\(genericType)!"
+        case "Array":
+            substitutionResult = declaration.bridge().substring(from: typeRange.upperBound)
+                .replacingOccurrences(of: "<", with: "[")
+                .replacingOccurrences(of: ">", with: "]")
+        case "Dictionary":
+            substitutionResult = declaration.bridge().substring(from: typeRange.upperBound)
+                .replacingOccurrences(of: "<", with: "[")
+                .replacingOccurrences(of: ">", with: "]")
+                .replacingOccurrences(of: ",", with: ":")
+        default:
+            break
+        }
+
+        return (violationRange, substitutionResult)
+    }
+
+    private func violationResults(in file: File) -> [NSTextCheckingResult] {
         let excludingKinds = SyntaxKind.commentAndStringKinds
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
@@ -67,11 +141,7 @@ public struct SyntacticSugarRule: ConfigurationProviderRule, AutomaticTestableRu
                     return nil
             }
 
-            let typeString = contents.substring(with: result.range(at: 1))
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location),
-                                  reason: message(for: typeString))
+            return result
         }
     }
 

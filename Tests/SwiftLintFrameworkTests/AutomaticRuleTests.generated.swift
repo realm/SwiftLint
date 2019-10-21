@@ -558,6 +558,12 @@ class QuickDiscouragedPendingTestRuleTests: XCTestCase {
     }
 }
 
+class RawValueForCamelCasedCodableEnumRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RawValueForCamelCasedCodableEnumRule.description)
+    }
+}
+
 class ReduceBooleanRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceBooleanRule.description)

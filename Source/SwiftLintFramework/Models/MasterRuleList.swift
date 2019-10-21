@@ -125,6 +125,7 @@ public let masterRuleList = RuleList(rules: [
     QuickDiscouragedCallRule.self,
     QuickDiscouragedFocusedTestRule.self,
     QuickDiscouragedPendingTestRule.self,
+    RawValueForCamelCasedCodableEnumRule.self,
     ReduceBooleanRule.self,
     ReduceIntoRule.self,
     RedundantDiscardableLetRule.self,

@@ -122,7 +122,7 @@ AutomaticTestableRule {
         _ enumElements: [[String: SourceKitRepresentable]]) -> [[String: SourceKitRepresentable]] {
         return enumElements
             .filter { substructure in
-                guard let name = substructure.name, name != name.lowercased() else { return false }
+                guard let name = substructure.name, !name.isLowercase() else { return false }
                 return !substructure.elements.contains { $0.kind == "source.lang.swift.structure.elem.init_expr" }
             }
     }

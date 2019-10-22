@@ -50,9 +50,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     )
 
     private struct OperandsMatch {
-        let leftOperandRange: NSRange
         let operatorRange: NSRange
-        let rightOperandRange: NSRange
         let fullRange: NSRange
     }
 
@@ -91,9 +89,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 let fullMatchRange = NSRange(location: leftOperandLocation, length: operandLength + result.range.length)
 
                 let identicalMatch = OperandsMatch(
-                    leftOperandRange: leftOperandRange,
                     operatorRange: result.range(at: 1),
-                    rightOperandRange: rightOperandRange,
                     fullRange: fullMatchRange
                 )
                 return (identicalMatch, tokens)

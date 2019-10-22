@@ -47,6 +47,10 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2901](https://github.com/realm/SwiftLint/issues/2901)  
 
+* Speedup identical operands rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)  
+  [#2903](https://github.com/realm/SwiftLint/issues/2903)  
+
 #### Bug Fixes
 
 * Fix running analyzer rules on the output of builds performed with

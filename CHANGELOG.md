@@ -74,6 +74,10 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2901](https://github.com/realm/SwiftLint/issues/2901)  
 
+* Faster tokens resolving in syntaxmap.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)  
+  [#2916](https://github.com/realm/SwiftLint/issues/2916)  
+
 #### Bug Fixes
 
 * Fix running analyzer rules on the output of builds performed with

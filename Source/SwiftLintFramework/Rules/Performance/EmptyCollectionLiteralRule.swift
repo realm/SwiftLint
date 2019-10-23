@@ -13,7 +13,7 @@ public struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule, 
         nonTriggeringExamples: [
             "myArray = []",
             "myArray.isEmpty",
-            "!myArray.isEmpy",
+            "!myArray.isEmpty",
             "myDict = [:]"
         ],
         triggeringExamples: [

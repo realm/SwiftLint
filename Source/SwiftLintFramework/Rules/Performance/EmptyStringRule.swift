@@ -12,7 +12,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         kind: .performance,
         nonTriggeringExamples: [
             "myString.isEmpty",
-            "!myString.isEmpy"
+            "!myString.isEmpty"
         ],
         triggeringExamples: [
             "myString↓ == \"\"",

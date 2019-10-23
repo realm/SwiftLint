@@ -20,8 +20,9 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
 
     // MARK: - Private
 
-    private func testClasses(in file: File) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter { dictionary in
+    private func testClasses(in file: File) -> [SourceKittenDictionary] {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        return dict.substructure.filter { dictionary in
             guard
                 let kind = dictionary.kind,
                 SwiftDeclarationKind(rawValue: kind) == .class else { return false }
@@ -30,7 +31,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
     }
 
     private func violations(in file: File,
-                            for dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                            for dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard
                 let kind = subDictionary.kind.flatMap(SwiftDeclarationKind.init),

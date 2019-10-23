@@ -24,7 +24,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .extension, let offset = dictionary.offset else {
             return []
         }

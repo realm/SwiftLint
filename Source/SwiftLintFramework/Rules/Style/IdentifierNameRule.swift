@@ -24,7 +24,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
             return []
         }
@@ -79,7 +79,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         } ?? []
     }
 
-    private func validateName(dictionary: [String: SourceKitRepresentable],
+    private func validateName(dictionary: SourceKittenDictionary,
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard var name = dictionary.name,
             let offset = dictionary.offset,

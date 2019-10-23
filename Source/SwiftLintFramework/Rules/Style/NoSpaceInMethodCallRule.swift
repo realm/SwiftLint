@@ -44,7 +44,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -60,7 +60,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
 
     public func violationRanges(in file: File,
                                 kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .call,
             let bodyOffset = dictionary.bodyOffset,
             let nameOffset = dictionary.nameOffset,

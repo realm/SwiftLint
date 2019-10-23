@@ -49,13 +49,13 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
             }
 
             return !isInBooleanCondition(byteOffset: byteRange.location,
-                                         dictionary: file.structure.dictionary)
+                                         dictionary: SourceKittenDictionary(value: file.structure.dictionary))
                 && !hasExplicitType(utf16Range: range.location ..< range.location + range.length,
                                     fileContents: contents)
         }
     }
 
-    private func isInBooleanCondition(byteOffset: Int, dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isInBooleanCondition(byteOffset: Int, dictionary: SourceKittenDictionary) -> Bool {
         guard let offset = dictionary.offset,
             let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
             NSLocationInRange(byteOffset, byteRange) else {

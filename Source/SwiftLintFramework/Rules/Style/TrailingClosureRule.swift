@@ -31,14 +31,15 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationOffsets(for: file.structure.dictionary, file: file).map {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        return violationOffsets(for: dict, file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: $0))
         }
     }
 
-    private func violationOffsets(for dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
+    private func violationOffsets(for dictionary: SourceKittenDictionary, file: File) -> [Int] {
         var results = [Int]()
 
         if dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
@@ -65,7 +66,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         return results
     }
 
-    private func shouldBeTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func shouldBeTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
         func shouldTrigger() -> Bool {
             return !isAlreadyTrailingClosure(dictionary: dictionary, file: file) &&
                 !isAnonymousClosureCall(dictionary: dictionary, file: file)
@@ -77,7 +78,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         if !configuration.onlySingleMutedParameter, !arguments.isEmpty,
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
-            closureArguments.last?.bridge() == arguments.last?.bridge() {
+            closureArguments.last?.value.bridge() == arguments.last?.value.bridge() {
             return shouldTrigger()
         }
 
@@ -98,8 +99,8 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         return false
     }
 
-    private func filterClosureArguments(_ arguments: [[String: SourceKitRepresentable]],
-                                        file: File) -> [[String: SourceKitRepresentable]] {
+    private func filterClosureArguments(_ arguments: [SourceKittenDictionary],
+                                        file: File) -> [SourceKittenDictionary] {
         return arguments.filter { argument in
             guard let offset = argument.bodyOffset,
                 let length = argument.bodyLength,
@@ -113,7 +114,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func isAlreadyTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isAlreadyTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
@@ -123,7 +124,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         return !text.hasSuffix(")")
     }
 
-    private func isAnonymousClosureCall(dictionary: [String: SourceKitRepresentable],
+    private func isAnonymousClosureCall(dictionary: SourceKittenDictionary,
                                         file: File) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,

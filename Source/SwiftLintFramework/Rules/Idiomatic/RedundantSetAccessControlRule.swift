@@ -47,11 +47,11 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structure.dictionary, parentDictionary: nil)
+        return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary), parentDictionary: nil)
     }
 
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable],
-                          parentDictionary: [String: SourceKitRepresentable]?) -> [StyleViolation] {
+    private func validate(file: File, dictionary: SourceKittenDictionary,
+                          parentDictionary: SourceKittenDictionary?) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict, parentDictionary: dictionary)
 
@@ -65,8 +65,8 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
     }
 
     private func validate(file: File, kind: SwiftDeclarationKind,
-                          dictionary: [String: SourceKitRepresentable],
-                          parentDictionary: [String: SourceKitRepresentable]?) -> [StyleViolation] {
+                          dictionary: SourceKittenDictionary,
+                          parentDictionary: SourceKittenDictionary?) -> [StyleViolation] {
         let aclAttributes: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate, .internal, .public, .open]
         let explicitACL = dictionary.swiftAttributes.compactMap { dict -> SwiftDeclarationAttributeKind? in
             guard let attribute = dict.attribute.flatMap(SwiftDeclarationAttributeKind.init),

@@ -1,87 +1,91 @@
 import SourceKittenFramework
 
-extension Dictionary where Key: ExpressibleByStringLiteral {
+
+private enum LazyValue<T> {
+    case notYetComputed(() -> T)
+    case computed(T)
+}
+
+final class LazyBox<T> {
+    init(computation: @escaping () -> T) {
+        _value = .notYetComputed(computation)
+    }
+
+    private var _value: LazyValue<T>
+
+    var value: T {
+        switch self._value {
+        case .notYetComputed(let computation):
+            let result = computation()
+            self._value = .computed(result)
+            return result
+        case .computed(let result):
+            return result
+        }
+    }
+}
+
+public struct SourceKittenDictionary {
+    public let value: [String: SourceKitRepresentable]
+    init(value: [String: SourceKitRepresentable]) {
+        self.value = value
+    }
+
     /// Accessibility.
     var accessibility: String? {
-        return self["key.accessibility"] as? String
+        return value["key.accessibility"] as? String
     }
-    /// Body length.
+
+    /// Body length
     var bodyLength: Int? {
-        return (self["key.bodylength"] as? Int64).flatMap({ Int($0) })
+        return (value["key.bodylength"] as? Int64).flatMap({ Int($0) })
     }
-    /// Body offset.
-    var bodyOffset: Int? {
-        return (self["key.bodyoffset"] as? Int64).flatMap({ Int($0) })
-    }
+    
     /// Kind.
     var kind: String? {
-        return self["key.kind"] as? String
+        return value["key.kind"] as? String
     }
+    
     /// Length.
     var length: Int? {
-        return (self["key.length"] as? Int64).flatMap({ Int($0) })
+        return (value["key.length"] as? Int64).flatMap({ Int($0) })
     }
     /// Name.
     var name: String? {
-        return self["key.name"] as? String
+        return value["key.name"] as? String
     }
+
     /// Name length.
-    var nameLength: Int? {
-        return (self["key.namelength"] as? Int64).flatMap({ Int($0) })
+    var nameLength : Int?{
+        return (value["key.namelength"] as? Int64).flatMap({ Int($0) })
     }
+
     /// Name offset.
     var nameOffset: Int? {
-        return (self["key.nameoffset"] as? Int64).flatMap({ Int($0) })
+        return (value["key.nameoffset"] as? Int64).flatMap({ Int($0) })
     }
-    /// Offset.
-    var offset: Int? {
-        return (self["key.offset"] as? Int64).flatMap({ Int($0) })
-    }
-    /// Setter accessibility.
-    var setterAccessibility: String? {
-        return self["key.setter_accessibility"] as? String
-    }
-    /// Type name.
-    var typeName: String? {
-        return self["key.typename"] as? String
-    }
+
     /// Documentation length.
     var docLength: Int? {
-        return (self["key.doclength"] as? Int64).flatMap({ Int($0) })
+        return (value["key.doclength"] as? Int64).flatMap({ Int($0) })
     }
 
-    var attribute: String? {
-        return self["key.attribute"] as? String
+    var substructure: [SourceKittenDictionary] {
+        let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
+        return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }.map(SourceKittenDictionary.init)
+    }
+    var elements: [SourceKittenDictionary] {
+        let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
+        return elements.compactMap { $0 as? SourceKittenDictionary }
     }
 
-    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
-        return swiftAttributes.compactMap { $0.attribute }
-                              .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
+    var entities: [SourceKittenDictionary] {
+        let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
+        return entities.compactMap { $0 as? SourceKittenDictionary }
     }
 
-    var swiftAttributes: [[String: SourceKitRepresentable]] {
-        let array = self["key.attributes"] as? [SourceKitRepresentable] ?? []
-        let dictionaries = array.compactMap { ($0 as? [String: SourceKitRepresentable]) }
-        return dictionaries
-    }
-
-    var substructure: [[String: SourceKitRepresentable]] {
-        let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
-    }
-
-    var elements: [[String: SourceKitRepresentable]] {
-        let elements = self["key.elements"] as? [SourceKitRepresentable] ?? []
-        return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
-    }
-
-    var entities: [[String: SourceKitRepresentable]] {
-        let entities = self["key.entities"] as? [SourceKitRepresentable] ?? []
-        return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
-    }
-
-    var enclosedVarParameters: [[String: SourceKitRepresentable]] {
-        return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
+    var enclosedVarParameters: [SourceKittenDictionary] {
+        return substructure.flatMap { subDict -> [SourceKittenDictionary] in
             guard let kindString = subDict.kind else {
                 return []
             }
@@ -97,8 +101,8 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         }
     }
 
-    var enclosedArguments: [[String: SourceKitRepresentable]] {
-        return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
+    var enclosedArguments: [SourceKittenDictionary] {
+        return substructure.flatMap { subDict -> [SourceKittenDictionary] in
             guard let kindString = subDict.kind,
                 SwiftExpressionKind(rawValue: kindString) == .argument else {
                     return []
@@ -109,8 +113,8 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 
     var inheritedTypes: [String] {
-        let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
-        return array.compactMap { ($0 as? [String: String])?.name }
+        let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
+        return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"]} }
     }
 
     internal func extractCallsToSuper(methodName: String) -> [String] {
@@ -127,6 +131,43 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             return [name]
         }
     }
+
+    /// Body offset.
+    var bodyOffset: Int? {
+        return (value["key.bodyoffset"] as? Int64).flatMap({ Int($0) })
+    }
+
+
+    var attribute: String? {
+        return value["key.attribute"] as? String
+    }
+
+    var swiftAttributes: [SourceKittenDictionary] {
+        let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
+        let dictionaries = array.compactMap { ($0 as? SourceKittenDictionary) }
+        return dictionaries
+    }
+
+    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
+        return swiftAttributes.compactMap { $0.attribute }
+            .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
+    }
+
+    /// Setter accessibility.
+    var setterAccessibility: String? {
+        return value["key.setter_accessibility"] as? String
+    }
+
+    /// Offset.
+    var offset: Int? {
+        return (value["key.offset"] as? Int64).flatMap({ Int($0) })
+    }
+
+    /// Type name.
+    var typeName: String? {
+        return value["key.typename"] as? String
+    }
+
 }
 
 extension Dictionary where Key == String {

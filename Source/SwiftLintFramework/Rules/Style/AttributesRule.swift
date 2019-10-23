@@ -26,11 +26,11 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTestableImport(file: file) +
-            validate(file: file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let attributeShouldBeOnSameLine: Bool?
         if SwiftDeclarationKind.variableKinds.contains(kind) {
             attributeShouldBeOnSameLine = true
@@ -71,7 +71,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func validateKind(file: File,
                               attributeShouldBeOnSameLine: Bool,
-                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                              dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let attributes = parseAttributes(dictionary: dictionary)
 
         guard !attributes.isEmpty,
@@ -162,7 +162,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         })
     }
 
-    private func violation(dictionary: [String: SourceKitRepresentable],
+    private func violation(dictionary: SourceKittenDictionary,
                            file: File) -> [StyleViolation] {
         let location: Location
         if let offset = dictionary.offset {
@@ -288,7 +288,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         return false
     }
 
-    private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [SwiftDeclarationAttributeKind] {
+    private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
         let blacklist: Set<SwiftDeclarationAttributeKind> = [
             .mutating,

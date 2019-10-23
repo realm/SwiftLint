@@ -5,9 +5,9 @@ struct NamespaceCollector {
         let name: String
         let kind: SwiftDeclarationKind
         let offset: Int
-        let dictionary: [String: SourceKitRepresentable]
+        let dictionary: SourceKittenDictionary
 
-        init?(dictionary: [String: SourceKitRepresentable], namespace: [String]) {
+        init?(dictionary: SourceKittenDictionary, namespace: [String]) {
             guard let name = dictionary.name,
                 let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
                 let offset = dictionary.offset else {
@@ -21,9 +21,9 @@ struct NamespaceCollector {
         }
     }
 
-    private let dictionary: [String: SourceKitRepresentable]
+    private let dictionary: SourceKittenDictionary
 
-    init(dictionary: [String: SourceKitRepresentable]) {
+    init(dictionary: SourceKittenDictionary) {
         self.dictionary = dictionary
     }
 
@@ -32,7 +32,7 @@ struct NamespaceCollector {
         return findAllElements(in: dictionary, of: types, namespace: namespace)
     }
 
-    private func findAllElements(in dictionary: [String: SourceKitRepresentable],
+    private func findAllElements(in dictionary: SourceKittenDictionary,
                                  of types: Set<SwiftDeclarationKind>,
                                  namespace: [String] = []) -> [Element] {
         return dictionary.substructure.flatMap { subDict -> [Element] in

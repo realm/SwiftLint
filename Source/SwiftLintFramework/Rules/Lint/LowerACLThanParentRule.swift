@@ -33,7 +33,7 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validateACL(isHigherThan: .open, in: file.structure.dictionary).map {
+        return validateACL(isHigherThan: .open, in: SourceKittenDictionary(value: file.structure.dictionary)).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
@@ -41,7 +41,7 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
     }
 
     private func validateACL(isHigherThan parentAccessibility: AccessControlLevel,
-                             in substructure: [String: SourceKitRepresentable]) -> [Int] {
+                             in substructure: SourceKittenDictionary) -> [Int] {
         return substructure.substructure.flatMap { element -> [Int] in
             guard let elementKind = element.kind.flatMap(SwiftDeclarationKind.init),
                 elementKind.isRelevantDeclaration else {

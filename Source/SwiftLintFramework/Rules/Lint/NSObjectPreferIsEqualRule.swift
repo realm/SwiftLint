@@ -20,8 +20,10 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
 
     // MARK: - Private
 
-    private func objcVisibleClasses(in file: File) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter { dictionary in
+    private func objcVisibleClasses(in file: File) -> [SourceKittenDictionary] {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+
+        return dict.substructure.filter { dictionary in
             guard
                 let kind = dictionary.kind,
                 SwiftDeclarationKind(rawValue: kind) == .class
@@ -33,7 +35,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
     }
 
     private func violations(in file: File,
-                            for dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                            for dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let typeName = dictionary.name else { return [] }
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard
@@ -46,7 +48,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         }
     }
 
-    private func isDoubleEqualsMethod(_ method: [String: SourceKitRepresentable],
+    private func isDoubleEqualsMethod(_ method: SourceKittenDictionary,
                                       onType typeName: String) -> Bool {
         guard
             let kind = method.kind.flatMap(SwiftDeclarationKind.init),
@@ -58,7 +60,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         return true
     }
 
-    private func areAllArguments(toMethod method: [String: SourceKitRepresentable],
+    private func areAllArguments(toMethod method: SourceKittenDictionary,
                                  ofType typeName: String) -> Bool {
         return method.enclosedVarParameters.allSatisfy { param in
             param.typeName == typeName

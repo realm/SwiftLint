@@ -28,7 +28,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .closure, let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength,
             case let contents = file.contents.bridge(),
             let closureRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
@@ -60,10 +60,10 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
     }
 
     private func localVariableDeclarations(inByteRange byteRange: NSRange,
-                                           structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
+                                           structure: Structure) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
 
-        func parse(dictionary: [String: SourceKitRepresentable]) {
+        func parse(dictionary: SourceKittenDictionary) {
             if let kindString = (dictionary.kind),
                 SwiftDeclarationKind(rawValue: kindString) == .varLocal,
                 let offset = dictionary.offset,
@@ -76,7 +76,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
             }
             dictionary.substructure.forEach(parse)
         }
-        parse(dictionary: structure.dictionary)
+        parse(dictionary: SourceKittenDictionary(value: structure.dictionary))
         return results
     }
 }

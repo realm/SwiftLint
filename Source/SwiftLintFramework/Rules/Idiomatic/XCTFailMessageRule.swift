@@ -38,7 +38,7 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticT
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
             let offset = dictionary.offset,
@@ -53,7 +53,7 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticT
                                location: Location(file: file, byteOffset: offset))]
     }
 
-    private func hasEmptyMessage(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func hasEmptyMessage(dictionary: SourceKittenDictionary, file: File) -> Bool {
         guard
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength else { return false }

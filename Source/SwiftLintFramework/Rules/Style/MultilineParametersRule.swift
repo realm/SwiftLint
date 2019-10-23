@@ -18,7 +18,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
 
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,

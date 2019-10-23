@@ -74,7 +74,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             case let arguments = dictionary.enclosedArguments,
             arguments.count > 1,
@@ -126,7 +126,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         }
     }
 
-    private func isMultiline(argument: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isMultiline(argument: SourceKittenDictionary, file: File) -> Bool {
         guard let offset = argument.bodyOffset,
             let length = argument.bodyLength,
             case let contents = file.contents.bridge(),
@@ -138,7 +138,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         return endLine > startLine
     }
 
-    private func isTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             case let start = min(offset, offset + length - 1),

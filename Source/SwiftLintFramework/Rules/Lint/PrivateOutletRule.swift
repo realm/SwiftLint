@@ -24,7 +24,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance else {
             return []
         }

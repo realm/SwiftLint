@@ -53,7 +53,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -64,7 +64,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
     private let initializerWithType = regex("^[A-Z][^(]*\\.init$")
 
     public func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         func isExpected(_ name: String) -> Bool {
             let range = NSRange(location: 0, length: name.utf16.count)
             return !["super.init", "self.init"].contains(name)

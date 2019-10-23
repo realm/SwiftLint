@@ -62,7 +62,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -71,7 +71,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     }
 
     public func violationRanges(in file: File, kind: SwiftDeclarationKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard functionKinds.contains(kind),
             !shouldReturnEarlyBasedOnTypeName(dictionary: dictionary),
             let nameOffset = dictionary.nameOffset,

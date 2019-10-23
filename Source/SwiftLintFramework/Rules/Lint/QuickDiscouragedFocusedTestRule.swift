@@ -15,7 +15,8 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let testClasses = file.structure.dictionary.substructure.filter {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
                 $0.kind.flatMap(SwiftDeclarationKind.init) == .class
         }
@@ -33,7 +34,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         }
     }
 
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func validate(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 
@@ -48,7 +49,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
 
     private func validate(file: File,
                           kind: SwiftExpressionKind,
-                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
             let name = dictionary.name,

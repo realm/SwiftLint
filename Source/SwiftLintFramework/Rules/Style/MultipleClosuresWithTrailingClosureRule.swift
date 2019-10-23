@@ -31,7 +31,7 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             case let arguments = dictionary.enclosedArguments,
             arguments.count > 1,
@@ -50,8 +50,8 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
         ]
     }
 
-    private func isTrailingClosure(argument: [String: SourceKitRepresentable],
-                                   call: [String: SourceKitRepresentable]) -> Bool {
+    private func isTrailingClosure(argument: SourceKittenDictionary,
+                                   call: SourceKittenDictionary) -> Bool {
         guard let callOffset = call.offset,
             let callLength = call.length,
             let argumentOffset = argument.offset,
@@ -63,8 +63,8 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
     }
 }
 
-private extension Array where Element == [String: SourceKitRepresentable] {
-    func filterClosures(file: File) -> [[String: SourceKitRepresentable]] {
+private extension Array where Element == SourceKittenDictionary {
+    func filterClosures(file: File) -> [SourceKittenDictionary] {
         if SwiftVersion.current < .fourDotTwo {
             return filter { argument in
                 guard let offset = argument.bodyOffset,

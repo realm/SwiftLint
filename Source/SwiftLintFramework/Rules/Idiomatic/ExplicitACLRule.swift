@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private typealias SourceKittenElement = [String: SourceKitRepresentable]
+private typealias SourceKittenElement = SourceKittenDictionary
 
 public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
@@ -91,7 +91,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structure.dictionary)
+        let implicitAndExplicitInternalElements = internalTypeElements(in: SourceKittenDictionary(value: file.structure.dictionary) )
 
         guard !implicitAndExplicitInternalElements.isEmpty else {
             return []

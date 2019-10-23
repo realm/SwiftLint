@@ -329,6 +329,35 @@ private extension File {
     }
 }
 
+private extension Dictionary where Value == SourceKitRepresentable, Key == String {
+
+    var entities: [[String: SourceKitRepresentable]] {
+        let entities = self["key.entities"] as? [SourceKitRepresentable] ?? []
+        return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
+    }
+
+    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
+        return swiftAttributes.compactMap { $0.attribute }
+                              .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
+    }
+
+    var swiftAttributes: [[String: SourceKitRepresentable]] {
+        let array = self["key.attributes"] as? [SourceKitRepresentable] ?? []
+        let dictionaries = array.compactMap { ($0 as? [String: SourceKitRepresentable]) }
+        return dictionaries
+    }
+
+    var attribute: String? {
+        return self["key.attribute"] as? String
+    }
+
+    var substructure: [[String: SourceKitRepresentable]] {
+        let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
+        return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
+    }
+
+}
+
 private let syntaxKindsToSkip: Set<SyntaxKind> = [
     .attributeBuiltin,
     .keyword,
@@ -350,3 +379,5 @@ private let attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> = 
     .objcMembers,
     .objcNonLazyRealization
 ]
+
+

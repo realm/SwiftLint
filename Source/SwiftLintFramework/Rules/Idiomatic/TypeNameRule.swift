@@ -23,11 +23,11 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +
-            validate(file: file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard typeKinds.contains(kind),
             let name = dictionary.name,
             let offset = dictionary.nameOffset else {
@@ -62,7 +62,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(name: String, dictionary: [String: SourceKitRepresentable] = [:], file: File,
+    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary(value: [:]), file: File,
                           offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
@@ -96,7 +96,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 }
 
 private extension String {
-    func nameStrippingTrailingSwiftUIPreviewProvider(_ dictionary: [String: SourceKitRepresentable]) -> String {
+    func nameStrippingTrailingSwiftUIPreviewProvider(_ dictionary: SourceKittenDictionary) -> String {
         guard dictionary.inheritedTypes.contains("PreviewProvider"),
             hasSuffix("_Previews"),
             let lastPreviewsIndex = lastIndex(of: "_Previews")

@@ -29,11 +29,11 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     }
 
     public func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(file: file, dictionary: file.structure.dictionary, parentStructure: nil)
+        return violationRanges(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary), parentStructure: nil)
     }
 
-    private func violationRanges(file: File, dictionary: [String: SourceKitRepresentable],
-                                 parentStructure: [String: SourceKitRepresentable]?) -> [NSRange] {
+    private func violationRanges(file: File, dictionary: SourceKittenDictionary,
+                                 parentStructure: SourceKittenDictionary?) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
             var violations = violationRanges(file: file, dictionary: subDict, parentStructure: dictionary)
 
@@ -48,8 +48,8 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
 
     private func violationRanges(file: File,
                                  kind: SwiftDeclarationKind,
-                                 dictionary: [String: SourceKitRepresentable],
-                                 parentStructure: [String: SourceKitRepresentable]?) -> [NSRange] {
+                                 dictionary: SourceKittenDictionary,
+                                 parentStructure: SourceKittenDictionary?) -> [NSRange] {
         let objcAttribute = dictionary.swiftAttributes
                                       .first(where: { $0.attribute == SwiftDeclarationAttributeKind.objc.rawValue })
         guard let objcOffset = objcAttribute?.offset,
@@ -89,7 +89,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     }
 }
 
-private extension Dictionary where Key == String, Value == SourceKitRepresentable {
+private extension SourceKittenDictionary{
     var isObjcAndIBDesignableDeclaredExtension: Bool {
         guard let kind = kind, let declaration = SwiftDeclarationKind(rawValue: kind) else {
             return false

@@ -24,7 +24,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structure.dictionary)
+        let collector = NamespaceCollector(dictionary: SourceKittenDictionary(value: file.structure.dictionary))
         let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
 
         let susceptibleNames = Set(elements.compactMap { $0.kind != .extension ? $0.name : nil })
@@ -44,7 +44,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         }
     }
 
-    private func hasWhereClause(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func hasWhereClause(dictionary: SourceKittenDictionary, file: File) -> Bool {
         let contents = file.contents.bridge()
 
         guard let nameOffset = dictionary.nameOffset,

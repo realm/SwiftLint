@@ -16,7 +16,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File, kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let contents = file.contents.bridge()
 
         guard kind == .switch,

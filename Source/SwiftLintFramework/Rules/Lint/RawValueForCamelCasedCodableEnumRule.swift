@@ -85,7 +85,7 @@ AutomaticTestableRule {
 
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else { return [] }
 
         let codableTypesSet = Set(["Codable", "Decodable", "Encodable"])
@@ -104,7 +104,7 @@ AutomaticTestableRule {
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [Int] {
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(camelCasedEnumCasesMissingRawValue)
@@ -113,13 +113,13 @@ AutomaticTestableRule {
         return locs
     }
 
-    private func substructureElements(of dict: [String: SourceKitRepresentable],
-                                      matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
+    private func substructureElements(of dict: SourceKittenDictionary,
+                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
         return dict.substructure.filter { $0.kind.flatMap(SwiftDeclarationKind.init) == kind }
     }
 
     private func camelCasedEnumCasesMissingRawValue(
-        _ enumElements: [[String: SourceKitRepresentable]]) -> [[String: SourceKitRepresentable]] {
+        _ enumElements: [SourceKittenDictionary]) -> [SourceKittenDictionary] {
         return enumElements
             .filter { substructure in
                 guard let name = substructure.name, !name.isLowercase() else { return false }

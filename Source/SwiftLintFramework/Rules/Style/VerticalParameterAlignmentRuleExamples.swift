@@ -2,20 +2,20 @@ internal struct VerticalParameterAlignmentRuleExamples {
     static let nonTriggeringExamples: [String] = {
         let commonExamples = [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: [String: SourceKitRepresentable]) { }\n",
+            "                      dictionary: SourceKittenDictionary) { }\n",
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]\n",
+            "                      dictionary: SourceKittenDictionary) -> [StyleViolation]\n",
             "func foo(bar: Int)\n",
             "func foo(bar: Int) -> String \n",
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: [String: SourceKitRepresentable])\n" +
+            "                      dictionary: SourceKittenDictionary)\n" +
             "                      -> [StyleViolation]\n",
             "func validateFunction(\n" +
             "   _ file: File, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]\n",
+            "   dictionary: SourceKittenDictionary) -> [StyleViolation]\n",
             "func validateFunction(\n" +
             "   _ file: File, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: [String: SourceKitRepresentable]\n" +
+            "   dictionary: SourceKittenDictionary\n" +
             ") -> [StyleViolation]\n",
             "func regex(_ pattern: String,\n" +
             "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
@@ -40,12 +40,12 @@ internal struct VerticalParameterAlignmentRuleExamples {
     static let triggeringExamples: [String] = {
         let commonExamples = [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                  ↓dictionary: [String: SourceKitRepresentable]) { }\n",
+            "                  ↓dictionary: SourceKittenDictionary) { }\n",
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
-            "                       ↓dictionary: [String: SourceKitRepresentable]) { }\n",
+            "                       ↓dictionary: SourceKittenDictionary) { }\n",
             "func validateFunction(_ file: File,\n" +
             "                  ↓kind: SwiftDeclarationKind,\n" +
-            "                  ↓dictionary: [String: SourceKitRepresentable]) { }\n"
+            "                  ↓dictionary: SourceKittenDictionary) { }\n"
         ]
 
         guard SwiftVersion.current >= .fiveDotOne else {

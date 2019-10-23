@@ -54,15 +54,15 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         if shouldUseLegacyImplementation {
-            return validate(file: file, dictionary: file.structure.dictionary) +
+            return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary)) +
                 validateGenericTypeAliases(in: file)
         } else {
-            return validate(file: file, dictionary: file.structure.dictionary)
+            return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
         }
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         if shouldUseLegacyImplementation {
             let types = genericTypesForType(in: file, kind: kind, dictionary: dictionary) +
                 genericTypesForFunction(in: file, kind: kind, dictionary: dictionary)
@@ -136,7 +136,7 @@ extension GenericTypeNameRule {
     }
 
     private func genericTypesForType(in file: File, kind: SwiftDeclarationKind,
-                                     dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
+                                     dictionary: SourceKittenDictionary) -> [(String, Int)] {
         guard SwiftDeclarationKind.typeKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
@@ -155,7 +155,7 @@ extension GenericTypeNameRule {
     }
 
     private func genericTypesForFunction(in file: File, kind: SwiftDeclarationKind,
-                                         dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
+                                         dictionary: SourceKittenDictionary) -> [(String, Int)] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
@@ -171,7 +171,7 @@ extension GenericTypeNameRule {
         return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 
-    private func minParameterOffset(parameters: [[String: SourceKitRepresentable]], file: File) -> Int {
+    private func minParameterOffset(parameters: [SourceKittenDictionary], file: File) -> Int {
         let offsets = parameters.compactMap { param -> Int? in
             return param.offset.flatMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location

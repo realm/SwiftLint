@@ -75,7 +75,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
     private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\]")
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let contents = file.contents.bridge()
         guard kind == .closure,
             let offset = dictionary.offset,

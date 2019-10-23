@@ -9,7 +9,7 @@ extension Structure {
     internal func kinds(forByteOffset byteOffset: Int? = nil) -> [(kind: String, byteRange: NSRange)] {
         var results = [(kind: String, byteRange: NSRange)]()
 
-        func parse(_ dictionary: [String: SourceKitRepresentable]) {
+        func parse(_ dictionary: SourceKittenDictionary) {
             guard let offset = dictionary.offset,
                 let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }) else {
                     return
@@ -22,14 +22,14 @@ extension Structure {
             }
             dictionary.substructure.forEach(parse)
         }
-        parse(dictionary)
+        parse(SourceKittenDictionary(value: dictionary))
         return results
     }
 
-    internal func structures(forByteOffset byteOffset: Int) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
+    internal func structures(forByteOffset byteOffset: Int) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
 
-        func parse(_ dictionary: [String: SourceKitRepresentable]) {
+        func parse(_ dictionary: SourceKittenDictionary) {
             guard let offset = dictionary.offset,
                 let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
                 NSLocationInRange(byteOffset, byteRange) else {
@@ -39,7 +39,7 @@ extension Structure {
             results.append(dictionary)
             dictionary.substructure.forEach(parse)
         }
-        parse(dictionary)
+        parse(SourceKittenDictionary(value: dictionary))
         return results
     }
 }

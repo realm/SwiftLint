@@ -15,7 +15,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .dictionary || kind == .array else { return [] }
 
         let keyLocations: [Location]
@@ -51,16 +51,16 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         }
     }
 
-    private func arrayElementLocations(with file: File, dictionary: [String: SourceKitRepresentable]) -> [Location] {
+    private func arrayElementLocations(with file: File, dictionary: SourceKittenDictionary) -> [Location] {
         return dictionary.elements.compactMap { element -> Location? in
             element.offset.map { Location(file: file, byteOffset: $0) }
         }
     }
 
     private func dictionaryKeyLocations(with file: File,
-                                        dictionary: [String: SourceKitRepresentable]) -> [Location] {
-        var keys: [[String: SourceKitRepresentable]] = []
-        var values: [[String: SourceKitRepresentable]] = []
+                                        dictionary: SourceKittenDictionary) -> [Location] {
+        var keys: [SourceKittenDictionary] = []
+        var values: [SourceKittenDictionary] = []
         dictionary.elements.enumerated().forEach { index, element in
             // in a dictionary, the even elements are keys, and the odd elements are values
             if index % 2 == 0 {

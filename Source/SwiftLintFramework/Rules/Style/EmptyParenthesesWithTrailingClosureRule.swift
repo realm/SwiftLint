@@ -47,7 +47,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
     private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -60,7 +60,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
     }
 
     public func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .call else {
             return []
         }

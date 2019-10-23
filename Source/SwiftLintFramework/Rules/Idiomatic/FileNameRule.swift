@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds + [.extension, .protocol]
 
-private extension Dictionary where Key: ExpressibleByStringLiteral {
+private extension SourceKittenDictionary {
     func recursiveDeclaredTypeNames() -> [String] {
         let subNames = substructure.flatMap { $0.recursiveDeclaredTypeNames() }
         if let kind = kind.flatMap(SwiftDeclarationKind.init),
@@ -57,7 +57,8 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         }
 
         // Process nested type separator
-        let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames().map {
+        let dictionary = SourceKittenDictionary(value: file.structure.dictionary)
+        let allDeclaredTypeNames = dictionary.recursiveDeclaredTypeNames().map {
             $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
         }
 

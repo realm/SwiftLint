@@ -40,7 +40,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        var violations = validateAttributes(file: file, dictionary: file.structure.dictionary)
+        var violations = validateAttributes(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
         violations += validateConditions(file: file)
         violations.sort(by: { $0.location < $1.location })
 
@@ -64,7 +64,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         }
     }
 
-    private func validateAttributes(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func validateAttributes(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validateAttributes(file: file, dictionary: subDict)
 
@@ -79,7 +79,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
 
     private func validateAttributes(file: File,
                                     kind: SwiftDeclarationKind,
-                                    dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                                    dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let attributes = dictionary.swiftAttributes.filter {
             $0.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .available
         }

@@ -35,7 +35,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind) else {
             return []
         }
@@ -78,7 +78,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    private func allFunctionParameterCount(structure: [[String: SourceKitRepresentable]],
+    private func allFunctionParameterCount(structure: [SourceKittenDictionary],
                                            offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for subDict in structure {

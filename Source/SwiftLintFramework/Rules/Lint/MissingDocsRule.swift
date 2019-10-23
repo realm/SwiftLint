@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 private extension File {
-    func missingDocOffsets(in dictionary: [String: SourceKitRepresentable],
+    func missingDocOffsets(in dictionary: SourceKittenDictionary,
                            acls: [AccessControlLevel]) -> [(Int, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
             !dictionary.inheritedTypes.isEmpty {
@@ -77,7 +77,8 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     public func validate(file: File) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
-        return file.missingDocOffsets(in: file.structure.dictionary,
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        return file.missingDocOffsets(in: dict,
                                       acls: acls).map { (offset: Int, acl: AccessControlLevel) in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.parameters.first { $0.value == acl }?.severity ?? .warning,

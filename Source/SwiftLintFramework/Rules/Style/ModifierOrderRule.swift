@@ -32,7 +32,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
 
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
         }
@@ -57,10 +57,10 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     public func correct(file: File) -> [Correction] {
-        return correct(file: file, dictionary: file.structure.dictionary)
+        return correct(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
     }
 
-    private func correct(file: File, dictionary: [String: SourceKitRepresentable]) -> [Correction] {
+    private func correct(file: File, dictionary: SourceKittenDictionary) -> [Correction] {
         return dictionary.substructure.flatMap { subDict -> [Correction] in
             var corrections = correct(file: file, dictionary: subDict)
 
@@ -75,7 +75,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
 
     private func correct(file: File,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [Correction] {
+                         dictionary: SourceKittenDictionary) -> [Correction] {
         guard let offset = dictionary.offset else { return [] }
         let originalContents = file.contents.bridge()
         let violatingRanges = violatingModifiers(dictionary: dictionary)
@@ -144,7 +144,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     private func violatingModifiers(
-        dictionary: [String: SourceKitRepresentable]
+        dictionary: SourceKittenDictionary
     ) -> [(preferredModifier: ModifierDescription, declaredModifier: ModifierDescription)] {
         let violatableModifiers = self.violatableModifiers(declaredModifiers: dictionary.modifierDescriptions)
         let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
@@ -156,7 +156,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 }
 
-private extension Dictionary where Key == String, Value == SourceKitRepresentable {
+private extension SourceKittenDictionary {
     var modifierDescriptions: [ModifierDescription] {
         let staticKinds = [SwiftDeclarationKind.functionMethodClass, .functionMethodStatic, .varClass, .varStatic]
         let staticKindsAndOffsets = kindsAndOffsets(in: staticKinds).map { [$0] } ?? []
@@ -191,14 +191,14 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
             }
     }
 
-    private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> [String: SourceKitRepresentable]? {
+    private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> SourceKittenDictionary? {
         guard let kind = kind, let offset = offset,
             let declarationKind = SwiftDeclarationKind(rawValue: kind),
             declarationKinds.contains(declarationKind) else {
                 return nil
         }
 
-        return ["key.kind": kind, "key.offset": Int64(offset)]
+        return SourceKittenDictionary(value: ["key.kind": kind, "key.offset": Int64(offset)])
     }
 }
 

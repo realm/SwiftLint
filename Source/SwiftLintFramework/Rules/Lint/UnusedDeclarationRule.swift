@@ -252,6 +252,15 @@ private extension File {
     }
 }
 
+private extension Dictionary where Value == SourceKitRepresentable, Key == String {
+
+    var name: String? {
+        return self["key.name"] as? String
+    }
+
+}
+
+
 // Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
 private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
     .functionConstructor,

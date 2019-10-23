@@ -32,10 +32,11 @@ extension CallPairRule {
                            callNameSuffix: String,
                            severity: ViolationSeverity,
                            reason: String? = nil,
-                           predicate: ([String: SourceKitRepresentable]) -> Bool = { _ in true }) -> [StyleViolation] {
+                           predicate: (SourceKittenDictionary) -> Bool = { _ in true }) -> [StyleViolation] {
         let firstRanges = file.match(pattern: pattern, with: patternSyntaxKinds)
         let contents = file.contents.bridge()
         let structure = file.structure
+        let dictionary = SourceKittenDictionary(value: structure.dictionary)
 
         let violatingLocations: [Int] = firstRanges.compactMap { range in
             guard let bodyByteRange = contents.NSRangeToByteRange(start: range.location,
@@ -48,7 +49,7 @@ extension CallPairRule {
 
             return methodCall(forByteOffset: bodyByteRange.location - 1,
                               excludingOffset: firstByteRange.location,
-                              dictionary: structure.dictionary,
+                              dictionary: dictionary,
                               predicate: { dictionary in
                 guard let name = dictionary.name else {
                     return false
@@ -67,8 +68,8 @@ extension CallPairRule {
     }
 
     private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
-                            dictionary: [String: SourceKitRepresentable],
-                            predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
+                            dictionary: SourceKittenDictionary,
+                            predicate: (SourceKittenDictionary) -> Bool) -> Int? {
         if let kindString = dictionary.kind,
             SwiftExpressionKind(rawValue: kindString) == .call,
             let bodyOffset = dictionary.offset,

@@ -40,9 +40,11 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     )
 
     public func validate(file: File) -> [StyleViolation] {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+
         var attributeLines = attributeLineNumbers(file: file)
         let varLines = varLetLineNumbers(file: file,
-                                         structure: file.structure.dictionary.substructure,
+                                         structure: dict.substructure,
                                          attributeLines: &attributeLines)
         let skippedLines = skippedLineNumbers(file: file)
         var violations = [StyleViolation]()
@@ -113,7 +115,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
                                          location: location))
     }
 
-    private func lineOffsets(file: File, statement: [String: SourceKitRepresentable]) -> (Int, Int)? {
+    private func lineOffsets(file: File, statement: SourceKittenDictionary) -> (Int, Int)? {
         guard let offset = statement.offset,
               let length = statement.length else {
             return nil
@@ -126,7 +128,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
 
     // Collects all the line numbers containing var or let declarations
     private func varLetLineNumbers(file: File,
-                                   structure: [[String: SourceKitRepresentable]],
+                                   structure: [SourceKittenDictionary],
                                    attributeLines: inout Set<Int>) -> Set<Int> {
         var result = Set<Int>()
 

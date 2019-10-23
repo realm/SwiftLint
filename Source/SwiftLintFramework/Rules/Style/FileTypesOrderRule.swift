@@ -86,33 +86,35 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
     private func extensionsSubstructures(
         in file: File,
-        mainTypeSubstructure: [String: SourceKitRepresentable]
-    ) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter { substructure in
+        mainTypeSubstructure: SourceKittenDictionary
+    ) -> [SourceKittenDictionary] {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
-            return substructure.bridge() != mainTypeSubstructure.bridge() &&
+            return substructure.value.bridge() != mainTypeSubstructure.value.bridge() &&
                 kind.contains(SwiftDeclarationKind.extension.rawValue)
         }
     }
 
     private func supportingTypesSubstructures(
         in file: File,
-        mainTypeSubstructure: [String: SourceKitRepresentable]
-    ) -> [[String: SourceKitRepresentable]] {
+        mainTypeSubstructure: SourceKittenDictionary
+    ) -> [SourceKittenDictionary] {
         var supportingTypeKinds = SwiftDeclarationKind.typeKinds
         supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
 
-        return file.structure.dictionary.substructure.filter { substructure in
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             guard let declarationKind = SwiftDeclarationKind(rawValue: kind) else { return false }
 
-            return substructure.bridge() != mainTypeSubstructure.bridge() &&
+            return substructure.value.bridge() != mainTypeSubstructure.value.bridge() &&
                 supportingTypeKinds.contains(declarationKind)
         }
     }
 
-    private func mainTypeSubstructure(in file: File) -> [String: SourceKitRepresentable]? {
-        let dict = file.structure.dictionary
+    private func mainTypeSubstructure(in file: File) -> SourceKittenDictionary? {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
 
         guard let filePath = file.path else {
             return self.mainTypeSubstructure(in: dict)
@@ -120,14 +122,14 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
         let fileName = URL(fileURLWithPath: filePath).lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return self.mainTypeSubstructure(in: file.structure.dictionary)
+            return self.mainTypeSubstructure(in: SourceKittenDictionary(value: file.structure.dictionary))
         }
 
         // specify type with name matching the files name as main type
         return mainTypeSubstructure
     }
 
-    private func mainTypeSubstructure(in dict: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? {
+    private func mainTypeSubstructure(in dict: SourceKittenDictionary) -> SourceKittenDictionary? {
         let priorityKinds: [SwiftDeclarationKind] = [.class, .enum, .struct]
         let priorityKindRawValues = priorityKinds.map { $0.rawValue }
 

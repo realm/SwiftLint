@@ -73,7 +73,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         }
     }
 
-    private func patternEnd(dictionary: [String: SourceKitRepresentable]) -> Int? {
+    private func patternEnd(dictionary: SourceKittenDictionary) -> Int? {
         let patternEnds = dictionary.elements.compactMap { subDictionary -> Int? in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,

@@ -73,7 +73,7 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []
         }
@@ -100,7 +100,7 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [Int] {
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(enumElementsMissingInitExpr)
@@ -109,14 +109,14 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         return locs
     }
 
-    private func substructureElements(of dict: [String: SourceKitRepresentable],
-                                      matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
+    private func substructureElements(of dict: SourceKittenDictionary,
+                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
         return dict.substructure
             .filter { $0.kind.flatMap(SwiftDeclarationKind.init) == kind }
     }
 
     private func enumElementsMissingInitExpr(
-        _ enumElements: [[String: SourceKitRepresentable]]) -> [[String: SourceKitRepresentable]] {
+        _ enumElements: [SourceKittenDictionary]) -> [SourceKittenDictionary] {
         return enumElements
             .filter { !$0.elements.contains { $0.kind == "source.lang.swift.structure.elem.init_expr" } }
     }

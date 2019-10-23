@@ -32,7 +32,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structure.dictionary)
+        let collector = NamespaceCollector(dictionary: SourceKittenDictionary(value: file.structure.dictionary))
         let elements = collector.findAllElements(of: [.class, .struct, .enum, .extension])
 
         let susceptibleNames = Set(elements.compactMap { $0.kind == .class ? $0.name : nil })

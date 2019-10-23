@@ -96,7 +96,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
@@ -106,7 +106,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private func violatingOffsets(file: File,
                                   kind: SwiftExpressionKind,
-                                  dictionary: [String: SourceKitRepresentable]) -> [Int] {
+                                  dictionary: SourceKittenDictionary) -> [Int] {
         let ranges = callRanges(file: file, kind: kind, dictionary: dictionary)
 
         let calls = ranges.compactMap { range -> (dotLine: Int, dotOffset: Int, range: NSRange)? in
@@ -158,7 +158,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private func callRanges(file: File,
                             kind: SwiftExpressionKind,
-                            dictionary: [String: SourceKitRepresentable],
+                            dictionary: SourceKittenDictionary,
                             parentCallName: String? = nil) -> [NSRange] {
         guard
             kind == .call,
@@ -186,7 +186,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     }
 
     private func subcallRange(file: File,
-                              call: [String: SourceKitRepresentable],
+                              call: SourceKittenDictionary,
                               parentName: String,
                               parentNameOffset: Int) -> NSRange? {
         guard
@@ -210,9 +210,9 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     }
 }
 
-fileprivate extension Dictionary where Key: ExpressibleByStringLiteral {
-    var subcalls: [[String: SourceKitRepresentable]] {
-        return substructure.compactMap { dictionary -> [String: SourceKitRepresentable]? in
+fileprivate extension SourceKittenDictionary {
+    var subcalls: [SourceKittenDictionary] {
+        return substructure.compactMap { dictionary -> SourceKittenDictionary? in
             guard dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call else {
                 return nil
             }

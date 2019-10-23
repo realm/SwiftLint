@@ -30,7 +30,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
     }
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             let (violation, range) = $0
             return StyleViolation(
@@ -43,7 +43,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [(ExpressibleByCompiler, NSRange)] {
+                                 dictionary: SourceKittenDictionary) -> [(ExpressibleByCompiler, NSRange)] {
         guard kind == .call, let name = dictionary.name else {
             return []
         }

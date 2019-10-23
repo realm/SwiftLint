@@ -15,7 +15,8 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let testClasses = file.structure.dictionary.substructure.filter {
+        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
                 $0.kind.flatMap(SwiftDeclarationKind.init) == .class
         }
@@ -33,7 +34,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func validate(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 
@@ -48,7 +49,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
 
     private func validate(file: File,
                           kind: SwiftExpressionKind,
-                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // is it a call to a restricted method?
         guard
             kind == .call,
@@ -65,9 +66,9 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func violationOffsets(in substructure: [[String: SourceKitRepresentable]]) -> [Int] {
+    private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [Int] {
         return substructure.flatMap { dictionary -> [Int] in
-            let substructure = dictionary.substructure.flatMap { dict -> [[String: SourceKitRepresentable]] in
+            let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
                 if dict.kind.flatMap(SwiftExpressionKind.init) == .closure {
                     return dict.substructure
                 } else {
@@ -79,7 +80,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func toViolationOffsets(dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [Int] {
         guard
             let kind = dictionary.kind,
             let offset = dictionary.offset
@@ -95,7 +96,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         return dictionary.substructure.compactMap(toViolationOffset)
     }
 
-    private func toViolationOffset(dictionary: [String: SourceKitRepresentable]) -> Int? {
+    private func toViolationOffset(dictionary: SourceKittenDictionary) -> Int? {
         guard
             let name = dictionary.name,
             let offset = dictionary.offset,

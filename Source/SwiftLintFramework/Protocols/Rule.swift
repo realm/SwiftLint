@@ -95,16 +95,16 @@ public extension SubstitutionCorrectableRule {
 
 public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
     func violationRanges(in file: File, kind: KindType,
-                         dictionary: [String: SourceKitRepresentable]) -> [NSRange]
+                         dictionary: SourceKittenDictionary) -> [NSRange]
 }
 
 extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
     public func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary)
+        return violationRanges(in: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
     }
 
     private func violationRanges(in file: File,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
 

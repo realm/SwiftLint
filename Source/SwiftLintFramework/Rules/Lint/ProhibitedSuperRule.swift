@@ -73,7 +73,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.bodyOffset,
             let name = dictionary.name,
             kind == .functionMethodInstance,

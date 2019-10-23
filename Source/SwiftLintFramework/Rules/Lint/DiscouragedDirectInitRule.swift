@@ -34,7 +34,7 @@ public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
             let offset = dictionary.nameOffset,

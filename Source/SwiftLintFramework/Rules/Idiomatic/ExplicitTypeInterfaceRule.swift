@@ -68,11 +68,11 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structure.dictionary, parentStructure: nil)
+        return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary), parentStructure: nil)
     }
 
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable],
-                          parentStructure: [String: SourceKitRepresentable]?) -> [StyleViolation] {
+    private func validate(file: File, dictionary: SourceKittenDictionary,
+                          parentStructure: SourceKittenDictionary?) -> [StyleViolation] {
         return dictionary.substructure.flatMap({ subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict, parentStructure: dictionary)
 
@@ -87,8 +87,8 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
 
     private func validate(file: File,
                           kind: SwiftDeclarationKind,
-                          dictionary: [String: SourceKitRepresentable],
-                          parentStructure: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                          dictionary: SourceKittenDictionary,
+                          parentStructure: SourceKittenDictionary) -> [StyleViolation] {
         guard configuration.allowedKinds.contains(kind),
             let offset = dictionary.offset,
             !dictionary.containsType,
@@ -110,7 +110,8 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     }
 }
 
-private extension Dictionary where Key == String, Value == SourceKitRepresentable {
+private extension SourceKittenDictionary {
+    
     var containsType: Bool {
         return typeName != nil
     }

@@ -88,7 +88,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
     private static let commentKinds = SyntaxKind.commentAndStringKinds
 
     public func validate(file: File, kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .forEach,
             let subDictionary = forBody(dictionary: dictionary),
             subDictionary.substructure.count == 1,
@@ -108,13 +108,13 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
         ]
     }
 
-    private func forBody(dictionary: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? {
+    private func forBody(dictionary: SourceKittenDictionary) -> SourceKittenDictionary? {
         return dictionary.substructure.first(where: { subDict -> Bool in
             subDict.kind.flatMap(StatementKind.init) == .brace
         })
     }
 
-    private func isOnlyOneIf(dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isOnlyOneIf(dictionary: SourceKittenDictionary) -> Bool {
         let substructure = dictionary.substructure
         guard substructure.count == 1 else {
             return false
@@ -123,8 +123,8 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
         return dictionary.substructure.first?.kind.flatMap(StatementKind.init) == .brace
     }
 
-    private func isOnlyIfInsideFor(forDictionary: [String: SourceKitRepresentable],
-                                   ifDictionary: [String: SourceKitRepresentable],
+    private func isOnlyIfInsideFor(forDictionary: SourceKittenDictionary,
+                                   ifDictionary: SourceKittenDictionary,
                                    file: File) -> Bool {
         guard let offset = forDictionary.offset,
             let length = forDictionary.length,
@@ -146,7 +146,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
         return doesntContainComments
     }
 
-    private func isComplexCondition(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isComplexCondition(dictionary: SourceKittenDictionary, file: File) -> Bool {
         let kind = "source.lang.swift.structure.elem.condition_expr"
         let contents = file.contents.bridge()
         return dictionary.elements.contains { element in

@@ -5530,7 +5530,7 @@ myArray.isEmpty
 ```
 
 ```swift
-!myArray.isEmpy
+!myArray.isEmpty
 ```
 
 ```swift
@@ -5960,7 +5960,7 @@ myString.isEmpty
 ```
 
 ```swift
-!myString.isEmpy
+!myString.isEmpty
 ```
 
 </details>

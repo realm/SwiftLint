@@ -56,6 +56,9 @@
   Xcode 11 or later.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix typos in the examples for `empty_string` and `empty_collection_literal`.
+  [Simon Bilsky-Rollins](https://github.com/simonbilskyrollins)
+
 ## 0.35.0: Secondary Lint Trap
 
 This is the last release to support building with Swift 4.2.x.

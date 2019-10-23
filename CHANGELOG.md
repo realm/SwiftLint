@@ -34,6 +34,9 @@
 * Make `toggle_bool` rule substitution correctable.  
   [MaxHaertwig](https://github.com/maxhaertwig)
 
+* Optimize the performance of `redundant_void_return` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Support building with Swift 5.1 on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)

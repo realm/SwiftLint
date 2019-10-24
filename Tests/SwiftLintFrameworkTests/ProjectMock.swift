@@ -85,7 +85,7 @@ extension ProjectMock {
     }
 
     var projectMockConfig2: Configuration {
-        return Configuration(childConfigQueue: [projectMockYAML2], optional: false, quiet: true)
+        return Configuration(configurationFiles: [projectMockYAML2], optional: false, quiet: true)
     }
 
     var projectMockConfig2CustomRules: Configuration {

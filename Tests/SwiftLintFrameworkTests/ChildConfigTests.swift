@@ -24,8 +24,8 @@ class ChildConfigTests: XCTestCase, ProjectMock {
             )
 
             XCTAssertEqual(
-                config.rulesStorage.disabledRuleIdentifiers,
-                expectedConfig.rulesStorage.disabledRuleIdentifiers
+                config.rulesWrapper.disabledRuleIdentifiers,
+                expectedConfig.rulesWrapper.disabledRuleIdentifiers
             )
             XCTAssertEqual(
                 config.rules.map { type(of: $0).description.identifier },
@@ -33,8 +33,8 @@ class ChildConfigTests: XCTestCase, ProjectMock {
             )
 
             XCTAssertEqual(
-                Set(config.rulesStorage.allRulesWithConfigurations.map { $0.configurationDescription }),
-                Set(expectedConfig.rulesStorage.allRulesWithConfigurations.map { $0.configurationDescription })
+                Set(config.rulesWrapper.allRulesWithConfigurations.map { $0.configurationDescription }),
+                Set(expectedConfig.rulesWrapper.allRulesWithConfigurations.map { $0.configurationDescription })
             )
             XCTAssertEqual(
                 Set(config.includedPaths),

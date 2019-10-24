@@ -6,7 +6,7 @@ extension Configuration {
         return lintablePaths(inPath: path, forceExclude: forceExclude).compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
-    private func lintablePaths(
+    internal func lintablePaths(
         inPath path: String,
         forceExclude: Bool,
         fileManager: LintableFileManager = FileManager.default

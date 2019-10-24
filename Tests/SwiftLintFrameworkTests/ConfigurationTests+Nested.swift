@@ -40,16 +40,17 @@ extension ConfigurationTests {
                        projectMockConfig0.merged(with: projectMockConfig3))
     }
 
-    func testNestedConfigurationWithCustomRootPath() {
-        XCTAssertNotEqual(projectMockConfig0.rootPath, projectMockConfig3.rootPath)
-        XCTAssertEqual(projectMockConfig0.merged(with: projectMockConfig3).rootPath, projectMockConfig3.rootPath)
+    func testMergedConfigurationNilRootPath() {
+        XCTAssertNil(projectMockConfig0.merged(with: projectMockConfig3).rootDirectory)
     }
 
     func testMergedWarningThreshold() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
-            return Configuration(warningThreshold: warningThreshold,
-                                 reporter: XcodeReporter.identifier,
-                                 ruleList: masterRuleList)
+            return Configuration(
+                ruleList: masterRuleList,
+                warningThreshold: warningThreshold,
+                reporter: XcodeReporter.identifier
+            )
         }
         XCTAssertEqual(configuration(forWarningThreshold: 3)
             .merged(with: configuration(forWarningThreshold: 2)).warningThreshold,

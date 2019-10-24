@@ -11,7 +11,7 @@ extension Configuration {
 
         return Configuration(
             rulesWrapper: rulesWrapper.merged(with: childConfiguration.rulesWrapper),
-            fileGraph: nil,
+            fileGraph: nil, // The merge result doesn't have a file "background" anymore
             includedPaths: mergedIncludedAndExcluded.included,
             excludedPaths: mergedIncludedAndExcluded.excluded,
             indentation: childConfiguration.indentation,

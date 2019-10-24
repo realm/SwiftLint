@@ -1,4 +1,4 @@
-public enum ConfigurationError: Error {
+public enum ConfigurationError: Error, Equatable {
     case unknownConfiguration
     case generic(String)
 }

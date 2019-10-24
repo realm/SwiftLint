@@ -128,8 +128,10 @@ extension Configuration {
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedUsages {
-            queuedPrintError("warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
-                "completely removed in a future release.")
+            queuedPrintError(
+                "warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be "
+                    + "completely removed in a future release."
+            )
         }
     }
 

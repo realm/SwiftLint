@@ -68,13 +68,13 @@ extension Configuration {
             rulesMode: rulesMode,
             ruleList: ruleList,
             allRulesWithConfigurations: allRulesWithConfigurations,
-            pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
-            included: defaultStringArray(dict[Key.included.rawValue]),
-            excluded: defaultStringArray(dict[Key.excluded.rawValue]),
+            includedPaths: defaultStringArray(dict[Key.included.rawValue]),
+            excludedPaths: defaultStringArray(dict[Key.excluded.rawValue]),
+            indentation: Configuration.getIndentationLogIfInvalid(from: dict),
             warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-            indentation: Configuration.getIndentationLogIfInvalid(from: dict)
+            pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) }
         )
     }
 

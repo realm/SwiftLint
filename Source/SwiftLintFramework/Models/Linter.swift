@@ -123,7 +123,7 @@ public struct Linter {
         self.cache = cache
         self.configuration = configuration
         self.compilerArguments = compilerArguments
-        let rules = configuration.rules.resultingRules.filter { rule in
+        let rules = configuration.rules.filter { rule in
             if compilerArguments.isEmpty {
                 return !(rule is AnalyzerRule)
             } else {
@@ -268,7 +268,7 @@ public struct CollectedLinter {
         }
 
         let allCustomIdentifiers =
-            (configuration.rules.resultingRules.first { $0 is CustomRules } as? CustomRules)?
+            (configuration.rules.first { $0 is CustomRules } as? CustomRules)?
             .configuration.customRuleConfigurations.map { RuleIdentifier($0.identifier) } ?? []
         let allRuleIdentifiers = masterRuleList.allValidIdentifiers().map { RuleIdentifier($0) }
         let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers + [.all])

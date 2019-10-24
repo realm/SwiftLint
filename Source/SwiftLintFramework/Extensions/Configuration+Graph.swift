@@ -1,14 +1,14 @@
 import Foundation
 
-public extension Configuration {
-    struct Graph: Hashable {
+internal extension Configuration {
+    struct FileGraph: Hashable {
         // MARK: - Subtypes
         public enum FilePath: Hashable { // swiftlint:disable:this nesting
             case promised(urlString: String)
             case existing(path: String)
         }
 
-        public class Vertix: Hashable { // swiftlint:disable:this nesting
+        private class Vertix: Hashable { // swiftlint:disable:this nesting
             private(set) var filePath: FilePath
             private(set) var configurationString: String = ""
             private(set) var configurationDict: [String: Any] = [:]
@@ -23,15 +23,15 @@ public extension Configuration {
                 }
             }
 
-            public func build(
-                rootPath: String?,
+            internal func build(
+                rootDirectory: String,
                 remoteConfigLoadingTimeout: Double,
                 remoteConfigLoadingTimeoutIfCached: Double
             ) throws {
                 let path = try filePath.resolve(
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached,
-                    rootPath: rootPath
+                    rootDirectory: rootDirectory
                 )
                 configurationString = try read(at: path)
                 configurationDict = try YamlParser.parse(configurationString)
@@ -45,41 +45,43 @@ public extension Configuration {
                 return try String(contentsOfFile: path, encoding: .utf8)
             }
 
-            public static func == (lhs: Vertix, rhs: Vertix) -> Bool {
+            internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
                 return lhs.filePath == rhs.filePath
             }
 
-            public func hash(into hasher: inout Hasher) {
+            internal func hash(into hasher: inout Hasher) {
                 hasher.combine(filePath)
             }
         }
 
-        public struct Edge: Hashable { // swiftlint:disable:this nesting
+        private struct Edge: Hashable { // swiftlint:disable:this nesting
             var edgeType: EdgeType
             unowned var origin: Vertix!
             unowned var target: Vertix!
 
-            public static func == (lhs: Edge, rhs: Edge) -> Bool {
+            internal static func == (lhs: Edge, rhs: Edge) -> Bool {
                 return lhs.edgeType == rhs.edgeType &&
                     lhs.origin == rhs.origin &&
                     lhs.target == rhs.target
             }
 
-            public func hash(into hasher: inout Hasher) {
+            internal func hash(into hasher: inout Hasher) {
                 hasher.combine(edgeType)
                 hasher.combine(origin)
                 hasher.combine(target)
             }
         }
 
-        public enum EdgeType: Hashable { // swiftlint:disable:this nesting
+        private enum EdgeType: Hashable { // swiftlint:disable:this nesting
             case childConfig
             case parentConfig
             case commandLineChildConfig
         }
 
         // MARK: - Properties
-        public let rootPath: String?
+        internal let rootDirectory: String
+
+        private let ignoreParentAndChildConfigs: Bool
 
         private var vertices: Set<Vertix>
         private var edges: Set<Edge>
@@ -87,29 +89,34 @@ public extension Configuration {
         private var isBuilt: Bool = false
 
         // MARK: - Initializers
-        public init(commandLineChildConfigs: [String], rootPath: String?) {
+        internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
             vertices = Set(commandLineChildConfigs.map { Vertix(string: $0) })
             edges = Set(zip(vertices, vertices.dropFirst()).map {
                 Edge(edgeType: .commandLineChildConfig, origin: $0.0, target: $0.1)
             })
 
-            self.rootPath = rootPath
+            self.rootDirectory = rootDirectory
+            self.ignoreParentAndChildConfigs = ignoreParentAndChildConfigs
         }
 
-        public init(singleConfig: String, rootPath: String?) throws {
-            vertices = [Vertix(string: singleConfig)]
-            edges = []
-            self.rootPath = rootPath
+        internal init(config: String, rootDirectory: String, ignoreParentAndChildConfigs: Bool) throws {
+            self.init(
+                commandLineChildConfigs: [config],
+                rootDirectory: rootDirectory,
+                ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
+            )
         }
 
-        public init(rootPath: String?) {
-            self.rootPath = rootPath
-            vertices = []
-            edges = []
+        internal init(rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
+            self.init(
+                commandLineChildConfigs: [],
+                rootDirectory: rootDirectory,
+                ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
+            )
         }
 
         // MARK: - Methods
-        public mutating func resultingConfiguration(
+        internal mutating func resultingConfiguration(
             configurationFactory: (([String: Any]) throws -> Configuration),
             remoteConfigLoadingTimeout: Double,
             remoteConfigLoadingTimeoutIfCached: Double
@@ -129,7 +136,7 @@ public extension Configuration {
             )
         }
 
-        public func includesFile(atPath path: String) -> Bool? {
+        internal func includesFile(atPath path: String) -> Bool? {
             guard isBuilt else { return nil }
 
             return vertices.contains { vertix in
@@ -149,31 +156,33 @@ public extension Configuration {
         ) throws {
             func process(vertix: Vertix) throws {
                 try vertix.build(
-                    rootPath: rootPath,
+                    rootDirectory: rootDirectory,
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
                 )
 
-                if
-                    let childConfigReference =
-                        vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String
-                {
-                    let childVertix = Vertix(string: childConfigReference)
-                    vertices.insert(childVertix)
-                    let childEdge = Edge(edgeType: .childConfig, origin: vertix, target: childVertix)
-                    edges.insert(childEdge)
-                    try process(vertix: childVertix)
-                }
+                if !ignoreParentAndChildConfigs {
+                    if
+                        let childConfigReference =
+                            vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String
+                    {
+                        let childVertix = Vertix(string: childConfigReference)
+                        vertices.insert(childVertix)
+                        let childEdge = Edge(edgeType: .childConfig, origin: vertix, target: childVertix)
+                        edges.insert(childEdge)
+                        try process(vertix: childVertix)
+                    }
 
-                if
-                    let parentConfigReference =
-                        vertix.configurationDict[Configuration.Key.parentConfig.rawValue] as? String
-                {
-                    let parentVertix = Vertix(string: parentConfigReference)
-                    vertices.insert(parentVertix)
-                    let parentEdge = Edge(edgeType: .parentConfig, origin: parentVertix, target: vertix)
-                    edges.insert(parentEdge)
-                    try process(vertix: parentVertix)
+                    if
+                        let parentConfigReference =
+                            vertix.configurationDict[Configuration.Key.parentConfig.rawValue] as? String
+                    {
+                        let parentVertix = Vertix(string: parentConfigReference)
+                        vertices.insert(parentVertix)
+                        let parentEdge = Edge(edgeType: .parentConfig, origin: parentVertix, target: vertix)
+                        edges.insert(parentEdge)
+                        try process(vertix: parentVertix)
+                    }
                 }
             }
 

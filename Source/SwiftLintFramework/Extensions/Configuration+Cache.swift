@@ -49,11 +49,11 @@ extension Configuration {
             return computedCacheDescription
         }
 
-        let cacheRulesDescriptions = rules.resultingRules
+        let cacheRulesDescriptions = rules
             .map { rule in [type(of: rule).description.identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [
-            graph.rootPath ?? FileManager.default.currentDirectoryPath,
+            rootDirectory ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath,
             cacheRulesDescriptions
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),

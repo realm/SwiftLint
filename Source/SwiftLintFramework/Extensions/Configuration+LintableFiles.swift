@@ -14,9 +14,9 @@ extension Configuration {
         // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
         if path.isFile && !forceExclude { return [path] }
 
-        let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let includedPaths = included.parallelFlatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: graph.rootPath)
+        let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
+        let includedPaths = self.includedPaths.parallelFlatMap {
+            fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory)
         }
 
         return filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
@@ -42,8 +42,8 @@ extension Configuration {
     }
 
     private func excludedPaths(fileManager: LintableFileManager) -> [String] {
-        return excluded
+        return excludedPaths
             .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: graph.rootPath) }
+            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
     }
 }

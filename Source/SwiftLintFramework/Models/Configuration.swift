@@ -7,57 +7,76 @@ import SourceKittenFramework
 // TODO: Tests
 // TODO: Docs
 public struct Configuration {
-    // MARK: - Properties
+    // MARK: - Properties: Static
     public static let `default` = Configuration()
     public static let fileName = ".swiftlint.yml"
 
-    public let indentation: IndentationStyle           // style to use when indenting
-    public let included: [String]                      // included
-    public let excluded: [String]                      // excluded
-    public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
-    public let warningThreshold: Int?                  // warning threshold
-    public let cachePath: String?
+    // MARK: Public Instance
+    /// The rules to be linted
+    public var rules: [Rule] {
+        return rulesWrapper.resultingRules
+    }
 
-    public var graph: Graph
+    /// The root directory of the files used for this Configuration, if some
+    public var rootDirectory: String? {
+        return fileGraph?.rootDirectory
+    }
 
+    /// The paths that should be included when linting
+    public let includedPaths: [String]
+
+    /// The paths that should be excluded when linting
+    public let excludedPaths: [String]
+
+    /// Style to use when indenting
+    public let indentation: IndentationStyle
+
+    /// The warning treshold, if some
+    public let warningThreshold: Int?
+
+    /// The reporter (xcode, json, csv, checkstyle)
+    public let reporter: String
+
+    /// The cache path, if some
+    public let cachePath: String? // TODO: Is this needed ?!
+
+    // MARK: Internal Instance
     internal var computedCacheDescription: String?
-    internal var configurationPath: String?            // if successfully loaded from a path
+    internal var fileGraph: FileGraph?
+    internal var rulesWrapper: RulesWrapper
 
-    // MARK: Rules Properties
-    public var rules: Rules
-
-    // MARK: - Initializers
-    /// Initialize with all properties.
+    // MARK: - Initializers: Internal
+    /// Initialize with all properties
     internal init(
-        rules: Rules,
-        included: [String],
-        excluded: [String],
+        rulesWrapper: RulesWrapper,
+        fileGraph: FileGraph?,
+        includedPaths: [String],
+        excludedPaths: [String],
+        indentation: IndentationStyle,
         warningThreshold: Int?,
         reporter: String,
-        cachePath: String?,
-        graph: Graph,
-        indentation: IndentationStyle
+        cachePath: String?
     ) {
-        self.rules = rules
-        self.included = included
-        self.excluded = excluded
+        self.rulesWrapper = rulesWrapper
+        self.fileGraph = fileGraph
+        self.includedPaths = includedPaths
+        self.excludedPaths = excludedPaths
+        self.indentation = indentation
         self.warningThreshold = warningThreshold
         self.reporter = reporter
         self.cachePath = cachePath
-        self.graph = graph
-        self.indentation = indentation
     }
 
     /// Initialize by copying a given configuration
-    private init(copying configuration: Configuration) {
-        rules = configuration.rules
-        included = configuration.included
-        excluded = configuration.excluded
+    internal init(copying configuration: Configuration) {
+        rulesWrapper = configuration.rulesWrapper
+        fileGraph = configuration.fileGraph
+        includedPaths = configuration.includedPaths
+        excludedPaths = configuration.excludedPaths
+        indentation = configuration.indentation
         warningThreshold = configuration.warningThreshold
         reporter = configuration.reporter
         cachePath = configuration.cachePath
-        graph = configuration.graph
-        indentation = configuration.indentation
     }
 
     /// Initialize with all properties,
@@ -67,14 +86,14 @@ public struct Configuration {
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         ruleList: RuleList = masterRuleList,
         allRulesWithConfigurations: [Rule]? = nil,
-        pinnedVersion: String? = nil,
-        included: [String] = [],
-        excluded: [String] = [],
+        fileGraph: FileGraph? = nil,
+        includedPaths: [String] = [],
+        excludedPaths: [String] = [],
+        indentation: IndentationStyle = .default,
         warningThreshold: Int? = nil,
         reporter: String = XcodeReporter.identifier,
         cachePath: String? = nil,
-        graph: Graph = Graph(rootPath: nil),
-        indentation: IndentationStyle = .default
+        pinnedVersion: String? = nil
     ) {
         if let pinnedVersion = pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -85,45 +104,59 @@ public struct Configuration {
         }
 
         self.init(
-            rules: Rules(
+            rulesWrapper: RulesWrapper(
                 mode: rulesMode,
                 allRulesWithConfigurations: allRulesWithConfigurations ?? (try? ruleList.allRules()) ?? [],
                 aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
             ),
-            included: included,
-            excluded: excluded,
+            fileGraph: fileGraph,
+            includedPaths: includedPaths,
+            excludedPaths: excludedPaths,
+            indentation: indentation,
             warningThreshold: warningThreshold,
             reporter: reporter,
-            cachePath: cachePath,
-            graph: graph,
-            indentation: indentation
+            cachePath: cachePath
         )
     }
 
-    /// Initialize based on paths to configuration files
+    // MARK: Public
+    /// Initialize with configuration files
     public init(
-        childConfigQueue: [String] = [Configuration.fileName],
-        rootPath: String?, // Doesn't have a default value so that the Configuration() init isn't ambiguous
+        configurationFiles: [String],
+        rootPath: String? = nil,
         optional: Bool = true,
         quiet: Bool = false,
         enableAllRules: Bool = false,
-        cachePath: String? = nil
+        cachePath: String? = nil,
+        ignoreParentAndChildConfigs: Bool = false
     ) {
+        func rootDirectory(from rootPath: String?) -> String {
+            var isDirectory: ObjCBool = false
+            guard
+                let rootPath = rootPath,
+                FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectory)
+            else {
+                return FileManager.default.currentDirectoryPath.bridge().standardizingPath
+            }
+
+            return isDirectory.boolValue ? rootPath : rootPath.bridge().deletingLastPathComponent
+        }
+
+        let rootDir = rootDirectory(from: rootPath)
         let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
-        let cacheIdentifier = "\(childConfigQueue) - \(String(describing: rootPath))"
+        let cacheIdentifier = "\(rootDir) - \(configurationFiles)"
 
         if let cachedConfig = Configuration.getCached(forIdentifier: cacheIdentifier) {
             self.init(copying: cachedConfig)
         }
 
-        let fail = { (msg: String) -> Never in
-            queuedPrintError(msg)
-            queuedFatalError("Could not read configuration")
-        }
-
         do {
-            var graph = Graph(commandLineChildConfigs: childConfigQueue, rootPath: rootPath)
-            let resultingConfiguration = try graph.resultingConfiguration(
+            var fileGraph = FileGraph(
+                commandLineChildConfigs: configurationFiles,
+                rootDirectory: rootDir,
+                ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
+            )
+            let resultingConfiguration = try fileGraph.resultingConfiguration(
                 configurationFactory: {
                     try Configuration(dict: $0, enableAllRules: enableAllRules, cachePath: cachePath)
                 },
@@ -132,41 +165,52 @@ public struct Configuration {
             )
 
             self.init(copying: resultingConfiguration)
-            self.graph = graph
-        } catch let ConfigurationError.generic(message) {
-            guard optional else { fail("error: SwiftLint Configuration Error: \(message)") }
-            queuedPrintError("warning: SwiftLint Configuration Error: \(message)")
-            self.init(rulesMode: rulesMode, cachePath: cachePath, graph: Graph(rootPath: rootPath))
-        } catch let YamlParserError.yamlParsing(message) {
-            fail(message)
+            self.fileGraph = fileGraph
+            setCached(forIdentifier: cacheIdentifier)
         } catch {
-            guard optional else { fail("Unknown Error") }
-            self.init(rulesMode: rulesMode, cachePath: cachePath, graph: Graph(rootPath: rootPath))
-        }
+            let errorString: String
+            switch error {
+            case let ConfigurationError.generic(message):
+                errorString = "SwiftLint Configuration Error: \(message)"
 
-        setCached(forIdentifier: cacheIdentifier)
+            case let YamlParserError.yamlParsing(message):
+                errorString = "YML Parsing Error: \(message)"
+
+            default:
+                errorString = "Unknown Error"
+            }
+
+            guard optional else {
+                queuedPrintError("error: \(errorString)")
+                queuedFatalError("Could not read configuration")
+            }
+
+            // Fallback to default config (with custom rules mode)
+            queuedPrintError("warning: \(errorString) – Falling back to default Configuration")
+            self.init(rulesMode: rulesMode, cachePath: cachePath)
+        }
     }
 }
 
 // MARK: - Hashable
-extension Configuration: Hashable {
+extension Configuration: Hashable { // TODO
     public func hash(into hasher: inout Hasher) {
         hasher.combine(cachePath)
-        hasher.combine(included)
-        hasher.combine(excluded)
+        hasher.combine(includedPaths)
+        hasher.combine(excludedPaths)
         hasher.combine(reporter)
-        hasher.combine(graph)
+        hasher.combine(fileGraph)
     }
 
     public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
         return lhs.warningThreshold == rhs.warningThreshold &&
             lhs.reporter == rhs.reporter &&
             lhs.cachePath == rhs.cachePath &&
-            lhs.included == rhs.included &&
-            lhs.excluded == rhs.excluded &&
-            lhs.rules.resultingRules == rhs.rules.resultingRules &&
+            lhs.includedPaths == rhs.includedPaths &&
+            lhs.excludedPaths == rhs.excludedPaths &&
+            lhs.rules == rhs.rules &&
             lhs.indentation == rhs.indentation &&
-            lhs.graph == rhs.graph
+            lhs.fileGraph == rhs.fileGraph
     }
 }
 
@@ -175,13 +219,13 @@ extension Configuration: CustomStringConvertible {
     public var description: String {
         return "Configuration: \n"
             + "- Indentation Style: \(indentation)\n"
-            + "- Included: \(included)\n"
-            + "- Excluded: \(excluded)\n"
+            + "- Included: \(includedPaths)\n"
+            + "- Excluded: \(excludedPaths)\n"
             + "- Warning Treshold: \(warningThreshold as Optional)\n"
-            + "- Root Path: \(graph.rootPath as Optional)\n"
+            + "- Root Directory: \(rootDirectory as Optional)\n"
             + "- Reporter: \(reporter)\n"
             + "- Cache Path: \(cachePath as Optional)\n"
             + "- Computed Cache Description: \(computedCacheDescription as Optional)\n"
-            + "- Rules: \(rules.resultingRules.map { type(of: $0).description.identifier })"
+            + "- Rules: \(rules.map { type(of: $0).description.identifier })"
     }
 }

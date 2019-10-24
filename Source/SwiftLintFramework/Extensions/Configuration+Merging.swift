@@ -1,49 +1,55 @@
 import Foundation
 import SourceKittenFramework
 
+/// GENERAL NOTE ON MERGING: The child configuration is added on top of the parent configuration
+/// and is preferred if in doubt!
+
 extension Configuration {
-    // MARK: - Properties
-    private var rootDirectory: String? {
-        guard let rootPath = graph.rootPath else { return nil }
-
-        var isDirectory: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectory) else { return nil }
-        return isDirectory.boolValue ? rootPath : rootPath.bridge().deletingLastPathComponent
-    }
-
     // MARK: - Methods: Merging
-    internal func merged(with configuration: Configuration) -> Configuration {
-        let includedAndExcluded = mergedIncludedAndExcluded(with: configuration)
+    internal func merged(with childConfiguration: Configuration) -> Configuration {
+        let mergedIncludedAndExcluded = self.mergedIncludedAndExcluded(with: childConfiguration)
 
         return Configuration(
-            rules: rules.merged(with: configuration.rules),
-            included: includedAndExcluded.included,
-            excluded: includedAndExcluded.excluded,
-            // The minimum warning threshold if both exist, otherwise the nested,
-            // and if it doesn't exist try to use the parent one
-            warningThreshold: warningThreshold.map { warningThreshold in
-                return min(configuration.warningThreshold ?? .max, warningThreshold)
-            } ?? configuration.warningThreshold,
-            reporter: reporter, // Always use the parent reporter
-            cachePath: cachePath, // Always use the parent cache path
-            graph: configuration.graph,
-            indentation: configuration.indentation
+            rulesWrapper: rulesWrapper.merged(with: childConfiguration.rulesWrapper),
+            fileGraph: nil,
+            includedPaths: mergedIncludedAndExcluded.included,
+            excludedPaths: mergedIncludedAndExcluded.excluded,
+            indentation: childConfiguration.indentation,
+            warningThreshold: mergedWarningTreshold(with: childConfiguration),
+            reporter: reporter,
+            cachePath: cachePath
         )
     }
 
     private func mergedIncludedAndExcluded(
-        with configuration: Configuration
+        with childConfiguration: Configuration
     ) -> (included: [String], excluded: [String]) {
-        if rootDirectory != configuration.rootDirectory {
+        if rootDirectory != childConfiguration.rootDirectory {
             // Configurations aren't on same level => use child configuration
-            return (included: configuration.included, excluded: configuration.excluded)
+            return (included: childConfiguration.includedPaths, excluded: childConfiguration.excludedPaths)
         }
 
         // Prefer child configuration over parent configuration
         return (
-            included: included.filter { !configuration.excluded.contains($0) } + configuration.included,
-            excluded: excluded.filter { !configuration.included.contains($0) } + configuration.excluded
+            included: includedPaths.filter { !childConfiguration.excludedPaths.contains($0) }
+                + childConfiguration.includedPaths,
+            excluded: excludedPaths.filter { !childConfiguration.includedPaths.contains($0) }
+                + childConfiguration.excludedPaths
         )
+    }
+
+    private func mergedWarningTreshold(
+        with childConfiguration: Configuration
+    ) -> Int? {
+        if let parentWarningTreshold = warningThreshold {
+            if let childWarningTreshold = childConfiguration.warningThreshold {
+                return min(childWarningTreshold, parentWarningTreshold)
+            } else {
+                return parentWarningTreshold
+            }
+        } else {
+            return childConfiguration.warningThreshold
+        }
     }
 
     // MARK: Accessing File Configurations
@@ -57,31 +63,35 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
+        // Allow nested configuration processing even if config wasn't created via files (-> rootDir present)
+        let rootDirectory = self.rootDirectory ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
+
         // Include nested configurations, but ignore their parent_config / child_config specifications!
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
         let fullPath = pathNSString.absolutePathRepresentation()
-        let cacheIdentifier = "nestedPath" + (graph.rootPath ?? "") + configurationSearchPath
+        let cacheIdentifier = "nestedPath" + rootDirectory + configurationSearchPath
 
         if let cached = Configuration.getCached(forIdentifier: cacheIdentifier) {
             return cached
         } else {
-            if path == rootDirectory || configurationSearchPath == configurationPath {
+            if path == rootDirectory {
                 // Use self if at level self
                 return self
             } else if
-                FileManager.default.fileExists(atPath: configurationSearchPath),
-                graph.includesFile(atPath: configurationSearchPath) == false
+                FileManager.default.fileExists(atPath: configurationSearchPath)//,
+                // fileGraph.includesFile(atPath: configurationSearchPath) == false TODO
             {
                 // Use self merged with the nested config that was found
                 // iff that nested config has not already been used to build the main config
                 queuedPrintError("warning: \(configurationSearchPath) is included as nested.") // TODO: Remove
                 let config = merged(
                     with: Configuration(
-                        childConfigQueue: [configurationSearchPath],
+                        configurationFiles: [configurationSearchPath],
                         rootPath: fullPath,
                         optional: false,
-                        quiet: true
+                        quiet: true,
+                        ignoreParentAndChildConfigs: true
                     )
                 )
 

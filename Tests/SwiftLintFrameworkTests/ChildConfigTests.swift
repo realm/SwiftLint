@@ -10,14 +10,14 @@ class ChildConfigTests: XCTestCase, ProjectMock {
         for path in [projectMockPathChildConfigValid1, projectMockPathChildConfigValid2] {
             FileManager.default.changeCurrentDirectoryPath(path)
             let config = Configuration(
-                childConfigQueue: ["child_config_main.yml"],
+                configurationFiles: ["child_config_main.yml"],
                 rootPath: path,
                 optional: false,
                 quiet: true
             )
 
             let expectedConfig = Configuration(
-                childConfigQueue: ["child_config_expected.yml"],
+                configurationFiles: ["child_config_expected.yml"],
                 rootPath: path,
                 optional: false,
                 quiet: true
@@ -37,12 +37,12 @@ class ChildConfigTests: XCTestCase, ProjectMock {
                 Set(expectedConfig.rulesStorage.allRulesWithConfigurations.map { $0.configurationDescription })
             )
             XCTAssertEqual(
-                Set(config.included),
-                Set(expectedConfig.included)
+                Set(config.includedPaths),
+                Set(expectedConfig.includedPaths)
             )
             XCTAssertEqual(
-                Set(config.excluded),
-                Set(expectedConfig.excluded)
+                Set(config.excludedPaths),
+                Set(expectedConfig.excludedPaths)
             )
         }
 

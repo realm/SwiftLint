@@ -56,7 +56,7 @@ struct RulesCommand: CommandProtocol {
         }
 
         let filtered: [Rule.Type] = masterRuleList.list.compactMap { ruleID, ruleType in
-            let configuredRule = configuration.rules.resultingRules.first { rule in
+            let configuredRule = configuration.rules.first { rule in
                 return type(of: rule).description.identifier == ruleID
             }
 
@@ -147,7 +147,7 @@ extension TextTable {
         }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
-            let configuredRule = configuration.rules.resultingRules.first { rule in
+            let configuredRule = configuration.rules.first { rule in
                 guard type(of: rule).description.identifier == ruleID else {
                     return false
                 }

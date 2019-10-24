@@ -70,17 +70,17 @@ extension ProjectMock {
     }
 
     var projectMockConfig0: Configuration {
-        return Configuration(childConfigQueue: [projectMockYAML0], rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML0], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig0CustomPath: Configuration {
-        return Configuration(childConfigQueue: [projectMockYAML0CustomPath], rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML0CustomPath], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig0CustomRules: Configuration {
-        return Configuration(childConfigQueue: [projectMockYAML0CustomRules], rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML0CustomRules], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
@@ -89,17 +89,17 @@ extension ProjectMock {
     }
 
     var projectMockConfig2CustomRules: Configuration {
-        return Configuration(childConfigQueue: [projectMockYAML2CustomRules], rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML2CustomRules], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig2CustomRulesDisabled: Configuration {
-        return Configuration(childConfigQueue: [projectMockYAML2CustomRulesDisabled], rootPath: projectMockPathLevel0,
+        return Configuration(configurationFiles: [projectMockYAML2CustomRulesDisabled], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
     }
 
     var projectMockConfig3: Configuration {
-        return Configuration(childConfigQueue: [Configuration.fileName], rootPath: projectMockPathLevel3,
+        return Configuration(configurationFiles: [Configuration.fileName], rootPath: projectMockPathLevel3,
                              optional: false, quiet: true)
     }
 }

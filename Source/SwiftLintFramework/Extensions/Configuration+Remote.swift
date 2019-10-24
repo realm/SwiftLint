@@ -1,46 +1,37 @@
 import Foundation // swiftlint:disable:this file_name
 
-public extension Configuration.Graph.FilePath {
+public extension Configuration.FileGraph.FilePath {
     // MARK: Resolving
     mutating func resolve(
         remoteConfigLoadingTimeout: Double,
         remoteConfigLoadingTimeoutIfCached: Double,
-        rootPath: String?
+        rootDirectory: String
     ) throws -> String {
         switch self {
         case let .existing(path):
-            return resolve(existingPath: path, rootPath: rootPath)
+            return resolve(existingPath: path, rootDirectory: rootDirectory)
 
         case let .promised(urlString):
             return try resolve(
                 urlString: urlString,
-                rootPath: rootPath,
+                rootDirectory: rootDirectory,
                 remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                 remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
             )
         }
     }
 
-    private func resolve(existingPath path: String, rootPath: String?) -> String {
-        var isDir: ObjCBool = false
-        if
-            let rootPath = rootPath,
-            FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDir) && isDir.boolValue
-        {
-            // rootPath is directory
-            return path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
-        } else {
-            return path.bridge().absolutePathRepresentation()
-        }
+    private func resolve(existingPath path: String, rootDirectory: String) -> String {
+        return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
     }
 
     private mutating func resolve(
         urlString: String,
-        rootPath: String?,
+        rootDirectory: String,
         remoteConfigLoadingTimeout: Double,
         remoteConfigLoadingTimeoutIfCached: Double
     ) throws -> String {
-        let cachedFilePath = getCachedFilePath(urlString: urlString, rootPath: rootPath)
+        let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: rootDirectory)
 
         // Handle missing network
         guard Reachability.isConnectedToNetwork() else {
@@ -82,7 +73,7 @@ public extension Configuration.Graph.FilePath {
         }
 
         // Handle file write failure
-        guard let filePath = cache(configString: configString, from: urlString, rootPath: rootPath) else {
+        guard let filePath = cache(configString: configString, from: urlString, rootDirectory: rootDirectory) else {
             return try handleFileWriteFailure(urlString: urlString, cachedFilePath: cachedFilePath)
         }
 
@@ -147,12 +138,12 @@ public extension Configuration.Graph.FilePath {
     }
 
     // MARK: Caching
-    private func getCachedFilePath(urlString: String, rootPath: String?) -> String? {
-        let path = filePath(for: urlString, rootPath: rootPath)
+    private func getCachedFilePath(urlString: String, rootDirectory: String) -> String? {
+        let path = filePath(for: urlString, rootDirectory: rootDirectory)
         return FileManager.default.fileExists(atPath: path) ? path: nil
     }
 
-    private func cache(configString: String, from urlString: String, rootPath: String?) -> String? {
+    private func cache(configString: String, from urlString: String, rootDirectory: String) -> String? {
         // Add comment line at the top of the config string
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy 'at' HH:mm:ss"
@@ -161,7 +152,7 @@ public extension Configuration.Graph.FilePath {
             + configString
 
         // Get path
-        let path = filePath(for: urlString, rootPath: rootPath)
+        let path = filePath(for: urlString, rootDirectory: rootDirectory)
 
         // Create directory if needed
         let directory = path.components(separatedBy: "/").dropLast().joined(separator: "/")
@@ -181,7 +172,7 @@ public extension Configuration.Graph.FilePath {
         ) ? path: nil
     }
 
-    private func filePath(for urlString: String, rootPath: String?) -> String {
+    private func filePath(for urlString: String, rootDirectory: String) -> String {
         let adjustUrlString = urlString
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: ":", with: "-")
@@ -191,14 +182,7 @@ public extension Configuration.Graph.FilePath {
         // update the version in the string and delete caches from the previous versions
         let versionNum = "v1"
         let path = "/.swiftlint/RemoteConfigCache/swiftlint_cache_\(versionNum)_\(adjustUrlString).yml"
-        var isDir: ObjCBool = false
-        if
-            let rootPath = rootPath,
-            FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDir) && isDir.boolValue
-        {
-            return rootPath + path
-        } else {
-            return FileManager.default.currentDirectoryPath + path
-        }
+
+        return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Configuration {
-    class Rules {
+    class RulesWrapper {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
 
@@ -114,7 +114,7 @@ public extension Configuration {
         }
 
         // MARK: Merging
-        internal func merged(with child: Rules) -> Rules {
+        internal func merged(with child: RulesWrapper) -> RulesWrapper {
             // Merge allRulesWithConfigurations
             let newAllRulesWithConfigurations = mergedAllRulesWithConfigurations(with: child)
 
@@ -142,7 +142,7 @@ public extension Configuration {
             }
 
             // Assemble & return merged Rules
-            return Rules(
+            return RulesWrapper(
                 mode: newMode,
                 allRulesWithConfigurations: merged(
                     customRules:
@@ -154,7 +154,7 @@ public extension Configuration {
             )
         }
 
-        private func mergedAllRulesWithConfigurations(with sub: Rules) -> [Rule] {
+        private func mergedAllRulesWithConfigurations(with sub: RulesWrapper) -> [Rule] {
             let mainConfigSet = Set(allRulesWithConfigurations.map(HashableRuleWrapper.init))
             let childConfigSet = Set(sub.allRulesWithConfigurations.map(HashableRuleWrapper.init))
             let childConfigRulesWithConfig = childConfigSet.filter { $0.rule.initializedWithNonEmptyConfiguration }
@@ -165,7 +165,7 @@ public extension Configuration {
                 .map { $0.rule }
         }
 
-        private func merged(customRules rules: [Rule], mode: RulesMode, with child: Rules) -> [Rule] {
+        private func merged(customRules rules: [Rule], mode: RulesMode, with child: RulesWrapper) -> [Rule] {
             guard
                 let customRulesRule = (allRulesWithConfigurations.first {
                     $0 is CustomRules
@@ -203,7 +203,7 @@ public extension Configuration {
 
         private func mergeDefaultMode(
             newAllRulesWithConfigurations: [Rule],
-            child: Rules,
+            child: RulesWrapper,
             childDisabled: Set<String>,
             childOptIn: Set<String>
         ) -> RulesMode {
@@ -257,13 +257,13 @@ public extension Configuration {
 
         // MARK: Helpers
         private func isOptInRule(_ identifier: String, allRulesWithConfigurations: [Rule]) -> Bool? {
-            if let cachedIsOptInRule = Rules.isOptInRuleCache[identifier] {
+            if let cachedIsOptInRule = RulesWrapper.isOptInRuleCache[identifier] {
                 return cachedIsOptInRule
             }
 
             let isOptInRule = allRulesWithConfigurations
                 .first { type(of: $0).description.identifier == identifier } is OptInRule
-            Rules.isOptInRuleCache[identifier] = isOptInRule
+            RulesWrapper.isOptInRuleCache[identifier] = isOptInRule
             return isOptInRule
         }
     }

@@ -227,7 +227,7 @@ Here's a reference of which SwiftLint version to use for a given Swift version.
 | Swift 3.x       | SwiftLint 0.25.1                 |
 | Swift 4.0-4.1.x | SwiftLint 0.28.2                 |
 | Swift 4.2.x     | SwiftLint 0.35.0                 |
-| Swift 5.0       | Latest                           |
+| Swift 5.x       | Latest                           |
 
 ## Rules
 

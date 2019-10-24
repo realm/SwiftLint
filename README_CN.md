@@ -172,7 +172,7 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 | Swift 3.x       | SwiftLint 0.25.1            |
 | Swift 4.0-4.1.x | SwiftLint 0.28.2            |
 | Swift 4.2.x     | SwiftLint 0.35.0            |
-| Swift 5.0       | 最新的                      |
+| Swift 5.x       | 最新的                      |
 
 ## 规则
 

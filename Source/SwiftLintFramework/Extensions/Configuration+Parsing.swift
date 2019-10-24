@@ -52,7 +52,7 @@ extension Configuration {
             )
         }
 
-        let rulesMode = try RulesStorage.Mode(
+        let rulesMode = try RulesMode(
             enableAllRules: enableAllRules,
             whitelistRules: whitelistRules,
             optInRules: optInRules,
@@ -144,7 +144,7 @@ extension Configuration {
     private static func validateConfiguredRulesAreEnabled(
         configurationDictionary dict: [String: Any],
         ruleList: RuleList,
-        rulesMode: RulesStorage.Mode
+        rulesMode: RulesMode
     ) {
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),

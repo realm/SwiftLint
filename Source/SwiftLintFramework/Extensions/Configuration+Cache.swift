@@ -49,7 +49,7 @@ extension Configuration {
             return computedCacheDescription
         }
 
-        let cacheRulesDescriptions = rules
+        let cacheRulesDescriptions = rules.resultingRules
             .map { rule in [type(of: rule).description.identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [

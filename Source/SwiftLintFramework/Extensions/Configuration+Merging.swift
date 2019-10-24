@@ -16,7 +16,7 @@ extension Configuration {
         let includedAndExcluded = mergedIncludedAndExcluded(with: configuration)
 
         return Configuration(
-            rulesStorage: rulesStorage.merged(with: configuration.rulesStorage),
+            rules: rules.merged(with: configuration.rules),
             included: includedAndExcluded.included,
             excluded: includedAndExcluded.excluded,
             // The minimum warning threshold if both exist, otherwise the nested,
@@ -69,8 +69,13 @@ extension Configuration {
             if path == rootDirectory || configurationSearchPath == configurationPath {
                 // Use self if at level self
                 return self
-            } else if FileManager.default.fileExists(atPath: configurationSearchPath) {
-                // Use self merged with the config that was found
+            } else if
+                FileManager.default.fileExists(atPath: configurationSearchPath),
+                graph.includesFile(atPath: configurationSearchPath) == false
+            {
+                // Use self merged with the nested config that was found
+                // iff that nested config has not already been used to build the main config
+                queuedPrintError("warning: \(configurationSearchPath) is included as nested.") // TODO: Remove
                 let config = merged(
                     with: Configuration(
                         childConfigQueue: [configurationSearchPath],

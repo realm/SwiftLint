@@ -1,6 +1,11 @@
 import Foundation
 import SourceKittenFramework
 
+// TODO: What happens if child/parent_config is specified multiple times in a single file?
+// TODO: Don't include child/parent_config again as nested config
+// TODO: Remote Config Cache Versioning
+// TODO: Tests
+// TODO: Docs
 public struct Configuration {
     // MARK: - Properties
     public static let `default` = Configuration()
@@ -19,15 +24,12 @@ public struct Configuration {
     internal var configurationPath: String?            // if successfully loaded from a path
 
     // MARK: Rules Properties
-    public var rulesStorage: RulesStorage
-
-    /// Shortcut for rulesStorage.resultingRules
-    public var rules: [Rule] { return rulesStorage.resultingRules }
+    public var rules: Rules
 
     // MARK: - Initializers
     /// Initialize with all properties.
     internal init(
-        rulesStorage: RulesStorage,
+        rules: Rules,
         included: [String],
         excluded: [String],
         warningThreshold: Int?,
@@ -36,7 +38,7 @@ public struct Configuration {
         graph: Graph,
         indentation: IndentationStyle
     ) {
-        self.rulesStorage = rulesStorage
+        self.rules = rules
         self.included = included
         self.excluded = excluded
         self.warningThreshold = warningThreshold
@@ -48,7 +50,7 @@ public struct Configuration {
 
     /// Initialize by copying a given configuration
     private init(copying configuration: Configuration) {
-        rulesStorage = configuration.rulesStorage
+        rules = configuration.rules
         included = configuration.included
         excluded = configuration.excluded
         warningThreshold = configuration.warningThreshold
@@ -59,10 +61,10 @@ public struct Configuration {
     }
 
     /// Initialize with all properties,
-    /// except that rulesStorage is still to be synthesized from rulesMode, ruleList & allRulesWithConfigurations
+    /// except that rules are still to be synthesized from rulesMode, ruleList & allRulesWithConfigurations
     /// and a check against the pinnedVersion is performed if given.
     internal init(
-        rulesMode: RulesStorage.Mode = .default(disabled: [], optIn: []),
+        rulesMode: RulesMode = .default(disabled: [], optIn: []),
         ruleList: RuleList = masterRuleList,
         allRulesWithConfigurations: [Rule]? = nil,
         pinnedVersion: String? = nil,
@@ -75,19 +77,19 @@ public struct Configuration {
         indentation: IndentationStyle = .default
     ) {
         if let pinnedVersion = pinnedVersion, pinnedVersion != Version.current.value {
-            queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
-                "configuration specified version \(pinnedVersion).")
+            queuedPrintError(
+                "Currently running SwiftLint \(Version.current.value) but " +
+                "configuration specified version \(pinnedVersion)."
+            )
             exit(2)
         }
 
-        let rulesStorage = RulesStorage(
-            mode: rulesMode,
-            allRulesWithConfigurations: allRulesWithConfigurations ?? (try? ruleList.allRules()) ?? [],
-            aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
-        )
-
         self.init(
-            rulesStorage: rulesStorage,
+            rules: Rules(
+                mode: rulesMode,
+                allRulesWithConfigurations: allRulesWithConfigurations ?? (try? ruleList.allRules()) ?? [],
+                aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
+            ),
             included: included,
             excluded: excluded,
             warningThreshold: warningThreshold,
@@ -107,7 +109,7 @@ public struct Configuration {
         enableAllRules: Bool = false,
         cachePath: String? = nil
     ) {
-        let rulesMode: RulesStorage.Mode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
+        let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
         let cacheIdentifier = "\(childConfigQueue) - \(String(describing: rootPath))"
 
         if let cachedConfig = Configuration.getCached(forIdentifier: cacheIdentifier) {
@@ -162,7 +164,7 @@ extension Configuration: Hashable {
             lhs.cachePath == rhs.cachePath &&
             lhs.included == rhs.included &&
             lhs.excluded == rhs.excluded &&
-            lhs.rules == rhs.rules &&
+            lhs.rules.resultingRules == rhs.rules.resultingRules &&
             lhs.indentation == rhs.indentation &&
             lhs.graph == rhs.graph
     }
@@ -180,6 +182,6 @@ extension Configuration: CustomStringConvertible {
             + "- Reporter: \(reporter)\n"
             + "- Cache Path: \(cachePath as Optional)\n"
             + "- Computed Cache Description: \(computedCacheDescription as Optional)\n"
-            + "- Rules: \(rules.map { type(of: $0).description.identifier })"
+            + "- Rules: \(rules.resultingRules.map { type(of: $0).description.identifier })"
     }
 }

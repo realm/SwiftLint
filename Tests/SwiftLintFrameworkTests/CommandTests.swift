@@ -364,7 +364,7 @@ class CommandTests: XCTestCase {
     }
 
     func testSuperfluousDisableCommandsDisabledOnConfiguration() {
-        let rulesMode = RulesStorage.Mode.default(disabled: ["superfluous_disable_command"], optIn: [])
+        let rulesMode = Rules.Mode.default(disabled: ["superfluous_disable_command"], optIn: [])
         let configuration = Configuration(rulesMode: rulesMode)
 
         XCTAssertEqual(

@@ -79,9 +79,11 @@ public extension Configuration {
         }
 
         // MARK: - Properties
-        private(set) var vertices: Set<Vertix>
-        private(set) var edges: Set<Edge>
         public let rootPath: String?
+
+        private var vertices: Set<Vertix>
+        private var edges: Set<Edge>
+
         private var isBuilt: Bool = false
 
         // MARK: - Initializers
@@ -112,6 +114,7 @@ public extension Configuration {
             remoteConfigLoadingTimeout: Double,
             remoteConfigLoadingTimeoutIfCached: Double
         ) throws -> Configuration {
+            // Build if needed
             if !isBuilt {
                 try build(
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
@@ -124,6 +127,19 @@ public extension Configuration {
                 configurationDicts: try validate(),
                 configurationFactory: configurationFactory
             )
+        }
+
+        public func includesFile(atPath path: String) -> Bool? {
+            guard isBuilt else { return nil }
+
+            return vertices.contains { vertix in
+                if case let .existing(filePath) = vertix.filePath {
+                    queuedPrintError("warning: vertix with filePath \(filePath)") // TODO: Remove
+                    return path == filePath
+                }
+
+                return false
+            }
         }
 
         // MARK: Private

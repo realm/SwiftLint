@@ -248,8 +248,10 @@
 		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
 		CC30F4502359F4F5006E14B9 /* Configuration+Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC30F44F2359F4F5006E14B9 /* Configuration+Remote.swift */; };
 		CC30F4522359F89A006E14B9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC30F4512359F89A006E14B9 /* Reachability.swift */; };
+		CC7737342361D85500A94635 /* HashableRuleWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7737322361D85100A94635 /* HashableRuleWrapper.swift */; };
+		CC7737362361DA1200A94635 /* Configuration+RulesMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7737352361DA1200A94635 /* Configuration+RulesMode.swift */; };
 		CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB336F42303FA7400C52023 /* Configuration+Graph.swift */; };
-		CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* RulesStorage.swift */; };
+		CCB97C3622E89260002F5458 /* Configuration+Rules.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* Configuration+Rules.swift */; };
 		CCB97C3A22E8D7EC002F5458 /* ChildConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
 		CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */; };
@@ -755,8 +757,10 @@
 		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
 		CC30F44F2359F4F5006E14B9 /* Configuration+Remote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Remote.swift"; sourceTree = "<group>"; };
 		CC30F4512359F89A006E14B9 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		CC7737322361D85100A94635 /* HashableRuleWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashableRuleWrapper.swift; sourceTree = "<group>"; };
+		CC7737352361DA1200A94635 /* Configuration+RulesMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+RulesMode.swift"; sourceTree = "<group>"; };
 		CCB336F42303FA7400C52023 /* Configuration+Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Graph.swift"; sourceTree = "<group>"; };
-		CCB97C3422E89257002F5458 /* RulesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesStorage.swift; sourceTree = "<group>"; };
+		CCB97C3422E89257002F5458 /* Configuration+Rules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Rules.swift"; sourceTree = "<group>"; };
 		CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildConfigTests.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
 		CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingConfiguration.swift; sourceTree = "<group>"; };
@@ -1686,6 +1690,7 @@
 				E809EDA01B8A71DF00399043 /* Configuration.swift */,
 				3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */,
 				E8B67C3D1C095E6300FDED8E /* Correction.swift */,
+				CC7737322361D85100A94635 /* HashableRuleWrapper.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
 				D4FD58B11E12A0200019503C /* LinterCache.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
@@ -1693,11 +1698,11 @@
 				E80E018E1B92C1350078EB70 /* Region.swift */,
 				83D71E261B131EB5000395DE /* RuleDescription.swift */,
 				CC26ED05204DE86E0013BBBC /* RuleIdentifier.swift */,
+				D401D9251ED85EF0005DA5D4 /* RuleKind.swift */,
 				E8BDE3FE1EDF91B6002EC12F /* RuleList.swift */,
 				D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */,
-				D401D9251ED85EF0005DA5D4 /* RuleKind.swift */,
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
-				CCB97C3422E89257002F5458 /* RulesStorage.swift */,
+				264E080E2248BA2800ADC4C5 /* RuleStorage.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E4EA064B23688EB4002531D7 /* SwiftLintFile.swift */,
 				E48F715C23789823003E1775 /* SwiftLintSyntaxMap.swift */,
@@ -1706,7 +1711,6 @@
 				D4C27BFD1E12D53F00DF713E /* Version.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
 				3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */,
-				264E080E2248BA2800ADC4C5 /* RuleStorage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1722,6 +1726,8 @@
 				E889D8C61F1D357B00058332 /* Configuration+Merging.swift */,
 				E86623661F1D377900AAA3A2 /* Configuration+Parsing.swift */,
 				CC30F44F2359F4F5006E14B9 /* Configuration+Remote.swift */,
+				CCB97C3422E89257002F5458 /* Configuration+Rules.swift */,
+				CC7737352361DA1200A94635 /* Configuration+RulesMode.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* SwiftLintFile+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* SwiftLintFile+Regex.swift */,
@@ -2018,8 +2024,10 @@
 				62426A062118F995007E6340 /* ClosureBodyLengthRuleExamples.swift in Sources */,
 				8B01E4FD20A41C8700C9233E /* FunctionParameterCountConfiguration.swift in Sources */,
 				740DF1B1203F62BB0081F694 /* EmptyStringRule.swift in Sources */,
+				CC7737362361DA1200A94635 /* Configuration+RulesMode.swift in Sources */,
 				4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */,
 				D4F10614229A2F5E00FDE319 /* NoFallthroughOnlyRuleExamples.swift in Sources */,
+				CC7737342361D85500A94635 /* HashableRuleWrapper.swift in Sources */,
 				3ABE19CF20B7CE32009C2EC2 /* MultilineFunctionChainsRule.swift in Sources */,
 				CC30F4522359F89A006E14B9 /* Reachability.swift in Sources */,
 				82FE253F20F604AD00295958 /* VerticalWhitespaceOpeningBracesRule.swift in Sources */,
@@ -2084,7 +2092,7 @@
 				E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */,
 				3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */,
 				827009FF20FE26C500ECA185 /* TypeContentsOrderRule.swift in Sources */,
-				CCB97C3622E89260002F5458 /* RulesStorage.swift in Sources */,
+				CCB97C3622E89260002F5458 /* Configuration+Rules.swift in Sources */,
 				E88198551BEA949A00333A11 /* ControlStatementRule.swift in Sources */,
 				584B0D3A2112BA78002F7E25 /* SonarQubeReporter.swift in Sources */,
 				E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */,

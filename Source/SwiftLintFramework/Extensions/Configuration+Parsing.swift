@@ -105,14 +105,14 @@ extension Configuration {
     ) {
         // Deprecation warning for "enabled_rules"
         if dict[Key.enabledRules.rawValue] != nil {
-            queuedPrintError("'\(Key.enabledRules.rawValue)' has been renamed to " +
+            queuedPrintError("warning: '\(Key.enabledRules.rawValue)' has been renamed to " +
                 "'\(Key.optInRules.rawValue)' and will be completely removed in a " +
                 "future release.")
         }
 
         // Deprecation warning for "use_nested_configs"
         if dict[Key.useNestedConfigs.rawValue] != nil {
-            queuedPrintError("Support for '\(Key.useNestedConfigs.rawValue)' has " +
+            queuedPrintError("warning: Support for '\(Key.useNestedConfigs.rawValue)' has " +
                 "been deprecated and its value is now ignored. Nested configuration files are " +
                 "now always considered.")
         }
@@ -128,16 +128,16 @@ extension Configuration {
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedUsages {
-            queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
+            queuedPrintError("warning: '\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
                 "completely removed in a future release.")
         }
     }
 
     private static func warnAboutInvalidKeys(configurationDictionary dict: [String: Any], ruleList: RuleList) {
         // Log an error when supplying invalid keys in the configuration dictionary
-        let invalidKeys = Set(dict.keys).subtracting(self.validKeys(ruleList: ruleList))
+        let invalidKeys = Set(dict.keys).subtracting(validKeys(ruleList: ruleList))
         if !invalidKeys.isEmpty {
-            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+            queuedPrintError("warning: Configuration contains invalid keys:\n\(invalidKeys)")
         }
     }
 
@@ -152,16 +152,18 @@ extension Configuration {
                     continue
             }
 
-            let message = "Found a configuration for '\(identifier)' rule"
+            let message = "warning: Found a configuration for '\(identifier)' rule"
 
             switch rulesMode {
             case .allEnabled:
                 return
+
             case .whitelisted(let whitelist):
                 if Set(whitelist).isDisjoint(with: rule.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not present on " +
                         "'\(Key.whitelistRules.rawValue)'.")
                 }
+
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not enabled on " +

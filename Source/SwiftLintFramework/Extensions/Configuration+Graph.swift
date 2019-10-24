@@ -117,7 +117,7 @@ internal extension Configuration {
 
         // MARK: - Methods
         internal mutating func resultingConfiguration(
-            configurationFactory: (([String: Any]) throws -> Configuration),
+            enableAllRules: Bool,
             remoteConfigLoadingTimeout: Double,
             remoteConfigLoadingTimeoutIfCached: Double
         ) throws -> Configuration {
@@ -132,7 +132,7 @@ internal extension Configuration {
 
             return try merged(
                 configurationDicts: try validate(),
-                configurationFactory: configurationFactory
+                enableAllRules: enableAllRules
             )
         }
 
@@ -242,15 +242,16 @@ internal extension Configuration {
 
         private func merged(
             configurationDicts: [[String: Any]],
-            configurationFactory: (([String: Any] ) throws -> Configuration)
+            enableAllRules: Bool
         ) throws -> Configuration {
             guard let firstConfigurationDict = configurationDicts.first else {
                 throw ConfigurationError.generic("Unknown Configuration Error")
             }
 
             let configurationDicts = Array(configurationDicts.dropFirst())
-            return try configurationDicts.reduce(try configurationFactory(firstConfigurationDict)) {
-                $0.merged(with: try configurationFactory($1))
+            let firstConfiguration = try Configuration(dict: firstConfigurationDict, enableAllRules: enableAllRules)
+            return try configurationDicts.reduce(firstConfiguration) {
+                $0.merged(with: try Configuration(dict: $1, enableAllRules: enableAllRules))
             }
         }
     }

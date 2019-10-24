@@ -38,7 +38,7 @@ public struct Configuration {
     public let reporter: String
 
     /// The cache path, if some
-    public let cachePath: String? // TODO: Is this needed ?!
+    public let cachePath: String?
 
     // MARK: Internal Instance
     internal var computedCacheDescription: String?
@@ -157,9 +157,7 @@ public struct Configuration {
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
             let resultingConfiguration = try fileGraph.resultingConfiguration(
-                configurationFactory: {
-                    try Configuration(dict: $0, enableAllRules: enableAllRules, cachePath: cachePath)
-                },
+                enableAllRules: enableAllRules,
                 remoteConfigLoadingTimeout: 2,
                 remoteConfigLoadingTimeoutIfCached: 1
             )
@@ -193,23 +191,26 @@ public struct Configuration {
 }
 
 // MARK: - Hashable
-extension Configuration: Hashable { // TODO
+extension Configuration: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(cachePath)
         hasher.combine(includedPaths)
         hasher.combine(excludedPaths)
+        hasher.combine(indentation)
+        hasher.combine(warningThreshold)
         hasher.combine(reporter)
+        hasher.combine(cachePath)
+        hasher.combine(rules.map { type(of: $0).description.identifier })
         hasher.combine(fileGraph)
     }
 
     public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
-        return lhs.warningThreshold == rhs.warningThreshold &&
+        return lhs.includedPaths == rhs.includedPaths &&
+            lhs.excludedPaths == rhs.excludedPaths &&
+            lhs.indentation == rhs.indentation &&
+            lhs.warningThreshold == rhs.warningThreshold &&
             lhs.reporter == rhs.reporter &&
             lhs.cachePath == rhs.cachePath &&
-            lhs.includedPaths == rhs.includedPaths &&
-            lhs.excludedPaths == rhs.excludedPaths &&
             lhs.rules == rhs.rules &&
-            lhs.indentation == rhs.indentation &&
             lhs.fileGraph == rhs.fileGraph
     }
 }

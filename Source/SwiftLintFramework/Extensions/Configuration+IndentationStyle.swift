@@ -1,5 +1,5 @@
 public extension Configuration {
-    enum IndentationStyle: Equatable {
+    enum IndentationStyle: Hashable {
         case tabs
         case spaces(count: Int)
 

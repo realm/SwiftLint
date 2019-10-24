@@ -15,11 +15,17 @@ extension SyntaxMap {
             return []
         }
 
-        let intersectingTokens = tokens
+        func isAfterByteRange(_ token: SyntaxToken) -> Bool {
+            return token.offset < byteRange.upperBound
+        }
+
+        let tokensAfterFirstIntersection = tokens
             .lazy
             .suffix(from: startIndex)
-            .prefix(while: intersect)
-        return Array(intersectingTokens)
+            .prefix(while: isAfterByteRange)
+            .filter(intersect)
+
+        return Array(tokensAfterFirstIntersection)
     }
 
     // Index of first token which intersects byterange

@@ -46,7 +46,8 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 "↓foo \(operation) foo",
                 "↓foo.aProperty \(operation) foo.aProperty",
                 "↓self.aProperty \(operation) self.aProperty",
-                "↓$0 \(operation) $0"
+                "↓$0 \(operation) $0",
+                "↓a?.b \(operation) a?.b"
             ]
         }
     )
@@ -103,14 +104,14 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         }
 
         // Make sure both operands have same token types
-        guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({ $0.0.type == $0.1.type }) else {
+        guard leftOperand.tokens.map({ $0.type }) == rightOperand.tokens.map({ $0.type }) else {
             return nil
         }
 
-        // Make sure that every part of the operand part is equal to previous on
-        guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({
-            contents.subStringWithSyntaxToken($0.0) == contents.subStringWithSyntaxToken($0.1) }) else {
-                return nil
+        // Make sure that every part of the operand part is equal to previous one
+        guard leftOperand.tokens.map(contents.subStringWithSyntaxToken) ==
+            rightOperand.tokens.map(contents.subStringWithSyntaxToken) else {
+            return nil
         }
 
         guard let leftmostToken = leftOperand.tokens.first else {

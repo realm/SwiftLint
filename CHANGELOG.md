@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Speed up Identical Operands rule by using syntaxmap instead of
+  regular expressions.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2918](https://github.com/realm/SwiftLint/issues/2918)
 
 #### Bug Fixes
 

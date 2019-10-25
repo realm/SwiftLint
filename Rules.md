@@ -9672,6 +9672,10 @@ expect("foo") == "foo"
 ```
 
 ```swift
+↓a?.b == a?.b
+```
+
+```swift
 ↓1 != 1
 ```
 
@@ -9689,6 +9693,10 @@ expect("foo") == "foo"
 
 ```swift
 ↓$0 != $0
+```
+
+```swift
+↓a?.b != a?.b
 ```
 
 ```swift
@@ -9712,6 +9720,10 @@ expect("foo") == "foo"
 ```
 
 ```swift
+↓a?.b === a?.b
+```
+
+```swift
 ↓1 !== 1
 ```
 
@@ -9729,6 +9741,10 @@ expect("foo") == "foo"
 
 ```swift
 ↓$0 !== $0
+```
+
+```swift
+↓a?.b !== a?.b
 ```
 
 ```swift
@@ -9752,6 +9768,10 @@ expect("foo") == "foo"
 ```
 
 ```swift
+↓a?.b > a?.b
+```
+
+```swift
 ↓1 >= 1
 ```
 
@@ -9769,6 +9789,10 @@ expect("foo") == "foo"
 
 ```swift
 ↓$0 >= $0
+```
+
+```swift
+↓a?.b >= a?.b
 ```
 
 ```swift
@@ -9792,6 +9816,10 @@ expect("foo") == "foo"
 ```
 
 ```swift
+↓a?.b < a?.b
+```
+
+```swift
 ↓1 <= 1
 ```
 
@@ -9809,6 +9837,10 @@ expect("foo") == "foo"
 
 ```swift
 ↓$0 <= $0
+```
+
+```swift
+↓a?.b <= a?.b
 ```
 
 </details>

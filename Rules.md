@@ -9201,6 +9201,10 @@ _ = num != nil && num == num?.byteSwapped
 ```
 
 ```swift
+num == num!.byteSwapped
+```
+
+```swift
 1 != 2
 ```
 
@@ -9255,6 +9259,10 @@ string != string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num != num?.byteSwapped
+```
+
+```swift
+num != num!.byteSwapped
 ```
 
 ```swift
@@ -9315,6 +9323,10 @@ _ = num != nil && num === num?.byteSwapped
 ```
 
 ```swift
+num === num!.byteSwapped
+```
+
+```swift
 1 !== 2
 ```
 
@@ -9369,6 +9381,10 @@ string !== string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num !== num?.byteSwapped
+```
+
+```swift
+num !== num!.byteSwapped
 ```
 
 ```swift
@@ -9429,6 +9445,10 @@ _ = num != nil && num > num?.byteSwapped
 ```
 
 ```swift
+num > num!.byteSwapped
+```
+
+```swift
 1 >= 2
 ```
 
@@ -9483,6 +9503,10 @@ string >= string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num >= num?.byteSwapped
+```
+
+```swift
+num >= num!.byteSwapped
 ```
 
 ```swift
@@ -9543,6 +9567,10 @@ _ = num != nil && num < num?.byteSwapped
 ```
 
 ```swift
+num < num!.byteSwapped
+```
+
+```swift
 1 <= 2
 ```
 
@@ -9597,6 +9625,10 @@ string <= string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num <= num?.byteSwapped
+```
+
+```swift
+num <= num!.byteSwapped
 ```
 
 ```swift

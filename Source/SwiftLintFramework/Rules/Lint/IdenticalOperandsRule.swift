@@ -31,7 +31,8 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 """
                 let num: Int? = 0
                 _ = num != nil && num \(operation) num?.byteSwapped
-                """
+                """,
+                "num \(operation) num!.byteSwapped"
             ]
         } + [
             "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
@@ -181,7 +182,7 @@ private extension NSString {
     }
 
     func isDotOrOptionalChainingBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
-        return isRegexBetweenTokens(startToken, "\\??\\.", endToken)
+        return isRegexBetweenTokens(startToken, "[\\?!]?\\.", endToken)
     }
 
     func isNilCoalecingOperatorBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {

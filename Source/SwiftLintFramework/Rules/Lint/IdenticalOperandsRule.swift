@@ -36,7 +36,8 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         } + [
             "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
             "let array = Array<Array<Int>>()",
-            "guard Set(identifiers).count != identifiers.count else { return }"
+            "guard Set(identifiers).count != identifiers.count else { return }",
+            "expect(\"foo\") == \"foo\""
         ],
         triggeringExamples: operators.flatMap { operation in
             [
@@ -59,62 +60,73 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
 
     public func validate(file: File) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
-        return file.matchesAndTokens(matching: "\\s(" + operators + ")\\s")
-            .filter { _, tokens in tokens.isEmpty }
-            .compactMap { result, _ -> NSRange? in
-                let contents = file.contents.bridge()
-                let operatorRange = result.range(at: 1)
-                guard let operatorByteRange = contents.NSRangeToByteRange(start: operatorRange.location,
-                                                                          length: operatorRange.length) else {
-                                                                            return nil
+        return
+            file.matchesAndTokens(matching: "\\s(" + operators + ")\\s")
+                .filter { _, tokens in tokens.isEmpty }
+                .compactMap { matchResult, _ in violationRangeFrom(match: matchResult, in: file) }
+                .map { range in
+                    return StyleViolation(ruleDescription: type(of: self).description,
+                                          severity: configuration.severity,
+                                          location: Location(file: file, characterOffset: range.location))
                 }
+    }
 
-                // grab index of first token after the operator
-                let tokens = file.syntaxMap.tokens
-                guard let rightTokenIndex = tokens.firstIndex(where: { $0.offset >= operatorByteRange.upperBound }),
-                    rightTokenIndex > 0 else {
-                        return nil
-                }
-                let (leftOperand, rightOperand) = operandsStartingFromIndexes(leftTokenIndex: rightTokenIndex - 1,
-                                                                              rightTokenIndex: rightTokenIndex,
-                                                                              file: file)
+    private func violationRangeFrom(match: NSTextCheckingResult, in file: File) -> NSRange? {
+        let contents = file.contents.bridge()
+        let operatorRange = match.range(at: 1)
+        guard let operatorByteRange = contents.NSRangeToByteRange(operatorRange) else {
+            return nil
+        }
 
-                guard leftOperand.tokens.count == rightOperand.tokens.count else {
-                    return nil
-                }
+        let tokens = file.syntaxMap.tokens
+        guard let rightTokenIndex = tokens.firstIndex(where: { $0.offset >= operatorByteRange.upperBound }),
+            rightTokenIndex > 0 else {
+                return nil
+        }
 
-                // Make sure both operands have same token types
-                guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({ $0.0.type == $0.1.type }) else {
-                    return nil
-                }
+        let (leftOperand, rightOperand) = operandsStartingFromIndexes(leftTokenIndex: rightTokenIndex - 1,
+                                                                      rightTokenIndex: rightTokenIndex,
+                                                                      file: file)
 
-                // Make sure that every part of the operand part is equal to previous on
-                guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({
-                    contents.subStringWithSyntaxToken($0.0) == contents.subStringWithSyntaxToken($0.1) }) else {
-                    return nil
-                }
+        guard leftOperand.tokens.count == rightOperand.tokens.count else {
+            return nil
+        }
 
-                guard let leftmostToken = leftOperand.tokens.first else {
-                    return nil
-                }
+        // Make sure that there's nothing but operator between tokens
+        let operatorString = contents.substring(with: operatorRange)
+        guard let leftToken = leftOperand.tokens.last, let rightToken = rightOperand.tokens.first else {
+            return nil
+        }
+        guard contents.isRegexBetweenTokens(leftToken, operatorString, rightToken) else {
+            return nil
+        }
 
-                // last check is to check if we have ?? to the left of the leftmost token
-                if leftOperand.index != 0 {
-                    let previousToken = tokens[leftOperand.index - 1]
-                    guard !contents.isNilCoalecingOperatorBetweenTokens(previousToken, leftmostToken) else {
-                        return nil
-                    }
-                }
+        // Make sure both operands have same token types
+        guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({ $0.0.type == $0.1.type }) else {
+            return nil
+        }
 
-                let violationRange = file.contents.byteRangeToNSRange(start: leftmostToken.offset,
-                                                                      length: leftmostToken.length)
-                return violationRange
+        // Make sure that every part of the operand part is equal to previous on
+        guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({
+            contents.subStringWithSyntaxToken($0.0) == contents.subStringWithSyntaxToken($0.1) }) else {
+                return nil
+        }
+
+        guard let leftmostToken = leftOperand.tokens.first else {
+            return nil
+        }
+
+        // last check is to check if we have ?? to the left of the leftmost token
+        if leftOperand.index != 0 {
+            let previousToken = tokens[leftOperand.index - 1]
+            guard !contents.isNilCoalecingOperatorBetweenTokens(previousToken, leftmostToken) else {
+                return nil
             }
-            .map { range in
-                return StyleViolation(ruleDescription: type(of: self).description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, characterOffset: range.location))
-            }
+        }
+
+        let violationRange = file.contents.byteRangeToNSRange(start: leftmostToken.offset,
+                                                              length: leftmostToken.length)
+        return violationRange
     }
 
     private func operandsStartingFromIndexes(leftTokenIndex: Int, rightTokenIndex: Int, file: File)
@@ -155,6 +167,10 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
 }
 
 private extension NSString {
+    func NSRangeToByteRange(_ range: NSRange) -> NSRange? {
+        return NSRangeToByteRange(start: range.location, length: range.length)
+    }
+
     func subStringWithSyntaxToken(_ syntaxToken: SyntaxToken) -> String? {
         return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)
     }

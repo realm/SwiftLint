@@ -9607,6 +9607,14 @@ func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError
 let array = Array<Array<Int>>()
 ```
 
+```swift
+guard Set(identifiers).count != identifiers.count else { return }
+```
+
+```swift
+expect("foo") == "foo"
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -242,7 +242,9 @@ extension CustomRulesTests {
         ("testLocalDisableCustomRuleWithMultipleRules", testLocalDisableCustomRuleWithMultipleRules),
         ("testCustomRulesIncludedDefault", testCustomRulesIncludedDefault),
         ("testCustomRulesIncludedExcludesFile", testCustomRulesIncludedExcludesFile),
-        ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile)
+        ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile),
+        ("testCustomRulesMultiLineRegexFile", testCustomRulesMultiLineRegexFile),
+        ("testCustomRulesMultiLineRegexFileFromConfiguration", testCustomRulesMultiLineRegexFileFromConfiguration)
     ]
 }
 

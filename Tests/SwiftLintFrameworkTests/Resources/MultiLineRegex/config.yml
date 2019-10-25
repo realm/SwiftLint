@@ -1,0 +1,13 @@
+whitelist_rules:
+ - custom_rules
+ - multi_line
+
+custom_rules:
+  multi_line:
+    included:
+        - MyPresenter.swift
+        - MyPatientsPresenter.swift
+    name: Multi-line rule
+    message: Error
+    regex: (?!.*\b(set|get|weak)\b.*$)(?:^\s*\bvar\b\s+\b(\w*controller\w*)\b\s*:\s*.*\?.*$)
+    severity: error

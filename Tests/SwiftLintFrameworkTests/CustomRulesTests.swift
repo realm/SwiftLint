@@ -112,6 +112,75 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testCustomRulesMultiLineRegexFile() {
+        var comp = RegexConfiguration(identifier: "my_multiline_rule")
+        comp.name = "MyMultilineRule"
+        comp.message = "Message"
+        comp.regex = regex(#"""
+    (?!.*\b(set|get|weak)\b.*$)(?:^\s*\bvar\b\s+\b(\w*controller\w*)\b\s*:\s*.*\?.*$)
+    """#)
+
+        comp.severityConfiguration = SeverityConfiguration(.error)
+        comp.matchKinds = SyntaxKind.allKinds
+
+        var compRules = CustomRulesConfiguration()
+        compRules.customRuleConfigurations = [comp]
+
+        var rule = CustomRules()
+        rule.configuration = compRules
+
+        let testFiles = getTestSwiftFiles()
+        XCTAssertEqual(testFiles.count, 2)
+
+        let violations0 = rule.validate(file: testFiles[0])
+        XCTAssertEqual(violations0.count, 1)
+        XCTAssertEqual(violations0.first?.location.line, 23)
+
+        let violations1 = rule.validate(file: testFiles[1])
+        XCTAssertEqual(violations1.count, 1)
+        XCTAssertEqual(violations1.first?.location.line, 32)
+    }
+
+    func testCustomRulesMultiLineRegexFileFromConfiguration() {
+        let config = Configuration(path: "config.yml",
+                                   rootPath: "\(testResourcesPath)/MultiLineRegex",
+            optional: false,
+            quiet: false)
+
+        XCTAssertNotNil(config)
+        XCTAssertEqual(config.rules.count, 1)
+
+        let swiftFiles = config
+            .lintableFiles(inPath: "\(testResourcesPath)/MultiLineRegex", forceExclude: false)
+            .sorted { $0.path! > $1.path! }
+        XCTAssertEqual(swiftFiles.count, 2)
+
+        let testFiles = getTestSwiftFiles().sorted { $0.path! > $1.path! }
+        XCTAssertEqual(testFiles.count, 2)
+        XCTAssertEqual(swiftFiles[0].path, testFiles[0].path)
+        XCTAssertEqual(swiftFiles[1].path, testFiles[1].path)
+
+        let storage = RuleStorage()
+        let violations = swiftFiles.parallelFlatMap {
+            Linter(file: $0, configuration: config)
+                .collect(into: storage)
+                .styleViolations(using: storage)
+        }
+        XCTAssertEqual(violations.count, 2)
+
+        let violations0 = violations.filter {
+            URL(string: $0.location.file!)!.lastPathComponent == "MyPresenter.swift"
+        }
+        XCTAssertEqual(violations0.count, 1)
+        XCTAssertEqual(violations0.first?.location.line, 23)
+
+        let violations1 = violations.filter {
+            URL(string: $0.location.file!)!.lastPathComponent == "MyPatientsPresenter.swift"
+        }
+        XCTAssertEqual(violations1.count, 1)
+        XCTAssertEqual(violations1.first?.location.line, 32)
+    }
+
     private func getCustomRules(_ extraConfig: [String: String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
@@ -163,5 +232,10 @@ class CustomRulesTests: XCTestCase {
 
     private func getTestTextFile() -> File {
         return File(path: "\(testResourcesPath)/test.txt")!
+    }
+
+    private func getTestSwiftFiles() -> [File] {
+        return [File(path: "\(testResourcesPath)/MultiLineRegex/MyPresenter.swift")!,
+                File(path: "\(testResourcesPath)/MultiLineRegex/MyPatientsPresenter.swift")!]
     }
 }

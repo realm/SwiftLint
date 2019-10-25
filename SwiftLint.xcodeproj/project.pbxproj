@@ -677,6 +677,7 @@
 		A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralConfiguration.swift; sourceTree = "<group>"; };
 		A3184D55215BCEFF00621EA2 /* LegacyRandomRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyRandomRule.swift; sourceTree = "<group>"; };
 		A73469401FB12149009B57C7 /* CallPairRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallPairRule.swift; sourceTree = "<group>"; };
+		A9E94B1823633E9A00407C6F /* MultiLineRegex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MultiLineRegex; sourceTree = "<group>"; };
 		B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRule.swift; sourceTree = "<group>"; };
 		B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRuleExamples.swift; sourceTree = "<group>"; };
 		B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsConfiguration.swift; sourceTree = "<group>"; };
@@ -977,6 +978,7 @@
 		3B12C9BE1C3209AC000B423F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A9E94B1823633E9A00407C6F /* MultiLineRegex */,
 				D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */,
 				D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */,
 				3B12C9BF1C3209AC000B423F /* test.yml */,

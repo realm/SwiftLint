@@ -128,7 +128,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             while currentIndex > 0 {
                 let prevToken = tokens[currentIndex - 1]
 
-                guard file.contents.isDotBetweenTokens(prevToken, leftMostToken) else { break }
+                guard file.contents.isDotOrOptionalChainingBetweenTokens(prevToken, leftMostToken) else { break }
 
                 leftTokens.insert(prevToken, at: 0)
                 currentIndex -= 1
@@ -142,7 +142,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             while currentIndex < tokens.count - 1 {
                 let nextToken = tokens[currentIndex + 1]
 
-                guard file.contents.isDotBetweenTokens(rightMostToken, nextToken) else { break }
+                guard file.contents.isDotOrOptionalChainingBetweenTokens(rightMostToken, nextToken) else { break }
 
                 rightTokens.append(nextToken)
                 currentIndex += 1
@@ -164,8 +164,8 @@ private extension NSString {
                                       length: endToken.offset - startToken.offset - startToken.length)
     }
 
-    func isDotBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
-        return isRegexBetweenTokens(startToken, "\\.", endToken)
+    func isDotOrOptionalChainingBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
+        return isRegexBetweenTokens(startToken, "\\??\\.", endToken)
     }
 
     func isNilCoalecingOperatorBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {

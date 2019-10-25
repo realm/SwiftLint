@@ -35,7 +35,8 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             ]
         } + [
             "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
-            "let array = Array<Array<Int>>()"
+            "let array = Array<Array<Int>>()",
+            "guard Set(identifiers).count != identifiers.count else { return }"
         ],
         triggeringExamples: operators.flatMap { operation in
             [
@@ -48,57 +49,133 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         }
     )
 
+    private struct Operand {
+        /// Index of first token in tokens
+        let index: Int
+
+        // tokens in this operand
+        let tokens: [SyntaxToken]
+    }
+
     public func validate(file: File) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
-        let pattern = """
-        (?<!\\.|\\$)(?:\\s|\\b|\\A)([\\$A-Za-z0-9_\\.]+)\\s*(\(operators))\\s*\\1\\b(?!\\s*(\\.|\\>|\\<|\\?))
-        """
-        let syntaxKinds = SyntaxKind.commentKinds
-        let excludingPattern = "\\?\\?\\s*" + pattern
-
-        let range = NSRange(location: 0, length: file.contents.utf16.count)
-        let exclusionRanges = regex(excludingPattern).matches(in: file.contents, options: [],
-                                                              range: range).map { $0.range }
-
-        return file.matchesAndTokens(matching: pattern)
-            .filter { result, _ in
-                let range = result.range(at: 1)
-                return !range.intersects(exclusionRanges)
-            }
-            .filter { result, tokens in
+        return file.matchesAndTokens(matching: "\\s(" + operators + ")\\s")
+            .filter { _, tokens in tokens.isEmpty }
+            .compactMap { result, _ -> NSRange? in
                 let contents = file.contents.bridge()
-                let range = result.range(at: 1)
-                guard let byteRange = contents.NSRangeToByteRange(start: range.location,
-                                                                  length: range.length) else {
-                    return false
+                let operatorRange = result.range(at: 1)
+                guard let operatorByteRange = contents.NSRangeToByteRange(start: operatorRange.location,
+                                                                          length: operatorRange.length) else {
+                                                                            return nil
                 }
 
-                let kinds = tokens
-                    .filter { $0.offset >= byteRange.location }
-                    .kinds
-                return syntaxKinds.isDisjoint(with: kinds)
-            }
-            .compactMap { result, tokens in
-                return (result, tokens.kinds)
-            }
-            .compactMap { result, syntaxKinds -> StyleViolation? in
-                guard Set(syntaxKinds) != [.typeidentifier] else {
+                // grab index of first token after the operator
+                let tokens = file.syntaxMap.tokens
+                guard let rightTokenIndex = tokens.firstIndex(where: { $0.offset >= operatorByteRange.upperBound }),
+                    rightTokenIndex > 0 else {
+                        return nil
+                }
+                let (leftOperand, rightOperand) = operandsStartingFromIndexes(leftTokenIndex: rightTokenIndex - 1,
+                                                                              rightTokenIndex: rightTokenIndex,
+                                                                              file: file)
+
+                guard leftOperand.tokens.count == rightOperand.tokens.count else {
                     return nil
                 }
 
-                let range = result.range(at: 1)
-                let operatorRange = result.range(at: 2)
-                let contents = file.contents.bridge()
-
-                guard let byteRange = contents.NSRangeToByteRange(start: operatorRange.location,
-                                                                  length: operatorRange.length),
-                    file.syntaxMap.kinds(inByteRange: byteRange).isEmpty else {
-                        return nil
+                // Make sure both operands have same token types
+                guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({ $0.0.type == $0.1.type }) else {
+                    return nil
                 }
 
+                // Make sure that every part of the operand part is equal to previous on
+                guard zip(leftOperand.tokens, rightOperand.tokens).allSatisfy({
+                    contents.subStringWithSyntaxToken($0.0) == contents.subStringWithSyntaxToken($0.1) }) else {
+                    return nil
+                }
+
+                guard let leftmostToken = leftOperand.tokens.first else {
+                    return nil
+                }
+
+                // last check is to check if we have ?? to the left of the leftmost token
+                if leftOperand.index != 0 {
+                    let previousToken = tokens[leftOperand.index - 1]
+                    guard !contents.isNilCoalecingOperatorBetweenTokens(previousToken, leftmostToken) else {
+                        return nil
+                    }
+                }
+
+                let violationRange = file.contents.byteRangeToNSRange(start: leftmostToken.offset,
+                                                                      length: leftmostToken.length)
+                return violationRange
+            }
+            .map { range in
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: configuration.severity,
                                       location: Location(file: file, characterOffset: range.location))
             }
+    }
+
+    private func operandsStartingFromIndexes(leftTokenIndex: Int, rightTokenIndex: Int, file: File)
+        -> (leftOperand: Operand, rightOperand: Operand) {
+            let tokens = file.syntaxMap.tokens
+
+            // expand to the left
+            var currentIndex = leftTokenIndex
+            var leftMostToken = tokens[currentIndex]
+            var leftTokens = [leftMostToken]
+            while currentIndex > 0 {
+                let prevToken = tokens[currentIndex - 1]
+
+                guard file.contents.isDotBetweenTokens(prevToken, leftMostToken) else { break }
+
+                leftTokens.insert(prevToken, at: 0)
+                currentIndex -= 1
+                leftMostToken = prevToken
+            }
+
+            // expand to the right
+            currentIndex = rightTokenIndex
+            var rightMostToken = tokens[currentIndex]
+            var rightTokens = [rightMostToken]
+            while currentIndex < tokens.count - 1 {
+                let nextToken = tokens[currentIndex + 1]
+
+                guard file.contents.isDotBetweenTokens(rightMostToken, nextToken) else { break }
+
+                rightTokens.append(nextToken)
+                currentIndex += 1
+                rightMostToken = nextToken
+            }
+
+            return (Operand(index: leftTokenIndex - leftTokens.count + 1, tokens: leftTokens),
+                    Operand(index: rightTokenIndex, tokens: rightTokens))
+    }
+}
+
+private extension NSString {
+    func subStringWithSyntaxToken(_ syntaxToken: SyntaxToken) -> String? {
+        return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)
+    }
+
+    func subStringBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> String? {
+        return substringWithByteRange(start: startToken.offset + startToken.length,
+                                      length: endToken.offset - startToken.offset - startToken.length)
+    }
+
+    func isDotBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
+        return isRegexBetweenTokens(startToken, "\\.", endToken)
+    }
+
+    func isNilCoalecingOperatorBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
+        return isRegexBetweenTokens(startToken, "\\?\\?", endToken)
+    }
+
+    func isRegexBetweenTokens(_ startToken: SyntaxToken, _ regexString: String, _ endToken: SyntaxToken) -> Bool {
+        guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
+
+        let range = NSRange(location: 0, length: betweenTokens.utf16.count)
+        return !regex("^\\s*\(regexString)\\s*$").matches(in: betweenTokens, options: [], range: range).isEmpty
     }
 }

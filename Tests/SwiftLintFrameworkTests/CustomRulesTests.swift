@@ -144,8 +144,8 @@ class CustomRulesTests: XCTestCase {
     func testCustomRulesMultiLineRegexFileFromConfiguration() {
         let config = Configuration(path: "config.yml",
                                    rootPath: "\(testResourcesPath)/MultiLineRegex",
-            optional: false,
-            quiet: false)
+                                   optional: false,
+                                   quiet: false)
 
         XCTAssertNotNil(config)
         XCTAssertEqual(config.rules.count, 1)

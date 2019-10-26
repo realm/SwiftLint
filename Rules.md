@@ -9201,6 +9201,10 @@ _ = num != nil && num == num?.byteSwapped
 ```
 
 ```swift
+num == num!.byteSwapped
+```
+
+```swift
 1 != 2
 ```
 
@@ -9255,6 +9259,10 @@ string != string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num != num?.byteSwapped
+```
+
+```swift
+num != num!.byteSwapped
 ```
 
 ```swift
@@ -9315,6 +9323,10 @@ _ = num != nil && num === num?.byteSwapped
 ```
 
 ```swift
+num === num!.byteSwapped
+```
+
+```swift
 1 !== 2
 ```
 
@@ -9369,6 +9381,10 @@ string !== string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num !== num?.byteSwapped
+```
+
+```swift
+num !== num!.byteSwapped
 ```
 
 ```swift
@@ -9429,6 +9445,10 @@ _ = num != nil && num > num?.byteSwapped
 ```
 
 ```swift
+num > num!.byteSwapped
+```
+
+```swift
 1 >= 2
 ```
 
@@ -9483,6 +9503,10 @@ string >= string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num >= num?.byteSwapped
+```
+
+```swift
+num >= num!.byteSwapped
 ```
 
 ```swift
@@ -9543,6 +9567,10 @@ _ = num != nil && num < num?.byteSwapped
 ```
 
 ```swift
+num < num!.byteSwapped
+```
+
+```swift
 1 <= 2
 ```
 
@@ -9600,11 +9628,23 @@ _ = num != nil && num <= num?.byteSwapped
 ```
 
 ```swift
+num <= num!.byteSwapped
+```
+
+```swift
 func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>
 ```
 
 ```swift
 let array = Array<Array<Int>>()
+```
+
+```swift
+guard Set(identifiers).count != identifiers.count else { return }
+```
+
+```swift
+expect("foo") == "foo"
 ```
 
 </details>
@@ -9632,6 +9672,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b == a?.b
+```
+
+```swift
 ↓1 != 1
 ```
 
@@ -9649,6 +9693,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 != $0
+```
+
+```swift
+↓a?.b != a?.b
 ```
 
 ```swift
@@ -9672,6 +9720,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b === a?.b
+```
+
+```swift
 ↓1 !== 1
 ```
 
@@ -9689,6 +9741,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 !== $0
+```
+
+```swift
+↓a?.b !== a?.b
 ```
 
 ```swift
@@ -9712,6 +9768,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b > a?.b
+```
+
+```swift
 ↓1 >= 1
 ```
 
@@ -9729,6 +9789,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 >= $0
+```
+
+```swift
+↓a?.b >= a?.b
 ```
 
 ```swift
@@ -9752,6 +9816,10 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b < a?.b
+```
+
+```swift
 ↓1 <= 1
 ```
 
@@ -9769,6 +9837,10 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 <= $0
+```
+
+```swift
+↓a?.b <= a?.b
 ```
 
 </details>

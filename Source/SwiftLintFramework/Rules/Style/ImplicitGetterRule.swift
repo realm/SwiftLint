@@ -191,7 +191,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
 
         let violatingLocations = getTokens.compactMap { token -> (Int, SwiftDeclarationKind?)? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structureDictionary: file.structureDictionary).last else {
+            guard let dict = declarations(forByteOffset: token.offset,
+                                          structureDictionary: file.structureDictionary).last else {
                 return nil
             }
 
@@ -216,12 +217,14 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                                   reason: reason)
         }
     }
+}
 
-    private func declarations(forByteOffset byteOffset: Int,
-                              structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+private extension ImplicitGetterRule {
+    func declarations(forByteOffset byteOffset: Int,
+                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
-                                                             .union([.functionSubscript])
+            .union([.functionSubscript])
 
         func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
             // Only accepts declarations which contains a body and contains the

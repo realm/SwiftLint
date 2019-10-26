@@ -36,7 +36,8 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         return file.match(pattern: "break", with: [.keyword]).compactMap { range in
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                let innerStructure = file.structure.structures(forByteOffset: byteRange.location, in: file.structureDictionary).last,
+                let innerStructure = file.structure.structures(forByteOffset: byteRange.location,
+                                                               in: file.structureDictionary).last,
                 innerStructure.kind.flatMap(StatementKind.init) == .case,
                 let caseOffset = innerStructure.offset,
                 let caseLength = innerStructure.length,

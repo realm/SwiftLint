@@ -19,7 +19,9 @@ private var structureCache = Cache({ file -> Structure? in
     return nil
 })
 
-private var structureDictionaryCache = Cache({ file in structureCache.get(file).map { SourceKittenDictionary($0.dictionary) } })
+private var structureDictionaryCache = Cache({ file in
+    return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
+})
 
 private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxMap.init) })
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })

@@ -2,12 +2,13 @@ import SourceKittenFramework
 
 public struct SourceKittenDictionary {
     public let value: [String: SourceKitRepresentable]
-    private let _substructure: [SourceKittenDictionary]
+    public let substructure: [SourceKittenDictionary]
+
     init(_ value: [String: SourceKitRepresentable]) {
         self.value = value
 
         let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
-        _substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
+        self.substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
             .map(SourceKittenDictionary.init)
     }
 
@@ -81,22 +82,15 @@ public struct SourceKittenDictionary {
 
     var swiftAttributes: [SourceKittenDictionary] {
         let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
-        let dictionaries = array.compactMap { ($0 as? SourceKittenDictionary) }
+        let dictionaries = array.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(SourceKittenDictionary.init)
         return dictionaries
-    }
-
-    var substructure: [SourceKittenDictionary] {
-        return _substructure
     }
 
     var elements: [SourceKittenDictionary] {
         let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
-        return elements.compactMap { $0 as? SourceKittenDictionary }
-    }
-
-    var entities: [SourceKittenDictionary] {
-        let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
-        return entities.compactMap { $0 as? SourceKittenDictionary }
+        return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
+        .map(SourceKittenDictionary.init)
     }
 
     var enclosedVarParameters: [SourceKittenDictionary] {

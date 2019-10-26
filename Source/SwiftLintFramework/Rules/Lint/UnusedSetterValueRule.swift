@@ -103,7 +103,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
         let violatingLocations = setTokens.compactMap { setToken -> Int? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: setToken.offset, structureDictionary: file.structureDictionary).last,
+            guard let dict = declarations(forByteOffset: setToken.offset,
+                                          structureDictionary: file.structureDictionary).last,
                 let bodyOffset = dict.bodyOffset, let bodyLength = dict.bodyLength,
                 case let contents = file.contents.bridge(),
                 let propertyRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
@@ -177,7 +178,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structureDictionary: file.structureDictionary).last,
+            guard let dict = declarations(forByteOffset: token.offset,
+                                          structureDictionary: file.structureDictionary).last,
                 propertyStructure.value.isEqualTo(dict.value) else {
                     return false
             }

@@ -82,7 +82,8 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
     }
 }
 
-private func functions(forByteOffset byteOffset: Int, in dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+private func functions(forByteOffset byteOffset: Int, in dictionary: SourceKittenDictionary)
+    -> [SourceKittenDictionary] {
     var results = [SourceKittenDictionary]()
 
     func parse(_ dictionary: SourceKittenDictionary) {

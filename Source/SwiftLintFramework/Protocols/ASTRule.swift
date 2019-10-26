@@ -7,7 +7,7 @@ public protocol ASTRule: Rule {
 
 public extension ASTRule where KindType.RawValue == String {
     func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+        return validate(file: file, dictionary: file.structureDictionary)
     }
 
     func validate(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {

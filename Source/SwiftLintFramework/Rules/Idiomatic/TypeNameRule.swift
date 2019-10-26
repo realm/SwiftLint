@@ -23,7 +23,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +
-            validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+            validate(file: file, dictionary: file.structureDictionary)
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
@@ -62,7 +62,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary(value: [:]), file: File,
+    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary([:]), file: File,
                           offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []

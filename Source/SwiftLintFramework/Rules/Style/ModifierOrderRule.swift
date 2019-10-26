@@ -57,7 +57,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     public func correct(file: File) -> [Correction] {
-        return correct(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+        return correct(file: file, dictionary: file.structureDictionary)
     }
 
     private func correct(file: File, dictionary: SourceKittenDictionary) -> [Correction] {
@@ -198,7 +198,7 @@ private extension SourceKittenDictionary {
                 return nil
         }
 
-        return SourceKittenDictionary(value: ["key.kind": kind, "key.offset": Int64(offset)])
+        return SourceKittenDictionary(["key.kind": kind, "key.offset": Int64(offset)])
     }
 }
 

@@ -94,7 +94,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         return (violationRange, "")
     }
 
-    private func shouldReturnEarlyBasedOnTypeName(dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func shouldReturnEarlyBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
         guard SwiftVersion.current >= .fourDotOne else {
             return false
         }
@@ -102,7 +102,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         return !containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary)
     }
 
-    private func containsVoidReturnTypeBasedOnTypeName(dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func containsVoidReturnTypeBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
         guard let typeName = dictionary.typeName else {
             return false
         }

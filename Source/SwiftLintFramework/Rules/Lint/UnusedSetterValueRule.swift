@@ -103,7 +103,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
         let violatingLocations = setTokens.compactMap { setToken -> Int? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: setToken.offset, structure: file.structure).last,
+            guard let dict = declarations(forByteOffset: setToken.offset, structureDictionary: file.structureDictionary).last,
                 let bodyOffset = dict.bodyOffset, let bodyLength = dict.bodyLength,
                 case let contents = file.contents.bridge(),
                 let propertyRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
@@ -162,7 +162,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 return nil
         }
 
-        let declaration = file.structure.structures(forByteOffset: firstToken.offset)
+        let declaration = file.structure.structures(forByteOffset: firstToken.offset, in: file.structureDictionary)
             .first(where: { $0.offset == firstToken.offset && $0.length == firstToken.length })
 
         guard let name = declaration?.name else {
@@ -177,7 +177,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last,
+            guard let dict = declarations(forByteOffset: token.offset, structureDictionary: file.structureDictionary).last,
                 propertyStructure.value.isEqualTo(dict.value) else {
                     return false
             }
@@ -187,7 +187,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 
     private func declarations(forByteOffset byteOffset: Int,
-                              structure: Structure) -> [SourceKittenDictionary] {
+                              structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
 
@@ -212,7 +212,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
             }
         }
 
-        let dict = SourceKittenDictionary(value: structure.dictionary)
+        let dict = structureDictionary
 
         for dictionary in dict.substructure {
             parse(dictionary: dictionary, parentKind: nil)

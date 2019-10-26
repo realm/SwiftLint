@@ -50,7 +50,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
 
         // if the declaration is inside a protocol
         if let offset = dictionary.offset,
-            !protocolDeclarations(forByteOffset: offset, structure: file.structure).isEmpty {
+            !protocolDeclarations(forByteOffset: offset, structureDictionary: file.structureDictionary).isEmpty {
             return []
         }
 
@@ -76,7 +76,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
     }
 
     private func protocolDeclarations(forByteOffset byteOffset: Int,
-                                      structure: Structure) -> [SourceKittenDictionary] {
+                                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         var results = [SourceKittenDictionary]()
 
         func parse(dictionary: SourceKittenDictionary) {
@@ -94,7 +94,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
             }
             dictionary.substructure.forEach(parse)
         }
-        parse(dictionary: SourceKittenDictionary(value: structure.dictionary))
+        parse(dictionary: structureDictionary)
         return results
     }
 }

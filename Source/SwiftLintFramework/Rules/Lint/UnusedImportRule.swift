@@ -317,7 +317,7 @@ private extension File {
             return false
         }
 
-        func containsAttributesRequiringFoundation(dict: [String: SourceKitRepresentable]) -> Bool {
+        func containsAttributesRequiringFoundation(dict: SourceKittenDictionary) -> Bool {
             if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
                 return true
             } else {
@@ -325,12 +325,11 @@ private extension File {
             }
         }
 
-        return containsAttributesRequiringFoundation(dict: self.structure.dictionary)
+        return containsAttributesRequiringFoundation(dict: self.structureDictionary)
     }
 }
 
 private extension Dictionary where Value == SourceKitRepresentable, Key == String {
-
     var entities: [[String: SourceKitRepresentable]] {
         let entities = self["key.entities"] as? [SourceKitRepresentable] ?? []
         return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
@@ -355,7 +354,6 @@ private extension Dictionary where Value == SourceKitRepresentable, Key == Strin
         let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
     }
-
 }
 
 private let syntaxKindsToSkip: Set<SyntaxKind> = [
@@ -379,5 +377,3 @@ private let attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> = 
     .objcMembers,
     .objcNonLazyRealization
 ]
-
-

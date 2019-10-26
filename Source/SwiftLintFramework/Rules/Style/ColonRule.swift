@@ -32,7 +32,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
         let dictionaryViolations: [StyleViolation]
         if configuration.applyToDictionaries {
-            dictionaryViolations = validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+            dictionaryViolations = validate(file: file, dictionary: file.structureDictionary)
         } else {
             dictionaryViolations = []
         }
@@ -75,7 +75,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         let violations: [RangeWithKind] = typeColonViolationRanges(in: file, matching: pattern).map {
             (range: $0, kind: ColonKind.type)
         }
-        let dictionary = SourceKittenDictionary(value: file.structure.dictionary)
+        let dictionary = file.structureDictionary
         let contents = file.contents.bridge()
         let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file,
                                                                              dictionary: dictionary).compactMap {

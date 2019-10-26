@@ -57,7 +57,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         }
 
         // Process nested type separator
-        let dictionary = SourceKittenDictionary(value: file.structure.dictionary)
+        let dictionary = file.structureDictionary
         let allDeclaredTypeNames = dictionary.recursiveDeclaredTypeNames().map {
             $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
         }

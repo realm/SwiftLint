@@ -88,7 +88,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violations(in: SourceKittenDictionary(value: file.structure.dictionary), file: file)
+        return violations(in: file.structureDictionary, file: file)
     }
 
     private func violations(in substructure: SourceKittenDictionary, file: File) -> [StyleViolation] {

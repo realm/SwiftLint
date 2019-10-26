@@ -43,7 +43,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
     }
 
     private func testClasses(in file: File) -> [SourceKittenDictionary] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
             guard
                 let kind = dictionary.kind,

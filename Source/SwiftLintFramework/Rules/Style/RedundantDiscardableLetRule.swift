@@ -49,7 +49,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
             }
 
             return !isInBooleanCondition(byteOffset: byteRange.location,
-                                         dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+                                         dictionary: file.structureDictionary)
                 && !hasExplicitType(utf16Range: range.location ..< range.location + range.length,
                                     fileContents: contents)
         }

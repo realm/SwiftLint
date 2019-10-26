@@ -40,7 +40,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
 
         var attributeLines = attributeLineNumbers(file: file)
         let varLines = varLetLineNumbers(file: file,

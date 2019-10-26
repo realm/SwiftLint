@@ -172,7 +172,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
 
     // check deepest kind matching range in structure is a typeAnnotation
     private func isTypeAnnotation(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
-        let kinds = file.structure.kinds(forByteOffset: byteRange.location)
+        let kinds = file.structure.kinds(forByteOffset: byteRange.location, in: file.structureDictionary)
         guard let lastItem = kinds.last,
             let lastKind = SwiftDeclarationKind(rawValue: lastItem.kind),
             SwiftDeclarationKind.variableKinds.contains(lastKind) else {

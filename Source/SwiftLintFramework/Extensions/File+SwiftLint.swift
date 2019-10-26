@@ -131,7 +131,7 @@ extension File {
         }
         var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
         var lineIterator = lines.makeIterator()
-        var structureIterator = structure.kinds().makeIterator()
+        var structureIterator = structure.kinds(in: structureDictionary).makeIterator()
         var maybeLine = lineIterator.next()
         var maybeStructure = structureIterator.next()
         while let line = maybeLine, let structure = maybeStructure {

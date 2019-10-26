@@ -74,7 +74,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
                 .filter { match, _ -> Bool in
                     let contents = file.contents.bridge()
                     guard let byteOffset = contents.NSRangeToByteRange(start: match.location, length: 1)?.location,
-                        let outerKind = file.structure.kinds(forByteOffset: byteOffset).last else {
+                        let outerKind = file.structure.kinds(forByteOffset: byteOffset, in: file.structureDictionary).last else {
                             return true
                     }
 

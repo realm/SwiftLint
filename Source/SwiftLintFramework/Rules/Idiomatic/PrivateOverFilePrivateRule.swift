@@ -67,7 +67,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
         let syntaxTokens = file.syntaxMap.tokens
         let contents = file.contents.bridge()
 
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         return dict.substructure.compactMap { dictionary -> NSRange? in
             guard let offset = dictionary.offset else {
                 return nil

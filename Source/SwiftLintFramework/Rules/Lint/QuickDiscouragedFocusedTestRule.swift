@@ -15,7 +15,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
                 $0.kind.flatMap(SwiftDeclarationKind.init) == .class

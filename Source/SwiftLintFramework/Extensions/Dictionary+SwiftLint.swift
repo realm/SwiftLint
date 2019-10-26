@@ -1,34 +1,14 @@
 import SourceKittenFramework
 
-
-private enum LazyValue<T> {
-    case notYetComputed(() -> T)
-    case computed(T)
-}
-
-final class LazyBox<T> {
-    init(computation: @escaping () -> T) {
-        _value = .notYetComputed(computation)
-    }
-
-    private var _value: LazyValue<T>
-
-    var value: T {
-        switch self._value {
-        case .notYetComputed(let computation):
-            let result = computation()
-            self._value = .computed(result)
-            return result
-        case .computed(let result):
-            return result
-        }
-    }
-}
-
 public struct SourceKittenDictionary {
     public let value: [String: SourceKitRepresentable]
-    init(value: [String: SourceKitRepresentable]) {
+    private let _substructure: [SourceKittenDictionary]
+    init(_ value: [String: SourceKitRepresentable]) {
         self.value = value
+
+        let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
+        _substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(SourceKittenDictionary.init)
     }
 
     /// Accessibility.
@@ -40,12 +20,17 @@ public struct SourceKittenDictionary {
     var bodyLength: Int? {
         return (value["key.bodylength"] as? Int64).flatMap({ Int($0) })
     }
-    
+
+    /// Body offset.
+    var bodyOffset: Int? {
+        return (value["key.bodyoffset"] as? Int64).flatMap({ Int($0) })
+    }
+
     /// Kind.
     var kind: String? {
         return value["key.kind"] as? String
     }
-    
+
     /// Length.
     var length: Int? {
         return (value["key.length"] as? Int64).flatMap({ Int($0) })
@@ -56,7 +41,7 @@ public struct SourceKittenDictionary {
     }
 
     /// Name length.
-    var nameLength : Int?{
+    var nameLength: Int? {
         return (value["key.namelength"] as? Int64).flatMap({ Int($0) })
     }
 
@@ -65,15 +50,45 @@ public struct SourceKittenDictionary {
         return (value["key.nameoffset"] as? Int64).flatMap({ Int($0) })
     }
 
+    /// Offset.
+    var offset: Int? {
+        return (value["key.offset"] as? Int64).flatMap({ Int($0) })
+    }
+
+    /// Setter accessibility.
+    var setterAccessibility: String? {
+        return value["key.setter_accessibility"] as? String
+    }
+
+    /// Type name.
+    var typeName: String? {
+        return value["key.typename"] as? String
+    }
+
     /// Documentation length.
     var docLength: Int? {
         return (value["key.doclength"] as? Int64).flatMap({ Int($0) })
     }
 
-    var substructure: [SourceKittenDictionary] {
-        let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }.map(SourceKittenDictionary.init)
+    var attribute: String? {
+        return value["key.attribute"] as? String
     }
+
+    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
+        return swiftAttributes.compactMap { $0.attribute }
+            .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
+    }
+
+    var swiftAttributes: [SourceKittenDictionary] {
+        let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
+        let dictionaries = array.compactMap { ($0 as? SourceKittenDictionary) }
+        return dictionaries
+    }
+
+    var substructure: [SourceKittenDictionary] {
+        return _substructure
+    }
+
     var elements: [SourceKittenDictionary] {
         let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
         return elements.compactMap { $0 as? SourceKittenDictionary }
@@ -114,7 +129,7 @@ public struct SourceKittenDictionary {
 
     var inheritedTypes: [String] {
         let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
-        return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"]} }
+        return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
 
     internal func extractCallsToSuper(methodName: String) -> [String] {
@@ -131,43 +146,6 @@ public struct SourceKittenDictionary {
             return [name]
         }
     }
-
-    /// Body offset.
-    var bodyOffset: Int? {
-        return (value["key.bodyoffset"] as? Int64).flatMap({ Int($0) })
-    }
-
-
-    var attribute: String? {
-        return value["key.attribute"] as? String
-    }
-
-    var swiftAttributes: [SourceKittenDictionary] {
-        let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
-        let dictionaries = array.compactMap { ($0 as? SourceKittenDictionary) }
-        return dictionaries
-    }
-
-    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
-        return swiftAttributes.compactMap { $0.attribute }
-            .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
-    }
-
-    /// Setter accessibility.
-    var setterAccessibility: String? {
-        return value["key.setter_accessibility"] as? String
-    }
-
-    /// Offset.
-    var offset: Int? {
-        return (value["key.offset"] as? Int64).flatMap({ Int($0) })
-    }
-
-    /// Type name.
-    var typeName: String? {
-        return value["key.typename"] as? String
-    }
-
 }
 
 extension Dictionary where Key == String {

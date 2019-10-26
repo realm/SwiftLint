@@ -17,7 +17,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
             violations.append(contentsOf: validateTypeSubstructure(substructure, in: file))

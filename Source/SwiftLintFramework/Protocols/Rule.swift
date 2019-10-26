@@ -100,7 +100,7 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
 
 extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
     public func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+        return violationRanges(in: file, dictionary: file.structureDictionary)
     }
 
     private func violationRanges(in file: File,

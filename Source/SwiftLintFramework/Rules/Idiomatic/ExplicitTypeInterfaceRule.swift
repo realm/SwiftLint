@@ -68,7 +68,7 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary), parentStructure: nil)
+        return validate(file: file, dictionary: file.structureDictionary, parentStructure: nil)
     }
 
     private func validate(file: File, dictionary: SourceKittenDictionary,
@@ -111,7 +111,6 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
 }
 
 private extension SourceKittenDictionary {
-    
     var containsType: Bool {
         return typeName != nil
     }

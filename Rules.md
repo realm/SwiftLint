@@ -24981,13 +24981,13 @@ Function parameters should be aligned vertically if they're in multiple lines in
 
 ```swift
 func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable]) { }
+                      dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
 func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
+                      dictionary: SourceKittenDictionary) -> [StyleViolation]
 
 ```
 
@@ -25003,7 +25003,7 @@ func foo(bar: Int) -> String
 
 ```swift
 func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable])
+                      dictionary: SourceKittenDictionary)
                       -> [StyleViolation]
 
 ```
@@ -25011,14 +25011,14 @@ func validateFunction(_ file: File, kind: SwiftDeclarationKind,
 ```swift
 func validateFunction(
    _ file: File, kind: SwiftDeclarationKind,
-   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
+   dictionary: SourceKittenDictionary) -> [StyleViolation]
 
 ```
 
 ```swift
 func validateFunction(
    _ file: File, kind: SwiftDeclarationKind,
-   dictionary: [String: SourceKitRepresentable]
+   dictionary: SourceKittenDictionary
 ) -> [StyleViolation]
 
 ```
@@ -25054,20 +25054,20 @@ func foo(data: Data,
 
 ```swift
 func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                  ↓dictionary: [String: SourceKitRepresentable]) { }
+                  ↓dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
 func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                       ↓dictionary: [String: SourceKitRepresentable]) { }
+                       ↓dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
 func validateFunction(_ file: File,
                   ↓kind: SwiftDeclarationKind,
-                  ↓dictionary: [String: SourceKitRepresentable]) { }
+                  ↓dictionary: SourceKittenDictionary) { }
 
 ```
 

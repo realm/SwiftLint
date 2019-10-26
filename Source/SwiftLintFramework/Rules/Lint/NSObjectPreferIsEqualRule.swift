@@ -21,7 +21,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
     // MARK: - Private
 
     private func objcVisibleClasses(in file: File) -> [SourceKittenDictionary] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
 
         return dict.substructure.filter { dictionary in
             guard

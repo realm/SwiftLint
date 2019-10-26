@@ -174,7 +174,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
     }
 
     private func violations(in file: File) -> [SourceKittenDictionary] {
-        return violations(in: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary)).sorted { lhs, rhs in
+        return violations(in: file, dictionary: file.structureDictionary).sorted { lhs, rhs in
             (lhs.offset ?? 0) < (rhs.offset ?? 0)
         }
     }

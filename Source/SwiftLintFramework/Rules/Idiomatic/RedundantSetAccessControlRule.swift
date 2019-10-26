@@ -47,7 +47,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary), parentDictionary: nil)
+        return validate(file: file, dictionary: file.structureDictionary, parentDictionary: nil)
     }
 
     private func validate(file: File, dictionary: SourceKittenDictionary,

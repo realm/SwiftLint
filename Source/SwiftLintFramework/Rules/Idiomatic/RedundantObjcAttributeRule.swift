@@ -29,7 +29,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     }
 
     public func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary), parentStructure: nil)
+        return violationRanges(file: file, dictionary: file.structureDictionary, parentStructure: nil)
     }
 
     private func violationRanges(file: File, dictionary: SourceKittenDictionary,
@@ -89,7 +89,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     }
 }
 
-private extension SourceKittenDictionary{
+private extension SourceKittenDictionary {
     var isObjcAndIBDesignableDeclaredExtension: Bool {
         guard let kind = kind, let declaration = SwiftDeclarationKind(rawValue: kind) else {
             return false

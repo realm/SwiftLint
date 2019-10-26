@@ -40,7 +40,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        var violations = validateAttributes(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+        var violations = validateAttributes(file: file, dictionary: file.structureDictionary)
         violations += validateConditions(file: file)
         violations.sort(by: { $0.location < $1.location })
 

@@ -54,10 +54,10 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         if shouldUseLegacyImplementation {
-            return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary)) +
+            return validate(file: file, dictionary: file.structureDictionary) +
                 validateGenericTypeAliases(in: file)
         } else {
-            return validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+            return validate(file: file, dictionary: file.structureDictionary)
         }
     }
 

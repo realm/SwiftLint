@@ -88,7 +88,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         in file: File,
         mainTypeSubstructure: SourceKittenDictionary
     ) -> [SourceKittenDictionary] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             return substructure.value.bridge() != mainTypeSubstructure.value.bridge() &&
@@ -103,7 +103,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         var supportingTypeKinds = SwiftDeclarationKind.typeKinds
         supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
 
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             guard let declarationKind = SwiftDeclarationKind(rawValue: kind) else { return false }
@@ -114,7 +114,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func mainTypeSubstructure(in file: File) -> SourceKittenDictionary? {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
 
         guard let filePath = file.path else {
             return self.mainTypeSubstructure(in: dict)
@@ -122,7 +122,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
         let fileName = URL(fileURLWithPath: filePath).lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return self.mainTypeSubstructure(in: SourceKittenDictionary(value: file.structure.dictionary))
+            return self.mainTypeSubstructure(in: file.structureDictionary)
         }
 
         // specify type with name matching the files name as main type

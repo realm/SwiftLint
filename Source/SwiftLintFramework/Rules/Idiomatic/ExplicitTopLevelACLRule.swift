@@ -36,7 +36,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
                                                          .extensionProtocol, .extensionStruct]
 
         // find all top-level types marked as internal (either explictly or implictly)
-        let dictionary = SourceKittenDictionary(value: file.structure.dictionary)
+        let dictionary = file.structureDictionary
         let internalTypesOffsets = dictionary.substructure.compactMap { element -> Int? in
             // ignore extensions
             guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),

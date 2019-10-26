@@ -21,7 +21,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
     // MARK: - Private
 
     private func testClasses(in file: File) -> [SourceKittenDictionary] {
-        let dict = SourceKittenDictionary(value: file.structure.dictionary)
+        let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
             guard
                 let kind = dictionary.kind,

@@ -112,7 +112,7 @@ extension ClosureEndIndentationRule {
     }
 
     fileprivate func violations(in file: File) -> [Violation] {
-        return violations(in: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+        return violations(in: file, dictionary: file.structureDictionary)
     }
 
     private func violations(in file: File,

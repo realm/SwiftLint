@@ -6,7 +6,7 @@ extension Structure {
     /// that contains the byte offset. Returns all kinds if no parameter specified.
     ///
     /// - Parameter byteOffset: Int?
-    internal func kinds(forByteOffset byteOffset: Int? = nil) -> [(kind: String, byteRange: NSRange)] {
+    internal func kinds(forByteOffset byteOffset: Int? = nil, in dictionary: SourceKittenDictionary) -> [(kind: String, byteRange: NSRange)] {
         var results = [(kind: String, byteRange: NSRange)]()
 
         func parse(_ dictionary: SourceKittenDictionary) {
@@ -22,11 +22,11 @@ extension Structure {
             }
             dictionary.substructure.forEach(parse)
         }
-        parse(SourceKittenDictionary(value: dictionary))
+        parse(dictionary)
         return results
     }
 
-    internal func structures(forByteOffset byteOffset: Int) -> [SourceKittenDictionary] {
+    internal func structures(forByteOffset byteOffset: Int, in dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         var results = [SourceKittenDictionary]()
 
         func parse(_ dictionary: SourceKittenDictionary) {
@@ -39,7 +39,7 @@ extension Structure {
             results.append(dictionary)
             dictionary.substructure.forEach(parse)
         }
-        parse(SourceKittenDictionary(value: dictionary))
+        parse(dictionary)
         return results
     }
 }

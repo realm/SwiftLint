@@ -26,7 +26,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTestableImport(file: file) +
-            validate(file: file, dictionary: SourceKittenDictionary(value: file.structure.dictionary))
+            validate(file: file, dictionary: file.structureDictionary)
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,

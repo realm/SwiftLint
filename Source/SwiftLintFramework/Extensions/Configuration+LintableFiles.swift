@@ -3,7 +3,8 @@ import Foundation
 extension Configuration {
     // MARK: Lintable Paths
     public func lintableFiles(inPath path: String, forceExclude: Bool) -> [SwiftLintFile] {
-        return lintablePaths(inPath: path, forceExclude: forceExclude).compactMap(SwiftLintFile.init(pathDeferringReading:))
+        return lintablePaths(inPath: path, forceExclude: forceExclude)
+            .compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
     internal func lintablePaths(

@@ -123,6 +123,11 @@
   todos with an expiration date.  
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
+* Add option to specify a `child_config` / `parent_config` file
+  (local or remote) in any SwiftLint configuration file.
+  Allow passing multiple configuration files via the command line.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 * Support compilation databases for `swiftlint analayze`.  
   [kastiglione](https://github.com/kastiglione)
@@ -220,10 +225,6 @@
 
 * Make `contains_over_first_not_nil` rule also match `first(where:) == nil`.  
   [Colton Schlosser](https://github.com/cltnschlosser)
-  
-* Add option to specify a `sub_config` file in any SwiftLint configuration file. Recursive sub configs are also possible.  
-  [Frederick Pietschmann](https://github.com/fredpi)
-  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 * Add two new cases to the Mark rule to detect a Mark using three slashes.  
   [nvanfleet](https://github.com/nvanfleet)

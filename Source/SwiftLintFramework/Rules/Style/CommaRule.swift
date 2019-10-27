@@ -63,12 +63,10 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
         ")" +                  // end capture
         "(\\S)"                // second capture is not whitespace.
 
-    private static let pattern =
-        "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
-        "|" +                       // or
-        "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
+    private static let pattern = "\\S?\(mainPatternGroups)"
 
     private static let regularExpression = regex(pattern, options: [])
+
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds.union([.objectLiteral])
 
@@ -80,12 +78,9 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
         return CommaRule.regularExpression
             .matches(in: contents, options: [], range: range)
             .compactMap { match -> NSRange? in
-                if match.numberOfRanges != 5 { return nil } // Number of Groups in regexp
+                if match.numberOfRanges != 3 { return nil } // Number of Groups in regexp
 
-                var indexStartRange = 1
-                if match.range(at: indexStartRange).location == NSNotFound {
-                    indexStartRange += 2
-                }
+                let indexStartRange = 1
 
                 // check first captured range
                 let firstRange = match.range(at: indexStartRange)

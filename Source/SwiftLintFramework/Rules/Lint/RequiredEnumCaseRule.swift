@@ -98,7 +98,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         /// - Returns: Names of cases found in the enum.
         static func cases(from dictionary: SourceKittenDictionary) -> [String] {
             let caseSubstructures = dictionary.substructure.filter { dict in
-                return dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) == .enumcase
+                return dict.declarationKind == .enumcase
             }.flatMap { $0.substructure }
 
             return caseSubstructures.compactMap { $0.name }.map { name in

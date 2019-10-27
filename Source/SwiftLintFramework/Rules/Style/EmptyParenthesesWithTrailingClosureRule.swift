@@ -76,7 +76,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
 
         // avoid the more expensive regex match if there's no trailing closure in the substructure
         if SwiftVersion.current >= .fourDotTwo,
-            dictionary.substructure.last?.kind.flatMap(SwiftExpressionKind.init(rawValue:)) != .closure {
+            dictionary.substructure.last?.expressionKind != .closure {
             return []
         }
 

@@ -93,11 +93,10 @@ private extension SourceKittenDictionary {
                     return
             }
 
-            if let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+            if let kind = dictionary.declarationKind,
                 SwiftDeclarationKind.functionKinds.contains(kind) {
                 results.append(dictionary)
             }
-            dictionary.substructure.forEach(parse)
         }
         parse(self)
         return results

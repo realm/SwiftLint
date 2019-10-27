@@ -60,7 +60,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         }
 
         let containsFatalError = dictionary.substructure.contains { dict -> Bool in
-            return dict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call && dict.name == "fatalError"
+            return dict.expressionKind == .call && dict.name == "fatalError"
         }
 
         guard let offset = dictionary.offset, containsFatalError,

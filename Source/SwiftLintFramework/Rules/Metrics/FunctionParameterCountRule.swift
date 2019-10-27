@@ -82,7 +82,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                                            offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for subDict in structure {
-            guard let key = subDict.kind,
+            guard subDict.kind != nil,
                 let parameterOffset = subDict.offset else {
                     continue
             }
@@ -91,7 +91,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                 return parameterCount
             }
 
-            if SwiftDeclarationKind(rawValue: key) == .varParameter {
+            if subDict.declarationKind == .varParameter {
                 parameterCount += 1
             }
         }

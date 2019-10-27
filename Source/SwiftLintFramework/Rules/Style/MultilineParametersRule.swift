@@ -31,7 +31,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
             guard
                 let offset = subStructure.offset,
                 let length = subStructure.length,
-                let kind = subStructure.kind, SwiftDeclarationKind(rawValue: kind) == .varParameter
+                subStructure.declarationKind == .varParameter
                 else {
                     return nil
             }

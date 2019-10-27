@@ -9,7 +9,7 @@ struct NamespaceCollector {
 
         init?(dictionary: SourceKittenDictionary, namespace: [String]) {
             guard let name = dictionary.name,
-                let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+                let kind = dictionary.declarationKind,
                 let offset = dictionary.offset else {
                     return nil
             }

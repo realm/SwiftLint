@@ -37,8 +37,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
             var violations = violationRanges(file: file, dictionary: subDict, parentStructure: dictionary)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
+            if let kind = subDict.declarationKind {
                 violations += violationRanges(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
             }
 
@@ -61,8 +60,8 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
 
         let isInObjcVisibleScope = { () -> Bool in
             guard let parentStructure = parentStructure,
-                let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-                let parentKind = parentStructure.kind.flatMap(SwiftDeclarationKind.init),
+                let kind = dictionary.declarationKind,
+                let parentKind = parentStructure.declarationKind,
                 let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) else {
                     return false
             }
@@ -91,7 +90,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
 
 private extension SourceKittenDictionary {
     var isObjcAndIBDesignableDeclaredExtension: Bool {
-        guard let kind = kind, let declaration = SwiftDeclarationKind(rawValue: kind) else {
+        guard let declaration = declarationKind else {
             return false
         }
         return [.extensionClass, .extension].contains(declaration)

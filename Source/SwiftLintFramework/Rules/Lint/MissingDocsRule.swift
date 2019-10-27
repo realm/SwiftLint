@@ -12,7 +12,7 @@ private extension File {
         }
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
                                                          .extensionStruct, .extensionProtocol]
-        guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+        guard let kind = dictionary.declarationKind,
             !extensionKinds.contains(kind),
             case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
             !isDeinit,

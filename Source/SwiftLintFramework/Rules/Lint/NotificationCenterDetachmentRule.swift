@@ -32,12 +32,12 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
                                   dictionary: SourceKittenDictionary) -> [Int] {
         return dictionary.substructure.flatMap { subDict -> [Int] in
             // complete detachment is allowed on `deinit`
-            if subDict.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance,
+            if subDict.declarationKind == .functionMethodInstance,
                 subDict.name == "deinit" {
                 return []
             }
 
-            if subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
+            if subDict.expressionKind == .call,
                 subDict.name == methodName,
                 parameterIsSelf(dictionary: subDict, file: file),
                 let offset = subDict.offset {

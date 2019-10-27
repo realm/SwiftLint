@@ -76,8 +76,7 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         return dictionary.substructure.flatMap({ subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict, parentStructure: dictionary)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
+            if let kind = subDict.declarationKind {
                 violations += validate(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
             }
 
@@ -157,9 +156,8 @@ private extension SourceKittenDictionary {
     }
 
     func contains(_ statements: Set<StatementKind>) -> Bool {
-        guard let kind = kind,
-              let statement = StatementKind(rawValue: kind) else {
-                return false
+        guard let statement = statementKind else {
+            return false
         }
         return statements.contains(statement)
     }

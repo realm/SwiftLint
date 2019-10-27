@@ -18,13 +18,13 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
-                $0.kind.flatMap(SwiftDeclarationKind.init) == .class
+                $0.declarationKind == .class
         }
 
         let specDeclarations = testClasses.flatMap { classDict in
             return classDict.substructure.filter {
                 return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance &&
+                    $0.declarationKind == .functionMethodInstance &&
                     $0.enclosedSwiftAttributes.contains(.override)
             }
         }
@@ -38,8 +38,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) {
+            if let kind = subDict.expressionKind {
                 violations += validate(file: file, kind: kind, dictionary: subDict)
             }
 

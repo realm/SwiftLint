@@ -67,7 +67,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         }
 
         let containsInstanceDeclarations = dictionary.substructure.contains { dict in
-            guard let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) else {
+            guard let kind = dict.declarationKind else {
                 return false
             }
 

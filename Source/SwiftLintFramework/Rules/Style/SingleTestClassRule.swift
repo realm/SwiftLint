@@ -45,11 +45,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
     private func testClasses(in file: File) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
-            guard
-                let kind = dictionary.kind,
-                SwiftDeclarationKind(rawValue: kind) == .class
-                else { return false }
-
+            guard dictionary.declarationKind == .class else { return false }
             return !testClasses.isDisjoint(with: dictionary.inheritedTypes)
         }
     }

@@ -201,7 +201,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                 return nil
             }
 
-            let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:))
+            let kind = dict.declarationKind
             return (token.offset, kind)
         }
 
@@ -229,8 +229,7 @@ private extension ImplicitGetterRule {
         func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
-            guard let kindString = dictionary.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString),
+            guard let kind = dictionary.declarationKind,
                 let bodyOffset = dictionary.bodyOffset,
                 let bodyLength = dictionary.bodyLength,
                 case let byteRange = NSRange(location: bodyOffset, length: bodyLength),

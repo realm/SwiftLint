@@ -55,8 +55,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict, parentDictionary: dictionary)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
+            if let kind = subDict.declarationKind {
                 violations += validate(file: file, kind: kind, dictionary: subDict, parentDictionary: dictionary)
             }
 

@@ -173,7 +173,7 @@ private extension File {
         -> (usr: String, nameOffset: Int)? {
         if let offset = cursorInfo.swiftlintOffset,
             let usr = cursorInfo.usr,
-            let kind = cursorInfo.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            let kind = cursorInfo.declarationKind,
             !declarationKindsToSkip.contains(kind),
             let acl = cursorInfo.accessibility.flatMap(AccessControlLevel.init(rawValue:)),
             includePublicAndOpen || [.internal, .private, .fileprivate].contains(acl) {
@@ -227,7 +227,7 @@ private extension File {
     }
 
     private static func testCaseUSR(cursorInfo: SourceKittenDictionary) -> String? {
-        if let kind = (cursorInfo.kind).flatMap(SwiftDeclarationKind.init(rawValue:)),
+        if let kind = cursorInfo.declarationKind,
             kind == .class,
             let annotatedDecl = cursorInfo.annotatedDeclaration,
             annotatedDecl.contains("<Type usr=\"c:objc(cs)XCTestCase\">XCTestCase</Type>"),

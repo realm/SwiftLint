@@ -70,8 +70,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
 
     private func isEnumeratedCall(dictionary: SourceKittenDictionary) -> Bool {
         for subDict in dictionary.substructure {
-            guard let kindString = subDict.kind,
-                SwiftExpressionKind(rawValue: kindString) == .call,
+            guard subDict.expressionKind == .call,
                 let name = subDict.name else {
                     continue
             }

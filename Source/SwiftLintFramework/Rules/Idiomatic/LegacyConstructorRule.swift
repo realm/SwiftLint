@@ -165,7 +165,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
                             dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         return dictionary.substructure.flatMap { subDict -> [SourceKittenDictionary] in
             var dictionaries = violations(in: file, dictionary: subDict)
-            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+            if let kind = subDict.expressionKind {
                 dictionaries += violations(in: file, kind: kind, dictionary: subDict)
             }
 

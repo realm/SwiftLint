@@ -6,7 +6,7 @@ private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds + [.extension
 private extension SourceKittenDictionary {
     func recursiveDeclaredTypeNames() -> [String] {
         let subNames = substructure.flatMap { $0.recursiveDeclaredTypeNames() }
-        if let kind = kind.flatMap(SwiftDeclarationKind.init),
+        if let kind = declarationKind,
             typeAndExtensionKinds.contains(kind), let name = name {
             return [name] + subNames
         }

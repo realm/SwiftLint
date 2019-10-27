@@ -52,7 +52,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
             }
         }
         violations.append(contentsOf: dictionary.substructure.compactMap { subDict in
-            if let kind = (subDict.kind).flatMap(SwiftDeclarationKind.init) {
+            if let kind = subDict.declarationKind {
                 return (kind, subDict)
             }
             return nil

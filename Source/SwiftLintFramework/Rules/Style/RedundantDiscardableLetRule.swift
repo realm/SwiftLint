@@ -63,7 +63,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         }
 
         let kinds: Set<StatementKind> = [.if, .guard, .while]
-        if let kind = dictionary.kind.flatMap(StatementKind.init), kinds.contains(kind) {
+        if let kind = dictionary.statementKind, kinds.contains(kind) {
             let conditionKind = "source.lang.swift.structure.elem.condition_expr"
             for element in dictionary.elements where element.kind == conditionKind {
                 guard let elementOffset = element.offset,

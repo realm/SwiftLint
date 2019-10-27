@@ -133,38 +133,40 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
         var result = Set<Int>()
 
         for statement in structure {
-            guard let kind = statement.kind,
+            guard statement.kind != nil,
                   let (startLine, endLine) = lineOffsets(file: file, statement: statement) else {
                 continue
             }
 
-            if SwiftDeclarationKind.nonVarAttributableKinds.contains(where: { $0.rawValue == kind }) {
-                if attributeLines.contains(startLine) {
-                    attributeLines.remove(startLine)
-                }
-            }
-            if SwiftDeclarationKind.varKinds.contains(where: { $0.rawValue == kind }) {
-                var lines = Set(startLine...((endLine < 0) ? file.lines.count : endLine))
-                var previousLine = startLine - 1
-
-                // Include preceding attributes
-                while attributeLines.contains(previousLine) {
-                    lines.insert(previousLine)
-                    attributeLines.remove(previousLine)
-                    previousLine -= 1
-                }
-
-                // Exclude the body where the accessors are
-                if let bodyOffset = statement.bodyOffset,
-                   let bodyLength = statement.bodyLength {
-                    let bodyStart = file.line(byteOffset: bodyOffset) + 1
-                    let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength) - 1
-
-                    if bodyStart <= bodyEnd {
-                        lines.subtract(Set(bodyStart...bodyEnd))
+            if let declarationKind = statement.declarationKind {
+                if SwiftDeclarationKind.nonVarAttributableKinds.contains(declarationKind) {
+                    if attributeLines.contains(startLine) {
+                        attributeLines.remove(startLine)
                     }
                 }
-                result.formUnion(lines)
+                if SwiftDeclarationKind.varKinds.contains(declarationKind) {
+                    var lines = Set(startLine...((endLine < 0) ? file.lines.count : endLine))
+                    var previousLine = startLine - 1
+
+                    // Include preceding attributes
+                    while attributeLines.contains(previousLine) {
+                        lines.insert(previousLine)
+                        attributeLines.remove(previousLine)
+                        previousLine -= 1
+                    }
+
+                    // Exclude the body where the accessors are
+                    if let bodyOffset = statement.bodyOffset,
+                        let bodyLength = statement.bodyLength {
+                        let bodyStart = file.line(byteOffset: bodyOffset) + 1
+                        let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength) - 1
+
+                        if bodyStart <= bodyEnd {
+                            lines.subtract(Set(bodyStart...bodyEnd))
+                        }
+                    }
+                    result.formUnion(lines)
+                }
             }
 
             let substructure = statement.substructure

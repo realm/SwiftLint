@@ -27,7 +27,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
 
         let caseStatements = dictionary.substructure.filter { subDict in
             // includes both `case` and `default` statements
-            return subDict.kind.flatMap(StatementKind.init) == .case
+            return subDict.statementKind == .case
         }
 
         if caseStatements.isEmpty {

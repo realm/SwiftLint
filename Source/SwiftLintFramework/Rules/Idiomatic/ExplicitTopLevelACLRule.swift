@@ -39,7 +39,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
         let dictionary = file.structureDictionary
         let internalTypesOffsets = dictionary.substructure.compactMap { element -> Int? in
             // ignore extensions
-            guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            guard let kind = element.declarationKind,
                 !extensionKinds.contains(kind) else {
                     return nil
             }

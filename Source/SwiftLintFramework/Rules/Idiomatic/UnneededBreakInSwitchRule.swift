@@ -37,7 +37,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
                 let innerStructure = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
-                innerStructure.kind.flatMap(StatementKind.init) == .case,
+                innerStructure.statementKind == .case,
                 let caseOffset = innerStructure.offset,
                 let caseLength = innerStructure.length,
                 let lastPatternEnd = patternEnd(dictionary: innerStructure) else {

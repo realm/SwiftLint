@@ -68,8 +68,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validateAttributes(file: file, dictionary: subDict)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
+            if let kind = subDict.declarationKind {
                 violations += validateAttributes(file: file, kind: kind, dictionary: subDict)
             }
 

@@ -108,7 +108,7 @@ extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
         let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
 
-            if let kind = subDict.kind.flatMap(KindType.init) {
+            if let kind = self.kind(from: subDict) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
 

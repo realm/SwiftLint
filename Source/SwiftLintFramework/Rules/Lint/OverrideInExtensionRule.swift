@@ -41,7 +41,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
             .filter { $0.kind == .extension && !susceptibleNames.contains($0.name) }
             .flatMap { element in
                 return element.dictionary.substructure.compactMap { element -> Int? in
-                    guard element.kind.flatMap(SwiftDeclarationKind.init) != nil,
+                    guard element.declarationKind != nil,
                         element.enclosedSwiftAttributes.contains(.override),
                         let offset = element.offset else {
                             return nil

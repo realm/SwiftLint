@@ -186,8 +186,7 @@ extension LiteralExpressionEndIdentationRule {
         return dictionary.substructure.flatMap { subDict -> [Violation] in
             var subViolations = violations(in: file, dictionary: subDict)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString),
+            if let kind = subDict.expressionKind,
                 let violation = violation(in: file, of: kind, dictionary: subDict) {
                 subViolations.append(violation)
             }

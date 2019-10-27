@@ -70,7 +70,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
 private extension Array where Element == SourceKittenDictionary {
     var parameterTypes: [String] {
         return compactMap { element in
-            guard element.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
+            guard element.declarationKind == .varParameter else {
                 return nil
             }
 

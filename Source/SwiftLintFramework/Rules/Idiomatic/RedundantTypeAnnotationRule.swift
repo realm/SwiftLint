@@ -99,7 +99,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
 
     private func isIBInspectable(range: NSRange, file: File) -> Bool {
         guard let byteRange = file.contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
-            let dict = file.structure.structures(forByteOffset: byteRange.location, in: file.structureDictionary).last,
+            let dict = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
             let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
             SwiftDeclarationKind.variableKinds.contains(kind) else {
                 return false

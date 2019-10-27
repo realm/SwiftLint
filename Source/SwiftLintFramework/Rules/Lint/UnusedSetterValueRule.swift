@@ -163,7 +163,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 return nil
         }
 
-        let declaration = file.structure.structures(forByteOffset: firstToken.offset, in: file.structureDictionary)
+        let declaration = file.structureDictionary.structures(forByteOffset: firstToken.offset)
             .first(where: { $0.offset == firstToken.offset && $0.length == firstToken.length })
 
         guard let name = declaration?.name else {

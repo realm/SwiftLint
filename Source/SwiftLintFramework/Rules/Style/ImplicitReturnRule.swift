@@ -68,8 +68,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location,
                                                             length: range.length),
-                let outerKindString = file.structure.kinds(forByteOffset: byteRange.location,
-                                                           in: file.structureDictionary).last?.kind,
+                let outerKindString = file.structureDictionary.kinds(forByteOffset: byteRange.location).last?.kind,
                 let outerKind = SwiftExpressionKind(rawValue: outerKindString),
                 [.call, .argument, .closure].contains(outerKind) else {
                     return nil

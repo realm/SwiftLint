@@ -57,8 +57,7 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
         return defers.compactMap { range -> StyleViolation? in
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                case let kinds = file.structure.kinds(forByteOffset: byteRange.upperBound,
-                                                      in: file.structureDictionary),
+                case let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.upperBound),
                 let brace = kinds.enumerated().lazy.reversed().first(where: isBrace),
                 brace.offset > kinds.startIndex,
                 case let outerKindIndex = kinds.index(before: brace.offset),

@@ -158,7 +158,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
                 return false
             }
 
-            let kinds = file.structure.kinds(forByteOffset: byteOffset, in: file.structureDictionary)
+            let kinds = file.structureDictionary.kinds(forByteOffset: byteOffset)
                 .compactMap { SwiftExpressionKind(rawValue: $0.kind) }
             guard kinds.contains(.call) else {
                 return false

@@ -183,17 +183,25 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
+        // find all comment Kinds first and then run matching patter over each of those
         let nsstring = file.contents.bridge()
-        return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
-            guard let syntaxKind = SyntaxKind(rawValue: syntaxTokens[0].type) else {
-                return false
+        let matchingTokens = file.syntaxMap.tokens.lazy
+            .filter { token in
+                guard let syntaxKind = SyntaxKind(rawValue: token.type) else {
+                    return false
+                }
+                return SyntaxKind.commentKinds.contains(syntaxKind)
             }
-            return !syntaxTokens.isEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
-        }.compactMap { range, syntaxTokens in
-            let identifierRange = nsstring
-                .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
-            return identifierRange.map { NSUnionRange($0, range) }
+        let ranges = matchingTokens.flatMap { (token: SyntaxToken) -> [(NSTextCheckingResult, [SyntaxToken])] in
+            let commentRange = nsstring.byteRangeToNSRange(start: token.offset, length: token.length)
+            let matchesAndTokens = file.matchesAndTokens(matching: pattern, range: commentRange)
+            return matchesAndTokens
         }
+        return ranges
+            .compactMap { range, syntaxTokens in
+                let identifierRange = nsstring.byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
+                return identifierRange.map { NSUnionRange($0, range.range) }
+            }
     }
 }
 

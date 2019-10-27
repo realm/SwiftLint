@@ -39,6 +39,11 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)  
   [#2916](https://github.com/realm/SwiftLint/issues/2916)  
 
+* Optimize mark rule to perform structure check first and then
+  run regular expressions.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2926](https://github.com/realm/SwiftLint/issues/2926)
+
 * Add GitHub Actions Logging reporter (`github-actions-logging`).  
   [Norio Nomura](https://github.com/norio-nomura)
 

@@ -7,10 +7,50 @@ private extension SwiftLintFile {
     func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
         return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").map {
+                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").compactMap {
+            if isAnonimousClosure(range: $0) {
+                return nil
+            }
             let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
             return ($0, branceRange.location)
         }
+    }
+
+    func isAnonimousClosure(range: NSRange) -> Bool {
+        let contentsBridge = contents.bridge()
+        guard range.location != NSNotFound else {
+            return false
+        }
+        let closureCode = contentsBridge.substring(from: range.location)
+        guard let closingBracketPosition = closingBracket(closureCode) else {
+            return false
+        }
+        let lengthAfterClosingBracket = closureCode.count - closingBracketPosition - 1
+        if lengthAfterClosingBracket <= 0 {
+            return false
+        }
+
+        let closingBracketRange = NSRange(location: closingBracketPosition + 1, length: lengthAfterClosingBracket)
+        let firstMatch = regex("(\\s)*\\(").matches(in: closureCode, options: [], range: closingBracketRange).first
+        return firstMatch != nil && firstMatch?.range.location != NSNotFound
+    }
+
+    func closingBracket(_ closureCode: String) -> Int? {
+        var bracketCount = 0
+        var location = 0
+        for letter in closureCode {
+            if letter == "{" {
+                bracketCount += 1
+            } else if letter == "}" {
+                if bracketCount == 1 {
+                    // The closing bracket found
+                    return location
+                }
+                bracketCount -= 1
+            }
+            location += 1
+        }
+        return nil
     }
 }
 
@@ -36,7 +76,15 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
             "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }",
             "struct Rule {}\n",
-            "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"
+            "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
+            """
+            func f(rect: CGRect) {
+               {
+                  let centre = CGPoint(x: rect.midX, y: rect.midY)
+                  print(centre)
+               }()
+            }
+            """
         ],
         triggeringExamples: [
             "func abc()↓{\n}",

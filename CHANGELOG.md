@@ -29,6 +29,9 @@
 
 * Add GitHub Actions Logging reporter (`github-actions-logging`).  
   [Norio Nomura](https://github.com/norio-nomura)
+* Use unique file id for each SiwftLintFile for caching  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2929](https://github.com/realm/SwiftLint/issues/2929)  
 
 #### Bug Fixes
 

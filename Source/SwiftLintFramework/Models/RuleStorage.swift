@@ -1,5 +1,4 @@
 import Dispatch
-import SourceKittenFramework
 
 public class RuleStorage {
     private var storage: [ObjectIdentifier: [SwiftLintFile: Any]]

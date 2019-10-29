@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 

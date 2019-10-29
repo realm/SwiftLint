@@ -128,7 +128,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
 private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String]) -> [SourceKittenDictionary] {
         guard let path = path,
-            let editorOpen = (try? Request.editorOpen(file: self).sendIfNotDisabled())
+            let editorOpen = (try? Request.editorOpen(file: self.file).sendIfNotDisabled())
                 .map(SourceKittenDictionary.init) else {
             return []
         }

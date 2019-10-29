@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 import SwiftLintFramework
 
 struct BenchmarkEntry {

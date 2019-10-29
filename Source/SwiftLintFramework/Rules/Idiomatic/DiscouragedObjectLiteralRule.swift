@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = ObjectLiteralConfiguration()
 

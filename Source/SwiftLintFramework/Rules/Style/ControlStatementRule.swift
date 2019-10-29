@@ -74,7 +74,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
             "do { ; } ↓while (condition) {\n": "do { ; } while condition {\n",
             "↓switch (foo) {\n": "switch foo {\n",
             "do {\n} ↓catch(let error as NSError) {\n}": "do {\n} catch let error as NSError {\n}",
-            "↓if (max(a, b) < c) {\n": "if max(a, b) < c {\n",
+            "↓if (max(a, b) < c) {\n": "if max(a, b) < c {\n"
         ]
     )
 

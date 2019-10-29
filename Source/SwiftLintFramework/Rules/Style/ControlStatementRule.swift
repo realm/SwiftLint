@@ -56,7 +56,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let statements = ["if", "for", "guard", "switch", "while", "catch"]
         let statementPatterns: [String] = statements.map { statement -> String in
             let isGuard = statement == "guard"

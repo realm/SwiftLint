@@ -6,26 +6,26 @@ class RegionTests: XCTestCase {
     // MARK: Regions From Files
 
     func testNoRegionsInEmptyFile() {
-        let file = File(contents: "")
+        let file = SwiftLintFile(contents: "")
         XCTAssertEqual(file.regions(), [])
     }
 
     func testNoRegionsInFileWithNoCommands() {
-        let file = File(contents: String(repeating: "\n", count: 100))
+        let file = SwiftLintFile(contents: String(repeating: "\n", count: 100))
         XCTAssertEqual(file.regions(), [])
     }
 
     func testRegionsFromSingleCommand() {
         // disable
         do {
-            let file = File(contents: "// swiftlint:disable rule_id\n")
+            let file = SwiftLintFile(contents: "// swiftlint:disable rule_id\n")
             let start = Location(file: nil, line: 1, character: 29)
             let end = Location(file: nil, line: .max, character: .max)
             XCTAssertEqual(file.regions(), [Region(start: start, end: end, disabledRuleIdentifiers: ["rule_id"])])
         }
         // enable
         do {
-            let file = File(contents: "// swiftlint:enable rule_id\n")
+            let file = SwiftLintFile(contents: "// swiftlint:enable rule_id\n")
             let start = Location(file: nil, line: 1, character: 28)
             let end = Location(file: nil, line: .max, character: .max)
             XCTAssertEqual(file.regions(), [Region(start: start, end: end, disabledRuleIdentifiers: [])])
@@ -35,7 +35,7 @@ class RegionTests: XCTestCase {
     func testRegionsFromMatchingPairCommands() {
         // disable/enable
         do {
-            let file = File(contents: "// swiftlint:disable rule_id\n// swiftlint:enable rule_id\n")
+            let file = SwiftLintFile(contents: "// swiftlint:disable rule_id\n// swiftlint:enable rule_id\n")
             XCTAssertEqual(file.regions(), [
                 Region(start: Location(file: nil, line: 1, character: 29),
                        end: Location(file: nil, line: 2, character: 27),
@@ -47,7 +47,7 @@ class RegionTests: XCTestCase {
         }
         // enable/disable
         do {
-            let file = File(contents: "// swiftlint:enable rule_id\n// swiftlint:disable rule_id\n")
+            let file = SwiftLintFile(contents: "// swiftlint:enable rule_id\n// swiftlint:disable rule_id\n")
             XCTAssertEqual(file.regions(), [
                 Region(start: Location(file: nil, line: 1, character: 28),
                        end: Location(file: nil, line: 2, character: 28),
@@ -60,7 +60,7 @@ class RegionTests: XCTestCase {
     }
 
     func testRegionsFromThreeCommandForSingleLine() {
-        let file = File(contents: "// swiftlint:disable:next 1\n" +
+        let file = SwiftLintFile(contents: "// swiftlint:disable:next 1\n" +
                                   "// swiftlint:disable:this 2\n" +
                                   "// swiftlint:disable:previous 3\n")
         XCTAssertEqual(file.regions(), [
@@ -74,7 +74,7 @@ class RegionTests: XCTestCase {
     }
 
     func testSeveralRegionsFromSeveralCommands() {
-        let file = File(contents: "// swiftlint:disable 1\n" +
+        let file = SwiftLintFile(contents: "// swiftlint:disable 1\n" +
                                   "// swiftlint:disable 2\n" +
                                   "// swiftlint:disable 3\n" +
                                   "// swiftlint:enable 1\n" +

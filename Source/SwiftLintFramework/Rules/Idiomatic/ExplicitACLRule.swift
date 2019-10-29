@@ -53,14 +53,14 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         ]
     )
 
-    private func findAllExplicitInternalTokens(in file: File) -> [NSRange] {
+    private func findAllExplicitInternalTokens(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents.bridge()
         return file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }
     }
 
-    private func offsetOfElements(from elements: [SourceKittenElement], in file: File,
+    private func offsetOfElements(from elements: [SourceKittenElement], in file: SwiftLintFile,
                                   thatAreNotInRanges ranges: [NSRange]) -> [Int] {
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
                                                          .extensionProtocol, .extensionStruct]
@@ -90,7 +90,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         }
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary )
 
         guard !implicitAndExplicitInternalElements.isEmpty else {

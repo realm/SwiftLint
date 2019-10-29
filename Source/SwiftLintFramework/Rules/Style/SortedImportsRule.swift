@@ -131,7 +131,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let groups = importGroups(in: file, filterEnabled: false)
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)
@@ -141,7 +141,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         }
     }
 
-    private func importGroups(in file: File, filterEnabled: Bool) -> [[Line]] {
+    private func importGroups(in file: SwiftLintFile, filterEnabled: Bool) -> [[Line]] {
         var importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
         if filterEnabled {
             importRanges = file.ruleEnabled(violatingRanges: importRanges, for: self)
@@ -173,7 +173,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let groups = importGroups(in: file, filterEnabled: true)
 
         let corrections = violatingOffsets(inGroups: groups).map { characterOffset -> Correction in

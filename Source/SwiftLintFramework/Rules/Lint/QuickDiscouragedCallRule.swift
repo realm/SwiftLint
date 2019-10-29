@@ -14,7 +14,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
@@ -34,7 +34,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func validate(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 
@@ -46,7 +46,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func validate(file: File,
+    private func validate(file: SwiftLintFile,
                           kind: SwiftExpressionKind,
                           dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // is it a call to a restricted method?

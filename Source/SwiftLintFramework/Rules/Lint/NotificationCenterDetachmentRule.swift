@@ -15,7 +15,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .class else {
             return []
@@ -28,7 +28,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         }
     }
 
-    private func violationOffsets(file: File,
+    private func violationOffsets(file: SwiftLintFile,
                                   dictionary: SourceKittenDictionary) -> [Int] {
         return dictionary.substructure.flatMap { subDict -> [Int] in
             // complete detachment is allowed on `deinit`
@@ -50,7 +50,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
 
     private var methodName = "NotificationCenter.default.removeObserver"
 
-    private func parameterIsSelf(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func parameterIsSelf(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength else {
                 return false

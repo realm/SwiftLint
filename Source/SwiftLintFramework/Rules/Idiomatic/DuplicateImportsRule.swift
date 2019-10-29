@@ -22,7 +22,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         triggeringExamples: DuplicateImportsRuleExamples.triggeringExamples
     )
 
-    private func rangesInConditionalCompilation(file: File) -> [NSRange] {
+    private func rangesInConditionalCompilation(file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents.bridge()
 
         let ranges = file.syntaxMap.tokens
@@ -38,7 +38,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         }
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let contents = file.contents.bridge()
 
         let ignoredRanges = self.rangesInConditionalCompilation(file: file)

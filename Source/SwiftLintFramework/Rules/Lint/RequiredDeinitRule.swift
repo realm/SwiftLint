@@ -68,7 +68,7 @@ public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule,
 
     public init() {}
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .class,

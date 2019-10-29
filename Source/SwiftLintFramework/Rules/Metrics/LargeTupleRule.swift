@@ -54,7 +54,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let offsets = violationOffsetsForTypes(in: file, dictionary: dictionary, kind: kind) +
             violationOffsetsForFunctions(in: file, dictionary: dictionary, kind: kind)
@@ -72,7 +72,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         }
     }
 
-    private func violationOffsetsForTypes(in file: File, dictionary: SourceKittenDictionary,
+    private func violationOffsetsForTypes(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                           kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let kinds = SwiftDeclarationKind.variableKinds.subtracting([.varLocal])
         guard kinds.contains(kind),
@@ -85,7 +85,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         return sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []
     }
 
-    private func violationOffsetsForFunctions(in file: File, dictionary: SourceKittenDictionary,
+    private func violationOffsetsForFunctions(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                               kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let contents = file.contents.bridge()
         guard SwiftDeclarationKind.functionKinds.contains(kind),

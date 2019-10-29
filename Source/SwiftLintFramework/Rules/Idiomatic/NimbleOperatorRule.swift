@@ -91,7 +91,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: "false"))
     ]
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -100,7 +100,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         }
     }
 
-    private func violationMatchesRanges(in file: File) -> [NSRange] {
+    private func violationMatchesRanges(in file: SwiftLintFile) -> [NSRange] {
         let operandPattern = "(.(?!expect\\())+?"
 
         let operatorsPattern = "(" + predicatesMapping.map { name, predicateDescription in
@@ -134,7 +134,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let matches = violationMatchesRanges(in: file)
             .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
         guard !matches.isEmpty else { return [] }

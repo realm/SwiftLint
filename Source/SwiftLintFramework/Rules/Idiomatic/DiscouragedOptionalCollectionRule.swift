@@ -15,7 +15,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
         triggeringExamples: DiscouragedOptionalCollectionExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let offsets = variableViolations(file: file, kind: kind, dictionary: dictionary) +
@@ -30,7 +30,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     // MARK: - Private
 
-    private func variableViolations(file: File,
+    private func variableViolations(file: SwiftLintFile,
                                     kind: SwiftDeclarationKind,
                                     dictionary: SourceKittenDictionary) -> [Int] {
         guard
@@ -41,7 +41,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
         return typeName.optionalCollectionRanges().map { _ in offset }
     }
 
-    private func functionViolations(file: File,
+    private func functionViolations(file: SwiftLintFile,
                                     kind: SwiftDeclarationKind,
                                     dictionary: SourceKittenDictionary) -> [Int] {
         guard

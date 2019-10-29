@@ -31,7 +31,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let collector = NamespaceCollector(dictionary: file.structureDictionary)
         let elements = collector.findAllElements(of: [.class, .struct, .enum, .extension])
 

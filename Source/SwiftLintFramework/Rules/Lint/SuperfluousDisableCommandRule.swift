@@ -13,7 +13,7 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
         kind: .lint
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         // This rule is implemented in Linter.swift
         return []
     }

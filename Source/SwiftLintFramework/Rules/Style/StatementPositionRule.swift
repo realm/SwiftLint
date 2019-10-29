@@ -64,7 +64,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         switch configuration.statementMode {
         case .default:
             return defaultValidate(file: file)
@@ -73,7 +73,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         switch configuration.statementMode {
         case .default:
             return defaultCorrect(file: file)
@@ -90,7 +90,7 @@ private extension StatementPositionRule {
     // followed by 'else' or 'catch' literals
     static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
-    func defaultValidate(file: File) -> [StyleViolation] {
+    func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
         return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).compactMap { range in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity.severity,
@@ -98,13 +98,13 @@ private extension StatementPositionRule {
         }
     }
 
-    func defaultViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
+    func defaultViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
         return file.match(pattern: pattern).filter { _, syntaxKinds in
             return syntaxKinds.starts(with: [.keyword])
         }.compactMap { $0.0 }
     }
 
-    func defaultCorrect(file: File) -> [Correction] {
+    func defaultCorrect(file: SwiftLintFile) -> [Correction] {
         let violations = defaultViolationRanges(in: file, matching: type(of: self).defaultPattern)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
@@ -125,7 +125,7 @@ private extension StatementPositionRule {
 
 // Uncuddled Behaviors
 private extension StatementPositionRule {
-    func uncuddledValidate(file: File) -> [StyleViolation] {
+    func uncuddledValidate(file: SwiftLintFile) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).compactMap { range in
             StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
                            severity: configuration.severity.severity,
@@ -171,7 +171,7 @@ private extension StatementPositionRule {
         }
     }
 
-    func uncuddledViolationRanges(in file: File) -> [NSRange] {
+    func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
@@ -184,7 +184,7 @@ private extension StatementPositionRule {
         return validMatches
     }
 
-    func uncuddledCorrect(file: File) -> [Correction] {
+    func uncuddledCorrect(file: SwiftLintFile) -> [Correction] {
         var contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap

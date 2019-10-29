@@ -61,7 +61,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
     private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -70,7 +70,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         }
     }
 
-    public func violationRanges(in file: File, kind: SwiftDeclarationKind,
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard functionKinds.contains(kind),
             !shouldReturnEarlyBasedOnTypeName(dictionary: dictionary),
@@ -90,7 +90,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         return [match]
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 

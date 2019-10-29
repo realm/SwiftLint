@@ -90,7 +90,7 @@ struct LintableFilesVisitor {
         }
     }
 
-    func linter(forFile file: File, configuration: Configuration) -> Linter {
+    func linter(forFile file: SwiftLintFile, configuration: Configuration) -> Linter {
         switch self.mode {
         case .lint:
             return Linter(file: file, configuration: configuration, cache: cache)

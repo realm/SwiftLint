@@ -55,7 +55,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,
@@ -63,7 +63,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let syntaxTokens = file.syntaxMap.tokens
         let contents = file.contents.bridge()
 
@@ -91,7 +91,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "private")
     }
 }

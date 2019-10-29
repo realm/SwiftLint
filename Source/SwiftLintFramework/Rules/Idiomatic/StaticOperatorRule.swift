@@ -79,7 +79,7 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule,
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .functionFree,
             let offset = dictionary.offset,

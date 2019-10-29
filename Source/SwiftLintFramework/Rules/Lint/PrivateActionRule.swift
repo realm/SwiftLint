@@ -33,7 +33,7 @@ public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard

@@ -24980,13 +24980,13 @@ Function parameters should be aligned vertically if they're in multiple lines in
 <summary>Non Triggering Examples</summary>
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
                       dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
                       dictionary: SourceKittenDictionary) -> [StyleViolation]
 
 ```
@@ -25002,7 +25002,7 @@ func foo(bar: Int) -> String
 ```
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
                       dictionary: SourceKittenDictionary)
                       -> [StyleViolation]
 
@@ -25010,14 +25010,14 @@ func validateFunction(_ file: File, kind: SwiftDeclarationKind,
 
 ```swift
 func validateFunction(
-   _ file: File, kind: SwiftDeclarationKind,
+   _ file: SwiftLintFile, kind: SwiftDeclarationKind,
    dictionary: SourceKittenDictionary) -> [StyleViolation]
 
 ```
 
 ```swift
 func validateFunction(
-   _ file: File, kind: SwiftDeclarationKind,
+   _ file: SwiftLintFile, kind: SwiftDeclarationKind,
    dictionary: SourceKittenDictionary
 ) -> [StyleViolation]
 
@@ -25053,19 +25053,19 @@ func foo(data: Data,
 <summary>Triggering Examples</summary>
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
                   ↓dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
                        ↓dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
-func validateFunction(_ file: File,
+func validateFunction(_ file: SwiftLintFile,
                   ↓kind: SwiftDeclarationKind,
                   ↓dictionary: SourceKittenDictionary) { }
 

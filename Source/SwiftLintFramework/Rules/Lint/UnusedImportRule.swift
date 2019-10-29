@@ -127,7 +127,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         requiresFileOnDisk: true
     )
 
-    public func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return violationRanges(in: file, compilerArguments: compilerArguments).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -135,7 +135,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         }
     }
 
-    public func correct(file: File, compilerArguments: [String]) -> [Correction] {
+    public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let violations = violationRanges(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
@@ -152,7 +152,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         return corrections
     }
 
-    private func violationRanges(in file: File, compilerArguments: [String]) -> [NSRange] {
+    private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
@@ -165,7 +165,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
     }
 }
 
-private extension File {
+private extension SwiftLintFile {
     func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
         let contentsNSString = contents.bridge()
         var imports = Set<String>()

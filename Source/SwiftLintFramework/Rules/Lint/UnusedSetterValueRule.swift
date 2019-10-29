@@ -98,7 +98,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let setTokens = file.rangesAndTokens(matching: "\\bset\\b").keywordTokens()
 
         let violatingLocations = setTokens.compactMap { setToken -> Int? in
@@ -157,7 +157,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 
     private func findNamedArgument(after token: SyntaxToken,
-                                   file: File) -> (name: String, token: SyntaxToken)? {
+                                   file: SwiftLintFile) -> (name: String, token: SyntaxToken)? {
         guard let firstToken = file.syntaxMap.tokens.first(where: { $0.offset > token.offset }),
             SyntaxKind(rawValue: firstToken.type) == .identifier else {
                 return nil
@@ -173,7 +173,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         return (name, firstToken)
     }
 
-    private func findGetToken(in range: NSRange, file: File,
+    private func findGetToken(in range: NSRange, file: SwiftLintFile,
                               propertyStructure: SourceKittenDictionary) -> SyntaxToken? {
         let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in

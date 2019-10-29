@@ -41,7 +41,7 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
 
     // MARK: - ASTRule
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
@@ -53,11 +53,11 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
 
     // MARK: - SubstitutionCorrectableASTRule
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File,
+    public func violationRanges(in file: SwiftLintFile,
                                 kind: SwiftExpressionKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard

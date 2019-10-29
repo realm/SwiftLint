@@ -25,7 +25,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, Automat
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
             .map({ "\\\($0)" }).joined()
         let operators = "\(escapedOperators)%<>&"

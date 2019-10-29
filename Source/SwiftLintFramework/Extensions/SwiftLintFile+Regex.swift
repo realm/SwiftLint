@@ -11,7 +11,7 @@ internal func regex(_ pattern: String,
     return try! .cached(pattern: pattern, options: options)
 }
 
-extension File {
+extension SwiftLintFile {
     internal func regions(restrictingRuleIdentifiers: Set<RuleIdentifier>? = nil) -> [Region] {
         var regions = [Region]()
         var disabledRules = Set<RuleIdentifier>()
@@ -233,7 +233,7 @@ extension File {
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
-        contents += string
+        file.contents += string
     }
 
     internal func write<S: StringProtocol>(_ string: S) {
@@ -251,7 +251,7 @@ extension File {
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        contents = String(string)
+        file.contents = String(string)
         invalidateCache()
     }
 

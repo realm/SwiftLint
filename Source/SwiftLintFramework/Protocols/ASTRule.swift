@@ -2,16 +2,16 @@ import SourceKittenFramework
 
 public protocol ASTRule: Rule {
     associatedtype KindType: RawRepresentable
-    func validate(file: File, kind: KindType, dictionary: SourceKittenDictionary) -> [StyleViolation]
+    func validate(file: SwiftLintFile, kind: KindType, dictionary: SourceKittenDictionary) -> [StyleViolation]
     func kind(from dictionary: SourceKittenDictionary) -> KindType?
 }
 
 public extension ASTRule {
-    func validate(file: File) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file, dictionary: file.structureDictionary)
     }
 
-    func validate(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 

@@ -41,7 +41,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -49,7 +49,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds
         let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
         let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
@@ -62,7 +62,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "Void")
     }
 }

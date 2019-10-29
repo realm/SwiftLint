@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 extension ColonRule {
-    internal func dictionaryColonViolationRanges(in file: File,
+    internal func dictionaryColonViolationRanges(in file: SwiftLintFile,
                                                  dictionary: SourceKittenDictionary) -> [NSRange] {
         guard configuration.applyToDictionaries else {
             return []
@@ -21,7 +21,7 @@ extension ColonRule {
         return ranges.unique
     }
 
-    internal func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,
+    internal func dictionaryColonViolationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                                  dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .dictionary,
             let ranges = dictionaryColonRanges(dictionary: dictionary) else {

@@ -37,7 +37,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.offset,
@@ -96,7 +96,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         return typeName.contains("->") || typeName.contains("@escaping")
     }
 
-    private func isDefaultParameter(file: File, dictionary: SourceKittenDictionary) -> Bool {
+    private func isDefaultParameter(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset, let length = dictionary.length,
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {

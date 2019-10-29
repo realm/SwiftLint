@@ -79,7 +79,7 @@ struct LintOrAnalyzeCommand {
         return .success(())
     }
 
-    private static func printStatus(violations: [StyleViolation], files: [File], serious: Int, verb: String) {
+    private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
         let pluralSuffix = { (collection: [Any]) -> String in
             return collection.count != 1 ? "s" : ""
         }

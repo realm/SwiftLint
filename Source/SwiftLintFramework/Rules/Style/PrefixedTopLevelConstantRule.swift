@@ -50,7 +50,7 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         if configuration.onlyPrivateMembers,

@@ -30,7 +30,7 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
         }
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "[\\}\\)]\\s*\\.count\\s*(?:!=|==|>)\\s*0\\b"
         return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier, .number],
                         callNameSuffix: ".filter", severity: configuration.severity)

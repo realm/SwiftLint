@@ -175,7 +175,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
         ]
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "\\{[^\\{]*?\\s+get\\b"
         let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
         let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in

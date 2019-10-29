@@ -27,7 +27,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
 
     public init() {}
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let classes = testClasses(in: file)
 
         guard classes.count > 1 else { return [] }
@@ -42,7 +42,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
         }
     }
 
-    private func testClasses(in file: File) -> [SourceKittenDictionary] {
+    private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
             guard dictionary.declarationKind == .class else { return false }

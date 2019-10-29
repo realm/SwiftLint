@@ -58,7 +58,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
             "↓if nil == foo"
         ])
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard observedStatements.contains(kind),
@@ -82,7 +82,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         }
     }
 
-    private func startOffset(of offset: Int, with length: Int, in file: File) -> Int {
+    private func startOffset(of offset: Int, with length: Int, in file: SwiftLintFile) -> Int {
         let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
         return range?.location ?? offset
     }

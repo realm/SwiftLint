@@ -27,7 +27,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .closure, let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength,
             case let contents = file.contents.bridge(),

@@ -47,7 +47,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -55,11 +55,11 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
         let contents = file.contents.bridge()
 

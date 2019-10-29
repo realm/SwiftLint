@@ -67,7 +67,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let contents = file.contents.bridge()
         return violationResults(in: file).map {
             let typeString = contents.substring(with: $0.range(at: 1))
@@ -78,11 +78,11 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return violationResults(in: file).map { $0.range }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         let contents = file.contents.bridge()
         let declaration = contents.substring(with: violationRange)
         let originalRange = NSRange(location: 0, length: declaration.count)
@@ -124,7 +124,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         return (violationRange, substitutionResult)
     }
 
-    private func violationResults(in file: File) -> [NSTextCheckingResult] {
+    private func violationResults(in file: SwiftLintFile) -> [NSTextCheckingResult] {
         let excludingKinds = SyntaxKind.commentAndStringKinds
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
@@ -145,7 +145,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         }
     }
 
-    private func isValidViolation(range: NSRange, file: File) -> Bool {
+    private func isValidViolation(range: NSRange, file: SwiftLintFile) -> Bool {
         let contents = file.contents.bridge()
 
         // avoid triggering when referring to an associatedtype

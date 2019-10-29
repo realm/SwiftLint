@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private extension File {
+private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
         return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
@@ -114,13 +114,13 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return file.violatingRanges(for: pattern).filter {
             !isFalsePositive(in: file, range: $0)
         }
     }
 
-    private func isFalsePositive(in file: File, range: NSRange) -> Bool {
+    private func isFalsePositive(in file: SwiftLintFile, range: NSRange) -> Bool {
         // Regex incorrectly flags blank lines that contain trailing whitespace (#2538)
         let patternRegex = regex(pattern)
         let substring = file.contents.substring(from: range.location, length: range.length)
@@ -147,7 +147,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let patternRegex = regex(pattern)
         return violationRanges(in: file).compactMap { violationRange in
             let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
@@ -169,7 +169,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
 }
 
 extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         guard !violatingRanges.isEmpty else { return [] }
 

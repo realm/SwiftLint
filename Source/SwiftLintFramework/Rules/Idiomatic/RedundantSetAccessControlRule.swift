@@ -46,11 +46,11 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file, dictionary: file.structureDictionary, parentDictionary: nil)
     }
 
-    private func validate(file: File, dictionary: SourceKittenDictionary,
+    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary,
                           parentDictionary: SourceKittenDictionary?) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict, parentDictionary: dictionary)
@@ -63,7 +63,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         }
     }
 
-    private func validate(file: File, kind: SwiftDeclarationKind,
+    private func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                           dictionary: SourceKittenDictionary,
                           parentDictionary: SourceKittenDictionary?) -> [StyleViolation] {
         let aclAttributes: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate, .internal, .public, .open]

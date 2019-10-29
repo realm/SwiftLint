@@ -36,7 +36,7 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             let offset = dictionary.offset,
@@ -52,7 +52,7 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         ]
     }
 
-    private func hasEmptyBody(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func hasEmptyBody(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength else {
                 return false

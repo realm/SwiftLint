@@ -23,7 +23,7 @@ class ReporterTests: XCTestCase {
     }
 
     private func stringFromFile(_ filename: String) -> String {
-        return File(path: "\(testResourcesPath)/\(filename)")!.contents
+        return SwiftLintFile(path: "\(testResourcesPath)/\(filename)")!.contents
     }
 
     private func generateViolations() -> [StyleViolation] {

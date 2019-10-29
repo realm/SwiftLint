@@ -15,7 +15,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
         triggeringExamples: MultilineArgumentsRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
@@ -52,7 +52,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
     private func findViolations(in arguments: [Argument],
                                 dictionary: SourceKittenDictionary,
-                                file: File) -> [Argument] {
+                                file: SwiftLintFile) -> [Argument] {
         guard case let contents = file.contents.bridge(),
             let nameOffset = dictionary.nameOffset,
             let (nameLine, _) = contents.lineAndCharacter(forByteOffset: nameOffset) else {
@@ -90,7 +90,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
     private func removeViolationsBeforeFirstClosure(arguments: [Argument],
                                                     violations: [Argument],
-                                                    file: File) -> [Argument] {
+                                                    file: SwiftLintFile) -> [Argument] {
         guard let firstClosure = arguments.first(where: isClosure(in: file)),
             let firstArgument = arguments.first else {
             return violations
@@ -110,7 +110,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
     // MARK: - Syntax Helpers
 
-    private func isTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func isTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             case let start = min(offset, offset + length - 1),
@@ -121,7 +121,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
         return !text.hasSuffix(")")
     }
 
-    private func isClosure(in file: File) -> (Argument) -> Bool {
+    private func isClosure(in file: SwiftLintFile) -> (Argument) -> Bool {
         return { argument in
             let contents = file.contents.bridge()
             let closureMatcher = regex("^\\s*\\{")
@@ -145,7 +145,7 @@ private struct Argument {
     let bodyOffset: Int
     let bodyLength: Int
 
-    init?(dictionary: SourceKittenDictionary, file: File, index: Int) {
+    init?(dictionary: SourceKittenDictionary, file: SwiftLintFile, index: Int) {
         guard let offset = dictionary.offset,
             let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset),
             let bodyOffset = dictionary.bodyOffset,

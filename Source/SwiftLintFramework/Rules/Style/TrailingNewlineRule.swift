@@ -42,7 +42,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
@@ -51,7 +51,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
                                location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         guard let count = file.contents.trailingNewlineCount(), count != 1 else {
             return []
         }

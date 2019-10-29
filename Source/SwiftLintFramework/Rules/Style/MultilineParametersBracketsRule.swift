@@ -87,11 +87,11 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file.structureDictionary, file: file)
     }
 
-    private func violations(in substructure: SourceKittenDictionary, file: File) -> [StyleViolation] {
+    private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {
         var violations = [StyleViolation]()
 
         // find violations at current level
@@ -128,7 +128,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
     }
 
     private func openingBracketViolation(parameters: [SourceKittenDictionary],
-                                         file: File) -> StyleViolation? {
+                                         file: SwiftLintFile) -> StyleViolation? {
         guard
             let firstParamByteOffset = parameters.first?.offset,
             let firstParamByteLength = parameters.first?.length,
@@ -155,7 +155,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
     }
 
     private func closingBracketViolation(parameters: [SourceKittenDictionary],
-                                         file: File) -> StyleViolation? {
+                                         file: SwiftLintFile) -> StyleViolation? {
         guard
             let lastParamByteOffset = parameters.last?.offset,
             let lastParamByteLength = parameters.last?.length,

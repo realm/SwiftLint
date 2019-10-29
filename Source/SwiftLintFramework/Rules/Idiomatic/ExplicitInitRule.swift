@@ -52,7 +52,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -63,7 +63,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
 
     private let initializerWithType = regex("^[A-Z][^(]*\\.init$")
 
-    public func violationRanges(in file: File, kind: SwiftExpressionKind,
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         func isExpected(_ name: String) -> Bool {
             let range = NSRange(location: 0, length: name.utf16.count)
@@ -83,7 +83,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
         return [range]
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 }

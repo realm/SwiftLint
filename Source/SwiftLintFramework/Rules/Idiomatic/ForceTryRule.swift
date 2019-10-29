@@ -26,7 +26,7 @@ public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "try!", with: [.keyword]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,

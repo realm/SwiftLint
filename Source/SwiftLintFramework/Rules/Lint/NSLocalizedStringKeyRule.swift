@@ -21,7 +21,7 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,

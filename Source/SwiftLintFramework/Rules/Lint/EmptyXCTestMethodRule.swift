@@ -14,13 +14,13 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return testClasses(in: file).flatMap { violations(in: file, for: $0) }
     }
 
     // MARK: - Private
 
-    private func testClasses(in file: File) -> [SourceKittenDictionary] {
+    private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
             guard dictionary.declarationKind == .class else { return false }
@@ -28,7 +28,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
         }
     }
 
-    private func violations(in file: File,
+    private func violations(in file: SwiftLintFile,
                             for dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard

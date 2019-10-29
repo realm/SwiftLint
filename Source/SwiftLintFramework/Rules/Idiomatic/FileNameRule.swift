@@ -32,7 +32,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         kind: .idiomatic
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
             case let fileName = filePath.bridge().lastPathComponent,
             !configuration.excluded.contains(fileName) else {

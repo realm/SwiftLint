@@ -30,7 +30,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         return violationOffsets(for: dict, file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -39,7 +39,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func violationOffsets(for dictionary: SourceKittenDictionary, file: File) -> [Int] {
+    private func violationOffsets(for dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [Int] {
         var results = [Int]()
 
         if dictionary.expressionKind == .call,
@@ -66,7 +66,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         return results
     }
 
-    private func shouldBeTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func shouldBeTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         func shouldTrigger() -> Bool {
             return !isAlreadyTrailingClosure(dictionary: dictionary, file: file) &&
                 !isAnonymousClosureCall(dictionary: dictionary, file: file)
@@ -100,7 +100,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func filterClosureArguments(_ arguments: [SourceKittenDictionary],
-                                        file: File) -> [SourceKittenDictionary] {
+                                        file: SwiftLintFile) -> [SourceKittenDictionary] {
         return arguments.filter { argument in
             guard let offset = argument.bodyOffset,
                 let length = argument.bodyLength,
@@ -114,7 +114,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func isAlreadyTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func isAlreadyTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
@@ -125,7 +125,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func isAnonymousClosureCall(dictionary: SourceKittenDictionary,
-                                        file: File) -> Bool {
+                                        file: SwiftLintFile) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {

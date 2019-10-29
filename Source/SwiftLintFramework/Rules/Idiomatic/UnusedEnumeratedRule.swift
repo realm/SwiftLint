@@ -30,7 +30,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         ]
     )
 
-    public func validate(file: File, kind: StatementKind,
+    public func validate(file: SwiftLintFile, kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .forEach,
             isEnumeratedCall(dictionary: dictionary),
@@ -62,7 +62,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         ]
     }
 
-    private func isTokenUnderscore(_ token: SyntaxToken, file: File) -> Bool {
+    private func isTokenUnderscore(_ token: SyntaxToken, file: SwiftLintFile) -> Bool {
         return token.length == 1 &&
             SyntaxKind(rawValue: token.type) == .keyword &&
             isUnderscore(file: file, token: token)
@@ -97,7 +97,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         return nil
     }
 
-    private func isUnderscore(file: File, token: SyntaxToken) -> Bool {
+    private func isUnderscore(file: SwiftLintFile, token: SyntaxToken) -> Bool {
         let contents = file.contents.bridge()
         return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
     }

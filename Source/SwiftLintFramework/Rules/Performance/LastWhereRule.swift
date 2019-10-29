@@ -30,7 +30,7 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file,
                         pattern: "[\\}\\)]\\s*\\.last",
                         patternSyntaxKinds: [.identifier],

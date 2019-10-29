@@ -30,7 +30,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         triggeringExamples: ModifierOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
@@ -56,11 +56,11 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         return correct(file: file, dictionary: file.structureDictionary)
     }
 
-    private func correct(file: File, dictionary: SourceKittenDictionary) -> [Correction] {
+    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Correction] {
         return dictionary.substructure.flatMap { subDict -> [Correction] in
             var corrections = correct(file: file, dictionary: subDict)
 
@@ -72,7 +72,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         }
     }
 
-    private func correct(file: File,
+    private func correct(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [Correction] {
         guard let offset = dictionary.offset else { return [] }

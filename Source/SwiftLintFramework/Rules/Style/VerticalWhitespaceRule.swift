@@ -38,7 +38,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         return defaultDescriptionReason
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
         guard !linesSections.isEmpty else {
             return []
@@ -56,7 +56,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
     private typealias LineSection = (lastLine: Line, linesToRemove: Int)
 
-    private func violatingLineSections(in file: File) -> [LineSection] {
+    private func violatingLineSections(in file: SwiftLintFile) -> [LineSection] {
         let nonSpaceRegex = regex("\\S", options: [])
         let filteredLines = file.lines.filter {
             nonSpaceRegex.firstMatch(in: file.contents, options: [], range: $0.range) == nil
@@ -108,7 +108,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         return blankLinesSections
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let linesSections = violatingLineSections(in: file)
         if linesSections.isEmpty { return [] }
 

@@ -103,7 +103,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .class && isTestClass(dictionary) else { return [] }
 
@@ -133,7 +133,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         return !regex.matches(in: superclass, options: [], range: range).isEmpty
     }
 
-    private func validateFunction(file: File,
+    private func validateFunction(file: SwiftLintFile,
                                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let kind = dictionary.declarationKind,
             kind == .functionMethodInstance,
@@ -144,7 +144,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         return validateAccessControlLevel(file: file, dictionary: dictionary)
     }
 
-    private func validateAccessControlLevel(file: File,
+    private func validateAccessControlLevel(file: SwiftLintFile,
                                             dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let acl = dictionary.accessibility, acl.isPrivate,
             !dictionary.enclosedSwiftAttributes.contains(.objc)

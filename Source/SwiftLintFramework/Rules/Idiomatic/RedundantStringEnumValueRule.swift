@@ -71,7 +71,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []
@@ -90,7 +90,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary, file: File) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [Int] {
         var caseCount = 0
         var violations = [Int]()
 
@@ -112,7 +112,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }).count
     }
 
-    private func violatingOffsetsForEnumCase(dictionary: SourceKittenDictionary, file: File) -> [Int] {
+    private func violatingOffsetsForEnumCase(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [Int] {
         return children(of: dictionary, matching: .enumelement).flatMap { element -> [Int] in
             guard let name = element.name else {
                 return []
@@ -122,7 +122,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
     }
 
     private func violatingOffsetsForEnumElement(dictionary: SourceKittenDictionary, name: String,
-                                                file: File) -> [Int] {
+                                                file: SwiftLintFile) -> [Int] {
         let enumInits = filterEnumInits(dictionary: dictionary)
 
         return enumInits.compactMap { dictionary -> Int? in

@@ -23,7 +23,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let collector = NamespaceCollector(dictionary: file.structureDictionary)
         let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
 
@@ -44,7 +44,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
         }
     }
 
-    private func hasWhereClause(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func hasWhereClause(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         let contents = file.contents.bridge()
 
         guard let nameOffset = dictionary.nameOffset,

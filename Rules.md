@@ -2953,7 +2953,7 @@ resourceString.range(of: rule.regex, options: .regularExpression) != nil
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`control_statement` | Enabled | No | style | No | 3.0.0 
+`control_statement` | Enabled | Yes | style | No | 3.0.0 
 
 `if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their conditionals or arguments in parentheses.
 

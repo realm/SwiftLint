@@ -1,6 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
+private typealias CacheKey = Int
+
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file).sendIfNotDisabled()
@@ -24,7 +26,7 @@ private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine()
 
 internal typealias AssertHandler = () -> Void
 
-private var assertHandlers = [String: AssertHandler]()
+private var assertHandlers = [CacheKey: AssertHandler]()
 private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
 
 private struct RebuildQueue {
@@ -47,7 +49,7 @@ private struct RebuildQueue {
 private var queueForRebuild = RebuildQueue()
 
 private class Cache<T> {
-    private var values = [String: T]()
+    private var values = [CacheKey: T]()
     private let factory: (File) -> T
     private let lock = NSLock()
 
@@ -75,11 +77,11 @@ private class Cache<T> {
         doLocked { values.removeAll(keepingCapacity: false) }
     }
 
-    fileprivate func set(key: String, value: T) {
+    fileprivate func set(key: CacheKey, value: T) {
         doLocked { values[key] = value }
     }
 
-    fileprivate func unset(key: String) {
+    fileprivate func unset(key: CacheKey) {
         doLocked { values.removeValue(forKey: key) }
     }
 
@@ -91,8 +93,8 @@ private class Cache<T> {
 }
 
 extension File {
-    fileprivate var cacheKey: String {
-        return path ?? contents
+    fileprivate var cacheKey: CacheKey {
+        return ObjectIdentifier(self).hashValue
     }
 
     internal var sourcekitdFailed: Bool {

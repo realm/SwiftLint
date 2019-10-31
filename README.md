@@ -368,6 +368,7 @@ type_name:
     warning: 40
     error: 50
   excluded: iPhone # excluded via string
+  allowed_symbols: ["_"] # these are allowed in type names
 identifier_name:
   min_length: # only min_length
     error: 4 # only error

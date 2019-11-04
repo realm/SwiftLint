@@ -15,6 +15,9 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2918](https://github.com/realm/SwiftLint/issues/2918)
 
+* Add GitHub Actions Logging reporter (`github-actions-logging`).  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 #### Bug Fixes
 
 * None.

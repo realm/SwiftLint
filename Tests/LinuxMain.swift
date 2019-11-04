@@ -1140,6 +1140,7 @@ extension ReporterTests {
         ("testReporterFromString", testReporterFromString),
         ("testXcodeReporter", testXcodeReporter),
         ("testEmojiReporter", testEmojiReporter),
+        ("testGitHubActionsLoggingReporter", testGitHubActionsLoggingReporter),
         ("testJSONReporter", testJSONReporter),
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),

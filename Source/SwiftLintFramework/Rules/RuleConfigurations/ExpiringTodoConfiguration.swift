@@ -15,9 +15,8 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
 
     private(set) var expiredSeverity: SeverityConfiguration
 
-    // swiftlint:disable todo
+    // swiftlint:disable:next todo
     /// The number of days prior to expiry before the TODO emits a violation
-    // swiftlint:enable todo
     private(set) var approachingExpiryThreshold: Int
     /// The opening/closing characters used to surround the expiry-date string
     private(set) var dateDelimiters: DelimiterConfiguration

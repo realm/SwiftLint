@@ -46,9 +46,8 @@ class ExpiringTodoRuleTests: XCTestCase {
     }
 
     private func date(for status: ExpiringTodoRule.ExpiryViolationLevel?) -> Date {
-        // swiftlint:disable force_cast
+        // swiftlint:disable:next force_cast
         let rule = config.rules.first(where: { $0 is ExpiringTodoRule }) as! ExpiringTodoRule
-        // swiftlint:enable force_cast
 
         let daysToAdvance: Int
 

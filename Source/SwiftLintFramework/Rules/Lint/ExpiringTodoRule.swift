@@ -38,10 +38,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public var configuration = ExpiringTodoConfiguration(
-        approachingExpirySeverity: .init(.warning),
-        expiredSeverity: .init(.error)
-    )
+    public var configuration: ExpiringTodoConfiguration = .init()
 
     public init() {}
 

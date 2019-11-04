@@ -4,6 +4,11 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
 
         fileprivate(set) var opening: String
         fileprivate(set) var closing: String
+
+        public init(opening: String, closing: String) {
+            self.opening = opening
+            self.closing = closing
+        }
     }
 
     public var consoleDescription: String {
@@ -26,8 +31,8 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     private(set) var dateSeparator: String
 
     public init(
-        approachingExpirySeverity: SeverityConfiguration,
-        expiredSeverity: SeverityConfiguration,
+        approachingExpirySeverity: SeverityConfiguration = .init(.warning),
+        expiredSeverity: SeverityConfiguration = .init(.error),
         approachingExpiryThreshold: Int = 15,
         dateFormat: String = "MM/dd/yyyy",
         dateDelimiters: DelimiterConfiguration = .default,

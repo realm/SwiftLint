@@ -74,22 +74,4 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
             self.dateSeparator = dateSeparator
         }
     }
-
-    func severity(with config: SeverityLevelsConfiguration, for level: Int) -> ViolationSeverity? {
-        if let error = config.error, level > error {
-            return .error
-        } else if level > config.warning {
-            return .warning
-        }
-        return nil
-    }
-
-    func threshold(with config: SeverityLevelsConfiguration, for severity: ViolationSeverity) -> Int {
-        switch severity {
-        case .error:
-            return config.error ?? config.warning
-        case .warning:
-            return config.warning
-        }
-    }
 }

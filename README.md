@@ -490,3 +490,8 @@ We :heart: open source software!
 See [our other open source projects](https://github.com/realm),
 read [our blog](https://realm.io/news), or say hi on twitter
 ([@realm](https://twitter.com/realm)).
+
+<img src="assets/macstadium.png" width="184" />
+
+Our thanks to MacStadium for providing a Mac Mini to run our performance
+tests.

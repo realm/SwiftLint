@@ -82,19 +82,6 @@ jobs:
     - script: bundle exec pod lib lint --verbose SwiftLintFramework.podspec
       displayName: pod lib lint
 
-- job: OSSCheck
-  pool:
-    vmImage: 'macOS 10.14'
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.1.app
-  steps:
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec danger --verbose
-      displayName: Run Danger
-      env:
-        DANGER_GITHUB_API_TOKEN: $(DANGER_GITHUB_API_TOKEN)
-
 - job: Analyze
   pool:
     vmImage: 'macOS 10.14'

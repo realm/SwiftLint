@@ -1,6 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
+internal typealias ColonRuleMatchTokens = ([NSRange], [SwiftLintSyntaxToken])
+
 internal extension ColonRule {
     var pattern: String {
         // If flexible_right_spacing is true, match only 0 whitespaces.
@@ -23,22 +25,106 @@ internal extension ColonRule {
     }
 
     func typeColonViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        let contents = file.stringView
-        return file.matchesAndTokens(matching: pattern).filter { match, syntaxTokens in
-            if match.range(at: 2).length > 0 && syntaxTokens.count > 2 { // captured a generic definition
-                let tokens = [syntaxTokens.first, syntaxTokens.last].compactMap { $0 }
-                return isValidMatch(syntaxTokens: tokens, file: file)
-            }
+        let validator = ColonRuleValidator(file: file, pattern: pattern)
+        return validator.typeColonViolationRanges()
+    }
+}
 
-            return isValidMatch(syntaxTokens: syntaxTokens, file: file)
-        }.compactMap { match, syntaxTokens in
-            let firstSyntaxTokenByteRange = ByteRange(location: syntaxTokens[0].offset, length: 0)
-            let identifierRange = contents.byteRangeToNSRange(firstSyntaxTokenByteRange)
-            return identifierRange.map { NSUnionRange($0, match.range) }
+private extension SwiftLintFile {
+    func isTypeLike(token: SwiftLintSyntaxToken) -> Bool {
+        guard let text = contents(for: token),
+            let firstLetter = text.unicodeScalars.first else {
+                return false
         }
+
+        return CharacterSet.uppercaseLetters.contains(firstLetter)
+    }
+}
+
+internal class ColonRuleValidator {
+    private let file: SwiftLintFile
+    private let pattern: String
+    private let outsideRangesPairer: OutsideRangesPair
+
+    init(file: SwiftLintFile, pattern: String) {
+        self.file = file
+        self.pattern = pattern
+        self.outsideRangesPairer = OutsideRangesPair()
     }
 
-    private func isValidMatch(syntaxTokens: [SwiftLintSyntaxToken], file: SwiftLintFile) -> Bool {
+    func typeColonViolationRanges() -> [NSRange] {
+        let contents = file.stringView
+        let matchesAndTokens = violationMatchTokens()
+        return Array(matchesAndTokens.joined())
+            .compactMap { ranges, syntaxTokens in
+                let firstSyntaxTokenByteRange = ByteRange(location: syntaxTokens[0].offset, length: 0)
+                let identifierRange = contents.byteRangeToNSRange(firstSyntaxTokenByteRange)
+                return identifierRange.map { NSUnionRange($0, ranges[0]) }
+            }
+    }
+
+    private func violationMatchTokens(range: NSRange? = nil) -> [[ColonRuleMatchTokens]] {
+        return SwiftLintFile.matchesAndTokens(matching: pattern, file: file, range: range)
+            .compactMap({ matchTokens -> [ColonRuleMatchTokens] in
+                let (match, syntaxTokens) = matchTokens
+                var ranges = [NSRange]()
+                if match.numberOfRanges > 0 {
+                    for index in 1...match.numberOfRanges {
+                        ranges.append(match.range(at: index - 1))
+                    }
+                }
+
+                return fillValidResults(ranges: ranges,
+                                        syntaxTokens: syntaxTokens,
+                                        result: [])
+            })
+    }
+
+    private func validGenericDefinitionMatch(ranges: [NSRange],
+                                             syntaxTokens: [SwiftLintSyntaxToken]) -> ColonRuleMatchTokens? {
+        let tokens = [syntaxTokens.first, syntaxTokens.last].compactMap { $0 }
+        if isValidMatch(syntaxTokens: tokens) {
+            return (ranges, tokens)
+        }
+        return nil
+    }
+
+    private func fillValidGenericDefinitions(ranges: [NSRange],
+                                             syntaxTokens: [SwiftLintSyntaxToken],
+                                             result: [ColonRuleMatchTokens]) -> [ColonRuleMatchTokens] {
+        var returnResult = [ColonRuleMatchTokens]()
+        if ranges[2].length > 0 && syntaxTokens.count > 2 { // captured a generic definition
+            if let genericMatch = validGenericDefinitionMatch(ranges: ranges, syntaxTokens: syntaxTokens) {
+                returnResult.append(genericMatch)
+                // filter ranges excluding already filtered
+                let ranges = genericMatch.0
+                let filteredGenericRanges = ranges.filter({ $0 != ranges.first && $0 != ranges.last })
+                if let pair = outsideRangesPairer.pair(ranges: filteredGenericRanges) {
+                    let internalLength = pair.last.location - pair.first.location + pair.last.length
+                    let internalRange = NSRange(location: pair.first.location, length: internalLength)
+                    let internalViolationTokens = violationMatchTokens(range: internalRange)
+                    returnResult.append(contentsOf: internalViolationTokens.joined())
+                }
+            }
+        }
+        return returnResult
+    }
+
+    private func fillValidResults(ranges: [NSRange],
+                                  syntaxTokens: [SwiftLintSyntaxToken],
+                                  result: [ColonRuleMatchTokens]) -> [ColonRuleMatchTokens] {
+        let resultGeneric = fillValidGenericDefinitions(ranges: ranges,
+                                                        syntaxTokens: syntaxTokens,
+                                                        result: result)
+        var resultAppend = result + resultGeneric
+
+        if resultGeneric.isEmpty && isValidMatch(syntaxTokens: syntaxTokens) {
+            resultAppend.append((ranges, syntaxTokens))
+        }
+        return resultAppend
+    }
+
+    private func isValidMatch(syntaxTokens: [SwiftLintSyntaxToken]) -> Bool {
         let syntaxKinds = syntaxTokens.kinds
 
         guard syntaxKinds.count == 2 else {
@@ -69,16 +155,5 @@ internal extension ColonRule {
         }
 
         return Set(syntaxKinds).isDisjoint(with: SyntaxKind.commentAndStringKinds)
-    }
-}
-
-private extension SwiftLintFile {
-    func isTypeLike(token: SwiftLintSyntaxToken) -> Bool {
-        guard let text = contents(for: token),
-            let firstLetter = text.unicodeScalars.first else {
-                return false
-        }
-
-        return CharacterSet.uppercaseLetters.contains(firstLetter)
     }
 }

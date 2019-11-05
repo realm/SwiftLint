@@ -32,6 +32,10 @@ public struct SwiftLintSyntaxToken {
     }
 }
 
+// MARK: Equatable
+
+extension SwiftLintSyntaxToken: Equatable {}
+
 extension Array where Element == SwiftLintSyntaxToken {
     var kinds: [SyntaxKind] {
         return compactMap { $0.kind }

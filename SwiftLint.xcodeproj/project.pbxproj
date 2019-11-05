@@ -464,6 +464,7 @@
 		E8BE1FCC1E07687400F781C7 /* Yams.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BE1FCB1E07687400F781C7 /* Yams.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
+		EB77BBEA23A8D29C0085497E /* OutsideRangesPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB77BBE823A8D03C0085497E /* OutsideRangesPair.swift */; };
 		ED641C3820AA07B400212C62 /* NoFallthroughOnlyRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED641C3620AA070700212C62 /* NoFallthroughOnlyRule.swift */; };
 		F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
 		F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */; };
@@ -1001,6 +1002,7 @@
 		E8BE1FCB1E07687400F781C7 /* Yams.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yams.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckstyleReporter.swift; sourceTree = "<group>"; };
+		EB77BBE823A8D03C0085497E /* OutsideRangesPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutsideRangesPair.swift; sourceTree = "<group>"; };
 		ED641C3620AA070700212C62 /* NoFallthroughOnlyRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoFallthroughOnlyRule.swift; sourceTree = "<group>"; };
 		F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyNSGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Nested.swift"; sourceTree = "<group>"; };
@@ -1127,6 +1129,7 @@
 				C25EBBE321078DC700E27603 /* Glob.swift */,
 				D4AB0EA11F8993DD00CEC380 /* NamespaceCollector.swift */,
 				4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */,
+				EB77BBE823A8D03C0085497E /* OutsideRangesPair.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2387,6 +2390,7 @@
 				A1A6F3F21EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift in Sources */,
 				D489B548231233A40090BAA0 /* ContainsOverFilterCountRule.swift in Sources */,
 				D4B0228E1E0CC608007E5297 /* ClassDelegateProtocolRule.swift in Sources */,
+				EB77BBEA23A8D29C0085497E /* OutsideRangesPair.swift in Sources */,
 				E881985F1BEA987C00333A11 /* TypeNameRule.swift in Sources */,
 				D40AD08A1E032F9700F48C30 /* UnusedClosureParameterRule.swift in Sources */,
 				D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */,

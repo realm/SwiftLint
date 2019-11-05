@@ -101,7 +101,8 @@ internal struct ColonRuleExamples {
         Example("func abc() { def(ghi↓:jkl) }"),
         Example("func abc(def: Void) { ghi(jkl↓:mno) }"),
         Example("class ABC { let def = ghi(jkl↓:mno) } }"),
-        Example("func foo() { let dict = [1↓ : 1] }")
+        Example("func foo() { let dict = [1↓ : 1] }"),
+        Example("class ↓Foo<↓T : Equatable> : Bar {}")
     ]
 
     static let corrections = [

@@ -94,6 +94,9 @@
   using Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3079](https://github.com/realm/SwiftLint/issues/3079)
+* Added nested passes for colon_rule, for generics violations. 
+  [Andrey Uryadov](https://github.com/a-25)
+  [#2664](https://github.com/realm/SwiftLint/issues/2664)
 
 ## 0.38.2: Machine Repair Manual
 

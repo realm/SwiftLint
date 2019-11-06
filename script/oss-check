@@ -105,7 +105,7 @@ def perform(*args)
 end
 
 def validate_state_to_run
-  if `git symbolic-ref HEAD --short`.strip == 'master' && @options[:branch] == 'HEAD'
+  if `git symbolic-ref HEAD --short || true`.strip == 'master' && @options[:branch] == 'HEAD'
     fail "can't run osscheck without '--branch' option from 'master' as the script compares " \
          "the performance of this branch against 'master'"
   end
@@ -269,6 +269,9 @@ end
   Repo.new('Swift', 'apple/swift'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
+
+# Clean up
+clean_up unless @options[:skip_clean]
 
 # Prep
 $stdout.sync = true

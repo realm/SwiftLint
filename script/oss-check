@@ -270,6 +270,9 @@ end
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
 
+# Clean up
+clean_up unless @options[:skip_clean]
+
 # Prep
 $stdout.sync = true
 validate_state_to_run

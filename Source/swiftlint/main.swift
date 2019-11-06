@@ -2,8 +2,6 @@ import Commandant
 import Dispatch
 import SwiftLintFramework
 
-// Comment to force OSSCheck to run
-
 DispatchQueue.global().async {
     let registry = CommandRegistry<CommandantError<()>>()
     registry.register(LintCommand())

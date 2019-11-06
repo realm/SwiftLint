@@ -11,11 +11,21 @@ extension SyntaxMap {
                 .intersects(byteRange)
         }
 
-        guard let startIndex = tokens.firstIndex(where: intersect) else {
+        func intersectsOrAfter(_ token: SyntaxToken) -> Bool {
+            return token.offset + token.length > byteRange.location
+        }
+
+        guard let startIndex = tokens.firstIndexAssumingSorted(where: intersectsOrAfter) else {
             return []
         }
-        let tokensBeginningIntersect = tokens.lazy.suffix(from: startIndex)
-        return Array(tokensBeginningIntersect.filter(intersect))
+
+        let tokensAfterFirstIntersection = tokens
+            .lazy
+            .suffix(from: startIndex)
+            .prefix(while: { $0.offset < byteRange.upperBound })
+            .filter(intersect)
+
+        return Array(tokensAfterFirstIntersection)
     }
 
     internal func kinds(inByteRange byteRange: NSRange) -> [SyntaxKind] {

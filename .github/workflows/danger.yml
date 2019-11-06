@@ -1,0 +1,13 @@
+name: Danger
+
+on: pull_request
+
+jobs:
+  Danger:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v1
+      - name: Bundle Install
+        run: bundle install --path vendor/bundle
+      - name: Run Danger
+        run: bundle exec danger --verbose

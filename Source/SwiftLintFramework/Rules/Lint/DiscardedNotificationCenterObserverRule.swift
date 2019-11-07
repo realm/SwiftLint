@@ -97,6 +97,7 @@ private extension SourceKittenDictionary {
                 SwiftDeclarationKind.functionKinds.contains(kind) {
                 results.append(dictionary)
             }
+            dictionary.substructure.forEach(parse)
         }
         parse(self)
         return results

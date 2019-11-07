@@ -44,7 +44,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
                     return nil
             }
 
-            if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
+            if element.accessibility == .internal {
                 return element.offset
             }
 

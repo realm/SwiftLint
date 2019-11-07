@@ -76,9 +76,9 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
             return attribute
         }.first
 
-        let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:))
+        let acl = dictionary.accessibility
         let resolvedAccessibility: AccessControlLevel? = explicitACL?.acl ?? {
-            let parentACL = parentDictionary?.accessibility.flatMap(AccessControlLevel.init(identifier:))
+            let parentACL = parentDictionary?.accessibility
 
             if acl == .internal, let parentACL = parentACL, parentACL == .fileprivate {
                 return .fileprivate
@@ -101,7 +101,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         }
 
         // if it's an inferred `private`, it means the variable is actually inside a fileprivate structure
-        if dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .private,
+        if dictionary.accessibility == .private,
             explicitACL == nil,
             dictionary.setterAccessibility.flatMap(AccessControlLevel.init(identifier:)) == .private {
                 return []

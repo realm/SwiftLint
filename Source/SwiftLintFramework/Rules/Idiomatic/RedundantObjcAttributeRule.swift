@@ -62,7 +62,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
             guard let parentStructure = parentStructure,
                 let kind = dictionary.declarationKind,
                 let parentKind = parentStructure.declarationKind,
-                let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) else {
+                let acl = dictionary.accessibility else {
                     return false
             }
 

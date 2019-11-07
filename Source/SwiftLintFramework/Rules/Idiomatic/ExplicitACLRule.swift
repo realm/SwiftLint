@@ -125,11 +125,11 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                 return []
             }
 
-            let isPrivate = element.accessibility.flatMap(AccessControlLevel.init(rawValue:))?.isPrivate ?? false
+            let isPrivate = element.accessibility?.isPrivate ?? false
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
+            if element.accessibility == .internal {
                 return internalTypeElementsInSubstructure + [element]
             }
 

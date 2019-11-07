@@ -8,6 +8,8 @@ public struct SourceKittenDictionary {
     public let declarationKind: SwiftDeclarationKind?
     public let statementKind: StatementKind?
 
+    public let accessibility: AccessControlLevel?
+
     init(_ value: [String: SourceKitRepresentable]) {
         self.value = value
 
@@ -19,11 +21,8 @@ public struct SourceKittenDictionary {
         self.expressionKind = stringKind.flatMap(SwiftExpressionKind.init)
         self.declarationKind = stringKind.flatMap(SwiftDeclarationKind.init)
         self.statementKind = stringKind.flatMap(StatementKind.init)
-    }
 
-    /// Accessibility.
-    var accessibility: String? {
-        return value["key.accessibility"] as? String
+        self.accessibility = (value["key.accessibility"] as? String).flatMap(AccessControlLevel.init(identifier:))
     }
 
     /// Body length

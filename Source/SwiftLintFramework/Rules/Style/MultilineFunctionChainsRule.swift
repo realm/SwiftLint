@@ -210,7 +210,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     }
 }
 
-fileprivate extension SourceKittenDictionary {
+private extension SourceKittenDictionary {
     var subcalls: [SourceKittenDictionary] {
         return substructure.compactMap { dictionary -> SourceKittenDictionary? in
             guard dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call else {

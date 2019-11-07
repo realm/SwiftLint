@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* Use SourceKittenDictionary wrapper over dictionaries  
+  returned from SourceKitten  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2922](https://github.com/realm/SwiftLint/issues/2922)
 
 #### Experimental
 

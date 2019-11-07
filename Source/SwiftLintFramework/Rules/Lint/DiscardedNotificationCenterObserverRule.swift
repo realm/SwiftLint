@@ -73,7 +73,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
 
         if let lastMatch = file.match(pattern: "\\breturn\\s+", with: [.keyword], range: range).last,
             lastMatch.location == range.length - lastMatch.length,
-            let lastFunction = functions(forByteOffset: offset, in: file.structureDictionary).last,
+            let lastFunction = file.structureDictionary.functions(forByteOffset: offset).last,
             !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
             return []
         }
@@ -82,23 +82,24 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
     }
 }
 
-private func functions(forByteOffset byteOffset: Int, in dictionary: SourceKittenDictionary)
-    -> [SourceKittenDictionary] {
-    var results = [SourceKittenDictionary]()
+private extension SourceKittenDictionary {
+    func functions(forByteOffset byteOffset: Int) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
 
-    func parse(_ dictionary: SourceKittenDictionary) {
-        guard let offset = dictionary.offset,
-            let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
-            NSLocationInRange(byteOffset, byteRange) else {
-                return
-        }
+        func parse(_ dictionary: SourceKittenDictionary) {
+            guard let offset = dictionary.offset,
+                let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
+                NSLocationInRange(byteOffset, byteRange) else {
+                    return
+            }
 
-        if let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-            SwiftDeclarationKind.functionKinds.contains(kind) {
-            results.append(dictionary)
+            if let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+                SwiftDeclarationKind.functionKinds.contains(kind) {
+                results.append(dictionary)
+            }
+            dictionary.substructure.forEach(parse)
         }
-        dictionary.substructure.forEach(parse)
+        parse(self)
+        return results
     }
-    parse(dictionary)
-    return results
 }

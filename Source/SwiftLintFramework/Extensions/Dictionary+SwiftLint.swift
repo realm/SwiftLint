@@ -93,6 +93,12 @@ public struct SourceKittenDictionary {
         .map(SourceKittenDictionary.init)
     }
 
+    var entities: [SourceKittenDictionary] {
+        let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
+        return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(SourceKittenDictionary.init)
+    }
+
     var enclosedVarParameters: [SourceKittenDictionary] {
         return substructure.flatMap { subDict -> [SourceKittenDictionary] in
             guard let kindString = subDict.kind else {

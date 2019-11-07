@@ -1,5 +1,4 @@
 import Commandant
-import Result
 import SwiftLintFramework
 
 struct VersionCommand: CommandProtocol {

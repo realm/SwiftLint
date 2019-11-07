@@ -1,5 +1,4 @@
 import Commandant
-import Result
 
 struct LintCommand: CommandProtocol {
     let verb = "lint"

@@ -1,7 +1,6 @@
 import Commandant
 import Dispatch
 import Foundation
-import Result
 import SwiftLintFramework
 
 enum LintOrAnalyzeMode {

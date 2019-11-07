@@ -1,6 +1,5 @@
 import Commandant
 import Foundation
-import Result
 import SourceKittenFramework
 import SwiftLintFramework
 

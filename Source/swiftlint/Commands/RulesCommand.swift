@@ -6,7 +6,6 @@ import Glibc
 #else
 #error("Unsupported platform")
 #endif
-import Result
 import SwiftLintFramework
 import SwiftyTextTable
 

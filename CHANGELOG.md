@@ -2,8 +2,9 @@
 
 #### Breaking
 
-* Use SourceKittenDictionary wrapper over dictionaries
-  returned from SourceKitten  
+* Replace the `[String: SourceKittenRepresentable]` dictionaries used in
+  public SwiftLintFramework APIs with a new `SourceKittenDictionary`
+  wrapper over dictionaries returned from SourceKitten.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2922](https://github.com/realm/SwiftLint/issues/2922)
 
@@ -11,7 +12,6 @@
   `antitypical/Result` dependency in favor of the Swift standard
   library's `Result` type.  
   [JP Simard](https://github.com/jpsim)
-  [#623](https://github.com/jpsim/SourceKitten/issues/623)
 
 #### Experimental
 
@@ -19,22 +19,23 @@
 
 #### Enhancements
 
-* Speedup by using SwiftFile wrapper over File from SourceKitten.
-  Use unique file id for each SiwftLintFile for caching  
+* Speed up many operations by using SwiftLintFile wrapper over File from
+  SourceKitten, caching most members derived from the File.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2929](https://github.com/realm/SwiftLint/issues/2929)
 
-* Speedup Swiftlint by using swift enums instead of raw values.  
+* Speed up Swiftlint by using swift enums instead of raw values for
+  dictionary lookups.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2924](https://github.com/realm/SwiftLint/issues/2924)
 
-* Speed up Identical Operands rule by using syntaxmap instead of
-  regular expressions.  
+* Speed up Identical Operands rule by using syntaxmap instead of regular
+  expressions.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2918](https://github.com/realm/SwiftLint/issues/2918)
 
-* Speed up syntax token lookups, which can improve performance when linting
-  large files.  
+* Speed up syntax token lookups, which can improve performance when
+  linting large files.  
   [PaulTaykalo](https://github.com/PaulTaykalo)  
   [#2916](https://github.com/realm/SwiftLint/issues/2916)  
 

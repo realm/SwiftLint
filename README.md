@@ -444,8 +444,7 @@ the linting process.
 * Each file will be linted using the configuration file that is in its
   directory or at the deepest level of its parent directories. Otherwise the
   root configuration will be used.
-* `excluded` and `included` are ignored for nested
-  configurations.
+* `included` is ignored for nested configurations.
 
 ### Auto-correct
 

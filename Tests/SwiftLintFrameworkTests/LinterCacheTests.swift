@@ -301,7 +301,9 @@ class LinterCacheTests: XCTestCase {
 
     // swiftlint:disable:next function_body_length
     func testDetectSwiftVersion() {
-        #if compiler(>=5.1.1)
+        #if compiler(>=5.1.2)
+            let version = "5.1.2"
+        #elseif compiler(>=5.1.1)
             let version = "5.1.1"
         #elseif compiler(>=5.1.0)
             let version = "5.1.0"

@@ -1,7 +1,6 @@
 import Commandant
 import Dispatch
 import Foundation
-import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
@@ -28,7 +27,7 @@ private func scriptInputFiles() -> Result<[SwiftLintFile], CommandantError<()>> 
     }()
 
     return count.flatMap { count in
-        let inputFiles = (0..<count).compactMap { fileNumber -> SwiftLintFile? in
+        return .success((0..<count).compactMap { fileNumber in
             switch getEnvironmentVariable("SCRIPT_INPUT_FILE_\(fileNumber)") {
             case let .success(path):
                 if path.bridge().isSwiftFile() {
@@ -39,8 +38,7 @@ private func scriptInputFiles() -> Result<[SwiftLintFile], CommandantError<()>> 
                 queuedPrintError(String(describing: error))
                 return nil
             }
-        }
-        return Result(inputFiles)
+        })
     }
 }
 

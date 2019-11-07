@@ -7,6 +7,12 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2922](https://github.com/realm/SwiftLint/issues/2922)
 
+* Update Commandant dependency to version 0.17.0, removing the
+  `antitypical/Result` dependency in favor of the Swift standard
+  library's `Result` type.  
+  [JP Simard](https://github.com/jpsim)
+  [#623](https://github.com/jpsim/SourceKitten/issues/623)
+
 #### Experimental
 
 * None.

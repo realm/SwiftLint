@@ -94,7 +94,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
@@ -104,7 +104,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         }
     }
 
-    private func violatingOffsets(file: File,
+    private func violatingOffsets(file: SwiftLintFile,
                                   kind: SwiftExpressionKind,
                                   dictionary: SourceKittenDictionary) -> [Int] {
         let ranges = callRanges(file: file, kind: kind, dictionary: dictionary)
@@ -134,7 +134,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private static let whitespaceDotRegex = regex("\\s*\\.")
 
-    private func callDotOffset(file: File, callRange: NSRange) -> Int? {
+    private func callDotOffset(file: SwiftLintFile, callRange: NSRange) -> Int? {
         guard
             let range = file.contents.bridge().byteRangeToNSRange(start: callRange.location, length: callRange.length),
             case let regex = type(of: self).whitespaceDotRegex,
@@ -146,7 +146,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private static let newlineWhitespaceDotRegex = regex("\\n\\s*\\.")
 
-    private func callHasLeadingNewline(file: File, callRange: NSRange) -> Bool {
+    private func callHasLeadingNewline(file: SwiftLintFile, callRange: NSRange) -> Bool {
         guard
             let range = file.contents.bridge().byteRangeToNSRange(start: callRange.location, length: callRange.length),
             case let regex = type(of: self).newlineWhitespaceDotRegex,
@@ -156,7 +156,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         return true
     }
 
-    private func callRanges(file: File,
+    private func callRanges(file: SwiftLintFile,
                             kind: SwiftExpressionKind,
                             dictionary: SourceKittenDictionary,
                             parentCallName: String? = nil) -> [NSRange] {
@@ -185,7 +185,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         }
     }
 
-    private func subcallRange(file: File,
+    private func subcallRange(file: SwiftLintFile,
                               call: SourceKittenDictionary,
                               parentName: String,
                               parentNameOffset: Int) -> NSRange? {

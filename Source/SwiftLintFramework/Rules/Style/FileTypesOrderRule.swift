@@ -18,7 +18,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     )
 
     // swiftlint:disable:next function_body_length
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
             let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 
@@ -85,7 +85,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func extensionsSubstructures(
-        in file: File,
+        in file: SwiftLintFile,
         mainTypeSubstructure: SourceKittenDictionary
     ) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
@@ -97,7 +97,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func supportingTypesSubstructures(
-        in file: File,
+        in file: SwiftLintFile,
         mainTypeSubstructure: SourceKittenDictionary
     ) -> [SourceKittenDictionary] {
         var supportingTypeKinds = SwiftDeclarationKind.typeKinds
@@ -112,7 +112,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         }
     }
 
-    private func mainTypeSubstructure(in file: File) -> SourceKittenDictionary? {
+    private func mainTypeSubstructure(in file: SwiftLintFile) -> SourceKittenDictionary? {
         let dict = file.structureDictionary
 
         guard let filePath = file.path else {

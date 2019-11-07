@@ -100,7 +100,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         ].joined(separator: "|")
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file, matching: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -108,7 +108,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         var result = [Correction]()
 
         result.append(contentsOf: correct(file: file,
@@ -159,7 +159,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return result.unique
     }
 
-    private func correct(file: File,
+    private func correct(file: SwiftLintFile,
                          pattern: String,
                          replaceString: String,
                          keepLastChar: Bool = false) -> [Correction] {
@@ -182,7 +182,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return corrections
     }
 
-    private func violationRanges(in file: File, matching pattern: String) -> [NSRange] {
+    private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             guard let syntaxKind = SyntaxKind(rawValue: syntaxTokens[0].type) else {

@@ -14,7 +14,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let startOffset = dictionary.nameOffset,

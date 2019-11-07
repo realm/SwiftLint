@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private extension File {
+private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
         return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
@@ -75,7 +75,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let patternRegex: NSRegularExpression = regex(pattern)
 
         return file.violatingRanges(for: pattern).map { violationRange in
@@ -95,7 +95,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
 }
 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
         guard !violatingRanges.isEmpty else { return [] }
 

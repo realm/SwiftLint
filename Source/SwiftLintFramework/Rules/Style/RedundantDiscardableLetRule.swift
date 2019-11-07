@@ -29,7 +29,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -37,11 +37,11 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "_")
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents.bridge()
         return file.match(pattern: "let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {

@@ -26,7 +26,7 @@ extension CallPairRule {
         - reason: The reason of the generated violations
         - predicate: Predicate to apply after checking callNameSuffix
      */
-    internal func validate(file: File,
+    internal func validate(file: SwiftLintFile,
                            pattern: String,
                            patternSyntaxKinds: [SyntaxKind],
                            callNameSuffix: String,

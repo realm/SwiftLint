@@ -18,13 +18,13 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
 
     fileprivate static let notWhitespace = regex("[^\\s]")
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }
     }
 
-    private func styleViolation(for violation: Violation, in file: File) -> StyleViolation {
+    private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
         let reason = "Closure end should have the same indentation as the line that started it. " +
                      "Expected \(violation.indentationRanges.expected.length), " +
                      "got \(violation.indentationRanges.actual.length)."
@@ -37,7 +37,7 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
 }
 
 extension ClosureEndIndentationRule: CorrectableRule {
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let allViolations = violations(in: file).reversed().filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }
@@ -111,11 +111,11 @@ extension ClosureEndIndentationRule {
         var range: NSRange
     }
 
-    fileprivate func violations(in file: File) -> [Violation] {
+    fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
         return violations(in: file, dictionary: file.structureDictionary)
     }
 
-    private func violations(in file: File,
+    private func violations(in file: SwiftLintFile,
                             dictionary: SourceKittenDictionary) -> [Violation] {
         return dictionary.substructure.flatMap { subDict -> [Violation] in
             var subViolations = violations(in: file, dictionary: subDict)
@@ -128,7 +128,7 @@ extension ClosureEndIndentationRule {
         }
     }
 
-    private func violations(in file: File, of kind: SwiftExpressionKind,
+    private func violations(in file: SwiftLintFile, of kind: SwiftExpressionKind,
                             dictionary: SourceKittenDictionary) -> [Violation] {
         guard kind == .call else {
             return []
@@ -143,7 +143,7 @@ extension ClosureEndIndentationRule {
         return violations
     }
 
-    private func hasTrailingClosure(in file: File,
+    private func hasTrailingClosure(in file: SwiftLintFile,
                                     dictionary: SourceKittenDictionary) -> Bool {
         guard
             let offset = dictionary.offset,
@@ -156,7 +156,7 @@ extension ClosureEndIndentationRule {
         return !text.hasSuffix(")")
     }
 
-    private func validateCall(in file: File,
+    private func validateCall(in file: SwiftLintFile,
                               dictionary: SourceKittenDictionary) -> Violation? {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset,
@@ -197,7 +197,7 @@ extension ClosureEndIndentationRule {
                          range: NSRange(location: offset, length: length))
     }
 
-    private func validateArguments(in file: File,
+    private func validateArguments(in file: SwiftLintFile,
                                    dictionary: SourceKittenDictionary) -> [Violation] {
         guard isFirstArgumentOnNewline(dictionary, file: file) else {
             return []
@@ -216,7 +216,7 @@ extension ClosureEndIndentationRule {
         return argumentViolations
     }
 
-    private func validateClosureArgument(in file: File,
+    private func validateClosureArgument(in file: SwiftLintFile,
                                          dictionary: SourceKittenDictionary) -> Violation? {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset,
@@ -257,7 +257,7 @@ extension ClosureEndIndentationRule {
                          range: NSRange(location: offset, length: length))
     }
 
-    private func startOffset(forDictionary dictionary: SourceKittenDictionary, file: File) -> Int? {
+    private func startOffset(forDictionary dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Int? {
         guard let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength else {
             return nil
@@ -277,7 +277,7 @@ extension ClosureEndIndentationRule {
     }
 
     private func isSingleLineClosure(dictionary: SourceKittenDictionary,
-                                     endPosition: Int, file: File) -> Bool {
+                                     endPosition: Int, file: SwiftLintFile) -> Bool {
         let contents = file.contents.bridge()
 
         guard let start = dictionary.bodyOffset,
@@ -290,7 +290,7 @@ extension ClosureEndIndentationRule {
     }
 
     private func containsSingleLineClosure(dictionary: SourceKittenDictionary,
-                                           endPosition: Int, file: File) -> Bool {
+                                           endPosition: Int, file: SwiftLintFile) -> Bool {
         let contents = file.contents.bridge()
 
         guard let closure = trailingClosure(dictionary: dictionary, file: file),
@@ -304,7 +304,7 @@ extension ClosureEndIndentationRule {
     }
 
     private func trailingClosure(dictionary: SourceKittenDictionary,
-                                 file: File) -> SourceKittenDictionary? {
+                                 file: SwiftLintFile) -> SourceKittenDictionary? {
         let arguments = dictionary.enclosedArguments
         let closureArguments = filterClosureArguments(arguments, file: file)
 
@@ -317,7 +317,7 @@ extension ClosureEndIndentationRule {
     }
 
     private func filterClosureArguments(_ arguments: [SourceKittenDictionary],
-                                        file: File) -> [SourceKittenDictionary] {
+                                        file: SwiftLintFile) -> [SourceKittenDictionary] {
         return arguments.filter { argument in
             guard let offset = argument.bodyOffset,
                 let length = argument.bodyLength,
@@ -332,7 +332,7 @@ extension ClosureEndIndentationRule {
     }
 
     private func isFirstArgumentOnNewline(_ dictionary: SourceKittenDictionary,
-                                          file: File) -> Bool {
+                                          file: SwiftLintFile) -> Bool {
         guard
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,

@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
     public var configuration = DiscouragedDirectInitConfiguration()
 
@@ -32,7 +30,7 @@ public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard

@@ -230,7 +230,7 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Testing Custom Configuration File
 
     func testCustomConfiguration() {
-        let file = File(path: projectMockSwift0)!
+        let file = SwiftLintFile(path: projectMockSwift0)!
         XCTAssertNotEqual(projectMockConfig0.configuration(for: file),
                           projectMockConfig0CustomPath.configuration(for: file))
     }
@@ -239,7 +239,7 @@ class ConfigurationTests: XCTestCase {
         let configuration = Configuration(path: projectMockYAML0,
                                           rootPath: projectMockSwift0,
                                           optional: false, quiet: true)
-        let file = File(path: projectMockSwift0)!
+        let file = SwiftLintFile(path: projectMockSwift0)!
         XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
@@ -247,7 +247,7 @@ class ConfigurationTests: XCTestCase {
         let configuration = Configuration(path: projectMockYAML0CustomPath,
                                           rootPath: projectMockSwift0,
                                           optional: false, quiet: true)
-        let file = File(path: projectMockSwift0)!
+        let file = SwiftLintFile(path: projectMockSwift0)!
         XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 

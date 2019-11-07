@@ -87,7 +87,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
 
     private static let commentKinds = SyntaxKind.commentAndStringKinds
 
-    public func validate(file: File, kind: StatementKind,
+    public func validate(file: SwiftLintFile, kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .forEach,
             let subDictionary = forBody(dictionary: dictionary),
@@ -125,7 +125,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
 
     private func isOnlyIfInsideFor(forDictionary: SourceKittenDictionary,
                                    ifDictionary: SourceKittenDictionary,
-                                   file: File) -> Bool {
+                                   file: SwiftLintFile) -> Bool {
         guard let offset = forDictionary.offset,
             let length = forDictionary.length,
             let ifOffset = ifDictionary.offset,
@@ -146,7 +146,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
         return doesntContainComments
     }
 
-    private func isComplexCondition(dictionary: SourceKittenDictionary, file: File) -> Bool {
+    private func isComplexCondition(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         let kind = "source.lang.swift.structure.elem.condition_expr"
         let contents = file.contents.bridge()
         return dictionary.elements.contains { element in

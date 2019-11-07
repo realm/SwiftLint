@@ -34,7 +34,7 @@ public struct TodoRule: ConfigurationProviderRule {
         ]
     )
 
-    private func customMessage(file: File, range: NSRange) -> String {
+    private func customMessage(file: SwiftLintFile, range: NSRange) -> String {
         var reason = type(of: self).description.description
         let offset = NSMaxRange(range)
 
@@ -71,7 +71,7 @@ public struct TodoRule: ConfigurationProviderRule {
         return reason
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "\\b(?:TODO|FIXME)(?::|\\b)").compactMap { range, syntaxKinds in
             if syntaxKinds.contains(where: { !$0.isCommentLike }) {
                 return nil

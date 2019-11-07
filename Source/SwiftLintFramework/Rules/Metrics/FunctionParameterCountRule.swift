@@ -34,7 +34,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind) else {
             return []
@@ -98,13 +98,13 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return parameterCount
     }
 
-    private func defaultFunctionParameterCount(file: File, byteOffset: Int, byteLength: Int) -> Int {
+    private func defaultFunctionParameterCount(file: SwiftLintFile, byteOffset: Int, byteLength: Int) -> Int {
         let substring = file.contents.bridge().substringWithByteRange(start: byteOffset, length: byteLength)!
         let equals = substring.filter { $0 == "=" }
         return equals.count
     }
 
-    private func functionIsInitializer(file: File, byteOffset: Int, byteLength: Int) -> Bool {
+    private func functionIsInitializer(file: SwiftLintFile, byteOffset: Int, byteLength: Int) -> Bool {
         guard let name = file.contents.bridge()
             .substringWithByteRange(start: byteOffset, length: byteLength),
             name.hasPrefix("init"),

@@ -21,12 +21,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private let typeKinds = SwiftDeclarationKind.typeKinds
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +
             validate(file: file, dictionary: file.structureDictionary)
     }
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard typeKinds.contains(kind),
             let name = dictionary.name,
@@ -37,7 +37,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         return validate(name: name, dictionary: dictionary, file: file, offset: offset)
     }
 
-    private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
+    private func validateTypeAliasesAndAssociatedTypes(in file: SwiftLintFile) -> [StyleViolation] {
         guard SwiftVersion.current < .fourDotOne else {
             return []
         }
@@ -62,8 +62,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary([:]), file: File,
-                          offset: Int) -> [StyleViolation] {
+    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary([:]),
+                          file: SwiftLintFile, offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }

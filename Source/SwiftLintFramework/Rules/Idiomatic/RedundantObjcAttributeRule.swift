@@ -20,7 +20,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         triggeringExamples: RedundantObjcAttributeRuleExamples.triggeringExamples,
         corrections: RedundantObjcAttributeRuleExamples.corrections)
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -28,11 +28,11 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return violationRanges(file: file, dictionary: file.structureDictionary, parentStructure: nil)
     }
 
-    private func violationRanges(file: File, dictionary: SourceKittenDictionary,
+    private func violationRanges(file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                  parentStructure: SourceKittenDictionary?) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
             var violations = violationRanges(file: file, dictionary: subDict, parentStructure: dictionary)
@@ -45,7 +45,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         }
     }
 
-    private func violationRanges(file: File,
+    private func violationRanges(file: SwiftLintFile,
                                  kind: SwiftDeclarationKind,
                                  dictionary: SourceKittenDictionary,
                                  parentStructure: SourceKittenDictionary?) -> [NSRange] {
@@ -99,7 +99,7 @@ private extension SourceKittenDictionary {
 }
 
 public extension RedundantObjcAttributeRule {
-     func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         var whitespaceAndNewlineOffset = 0
         let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()
         let nsContent = file.contents.bridge()

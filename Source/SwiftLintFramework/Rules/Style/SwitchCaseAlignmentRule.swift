@@ -15,7 +15,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 
-    public func validate(file: File, kind: StatementKind,
+    public func validate(file: SwiftLintFile, kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let contents = file.contents.bridge()
 

@@ -30,7 +30,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
 
     private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol", "class"]
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .protocol else {
             return []
@@ -77,7 +77,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
         ]
     }
 
-    private func isClassProtocol(file: File, range: NSRange) -> Bool {
+    private func isClassProtocol(file: SwiftLintFile, range: NSRange) -> Bool {
         return !file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isEmpty
     }
 

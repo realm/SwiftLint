@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = ObjectLiteralConfiguration()
 
@@ -24,7 +22,7 @@ public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset, kind == .objectLiteral else { return [] }

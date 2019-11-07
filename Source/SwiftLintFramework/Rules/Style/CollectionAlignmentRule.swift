@@ -14,7 +14,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         triggeringExamples: Examples(alignColons: false).triggeringExamples
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .dictionary || kind == .array else { return [] }
 
@@ -51,13 +51,13 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         }
     }
 
-    private func arrayElementLocations(with file: File, dictionary: SourceKittenDictionary) -> [Location] {
+    private func arrayElementLocations(with file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Location] {
         return dictionary.elements.compactMap { element -> Location? in
             element.offset.map { Location(file: file, byteOffset: $0) }
         }
     }
 
-    private func dictionaryKeyLocations(with file: File,
+    private func dictionaryKeyLocations(with file: SwiftLintFile,
                                         dictionary: SourceKittenDictionary) -> [Location] {
         var keys: [SourceKittenDictionary] = []
         var values: [SourceKittenDictionary] = []
@@ -86,7 +86,8 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         }
     }
 
-    private func colonLocation(with file: File, keyOffset: Int, keyLength: Int, valueOffset: Int) -> Location? {
+    private func colonLocation(with file: SwiftLintFile, keyOffset: Int, keyLength: Int,
+                               valueOffset: Int) -> Location? {
         let contents = file.contents.bridge()
         let matchStart = keyOffset + keyLength
         let matchLength = valueOffset - matchStart

@@ -39,7 +39,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
         return typeName.range(of: "!") != nil || typeName.range(of: "ImplicitlyUnwrappedOptional<") != nil
     }
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.variableKinds.contains(kind) else {
             return []

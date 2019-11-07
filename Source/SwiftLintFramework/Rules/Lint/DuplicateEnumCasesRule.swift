@@ -37,7 +37,7 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []

@@ -20,7 +20,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "\\b\\s*(==|!=)\\s*\"\""
         return file.match(pattern: pattern, with: [.string]).map {
             StyleViolation(ruleDescription: type(of: self).description,

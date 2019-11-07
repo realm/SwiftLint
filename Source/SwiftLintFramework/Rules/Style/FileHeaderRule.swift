@@ -33,7 +33,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
 
     private static let reason = "Header comments should be consistent with project patterns."
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         var firstToken: SyntaxToken?
         var lastToken: SyntaxToken?
         var firstNonCommentToken: SyntaxToken?
@@ -97,7 +97,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         }
     }
 
-    private func isSwiftLintCommand(token: SyntaxToken, file: File) -> Bool {
+    private func isSwiftLintCommand(token: SyntaxToken, file: SwiftLintFile) -> Bool {
         guard let range = file.contents.bridge().byteRangeToNSRange(start: token.offset,
                                                                     length: token.length) else {
             return false

@@ -44,7 +44,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call, let name = dictionary.name, name.hasSuffix(".map"),
             let bodyOffset = dictionary.bodyOffset,
@@ -85,7 +85,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 
     private func isClosureParameter(firstToken: SyntaxToken,
                                     nameEndPosition: Int,
-                                    file: File) -> Bool {
+                                    file: SwiftLintFile) -> Bool {
         let length = firstToken.offset - nameEndPosition
         guard length > 0,
             case let contents = file.contents.bridge(),
@@ -99,7 +99,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 
     private func containsTrailingContent(lastToken: SyntaxToken,
                                          bodyEndPosition: Int,
-                                         file: File) -> Bool {
+                                         file: SwiftLintFile) -> Bool {
         let lastTokenEnd = lastToken.offset + lastToken.length
         let remainingLength = bodyEndPosition - lastTokenEnd
         let remainingRange = NSRange(location: lastTokenEnd, length: remainingLength)
@@ -108,7 +108,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 
     private func containsLeadingContent(tokens: [SyntaxToken],
                                         bodyStartPosition: Int,
-                                        file: File) -> Bool {
+                                        file: SwiftLintFile) -> Bool {
         let inTokenPosition = tokens.firstIndex(where: { token in
             SyntaxKind(rawValue: token.type) == .keyword && file.contents(for: token) == "in"
         })
@@ -130,7 +130,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         return containsContent(inByteRange: remainingRange, file: file)
     }
 
-    private func containsContent(inByteRange byteRange: NSRange, file: File) -> Bool {
+    private func containsContent(inByteRange byteRange: NSRange, file: SwiftLintFile) -> Bool {
         let nsstring = file.contents.bridge()
         let remainingTokens = file.syntaxMap.tokens(inByteRange: byteRange)
         let ranges = NSMutableIndexSet(indexesIn: byteRange)
@@ -158,7 +158,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         return containsContent
     }
 
-    private func isShortParameterStyleViolation(file: File, tokens: [SyntaxToken]) -> Bool {
+    private func isShortParameterStyleViolation(file: SwiftLintFile, tokens: [SyntaxToken]) -> Bool {
         let kinds = tokens.kinds
         switch kinds {
         case [.identifier]:
@@ -173,7 +173,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         }
     }
 
-    private func isParameterStyleViolation(file: File, dictionary: SourceKittenDictionary,
+    private func isParameterStyleViolation(file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                            tokens: [SyntaxToken]) -> Bool {
         let parameters = dictionary.enclosedVarParameters
         guard parameters.count == 1,

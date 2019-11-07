@@ -67,11 +67,11 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file, dictionary: file.structureDictionary, parentStructure: nil)
     }
 
-    private func validate(file: File, dictionary: SourceKittenDictionary,
+    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary,
                           parentStructure: SourceKittenDictionary?) -> [StyleViolation] {
         return dictionary.substructure.flatMap({ subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict, parentStructure: dictionary)
@@ -84,7 +84,7 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         })
     }
 
-    private func validate(file: File,
+    private func validate(file: SwiftLintFile,
                           kind: SwiftDeclarationKind,
                           dictionary: SourceKittenDictionary,
                           parentStructure: SourceKittenDictionary) -> [StyleViolation] {
@@ -114,7 +114,7 @@ private extension SourceKittenDictionary {
         return typeName != nil
     }
 
-    func isInitCall(file: File) -> Bool {
+    func isInitCall(file: SwiftLintFile) -> Bool {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
@@ -131,7 +131,7 @@ private extension SourceKittenDictionary {
         return initCallRegex.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }
 
-    func isTypeReferenceAssignment(file: File) -> Bool {
+    func isTypeReferenceAssignment(file: SwiftLintFile) -> Bool {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
@@ -176,7 +176,7 @@ private extension SourceKittenDictionary {
     }
 }
 
-private extension File {
+private extension SwiftLintFile {
     var captureGroupByteRanges: [NSRange] {
         return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
                      excludingSyntaxKinds: SyntaxKind.commentKinds)

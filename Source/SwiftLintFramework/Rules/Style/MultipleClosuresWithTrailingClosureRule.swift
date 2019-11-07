@@ -30,7 +30,7 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             case let arguments = dictionary.enclosedArguments,
@@ -64,7 +64,7 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
 }
 
 private extension Array where Element == SourceKittenDictionary {
-    func filterClosures(file: File) -> [SourceKittenDictionary] {
+    func filterClosures(file: SwiftLintFile) -> [SourceKittenDictionary] {
         if SwiftVersion.current < .fourDotTwo {
             return filter { argument in
                 guard let offset = argument.bodyOffset,

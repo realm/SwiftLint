@@ -49,7 +49,7 @@ private extension Rule {
 
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
-    func lint(file: File, regions: [Region], benchmark: Bool,
+    func lint(file: SwiftLintFile, regions: [Region], benchmark: Bool,
               storage: RuleStorage,
               configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
@@ -110,14 +110,14 @@ private extension Rule {
 
 /// Represents a file that can be linted for style violations and corrections after being collected.
 public struct Linter {
-    public let file: File
+    public let file: SwiftLintFile
     public var isCollecting: Bool
     fileprivate let rules: [Rule]
     fileprivate let cache: LinterCache?
     fileprivate let configuration: Configuration
     fileprivate let compilerArguments: [String]
 
-    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil,
+    public init(file: SwiftLintFile, configuration: Configuration = Configuration()!, cache: LinterCache? = nil,
                 compilerArguments: [String] = []) {
         self.file = file
         self.cache = cache
@@ -147,7 +147,7 @@ public struct Linter {
 ///
 /// A `CollectedLinter` is only created after a `Linter` has run its collection steps in `Linter.collect(into:)`.
 public struct CollectedLinter {
-    public let file: File
+    public let file: SwiftLintFile
     private let rules: [Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
@@ -251,9 +251,9 @@ public struct CollectedLinter {
     }
 
     public func format(useTabs: Bool, indentWidth: Int) {
-        let formattedContents = try? file.format(trimmingTrailingWhitespace: true,
-                                                 useTabs: useTabs,
-                                                 indentWidth: indentWidth)
+        let formattedContents = try? file.file.format(trimmingTrailingWhitespace: true,
+                                                      useTabs: useTabs,
+                                                      indentWidth: indentWidth)
         if let formattedContents = formattedContents {
             file.write(formattedContents)
         }

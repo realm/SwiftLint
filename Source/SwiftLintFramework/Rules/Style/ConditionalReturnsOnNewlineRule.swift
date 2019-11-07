@@ -29,7 +29,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = configuration.ifOnly ? "(if)[^\n]*return" : "(guard|if)[^\n]*return"
 
         return file.rangesAndTokens(matching: pattern).filter { _, tokens in
@@ -49,7 +49,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
         }
     }
 
-    private func content(for token: SyntaxToken, file: File) -> String {
+    private func content(for token: SyntaxToken, file: SwiftLintFile) -> String {
         return file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) ?? ""
     }
 }

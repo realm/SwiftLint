@@ -43,7 +43,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let conditionKind = "source.lang.swift.structure.elem.condition_expr"
@@ -67,7 +67,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func violations(in range: NSRange, of file: File, with kind: StatementKind) -> [NSRange] {
+    private func violations(in range: NSRange, of file: SwiftLintFile, with kind: StatementKind) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds
 
         let underscorePattern = "(_\\s*[=,)]\\s*(try\\?)?)"
@@ -82,7 +82,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             .map { $0.0.range(at: 1) }
     }
 
-    private func containsOptionalTry(at range: NSRange, of file: File) -> Bool {
+    private func containsOptionalTry(at range: NSRange, of file: SwiftLintFile) -> Bool {
         guard configuration.ignoreOptionalTry else {
             return false
         }

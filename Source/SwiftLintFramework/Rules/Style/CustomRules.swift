@@ -60,7 +60,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
 
     public init() {}
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         guard !configurations.isEmpty else {

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-private extension File {
+private extension SwiftLintFile {
     func missingDocOffsets(in dictionary: SourceKittenDictionary,
                            acls: [AccessControlLevel]) -> [(Int, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
@@ -74,7 +74,7 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
         let dict = file.structureDictionary
         return file.missingDocOffsets(in: dict,

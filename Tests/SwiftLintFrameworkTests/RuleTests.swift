@@ -1,4 +1,3 @@
-import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
@@ -17,7 +16,7 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
         try self.configuration.apply(configuration: configuration)
     }
 
-    func validate(file: File) -> [StyleViolation] { return [] }
+    func validate(file: SwiftLintFile) -> [StyleViolation] { return [] }
 }
 
 class RuleTests: XCTestCase {
@@ -29,7 +28,7 @@ class RuleTests: XCTestCase {
         init() {}
         init(configuration: Any) throws { self.init() }
 
-        func validate(file: File) -> [StyleViolation] {
+        func validate(file: SwiftLintFile) -> [StyleViolation] {
             return []
         }
     }
@@ -42,7 +41,7 @@ class RuleTests: XCTestCase {
         init() {}
         init(configuration: Any) throws { self.init() }
 
-        func validate(file: File) -> [StyleViolation] {
+        func validate(file: SwiftLintFile) -> [StyleViolation] {
             return []
         }
     }
@@ -59,7 +58,7 @@ class RuleTests: XCTestCase {
             try self.configuration.apply(configuration: configuration)
         }
 
-        func validate(file: File) -> [StyleViolation] { return [] }
+        func validate(file: SwiftLintFile) -> [StyleViolation] { return [] }
     }
 
     func testRuleIsEqualTo() {

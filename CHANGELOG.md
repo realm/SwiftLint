@@ -2,7 +2,7 @@
 
 #### Breaking
 
-* Use SourceKittenDictionary wrapper over dictionaries  
+* Use SourceKittenDictionary wrapper over dictionaries
   returned from SourceKitten  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2922](https://github.com/realm/SwiftLint/issues/2922)
@@ -12,6 +12,11 @@
 * None.
 
 #### Enhancements
+
+* Speedup by using SwiftFile wrapper over File from SourceKitten.
+  Use unique file id for each SiwftLintFile for caching  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2929](https://github.com/realm/SwiftLint/issues/2929)
 
 * Speedup Swiftlint by using swift enums instead of raw values.  
   [PaulTaykalo](https://github.com/PaulTaykalo)

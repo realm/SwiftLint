@@ -22,7 +22,7 @@ internal extension ColonRule {
             "\\S)"                      // lazily to the first non-whitespace character.
     }
 
-    func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
+    func typeColonViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         return file.matchesAndTokens(matching: pattern).filter { match, syntaxTokens in
             if match.range(at: 2).length > 0 && syntaxTokens.count > 2 { // captured a generic definition
@@ -38,7 +38,7 @@ internal extension ColonRule {
         }
     }
 
-    private func isValidMatch(syntaxTokens: [SyntaxToken], file: File) -> Bool {
+    private func isValidMatch(syntaxTokens: [SyntaxToken], file: SwiftLintFile) -> Bool {
         let syntaxKinds = syntaxTokens.kinds
 
         guard syntaxKinds.count == 2 else {
@@ -72,7 +72,7 @@ internal extension ColonRule {
     }
 }
 
-private extension File {
+private extension SwiftLintFile {
     func isTypeLike(token: SyntaxToken) -> Bool {
         guard let text = getTokenText(token: token),
             let firstLetter = text.unicodeScalars.first else {

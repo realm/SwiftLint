@@ -10,7 +10,7 @@ class FileNameRuleTests: XCTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
                           prefixPattern: String? = nil, suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {
-        let file = File(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
+        let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameRule
         if let excluded = excludedOverride {
             rule = try FileNameRule(configuration: ["excluded": excluded])

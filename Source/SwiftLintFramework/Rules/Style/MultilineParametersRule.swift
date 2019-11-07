@@ -16,7 +16,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard

@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 extension ColonRule {
-    internal func functionCallColonViolationRanges(in file: File,
+    internal func functionCallColonViolationRanges(in file: SwiftLintFile,
                                                    dictionary: SourceKittenDictionary) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges: [NSRange] = []
@@ -14,7 +14,7 @@ extension ColonRule {
         }
     }
 
-    internal func functionCallColonViolationRanges(in file: File, kind: SwiftExpressionKind,
+    internal func functionCallColonViolationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                                    dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .argument,
             let ranges = functionCallColonRanges(dictionary: dictionary) else {

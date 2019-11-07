@@ -60,7 +60,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         let tokens: [SyntaxToken]
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
         return
             file.matchesAndTokens(matching: "\\s(" + operators + ")\\s")
@@ -73,7 +73,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 }
     }
 
-    private func violationRangeFrom(match: NSTextCheckingResult, in file: File) -> NSRange? {
+    private func violationRangeFrom(match: NSTextCheckingResult, in file: SwiftLintFile) -> NSRange? {
         let contents = file.contents.bridge()
         let operatorRange = match.range(at: 1)
         guard let operatorByteRange = contents.NSRangeToByteRange(operatorRange) else {
@@ -131,7 +131,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         return violationRange
     }
 
-    private func operandsStartingFromIndexes(leftTokenIndex: Int, rightTokenIndex: Int, file: File)
+    private func operandsStartingFromIndexes(leftTokenIndex: Int, rightTokenIndex: Int, file: SwiftLintFile)
         -> (leftOperand: Operand, rightOperand: Operand) {
             let tokens = file.syntaxMap.tokens
 

@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -30,7 +28,7 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
     ]
 
     public func validate(
-        file: File,
+        file: SwiftLintFile,
         kind: SwiftExpressionKind,
         dictionary: SourceKittenDictionary
     ) -> [StyleViolation] {

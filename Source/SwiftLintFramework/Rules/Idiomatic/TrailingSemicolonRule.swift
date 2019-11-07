@@ -28,7 +28,7 @@ public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationP
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -36,12 +36,12 @@ public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationP
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return file.match(pattern: "(;+([^\\S\\n]?)*)+;?$",
                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 }

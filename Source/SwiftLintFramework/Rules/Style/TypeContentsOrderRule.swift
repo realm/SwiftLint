@@ -16,7 +16,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: TypeContentsOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
@@ -26,7 +26,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
 
     private func validateTypeSubstructure(
         _ substructure: SourceKittenDictionary,
-        in file: File
+        in file: SwiftLintFile
     ) -> [StyleViolation] {
         let typeContentOffsets = self.typeContentOffsets(in: substructure)
         let orderedTypeContentOffsets = typeContentOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }

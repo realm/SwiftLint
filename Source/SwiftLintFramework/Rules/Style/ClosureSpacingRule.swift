@@ -69,7 +69,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     // returns ranges of braces `{` or `}` in the same line
-    private func validBraces(in file: File) -> [NSRange] {
+    private func validBraces(in file: SwiftLintFile) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let bracePattern = regex("\\{|\\}")
         let linesTokens = file.syntaxTokensByLines
@@ -95,7 +95,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     // find ranges where violation exist. Returns ranges sorted by location.
-    private func findViolations(file: File) -> [NSRange] {
+    private func findViolations(file: SwiftLintFile) -> [NSRange] {
         // match open braces to corresponding closing braces
         func matchBraces(validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }
@@ -133,7 +133,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             }
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return findViolations(file: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -148,7 +148,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         var matches = removeNested(findViolations(file: file)).filter {
             !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty
         }

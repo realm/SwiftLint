@@ -54,7 +54,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         ]
     )
 
-    public func validate(file: File, kind: StatementKind,
+    public func validate(file: SwiftLintFile, kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -63,11 +63,11 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File, kind: StatementKind,
+    public func violationRanges(in file: SwiftLintFile, kind: StatementKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .case else {
             return []

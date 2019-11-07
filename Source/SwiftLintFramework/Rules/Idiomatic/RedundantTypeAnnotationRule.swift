@@ -54,7 +54,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: type(of: self).description,
@@ -64,11 +64,11 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let typeAnnotationPattern = ":\\s?\\w+"
         let pattern = "(var|let)\\s?\\w+\(typeAnnotationPattern)\\s?=\\s?\\w+(\\(|.)"
         let foundRanges = file.match(pattern: pattern, with: [.keyword, .identifier, .typeidentifier, .identifier])
@@ -80,7 +80,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
             }
     }
 
-    private func isFalsePositive(in file: File, range: NSRange) -> Bool {
+    private func isFalsePositive(in file: SwiftLintFile, range: NSRange) -> Bool {
         let substring = file.contents.bridge().substring(with: range)
 
         let components = substring.components(separatedBy: "=")
@@ -97,7 +97,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         return lhsTypeName != rhsTypeName
     }
 
-    private func isIBInspectable(range: NSRange, file: File) -> Bool {
+    private func isIBInspectable(range: NSRange, file: SwiftLintFile) -> Bool {
         guard let byteRange = file.contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
             let dict = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
             let kind = dict.declarationKind,

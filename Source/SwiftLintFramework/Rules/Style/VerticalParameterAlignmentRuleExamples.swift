@@ -1,20 +1,20 @@
 internal struct VerticalParameterAlignmentRuleExamples {
     static let nonTriggeringExamples: [String] = {
         let commonExamples = [
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
+            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "                      dictionary: SourceKittenDictionary) { }\n",
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
+            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "                      dictionary: SourceKittenDictionary) -> [StyleViolation]\n",
             "func foo(bar: Int)\n",
             "func foo(bar: Int) -> String \n",
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
+            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "                      dictionary: SourceKittenDictionary)\n" +
             "                      -> [StyleViolation]\n",
             "func validateFunction(\n" +
-            "   _ file: File, kind: SwiftDeclarationKind,\n" +
+            "   _ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "   dictionary: SourceKittenDictionary) -> [StyleViolation]\n",
             "func validateFunction(\n" +
-            "   _ file: File, kind: SwiftDeclarationKind,\n" +
+            "   _ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "   dictionary: SourceKittenDictionary\n" +
             ") -> [StyleViolation]\n",
             "func regex(_ pattern: String,\n" +
@@ -39,11 +39,11 @@ internal struct VerticalParameterAlignmentRuleExamples {
 
     static let triggeringExamples: [String] = {
         let commonExamples = [
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
+            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "                  ↓dictionary: SourceKittenDictionary) { }\n",
-            "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
+            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
             "                       ↓dictionary: SourceKittenDictionary) { }\n",
-            "func validateFunction(_ file: File,\n" +
+            "func validateFunction(_ file: SwiftLintFile,\n" +
             "                  ↓kind: SwiftDeclarationKind,\n" +
             "                  ↓dictionary: SourceKittenDictionary) { }\n"
         ]

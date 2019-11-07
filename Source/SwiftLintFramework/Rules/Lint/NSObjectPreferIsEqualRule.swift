@@ -14,13 +14,13 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         triggeringExamples: NSObjectPreferIsEqualRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return objcVisibleClasses(in: file).flatMap { violations(in: file, for: $0) }
     }
 
     // MARK: - Private
 
-    private func objcVisibleClasses(in file: File) -> [SourceKittenDictionary] {
+    private func objcVisibleClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
 
         return dict.substructure.filter { dictionary in
@@ -32,7 +32,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         }
     }
 
-    private func violations(in file: File,
+    private func violations(in file: SwiftLintFile,
                             for dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let typeName = dictionary.name else { return [] }
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in

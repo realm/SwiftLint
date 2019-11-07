@@ -39,7 +39,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         var violations = validateAttributes(file: file, dictionary: file.structureDictionary)
         violations += validateConditions(file: file)
         violations.sort(by: { $0.location < $1.location })
@@ -47,7 +47,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         return violations
     }
 
-    private func validateConditions(file: File) -> [StyleViolation] {
+    private func validateConditions(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "#available\\s*\\([^\\(]+\\)"
 
         return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
@@ -64,7 +64,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         }
     }
 
-    private func validateAttributes(file: File, dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    private func validateAttributes(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validateAttributes(file: file, dictionary: subDict)
 
@@ -76,7 +76,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         }
     }
 
-    private func validateAttributes(file: File,
+    private func validateAttributes(file: SwiftLintFile,
                                     kind: SwiftDeclarationKind,
                                     dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let attributes = dictionary.swiftAttributes.filter {
@@ -97,7 +97,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         }.unique
     }
 
-    private func validate(range: NSRange, file: File, violationType: String,
+    private func validate(range: NSRange, file: SwiftLintFile, violationType: String,
                           byteOffsetToReport: Int) -> [StyleViolation] {
         let platformToConfiguredMinVersion = self.platformToConfiguredMinVersion
         let allPlatforms = "(?:" + platformToConfiguredMinVersion.keys.joined(separator: "|") + ")"

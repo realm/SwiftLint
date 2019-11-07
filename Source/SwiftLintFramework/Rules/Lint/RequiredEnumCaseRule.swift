@@ -76,7 +76,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         let inheritedTypes: [String]
         let cases: [String]
 
-        init(from dictionary: SourceKittenDictionary, in file: File) {
+        init(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) {
             location = Enum.location(from: dictionary, in: file)
             inheritedTypes = dictionary.inheritedTypes
             cases = Enum.cases(from: dictionary)
@@ -86,9 +86,9 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ///
         /// - Parameters:
         ///   - dictionary: Parsed source for the enum.
-        ///   - file: File that contains the enum.
+        ///   - file: SwiftLintFile that contains the enum.
         /// - Returns: Location of where the enum declaration starts.
-        static func location(from dictionary: SourceKittenDictionary, in file: File) -> Location {
+        static func location(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) -> Location {
             return Location(file: file, characterOffset: dictionary.offset ?? 0)
         }
 
@@ -159,7 +159,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []

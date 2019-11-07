@@ -97,7 +97,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
     private let reduceExpression = regex("(?<!\\w)reduce$")
     private let initExpression = regex("^(?:\\[.+:?.*\\]|(?:Array|Dictionary)<.+>)(?:\\.init\\(|\\().*\\)$")
 
-    public func validate(file: File, kind: SwiftExpressionKind,
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
@@ -123,7 +123,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
         return [violation]
     }
 
-    private func argumentIsCopyOnWriteType(_ argument: SourceKittenDictionary, file: File) -> Bool {
+    private func argumentIsCopyOnWriteType(_ argument: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         if let substructure = argument.substructure.first,
             let kind = substructure.expressionKind {
             if kind == .array || kind == .dictionary {

@@ -26,7 +26,7 @@ public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -34,11 +34,11 @@ public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return file.match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
     }
 }

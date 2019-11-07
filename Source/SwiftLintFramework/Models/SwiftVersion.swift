@@ -48,12 +48,12 @@ public extension SwiftVersion {
         }
 
         if !Request.disableSourceKit,
-            case let dynamicCallableFile = File(contents: "@dynamicCallable"),
+            case let dynamicCallableFile = SwiftLintFile(contents: "@dynamicCallable"),
             dynamicCallableFile.syntaxMap.tokens.compactMap({ SyntaxKind(rawValue: $0.type) }) == [.attributeID] {
             return .five
         }
 
-        let file = File(contents: """
+        let file = SwiftLintFile(contents: """
             #if swift(>=4.2.0)
                 let version = "4.2.0"
             #elseif swift(>=4.1.50)

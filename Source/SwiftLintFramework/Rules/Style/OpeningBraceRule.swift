@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
-private extension File {
+private extension SwiftLintFile {
     func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
         return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
@@ -67,7 +67,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -75,7 +75,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.violatingOpeningBraceRanges().filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }

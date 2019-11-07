@@ -31,7 +31,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind) else {
             return []
@@ -52,7 +52,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    private func measureComplexity(in file: File, dictionary: SourceKittenDictionary) -> Int {
+    private func measureComplexity(in file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Int {
         var hasSwitchStatements = false
 
         let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
@@ -87,7 +87,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     // Switch complexity is reduced by `fallthrough` cases
 
-    private func reduceSwitchComplexity(initialComplexity complexity: Int, file: File,
+    private func reduceSwitchComplexity(initialComplexity complexity: Int, file: SwiftLintFile,
                                         dictionary: SourceKittenDictionary) -> Int {
         let bodyOffset = dictionary.bodyOffset ?? 0
         let bodyLength = dictionary.bodyLength ?? 0

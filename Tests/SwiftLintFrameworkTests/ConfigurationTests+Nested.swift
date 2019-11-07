@@ -1,4 +1,3 @@
-import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
@@ -22,22 +21,22 @@ extension ConfigurationTests {
     }
 
     func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift0)!),
+        XCTAssertEqual(projectMockConfig0.configuration(for: SwiftLintFile(path: projectMockSwift0)!),
                        projectMockConfig0)
     }
 
     func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift1)!),
+        XCTAssertEqual(projectMockConfig0.configuration(for: SwiftLintFile(path: projectMockSwift1)!),
                        projectMockConfig0)
     }
 
     func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift2)!),
+        XCTAssertEqual(projectMockConfig0.configuration(for: SwiftLintFile(path: projectMockSwift2)!),
                        projectMockConfig0.merge(with: projectMockConfig2))
     }
 
     func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
+        XCTAssertEqual(projectMockConfig0.configuration(for: SwiftLintFile(path: projectMockSwift3)!),
                        projectMockConfig0.merge(with: projectMockConfig3))
     }
 

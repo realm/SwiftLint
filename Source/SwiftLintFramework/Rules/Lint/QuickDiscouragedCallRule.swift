@@ -18,13 +18,13 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
-                $0.kind.flatMap(SwiftDeclarationKind.init) == .class
+                $0.declarationKind == .class
         }
 
         let specDeclarations = testClasses.flatMap { classDict in
             return classDict.substructure.filter {
                 return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance &&
+                    $0.declarationKind == .functionMethodInstance &&
                     $0.enclosedSwiftAttributes.contains(.override)
             }
         }
@@ -38,8 +38,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) {
+            if let kind = subDict.expressionKind {
                 violations += validate(file: file, kind: kind, dictionary: subDict)
             }
 
@@ -69,7 +68,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
     private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [Int] {
         return substructure.flatMap { dictionary -> [Int] in
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
-                if dict.kind.flatMap(SwiftExpressionKind.init) == .closure {
+                if dict.expressionKind == .closure {
                     return dict.substructure
                 } else {
                     return [dict]
@@ -82,16 +81,16 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
 
     private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [Int] {
         guard
-            let kind = dictionary.kind,
+            dictionary.kind != nil,
             let offset = dictionary.offset
             else { return [] }
 
-        if SwiftExpressionKind(rawValue: kind) == .call,
+        if dictionary.expressionKind == .call,
             let name = dictionary.name, QuickCallKind(rawValue: name) == nil {
             return [offset]
         }
 
-        guard SwiftExpressionKind(rawValue: kind) != .call else { return [] }
+        guard dictionary.expressionKind != .call else { return [] }
 
         return dictionary.substructure.compactMap(toViolationOffset)
     }
@@ -100,8 +99,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         guard
             let name = dictionary.name,
             let offset = dictionary.offset,
-            let kind = dictionary.kind,
-            SwiftExpressionKind(rawValue: kind) == .call,
+            dictionary.expressionKind == .call,
             QuickCallKind(rawValue: name) == nil
             else { return nil }
 

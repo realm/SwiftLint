@@ -70,7 +70,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                 return nil
             }
 
-            guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            guard let kind = element.declarationKind,
                 !extensionKinds.contains(kind) else {
                     return nil
             }
@@ -116,7 +116,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     private func internalTypeElements(in element: SourceKittenElement) -> [SourceKittenElement] {
         return element.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) else {
+            guard let elementKind = element.declarationKind else {
                 return []
             }
 
@@ -125,11 +125,11 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                 return []
             }
 
-            let isPrivate = element.accessibility.flatMap(AccessControlLevel.init(rawValue:))?.isPrivate ?? false
+            let isPrivate = element.accessibility?.isPrivate ?? false
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
+            if element.accessibility == .internal {
                 return internalTypeElementsInSubstructure + [element]
             }
 

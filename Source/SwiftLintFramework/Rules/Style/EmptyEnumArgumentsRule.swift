@@ -76,7 +76,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         let contents = file.contents.bridge()
 
         let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
-            guard dict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
+            guard dict.expressionKind == .call,
                 let offset = dict.offset,
                 let length = dict.length,
                 let range = contents.byteRangeToNSRange(start: offset, length: length) else {

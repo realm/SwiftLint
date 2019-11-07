@@ -4,17 +4,25 @@ public struct SourceKittenDictionary {
     public let value: [String: SourceKitRepresentable]
     public let substructure: [SourceKittenDictionary]
 
+    public let expressionKind: SwiftExpressionKind?
+    public let declarationKind: SwiftDeclarationKind?
+    public let statementKind: StatementKind?
+
+    public let accessibility: AccessControlLevel?
+
     init(_ value: [String: SourceKitRepresentable]) {
         self.value = value
 
         let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
         self.substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
             .map(SourceKittenDictionary.init)
-    }
 
-    /// Accessibility.
-    var accessibility: String? {
-        return value["key.accessibility"] as? String
+        let stringKind = value["key.kind"] as? String
+        self.expressionKind = stringKind.flatMap(SwiftExpressionKind.init)
+        self.declarationKind = stringKind.flatMap(SwiftDeclarationKind.init)
+        self.statementKind = stringKind.flatMap(StatementKind.init)
+
+        self.accessibility = (value["key.accessibility"] as? String).flatMap(AccessControlLevel.init(identifier:))
     }
 
     /// Body length
@@ -101,14 +109,10 @@ public struct SourceKittenDictionary {
 
     var enclosedVarParameters: [SourceKittenDictionary] {
         return substructure.flatMap { subDict -> [SourceKittenDictionary] in
-            guard let kindString = subDict.kind else {
-                return []
-            }
-
-            if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
+            if subDict.declarationKind == .varParameter {
                 return [subDict]
-            } else if SwiftExpressionKind(rawValue: kindString) == .argument ||
-                SwiftExpressionKind(rawValue: kindString) == .closure {
+            } else if subDict.expressionKind == .argument ||
+                subDict.expressionKind == .closure {
                 return subDict.enclosedVarParameters
             }
 
@@ -118,9 +122,8 @@ public struct SourceKittenDictionary {
 
     var enclosedArguments: [SourceKittenDictionary] {
         return substructure.flatMap { subDict -> [SourceKittenDictionary] in
-            guard let kindString = subDict.kind,
-                SwiftExpressionKind(rawValue: kindString) == .argument else {
-                    return []
+            guard subDict.expressionKind == .argument else {
+                return []
             }
 
             return [subDict]
@@ -138,7 +141,7 @@ public struct SourceKittenDictionary {
         }
         let superCall = "super.\(methodNameWithoutArguments)"
         return substructure.flatMap { elems -> [String] in
-            guard let type = elems.kind.flatMap(SwiftExpressionKind.init),
+            guard let type = elems.expressionKind,
                 let name = elems.name,
                 type == .call && superCall == name else {
                     return elems.extractCallsToSuper(methodName: methodName)

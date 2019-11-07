@@ -42,16 +42,16 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     private func violationOffsets(for dictionary: SourceKittenDictionary, file: File) -> [Int] {
         var results = [Int]()
 
-        if dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
+        if dictionary.expressionKind == .call,
             shouldBeTrailingClosure(dictionary: dictionary, file: file),
             let offset = dictionary.offset {
             results = [offset]
         }
 
-        if let kind = dictionary.kind.flatMap(StatementKind.init), kind != .brace {
+        if let kind = dictionary.statementKind, kind != .brace {
             // trailing closures are not allowed in `if`, `guard`, etc
             results += dictionary.substructure.flatMap { subDict -> [Int] in
-                guard subDict.kind.flatMap(StatementKind.init) == .brace else {
+                guard subDict.statementKind == .brace else {
                     return []
                 }
 

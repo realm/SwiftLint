@@ -24,7 +24,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         }
 
         let params = dictionary.substructure.filter { subDict in
-            return subDict.kind.flatMap(SwiftDeclarationKind.init) == .varParameter &&
+            return subDict.declarationKind == .varParameter &&
                 (subDict.offset ?? .max) < endOffset
         }
 

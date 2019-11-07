@@ -82,8 +82,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         func parse(dictionary: SourceKittenDictionary) {
             // Only accepts protocols declarations which contains a body and contains the
             // searched byteOffset
-            if let kindString = (dictionary.kind),
-                SwiftDeclarationKind(rawValue: kindString) == .protocol,
+            if dictionary.declarationKind == .protocol,
                 let offset = dictionary.bodyOffset,
                 let length = dictionary.bodyLength {
                 let byteRange = NSRange(location: offset, length: length)

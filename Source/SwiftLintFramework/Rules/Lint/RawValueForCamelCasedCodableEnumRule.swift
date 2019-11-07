@@ -115,7 +115,7 @@ AutomaticTestableRule {
 
     private func substructureElements(of dict: SourceKittenDictionary,
                                       matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        return dict.substructure.filter { $0.kind.flatMap(SwiftDeclarationKind.init) == kind }
+        return dict.substructure.filter { $0.declarationKind == kind }
     }
 
     private func camelCasedEnumCasesMissingRawValue(

@@ -54,7 +54,7 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         if configuration.onlyPrivateMembers,
-            let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)), !acl.isPrivate {
+            let acl = dictionary.accessibility, !acl.isPrivate {
             return []
         }
 

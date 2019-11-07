@@ -6,9 +6,8 @@ extension ColonRule {
                                                    dictionary: SourceKittenDictionary) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges: [NSRange] = []
-            if let kindString = subDict.kind,
-                let kind = KindType(rawValue: kindString) {
-                    ranges += functionCallColonViolationRanges(in: file, kind: kind, dictionary: subDict)
+            if let kind = subDict.expressionKind {
+                ranges += functionCallColonViolationRanges(in: file, kind: kind, dictionary: subDict)
             }
             ranges += functionCallColonViolationRanges(in: file, dictionary: subDict)
             return ranges

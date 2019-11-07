@@ -1,25 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-private extension AccessControlLevel {
-    init?(_ dictionary: SourceKittenDictionary) {
-        guard let accessibility = dictionary.accessibility,
-            let acl = AccessControlLevel(rawValue: accessibility) else { return nil }
-        self = acl
-    }
-}
-
 private extension SourceKittenDictionary {
     var superclass: String? {
-        guard let kindString = self.kind,
-            let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class,
+        guard declarationKind == .class,
             let className = inheritedTypes.first else { return nil }
         return className
     }
 
     var parameters: [SourceKittenDictionary] {
         return substructure.filter { dict in
-            guard let kind = dict.kind.flatMap(SwiftDeclarationKind.init) else {
+            guard let kind = dict.declarationKind else {
                 return false
             }
 
@@ -144,7 +135,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
 
     private func validateFunction(file: File,
                                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+        guard let kind = dictionary.declarationKind,
             kind == .functionMethodInstance,
             let name = dictionary.name, name.hasPrefix("test"),
             dictionary.parameters.isEmpty else {
@@ -155,7 +146,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
 
     private func validateAccessControlLevel(file: File,
                                             dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let acl = AccessControlLevel(dictionary), acl.isPrivate,
+        guard let acl = dictionary.accessibility, acl.isPrivate,
             !dictionary.enclosedSwiftAttributes.contains(.objc)
             else { return [] }
         let offset = dictionary.offset ?? 0

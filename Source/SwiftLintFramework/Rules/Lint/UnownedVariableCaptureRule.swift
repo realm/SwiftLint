@@ -64,8 +64,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         var results = [SourceKittenDictionary]()
 
         func parse(dictionary: SourceKittenDictionary) {
-            if let kindString = (dictionary.kind),
-                SwiftDeclarationKind(rawValue: kindString) == .varLocal,
+            if dictionary.declarationKind == .varLocal,
                 let offset = dictionary.offset,
                 let length = dictionary.length {
                 let variableByteRange = NSRange(location: offset, length: length)

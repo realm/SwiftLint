@@ -34,7 +34,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         guard isOutlet else { return [] }
 
         // Check if private
-        let isPrivate = isPrivateLevel(identifier: dictionary.accessibility)
+        let isPrivate = dictionary.accessibility?.isPrivate ?? false
         let isPrivateSet = isPrivateLevel(identifier: dictionary.setterAccessibility)
 
         if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {

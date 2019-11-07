@@ -74,7 +74,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
             }
 
             if !configuration.validateExtensions &&
-                dictionary.kind.flatMap(SwiftDeclarationKind.init) == .extension {
+                dictionary.declarationKind == .extension {
                 return nil
             }
 

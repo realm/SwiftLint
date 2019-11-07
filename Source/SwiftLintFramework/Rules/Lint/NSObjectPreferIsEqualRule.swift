@@ -24,9 +24,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         let dict = file.structureDictionary
 
         return dict.substructure.filter { dictionary in
-            guard
-                let kind = dictionary.kind,
-                SwiftDeclarationKind(rawValue: kind) == .class
+            guard dictionary.declarationKind == .class
             else { return false }
             let isDirectNSObjectSubclass = dictionary.inheritedTypes.contains("NSObject")
             let isMarkedObjc = dictionary.enclosedSwiftAttributes.contains(.objc)
@@ -51,7 +49,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
     private func isDoubleEqualsMethod(_ method: SourceKittenDictionary,
                                       onType typeName: String) -> Bool {
         guard
-            let kind = method.kind.flatMap(SwiftDeclarationKind.init),
+            let kind = method.declarationKind,
             let name = method.name,
             kind == .functionMethodStatic,
             name == "==(_:_:)",

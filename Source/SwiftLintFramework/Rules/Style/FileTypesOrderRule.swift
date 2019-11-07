@@ -105,8 +105,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
         let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
-            guard let kind = substructure.kind else { return false }
-            guard let declarationKind = SwiftDeclarationKind(rawValue: kind) else { return false }
+            guard let declarationKind = substructure.declarationKind else { return false }
 
             return substructure.value.bridge() != mainTypeSubstructure.value.bridge() &&
                 supportingTypeKinds.contains(declarationKind)
@@ -131,11 +130,10 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
     private func mainTypeSubstructure(in dict: SourceKittenDictionary) -> SourceKittenDictionary? {
         let priorityKinds: [SwiftDeclarationKind] = [.class, .enum, .struct]
-        let priorityKindRawValues = priorityKinds.map { $0.rawValue }
 
         let priorityKindSubstructures = dict.substructure.filter { substructure in
-            guard let kind = substructure.kind else { return false }
-            return priorityKindRawValues.contains(kind)
+            guard let kind = substructure.declarationKind else { return false }
+            return priorityKinds.contains(kind)
         }
 
         let substructuresSortedByBodyLength = priorityKindSubstructures.sorted { lhs, rhs in

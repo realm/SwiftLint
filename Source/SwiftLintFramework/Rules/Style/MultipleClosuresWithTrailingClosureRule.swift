@@ -80,7 +80,7 @@ private extension Array where Element == SourceKittenDictionary {
         } else {
             return filter { argument in
                 return argument.substructure.contains(where: { dictionary in
-                    dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .closure
+                    dictionary.expressionKind == .closure
                 })
             }
         }

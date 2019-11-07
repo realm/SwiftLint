@@ -13,6 +13,10 @@
 
 #### Enhancements
 
+* Speedup Swiftlint by using swift enums instead of raw values.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2924](https://github.com/realm/SwiftLint/issues/2924)
+
 * Speed up Identical Operands rule by using syntaxmap instead of
   regular expressions.  
   [PaulTaykalo](https://github.com/PaulTaykalo)

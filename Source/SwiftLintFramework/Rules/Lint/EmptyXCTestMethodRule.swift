@@ -23,9 +23,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
     private func testClasses(in file: File) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
-            guard
-                let kind = dictionary.kind,
-                SwiftDeclarationKind(rawValue: kind) == .class else { return false }
+            guard dictionary.declarationKind == .class else { return false }
             return dictionary.inheritedTypes.contains("XCTestCase")
         }
     }
@@ -34,7 +32,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
                             for dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard
-                let kind = subDictionary.kind.flatMap(SwiftDeclarationKind.init),
+                let kind = subDictionary.declarationKind,
                 SwiftDeclarationKind.functionKinds.contains(kind),
                 let name = subDictionary.name, isXCTestMethod(name),
                 let offset = subDictionary.offset,

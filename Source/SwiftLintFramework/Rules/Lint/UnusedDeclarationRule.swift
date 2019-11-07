@@ -145,8 +145,8 @@ private extension File {
                     return nil
                 }
 
-                if let acl = File.aclAtOffset(offset, substructureElement: editorOpen) {
-                    cursorInfo["key.accessibility"] = acl
+                if let acl = editorOpen.aclAtOffset(offset) {
+                    cursorInfo["key.accessibility"] = acl.rawValue
                 }
                 cursorInfo["swiftlint.offset"] = offset
                 return cursorInfo
@@ -173,9 +173,9 @@ private extension File {
         -> (usr: String, nameOffset: Int)? {
         if let offset = cursorInfo.swiftlintOffset,
             let usr = cursorInfo.usr,
-            let kind = cursorInfo.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            let kind = cursorInfo.declarationKind,
             !declarationKindsToSkip.contains(kind),
-            let acl = cursorInfo.accessibility.flatMap(AccessControlLevel.init(rawValue:)),
+            let acl = cursorInfo.accessibility,
             includePublicAndOpen || [.internal, .private, .fileprivate].contains(acl) {
             // Skip declarations marked as @IBOutlet, @IBAction or @objc
             // since those might not be referenced in code, but only dynamically (e.g. Interface Builder)
@@ -227,7 +227,7 @@ private extension File {
     }
 
     private static func testCaseUSR(cursorInfo: SourceKittenDictionary) -> String? {
-        if let kind = (cursorInfo.kind).flatMap(SwiftDeclarationKind.init(rawValue:)),
+        if let kind = cursorInfo.declarationKind,
             kind == .class,
             let annotatedDecl = cursorInfo.annotatedDeclaration,
             annotatedDecl.contains("<Type usr=\"c:objc(cs)XCTestCase\">XCTestCase</Type>"),
@@ -235,20 +235,6 @@ private extension File {
             return usr
         }
 
-        return nil
-    }
-
-    private static func aclAtOffset(_ offset: Int64, substructureElement: SourceKittenDictionary) -> String? {
-        if let nameOffset = substructureElement.nameOffset,
-            nameOffset == offset,
-            let acl = substructureElement.accessibility {
-            return acl
-        }
-        for child in substructureElement.substructure {
-            if let acl = File.aclAtOffset(offset, substructureElement: child) {
-                return acl
-            }
-        }
         return nil
     }
 }
@@ -264,6 +250,20 @@ private extension SourceKittenDictionary {
 
     var annotatedDeclaration: String? {
         return value["key.annotated_decl"] as? String
+    }
+
+    func aclAtOffset(_ offset: Int64) -> AccessControlLevel? {
+        if let nameOffset = nameOffset,
+            nameOffset == offset,
+            let acl = accessibility {
+            return acl
+        }
+        for child in substructure {
+            if let acl = child.aclAtOffset(offset) {
+                return acl
+            }
+        }
+        return nil
     }
 }
 

@@ -41,7 +41,7 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
         ) { dictionary in
             if
                 !dictionary.substructure.isEmpty &&
-                dictionary.substructure.last?.kind.flatMap(SwiftExpressionKind.init) != .argument &&
+                dictionary.substructure.last?.expressionKind != .argument &&
                 dictionary.substructure.last?.name != "NSPredicate"
             {
                 return true // has a substructure, like a closure

@@ -64,8 +64,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         return dictionary.substructure.flatMap { subDict -> [Correction] in
             var corrections = correct(file: file, dictionary: subDict)
 
-            if let kindString = subDict.kind,
-                let kind = KindType(rawValue: kindString) {
+            if let kind = subDict.declarationKind {
                 corrections += correct(file: file, kind: kind, dictionary: subDict)
             }
 
@@ -192,13 +191,13 @@ private extension SourceKittenDictionary {
     }
 
     private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> SourceKittenDictionary? {
-        guard let kind = kind, let offset = offset,
-            let declarationKind = SwiftDeclarationKind(rawValue: kind),
+        guard let offset = offset,
+            let declarationKind = declarationKind,
             declarationKinds.contains(declarationKind) else {
                 return nil
         }
 
-        return SourceKittenDictionary(["key.kind": kind, "key.offset": Int64(offset)])
+        return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset)])
     }
 }
 

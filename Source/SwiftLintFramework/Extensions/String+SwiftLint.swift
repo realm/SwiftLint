@@ -23,8 +23,7 @@ extension String {
     }
 
     internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
-        if let aclString = dict.accessibility,
-           let acl = AccessControlLevel(identifier: aclString),
+        if let acl = dict.accessibility,
             acl.isPrivate && first == "_" {
             return String(self[index(after: startIndex)...])
         }

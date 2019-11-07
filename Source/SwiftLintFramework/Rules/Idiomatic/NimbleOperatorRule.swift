@@ -127,8 +127,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 
                 let containsCall = file.structureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
                     .contains(where: { dict -> Bool in
-                        return dict.kind.flatMap(SwiftExpressionKind.init) == .call &&
-                            (dict.name ?? "").starts(with: "expect")
+                        return dict.expressionKind == .call && (dict.name ?? "").starts(with: "expect")
                     })
 
                 return containsCall

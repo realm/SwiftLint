@@ -125,13 +125,9 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
 
     private func argumentIsCopyOnWriteType(_ argument: SourceKittenDictionary, file: File) -> Bool {
         if let substructure = argument.substructure.first,
-            let kind = substructure.kind {
-            switch kind {
-            case SwiftExpressionKind.array.rawValue,
-                 SwiftExpressionKind.dictionary.rawValue:
+            let kind = substructure.expressionKind {
+            if kind == .array || kind == .dictionary {
                 return true
-            default:
-                break
             }
         }
 

@@ -120,8 +120,7 @@ extension ClosureEndIndentationRule {
         return dictionary.substructure.flatMap { subDict -> [Violation] in
             var subViolations = violations(in: file, dictionary: subDict)
 
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) {
+            if let kind = subDict.expressionKind {
                 subViolations += violations(in: file, of: kind, dictionary: subDict)
             }
 

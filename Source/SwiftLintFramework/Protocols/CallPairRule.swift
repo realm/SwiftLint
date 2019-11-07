@@ -69,8 +69,7 @@ extension CallPairRule {
     private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
                             dictionary: SourceKittenDictionary,
                             predicate: (SourceKittenDictionary) -> Bool) -> Int? {
-        if let kindString = dictionary.kind,
-            SwiftExpressionKind(rawValue: kindString) == .call,
+        if dictionary.expressionKind == .call,
             let bodyOffset = dictionary.offset,
             let bodyLength = dictionary.length,
             let offset = dictionary.offset {

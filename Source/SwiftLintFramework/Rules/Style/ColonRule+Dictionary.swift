@@ -10,7 +10,7 @@ extension ColonRule {
 
         let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges: [NSRange] = []
-            if let kind = subDict.kind.flatMap(KindType.init(rawValue:)) {
+            if let kind = subDict.expressionKind {
                 ranges += dictionaryColonViolationRanges(in: file, kind: kind, dictionary: subDict)
             }
             ranges += dictionaryColonViolationRanges(in: file, dictionary: subDict)

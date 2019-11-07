@@ -49,7 +49,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         let isNotClosure = { !self.isClosureParameter(dictionary: $0) }
         let params = dictionary.substructure
             .flatMap { subDict -> [SourceKittenDictionary] in
-                guard subDict.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
+                guard subDict.declarationKind == .varParameter else {
                     return []
                 }
 

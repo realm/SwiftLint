@@ -76,7 +76,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
 
         // Don't trigger if it's a single parameter trailing closure without parens
         if let subDict = dictionary.substructure.last,
-            subDict.kind.flatMap(SwiftExpressionKind.init) == .closure,
+            subDict.expressionKind == .closure,
             let closureBodyOffset = subDict.bodyOffset,
             closureBodyOffset == bodyOffset {
             return []

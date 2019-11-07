@@ -95,7 +95,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         var violations = [StyleViolation]()
 
         // find violations at current level
-        if let kindString = substructure.kind, let kind = SwiftDeclarationKind(rawValue: kindString),
+        if let kind = substructure.declarationKind,
             SwiftDeclarationKind.functionKinds.contains(kind) {
             guard
                 let nameOffset = substructure.nameOffset,
@@ -107,7 +107,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
 
             let isMultiline = functionName.contains("\n")
 
-            let parameters = substructure.substructure.filter { $0.kind == SwiftDeclarationKind.varParameter.rawValue }
+            let parameters = substructure.substructure.filter { $0.declarationKind == .varParameter }
             if isMultiline && !parameters.isEmpty {
                 if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
                     violations.append(openingBracketViolation)

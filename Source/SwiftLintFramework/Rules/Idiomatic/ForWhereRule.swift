@@ -93,7 +93,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
             let subDictionary = forBody(dictionary: dictionary),
             subDictionary.substructure.count == 1,
             let bodyDictionary = subDictionary.substructure.first,
-            bodyDictionary.kind.flatMap(StatementKind.init) == .if,
+            bodyDictionary.statementKind == .if,
             isOnlyOneIf(dictionary: bodyDictionary),
             isOnlyIfInsideFor(forDictionary: subDictionary, ifDictionary: bodyDictionary, file: file),
             !isComplexCondition(dictionary: bodyDictionary, file: file),
@@ -110,7 +110,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
 
     private func forBody(dictionary: SourceKittenDictionary) -> SourceKittenDictionary? {
         return dictionary.substructure.first(where: { subDict -> Bool in
-            subDict.kind.flatMap(StatementKind.init) == .brace
+            subDict.statementKind == .brace
         })
     }
 
@@ -120,7 +120,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
             return false
         }
 
-        return dictionary.substructure.first?.kind.flatMap(StatementKind.init) == .brace
+        return dictionary.substructure.first?.statementKind == .brace
     }
 
     private func isOnlyIfInsideFor(forDictionary: SourceKittenDictionary,

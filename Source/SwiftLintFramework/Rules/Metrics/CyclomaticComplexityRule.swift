@@ -56,16 +56,16 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         var hasSwitchStatements = false
 
         let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
-            guard let kind = subDict.kind else {
+            guard subDict.kind != nil else {
                 return complexity
             }
 
-            if let declarationKind = SwiftDeclarationKind(rawValue: kind),
+            if let declarationKind = subDict.declarationKind,
                 SwiftDeclarationKind.functionKinds.contains(declarationKind) {
                 return complexity
             }
 
-            guard let statementKind = StatementKind(rawValue: kind) else {
+            guard let statementKind = subDict.statementKind else {
                 return complexity + measureComplexity(in: file, dictionary: subDict)
             }
 

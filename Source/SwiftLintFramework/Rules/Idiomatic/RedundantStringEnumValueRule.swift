@@ -3,8 +3,7 @@ import SourceKittenFramework
 private func children(of dict: SourceKittenDictionary,
                       matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
     return dict.substructure.compactMap { subDict in
-        if let kindString = subDict.kind,
-            SwiftDeclarationKind(rawValue: kindString) == kind {
+        if subDict.declarationKind == kind {
             return subDict
         }
         return nil

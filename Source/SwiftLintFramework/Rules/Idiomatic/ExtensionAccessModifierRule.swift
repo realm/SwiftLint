@@ -84,8 +84,8 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         }
 
         let declarations = dictionary.substructure.compactMap { entry -> (acl: AccessControlLevel, offset: Int)? in
-            guard entry.kind.flatMap(SwiftDeclarationKind.init) != nil,
-                let acl = entry.accessibility.flatMap(AccessControlLevel.init(identifier:)),
+            guard entry.declarationKind != nil,
+                let acl = entry.accessibility,
                 let offset = entry.offset else {
                 return nil
             }

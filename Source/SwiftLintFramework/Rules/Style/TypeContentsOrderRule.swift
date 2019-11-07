@@ -78,7 +78,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     private func typeContent(for typeContentStructure: SourceKittenDictionary) -> TypeContent? {
-        guard let typeContentKind = SwiftDeclarationKind(rawValue: typeContentStructure.kind!) else { return nil }
+        guard let typeContentKind = typeContentStructure.declarationKind else { return nil }
 
         switch typeContentKind {
         case .enumcase, .enumelement:

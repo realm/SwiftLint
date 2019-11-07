@@ -18,6 +18,11 @@ private var structureCache = Cache({ file -> Structure? in
     }
     return nil
 })
+
+private var structureDictionaryCache = Cache({ file in
+    return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
+})
+
 private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxMap.init) })
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
@@ -128,6 +133,17 @@ extension File {
         return structure
     }
 
+    internal var structureDictionary: SourceKittenDictionary {
+        guard let structureDictionary = structureDictionaryCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SourceKittenDictionary([:])
+            }
+            queuedFatalError("Never call this for file that sourcekitd fails.")
+        }
+        return structureDictionary
+    }
+
     internal var syntaxMap: SyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
@@ -165,6 +181,7 @@ extension File {
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
+        structureDictionaryCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
@@ -175,6 +192,7 @@ extension File {
         responseCache.clear()
         assertHandlerCache.clear()
         structureCache.clear()
+        structureDictionaryCache.clear()
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()

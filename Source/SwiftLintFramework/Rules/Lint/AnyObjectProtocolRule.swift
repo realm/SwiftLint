@@ -40,7 +40,7 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
 
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -56,7 +56,7 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
 
     public func violationRanges(in file: File,
                                 kind: SwiftDeclarationKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .protocol else { return [] }
 
         return dictionary.elements.compactMap { subDict -> NSRange? in

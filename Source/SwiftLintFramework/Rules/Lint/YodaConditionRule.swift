@@ -60,7 +60,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
 
     public func validate(file: File,
                          kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard observedStatements.contains(kind),
               let offset = dictionary.offset,
               let length = dictionary.length

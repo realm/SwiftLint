@@ -77,7 +77,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .extension, let offset = dictionary.offset,
             dictionary.inheritedTypes.isEmpty else {
                 return []
@@ -116,7 +116,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
 
     private func declarationsViolations(file: File, acl: AccessControlLevel,
                                         declarationOffsets: [Int],
-                                        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                                        dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset, let length = dictionary.length,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {

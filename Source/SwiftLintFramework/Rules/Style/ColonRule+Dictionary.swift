@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 extension ColonRule {
     internal func dictionaryColonViolationRanges(in file: File,
-                                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard configuration.applyToDictionaries else {
             return []
         }
@@ -22,7 +22,7 @@ extension ColonRule {
     }
 
     internal func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,
-                                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .dictionary,
             let ranges = dictionaryColonRanges(dictionary: dictionary) else {
                 return []
@@ -43,7 +43,7 @@ extension ColonRule {
         }
     }
 
-    private func dictionaryColonRanges(dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
+    private func dictionaryColonRanges(dictionary: SourceKittenDictionary) -> [NSRange]? {
         let elements = dictionary.elements
         guard elements.count % 2 == 0 else {
             return nil

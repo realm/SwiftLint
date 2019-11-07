@@ -56,7 +56,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
     private static let commaRegex = regex(",", options: [.ignoreMetacharacters])
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         if let (index, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary) {
             return violations(file: file, byteOffset: index, reason: reason.rawValue)
         } else {
@@ -65,7 +65,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
     }
 
     public func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard let (offset, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary),
             case let length = reason == .extraTrailingCommaReason ? 1 : 0,
             let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
@@ -80,7 +80,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
     }
 
     private func violationIndexAndReason(in file: File, kind: SwiftExpressionKind,
-                                         dictionary: [String: SourceKitRepresentable]) -> CommaRuleViolation? {
+                                         dictionary: SourceKittenDictionary) -> CommaRuleViolation? {
         let allowedKinds: Set<SwiftExpressionKind> = [.array, .dictionary]
 
         guard let bodyOffset = dictionary.bodyOffset,

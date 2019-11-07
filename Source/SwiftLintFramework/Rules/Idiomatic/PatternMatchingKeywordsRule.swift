@@ -35,7 +35,7 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
     )
 
     public func validate(file: File, kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .case else {
             return []
         }

@@ -26,7 +26,7 @@ public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationPro
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset, kind == .objectLiteral else { return [] }
 
         if !configuration.imageLiteral && dictionary.name == "imageLiteral" {

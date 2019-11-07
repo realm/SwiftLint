@@ -17,7 +17,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
             case let arguments = dictionary.enclosedArguments,
@@ -51,7 +51,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
     // MARK: - Violation Logic
 
     private func findViolations(in arguments: [Argument],
-                                dictionary: [String: SourceKitRepresentable],
+                                dictionary: SourceKittenDictionary,
                                 file: File) -> [Argument] {
         guard case let contents = file.contents.bridge(),
             let nameOffset = dictionary.nameOffset,
@@ -110,7 +110,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
     // MARK: - Syntax Helpers
 
-    private func isTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isTrailingClosure(dictionary: SourceKittenDictionary, file: File) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             case let start = min(offset, offset + length - 1),
@@ -145,7 +145,7 @@ private struct Argument {
     let bodyOffset: Int
     let bodyLength: Int
 
-    init?(dictionary: [String: SourceKitRepresentable], file: File, index: Int) {
+    init?(dictionary: SourceKittenDictionary, file: File, index: Int) {
         guard let offset = dictionary.offset,
             let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset),
             let bodyOffset = dictionary.bodyOffset,

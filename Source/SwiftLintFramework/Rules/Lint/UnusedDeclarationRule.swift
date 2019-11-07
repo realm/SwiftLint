@@ -126,82 +126,86 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
 // MARK: - File Extensions
 
 private extension File {
-    func allCursorInfo(compilerArguments: [String]) -> [[String: SourceKitRepresentable]] {
-        guard let path = path, let editorOpen = try? Request.editorOpen(file: self).sendIfNotDisabled() else {
+    func allCursorInfo(compilerArguments: [String]) -> [SourceKittenDictionary] {
+        guard let path = path,
+            let editorOpen = (try? Request.editorOpen(file: self).sendIfNotDisabled())
+                .map(SourceKittenDictionary.init) else {
             return []
         }
 
-        return syntaxMap.tokens.compactMap { token in
-            guard let kind = SyntaxKind(rawValue: token.type), !syntaxKindsToSkip.contains(kind) else {
-                return nil
-            }
+        return syntaxMap.tokens
+            .compactMap { token in
+                guard let kind = SyntaxKind(rawValue: token.type), !syntaxKindsToSkip.contains(kind) else {
+                    return nil
+                }
 
-            let offset = Int64(token.offset)
-            let request = Request.cursorInfo(file: path, offset: offset, arguments: compilerArguments)
-            guard var cursorInfo = try? request.sendIfNotDisabled() else {
-                return nil
-            }
+                let offset = Int64(token.offset)
+                let request = Request.cursorInfo(file: path, offset: offset, arguments: compilerArguments)
+                guard var cursorInfo = try? request.sendIfNotDisabled() else {
+                    return nil
+                }
 
-            if let acl = File.aclAtOffset(offset, substructureElement: editorOpen) {
-                cursorInfo["key.accessibility"] = acl
+                if let acl = File.aclAtOffset(offset, substructureElement: editorOpen) {
+                    cursorInfo["key.accessibility"] = acl
+                }
+                cursorInfo["swiftlint.offset"] = offset
+                return cursorInfo
             }
-            cursorInfo["swiftlint.offset"] = offset
-            return cursorInfo
-        }
+            .map(SourceKittenDictionary.init)
     }
 
-    static func declaredUSRs(allCursorInfo: [[String: SourceKitRepresentable]], includePublicAndOpen: Bool)
+    static func declaredUSRs(allCursorInfo: [SourceKittenDictionary], includePublicAndOpen: Bool)
         -> [(usr: String, nameOffset: Int)] {
         return allCursorInfo.compactMap { cursorInfo in
             return declaredUSRAndOffset(cursorInfo: cursorInfo, includePublicAndOpen: includePublicAndOpen)
         }
     }
 
-    static func referencedUSRs(allCursorInfo: [[String: SourceKitRepresentable]]) -> [String] {
+    static func referencedUSRs(allCursorInfo: [SourceKittenDictionary]) -> [String] {
         return allCursorInfo.compactMap(referencedUSR)
     }
 
-    static func testCaseUSRs(allCursorInfo: [[String: SourceKitRepresentable]]) -> Set<String> {
+    static func testCaseUSRs(allCursorInfo: [SourceKittenDictionary]) -> Set<String> {
         return Set(allCursorInfo.compactMap(testCaseUSR))
     }
 
-    private static func declaredUSRAndOffset(cursorInfo: [String: SourceKitRepresentable], includePublicAndOpen: Bool)
+    private static func declaredUSRAndOffset(cursorInfo: SourceKittenDictionary, includePublicAndOpen: Bool)
         -> (usr: String, nameOffset: Int)? {
-        if let offset = cursorInfo["swiftlint.offset"] as? Int64,
-            let usr = cursorInfo["key.usr"] as? String,
-            let kind = (cursorInfo["key.kind"] as? String).flatMap(SwiftDeclarationKind.init(rawValue:)),
+        if let offset = cursorInfo.swiftlintOffset,
+            let usr = cursorInfo.usr,
+            let kind = cursorInfo.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
             !declarationKindsToSkip.contains(kind),
-            let acl = (cursorInfo["key.accessibility"] as? String).flatMap(AccessControlLevel.init(rawValue:)),
+            let acl = cursorInfo.accessibility.flatMap(AccessControlLevel.init(rawValue:)),
             includePublicAndOpen || [.internal, .private, .fileprivate].contains(acl) {
             // Skip declarations marked as @IBOutlet, @IBAction or @objc
             // since those might not be referenced in code, but only dynamically (e.g. Interface Builder)
-            if let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
+            if let annotatedDecl = cursorInfo.annotatedDeclaration,
                 ["@IBOutlet", "@IBAction", "@objc", "@IBInspectable"].contains(where: annotatedDecl.contains) {
                 return nil
             }
 
             // Classes marked as @UIApplicationMain are used by the operating system as the entry point into the app.
-            if let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
+            if let annotatedDecl = cursorInfo.annotatedDeclaration,
                 annotatedDecl.contains("@UIApplicationMain") {
                 return nil
             }
 
             // Skip declarations that override another. This works for both subclass overrides &
             // protocol extension overrides.
-            if cursorInfo["key.overrides"] != nil {
+            if cursorInfo.value["key.overrides"] != nil {
                 return nil
             }
 
             // Sometimes default protocol implementations don't have `key.overrides` set but they do have
             // `key.related_decls`.
-            if cursorInfo["key.related_decls"] != nil {
+            if cursorInfo.value["key.related_decls"] != nil {
                 return nil
             }
 
             // Skip CodingKeys as they are used
             if kind == .enum,
                 cursorInfo.name == "CodingKeys",
-                let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
+                let annotatedDecl = cursorInfo.annotatedDeclaration,
                 annotatedDecl.contains("usr=\"s:s9CodingKeyP\">CodingKey<") {
                 return nil
             }
@@ -212,9 +216,9 @@ private extension File {
         return nil
     }
 
-    private static func referencedUSR(cursorInfo: [String: SourceKitRepresentable]) -> String? {
-        if let usr = cursorInfo["key.usr"] as? String,
-            let kind = cursorInfo["key.kind"] as? String,
+    private static func referencedUSR(cursorInfo: SourceKittenDictionary) -> String? {
+        if let usr = cursorInfo.usr,
+            let kind = cursorInfo.kind,
             kind.contains("source.lang.swift.ref") {
             return usr
         }
@@ -222,33 +226,44 @@ private extension File {
         return nil
     }
 
-    private static func testCaseUSR(cursorInfo: [String: SourceKitRepresentable]) -> String? {
-        if let kind = (cursorInfo["key.kind"] as? String).flatMap(SwiftDeclarationKind.init(rawValue:)),
+    private static func testCaseUSR(cursorInfo: SourceKittenDictionary) -> String? {
+        if let kind = (cursorInfo.kind).flatMap(SwiftDeclarationKind.init(rawValue:)),
             kind == .class,
-            let annotatedDecl = cursorInfo["key.annotated_decl"] as? String,
+            let annotatedDecl = cursorInfo.annotatedDeclaration,
             annotatedDecl.contains("<Type usr=\"c:objc(cs)XCTestCase\">XCTestCase</Type>"),
-            let usr = cursorInfo["key.usr"] as? String {
+            let usr = cursorInfo.usr {
             return usr
         }
 
         return nil
     }
 
-    private static func aclAtOffset(_ offset: Int64, substructureElement: [String: SourceKitRepresentable]) -> String? {
-        if let nameOffset = substructureElement["key.nameoffset"] as? Int64,
+    private static func aclAtOffset(_ offset: Int64, substructureElement: SourceKittenDictionary) -> String? {
+        if let nameOffset = substructureElement.nameOffset,
             nameOffset == offset,
-            let acl = substructureElement["key.accessibility"] as? String {
+            let acl = substructureElement.accessibility {
             return acl
         }
-        if let substructure = substructureElement[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
-            let nestedSubstructure = substructure.compactMap({ $0 as? [String: SourceKitRepresentable] })
-            for child in nestedSubstructure {
-                if let acl = File.aclAtOffset(offset, substructureElement: child) {
-                    return acl
-                }
+        for child in substructureElement.substructure {
+            if let acl = File.aclAtOffset(offset, substructureElement: child) {
+                return acl
             }
         }
         return nil
+    }
+}
+
+private extension SourceKittenDictionary {
+    var swiftlintOffset: Int64? {
+        return value["swiftlint.offset"] as? Int64
+    }
+
+    var usr: String? {
+        return value["key.usr"] as? String
+    }
+
+    var annotatedDeclaration: String? {
+        return value["key.annotated_decl"] as? String
     }
 }
 

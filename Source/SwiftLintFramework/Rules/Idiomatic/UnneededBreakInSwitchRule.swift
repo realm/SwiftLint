@@ -36,7 +36,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         return file.match(pattern: "break", with: [.keyword]).compactMap { range in
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                let innerStructure = file.structure.structures(forByteOffset: byteRange.location).last,
+                let innerStructure = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
                 innerStructure.kind.flatMap(StatementKind.init) == .case,
                 let caseOffset = innerStructure.offset,
                 let caseLength = innerStructure.length,
@@ -73,7 +73,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         }
     }
 
-    private func patternEnd(dictionary: [String: SourceKitRepresentable]) -> Int? {
+    private func patternEnd(dictionary: SourceKittenDictionary) -> Int? {
         let patternEnds = dictionary.elements.compactMap { subDictionary -> Int? in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,

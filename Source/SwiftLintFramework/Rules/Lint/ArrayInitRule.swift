@@ -45,7 +45,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call, let name = dictionary.name, name.hasSuffix(".map"),
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
@@ -173,7 +173,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         }
     }
 
-    private func isParameterStyleViolation(file: File, dictionary: [String: SourceKitRepresentable],
+    private func isParameterStyleViolation(file: File, dictionary: SourceKittenDictionary,
                                            tokens: [SyntaxToken]) -> Bool {
         let parameters = dictionary.enclosedVarParameters
         guard parameters.count == 1,

@@ -36,7 +36,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance else {
             return []
         }

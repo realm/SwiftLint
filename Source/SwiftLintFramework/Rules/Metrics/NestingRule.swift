@@ -30,11 +30,11 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return validate(file: file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    private func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
+    private func validate(file: File, kind: SwiftDeclarationKind, dictionary: SourceKittenDictionary,
                           level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds = SwiftDeclarationKind.typeKinds

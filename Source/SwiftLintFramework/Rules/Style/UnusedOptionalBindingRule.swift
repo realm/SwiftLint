@@ -45,7 +45,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File,
                          kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let conditionKind = "source.lang.swift.structure.elem.condition_expr"
         guard kind == .if || kind == .guard else {
             return []

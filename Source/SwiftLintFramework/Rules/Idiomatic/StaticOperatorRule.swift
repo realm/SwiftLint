@@ -80,7 +80,7 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule,
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .functionFree,
             let offset = dictionary.offset,
             let name = dictionary.name?.split(separator: "(").first.flatMap(String.init) else {

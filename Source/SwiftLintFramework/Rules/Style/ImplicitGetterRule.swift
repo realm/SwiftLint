@@ -191,7 +191,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
 
         let violatingLocations = getTokens.compactMap { token -> (Int, SwiftDeclarationKind?)? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last else {
+            guard let dict = declarations(forByteOffset: token.offset,
+                                          structureDictionary: file.structureDictionary).last else {
                 return nil
             }
 
@@ -216,14 +217,16 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                                   reason: reason)
         }
     }
+}
 
-    private func declarations(forByteOffset byteOffset: Int,
-                              structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
+private extension ImplicitGetterRule {
+    func declarations(forByteOffset byteOffset: Int,
+                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
-                                                             .union([.functionSubscript])
+            .union([.functionSubscript])
 
-        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
+        func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
             guard let kindString = dictionary.kind,
@@ -244,7 +247,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             }
         }
 
-        for dictionary in structure.dictionary.substructure {
+        let dict = structureDictionary
+        for dictionary in dict.substructure {
             parse(dictionary: dictionary, parentKind: nil)
         }
 

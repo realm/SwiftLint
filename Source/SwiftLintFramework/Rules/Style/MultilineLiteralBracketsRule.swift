@@ -99,7 +99,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             [.array, .dictionary].contains(kind),
             let bodyOffset = dictionary.bodyOffset,

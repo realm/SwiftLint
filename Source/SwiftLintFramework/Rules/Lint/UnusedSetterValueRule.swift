@@ -103,7 +103,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
         let violatingLocations = setTokens.compactMap { setToken -> Int? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: setToken.offset, structure: file.structure).last,
+            guard let dict = declarations(forByteOffset: setToken.offset,
+                                          structureDictionary: file.structureDictionary).last,
                 let bodyOffset = dict.bodyOffset, let bodyLength = dict.bodyLength,
                 case let contents = file.contents.bridge(),
                 let propertyRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
@@ -162,7 +163,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 return nil
         }
 
-        let declaration = file.structure.structures(forByteOffset: firstToken.offset)
+        let declaration = file.structureDictionary.structures(forByteOffset: firstToken.offset)
             .first(where: { $0.offset == firstToken.offset && $0.length == firstToken.length })
 
         guard let name = declaration?.name else {
@@ -173,12 +174,13 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 
     private func findGetToken(in range: NSRange, file: File,
-                              propertyStructure: [String: SourceKitRepresentable]) -> SyntaxToken? {
+                              propertyStructure: SourceKittenDictionary) -> SyntaxToken? {
         let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last,
-                propertyStructure.isEqualTo(dict) else {
+            guard let dict = declarations(forByteOffset: token.offset,
+                                          structureDictionary: file.structureDictionary).last,
+                propertyStructure.value.isEqualTo(dict.value) else {
                     return false
             }
 
@@ -187,11 +189,11 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 
     private func declarations(forByteOffset byteOffset: Int,
-                              structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
+                              structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
 
-        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
+        func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
             guard let kindString = dictionary.kind,
@@ -212,7 +214,9 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
             }
         }
 
-        for dictionary in structure.dictionary.substructure {
+        let dict = structureDictionary
+
+        for dictionary in dict.substructure {
             parse(dictionary: dictionary, parentKind: nil)
         }
 

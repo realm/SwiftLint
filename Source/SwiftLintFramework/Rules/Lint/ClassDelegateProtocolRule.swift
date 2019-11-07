@@ -31,7 +31,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
     private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol", "class"]
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .protocol else {
             return []
         }

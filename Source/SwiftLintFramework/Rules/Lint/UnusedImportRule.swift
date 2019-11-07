@@ -187,13 +187,13 @@ private extension File {
             }
             let cursorInfoRequest = Request.cursorInfo(file: path!, offset: Int64(token.offset),
                                                        arguments: compilerArguments)
-            guard let cursorInfo = try? cursorInfoRequest.sendIfNotDisabled() else {
+            guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
                 queuedPrintError("Could not get cursor info")
                 continue
             }
             if nextIsModuleImport {
-                if let importedModule = cursorInfo["key.modulename"] as? String,
-                    cursorInfo["key.kind"] as? String == "source.lang.swift.ref.module" {
+                if let importedModule = cursorInfo.moduleName,
+                    cursorInfo.kind == "source.lang.swift.ref.module" {
                     imports.insert(importedModule)
                     nextIsModuleImport = false
                     continue
@@ -240,19 +240,20 @@ private extension File {
 
     // Operators are omitted in the editor.open request and thus have to be looked up by the indexsource request
     func operatorImports(arguments: [String], processedTokenOffsets: Set<Int>) -> Set<String> {
-        guard let index = try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled() else {
+        guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
+            .map(SourceKittenDictionary.init) else {
             queuedPrintError("Could not get index")
             return []
         }
 
-        let operatorEntities = flatEntities(entity: index).filter { mightBeOperator(kind: $0["key.kind"] as? String) }
+        let operatorEntities = flatEntities(entity: index).filter { mightBeOperator(kind: $0.kind) }
         let offsetPerLine = self.offsetPerLine()
         var imports = Set<String>()
 
         for entity in operatorEntities {
             if
-                let line = entity["key.line"] as? Int64,
-                let column = entity["key.column"] as? Int64,
+                let line = entity.line,
+                let column = entity.column,
                 let lineOffset = offsetPerLine[Int(line) - 1] {
                 let offset = lineOffset + column - 1
 
@@ -260,7 +261,8 @@ private extension File {
                 guard !processedTokenOffsets.contains(Int(offset)) else { continue }
 
                 let cursorInfoRequest = Request.cursorInfo(file: path!, offset: offset, arguments: arguments)
-                guard let cursorInfo = try? cursorInfoRequest.sendIfNotDisabled() else {
+                guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
+                    .map(SourceKittenDictionary.init) else {
                     queuedPrintError("Could not get cursor info")
                     continue
                 }
@@ -272,8 +274,7 @@ private extension File {
         return imports
     }
 
-    typealias Entity = [String: SourceKitRepresentable]
-    func flatEntities(entity: Entity) -> [Entity] {
+    func flatEntities(entity: SourceKittenDictionary) -> [SourceKittenDictionary] {
         let entities = entity.entities
         if entities.isEmpty {
             return [entity]
@@ -306,8 +307,8 @@ private extension File {
         ].contains { kind.hasPrefix($0) }
     }
 
-    func appendUsedImports(cursorInfo: [String: SourceKitRepresentable], usrFragments: inout Set<String>) {
-        if let usr = cursorInfo["key.modulename"] as? String {
+    func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
+        if let usr = cursorInfo.moduleName {
             usrFragments.formUnion(usr.split(separator: ".").map(String.init))
         }
     }
@@ -317,7 +318,7 @@ private extension File {
             return false
         }
 
-        func containsAttributesRequiringFoundation(dict: [String: SourceKitRepresentable]) -> Bool {
+        func containsAttributesRequiringFoundation(dict: SourceKittenDictionary) -> Bool {
             if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
                 return true
             } else {
@@ -325,7 +326,22 @@ private extension File {
             }
         }
 
-        return containsAttributesRequiringFoundation(dict: self.structure.dictionary)
+        return containsAttributesRequiringFoundation(dict: self.structureDictionary)
+    }
+}
+
+private extension SourceKittenDictionary {
+    /// Module name in @import expressions
+    var moduleName: String? {
+        return value["key.modulename"] as? String
+    }
+
+    var line: Int64? {
+        return value["key.line"] as? Int64
+    }
+
+    var column: Int64? {
+        return value["key.column"] as? Int64
     }
 }
 

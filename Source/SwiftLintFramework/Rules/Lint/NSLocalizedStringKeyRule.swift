@@ -23,7 +23,7 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             dictionary.name == "NSLocalizedString",
             let firstArgument = dictionary.enclosedArguments.first,

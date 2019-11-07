@@ -38,7 +38,7 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []
         }
@@ -67,8 +67,8 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
             }
     }
 
-    private func substructureElements(of dict: [String: SourceKitRepresentable],
-                                      matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
+    private func substructureElements(of dict: SourceKittenDictionary,
+                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
         return dict.substructure
             .filter { $0.kind.flatMap(SwiftDeclarationKind.init) == kind }
     }

@@ -90,7 +90,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
     private static let kinds: Set<StatementKind> = [.if, .for, .forEach, .while, .repeatWhile, .switch]
 
     public func validate(file: File, kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return self.violationRanges(in: file, kind: kind, dictionary: dictionary).map { range in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -112,7 +112,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
     }
 
     public func violationRanges(in file: File, kind: StatementKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard type(of: self).kinds.contains(kind),
             let offset = dictionary.offset, let length = dictionary.length,
             case let byteRange = NSRange(location: offset, length: length),

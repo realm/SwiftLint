@@ -17,7 +17,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let offsets = variableViolations(file: file, kind: kind, dictionary: dictionary) +
             functionViolations(file: file, kind: kind, dictionary: dictionary)
 
@@ -32,7 +32,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     private func variableViolations(file: File,
                                     kind: SwiftDeclarationKind,
-                                    dictionary: [String: SourceKitRepresentable]) -> [Int] {
+                                    dictionary: SourceKittenDictionary) -> [Int] {
         guard
             SwiftDeclarationKind.variableKinds.contains(kind),
             let offset = dictionary.offset,
@@ -43,7 +43,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     private func functionViolations(file: File,
                                     kind: SwiftDeclarationKind,
-                                    dictionary: [String: SourceKitRepresentable]) -> [Int] {
+                                    dictionary: SourceKittenDictionary) -> [Int] {
         guard
             SwiftDeclarationKind.functionKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,

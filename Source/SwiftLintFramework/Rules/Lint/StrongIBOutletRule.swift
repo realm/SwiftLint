@@ -22,7 +22,7 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance,
             case let attributes = dictionary.enclosedSwiftAttributes,
             attributes.contains(.iboutlet),

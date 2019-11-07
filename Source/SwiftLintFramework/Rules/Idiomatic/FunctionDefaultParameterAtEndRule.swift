@@ -38,7 +38,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
@@ -48,7 +48,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
 
         let isNotClosure = { !self.isClosureParameter(dictionary: $0) }
         let params = dictionary.substructure
-            .flatMap { subDict -> [[String: SourceKitRepresentable]] in
+            .flatMap { subDict -> [SourceKittenDictionary] in
                 guard subDict.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
                     return []
                 }
@@ -88,7 +88,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         ]
     }
 
-    private func isClosureParameter(dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isClosureParameter(dictionary: SourceKittenDictionary) -> Bool {
         guard let typeName = dictionary.typeName else {
             return false
         }
@@ -96,7 +96,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         return typeName.contains("->") || typeName.contains("@escaping")
     }
 
-    private func isDefaultParameter(file: File, dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isDefaultParameter(file: File, dictionary: SourceKittenDictionary) -> Bool {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset, let length = dictionary.length,
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {

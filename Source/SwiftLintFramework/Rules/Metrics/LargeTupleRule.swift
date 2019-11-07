@@ -55,7 +55,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let offsets = violationOffsetsForTypes(in: file, dictionary: dictionary, kind: kind) +
             violationOffsetsForFunctions(in: file, dictionary: dictionary, kind: kind)
 
@@ -72,7 +72,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         }
     }
 
-    private func violationOffsetsForTypes(in file: File, dictionary: [String: SourceKitRepresentable],
+    private func violationOffsetsForTypes(in file: File, dictionary: SourceKittenDictionary,
                                           kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let kinds = SwiftDeclarationKind.variableKinds.subtracting([.varLocal])
         guard kinds.contains(kind),
@@ -85,7 +85,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         return sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []
     }
 
-    private func violationOffsetsForFunctions(in file: File, dictionary: [String: SourceKitRepresentable],
+    private func violationOffsetsForFunctions(in file: File, dictionary: SourceKittenDictionary,
                                               kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let contents = file.contents.bridge()
         guard SwiftDeclarationKind.functionKinds.contains(kind),
@@ -124,7 +124,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         return offsets
     }
 
-    private func returnRangeForFunction(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
+    private func returnRangeForFunction(dictionary: SourceKittenDictionary) -> NSRange? {
         guard let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,

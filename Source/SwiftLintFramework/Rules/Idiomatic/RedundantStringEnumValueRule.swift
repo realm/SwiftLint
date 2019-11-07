@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
-private func children(of dict: [String: SourceKitRepresentable],
-                      matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
+private func children(of dict: SourceKittenDictionary,
+                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
     return dict.substructure.compactMap { subDict in
         if let kindString = subDict.kind,
             SwiftDeclarationKind(rawValue: kindString) == kind {
@@ -73,7 +73,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []
         }
@@ -91,7 +91,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary, file: File) -> [Int] {
         var caseCount = 0
         var violations = [Int]()
 
@@ -107,13 +107,13 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         return violations
     }
 
-    private func enumElementsCount(dictionary: [String: SourceKitRepresentable]) -> Int {
+    private func enumElementsCount(dictionary: SourceKittenDictionary) -> Int {
         return children(of: dictionary, matching: .enumelement).filter({ element in
             return !filterEnumInits(dictionary: element).isEmpty
         }).count
     }
 
-    private func violatingOffsetsForEnumCase(dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
+    private func violatingOffsetsForEnumCase(dictionary: SourceKittenDictionary, file: File) -> [Int] {
         return children(of: dictionary, matching: .enumelement).flatMap { element -> [Int] in
             guard let name = element.name else {
                 return []
@@ -122,7 +122,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }
     }
 
-    private func violatingOffsetsForEnumElement(dictionary: [String: SourceKitRepresentable], name: String,
+    private func violatingOffsetsForEnumElement(dictionary: SourceKittenDictionary, name: String,
                                                 file: File) -> [Int] {
         let enumInits = filterEnumInits(dictionary: dictionary)
 
@@ -143,7 +143,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }
     }
 
-    private func filterEnumInits(dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
+    private func filterEnumInits(dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         return dictionary.elements.filter {
             $0.kind == "source.lang.swift.structure.elem.init_expr"
         }

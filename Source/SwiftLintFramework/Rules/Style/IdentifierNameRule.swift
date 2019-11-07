@@ -29,6 +29,9 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+        let unallowedSymbols = allowedSymbols.inverted
+
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
             guard !configuration.excluded.contains(name) else {
                 return []
@@ -39,8 +42,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
             let type = self.type(for: kind)
             if !isFunction {
-                let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-                if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+                if name.rangeOfCharacter(from: unallowedSymbols) != nil {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,

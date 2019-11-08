@@ -99,24 +99,23 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
                          dictionary: SourceKittenDictionary) -> [NSRange]
 }
 
-extension SubstitutionCorrectableASTRule where KindType.RawValue == String {
+extension SubstitutionCorrectableASTRule {
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structureDictionary)
+        var ranges: [NSRange] = []
+        violationRanges(in: file, dictionary: file.structureDictionary, into: &ranges)
+        return ranges.unique
     }
 
     private func violationRanges(in file: SwiftLintFile,
-                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var ranges = violationRanges(in: file, dictionary: subDict)
+                                 dictionary: SourceKittenDictionary,
+                                 into array: inout [NSRange]) {
+        dictionary.substructure.forEach { subDict in
+            violationRanges(in: file, dictionary: subDict, into: &array)
 
             if let kind = self.kind(from: subDict) {
-                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
+                array += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
-
-            return ranges
         }
-
-        return ranges.unique
     }
 }
 

@@ -42,6 +42,10 @@
 * Add GitHub Actions Logging reporter (`github-actions-logging`).  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Use faster comparison in 'file_types_order' rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2949](https://github.com/realm/SwiftLint/issues/2949)
+
 #### Bug Fixes
 
 * None.

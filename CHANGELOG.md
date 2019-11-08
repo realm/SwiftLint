@@ -46,6 +46,10 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2949](https://github.com/realm/SwiftLint/issues/2949)
 
+* Faster dictionaries traversing for AST Rules.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2951](https://github.com/realm/SwiftLint/issues/2951)
+
 #### Bug Fixes
 
 * None.

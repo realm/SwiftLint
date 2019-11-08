@@ -12,14 +12,18 @@ public extension ASTRule {
     }
 
     func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            var violations = validate(file: file, dictionary: subDict)
+        var violations: [StyleViolation] = []
+        validate(file: file, dictionary: dictionary, into: &violations)
+        return violations
+    }
+
+    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary, into array: inout [StyleViolation]) {
+        dictionary.substructure.forEach { subDict in
+            validate(file: file, dictionary: subDict, into: &array)
 
             if let kind = self.kind(from: subDict) {
-                violations += validate(file: file, kind: kind, dictionary: subDict)
+                array += validate(file: file, kind: kind, dictionary: subDict)
             }
-
-            return violations
         }
     }
 }

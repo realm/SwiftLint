@@ -91,7 +91,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
-            return substructure.value.bridge() != mainTypeSubstructure.value.bridge() &&
+            return substructure.offset != mainTypeSubstructure.offset &&
                 kind.contains(SwiftDeclarationKind.extension.rawValue)
         }
     }
@@ -107,7 +107,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         return dict.substructure.filter { substructure in
             guard let declarationKind = substructure.declarationKind else { return false }
 
-            return substructure.value.bridge() != mainTypeSubstructure.value.bridge() &&
+            return substructure.offset != mainTypeSubstructure.offset &&
                 supportingTypeKinds.contains(declarationKind)
         }
     }

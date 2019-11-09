@@ -175,7 +175,8 @@ extension SourceKittenDictionary {
     /// Traversing all substuctures of the dictionary hierarchically, calling |traverseBlock| on each node.
     /// Traversing using depth first strategy, so deepest substructures will be passed to |traversBlock| first
     /// - Parameter traverseBlock: block that will be called for each substructure and his parent
-    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) -> [T] {
+    func traverseWithParentDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?)
+        -> [T] {
         var result: [T] = []
         traverseWithParentDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result

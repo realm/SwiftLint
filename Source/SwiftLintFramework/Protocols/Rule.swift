@@ -99,22 +99,11 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
                          dictionary: SourceKittenDictionary) -> [NSRange]
 }
 
-extension SubstitutionCorrectableASTRule {
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        var ranges: [NSRange] = []
-        violationRanges(in: file, dictionary: file.structureDictionary, into: &ranges)
-        return ranges.unique
-    }
-
-    private func violationRanges(in file: SwiftLintFile,
-                                 dictionary: SourceKittenDictionary,
-                                 into array: inout [NSRange]) {
-        dictionary.substructure.forEach { subDict in
-            violationRanges(in: file, dictionary: subDict, into: &array)
-
-            if let kind = self.kind(from: subDict) {
-                array += violationRanges(in: file, kind: kind, dictionary: subDict)
-            }
+public extension SubstitutionCorrectableASTRule {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        return file.structureDictionary.traverseDepthFirst { subDict in
+            guard let kind = self.kind(from: subDict) else { return nil }
+            return violationRanges(in: file, kind: kind, dictionary: subDict)
         }
     }
 }

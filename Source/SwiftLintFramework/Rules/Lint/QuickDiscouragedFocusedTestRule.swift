@@ -35,14 +35,9 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
     }
 
     private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            var violations = validate(file: file, dictionary: subDict)
-
-            if let kind = subDict.expressionKind {
-                violations += validate(file: file, kind: kind, dictionary: subDict)
-            }
-
-            return violations
+        return dictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            return validate(file: file, kind: kind, dictionary: subDict)
         }
     }
 

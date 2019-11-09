@@ -68,20 +68,10 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structureDictionary, parentStructure: nil)
-    }
-
-    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                          parentStructure: SourceKittenDictionary?) -> [StyleViolation] {
-        return dictionary.substructure.flatMap({ subDict -> [StyleViolation] in
-            var violations = validate(file: file, dictionary: subDict, parentStructure: dictionary)
-
-            if let kind = subDict.declarationKind {
-                violations += validate(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
-            }
-
-            return violations
-        })
+        return file.structureDictionary.traverseDepthFirst { parent, subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return validate(file: file, kind: kind, dictionary: subDict, parentStructure: parent)
+        }
     }
 
     private func validate(file: SwiftLintFile,

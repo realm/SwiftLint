@@ -29,19 +29,9 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return violationRanges(file: file, dictionary: file.structureDictionary, parentStructure: nil)
-    }
-
-    private func violationRanges(file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                 parentStructure: SourceKittenDictionary?) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var violations = violationRanges(file: file, dictionary: subDict, parentStructure: dictionary)
-
-            if let kind = subDict.declarationKind {
-                violations += violationRanges(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
-            }
-
-            return violations
+        return file.structureDictionary.traverseDepthFirst { parent, subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return violationRanges(file: file, kind: kind, dictionary: subDict, parentStructure: parent)
         }
     }
 

@@ -178,20 +178,10 @@ extension LiteralExpressionEndIdentationRule {
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        return violations(in: file, dictionary: file.structureDictionary)
-    }
-
-    private func violations(in file: SwiftLintFile,
-                            dictionary: SourceKittenDictionary) -> [Violation] {
-        return dictionary.substructure.flatMap { subDict -> [Violation] in
-            var subViolations = violations(in: file, dictionary: subDict)
-
-            if let kind = subDict.expressionKind,
-                let violation = violation(in: file, of: kind, dictionary: subDict) {
-                subViolations.append(violation)
-            }
-
-            return subViolations
+        return file.structureDictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            guard let violation = violation(in: file, of: kind, dictionary: subDict) else { return nil }
+            return [violation]
         }
     }
 

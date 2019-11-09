@@ -151,6 +151,41 @@ public struct SourceKittenDictionary {
     }
 }
 
+extension SourceKittenDictionary {
+    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        return result
+    }
+
+    func traverseDepthFirst<T>(collectingValuesInto array:inout [T], traverseBlock: (SourceKittenDictionary) -> [T]?) {
+        substructure.forEach { subDict in
+            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+
+            if let collectedValues = traverseBlock(subDict) {
+                array += collectedValues
+            }
+        }
+    }
+
+    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        return result
+    }
+
+    func traverseDepthFirst<T>(collectingValuesInto array:inout [T],
+                               traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
+        substructure.forEach { subDict in
+            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+
+            if let collectedValues = traverseBlock(self, subDict) {
+                array += collectedValues
+            }
+        }
+    }
+}
+
 extension Dictionary where Key == String {
     /// Returns a dictionary with SwiftLint violation markers (↓) removed from keys.
     func removingViolationMarkers() -> [Key: Value] {

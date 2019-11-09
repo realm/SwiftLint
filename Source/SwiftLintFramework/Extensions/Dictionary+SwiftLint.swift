@@ -152,13 +152,17 @@ public struct SourceKittenDictionary {
 }
 
 extension SourceKittenDictionary {
+    /// Traversing all substuctures of the dictionary hierarchically, calling |traverseBlock| on each node.
+    /// Traversing using depth first strategy, so deepest substructures will be passed to |traversBlock| first
+    /// - Parameter traverseBlock: block that will be called for each substructure in the dictionary
     func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
         var result: [T] = []
         traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result
     }
 
-    func traverseDepthFirst<T>(collectingValuesInto array:inout [T], traverseBlock: (SourceKittenDictionary) -> [T]?) {
+    private func traverseDepthFirst<T>(collectingValuesInto array:inout [T],
+                                       traverseBlock: (SourceKittenDictionary) -> [T]?) {
         substructure.forEach { subDict in
             subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
 
@@ -168,16 +172,20 @@ extension SourceKittenDictionary {
         }
     }
 
+    /// Traversing all substuctures of the dictionary hierarchically, calling |traverseBlock| on each node.
+    /// Traversing using depth first strategy, so deepest substructures will be passed to |traversBlock| first
+    /// - Parameter traverseBlock: block that will be called for each substructure and his parent
     func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) -> [T] {
         var result: [T] = []
-        traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        traverseWithParentDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result
     }
 
-    func traverseDepthFirst<T>(collectingValuesInto array:inout [T],
-                               traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
+    private func traverseWithParentDepthFirst<T>(
+        collectingValuesInto array:inout [T],
+        traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
         substructure.forEach { subDict in
-            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+            subDict.traverseWithParentDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
 
             if let collectedValues = traverseBlock(self, subDict) {
                 array += collectedValues

@@ -78,7 +78,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         if !configuration.onlySingleMutedParameter, !arguments.isEmpty,
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
-            closureArguments.last?.value.bridge() == arguments.last?.value.bridge() {
+            closureArguments.last?.offset == arguments.last?.offset {
             return shouldTrigger()
         }
 

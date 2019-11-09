@@ -172,11 +172,6 @@
   expressions.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2918](https://github.com/realm/SwiftLint/issues/2918)
-  
-* Add new indentation opt-in-rule checking for
-  basic additive indentation pattern.  
-  [Frederick Pietschmann](https://github.com/fredpi)
-  [#227](https://github.com/realm/SwiftLint/issues/227)
 
 * Speed up syntax token lookups, which can improve performance when
   linting large files.  
@@ -1618,7 +1613,10 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* None.
+* Add new indentation opt-in-rule checking for
+  basic additive indentation pattern.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#227](https://github.com/realm/SwiftLint/issues/227)
 
 #### Bug Fixes
 

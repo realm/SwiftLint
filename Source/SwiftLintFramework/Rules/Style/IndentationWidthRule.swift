@@ -46,7 +46,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     public init() {}
 
     // MARK: - Methods: Validation
-    public func validate(file: File) -> [StyleViolation] { // swiftlint:disable:this function_body_length
+    public func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 

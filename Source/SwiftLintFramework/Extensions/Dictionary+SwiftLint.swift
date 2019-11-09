@@ -162,7 +162,7 @@ extension SourceKittenDictionary {
         return result
     }
 
-    private func traverseDepthFirst<T>(collectingValuesInto array:inout [T],
+    private func traverseDepthFirst<T>(collectingValuesInto array: inout [T],
                                        traverseBlock: (SourceKittenDictionary) -> [T]?) {
         substructure.forEach { subDict in
             subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
@@ -185,7 +185,7 @@ extension SourceKittenDictionary {
     }
 
     private func traverseWithParentDepthFirst<T>(
-        collectingValuesInto array:inout [T],
+        collectingValuesInto array: inout [T],
         traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
         substructure.forEach { subDict in
             subDict.traverseWithParentDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)

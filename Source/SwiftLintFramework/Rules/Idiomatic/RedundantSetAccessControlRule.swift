@@ -47,7 +47,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.structureDictionary.traverseDepthFirst { parent, subDict in
+        return file.structureDictionary.traverseWithParentDepthFirst { parent, subDict in
             guard let kind = subDict.declarationKind else { return nil }
             return validate(file: file, kind: kind, dictionary: subDict, parentDictionary: parent)
         }

@@ -163,13 +163,9 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
 
     private func violations(in file: SwiftLintFile,
                             dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        return dictionary.substructure.flatMap { subDict -> [SourceKittenDictionary] in
-            var dictionaries = violations(in: file, dictionary: subDict)
-            if let kind = subDict.expressionKind {
-                dictionaries += violations(in: file, kind: kind, dictionary: subDict)
-            }
-
-            return dictionaries
+        return dictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            return violations(in: file, kind: kind, dictionary: subDict)
         }
     }
 

@@ -57,21 +57,11 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        return correct(file: file, dictionary: file.structureDictionary)
-    }
-
-    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Correction] {
-        return dictionary.substructure.flatMap { subDict -> [Correction] in
-            var corrections = correct(file: file, dictionary: subDict)
-
-            if let kind = subDict.declarationKind {
-                corrections += correct(file: file, kind: kind, dictionary: subDict)
-            }
-
-            return corrections
+        return file.structureDictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return correct(file: file, kind: kind, dictionary: subDict)
         }
     }
-
     private func correct(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [Correction] {

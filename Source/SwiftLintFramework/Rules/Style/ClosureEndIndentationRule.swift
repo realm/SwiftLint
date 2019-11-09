@@ -299,7 +299,7 @@ extension ClosureEndIndentationRule {
         let closureArguments = filterClosureArguments(arguments, file: file)
 
         if closureArguments.count == 1,
-            closureArguments.last?.value.bridge() == arguments.last?.value.bridge() {
+            closureArguments.last?.offset == arguments.last?.offset {
             return closureArguments.last
         }
 

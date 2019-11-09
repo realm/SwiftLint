@@ -39,16 +39,18 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)  
   [#2916](https://github.com/realm/SwiftLint/issues/2916)  
 
-* Add GitHub Actions Logging reporter (`github-actions-logging`).  
-  [Norio Nomura](https://github.com/norio-nomura)
-
 * Use faster comparison in 'file_types_order' rule.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2949](https://github.com/realm/SwiftLint/issues/2949)
 
-* Faster dictionaries traversing for AST Rules.  
+* Speed up recursively executed rules (all AST rules and some others) by
+  avoiding the creation of many intermediate collections when
+  accumulating results.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2951](https://github.com/realm/SwiftLint/issues/2951)
+
+* Add GitHub Actions Logging reporter (`github-actions-logging`).  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 #### Bug Fixes
 

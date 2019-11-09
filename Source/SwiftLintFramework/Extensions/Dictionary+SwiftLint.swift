@@ -152,9 +152,10 @@ public struct SourceKittenDictionary {
 }
 
 extension SourceKittenDictionary {
-    /// Traversing all substuctures of the dictionary hierarchically, calling |traverseBlock| on each node.
-    /// Traversing using depth first strategy, so deepest substructures will be passed to |traversBlock| first
-    /// - Parameter traverseBlock: block that will be called for each substructure in the dictionary
+    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
+    ///
+    /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
     func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
         var result: [T] = []
         traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
@@ -172,9 +173,10 @@ extension SourceKittenDictionary {
         }
     }
 
-    /// Traversing all substuctures of the dictionary hierarchically, calling |traverseBlock| on each node.
-    /// Traversing using depth first strategy, so deepest substructures will be passed to |traversBlock| first
-    /// - Parameter traverseBlock: block that will be called for each substructure and his parent
+    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
+    ///
+    /// - parameter traverseBlock: block that will be called for each substructure and its parent.
     func traverseWithParentDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?)
         -> [T] {
         var result: [T] = []

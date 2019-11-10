@@ -8,7 +8,12 @@ public protocol ASTRule: Rule {
 
 public extension ASTRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structureDictionary)
+        var result: [StyleViolation] = []
+        file.flattenStructureDictionary.forEach { subDict in
+            guard let kind = self.kind(from: subDict) else { return }
+            result.append(contentsOf: validate(file: file, kind: kind, dictionary: subDict))
+        }
+        return result
     }
 
     func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {

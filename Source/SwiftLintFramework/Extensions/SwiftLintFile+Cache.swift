@@ -24,6 +24,10 @@ private var structureDictionaryCache = Cache({ file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
 })
 
+private var flattenStructureDictionaryCache = Cache ({ file in
+    return file.structureDictionary.traverseDepthFirst { item in [item] }
+})
+
 private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxMap.init) })
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
@@ -144,6 +148,11 @@ extension SwiftLintFile {
         }
         return structureDictionary
     }
+
+    internal var flattenStructureDictionary: [SourceKittenDictionary] {
+       return flattenStructureDictionaryCache.get(self)
+    }
+
 
     internal var syntaxMap: SyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {

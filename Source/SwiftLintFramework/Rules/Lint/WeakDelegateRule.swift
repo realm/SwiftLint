@@ -77,23 +77,13 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
 
     private func protocolDeclarations(forByteOffset byteOffset: Int,
                                       structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        var results = [SourceKittenDictionary]()
-
-        func parse(dictionary: SourceKittenDictionary) {
-            // Only accepts protocols declarations which contains a body and contains the
-            // searched byteOffset
-            if dictionary.declarationKind == .protocol,
-                let offset = dictionary.bodyOffset,
-                let length = dictionary.bodyLength {
-                let byteRange = NSRange(location: offset, length: length)
-
-                if NSLocationInRange(byteOffset, byteRange) {
-                    results.append(dictionary)
-                }
+        return structureDictionary.traverseBreadthFirst { dictionary in
+            guard dictionary.declarationKind == .protocol,
+                let byteRange = dictionary.byteRange,
+                NSLocationInRange(byteOffset, byteRange) else {
+                    return nil
             }
-            dictionary.substructure.forEach(parse)
+            return [dictionary]
         }
-        parse(dictionary: structureDictionary)
-        return results
     }
 }

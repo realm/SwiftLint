@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct SourceKittenDictionary {
@@ -62,6 +63,12 @@ public struct SourceKittenDictionary {
     /// Offset.
     var offset: Int? {
         return (value["key.offset"] as? Int64).flatMap({ Int($0) })
+    }
+
+    /// Returns byte range startif from `offset` with `length` bytes
+    var byteRange: NSRange? {
+        guard let offset = offset, let length = length else { return nil }
+        return NSRange(location: offset, length: length)
     }
 
     /// Setter accessibility.
@@ -193,6 +200,25 @@ extension SourceKittenDictionary {
             if let collectedValues = traverseBlock(self, subDict) {
                 array += collectedValues
             }
+        }
+    }
+
+    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing using breadth first strategy, so deepest substructures will be passed to `traverseBlock` last.
+    /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
+    func traverseBreadthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traverseBreadthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        return result
+    }
+
+    private func traverseBreadthFirst<T>(collectingValuesInto array: inout [T],
+                                         traverseBlock: (SourceKittenDictionary) -> [T]?) {
+        substructure.forEach { subDict in
+            if let collectedValues = traverseBlock(subDict) {
+                array += collectedValues
+            }
+            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
         }
     }
 }

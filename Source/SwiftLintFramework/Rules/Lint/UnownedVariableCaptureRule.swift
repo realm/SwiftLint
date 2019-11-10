@@ -61,21 +61,13 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
 
     private func localVariableDeclarations(inByteRange byteRange: NSRange,
                                            structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        var results = [SourceKittenDictionary]()
-
-        func parse(dictionary: SourceKittenDictionary) {
-            if dictionary.declarationKind == .varLocal,
-                let offset = dictionary.offset,
-                let length = dictionary.length {
-                let variableByteRange = NSRange(location: offset, length: length)
-
-                if byteRange.intersects(variableByteRange) {
-                    results.append(dictionary)
-                }
+        return structureDictionary.traverseBreadthFirst { dictionary in
+            guard dictionary.declarationKind == .varLocal,
+                let variableByteRange = dictionary.byteRange,
+                byteRange.intersects(variableByteRange) else {
+                    return nil
             }
-            dictionary.substructure.forEach(parse)
+            return [dictionary]
         }
-        parse(dictionary: structureDictionary)
-        return results
     }
 }

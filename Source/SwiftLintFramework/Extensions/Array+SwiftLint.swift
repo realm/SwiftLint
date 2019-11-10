@@ -1,6 +1,5 @@
 import Dispatch
 import Foundation
-import SourceKittenFramework
 
 extension Array where Element: NSTextCheckingResult {
     func ranges() -> [NSRange] {

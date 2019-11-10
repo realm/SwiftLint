@@ -84,22 +84,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
 
 private extension SourceKittenDictionary {
     func functions(forByteOffset byteOffset: Int) -> [SourceKittenDictionary] {
-        var results = [SourceKittenDictionary]()
-
-        func parse(_ dictionary: SourceKittenDictionary) {
-            guard let offset = dictionary.offset,
-                let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
-                NSLocationInRange(byteOffset, byteRange) else {
-                    return
-            }
-
-            if let kind = dictionary.declarationKind,
-                SwiftDeclarationKind.functionKinds.contains(kind) {
-                results.append(dictionary)
-            }
-            dictionary.substructure.forEach(parse)
-        }
-        parse(self)
-        return results
+        return structures(forByteOffset: byteOffset)
+            .filter { $0.declarationKind.map(SwiftDeclarationKind.functionKinds.contains) == true }
     }
 }

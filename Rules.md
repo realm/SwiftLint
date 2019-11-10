@@ -9647,6 +9647,14 @@ guard Set(identifiers).count != identifiers.count else { return }
 expect("foo") == "foo"
 ```
 
+```swift
+type(of: model).cachePrefix == cachePrefix
+```
+
+```swift
+histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -9676,6 +9684,18 @@ expect("foo") == "foo"
 ```
 
 ```swift
+if (↓elem == elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 == s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView == tab.webView
+```
+
+```swift
 ↓1 != 1
 ```
 
@@ -9697,6 +9717,18 @@ expect("foo") == "foo"
 
 ```swift
 ↓a?.b != a?.b
+```
+
+```swift
+if (↓elem != elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 != s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView != tab.webView
 ```
 
 ```swift
@@ -9724,6 +9756,18 @@ expect("foo") == "foo"
 ```
 
 ```swift
+if (↓elem === elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 === s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView === tab.webView
+```
+
+```swift
 ↓1 !== 1
 ```
 
@@ -9745,6 +9789,18 @@ expect("foo") == "foo"
 
 ```swift
 ↓a?.b !== a?.b
+```
+
+```swift
+if (↓elem !== elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 !== s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView !== tab.webView
 ```
 
 ```swift
@@ -9772,6 +9828,18 @@ expect("foo") == "foo"
 ```
 
 ```swift
+if (↓elem > elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 > s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView > tab.webView
+```
+
+```swift
 ↓1 >= 1
 ```
 
@@ -9793,6 +9861,18 @@ expect("foo") == "foo"
 
 ```swift
 ↓a?.b >= a?.b
+```
+
+```swift
+if (↓elem >= elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 >= s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView >= tab.webView
 ```
 
 ```swift
@@ -9820,6 +9900,18 @@ expect("foo") == "foo"
 ```
 
 ```swift
+if (↓elem < elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 < s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView < tab.webView
+```
+
+```swift
 ↓1 <= 1
 ```
 
@@ -9841,6 +9933,18 @@ expect("foo") == "foo"
 
 ```swift
 ↓a?.b <= a?.b
+```
+
+```swift
+if (↓elem <= elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 <= s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView <= tab.webView
 ```
 
 </details>

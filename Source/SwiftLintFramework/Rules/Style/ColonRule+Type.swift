@@ -38,7 +38,7 @@ internal extension ColonRule {
         }
     }
 
-    private func isValidMatch(syntaxTokens: [SyntaxToken], file: SwiftLintFile) -> Bool {
+    private func isValidMatch(syntaxTokens: [SwiftLintSyntaxToken], file: SwiftLintFile) -> Bool {
         let syntaxKinds = syntaxTokens.kinds
 
         guard syntaxKinds.count == 2 else {
@@ -55,7 +55,7 @@ internal extension ColonRule {
             validKinds = file.isTypeLike(token: syntaxTokens[1])
             //Exclude explicit "Self" type because of static variables
             if syntaxKinds[0] == .identifier,
-                file.getTokenText(token: syntaxTokens[1]) == "Self" {
+                file.contents(for: syntaxTokens[1]) == "Self" {
                 validKinds = false
             }
         case (.keyword, .typeidentifier):
@@ -73,17 +73,12 @@ internal extension ColonRule {
 }
 
 private extension SwiftLintFile {
-    func isTypeLike(token: SyntaxToken) -> Bool {
-        guard let text = getTokenText(token: token),
+    func isTypeLike(token: SwiftLintSyntaxToken) -> Bool {
+        guard let text = contents(for: token),
             let firstLetter = text.unicodeScalars.first else {
                 return false
         }
 
         return CharacterSet.uppercaseLetters.contains(firstLetter)
-    }
-
-    func getTokenText(token: SyntaxToken) -> String? {
-        let nsstring = contents.bridge()
-        return nsstring.substringWithByteRange(start: token.offset, length: token.length)
     }
 }

@@ -74,9 +74,9 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         ]
     }
 
-    private func firstNonCommentToken(inByteRange byteRange: NSRange, file: SwiftLintFile) -> SyntaxToken? {
+    private func firstNonCommentToken(inByteRange byteRange: NSRange, file: SwiftLintFile) -> SwiftLintSyntaxToken? {
         return file.syntaxMap.tokens(inByteRange: byteRange).first { token -> Bool in
-            guard let kind = SyntaxKind(rawValue: token.type) else {
+            guard let kind = token.kind else {
                 return false
             }
 

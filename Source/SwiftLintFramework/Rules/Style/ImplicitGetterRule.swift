@@ -178,10 +178,10 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "\\{[^\\{]*?\\s+get\\b"
         let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
-        let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
+        let getTokens: [SwiftLintSyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
             let kinds = tokens.kinds
             guard let token = tokens.last,
-                SyntaxKind(rawValue: token.type) == .keyword,
+                token.kind == .keyword,
                 attributesKinds.isDisjoint(with: kinds) else {
                     return nil
             }

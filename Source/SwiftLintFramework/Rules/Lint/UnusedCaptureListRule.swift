@@ -132,14 +132,11 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
     }
 
     private func identifierStrings(in file: SwiftLintFile, byteRange: NSRange) -> Set<String> {
-        let contents = file.contents.bridge()
         let identifiers = file.syntaxMap
             .tokens(inByteRange: byteRange)
             .compactMap { token -> String? in
-                guard token.type == SyntaxKind.identifier.rawValue || token.type == SyntaxKind.keyword.rawValue,
-                    let range = contents.byteRangeToNSRange(start: token.offset, length: token.length)
-                    else { return nil }
-                return contents.substring(with: range)
+                guard token.kind == .identifier || token.kind == .keyword else { return nil }
+                return file.contents(for: token)
             }
         return Set(identifiers)
     }

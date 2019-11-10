@@ -52,7 +52,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
 
         return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
             guard let availabilityToken = tokens.first,
-                SyntaxKind(rawValue: availabilityToken.type) == .keyword,
+                availabilityToken.kind == .keyword,
                 let tokenRange = file.contents.bridge().byteRangeToNSRange(start: availabilityToken.offset,
                                                                            length: availabilityToken.length) else {
                     return []

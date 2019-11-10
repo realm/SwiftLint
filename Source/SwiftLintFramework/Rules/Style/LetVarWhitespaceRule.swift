@@ -185,8 +185,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
         var result = Set<Int>()
         let syntaxMap = file.syntaxMap
 
-        for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue ||
-                                            token.type == SyntaxKind.docComment.rawValue {
+        for token in syntaxMap.tokens where token.kind == .comment ||
+                                            token.kind == .docComment {
             let startLine = file.line(byteOffset: token.offset)
             let endLine = file.line(byteOffset: token.offset + token.length)
 
@@ -209,7 +209,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     // other than let/var
     private func attributeLineNumbers(file: SwiftLintFile) -> Set<Int> {
         return Set(file.syntaxMap.tokens.compactMap({ token in
-            if token.type == SyntaxKind.attributeBuiltin.rawValue {
+            if token.kind == .attributeBuiltin {
                 return file.line(byteOffset: token.offset)
             }
             return nil

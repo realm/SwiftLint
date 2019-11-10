@@ -57,7 +57,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 
         let range = NSRange(location: bodyOffset, length: bodyLength)
         let tokens = file.syntaxMap.tokens(inByteRange: range).filter { token in
-            guard let kind = SyntaxKind(rawValue: token.type) else {
+            guard let kind = token.kind else {
                 return false
             }
 
@@ -83,7 +83,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         ]
     }
 
-    private func isClosureParameter(firstToken: SyntaxToken,
+    private func isClosureParameter(firstToken: SwiftLintSyntaxToken,
                                     nameEndPosition: Int,
                                     file: SwiftLintFile) -> Bool {
         let length = firstToken.offset - nameEndPosition
@@ -97,7 +97,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         return pattern.firstMatch(in: file.contents, options: .anchored, range: byteRange) != nil
     }
 
-    private func containsTrailingContent(lastToken: SyntaxToken,
+    private func containsTrailingContent(lastToken: SwiftLintSyntaxToken,
                                          bodyEndPosition: Int,
                                          file: SwiftLintFile) -> Bool {
         let lastTokenEnd = lastToken.offset + lastToken.length
@@ -106,14 +106,14 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         return containsContent(inByteRange: remainingRange, file: file)
     }
 
-    private func containsLeadingContent(tokens: [SyntaxToken],
+    private func containsLeadingContent(tokens: [SwiftLintSyntaxToken],
                                         bodyStartPosition: Int,
                                         file: SwiftLintFile) -> Bool {
         let inTokenPosition = tokens.firstIndex(where: { token in
-            SyntaxKind(rawValue: token.type) == .keyword && file.contents(for: token) == "in"
+            token.kind == .keyword && file.contents(for: token) == "in"
         })
 
-        let firstToken: SyntaxToken
+        let firstToken: SwiftLintSyntaxToken
         let start: Int
         if let position = inTokenPosition {
             let index = tokens.index(after: position)
@@ -136,7 +136,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         let ranges = NSMutableIndexSet(indexesIn: byteRange)
 
         for token in remainingTokens {
-            ranges.remove(in: NSRange(location: token.offset, length: token.length))
+            ranges.remove(in: token.range)
         }
 
         var containsContent = false
@@ -158,7 +158,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         return containsContent
     }
 
-    private func isShortParameterStyleViolation(file: SwiftLintFile, tokens: [SyntaxToken]) -> Bool {
+    private func isShortParameterStyleViolation(file: SwiftLintFile, tokens: [SwiftLintSyntaxToken]) -> Bool {
         let kinds = tokens.kinds
         switch kinds {
         case [.identifier]:
@@ -174,7 +174,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 
     private func isParameterStyleViolation(file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                           tokens: [SyntaxToken]) -> Bool {
+                                           tokens: [SwiftLintSyntaxToken]) -> Bool {
         let parameters = dictionary.enclosedVarParameters
         guard parameters.count == 1,
             let offset = parameters[0].offset,
@@ -185,7 +185,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
 
         let parameterEnd = offset + length
         let tokens = Array(tokens.filter { $0.offset >= parameterEnd }.drop { token in
-            let isKeyword = SyntaxKind(rawValue: token.type) == .keyword
+            let isKeyword = token.kind == .keyword
             return !isKeyword || file.contents(for: token) != "in"
         })
 

@@ -118,7 +118,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
             case let byteRange = NSRange(location: offset, length: length),
             case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
             let firstToken = tokens.first,
-            SyntaxKind(rawValue: firstToken.type) == .identifier,
+            firstToken.kind == .identifier,
             let tokenContent = file.contents(for: firstToken),
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {

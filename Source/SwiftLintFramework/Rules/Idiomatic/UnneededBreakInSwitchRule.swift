@@ -46,7 +46,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
 
             let caseRange = NSRange(location: caseOffset, length: caseLength)
             let tokens = file.syntaxMap.tokens(inByteRange: caseRange).filter { token in
-                guard let kind = SyntaxKind(rawValue: token.type),
+                guard let kind = token.kind,
                     token.offset > lastPatternEnd else {
                         return false
                 }
@@ -61,7 +61,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
 
             // is the `break` found the last (non-comment) token inside `case`?
             guard let lastValidToken = tokens.last,
-                SyntaxKind(rawValue: lastValidToken.type) == .keyword,
+                lastValidToken.kind == .keyword,
                 lastValidToken.offset == byteRange.location,
                 lastValidToken.length == byteRange.length else {
                     return nil

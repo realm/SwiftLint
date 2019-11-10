@@ -156,10 +156,10 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         }
     }
 
-    private func findNamedArgument(after token: SyntaxToken,
-                                   file: SwiftLintFile) -> (name: String, token: SyntaxToken)? {
+    private func findNamedArgument(after token: SwiftLintSyntaxToken,
+                                   file: SwiftLintFile) -> (name: String, token: SwiftLintSyntaxToken)? {
         guard let firstToken = file.syntaxMap.tokens.first(where: { $0.offset > token.offset }),
-            SyntaxKind(rawValue: firstToken.type) == .identifier else {
+            firstToken.kind == .identifier else {
                 return nil
         }
 
@@ -174,7 +174,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 
     private func findGetToken(in range: NSRange, file: SwiftLintFile,
-                              propertyStructure: SourceKittenDictionary) -> SyntaxToken? {
+                              propertyStructure: SourceKittenDictionary) -> SwiftLintSyntaxToken? {
         let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in
             // the last element is the deepest structure
@@ -223,14 +223,12 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 }
 
-private extension Array where Element == (NSRange, [SyntaxToken]) {
-    func keywordTokens() -> [SyntaxToken] {
+private extension Array where Element == (NSRange, [SwiftLintSyntaxToken]) {
+    func keywordTokens() -> [SwiftLintSyntaxToken] {
         return compactMap { _, tokens in
-            guard let token = tokens.last,
-                SyntaxKind(rawValue: token.type) == .keyword else {
-                    return nil
+            guard let token = tokens.last, token.kind == .keyword else {
+                return nil
             }
-
             return token
         }
     }

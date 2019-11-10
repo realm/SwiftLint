@@ -8,12 +8,6 @@ extension Array where Element: NSTextCheckingResult {
     }
 }
 
-extension Array where Element == SyntaxToken {
-    var kinds: [SyntaxKind] {
-        return compactMap { SyntaxKind(rawValue: $0.type) }
-    }
-}
-
 extension Array where Element: Equatable {
     var unique: [Element] {
         var uniqueValues = [Element]()

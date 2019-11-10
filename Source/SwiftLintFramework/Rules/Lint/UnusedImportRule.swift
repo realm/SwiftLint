@@ -173,12 +173,10 @@ private extension SwiftLintFile {
         var nextIsModuleImport = false
         let tokens = syntaxMap.tokens
         for token in tokens {
-            guard let tokenKind = SyntaxKind(rawValue: token.type) else {
+            guard let tokenKind = token.kind else {
                 continue
             }
-            if tokenKind == .keyword,
-                let substring = contentsNSString.substringWithByteRange(start: token.offset, length: token.length),
-                substring == "import" {
+            if tokenKind == .keyword, contents(for: token) == "import" {
                 nextIsModuleImport = true
                 continue
             }

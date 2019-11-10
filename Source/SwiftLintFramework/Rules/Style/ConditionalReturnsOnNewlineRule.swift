@@ -34,22 +34,17 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
 
         return file.rangesAndTokens(matching: pattern).filter { _, tokens in
             guard let firstToken = tokens.first, let lastToken = tokens.last,
-                SyntaxKind(rawValue: firstToken.type) == .keyword &&
-                    SyntaxKind(rawValue: lastToken.type) == .keyword else {
-                        return false
+                firstToken.kind == .keyword && lastToken.kind == .keyword else {
+                    return false
             }
 
             let searchTokens = configuration.ifOnly ? ["if"] : ["if", "guard"]
-            return searchTokens.contains(content(for: firstToken, file: file)) &&
-                content(for: lastToken, file: file) == "return"
+            return searchTokens.contains(file.contents(for: firstToken) ?? "") &&
+                file.contents(for: lastToken) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.0.location))
         }
-    }
-
-    private func content(for token: SyntaxToken, file: SwiftLintFile) -> String {
-        return file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) ?? ""
     }
 }

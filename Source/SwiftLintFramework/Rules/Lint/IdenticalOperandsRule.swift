@@ -38,7 +38,9 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
             "let array = Array<Array<Int>>()",
             "guard Set(identifiers).count != identifiers.count else { return }",
-            "expect(\"foo\") == \"foo\""
+            #"expect("foo") == "foo""#,
+            "type(of: model).cachePrefix == cachePrefix",
+            "histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1"
         ],
         triggeringExamples: operators.flatMap { operation in
             [
@@ -47,7 +49,10 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 "↓foo.aProperty \(operation) foo.aProperty",
                 "↓self.aProperty \(operation) self.aProperty",
                 "↓$0 \(operation) $0",
-                "↓a?.b \(operation) a?.b"
+                "↓a?.b \(operation) a?.b",
+                "if (↓elem \(operation) elem) {}",
+                "XCTAssertTrue(↓s3 \(operation) s3)",
+                "if let tab = tabManager.selectedTab, ↓tab.webView \(operation) tab.webView"
             ]
         }
     )
@@ -118,10 +123,10 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             return nil
         }
 
-        // last check is to check if we have ?? to the left of the leftmost token
         if leftOperand.index != 0 {
             let previousToken = tokens[leftOperand.index - 1]
-            guard !contents.isNilCoalecingOperatorBetweenTokens(previousToken, leftmostToken) else {
+
+            guard contents.isWhiteSpaceBetweenTokens(previousToken, leftmostToken) else {
                 return nil
             }
         }
@@ -183,11 +188,13 @@ private extension NSString {
     }
 
     func isDotOrOptionalChainingBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
-        return isRegexBetweenTokens(startToken, "[\\?!]?\\.", endToken)
+        return isRegexBetweenTokens(startToken, #"[\?!]?\."#, endToken)
     }
 
-    func isNilCoalecingOperatorBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
-        return isRegexBetweenTokens(startToken, "\\?\\?", endToken)
+    func isWhiteSpaceBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
+        guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
+        let range = NSRange(location: 0, length: betweenTokens.utf16.count)
+        return !regex(#"^[\s\(,]*$"#).matches(in: betweenTokens, options: [], range: range).isEmpty
     }
 
     func isRegexBetweenTokens(_ startToken: SyntaxToken, _ regexString: String, _ endToken: SyntaxToken) -> Bool {

@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix for false-positive identical operands rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2953](https://github.com/realm/SwiftLint/issues/2953)
 
 ## 0.37.0: Double Load
 

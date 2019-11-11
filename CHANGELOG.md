@@ -2,7 +2,11 @@
 
 #### Breaking
 
-* None.
+* Replace the `SyntaxToken` and `SyntaxMap` structures used in  
+  public SwiftLintFramework APIs with a new  `SwiftLintSyntaxToken`  
+  and `SwiftlintSyntaxMap` wrappers over structures returned from SourceKitten
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2955](https://github.com/realm/SwiftLint/issues/2955)
 
 #### Experimental
 

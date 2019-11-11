@@ -65,7 +65,7 @@ public struct SourceKittenDictionary {
         return (value["key.offset"] as? Int64).flatMap({ Int($0) })
     }
 
-    /// Returns byte range startif from `offset` with `length` bytes
+    /// Returns byte range starting from `offset` with `length` bytes
     var byteRange: NSRange? {
         guard let offset = offset, let length = length else { return nil }
         return NSRange(location: offset, length: length)

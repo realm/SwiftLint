@@ -196,10 +196,9 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             }
         }
 
-        let directives: Set = ["#if", "#elseif", "#else", "#endif", "#!", "#warning", "#error"]
         let directiveLines = file.lines.filter {
-            let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
-            return directives.contains(where: trimmed.hasPrefix)
+            return regex(#"^\s*#(if|elseif|else|endif|\!|warning|error)"#)
+                .firstMatch(in: $0.content, options: [], range: $0.content.fullNSRange) != nil
         }
 
         result.formUnion(directiveLines.map { $0.index - 1 })

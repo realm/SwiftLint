@@ -84,13 +84,11 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
 
             let parametersTokens = file.syntaxMap.tokens(inByteRange: parametersByteRange)
             let parametersAreValid = parametersTokens.allSatisfy { token in
-                let kind = SyntaxKind(rawValue: token.type)
-                if kind == .identifier {
+                if token.kind == .identifier {
                     return true
                 }
 
-                return kind == .keyword &&
-                    file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) == "_"
+                return token.kind == .keyword && file.contents(for: token) == "_"
             }
 
             let inKinds = Set(file.syntaxMap.kinds(inByteRange: inByteRange))

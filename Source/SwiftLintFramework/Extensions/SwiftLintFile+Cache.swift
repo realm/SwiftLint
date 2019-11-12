@@ -24,7 +24,9 @@ private var structureDictionaryCache = Cache({ file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
 })
 
-private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxMap.init) })
+private var syntaxMapCache = Cache({ file in
+    responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
+})
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
 
@@ -145,18 +147,18 @@ extension SwiftLintFile {
         return structureDictionary
     }
 
-    internal var syntaxMap: SyntaxMap {
+    internal var syntaxMap: SwiftLintSyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
                 handler()
-                return SyntaxMap(data: [])
+                return SwiftLintSyntaxMap(value: SyntaxMap(data: []))
             }
             queuedFatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxMap
     }
 
-    internal var syntaxTokensByLines: [[SyntaxToken]] {
+    internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()

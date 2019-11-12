@@ -29,10 +29,10 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     }
 
     private func violatingRanges(in file: SwiftLintFile) -> [(NSRange, String)] {
-        let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
-        return numberTokens.compactMap { (token: SyntaxToken) -> (NSRange, String)? in
+        let numberTokens = file.syntaxMap.tokens.filter { $0.kind == .number }
+        return numberTokens.compactMap { (token: SwiftLintSyntaxToken) -> (NSRange, String)? in
             guard
-                let content = contentFrom(file: file, token: token),
+                let content = file.contents(for: token),
                 isDecimal(number: content),
                 !isInValidRanges(number: content)
             else {
@@ -158,10 +158,5 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         }
 
         return Array(collection)
-    }
-
-    private func contentFrom(file: SwiftLintFile, token: SyntaxToken) -> String? {
-        return file.contents.bridge().substringWithByteRange(start: token.offset,
-                                                             length: token.length)
     }
 }

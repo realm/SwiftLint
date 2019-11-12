@@ -1,17 +1,24 @@
 import Foundation
 import SourceKittenFramework
 
-extension SyntaxMap {
+public struct SwiftLintSyntaxMap {
+    public let value: SyntaxMap
+    public let tokens: [SwiftLintSyntaxToken]
+
+    public init(value: SyntaxMap) {
+        self.value = value
+        self.tokens = value.tokens.map(SwiftLintSyntaxToken.init)
+    }
+
     /// Returns array of SyntaxTokens intersecting with byte range
     ///
     /// - Parameter byteRange: byte based NSRange
-    internal func tokens(inByteRange byteRange: NSRange) -> [SyntaxToken] {
-        func intersect(_ token: SyntaxToken) -> Bool {
-            return NSRange(location: token.offset, length: token.length)
-                .intersects(byteRange)
+    internal func tokens(inByteRange byteRange: NSRange) -> [SwiftLintSyntaxToken] {
+        func intersect(_ token: SwiftLintSyntaxToken) -> Bool {
+            return token.range.intersects(byteRange)
         }
 
-        func intersectsOrAfter(_ token: SyntaxToken) -> Bool {
+        func intersectsOrAfter(_ token: SwiftLintSyntaxToken) -> Bool {
             return token.offset + token.length > byteRange.location
         }
 
@@ -29,6 +36,6 @@ extension SyntaxMap {
     }
 
     internal func kinds(inByteRange byteRange: NSRange) -> [SyntaxKind] {
-        return tokens(inByteRange: byteRange).kinds
+        return tokens(inByteRange: byteRange).compactMap { $0.kind }
     }
 }

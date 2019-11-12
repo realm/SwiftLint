@@ -64,7 +64,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
             return false
         }
 
-        let body = file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
+        let body = file.contents(for: token)
         return body == "self"
     }
 }

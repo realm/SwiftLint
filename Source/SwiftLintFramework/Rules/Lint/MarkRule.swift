@@ -185,7 +185,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
-            guard let syntaxKind = SyntaxKind(rawValue: syntaxTokens[0].type) else {
+            guard let syntaxKind = syntaxTokens.first?.kind else {
                 return false
             }
             return !syntaxTokens.isEmpty && SyntaxKind.commentKinds.contains(syntaxKind)

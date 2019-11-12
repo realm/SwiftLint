@@ -80,8 +80,8 @@ private func isBrace(offset: Int, element: (kind: String, byteRange: NSRange)) -
     return StatementKind(rawValue: element.kind) == .brace
 }
 
-private func isNotComment(token: SyntaxToken) -> Bool {
-    guard let kind = SyntaxKind(rawValue: token.type) else {
+private func isNotComment(token: SwiftLintSyntaxToken) -> Bool {
+    guard let kind = token.kind else {
         return false
     }
 

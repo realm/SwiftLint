@@ -62,7 +62,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         let index: Int
 
         // tokens in this operand
-        let tokens: [SyntaxToken]
+        let tokens: [SwiftLintSyntaxToken]
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -109,7 +109,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         }
 
         // Make sure both operands have same token types
-        guard leftOperand.tokens.map({ $0.type }) == rightOperand.tokens.map({ $0.type }) else {
+        guard leftOperand.tokens.map({ $0.value.type }) == rightOperand.tokens.map({ $0.value.type }) else {
             return nil
         }
 
@@ -178,26 +178,29 @@ private extension NSString {
         return NSRangeToByteRange(start: range.location, length: range.length)
     }
 
-    func subStringWithSyntaxToken(_ syntaxToken: SyntaxToken) -> String? {
+    func subStringWithSyntaxToken(_ syntaxToken: SwiftLintSyntaxToken) -> String? {
         return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)
     }
 
-    func subStringBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> String? {
+    func subStringBetweenTokens(_ startToken: SwiftLintSyntaxToken, _ endToken: SwiftLintSyntaxToken) -> String? {
         return substringWithByteRange(start: startToken.offset + startToken.length,
                                       length: endToken.offset - startToken.offset - startToken.length)
     }
 
-    func isDotOrOptionalChainingBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
+    func isDotOrOptionalChainingBetweenTokens(_ startToken: SwiftLintSyntaxToken,
+                                              _ endToken: SwiftLintSyntaxToken) -> Bool {
         return isRegexBetweenTokens(startToken, #"[\?!]?\."#, endToken)
     }
 
-    func isWhiteSpaceBetweenTokens(_ startToken: SyntaxToken, _ endToken: SyntaxToken) -> Bool {
+    func isWhiteSpaceBetweenTokens(_ startToken: SwiftLintSyntaxToken,
+                                   _ endToken: SwiftLintSyntaxToken) -> Bool {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
         let range = NSRange(location: 0, length: betweenTokens.utf16.count)
         return !regex(#"^[\s\(,]*$"#).matches(in: betweenTokens, options: [], range: range).isEmpty
     }
 
-    func isRegexBetweenTokens(_ startToken: SyntaxToken, _ regexString: String, _ endToken: SyntaxToken) -> Bool {
+    func isRegexBetweenTokens(_ startToken: SwiftLintSyntaxToken, _ regexString: String,
+                              _ endToken: SwiftLintSyntaxToken) -> Bool {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
 
         let range = NSRange(location: 0, length: betweenTokens.utf16.count)

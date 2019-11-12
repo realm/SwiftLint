@@ -47,14 +47,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             guard tokens.count == 2,
                 let keywordToken = tokens.first,
                 let nameToken = tokens.last,
-                SyntaxKind(rawValue: keywordToken.type) == .keyword,
-                SyntaxKind(rawValue: nameToken.type) == .identifier else {
+                keywordToken.kind == .keyword,
+                nameToken.kind == .identifier else {
                     return []
             }
 
-            let contents = file.contents.bridge()
-            guard let name = contents.substringWithByteRange(start: nameToken.offset,
-                                                             length: nameToken.length) else {
+            guard let name = file.contents(for: nameToken) else {
                 return []
             }
 

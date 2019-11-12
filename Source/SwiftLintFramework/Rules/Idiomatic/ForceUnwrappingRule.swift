@@ -108,7 +108,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
             }
     }
 
-    private func violationRange(match: NSTextCheckingResult, nsstring: NSString, syntaxMap: SyntaxMap,
+    private func violationRange(match: NSTextCheckingResult, nsstring: NSString, syntaxMap: SwiftLintSyntaxMap,
                                 file: SwiftLintFile) -> NSRange? {
         if match.numberOfRanges < 3 { return nil }
 
@@ -155,18 +155,16 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
     }
 
     // check if first captured range is comment, string, typeidentifier, or a keyword that is not `self`.
-    private func isFirstRangeExcludedToken(byteRange: NSRange, syntaxMap: SyntaxMap, file: SwiftLintFile) -> Bool {
+    private func isFirstRangeExcludedToken(byteRange: NSRange, syntaxMap: SwiftLintSyntaxMap,
+                                           file: SwiftLintFile) -> Bool {
         let tokens = syntaxMap.tokens(inByteRange: byteRange)
-        let nsString = file.contents.bridge()
         return tokens.contains { token in
-            guard let kind = SyntaxKind(rawValue: token.type),
+            guard let kind = token.kind,
                 ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains(kind)
                 else { return false }
             // check for `self
-            guard kind == .keyword,
-                let nsRange = nsString.byteRangeToNSRange(start: token.offset, length: token.length)
-                else { return true }
-            return nsString.substring(with: nsRange) != "self"
+            guard kind == .keyword else { return true }
+            return file.contents(for: token) != "self"
         }
     }
 

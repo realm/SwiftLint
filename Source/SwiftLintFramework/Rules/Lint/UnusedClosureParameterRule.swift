@@ -160,8 +160,8 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                 }
 
                 let token = tokens.first(where: { token -> Bool in
-                    return (SyntaxKind(rawValue: token.type) == .identifier
-                        || (SyntaxKind(rawValue: token.type) == .keyword && name == "self")) &&
+                    return (token.kind == .identifier
+                        || (token.kind == .keyword && name == "self")) &&
                         token.offset == byteRange.location &&
                         token.length == byteRange.length
                 })

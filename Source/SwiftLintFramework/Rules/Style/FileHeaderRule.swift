@@ -34,12 +34,12 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     private static let reason = "Header comments should be consistent with project patterns."
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        var firstToken: SyntaxToken?
-        var lastToken: SyntaxToken?
-        var firstNonCommentToken: SyntaxToken?
+        var firstToken: SwiftLintSyntaxToken?
+        var lastToken: SwiftLintSyntaxToken?
+        var firstNonCommentToken: SwiftLintSyntaxToken?
 
         for token in file.syntaxTokensByLines.lazy.joined() {
-            guard let kind = SyntaxKind(rawValue: token.type), kind.isFileHeaderKind else {
+            guard let kind = token.kind, kind.isFileHeaderKind else {
                 // found a token that is not a comment, which means it's not the top of the file
                 // so we can just skip the remaining tokens
                 firstNonCommentToken = token
@@ -97,7 +97,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         }
     }
 
-    private func isSwiftLintCommand(token: SyntaxToken, file: SwiftLintFile) -> Bool {
+    private func isSwiftLintCommand(token: SwiftLintSyntaxToken, file: SwiftLintFile) -> Bool {
         guard let range = file.contents.bridge().byteRangeToNSRange(start: token.offset,
                                                                     length: token.length) else {
             return false

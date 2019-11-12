@@ -202,9 +202,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
             // check if it's a line with other declaration which could have its own attributes
             let nonAttributeTokens = tokens.filter { token in
-                guard SyntaxKind(rawValue: token.type) == .keyword,
-                    let keyword = contents.substringWithByteRange(start: token.offset,
-                                                                  length: token.length) else {
+                guard token.kind == .keyword,
+                    let keyword = file.contents(for: token) else {
                     return false
                 }
 
@@ -260,15 +259,14 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         return true
     }
 
-    private func attributeName(token: SyntaxToken, file: SwiftLintFile) -> (String, NSRange)? {
-        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+    private func attributeName(token: SwiftLintSyntaxToken, file: SwiftLintFile) -> (String, NSRange)? {
+        guard token.kind == .attributeBuiltin else {
             return nil
         }
 
-        let maybeName = file.contents.bridge().substringWithByteRange(start: token.offset,
-                                                                      length: token.length)
+        let maybeName = file.contents(for: token)
         if let name = maybeName, isAttribute(name) {
-            return (name, NSRange(location: token.offset, length: token.length))
+            return (name, token.range)
         }
 
         return nil

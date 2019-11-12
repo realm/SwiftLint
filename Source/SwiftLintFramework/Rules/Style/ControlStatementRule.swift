@@ -105,11 +105,11 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
                 .filter { match -> Bool in
                     let contents = file.contents.bridge()
                     guard let byteOffset = contents.NSRangeToByteRange(start: match.location, length: 1)?.location,
-                        let outerKind = file.structureDictionary.kinds(forByteOffset: byteOffset).last else {
+                        let outerKind = file.structureDictionary.structures(forByteOffset: byteOffset).last else {
                             return true
                     }
 
-                    return SwiftExpressionKind(rawValue: outerKind.kind) != .call
+                    return outerKind.expressionKind != .call
                 }
         }
     }

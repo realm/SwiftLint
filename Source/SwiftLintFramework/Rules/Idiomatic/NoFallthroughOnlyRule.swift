@@ -52,14 +52,14 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
     private func isNextTokenUnknownAttribute(afterOffset offset: Int, file: SwiftLintFile) -> Bool {
         let nextNonCommentToken = file.syntaxMap.tokens
             .first { token in
-                guard let kind = SyntaxKind(rawValue: token.type), !kind.isCommentLike else {
+                guard let kind = token.kind, !kind.isCommentLike else {
                     return false
                 }
 
                 return token.offset > offset
             }
 
-        return (nextNonCommentToken?.type).flatMap(SyntaxKind.init(rawValue:)) == .attributeID &&
+        return nextNonCommentToken?.kind == .attributeID &&
             nextNonCommentToken.flatMap(file.contents(for:)) == "@unknown"
     }
 

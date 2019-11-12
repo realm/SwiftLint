@@ -135,7 +135,7 @@ private extension SwiftLintFile {
 
         return syntaxMap.tokens
             .compactMap { token in
-                guard let kind = SyntaxKind(rawValue: token.type), !syntaxKindsToSkip.contains(kind) else {
+                guard let kind = token.kind, !syntaxKindsToSkip.contains(kind) else {
                     return nil
                 }
 

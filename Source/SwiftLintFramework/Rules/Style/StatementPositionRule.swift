@@ -160,7 +160,8 @@ private extension StatementPositionRule {
         }
     }
 
-    static func uncuddledMatchFilter(contents: String, syntaxMap: SyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
+    static func uncuddledMatchFilter(contents: String,
+                                     syntaxMap: SwiftLintSyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
             guard let matchRange = contents.bridge().NSRangeToByteRange(start: range.location,

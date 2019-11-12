@@ -62,9 +62,9 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         ]
     }
 
-    private func isTokenUnderscore(_ token: SyntaxToken, file: SwiftLintFile) -> Bool {
+    private func isTokenUnderscore(_ token: SwiftLintSyntaxToken, file: SwiftLintFile) -> Bool {
         return token.length == 1 &&
-            SyntaxKind(rawValue: token.type) == .keyword &&
+            token.kind == .keyword &&
             isUnderscore(file: file, token: token)
     }
 
@@ -97,8 +97,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         return nil
     }
 
-    private func isUnderscore(file: SwiftLintFile, token: SyntaxToken) -> Bool {
-        let contents = file.contents.bridge()
-        return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
+    private func isUnderscore(file: SwiftLintFile, token: SwiftLintSyntaxToken) -> Bool {
+        return file.contents(for: token) == "_"
     }
 }

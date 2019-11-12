@@ -72,6 +72,9 @@
 * Add GitHub Actions Logging reporter (`github-actions-logging`).  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Make `control_statement` rule substitution correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
 #### Bug Fixes
 
 * None.

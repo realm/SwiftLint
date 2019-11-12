@@ -112,9 +112,9 @@ extension ClosureEndIndentationRule {
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return violations(in: file, of: kind, dictionary: subDict)
+        return file.structureDictionary.traverseDepthFirst { subDict, result in
+            guard let kind = subDict.expressionKind else { return }
+            result += violations(in: file, of: kind, dictionary: subDict)
         }
     }
 

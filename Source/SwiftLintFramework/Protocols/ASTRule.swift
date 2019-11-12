@@ -12,9 +12,9 @@ public extension ASTRule {
     }
 
     func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = self.kind(from: subDict) else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict)
+        return dictionary.traverseDepthFirst { subDict, result in
+            guard let kind = self.kind(from: subDict) else { return }
+            result += validate(file: file, kind: kind, dictionary: subDict)
         }
     }
 }

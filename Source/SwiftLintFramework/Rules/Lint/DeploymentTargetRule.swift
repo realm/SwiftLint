@@ -65,9 +65,9 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     }
 
     private func validateAttributes(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.declarationKind else { return nil }
-            return validateAttributes(file: file, kind: kind, dictionary: subDict)
+        return dictionary.traverseDepthFirst { subDict, result in
+            guard let kind = subDict.declarationKind else { return }
+            result += validateAttributes(file: file, kind: kind, dictionary: subDict)
         }
     }
 

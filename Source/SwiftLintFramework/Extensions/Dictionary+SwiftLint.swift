@@ -163,20 +163,17 @@ extension SourceKittenDictionary {
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///
     /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
-    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
+    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary, inout [T]) -> ()) -> [T] {
         var result: [T] = []
         traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
         return result
     }
 
     private func traverseDepthFirst<T>(collectingValuesInto array: inout [T],
-                                       traverseBlock: (SourceKittenDictionary) -> [T]?) {
+                                       traverseBlock: (SourceKittenDictionary, inout [T]) -> ()) {
         substructure.forEach { subDict in
             subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
-
-            if let collectedValues = traverseBlock(subDict) {
-                array += collectedValues
-            }
+            traverseBlock(subDict, &array)
         }
     }
 
@@ -218,7 +215,7 @@ extension SourceKittenDictionary {
             if let collectedValues = traverseBlock(subDict) {
                 array += collectedValues
             }
-            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+            subDict.traverseBreadthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
         }
     }
 }

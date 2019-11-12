@@ -101,9 +101,9 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
 
 public extension SubstitutionCorrectableASTRule {
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = self.kind(from: subDict) else { return nil }
-            return violationRanges(in: file, kind: kind, dictionary: subDict)
+        return file.structureDictionary.traverseDepthFirst { subDict, result in
+            guard let kind = self.kind(from: subDict) else { return }
+            result += violationRanges(in: file, kind: kind, dictionary: subDict)
         }
     }
 }

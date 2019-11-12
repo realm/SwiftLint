@@ -35,9 +35,9 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
     }
 
     private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict)
+        return dictionary.traverseDepthFirst { subDict, result in
+            guard let kind = subDict.expressionKind else { return }
+            result += validate(file: file, kind: kind, dictionary: subDict)
         }
     }
 

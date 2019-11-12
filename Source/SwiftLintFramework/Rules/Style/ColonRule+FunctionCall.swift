@@ -4,9 +4,9 @@ import SourceKittenFramework
 extension ColonRule {
     internal func functionCallColonViolationRanges(in file: SwiftLintFile,
                                                    dictionary: SourceKittenDictionary) -> [NSRange] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return functionCallColonViolationRanges(in: file, kind: kind, dictionary: subDict)
+        return dictionary.traverseDepthFirst { subDict, result in
+            guard let kind = subDict.expressionKind else { return }
+            result += functionCallColonViolationRanges(in: file, kind: kind, dictionary: subDict)
         }
     }
 

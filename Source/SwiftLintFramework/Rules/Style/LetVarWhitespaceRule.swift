@@ -43,9 +43,11 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
         let dict = file.structureDictionary
 
         var attributeLines = attributeLineNumbers(file: file)
-        let varLines = varLetLineNumbers(file: file,
-                                         structure: dict.substructure,
-                                         attributeLines: &attributeLines)
+        var varLines = Set<Int>()
+        varLetLineNumbers(file: file,
+                          structure: dict.substructure,
+                          attributeLines: &attributeLines,
+                          collectingInto: &varLines)
         let skippedLines = skippedLineNumbers(file: file)
         var violations = [StyleViolation]()
 
@@ -129,9 +131,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     // Collects all the line numbers containing var or let declarations
     private func varLetLineNumbers(file: SwiftLintFile,
                                    structure: [SourceKittenDictionary],
-                                   attributeLines: inout Set<Int>) -> Set<Int> {
-        var result = Set<Int>()
-
+                                   attributeLines: inout Set<Int>,
+                                   collectingInto result: inout Set<Int>) {
         for statement in structure {
             guard statement.kind != nil,
                   let (startLine, endLine) = lineOffsets(file: file, statement: statement) else {
@@ -172,12 +173,12 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             let substructure = statement.substructure
 
             if !substructure.isEmpty {
-                result.formUnion(varLetLineNumbers(file: file,
-                                                   structure: substructure,
-                                                   attributeLines: &attributeLines))
+                varLetLineNumbers(file: file,
+                                  structure: substructure,
+                                  attributeLines: &attributeLines,
+                                  collectingInto: &result)
             }
         }
-        return result
     }
 
     // Collects all the line numbers containing comments or #if/#endif
@@ -195,10 +196,9 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             }
         }
 
-        let directives: Set = ["#if", "#elseif", "#else", "#endif", "#!", "#warning", "#error"]
         let directiveLines = file.lines.filter {
-            let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
-            return directives.contains(where: trimmed.hasPrefix)
+            return regex(#"^\s*#(if|elseif|else|endif|\!|warning|error)"#)
+                .firstMatch(in: $0.content, options: [], range: $0.content.fullNSRange) != nil
         }
 
         result.formUnion(directiveLines.map { $0.index - 1 })
@@ -231,7 +231,9 @@ private extension SwiftDeclarationKind {
 private extension SwiftLintFile {
     // Zero based line number for specified byte offset
     func line(byteOffset: Int) -> Int {
-        guard let line = contents.bridge().lineAndCharacter(forByteOffset: byteOffset)?.line else { return -1 }
-        return line - 1
+        let lineIndex = lines.firstIndexAssumingSorted { line in
+            return line.byteRange.location > byteOffset
+        }
+        return (lineIndex ?? 0 ) - 1
     }
 }

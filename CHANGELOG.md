@@ -14,9 +14,11 @@
 
 #### Enhancements
 
-* None.
-
 #### Bug Fixes
+
+* Fix false positive for LetVarWhitespaceRule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2956](https://github.com/realm/SwiftLint/issues/2956)
 
 * Fix for false-positive identical operands rule.  
   [PaulTaykalo](https://github.com/PaulTaykalo)

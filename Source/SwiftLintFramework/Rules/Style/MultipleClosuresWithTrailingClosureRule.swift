@@ -69,7 +69,7 @@ private extension Array where Element == SourceKittenDictionary {
             return filter { argument in
                 guard let offset = argument.bodyOffset,
                     let length = argument.bodyLength,
-                    let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                    let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length),
                     let match = regex("^\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
                     match.location == range.location else {
                         return false

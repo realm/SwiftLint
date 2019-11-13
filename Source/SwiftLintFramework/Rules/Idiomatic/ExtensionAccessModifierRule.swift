@@ -118,7 +118,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
                                         declarationOffsets: [Int],
                                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset, let length = dictionary.length,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }

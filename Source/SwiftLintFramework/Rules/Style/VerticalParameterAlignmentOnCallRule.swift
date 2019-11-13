@@ -79,7 +79,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             case let arguments = dictionary.enclosedArguments,
             arguments.count > 1,
             let firstArgumentOffset = arguments.first?.offset,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             var firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset) else {
                 return []
         }
@@ -129,7 +129,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
     private func isMultiline(argument: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let offset = argument.bodyOffset,
             let length = argument.bodyLength,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
             let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length) else {
                 return false
@@ -142,7 +142,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             case let start = min(offset, offset + length - 1),
-            let text = file.contents.bridge().substringWithByteRange(start: start, length: length) else {
+            let text = file.linesContainer.substringWithByteRange(start: start, length: length) else {
                 return false
         }
 

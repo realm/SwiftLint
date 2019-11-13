@@ -42,7 +42,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return file.match(pattern: "let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
                 return false
@@ -51,7 +51,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
             return !isInBooleanCondition(byteOffset: byteRange.location,
                                          dictionary: file.structureDictionary)
                 && !hasExplicitType(utf16Range: range.location ..< range.location + range.length,
-                                    fileContents: contents)
+                                    fileContents: contents.nsString)
         }
     }
 

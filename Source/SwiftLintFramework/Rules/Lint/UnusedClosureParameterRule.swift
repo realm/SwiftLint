@@ -134,7 +134,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         let rangeStart = nameOffset + nameLength
         let rangeLength = (offset + length) - (nameOffset + nameLength)
         let parameters = dictionary.enclosedVarParameters
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         return parameters.compactMap { param -> (NSRange, String)? in
             guard let paramOffset = param.offset,

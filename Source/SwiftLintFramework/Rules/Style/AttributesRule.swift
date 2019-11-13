@@ -58,7 +58,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 return nil
             }
 
-            let contents = file.contents.bridge()
+            let contents = file.linesContainer
             let match = contents.substring(with: range)
             let idx = match.lastIndex(of: "import") ?? 0
             let location = idx + range.location
@@ -76,7 +76,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         guard !attributes.isEmpty,
             let offset = dictionary.offset,
-            let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset) else {
+            let (line, _) = file.linesContainer.lineAndCharacter(forByteOffset: offset) else {
             return []
         }
 
@@ -185,7 +185,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()
         var foundEmptyLine = false
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         while currentLine >= 0 {
             defer {
@@ -247,7 +247,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let restOfLineLength = line.byteRange.location + line.byteRange.length - restOfLineOffset
 
         let regex = AttributesRule.regularExpression
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`
         guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset, length: restOfLineLength),

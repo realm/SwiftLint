@@ -80,7 +80,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
             let offset = dictionary.offset,
             case let start = nameOffset + nameLength,
             case let end = dictionary.bodyOffset ?? offset + length,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let range = contents.byteRangeToNSRange(start: start, length: end - start),
             file.match(pattern: "->", excludingSyntaxKinds: excludingKinds, range: range).count == 1,
             let match = file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, range: range).first else {

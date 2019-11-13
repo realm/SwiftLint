@@ -98,7 +98,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         return dictionary.swiftAttributes.contains { dict -> Bool in
             guard dict.attribute.flatMap(SwiftDeclarationAttributeKind.init(rawValue:)) == .available,
                 let offset = dict.offset, let length = dict.length,
-                let contents = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
+                let contents = file.linesContainer.substringWithByteRange(start: offset, length: length) else {
                     return false
             }
 

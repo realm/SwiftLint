@@ -106,7 +106,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
             guard let dict = declarations(forByteOffset: setToken.offset,
                                           structureDictionary: file.structureDictionary).last,
                 let bodyOffset = dict.bodyOffset, let bodyLength = dict.bodyLength,
-                case let contents = file.contents.bridge(),
+                case let contents = file.linesContainer,
                 let propertyRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
                 let getToken = findGetToken(in: propertyRange, file: file, propertyStructure: dict) else {
                     return nil

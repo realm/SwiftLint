@@ -148,7 +148,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
 
     private func isComplexCondition(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         let kind = "source.lang.swift.structure.elem.condition_expr"
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return dictionary.elements.contains { element in
             guard element.kind == kind,
                 let offset = element.offset,

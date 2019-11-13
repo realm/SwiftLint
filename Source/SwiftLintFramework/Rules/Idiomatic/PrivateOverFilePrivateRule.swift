@@ -65,7 +65,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let syntaxTokens = file.syntaxMap.tokens
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         let dict = file.structureDictionary
         return dict.substructure.compactMap { dictionary -> NSRange? in

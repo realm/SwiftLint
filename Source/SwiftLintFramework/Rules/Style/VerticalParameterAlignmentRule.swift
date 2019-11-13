@@ -32,7 +32,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         let calculateLocation = { (dict: SourceKittenDictionary) -> Location? in
             guard let byteOffset = dict.offset,
                 let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {

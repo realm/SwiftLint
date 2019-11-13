@@ -130,7 +130,7 @@ extension GenericTypeNameRule {
                     return []
             }
 
-            let genericConstraint = file.contents.bridge().substring(with: match)
+            let genericConstraint = file.linesContainer.nsString.substring(with: match)
             return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
         }.flatMap { validate(name: $0.0, file: file, offset: $0.1) }
     }
@@ -141,10 +141,10 @@ extension GenericTypeNameRule {
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let bodyOffset = dictionary.bodyOffset,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
-            let range = contents.byteRangeToNSRange(start: start, length: length),
+            let range = file.linesContainer.byteRangeToNSRange(start: start, length: length),
             let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
                                                                    range: range)?.range(at: 1) else {
                 return []
@@ -159,7 +159,7 @@ extension GenericTypeNameRule {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let range = contents.byteRangeToNSRange(start: offset, length: length),
             let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents,
                                                                    options: [], range: range)?.range(at: 1),
@@ -167,14 +167,14 @@ extension GenericTypeNameRule {
                 return []
         }
 
-        let genericConstraint = contents.substring(with: match)
+        let genericConstraint = contents.nsString.substring(with: match)
         return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 
     private func minParameterOffset(parameters: [SourceKittenDictionary], file: SwiftLintFile) -> Int {
         let offsets = parameters.compactMap { param -> Int? in
             return param.offset.flatMap {
-                file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location
+                file.linesContainer.byteRangeToNSRange(start: $0, length: 0)?.location
             }
         }
 
@@ -195,7 +195,7 @@ extension GenericTypeNameRule {
             }
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return namesAndRanges.compactMap { name, range -> (String, Int)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),

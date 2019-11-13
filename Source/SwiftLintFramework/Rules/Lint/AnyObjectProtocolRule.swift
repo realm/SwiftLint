@@ -63,13 +63,13 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
             guard
                 let offset = subDict.offset,
                 let length = subDict.length,
-                let content = file.contents.bridge().substringWithByteRange(start: offset, length: length),
+                let content = file.linesContainer.substringWithByteRange(start: offset, length: length),
                 content == "class"
                 else {
                     return nil
             }
 
-            return file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
+            return file.linesContainer.byteRangeToNSRange(start: offset, length: length)
         }
     }
 }

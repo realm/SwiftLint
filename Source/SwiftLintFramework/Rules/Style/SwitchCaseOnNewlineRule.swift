@@ -61,8 +61,8 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
             case let rangeLength = offset + length - start,
             case let byteRange = NSRange(location: start, length: rangeLength),
             let firstToken = firstNonCommentToken(inByteRange: byteRange, file: file),
-            let (tokenLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: firstToken.offset),
-            let (caseEndLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: start),
+            let (tokenLine, _) = file.linesContainer.lineAndCharacter(forByteOffset: firstToken.offset),
+            let (caseEndLine, _) = file.linesContainer.lineAndCharacter(forByteOffset: start),
             tokenLine == caseEndLine else {
                 return []
         }

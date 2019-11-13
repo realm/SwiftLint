@@ -34,7 +34,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "break", with: [.keyword]).compactMap { range in
-            let contents = file.contents.bridge()
+            let contents = file.linesContainer
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
                 let innerStructure = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
                 innerStructure.statementKind == .case,

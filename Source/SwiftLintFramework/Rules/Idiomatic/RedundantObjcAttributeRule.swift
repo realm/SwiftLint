@@ -43,7 +43,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
                                       .first(where: { $0.attribute == SwiftDeclarationAttributeKind.objc.rawValue })
         guard let objcOffset = objcAttribute?.offset,
               let objcLength = objcAttribute?.length,
-              let range = file.contents.bridge().byteRangeToNSRange(start: objcOffset, length: objcLength),
+              let range = file.linesContainer.byteRangeToNSRange(start: objcOffset, length: objcLength),
               !dictionary.isObjcAndIBDesignableDeclaredExtension else {
             return []
         }

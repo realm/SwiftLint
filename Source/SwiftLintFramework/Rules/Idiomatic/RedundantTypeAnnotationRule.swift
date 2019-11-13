@@ -81,7 +81,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
     }
 
     private func isFalsePositive(in file: SwiftLintFile, range: NSRange) -> Bool {
-        let substring = file.contents.bridge().substring(with: range)
+        let substring = file.linesContainer.nsString.substring(with: range)
 
         let components = substring.components(separatedBy: "=")
         let charactersToTrimFromRhs = CharacterSet(charactersIn: ".(").union(.whitespaces)
@@ -98,7 +98,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
     }
 
     private func isIBInspectable(range: NSRange, file: SwiftLintFile) -> Bool {
-        guard let byteRange = file.contents.bridge().NSRangeToByteRange(start: range.location, length: range.length),
+        guard let byteRange = file.linesContainer.NSRangeToByteRange(start: range.location, length: range.length),
             let dict = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
             let kind = dict.declarationKind,
             SwiftDeclarationKind.variableKinds.contains(kind) else {

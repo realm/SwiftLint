@@ -30,7 +30,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .closure, let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let closureRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
             let inTokenRange = file.match(pattern: "\\bin\\b", with: [.keyword], range: closureRange).first,
             let inTokenByteRange = contents.NSRangeToByteRange(start: inTokenRange.location,

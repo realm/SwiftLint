@@ -62,7 +62,7 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
             return true
         }
 
-        let body = file.contents.bridge().substringWithByteRange(start: bodyOffset, length: bodyLength)
+        let body = file.linesContainer.substringWithByteRange(start: bodyOffset, length: bodyLength)
         return body == "\"\""
     }
 }

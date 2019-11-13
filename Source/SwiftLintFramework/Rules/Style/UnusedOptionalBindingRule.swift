@@ -55,7 +55,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         return elements.flatMap { element -> [StyleViolation] in
             guard let offset = element.offset,
                 let length = element.length,
-                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+                let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length) else {
                     return []
             }
 

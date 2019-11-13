@@ -25,7 +25,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
 
     public init(file: SwiftLintFile, byteOffset offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.bridge().lineAndCharacter(forByteOffset: offset) {
+        if let lineAndCharacter = file.linesContainer.lineAndCharacter(forByteOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {
@@ -36,7 +36,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
 
     public init(file: SwiftLintFile, characterOffset offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.bridge().lineAndCharacter(forCharacterOffset: offset) {
+        if let lineAndCharacter = file.linesContainer.lineAndCharacter(forCharacterOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {

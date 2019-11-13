@@ -76,7 +76,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             (range: $0, kind: ColonKind.type)
         }
         let dictionary = file.structureDictionary
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file,
                                                                              dictionary: dictionary).compactMap {
             guard let range = contents.byteRangeToNSRange(start: $0.location, length: $0.length) else {

@@ -90,7 +90,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
                 return kindsToExclude.contains(tokenKind)
             }
             let tokenRanges = tokens.compactMap {
-                file.contents.bridge().byteRangeToNSRange(start: $0.offset, length: $0.length)
+                file.linesContainer.byteRangeToNSRange(start: $0.offset, length: $0.length)
             }
             linesWithBraces.append(braces.filter({ !$0.intersects(tokenRanges) }))
         }

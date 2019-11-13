@@ -87,7 +87,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
 
     private func violationOffsetsForFunctions(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                               kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let returnRange = returnRangeForFunction(dictionary: dictionary),
             let returnSubstring = contents.substringWithByteRange(start: returnRange.location,

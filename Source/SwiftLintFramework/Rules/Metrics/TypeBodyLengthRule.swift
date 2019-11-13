@@ -39,7 +39,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticT
         if let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength {
-            let startLine = file.contents.bridge().lineAndCharacter(forByteOffset: bodyOffset)
+            let startLine = file.linesContainer.lineAndCharacter(forByteOffset: bodyOffset)
             let endLine = file.contents.bridge()
                 .lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
 

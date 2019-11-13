@@ -182,7 +182,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
 
         for dictionary in violatingDictionaries.reversed() {
             guard let offset = dictionary.offset, let length = dictionary.length,
-                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length),
                 let name = dictionary.name,
                 let correctedName = type(of: self).constructorsToCorrectedNames[name],
                 file.ruleEnabled(violatingRanges: [range], for: self) == [range],
@@ -211,7 +211,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
     }
 
     private func argumentsContents(file: SwiftLintFile, arguments: [SourceKittenDictionary]) -> [String] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return arguments.compactMap { argument -> String? in
             guard argument.name == nil,
                 let offset = argument.offset,

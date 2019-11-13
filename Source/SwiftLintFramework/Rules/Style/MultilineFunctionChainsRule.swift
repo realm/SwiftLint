@@ -112,7 +112,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         let calls = ranges.compactMap { range -> (dotLine: Int, dotOffset: Int, range: NSRange)? in
             guard
                 let offset = callDotOffset(file: file, callRange: range),
-                let line = file.contents.bridge().lineAndCharacter(forCharacterOffset: offset)?.line else {
+                let line = file.linesContainer.lineAndCharacter(forCharacterOffset: offset)?.line else {
                     return nil
             }
             return (dotLine: line, dotOffset: offset, range: range)
@@ -136,7 +136,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private func callDotOffset(file: SwiftLintFile, callRange: NSRange) -> Int? {
         guard
-            let range = file.contents.bridge().byteRangeToNSRange(start: callRange.location, length: callRange.length),
+            let range = file.linesContainer.byteRangeToNSRange(start: callRange.location, length: callRange.length),
             case let regex = type(of: self).whitespaceDotRegex,
             let match = regex.matches(in: file.contents, options: [], range: range).last?.range else {
                 return nil
@@ -148,7 +148,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private func callHasLeadingNewline(file: SwiftLintFile, callRange: NSRange) -> Bool {
         guard
-            let range = file.contents.bridge().byteRangeToNSRange(start: callRange.location, length: callRange.length),
+            let range = file.linesContainer.byteRangeToNSRange(start: callRange.location, length: callRange.length),
             case let regex = type(of: self).newlineWhitespaceDotRegex,
             regex.firstMatch(in: file.contents, options: [], range: range) != nil else {
                 return false
@@ -162,7 +162,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                             parentCallName: String? = nil) -> [NSRange] {
         guard
             kind == .call,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
             let name = contents.substringWithByteRange(start: offset, length: length) else {
@@ -190,7 +190,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                               parentName: String,
                               parentNameOffset: Int) -> NSRange? {
         guard
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let nameOffset = call.nameOffset,
             parentNameOffset == nameOffset,
             let nameLength = call.nameLength,

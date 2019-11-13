@@ -83,7 +83,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     private func startOffset(of offset: Int, with length: Int, in file: SwiftLintFile) -> Int {
-        let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
+        let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length)
         return range?.location ?? offset
     }
 }

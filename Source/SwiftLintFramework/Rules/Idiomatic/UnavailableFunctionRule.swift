@@ -66,7 +66,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         guard let offset = dictionary.offset, containsFatalError,
             !isFunctionUnavailable(file: file, dictionary: dictionary),
             let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength,
-            let range = file.contents.bridge().byteRangeToNSRange(start: bodyOffset, length: bodyLength),
+            let range = file.linesContainer.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
             file.match(pattern: "\\breturn\\b", with: [.keyword], range: range).isEmpty else {
                 return []
         }
@@ -82,7 +82,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         return dictionary.swiftAttributes.contains { dict -> Bool in
             guard dict.attribute.flatMap(SwiftDeclarationAttributeKind.init(rawValue:)) == .available,
                 let offset = dict.offset, let length = dict.length,
-                let contents = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
+                let contents = file.linesContainer.substringWithByteRange(start: offset, length: length) else {
                     return false
             }
 

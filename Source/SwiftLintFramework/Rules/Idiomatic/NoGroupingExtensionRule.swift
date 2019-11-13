@@ -45,7 +45,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
     }
 
     private func hasWhereClause(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         guard let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,

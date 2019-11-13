@@ -57,7 +57,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             argumentsNames == ["forName", "object", "queue"] ||
                 argumentsNames == ["forName", "object", "queue", "using"],
             let offset = dictionary.offset,
-            let range = file.contents.bridge().byteRangeToNSRange(start: 0, length: offset) else {
+            let range = file.linesContainer.byteRangeToNSRange(start: 0, length: offset) else {
                 return []
         }
 

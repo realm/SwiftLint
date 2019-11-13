@@ -53,7 +53,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
     private func findViolations(in arguments: [Argument],
                                 dictionary: SourceKittenDictionary,
                                 file: SwiftLintFile) -> [Argument] {
-        guard case let contents = file.contents.bridge(),
+        guard case let contents = file.linesContainer,
             let nameOffset = dictionary.nameOffset,
             let (nameLine, _) = contents.lineAndCharacter(forByteOffset: nameOffset) else {
                 return []
@@ -114,7 +114,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             case let start = min(offset, offset + length - 1),
-            let text = file.contents.bridge().substringWithByteRange(start: start, length: length) else {
+            let text = file.linesContainer.substringWithByteRange(start: start, length: length) else {
                 return false
         }
 
@@ -123,7 +123,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
     private func isClosure(in file: SwiftLintFile) -> (Argument) -> Bool {
         return { argument in
-            let contents = file.contents.bridge()
+            let contents = file.linesContainer
             let closureMatcher = regex("^\\s*\\{")
             guard let range = contents.byteRangeToNSRange(start: argument.bodyOffset,
                                                           length: argument.bodyLength),
@@ -147,7 +147,7 @@ private struct Argument {
 
     init?(dictionary: SourceKittenDictionary, file: SwiftLintFile, index: Int) {
         guard let offset = dictionary.offset,
-            let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset),
+            let (line, _) = file.linesContainer.lineAndCharacter(forByteOffset: offset),
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength else {
             return nil

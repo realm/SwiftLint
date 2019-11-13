@@ -104,7 +104,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             [.array, .dictionary].contains(kind),
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
-            let range = file.contents.bridge().byteRangeToNSRange(start: bodyOffset, length: bodyLength)
+            let range = file.linesContainer.byteRangeToNSRange(start: bodyOffset, length: bodyLength)
         else {
             return []
         }

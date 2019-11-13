@@ -100,7 +100,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         var rangeToRemove = violationRange
-        let contentsNSString = file.contents.bridge()
+        let contentsNSString = file.linesContainer
         if let byteRange = contentsNSString.NSRangeToByteRange(start: violationRange.location,
                                                                length: violationRange.length),
             let nextToken = file.syntaxMap.tokens.first(where: { $0.offset > byteRange.location }),
@@ -120,7 +120,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
             let firstToken = tokens.first,
             firstToken.kind == .identifier,
             let tokenContent = file.contents(for: firstToken),
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }

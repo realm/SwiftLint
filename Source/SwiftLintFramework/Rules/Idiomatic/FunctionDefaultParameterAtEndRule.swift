@@ -97,7 +97,7 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
     }
 
     private func isDefaultParameter(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard let offset = dictionary.offset, let length = dictionary.length,
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {
                 return false

@@ -120,7 +120,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
                 excludingKinds.isDisjoint(with: kinds) && kinds.first == .identifier
             }.map { $0.0 }
             .filter { range in
-                let contents = file.contents.bridge()
+                let contents = file.linesContainer
                 guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
                     return false
                 }

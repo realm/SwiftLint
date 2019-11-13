@@ -68,7 +68,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
             nameLength > 0,
             case let nameEndPosition = nameOffset + nameLength,
             bodyOffset != nameEndPosition + 1,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let range = contents.byteRangeToNSRange(start: nameEndPosition,
                                                     length: bodyOffset - nameEndPosition - 1) else {
                 return []

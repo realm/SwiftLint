@@ -17,7 +17,7 @@ extension ColonRule {
                 return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return ranges.filter {
             guard let colon = contents.substringWithByteRange(start: $0.location, length: $0.length) else {
                 return false

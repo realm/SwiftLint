@@ -63,7 +63,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let bodyOffset = dictionary.bodyOffset,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
             !isClassProtocol(file: file, range: range) else {

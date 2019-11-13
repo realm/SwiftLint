@@ -103,7 +103,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
                 }
                 .map { $0.0 }
                 .filter { match -> Bool in
-                    let contents = file.contents.bridge()
+                    let contents = file.linesContainer
                     guard let byteOffset = contents.NSRangeToByteRange(start: match.location, length: 1)?.location,
                         let outerKind = file.structureDictionary.structures(forByteOffset: byteOffset).last else {
                             return true
@@ -115,7 +115,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
-        var violationString = file.contents.bridge().substring(with: violationRange)
+        var violationString = file.linesContainer.substring(with: violationRange)
         if violationString.contains("(") && violationString.contains(")") {
             if let openingIndex = violationString.firstIndex(of: "(") {
                 let replacement = violationString[violationString.index(before: openingIndex)] == " " ? "" : " "

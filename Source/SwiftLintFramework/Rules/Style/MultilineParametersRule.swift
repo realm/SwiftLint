@@ -44,7 +44,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
 
         for range in parameterRanges {
             guard
-                let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: range.offset),
+                let (line, _) = file.linesContainer.lineAndCharacter(forByteOffset: range.offset),
                 offset..<(offset + length) ~= range.offset,
                 isRange(range, withinRanges: parameterRanges)
                 else {

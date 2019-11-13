@@ -115,9 +115,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         let firstRange = match.range(at: 1)
         let secondRange = match.range(at: 2)
 
-        guard let matchByteFirstRange = nsstring
+        guard let matchByteFirstRange = file.linesContainer
             .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),
-            let matchByteSecondRange = nsstring
+            let matchByteSecondRange = file.linesContainer
                 .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
             else { return nil }
 
@@ -180,7 +180,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         // range is in some "source.lang.swift.decl.var.*"
         let byteOffset = lastItem.byteRange.location
         let byteLength = byteRange.location - byteOffset
-        if let varDeclarationString = contents.substringWithByteRange(start: byteOffset, length: byteLength),
+        if let varDeclarationString = file.linesContainer.substringWithByteRange(start: byteOffset, length: byteLength),
             varDeclarationString.contains("=") {
             // if declarations contains "=", range is not type annotation
             return false

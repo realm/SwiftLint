@@ -77,7 +77,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             let name = dictionary.name, isExpected(name),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
-            let range = file.contents.bridge()
+            let range = file.linesContainer
                 .byteRangeToNSRange(start: nameOffset + nameLength - length, length: length)
             else { return [] }
         return [range]

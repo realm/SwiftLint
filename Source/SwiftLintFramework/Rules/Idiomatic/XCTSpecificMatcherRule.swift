@@ -50,7 +50,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 guard
                     let argOffset = argument.offset,
                     let argLength = argument.length,
-                    let body = file.contents.bridge().substringWithByteRange(start: argOffset, length: argLength)
+                    let body = file.linesContainer.substringWithByteRange(start: argOffset, length: argLength)
                     else { return nil }
 
                 return body

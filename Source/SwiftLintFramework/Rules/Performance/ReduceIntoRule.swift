@@ -131,7 +131,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
             }
         }
 
-        let contents = file.contents
+        let contents = file.linesContainer
         guard let offset = argument.offset,
             let length = argument.length,
             let range = contents.byteRangeToNSRange(start: offset, length: length)
@@ -145,7 +145,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
         }
 
         // check for Array or Dictionary init
-        let initMatch = initExpression.firstMatch(in: contents, options: [], range: range)
+        let initMatch = initExpression.firstMatch(in: contents.string, options: [], range: range)
         return initMatch != nil
     }
 }

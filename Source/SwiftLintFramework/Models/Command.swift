@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 
 #if os(Linux)
 private extension Scanner {
@@ -82,7 +83,7 @@ public struct Command: Equatable {
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         guard let actionString = actionAndModifierScanner.scanUpToString(":"),
             let action = Action(rawValue: actionString),
-            let lineAndCharacter = string.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
+            let lineAndCharacter = StringLinesContainer(string).lineAndCharacter(forCharacterOffset: NSMaxRange(range))
             else {
                 return nil
         }

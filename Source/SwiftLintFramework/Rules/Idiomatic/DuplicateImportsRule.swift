@@ -23,7 +23,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
     )
 
     private func rangesInConditionalCompilation(file: SwiftLintFile) -> [NSRange] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         let ranges = file.syntaxMap.tokens
             .filter { $0.kind == .buildconfigKeyword }
@@ -39,7 +39,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         let ignoredRanges = self.rangesInConditionalCompilation(file: file)
 
@@ -55,7 +55,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
                 return !importRange.intersects(ignoredRanges)
             }
 
-        let lines = contents.lines()
+        let lines = file.lines
 
         let importLines: [Line] = importRanges.compactMap { range in
             guard let line = contents.lineAndCharacter(forByteOffset: range.location)?.line

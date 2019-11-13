@@ -65,8 +65,8 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestabl
     }()
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let contents = file.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
+        let contents = file.linesContainer
+        let range = NSRange(location: 0, length: contents.nsString.length)
 
         let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
 

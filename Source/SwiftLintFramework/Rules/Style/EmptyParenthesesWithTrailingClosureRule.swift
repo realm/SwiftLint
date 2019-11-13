@@ -84,7 +84,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
         let rangeLength = (offset + length) - (nameOffset + nameLength)
         let regex = EmptyParenthesesWithTrailingClosureRule.emptyParenthesesRegex
 
-        guard let range = file.contents.bridge().byteRangeToNSRange(start: rangeStart, length: rangeLength),
+        guard let range = file.linesContainer.byteRangeToNSRange(start: rangeStart, length: rangeLength),
             let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location else {
                 return []

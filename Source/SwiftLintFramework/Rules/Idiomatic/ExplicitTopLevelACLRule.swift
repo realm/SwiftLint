@@ -56,7 +56,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
         }
 
         // find all "internal" tokens
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         let allInternalRanges = file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }

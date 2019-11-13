@@ -54,7 +54,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     )
 
     private func findAllExplicitInternalTokens(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }

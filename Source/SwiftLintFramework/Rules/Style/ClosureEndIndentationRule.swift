@@ -138,7 +138,7 @@ extension ClosureEndIndentationRule {
         guard
             let offset = dictionary.offset,
             let length = dictionary.length,
-            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length)
+            let text = file.linesContainer.substringWithByteRange(start: offset, length: length)
             else {
                 return false
         }
@@ -148,7 +148,7 @@ extension ClosureEndIndentationRule {
 
     private func validateCall(in file: SwiftLintFile,
                               dictionary: SourceKittenDictionary) -> Violation? {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             let bodyLength = dictionary.bodyLength,
@@ -208,7 +208,7 @@ extension ClosureEndIndentationRule {
 
     private func validateClosureArgument(in file: SwiftLintFile,
                                          dictionary: SourceKittenDictionary) -> Violation? {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             let bodyLength = dictionary.bodyLength,
@@ -254,7 +254,7 @@ extension ClosureEndIndentationRule {
         }
 
         let newLineRegex = regex("\n(\\s*\\}?\\.)")
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard let range = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let match = newLineRegex.matches(in: file.contents, options: [],
                                              range: range).last?.range(at: 1),
@@ -268,7 +268,7 @@ extension ClosureEndIndentationRule {
 
     private func isSingleLineClosure(dictionary: SourceKittenDictionary,
                                      endPosition: Int, file: SwiftLintFile) -> Bool {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         guard let start = dictionary.bodyOffset,
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: start),
@@ -281,7 +281,7 @@ extension ClosureEndIndentationRule {
 
     private func containsSingleLineClosure(dictionary: SourceKittenDictionary,
                                            endPosition: Int, file: SwiftLintFile) -> Bool {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         guard let closure = trailingClosure(dictionary: dictionary, file: file),
             let start = closure.bodyOffset,
@@ -311,7 +311,7 @@ extension ClosureEndIndentationRule {
         return arguments.filter { argument in
             guard let offset = argument.bodyOffset,
                 let length = argument.bodyLength,
-                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length),
                 let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
                 match.location == range.location else {
                     return false
@@ -330,7 +330,7 @@ extension ClosureEndIndentationRule {
             let firstArgumentOffset = firstArgument.offset,
             case let offset = nameOffset + nameLength,
             case let length = firstArgumentOffset - offset,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+            let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length),
             let match = regex("\\(\\s*\\n\\s*").firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location else {
                 return false

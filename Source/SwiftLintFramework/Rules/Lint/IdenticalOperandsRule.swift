@@ -79,7 +79,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     }
 
     private func violationRangeFrom(match: NSTextCheckingResult, in file: SwiftLintFile) -> NSRange? {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         let operatorRange = match.range(at: 1)
         guard let operatorByteRange = contents.NSRangeToByteRange(operatorRange) else {
             return nil
@@ -100,7 +100,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         }
 
         // Make sure that there's nothing but operator between tokens
-        let operatorString = contents.substring(with: operatorRange)
+        let operatorString = contents.nsString.substring(with: operatorRange)
         guard let leftToken = leftOperand.tokens.last, let rightToken = rightOperand.tokens.first else {
             return nil
         }
@@ -131,7 +131,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             }
         }
 
-        let violationRange = file.contents.byteRangeToNSRange(start: leftmostToken.offset,
+        let violationRange = file.linesContainer.byteRangeToNSRange(start: leftmostToken.offset,
                                                               length: leftmostToken.length)
         return violationRange
     }
@@ -147,7 +147,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             while currentIndex > 0 {
                 let prevToken = tokens[currentIndex - 1]
 
-                guard file.contents.isDotOrOptionalChainingBetweenTokens(prevToken, leftMostToken) else { break }
+                guard file.linesContainer.isDotOrOptionalChainingBetweenTokens(prevToken, leftMostToken) else { break }
 
                 leftTokens.insert(prevToken, at: 0)
                 currentIndex -= 1
@@ -161,7 +161,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             while currentIndex < tokens.count - 1 {
                 let nextToken = tokens[currentIndex + 1]
 
-                guard file.contents.isDotOrOptionalChainingBetweenTokens(rightMostToken, nextToken) else { break }
+                guard file.linesContainer.isDotOrOptionalChainingBetweenTokens(rightMostToken, nextToken) else { break }
 
                 rightTokens.append(nextToken)
                 currentIndex += 1
@@ -173,10 +173,10 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     }
 }
 
-private extension NSString {
-    func NSRangeToByteRange(_ range: NSRange) -> NSRange? {
-        return NSRangeToByteRange(start: range.location, length: range.length)
-    }
+private extension StringLinesContainer {
+//    func NSRangeToByteRange(_ range: NSRange) -> NSRange? {
+//        return NSRangeToByteRange(start: range.location, length: range.length)
+//    }
 
     func subStringWithSyntaxToken(_ syntaxToken: SwiftLintSyntaxToken) -> String? {
         return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)

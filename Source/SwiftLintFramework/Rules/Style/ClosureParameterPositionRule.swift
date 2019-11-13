@@ -68,7 +68,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             }
 
             let rangeLength = paramOffset - rangeStart
-            let contents = file.contents.bridge()
+            let contents = file.linesContainer
 
             guard let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength),
                 let match = regex.matches(in: file.contents, options: [], range: range).last?.range,

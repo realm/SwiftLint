@@ -108,12 +108,12 @@ private extension SourceKittenDictionary {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
-            case let contents = file.contents.bridge(),
-            let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            let afterNameRange = file.linesContainer.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
         else {
             return false
         }
 
+        let contents = file.contents
         let contentAfterName = contents.substring(from: afterNameRange.location)
         let initCallRegex =
             regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\(")
@@ -125,12 +125,12 @@ private extension SourceKittenDictionary {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
-            case let contents = file.contents.bridge(),
-            let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            let afterNameRange = file.linesContainer.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
         else {
             return false
         }
 
+        let contents = file.contents
         let contentAfterName = contents.substring(from: afterNameRange.location)
         let typeAssignment = regex("^\\s*=\\s*(?:\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\.)*self")
 
@@ -170,7 +170,7 @@ private extension SwiftLintFile {
     var captureGroupByteRanges: [NSRange] {
         return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
                      excludingSyntaxKinds: SyntaxKind.commentKinds)
-                .compactMap { contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length) }
+                .compactMap { linesContainer.NSRangeToByteRange(start: $0.location, length: $0.length) }
     }
 }
 

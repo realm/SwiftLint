@@ -54,7 +54,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
                 compilerProtocol.match(arguments: arguments),
                 let offset = dictionary.offset,
                 let length = dictionary.length,
-                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+                let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length) else {
                     continue
             }
 

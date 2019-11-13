@@ -70,8 +70,8 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
     private func violationRanges(file: SwiftLintFile) -> [NSRange] {
         let capturesPattern = "(?:\\[[^\\]]+\\])?"
         let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+?\\))\\s*(in|->)"
-        let contents = file.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
+        let contents = file.linesContainer
+        let range = NSRange(location: 0, length: contents.nsString.length)
         return regex(pattern).matches(in: file.contents, options: [], range: range).compactMap { match -> NSRange? in
             let parametersRange = match.range(at: 1)
             let inRange = match.range(at: 2)

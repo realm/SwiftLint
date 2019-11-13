@@ -40,7 +40,7 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
             return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         return dictionary.elements.flatMap { subDictionary -> [StyleViolation] in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,

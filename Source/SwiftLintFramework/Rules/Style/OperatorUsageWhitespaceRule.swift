@@ -139,7 +139,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func kinds(in range: NSRange, file: SwiftLintFile) -> [SyntaxKind] {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
             return []
         }
@@ -148,7 +148,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func operatorInRange(file: SwiftLintFile, range: NSRange) -> String {
-        return file.contents.bridge().substring(with: range).trimmingCharacters(in: .whitespaces)
+        return file.linesContainer.nsString.substring(with: range).trimmingCharacters(in: .whitespaces)
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {

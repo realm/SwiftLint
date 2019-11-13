@@ -68,7 +68,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard let (offset, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary),
             case let length = reason == .extraTrailingCommaReason ? 1 : 0,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+            let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }
 
@@ -102,7 +102,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
             return nil
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         if let (startLine, _) = contents.lineAndCharacter(forByteOffset: bodyOffset),
             let (endLine, _) = contents.lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
@@ -143,7 +143,8 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
     }
 
     private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: Int) -> Int? {
-        let nsstring = contents.bridge()
+        let container = StringLinesContainer(contents)
+        let nsstring = container.nsString
         let range = NSRange(location: 0, length: nsstring.length)
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
@@ -153,7 +154,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
             let kinds = file.syntaxMap.kinds(inByteRange: range)
             return SyntaxKind.commentKinds.isDisjoint(with: kinds)
         }.flatMap {
-            nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
+            container.NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
     }
 }

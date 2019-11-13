@@ -35,7 +35,7 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTe
             attributes.contains(.dynamic),
             attributes.contains(.inline),
             let funcByteOffset = dictionary.offset,
-            let funcOffset = file.contents.bridge()
+            let funcOffset = file.linesContainer
                 .byteRangeToNSRange(start: funcByteOffset, length: 0)?.location,
             case let inlinePattern = regex("@inline"),
             case let range = NSRange(location: 0, length: funcOffset),

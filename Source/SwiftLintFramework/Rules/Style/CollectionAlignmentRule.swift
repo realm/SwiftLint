@@ -88,7 +88,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
 
     private func colonLocation(with file: SwiftLintFile, keyOffset: Int, keyLength: Int,
                                valueOffset: Int) -> Location? {
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         let matchStart = keyOffset + keyLength
         let matchLength = valueOffset - matchStart
         let range = contents.byteRangeToNSRange(start: matchStart, length: matchLength)

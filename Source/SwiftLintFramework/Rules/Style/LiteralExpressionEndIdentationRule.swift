@@ -193,7 +193,7 @@ extension LiteralExpressionEndIdentationRule {
 
         let elements = dictionary.elements.filter { $0.kind == "source.lang.swift.structure.elem.expr" }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
         guard !elements.isEmpty,
             let offset = dictionary.offset,
             let length = dictionary.length,

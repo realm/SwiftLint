@@ -38,16 +38,16 @@ public struct TodoRule: ConfigurationProviderRule {
         var reason = type(of: self).description.description
         let offset = NSMaxRange(range)
 
-        guard let (lineNumber, _) = file.contents.bridge().lineAndCharacter(forCharacterOffset: offset) else {
+        guard let (lineNumber, _) = file.linesContainer.lineAndCharacter(forCharacterOffset: offset) else {
             return reason
         }
 
         let line = file.lines[lineNumber - 1]
         // customizing the reason message to be specific to fixme or todo
-        let violationSubstring = file.contents.bridge().substring(with: range)
+        let violationSubstring = file.linesContainer.nsString.substring(with: range)
 
         let range = NSRange(location: offset, length: NSMaxRange(line.range) - offset)
-        var message = file.contents.bridge().substring(with: range)
+        var message = file.linesContainer.substring(with: range)
         let kind = violationSubstring.hasPrefix("FIXME") ? "FIXMEs" : "TODOs"
 
         // trim whitespace

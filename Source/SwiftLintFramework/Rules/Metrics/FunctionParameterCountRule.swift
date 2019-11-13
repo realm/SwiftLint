@@ -99,7 +99,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func defaultFunctionParameterCount(file: SwiftLintFile, byteOffset: Int, byteLength: Int) -> Int {
-        let substring = file.contents.bridge().substringWithByteRange(start: byteOffset, length: byteLength)!
+        let substring = file.linesContainer.substringWithByteRange(start: byteOffset, length: byteLength)!
         let equals = substring.filter { $0 == "=" }
         return equals.count
     }

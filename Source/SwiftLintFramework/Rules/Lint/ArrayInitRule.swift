@@ -88,7 +88,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
                                     file: SwiftLintFile) -> Bool {
         let length = firstToken.offset - nameEndPosition
         guard length > 0,
-            case let contents = file.contents.bridge(),
+            case let contents = file.linesContainer,
             let byteRange = contents.byteRangeToNSRange(start: nameEndPosition, length: length) else {
                 return false
         }

@@ -74,8 +74,8 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents
-        let nsstring = contents.bridge()
-        let range = NSRange(location: 0, length: nsstring.length)
+        let nsstring = file.linesContainer
+        let range = NSRange(location: 0, length: file.linesContainer.nsString.length)
         let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
             .matches(in: contents, options: [], range: range)
@@ -102,7 +102,7 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
 
                 // If the first range does not start with comma, it already violates this rule
                 // no matter what is contained in the second range.
-                if !nsstring.substring(with: firstRange).hasPrefix(", ") {
+                if !nsstring.nsString.substring(with: firstRange).hasPrefix(", ") {
                     return firstRange
                 }
 

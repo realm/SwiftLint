@@ -90,7 +90,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             let nameLength = dictionary.nameLength,
             case let start = nameOffset + nameLength,
             case let length = totalLength + offset - start,
-            let range = file.contents.bridge().byteRangeToNSRange(start: start, length: length),
+            let range = file.linesContainer.byteRangeToNSRange(start: start, length: length),
             let match = regex("\\s*\\(\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location {
             return shouldTrigger()
@@ -104,7 +104,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         return arguments.filter { argument in
             guard let offset = argument.bodyOffset,
                 let length = argument.bodyLength,
-                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length),
                 let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
                 match.location == range.location else {
                     return false
@@ -117,7 +117,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     private func isAlreadyTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
-            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
+            let text = file.linesContainer.substringWithByteRange(start: offset, length: length) else {
                 return false
         }
 
@@ -128,7 +128,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
                                         file: SwiftLintFile) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+            let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length) else {
                 return false
         }
 

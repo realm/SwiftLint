@@ -79,12 +79,12 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
             // is this single argument the default parameter?
             let bodyOffset = argument.bodyOffset,
             let bodyLength = argument.bodyLength,
-            let body = file.contents.bridge().substringWithByteRange(start: bodyOffset, length: bodyLength),
+            let body = file.linesContainer.substringWithByteRange(start: bodyOffset, length: bodyLength),
             body == "\"\""
             else { return [] }
 
         guard
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
+            let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length)
             else { return [] }
 
         return [range]

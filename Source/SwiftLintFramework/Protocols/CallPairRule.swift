@@ -34,14 +34,14 @@ extension CallPairRule {
                            reason: String? = nil,
                            predicate: (SourceKittenDictionary) -> Bool = { _ in true }) -> [StyleViolation] {
         let firstRanges = file.match(pattern: pattern, with: patternSyntaxKinds)
-        let contents = file.contents.bridge()
+        let linesContainer = file.linesContainer
         let dictionary = file.structureDictionary
 
         let violatingLocations: [Int] = firstRanges.compactMap { range in
-            guard let bodyByteRange = contents.NSRangeToByteRange(start: range.location,
+            guard let bodyByteRange = linesContainer.NSRangeToByteRange(start: range.location,
                                                                   length: range.length),
                 case let firstLocation = range.location + range.length - 1,
-                let firstByteRange = contents.NSRangeToByteRange(start: firstLocation,
+                let firstByteRange = linesContainer.NSRangeToByteRange(start: firstLocation,
                                                                  length: 1) else {
                 return nil
             }

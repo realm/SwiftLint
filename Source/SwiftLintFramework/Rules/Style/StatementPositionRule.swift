@@ -160,11 +160,11 @@ private extension StatementPositionRule {
         }
     }
 
-    static func uncuddledMatchFilter(contents: String,
+    static func uncuddledMatchFilter(contents: StringLinesContainer,
                                      syntaxMap: SwiftLintSyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
-            guard let matchRange = contents.bridge().NSRangeToByteRange(start: range.location,
+            guard let matchRange = contents..NSRangeToByteRange(start: range.location,
                                                                         length: range.length) else {
                 return false
             }
@@ -173,10 +173,10 @@ private extension StatementPositionRule {
     }
 
     func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.contents
+        let contents = file.linesContainer
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegex.matches(in: contents, options: [], range: range)
+        let matches = StatementPositionRule.uncuddledRegex.matches(in: contents.string, options: [], range: range)
         let validator = type(of: self).uncuddledMatchValidator(contents: contents)
         let filterMatches = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 

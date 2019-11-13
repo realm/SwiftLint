@@ -137,7 +137,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
             return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.linesContainer
 
         return cursorsMissingExplicitSelf.compactMap { cursorInfo in
             guard let byteOffset = cursorInfo["swiftlint.offset"] as? Int64 else {
@@ -197,6 +197,6 @@ private extension NSString {
 private func binaryOffsets(file: SwiftLintFile, compilerArguments: [String]) throws -> [Int] {
     let absoluteFile = file.path!.bridge().absolutePathRepresentation()
     let index = try Request.index(file: absoluteFile, arguments: compilerArguments).sendIfNotDisabled()
-    let binaryOffsets = file.contents.bridge().recursiveByteOffsets(index)
+    let binaryOffsets = file.linesContainerrecursiveByteOffsets(index)
     return binaryOffsets.sorted()
 }

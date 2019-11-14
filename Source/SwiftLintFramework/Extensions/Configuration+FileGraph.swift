@@ -9,7 +9,7 @@ internal extension Configuration {
         }
 
         private class Vertix: Hashable { // swiftlint:disable:this nesting
-            internal var originatesFromRemote: Bool { originalRemoteString != nil }
+            internal var originatesFromRemote: Bool { return originalRemoteString != nil }
             internal let originalRemoteString: String?
 
             private(set) var filePath: FilePath
@@ -164,9 +164,9 @@ internal extension Configuration {
             remoteConfigTimeoutIfCachedOverride: TimeInterval? = nil
         ) throws {
             try vertix.build(
-                remoteConfigTimeout: remoteConfigTimeoutOverride ?? Self.defaultRemoteConfigTimeout,
+                remoteConfigTimeout: remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCachedOverride
-                    ?? remoteConfigTimeoutOverride ?? Self.defaultRemoteConfigTimeoutIfCached
+                    ?? remoteConfigTimeoutOverride ?? Configuration.FileGraph.defaultRemoteConfigTimeoutIfCached
             )
 
             if !ignoreParentAndChildConfigs {
@@ -186,7 +186,7 @@ internal extension Configuration {
         }
 
         private func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
-            vertices.first {
+            return vertices.first {
                 $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
             } ?? vertices.first { $0.filePath == vertix.filePath }
         }

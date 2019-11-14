@@ -55,7 +55,7 @@ extension Configuration {
     // MARK: Accessing File Configurations
     /// Returns the configuration for the given file, based on self but respecting nested configurations
     public func configuration(for file: SwiftLintFile) -> Configuration {
-        (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
+        return (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
     }
 
     private func configuration(forDirectory directory: String) -> Configuration {

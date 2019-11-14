@@ -3,9 +3,12 @@ import Foundation
 import SourceKittenFramework
 import SwiftLintFramework
 
+typealias File = String
+typealias Arguments = [String]
+
 enum CompilerInvocations {
     case buildLog(compilerInvocations: [String])
-    case compilationDatabase(compileCommands: [String: [String]])
+    case compilationDatabase(compileCommands: [File: Arguments])
 
     func arguments(forFile path: String?) -> [String] {
         return path.flatMap { path in
@@ -157,7 +160,10 @@ struct LintableFilesVisitor {
             return nil
         }
 
-        return database.reduce(into: [:]) { (commands: inout [String: [String]], entry: [String: Any]) in
+        // Convert compile_commands.json into a structure convenient for subscripting.
+        // Compile commands are and array of dictionaries. Each dict has a key for "file", and a key for "arguments".
+        // This `reduce` converts that structure into a [File: Arguments] argument lookup table.
+        return database.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
             if let file = entry["file"] as? String, let arguments = entry["arguments"] as? [String] {
                 commands[file] = arguments
             }

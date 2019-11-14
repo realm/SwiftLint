@@ -19,6 +19,16 @@ public struct YamlParser {
             throw YamlParserError.yamlParsing("\(error)")
         }
     }
+
+    public static func parseArray(_ yaml: String,
+                             env: [String: String] = ProcessInfo.processInfo.environment) throws -> [[String: Any]] {
+        do {
+            return try Yams.load(yaml: yaml, .default,
+                                 .swiftlintContructor(env: env)) as? [[String: Any]] ?? []
+        } catch {
+            throw YamlParserError.yamlParsing("\(error)")
+        }
+    }
 }
 
 private extension Constructor {

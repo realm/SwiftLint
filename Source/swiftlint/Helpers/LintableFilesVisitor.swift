@@ -3,9 +3,27 @@ import Foundation
 import SourceKittenFramework
 import SwiftLintFramework
 
+enum CompilerInvocations {
+    case buildLog(compilerInvocations: [String])
+    case compilationDatabase(compileCommands: [[String: Any]])
+
+    func arguments(forFile path: String?) -> [String] {
+        return path.flatMap { path in
+            switch self {
+            case let .buildLog(compilerInvocations):
+                return CompilerArgumentsExtractor.compilerArgumentsForFile(path, compilerInvocations: compilerInvocations)
+            case let .compilationDatabase(compileCommands):
+                return compileCommands
+                    .first { $0["file"] as? String == path }
+                    .flatMap { $0["arguments"] as? [String] }
+            }
+        } ?? []
+    }
+}
+
 enum LintOrAnalyzeModeWithCompilerArguments {
     case lint
-    case analyze(allCompilerInvocations: [String])
+    case analyze(allCompilerInvocations: CompilerInvocations)
 }
 
 struct LintableFilesVisitor {
@@ -35,7 +53,7 @@ struct LintableFilesVisitor {
     }
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool,
-                 forceExclude: Bool, cache: LinterCache?, compilerLogContents: String,
+                 forceExclude: Bool, cache: LinterCache?, compilerInvocations: CompilerInvocations?,
                  block: @escaping (CollectedLinter) -> Void) {
         self.paths = paths
         self.action = action
@@ -45,35 +63,45 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.cache = cache
         self.parallel = true
-        if compilerLogContents.isEmpty {
-            self.mode = .lint
+        if let compilerInvocations = compilerInvocations {
+            self.mode = .analyze(allCompilerInvocations: compilerInvocations)
         } else {
-            let allCompilerInvocations = CompilerArgumentsExtractor
-                .allCompilerInvocations(compilerLogs: compilerLogContents)
-            self.mode = .analyze(allCompilerInvocations: allCompilerInvocations)
+            self.mode = .lint
         }
         self.block = block
     }
 
     static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, CommandantError<()>> {
-        let compilerLogContents: String
+        let compilerInvocations: CompilerInvocations?
         if options.mode == .lint {
-            compilerLogContents = ""
-        } else if let logContents = LintableFilesVisitor.compilerLogContents(logPath: options.compilerLogPath),
-            !logContents.isEmpty {
-            compilerLogContents = logContents
+            compilerInvocations = nil
         } else {
-            return .failure(
-                .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
-            )
+            if let logContents = LintableFilesVisitor.compilerLogContents(logPath: options.compilerLogPath) {
+                let allCompilerInvocations = CompilerArgumentsExtractor.allCompilerInvocations(compilerLogs: logContents)
+                compilerInvocations = .buildLog(compilerInvocations: allCompilerInvocations)
+            } else if !options.compileCommands.isEmpty {
+                do {
+                    let yamlContents = try String(contentsOfFile: options.compileCommands, encoding: .utf8)
+                    let compileCommands = try YamlParser.parseArray(yamlContents)
+                    compilerInvocations = .compilationDatabase(compileCommands: compileCommands)
+                } catch {
+                    return .failure(
+                        .usageError(description: "Could not compilation database at path: '\(options.compileCommands)'")
+                    )
+                }
+            } else {
+                return .failure(
+                    .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
+                )
+            }
         }
 
         let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
                                            useSTDIN: options.useSTDIN, quiet: options.quiet,
                                            useScriptInputFiles: options.useScriptInputFiles,
                                            forceExclude: options.forceExclude, cache: cache,
-                                           compilerLogContents: compilerLogContents, block: block)
+                                           compilerInvocations: compilerInvocations, block: block)
         return .success(visitor)
     }
 
@@ -81,10 +109,8 @@ struct LintableFilesVisitor {
         switch self.mode {
         case .lint:
             return false
-        case let .analyze(allCompilerInvocations):
-            let compilerArguments = path.flatMap {
-                CompilerArgumentsExtractor.compilerArgumentsForFile($0, compilerInvocations: allCompilerInvocations)
-            } ?? []
+        case let .analyze(compilerInvocations):
+            let compilerArguments = compilerInvocations.arguments(forFile: path)
             return compilerArguments.isEmpty
         }
     }
@@ -93,10 +119,8 @@ struct LintableFilesVisitor {
         switch self.mode {
         case .lint:
             return Linter(file: file, configuration: configuration, cache: cache)
-        case let .analyze(allCompilerInvocations):
-            let compilerArguments = file.path.flatMap {
-                CompilerArgumentsExtractor.compilerArgumentsForFile($0, compilerInvocations: allCompilerInvocations)
-            } ?? []
+        case let .analyze(compilerInvocations):
+            let compilerArguments = compilerInvocations.arguments(forFile: file.path)
             return Linter(file: file, configuration: configuration, compilerArguments: compilerArguments)
         }
     }
@@ -108,7 +132,7 @@ struct LintableFilesVisitor {
 
         if let data = FileManager.default.contents(atPath: logPath),
             let logContents = String(data: data, encoding: .utf8) {
-            return logContents
+            return logContents.isEmpty ? nil : logContents
         }
 
         print("couldn't read log file at path '\(logPath)'")

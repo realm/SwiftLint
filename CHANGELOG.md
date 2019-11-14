@@ -84,6 +84,9 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3415](https://github.com/realm/SwiftLint/issues/3415)
 
+* Make `strong_iboutlet` rule correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
 #### Bug Fixes
 
 * None.

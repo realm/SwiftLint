@@ -115,7 +115,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        var violationString = file.linesContainer.substring(with: violationRange)
+        var violationString = file.linesContainer.nsString.substring(with: violationRange)
         if violationString.contains("(") && violationString.contains(")") {
             if let openingIndex = violationString.firstIndex(of: "(") {
                 let replacement = violationString[violationString.index(before: openingIndex)] == " " ? "" : " "

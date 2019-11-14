@@ -87,13 +87,15 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         if violatingRanges.isEmpty {
             corrections = []
         } else {
-            var correctedContents = originalContents.string
+            var correctedContents = originalContents.nsString
 
-            violatingRanges.reversed().forEach { preferredModifierRange, declaredModifierRange in
+            violatingRanges.reversed().forEach { (arg) in
+
+                let (preferredModifierRange, declaredModifierRange) = arg
                 correctedContents = correctedContents.replacingCharacters(
                     in: declaredModifierRange,
-                    with: originalContents.substring(with: preferredModifierRange)
-                )
+                    with: originalContents.nsString.substring(with: preferredModifierRange)
+                ).bridge()
             }
 
             file.write(correctedContents.bridge())

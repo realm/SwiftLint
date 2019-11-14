@@ -150,7 +150,7 @@ extension GenericTypeNameRule {
                 return []
         }
 
-        let genericConstraint = contents.substring(with: match)
+        let genericConstraint = contents.nsString.substring(with: match)
         return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 

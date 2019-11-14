@@ -93,7 +93,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         guard captureListRange.location != NSNotFound,
             captureListRange.length > 0 else { return [] }
 
-        let captureList = contents.substring(with: captureListRange)
+        let captureList = contents.nsString.substring(with: captureListRange)
         let references = referencesAndLocationsFromCaptureList(captureList)
 
         let restOfClosureLocation = captureListRange.location + captureListRange.length + 1

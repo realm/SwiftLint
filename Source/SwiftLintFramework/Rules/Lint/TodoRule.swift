@@ -47,7 +47,7 @@ public struct TodoRule: ConfigurationProviderRule {
         let violationSubstring = file.linesContainer.nsString.substring(with: range)
 
         let range = NSRange(location: offset, length: NSMaxRange(line.range) - offset)
-        var message = file.linesContainer.substring(with: range)
+        var message = file.linesContainer.nsString.substring(with: range)
         let kind = violationSubstring.hasPrefix("FIXME") ? "FIXMEs" : "TODOs"
 
         // trim whitespace

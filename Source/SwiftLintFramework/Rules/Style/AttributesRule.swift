@@ -59,7 +59,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             }
 
             let contents = file.linesContainer
-            let match = contents.substring(with: range)
+            let match = contents.nsString.substring(with: range)
             let idx = match.lastIndex(of: "import") ?? 0
             let location = idx + range.location
 

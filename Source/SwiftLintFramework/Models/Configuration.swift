@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 // TODO: What happens if child/parent_config is specified multiple times in a single file?
 // TODO: Don't include child/parent_config again as nested config
-// TODO: Remote Config Cache Versioning
 // TODO: Tests
 // TODO: Docs
 public struct Configuration {

@@ -1,7 +1,14 @@
 import Foundation // swiftlint:disable:this file_name
 
 public extension Configuration.FileGraph.FilePath {
-    // MARK: Resolving
+    // MARK: - Properties: Remote Cache
+    /// This should never be touched. Change the version number for changes to the cache format
+    private static let remoteCachePath: String = ".swiftlint/RemoteConfigCache"
+
+    /// If the format of the caching is changed in the future, change this version number
+    private static let remoteCacheVersionNumber: String = "v1"
+
+    // MARK: - Methods: Resolving
     mutating func resolve(
         remoteConfigLoadingTimeout: Double,
         remoteConfigLoadingTimeoutIfCached: Double,
@@ -14,7 +21,6 @@ public extension Configuration.FileGraph.FilePath {
         case let .promised(urlString):
             return try resolve(
                 urlString: urlString,
-                rootDirectory: rootDirectory,
                 remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                 remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
             )
@@ -27,10 +33,13 @@ public extension Configuration.FileGraph.FilePath {
 
     private mutating func resolve(
         urlString: String,
-        rootDirectory: String,
         remoteConfigLoadingTimeout: Double,
         remoteConfigLoadingTimeoutIfCached: Double
     ) throws -> String {
+        // Always use top level as root directory for remote files
+        let rootDirectory = FileManager.default.currentDirectoryPath.bridge().standardizingPath
+
+        // Get cache path
         let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: rootDirectory)
 
         // Handle missing network
@@ -144,27 +153,24 @@ public extension Configuration.FileGraph.FilePath {
     }
 
     private func cache(configString: String, from urlString: String, rootDirectory: String) -> String? {
+        // Do cache maintenance
+        do {
+            try maintainRemoteConfigCache(rootDirectory: rootDirectory)
+        } catch {
+            return nil
+        }
+
         // Add comment line at the top of the config string
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy 'at' HH:mm:ss"
         let configString =
-            "# Automatically downloaded from \"\(urlString)\" by SwiftLint on \(formatter.string(from: Date())).\n"
+            "#\n"
+            + "# Automatically downloaded from \"\(urlString)\" by SwiftLint on \(formatter.string(from: Date())).\n"
+            + "#\n"
             + configString
 
-        // Get path
-        let path = filePath(for: urlString, rootDirectory: rootDirectory)
-
-        // Create directory if needed
-        let directory = path.components(separatedBy: "/").dropLast().joined(separator: "/")
-        if !FileManager.default.fileExists(atPath: directory) {
-            do {
-                try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
-            } catch {
-                return nil
-            }
-        }
-
         // Create file
+        let path = filePath(for: urlString, rootDirectory: rootDirectory)
         return FileManager.default.createFile(
             atPath: path,
             contents: Data(configString.utf8),
@@ -173,16 +179,48 @@ public extension Configuration.FileGraph.FilePath {
     }
 
     private func filePath(for urlString: String, rootDirectory: String) -> String {
-        let adjustUrlString = urlString
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: ":", with: "-")
-            .replacingOccurrences(of: ".", with: "+")
-
-        // If this string or caching is changed in the future,
-        // update the version in the string and delete caches from the previous versions
-        let versionNum = "v1"
-        let path = "/.swiftlint/RemoteConfigCache/swiftlint_cache_\(versionNum)_\(adjustUrlString).yml"
-
+        let adjustedUrlString = urlString.replacingOccurrences(of: "/", with: "_")
+        let path = "\(Self.remoteCachePath)/\(Self.remoteCacheVersionNumber)/\(adjustedUrlString).yml"
         return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+    }
+
+    private func maintainRemoteConfigCache(rootDirectory: String) throws {
+        // Create directory if needed
+        let directory = "\(Self.remoteCachePath)/\(Self.remoteCacheVersionNumber)/"
+            .bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+        if !FileManager.default.fileExists(atPath: directory) {
+            try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
+        }
+
+        // Delete all cache folders except for the current version's folder
+        let directoryWithoutVersionNum = directory.components(separatedBy: "/").dropLast().joined(separator: "/")
+        try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum)).forEach {
+            if !$0.contains("/") && $0 != Self.remoteCacheVersionNumber {
+                try FileManager.default.removeItem(atPath:
+                    $0.bridge().absolutePathRepresentation(rootDirectory: directoryWithoutVersionNum)
+                )
+            }
+        }
+
+        // Add gitignore entry if needed
+        let gitignorePath = ".gitignore"
+        let requiredGitignoreAppendix = "\(Self.remoteCachePath)"
+        let newGitignoreAppendix = "# SwiftLint Remote Config Cache\n\(requiredGitignoreAppendix)"
+
+        if !FileManager.default.fileExists(atPath: gitignorePath) {
+            guard FileManager.default.createFile(
+                atPath: gitignorePath,
+                contents: Data(newGitignoreAppendix.utf8),
+                attributes: [:]
+            ) else {
+                throw NSError()
+            }
+        } else {
+            var contents = try String(contentsOfFile: gitignorePath, encoding: .utf8)
+            if !contents.contains(requiredGitignoreAppendix) {
+                contents += "\n\n\(newGitignoreAppendix)"
+                try contents.write(toFile: gitignorePath, atomically: true, encoding: .utf8)
+            }
+        }
     }
 }

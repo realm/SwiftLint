@@ -161,7 +161,7 @@ struct LintableFilesVisitor {
         }
 
         // Convert compile_commands.json into a structure convenient for subscripting.
-        // Compile commands are and array of dictionaries. Each dict has a key for "file", and a key for "arguments".
+        // Compile commands are an array of dictionaries. Each dict has a key for "file", and a key for "arguments".
         // This `reduce` converts that structure into a [File: Arguments] argument lookup table.
         return database.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
             if let file = entry["file"] as? String, let arguments = entry["arguments"] as? [String] {

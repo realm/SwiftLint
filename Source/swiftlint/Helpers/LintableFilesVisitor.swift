@@ -77,10 +77,10 @@ struct LintableFilesVisitor {
             compilerInvocations = nil
         } else {
             switch loadCompilerInvocations(options) {
-                case let .success(invocations):
-                    compilerInvocations = invocations
-                case let .failure(error):
-                    return .failure(error)
+            case let .success(invocations):
+                compilerInvocations = invocations
+            case let .failure(error):
+                return .failure(error)
             }
         }
 
@@ -153,8 +153,7 @@ struct LintableFilesVisitor {
     private static func loadCompileCommands(_ path: String) -> [String: [String]]? {
         guard let jsonContents = FileManager.default.contents(atPath: path),
             let object = try? JSONSerialization.jsonObject(with: jsonContents),
-            let database = object as? [[String: Any]] else
-        {
+            let database = object as? [[String: Any]] else {
             return nil
         }
 

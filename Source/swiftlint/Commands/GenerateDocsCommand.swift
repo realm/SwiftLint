@@ -56,7 +56,11 @@ struct GenerateDocsOptions: OptionsProtocol {
     let onlyEnabledRules: Bool
     let onlyDisabledRules: Bool
 
-    static func create(_ configurationFile: String) -> (_ path: String?) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> GenerateDocsOptions {
+    static func create(_ configurationFile: String)
+        -> (_ path: String?)
+        -> (_ onlyEnabledRules: Bool)
+        -> (_ onlyDisabledRules: Bool)
+        -> GenerateDocsOptions {
         return { path in { onlyEnabledRules in { onlyDisabledRules in
             self.init(configurationFile: configurationFile,
                       path: path,

@@ -103,7 +103,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
             kind == .call,
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
-            let nameRange = file.contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
+            let nameRange = file.linesContainer.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let match = reduceExpression.firstMatch(in: file.contents, options: [], range: nameRange),
             dictionary.enclosedArguments.count == 2,
             // would otherwise equal "into"

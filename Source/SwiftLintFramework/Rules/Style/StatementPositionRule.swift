@@ -141,7 +141,7 @@ private extension StatementPositionRule {
 
     static let uncuddledRegex = regex(uncuddledPattern, options: [])
 
-    static func uncuddledMatchValidator(contents: String) -> ((NSTextCheckingResult) -> NSTextCheckingResult?) {
+    static func uncuddledMatchValidator(contents: StringLinesContainer) -> ((NSTextCheckingResult) -> NSTextCheckingResult?) {
         return { match in
             if match.numberOfRanges != 5 {
                 return match
@@ -151,8 +151,8 @@ private extension StatementPositionRule {
             }
             let range1 = match.range(at: 1)
             let range2 = match.range(at: 3)
-            let whitespace1 = contents.substring(from: range1.location, length: range1.length)
-            let whitespace2 = contents.substring(from: range2.location, length: range2.length)
+            let whitespace1 = contents.string.substring(from: range1.location, length: range1.length)
+            let whitespace2 = contents.string.substring(from: range2.location, length: range2.length)
             if whitespace1 == whitespace2 {
                 return nil
             }
@@ -164,7 +164,7 @@ private extension StatementPositionRule {
                                      syntaxMap: SwiftLintSyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
-            guard let matchRange = contents..NSRangeToByteRange(start: range.location,
+            guard let matchRange = contents.NSRangeToByteRange(start: range.location,
                                                                         length: range.length) else {
                 return false
             }
@@ -174,7 +174,7 @@ private extension StatementPositionRule {
 
     func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.linesContainer
-        let range = NSRange(location: 0, length: contents.utf16.count)
+        let range = NSRange(location: 0, length: contents.nsString.length)
         let syntaxMap = file.syntaxMap
         let matches = StatementPositionRule.uncuddledRegex.matches(in: contents.string, options: [], range: range)
         let validator = type(of: self).uncuddledMatchValidator(contents: contents)
@@ -190,8 +190,8 @@ private extension StatementPositionRule {
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
         let matches = StatementPositionRule.uncuddledRegex.matches(in: contents, options: [], range: range)
-        let validator = type(of: self).uncuddledMatchValidator(contents: contents)
-        let filterRanges = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
+        let validator = type(of: self).uncuddledMatchValidator(contents: file.linesContainer)
+        let filterRanges = type(of: self).uncuddledMatchFilter(contents: file.linesContainer, syntaxMap: syntaxMap)
 
         let validMatches = matches.compactMap(validator).filter(filterRanges)
                   .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }

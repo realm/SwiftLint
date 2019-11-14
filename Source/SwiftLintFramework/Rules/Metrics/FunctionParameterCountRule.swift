@@ -105,7 +105,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func functionIsInitializer(file: SwiftLintFile, byteOffset: Int, byteLength: Int) -> Bool {
-        guard let name = file.contents.bridge()
+        guard let name = file.linesContainer
             .substringWithByteRange(start: byteOffset, length: byteLength),
             name.hasPrefix("init"),
             let funcName = name.components(separatedBy: CharacterSet(charactersIn: "<(")).first else {

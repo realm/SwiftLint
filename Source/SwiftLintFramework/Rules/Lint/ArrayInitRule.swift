@@ -131,7 +131,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 
     private func containsContent(inByteRange byteRange: NSRange, file: SwiftLintFile) -> Bool {
-        let nsstring = file.contents.bridge()
+        let nsstring = file.linesContainer
         let remainingTokens = file.syntaxMap.tokens(inByteRange: byteRange)
         let ranges = NSMutableIndexSet(indexesIn: byteRange)
 

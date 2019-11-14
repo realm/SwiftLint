@@ -110,7 +110,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         for (range, kind) in ranges {
             let substring = text.substring(with: range)
             if kind != .generic,
-                let byteRange = text.NSRangeToByteRange(start: range.location, length: range.length),
+                let byteRange = StringLinesContainer(text).NSRangeToByteRange(start: range.location, length: range.length),
                 !containsReturnArrow(in: text.bridge(), range: range) {
                 let size = substring.components(separatedBy: ",").count
                 let offset = byteRange.location + initialOffset

@@ -24,9 +24,16 @@ struct GenerateDocsCommand: CommandProtocol {
 
 struct GenerateDocsOptions: OptionsProtocol {
     let path: String?
+    let onlyEnabledRules: Bool
+    let onlyDisabledRules: Bool
 
-    static func create(_ path: String?) -> GenerateDocsOptions {
-        return self.init(path: path)
+    static func create(_ path: String?) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> GenerateDocsOptions {
+        return { onlyEnabledRules in { onlyDisabledRules in
+            return self.init(path: path,
+                             onlyEnabledRules: onlyEnabledRules,
+                             onlyDisabledRules: onlyDisabledRules)
+            }
+        }
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<GenerateDocsOptions, CommandantError<CommandantError<()>>> {
@@ -34,5 +41,11 @@ struct GenerateDocsOptions: OptionsProtocol {
             <*> mode <| Option(key: "path", defaultValue: nil,
                                usage: "the path where the documentation should be saved. " +
                                       "If not present, it'll be printed to the output.")
+            <*> mode <| Switch(flag: "e",
+                               key: "enabled",
+                               usage: "only print enabled rules")
+            <*> mode <| Switch(flag: "d",
+                               key: "disabled",
+                               usage: "only print disabled rules")
     }
 }

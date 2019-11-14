@@ -82,12 +82,16 @@ struct LintableFilesVisitor {
                 compilerInvocations = .buildLog(compilerInvocations: allCompilerInvocations)
             } else if !options.compileCommands.isEmpty {
                 do {
-                    let yamlContents = try String(contentsOfFile: options.compileCommands, encoding: .utf8)
-                    let compileCommands = try YamlParser.parseArray(yamlContents)
+                    let jsonContents = try Data(contentsOf: URL(fileURLWithPath: options.compileCommands))
+                    guard let compileCommands = try JSONSerialization.jsonObject(with: jsonContents) as? [[String: Any]] else {
+                        return .failure(
+                            .usageError(description: "Unexpected structure of compilation database  at path: '\(options.compileCommands)'")
+                        )
+                    }
                     compilerInvocations = .compilationDatabase(compileCommands: compileCommands)
                 } catch {
                     return .failure(
-                        .usageError(description: "Could not compilation database at path: '\(options.compileCommands)'")
+                        .usageError(description: "Could not read compilation database at path: '\(options.compileCommands)'")
                     )
                 }
             } else {

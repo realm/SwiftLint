@@ -33,6 +33,8 @@ internal extension Configuration {
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached,
                     rootDirectory: rootDirectory
                 )
+
+                filePath = .existing(path: path)
                 configurationString = try read(at: path)
                 configurationDict = try YamlParser.parse(configurationString)
             }
@@ -141,7 +143,6 @@ internal extension Configuration {
 
             return vertices.contains { vertix in
                 if case let .existing(filePath) = vertix.filePath {
-                    queuedPrintError("warning: vertix with filePath \(filePath)") // TODO: Remove
                     return path == filePath
                 }
 

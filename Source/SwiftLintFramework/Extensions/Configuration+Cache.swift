@@ -20,7 +20,7 @@ private extension String {
 #endif
 
 extension Configuration {
-    // MARK: Caching Configurations By Path (In-Memory)
+    // MARK: Caching Configurations By Identifier (In-Memory)
     private static var cachedConfigurationsByIdentifier = [String: Configuration]()
     private static var cachedConfigurationsByIdentifierLock = NSLock()
 
@@ -42,8 +42,23 @@ extension Configuration {
         return result
     }
 
-    // MARK: SwiftLint Cache (On-Disk)
+    // MARK: Nested Config Is Self Cache
+    private static var nestedConfigIsSelfByIdentifier = [String: Bool]()
+    private static var nestedConfigIsSelfByIdentifierLock = NSLock()
 
+    internal static func setIsNestedConfigurationSelf(forIdentifier identifier: String, value: Bool) {
+        Configuration.nestedConfigIsSelfByIdentifierLock.lock()
+        Configuration.nestedConfigIsSelfByIdentifier[identifier] = value
+        Configuration.nestedConfigIsSelfByIdentifierLock.unlock()
+    }
+
+    internal static func getIsNestedConfigurationSelf(forIdentifier identifier: String) -> Bool? {
+        Configuration.nestedConfigIsSelfByIdentifierLock.lock()
+        defer { Configuration.nestedConfigIsSelfByIdentifierLock.unlock() }
+        return Configuration.nestedConfigIsSelfByIdentifier[identifier]
+    }
+
+    // MARK: SwiftLint Cache (On-Disk)
     internal var cacheDescription: String {
         if let computedCacheDescription = computedCacheDescription {
             return computedCacheDescription

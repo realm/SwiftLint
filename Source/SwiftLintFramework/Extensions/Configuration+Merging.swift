@@ -55,40 +55,39 @@ extension Configuration {
     // MARK: Accessing File Configurations
     /// Returns the configuration for the given file, based on self but respecting nested configurations
     public func configuration(for file: SwiftLintFile) -> Configuration {
-        if let containingDir = file.path?.bridge().deletingLastPathComponent {
-            return configuration(forPath: containingDir)
-        }
-
-        return self
+        (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
     }
 
-    private func configuration(forPath path: String) -> Configuration {
+    private func configuration(forDirectory directory: String) -> Configuration {
         // Allow nested configuration processing even if config wasn't created via files (-> rootDir present)
         let rootDirectory = self.rootDirectory ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
 
         // Include nested configurations, but ignore their parent_config / child_config specifications!
-        let pathNSString = path.bridge()
-        let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
-        let fullPath = pathNSString.absolutePathRepresentation()
+        let directoryNSString = directory.bridge()
+        let configurationSearchPath = directoryNSString.appendingPathComponent(Configuration.fileName)
+        let fullDirectory = directoryNSString.absolutePathRepresentation()
         let cacheIdentifier = "nestedPath" + rootDirectory + configurationSearchPath
 
-        if let cached = Configuration.getCached(forIdentifier: cacheIdentifier) {
+        if Configuration.getIsNestedConfigurationSelf(forIdentifier: cacheIdentifier) == true {
+            return self
+        } else if let cached = Configuration.getCached(forIdentifier: cacheIdentifier) {
             return cached
         } else {
-            if path == rootDirectory {
+            let config: Configuration
+
+            if directory == rootDirectory {
                 // Use self if at level self
-                return self
+                config = self
             } else if
-                FileManager.default.fileExists(atPath: configurationSearchPath)//,
-                // fileGraph.includesFile(atPath: configurationSearchPath) == false TODO
+                FileManager.default.fileExists(atPath: configurationSearchPath),
+                fileGraph?.includesFile(atPath: configurationSearchPath) != true
             {
                 // Use self merged with the nested config that was found
                 // iff that nested config has not already been used to build the main config
-                queuedPrintError("warning: \(configurationSearchPath) is included as nested.") // TODO: Remove
-                let config = merged(
+                config = merged(
                     with: Configuration(
                         configurationFiles: [configurationSearchPath],
-                        rootPath: fullPath,
+                        rootPath: fullDirectory,
                         optional: false,
                         quiet: true,
                         ignoreParentAndChildConfigs: true
@@ -97,14 +96,20 @@ extension Configuration {
 
                 // Cache merged result to circumvent heavy merge recomputations
                 config.setCached(forIdentifier: cacheIdentifier)
-                return config
-            } else if path != "/" {
+            } else if directory != "/" {
                 // If we are not at the root path, continue down the tree
-                return configuration(forPath: pathNSString.deletingLastPathComponent)
+                config = configuration(forDirectory: directoryNSString.deletingLastPathComponent)
             } else {
                 // Fallback to self
-                return self
+                config = self
             }
+
+            if config == self {
+                // Cache that for this path, the config equals self
+                Configuration.setIsNestedConfigurationSelf(forIdentifier: cacheIdentifier, value: true)
+            }
+
+            return config
         }
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 // TODO: What happens if child/parent_config is specified multiple times in a single file?
-// TODO: Don't include child/parent_config again as nested config
+// TODO: Is the path managed properly if a child config is referenced from a subdir child config?
 // TODO: Tests
 // TODO: Docs
 public struct Configuration {

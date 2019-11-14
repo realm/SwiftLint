@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* `-enabled` / `-disabled` options in `generate-docs` command.
+  [417-72KI](https://github.com/417-72KI)
+  [#2961](https://github.com/realm/SwiftLint/issues/2961)
 
 #### Bug Fixes
 

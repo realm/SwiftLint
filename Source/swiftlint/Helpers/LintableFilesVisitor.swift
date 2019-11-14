@@ -5,17 +5,16 @@ import SwiftLintFramework
 
 enum CompilerInvocations {
     case buildLog(compilerInvocations: [String])
-    case compilationDatabase(compileCommands: [[String: Any]])
+    case compilationDatabase(compileCommands: [String: [String]])
 
     func arguments(forFile path: String?) -> [String] {
         return path.flatMap { path in
             switch self {
             case let .buildLog(compilerInvocations):
-                return CompilerArgumentsExtractor.compilerArgumentsForFile(path, compilerInvocations: compilerInvocations)
+                return CompilerArgumentsExtractor
+                    .compilerArgumentsForFile(path, compilerInvocations: compilerInvocations)
             case let .compilationDatabase(compileCommands):
-                return compileCommands
-                    .first { $0["file"] as? String == path }
-                    .flatMap { $0["arguments"] as? [String] }
+                return compileCommands[path]
             }
         } ?? []
     }
@@ -77,27 +76,11 @@ struct LintableFilesVisitor {
         if options.mode == .lint {
             compilerInvocations = nil
         } else {
-            if let logContents = LintableFilesVisitor.compilerLogContents(logPath: options.compilerLogPath) {
-                let allCompilerInvocations = CompilerArgumentsExtractor.allCompilerInvocations(compilerLogs: logContents)
-                compilerInvocations = .buildLog(compilerInvocations: allCompilerInvocations)
-            } else if !options.compileCommands.isEmpty {
-                do {
-                    let jsonContents = try Data(contentsOf: URL(fileURLWithPath: options.compileCommands))
-                    guard let compileCommands = try JSONSerialization.jsonObject(with: jsonContents) as? [[String: Any]] else {
-                        return .failure(
-                            .usageError(description: "Unexpected structure of compilation database  at path: '\(options.compileCommands)'")
-                        )
-                    }
-                    compilerInvocations = .compilationDatabase(compileCommands: compileCommands)
-                } catch {
-                    return .failure(
-                        .usageError(description: "Could not read compilation database at path: '\(options.compileCommands)'")
-                    )
-                }
-            } else {
-                return .failure(
-                    .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
-                )
+            switch loadCompilerInvocations(options) {
+                case let .success(invocations):
+                    compilerInvocations = invocations
+                case let .failure(error):
+                    return .failure(error)
             }
         }
 
@@ -129,17 +112,56 @@ struct LintableFilesVisitor {
         }
     }
 
-    private static func compilerLogContents(logPath: String) -> String? {
-        if logPath.isEmpty {
+    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions)
+        -> Result<CompilerInvocations, CommandantError<()>> {
+        if !options.compilerLogPath.isEmpty {
+            let path = options.compilerLogPath
+            guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
+                return .failure(
+                    .usageError(description: "Could not read compiler log at path: '\(path)'")
+                )
+            }
+
+            return .success(.buildLog(compilerInvocations: compilerInvocations))
+        } else if options.compileCommands.isEmpty {
+            let path = options.compileCommands
+            guard let compileCommands = self.loadCompileCommands(path) else {
+                return .failure(
+                    .usageError(description: "Could not read compilation database at path: '\(path)'")
+                )
+            }
+
+            return .success(.compilationDatabase(compileCommands: compileCommands))
+        }
+
+        return .failure(.usageError(description: "Could not read compiler invocations"))
+    }
+
+    private static func loadLogCompilerInvocations(_ path: String) -> [String]? {
+        if let data = FileManager.default.contents(atPath: path),
+            let logContents = String(data: data, encoding: .utf8) {
+            if logContents.isEmpty {
+                return nil
+            }
+
+            return CompilerArgumentsExtractor.allCompilerInvocations(compilerLogs: logContents)
+        }
+
+        return nil
+    }
+
+    private static func loadCompileCommands(_ path: String) -> [String: [String]]? {
+        guard let jsonContents = FileManager.default.contents(atPath: path),
+            let object = try? JSONSerialization.jsonObject(with: jsonContents),
+            let database = object as? [[String: Any]] else
+        {
             return nil
         }
 
-        if let data = FileManager.default.contents(atPath: logPath),
-            let logContents = String(data: data, encoding: .utf8) {
-            return logContents.isEmpty ? nil : logContents
+        return database.reduce(into: [:]) { (commands: inout [String: [String]], entry: [String: Any]) in
+            if let file = entry["file"] as? String, let arguments = entry["arguments"] as? [String] {
+                commands[file] = arguments
+            }
         }
-
-        print("couldn't read log file at path '\(logPath)'")
-        return nil
     }
 }

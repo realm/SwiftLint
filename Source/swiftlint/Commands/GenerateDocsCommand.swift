@@ -6,7 +6,6 @@ struct GenerateDocsCommand: CommandProtocol {
     let function = "Generates markdown documentation for all rules"
 
     func run(_ options: GenerateDocsOptions) -> Result<(), CommandantError<()>> {
-
         if options.onlyDisabledRules && options.onlyEnabledRules {
             return .failure(.usageError(description: "You can't use --disabled and --enabled at the same time."))
         }

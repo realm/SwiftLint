@@ -16,6 +16,8 @@ extension Configuration {
         case analyzerRules = "analyzer_rules"
         case childConfig = "child_config"
         case parentConfig = "parent_config"
+        case remoteConfigTimeout = "remote_timeout"
+        case remoteConfigTimeoutIfCached = "remote_timeout_if_cached"
     }
 
     // MARK: - Properties

@@ -1,10 +1,6 @@
 import Foundation
 import SourceKittenFramework
 
-// TODO: What happens if child/parent_config is specified multiple times in a single file?
-// TODO: Is the path managed properly if a child config is referenced from a subdir child config?
-// TODO: Tests
-// TODO: Docs
 public struct Configuration {
     // MARK: - Properties: Static
     public static let `default` = Configuration()
@@ -155,11 +151,7 @@ public struct Configuration {
                 rootDirectory: rootDir,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
-            let resultingConfiguration = try fileGraph.resultingConfiguration(
-                enableAllRules: enableAllRules,
-                remoteConfigLoadingTimeout: 2,
-                remoteConfigLoadingTimeoutIfCached: 1
-            )
+            let resultingConfiguration = try fileGraph.resultingConfiguration(enableAllRules: enableAllRules)
 
             self.init(copying: resultingConfiguration)
             self.fileGraph = fileGraph

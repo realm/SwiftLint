@@ -10,8 +10,8 @@ public extension Configuration.FileGraph.FilePath {
 
     // MARK: - Methods: Resolving
     mutating func resolve(
-        remoteConfigLoadingTimeout: Double,
-        remoteConfigLoadingTimeoutIfCached: Double
+        remoteConfigTimeout: Double,
+        remoteConfigTimeoutIfCached: Double
     ) throws -> String {
         switch self {
         case let .existing(path):
@@ -20,16 +20,16 @@ public extension Configuration.FileGraph.FilePath {
         case let .promised(urlString):
             return try resolve(
                 urlString: urlString,
-                remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
-                remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
+                remoteConfigTimeout: remoteConfigTimeout,
+                remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCached
             )
         }
     }
 
     private mutating func resolve(
         urlString: String,
-        remoteConfigLoadingTimeout: Double,
-        remoteConfigLoadingTimeoutIfCached: Double
+        remoteConfigTimeout: Double,
+        remoteConfigTimeoutIfCached: Double
     ) throws -> String {
         // Always use top level as root directory for remote files
         let rootDirectory = FileManager.default.currentDirectoryPath.bridge().standardizingPath
@@ -59,7 +59,7 @@ public extension Configuration.FileGraph.FilePath {
 
         task.resume()
 
-        let timeout = cachedFilePath == nil ? remoteConfigLoadingTimeout : remoteConfigLoadingTimeoutIfCached
+        let timeout = cachedFilePath == nil ? remoteConfigTimeout : remoteConfigTimeoutIfCached
         let time = CFAbsoluteTimeGetCurrent()
 
         // Block main thread until timeout is reached / task is done
@@ -75,7 +75,12 @@ public extension Configuration.FileGraph.FilePath {
             (taskResult.1 as? HTTPURLResponse)?.statusCode == 200,
             let configString = (taskResult.0.flatMap { String(data: $0, encoding: .utf8) })
         else {
-            return try handleWrongData(urlString: urlString, cachedFilePath: cachedFilePath, taskDone: taskDone)
+            return try handleWrongData(
+                urlString: urlString,
+                cachedFilePath: cachedFilePath,
+                taskDone: taskDone,
+                timeout: timeout
+            )
         }
 
         // Handle file write failure
@@ -104,13 +109,18 @@ public extension Configuration.FileGraph.FilePath {
         }
     }
 
-    private mutating func handleWrongData(urlString: String, cachedFilePath: String?, taskDone: Bool) throws -> String {
+    private mutating func handleWrongData(
+        urlString: String,
+        cachedFilePath: String?,
+        taskDone: Bool,
+        timeout: TimeInterval
+    ) throws -> String {
         if let cachedFilePath = cachedFilePath {
             if taskDone {
                 queuedPrint("Unable to load remote config from \"\(urlString)\". Using cached version as a fallback.")
             } else {
                 queuedPrint(
-                    "Timeout: Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
+                    "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
                 )
             }
 
@@ -124,7 +134,7 @@ public extension Configuration.FileGraph.FilePath {
                 )
             } else {
                 throw ConfigurationError.generic(
-                    "Timeout: Unable to load remote config from \"\(urlString)\". "
+                    "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "
                         + "Also didn't found cached version to fallback to."
                 )
             }

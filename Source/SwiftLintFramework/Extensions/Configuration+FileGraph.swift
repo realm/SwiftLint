@@ -30,12 +30,12 @@ internal extension Configuration {
             }
 
             internal func build(
-                remoteConfigLoadingTimeout: Double,
-                remoteConfigLoadingTimeoutIfCached: Double
+                remoteConfigTimeout: TimeInterval,
+                remoteConfigTimeoutIfCached: TimeInterval
             ) throws {
                 let path = try filePath.resolve(
-                    remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
-                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
+                    remoteConfigTimeout: remoteConfigTimeout,
+                    remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCached
                 )
 
                 filePath = .existing(path: path)
@@ -85,6 +85,9 @@ internal extension Configuration {
         }
 
         // MARK: - Properties
+        private static let defaultRemoteConfigTimeout: TimeInterval = 2
+        private static let defaultRemoteConfigTimeoutIfCached: TimeInterval = 1
+
         internal let rootDirectory: String
 
         private let ignoreParentAndChildConfigs: Bool
@@ -122,17 +125,10 @@ internal extension Configuration {
         }
 
         // MARK: - Methods
-        internal mutating func resultingConfiguration(
-            enableAllRules: Bool,
-            remoteConfigLoadingTimeout: Double,
-            remoteConfigLoadingTimeoutIfCached: Double
-        ) throws -> Configuration {
+        internal mutating func resultingConfiguration(enableAllRules: Bool) throws -> Configuration {
             // Build if needed
             if !isBuilt {
-                try build(
-                    remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
-                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
-                )
+                try build()
             }
 
             return try merged(
@@ -153,70 +149,8 @@ internal extension Configuration {
             }
         }
 
-        // MARK: Private
-        private mutating func build(
-            remoteConfigLoadingTimeout: Double,
-            remoteConfigLoadingTimeoutIfCached: Double
-        ) throws {
-            func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
-                vertices.first {
-                    $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
-                } ?? vertices.first { $0.filePath == vertix.filePath }
-            }
-
-            func processPossibleReference(ofType type: EdgeType, from vertix: Vertix) throws {
-                let key = type == .childConfig ? Configuration.Key.childConfig.rawValue
-                    : Configuration.Key.parentConfig.rawValue
-
-                if let reference = vertix.configurationDict[key] as? String {
-                    var rootDirectory: String = ""
-                    if case let .existing(path) = vertix.filePath {
-                        rootDirectory = path.bridge().deletingLastPathComponent
-                    }
-
-                    let referencedVertix = Vertix(string: reference, rootDirectory: rootDirectory)
-
-                    // Local vertices are allowed to have local / remote references
-                    // Remote vertices are only allowed to have remote references
-                    if vertix.originatesFromRemote && !referencedVertix.originatesFromRemote {
-                        throw ConfigurationError.generic("Remote configs are not allowed to reference local configs.")
-                    } else {
-                        let existingVertix = findPossiblyExistingVertix(sameAs: referencedVertix)
-
-                        if existingVertix == nil {
-                            vertices.insert(referencedVertix)
-                        }
-
-                        let edge: Edge
-                        switch type {
-                        case .childConfig, .commandLineChildConfig: // The latter should not happen
-                            edge = Edge(type: .childConfig, origin: vertix, target: existingVertix ?? referencedVertix)
-
-                        case .parentConfig:
-                            edge = Edge(type: .parentConfig, origin: existingVertix ?? referencedVertix, target: vertix)
-                        }
-
-                        edges.insert(edge)
-
-                        if existingVertix == nil {
-                            try process(vertix: referencedVertix)
-                        }
-                    }
-                }
-            }
-
-            func process(vertix: Vertix) throws {
-                try vertix.build(
-                    remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
-                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
-                )
-
-                if !ignoreParentAndChildConfigs {
-                    try processPossibleReference(ofType: .childConfig, from: vertix)
-                    try processPossibleReference(ofType: .parentConfig, from: vertix)
-                }
-            }
-
+        // MARK: Building
+        private mutating func build() throws {
             for vertix in vertices {
                 try process(vertix: vertix)
             }
@@ -224,6 +158,98 @@ internal extension Configuration {
             isBuilt = true
         }
 
+        private mutating func process(
+            vertix: Vertix,
+            remoteConfigTimeoutOverride: TimeInterval? = nil,
+            remoteConfigTimeoutIfCachedOverride: TimeInterval? = nil
+        ) throws {
+            try vertix.build(
+                remoteConfigTimeout: remoteConfigTimeoutOverride ?? Self.defaultRemoteConfigTimeout,
+                remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCachedOverride
+                    ?? remoteConfigTimeoutOverride ?? Self.defaultRemoteConfigTimeoutIfCached
+            )
+
+            if !ignoreParentAndChildConfigs {
+                try processPossibleReference(
+                    ofType: .childConfig,
+                    from: vertix,
+                    remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
+                    remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride
+                )
+                try processPossibleReference(
+                    ofType: .parentConfig,
+                    from: vertix,
+                    remoteConfigTimeoutOverride: remoteConfigTimeoutOverride,
+                    remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCachedOverride
+                )
+            }
+        }
+
+        private func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
+            vertices.first {
+                $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
+            } ?? vertices.first { $0.filePath == vertix.filePath }
+        }
+
+        private mutating func processPossibleReference(
+            ofType type: EdgeType,
+            from vertix: Vertix,
+            remoteConfigTimeoutOverride: TimeInterval?,
+            remoteConfigTimeoutIfCachedOverride: TimeInterval?
+        ) throws {
+            let key = type == .childConfig ? Configuration.Key.childConfig.rawValue
+                : Configuration.Key.parentConfig.rawValue
+
+            if let reference = vertix.configurationDict[key] as? String {
+                var rootDirectory: String = ""
+                if case let .existing(path) = vertix.filePath {
+                    rootDirectory = path.bridge().deletingLastPathComponent
+                }
+
+                let referencedVertix = Vertix(string: reference, rootDirectory: rootDirectory)
+
+                // Local vertices are allowed to have local / remote references
+                // Remote vertices are only allowed to have remote references
+                if vertix.originatesFromRemote && !referencedVertix.originatesFromRemote {
+                    throw ConfigurationError.generic("Remote configs are not allowed to reference local configs.")
+                } else {
+                    let existingVertix = findPossiblyExistingVertix(sameAs: referencedVertix)
+
+                    let edge: Edge
+                    switch type {
+                    case .childConfig, .commandLineChildConfig: // The latter should not happen
+                        edge = Edge(type: .childConfig, origin: vertix, target: existingVertix ?? referencedVertix)
+
+                    case .parentConfig:
+                        edge = Edge(type: .parentConfig, origin: existingVertix ?? referencedVertix, target: vertix)
+                    }
+
+                    edges.insert(edge)
+
+                    if existingVertix == nil {
+                        vertices.insert(referencedVertix)
+
+                        // Use timeout config from vertix / parent of vertix if some
+                        let remoteConfigTimeout =
+                            vertix.configurationDict[Configuration.Key.remoteConfigTimeout.rawValue]
+                                as? TimeInterval
+                                ?? remoteConfigTimeoutOverride // from vertix parent
+                        let remoteConfigTimeoutIfCached =
+                            vertix.configurationDict[Configuration.Key.remoteConfigTimeoutIfCached.rawValue]
+                                as? TimeInterval
+                                ?? remoteConfigTimeoutIfCachedOverride // from vertix parent
+
+                        try process(
+                            vertix: referencedVertix,
+                            remoteConfigTimeoutOverride: remoteConfigTimeout,
+                            remoteConfigTimeoutIfCachedOverride: remoteConfigTimeoutIfCached
+                        )
+                    }
+                }
+            }
+        }
+
+        // MARK: Validating
         /// Validates the Graph and throws failures
         /// If successful, returns array of configuration dicts that represents the graph
         private func validate() throws -> [[String: Any]] {
@@ -273,6 +299,7 @@ internal extension Configuration {
             return verticesToMerge.map { $0.configurationDict }
         }
 
+        // MARK: Merging
         private func merged(
             configurationDicts: [[String: Any]],
             enableAllRules: Bool

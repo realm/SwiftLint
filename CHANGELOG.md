@@ -151,6 +151,9 @@ This is the last release to support building with Swift 5.0.x.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2086](https://github.com/realm/SwiftLint/issues/2086)
 
+* Make `strong_iboutlet` rule correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
 #### Bug Fixes
 
 * Fix `discarded_notification_center_observer` false positives when

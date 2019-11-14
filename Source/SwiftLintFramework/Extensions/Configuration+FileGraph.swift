@@ -18,12 +18,9 @@ internal extension Configuration {
             private(set) var configurationDict: [String: Any] = [:]
 
             init(string: String, rootDirectory: String) {
-                let remotePrefix = "remote:"
-
-                if string.hasPrefix(remotePrefix) {
-                    let urlString = String(string.dropFirst(remotePrefix.count))
-                    originalRemoteString = urlString
-                    filePath = .promised(urlString: urlString)
+                if string.hasPrefix("http://") || string.hasPrefix("https://") {
+                    originalRemoteString = string
+                    filePath = .promised(urlString: string)
                 } else {
                     originalRemoteString = nil
                     filePath = .existing(

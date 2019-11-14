@@ -250,7 +250,7 @@
 		CC30F4522359F89A006E14B9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC30F4512359F89A006E14B9 /* Reachability.swift */; };
 		CC7737342361D85500A94635 /* HashableRuleWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7737322361D85100A94635 /* HashableRuleWrapper.swift */; };
 		CC7737362361DA1200A94635 /* Configuration+RulesMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7737352361DA1200A94635 /* Configuration+RulesMode.swift */; };
-		CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB336F42303FA7400C52023 /* Configuration+Graph.swift */; };
+		CCB336F52303FA7400C52023 /* Configuration+FileGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB336F42303FA7400C52023 /* Configuration+FileGraph.swift */; };
 		CCB97C3622E89260002F5458 /* Configuration+Rules.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3422E89257002F5458 /* Configuration+Rules.swift */; };
 		CCB97C3A22E8D7EC002F5458 /* ChildConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
@@ -759,7 +759,7 @@
 		CC30F4512359F89A006E14B9 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		CC7737322361D85100A94635 /* HashableRuleWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashableRuleWrapper.swift; sourceTree = "<group>"; };
 		CC7737352361DA1200A94635 /* Configuration+RulesMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+RulesMode.swift"; sourceTree = "<group>"; };
-		CCB336F42303FA7400C52023 /* Configuration+Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Graph.swift"; sourceTree = "<group>"; };
+		CCB336F42303FA7400C52023 /* Configuration+FileGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+FileGraph.swift"; sourceTree = "<group>"; };
 		CCB97C3422E89257002F5458 /* Configuration+Rules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Rules.swift"; sourceTree = "<group>"; };
 		CCB97C3722E8D7E6002F5458 /* ChildConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildConfigTests.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
@@ -1720,7 +1720,7 @@
 			children = (
 				3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */,
 				E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */,
-				CCB336F42303FA7400C52023 /* Configuration+Graph.swift */,
+				CCB336F42303FA7400C52023 /* Configuration+FileGraph.swift */,
 				8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */,
 				E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */,
 				E889D8C61F1D357B00058332 /* Configuration+Merging.swift */,
@@ -1729,8 +1729,6 @@
 				CCB97C3422E89257002F5458 /* Configuration+Rules.swift */,
 				CC7737352361DA1200A94635 /* Configuration+RulesMode.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
-				24E17F701B1481FF008195BE /* SwiftLintFile+Cache.swift */,
-				E88DEA741B09852000A66CB0 /* SwiftLintFile+Regex.swift */,
 				E832F10A1B17E2F5003F265F /* FileManager+SwiftLint.swift */,
 				3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */,
 				3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */,
@@ -1740,11 +1738,11 @@
 				E4A365D123653648003B4141 /* SourceKittenDictionary+Swiftlint.swift */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				B39353F28BCCA39247B316BD /* String+XML.swift */,
-                6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */,
-				E816194B1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift */,
 				1894D740207D57AD00BD94CF /* SwiftDeclarationAttributeKind+Swiftlint.swift */,
 				E816194B1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift */,
 				D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */,
+				24E17F701B1481FF008195BE /* SwiftLintFile+Cache.swift */,
+				E88DEA741B09852000A66CB0 /* SwiftLintFile+Regex.swift */,
 				E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */,
 			);
 			path = Extensions;
@@ -2070,7 +2068,7 @@
 				B25DCD0C1F7E9FA20028A199 /* MultilineArgumentsRule.swift in Sources */,
 				6258783B1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift in Sources */,
 				62A3E95D209E084000547A86 /* EmptyXCTestMethodRule.swift in Sources */,
-				CCB336F52303FA7400C52023 /* Configuration+Graph.swift in Sources */,
+				CCB336F52303FA7400C52023 /* Configuration+FileGraph.swift in Sources */,
 				D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */,
 				29FC197A21382C07006D208C /* DuplicateImportsRuleExamples.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,

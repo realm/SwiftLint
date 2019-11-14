@@ -31,7 +31,23 @@ struct GenerateDocsCommand: CommandProtocol {
 private extension GenerateDocsCommand {
     func ruleList(for options: GenerateDocsOptions) -> RuleList {
         guard options.onlyDisabledRules || options.onlyEnabledRules else { return masterRuleList }
-        fatalError("Not implemented")
+        let configuration = Configuration(options: options)
+
+        let filtered: [Rule.Type] = masterRuleList.list.compactMap { ruleID, ruleType in
+            let configuredRule = configuration.rules.first { rule in
+                return type(of: rule).description.identifier == ruleID
+            }
+
+            if options.onlyEnabledRules && configuredRule == nil {
+                return nil
+            } else if options.onlyDisabledRules && configuredRule != nil {
+                return nil
+            }
+
+            return ruleType
+        }
+
+        return RuleList(rules: filtered)
     }
 }
 

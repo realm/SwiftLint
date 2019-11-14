@@ -257,6 +257,12 @@ extension Configuration {
     init(options: RulesOptions) {
         self.init(path: options.configurationFile, optional: isConfigOptional())
     }
+
+    // MARK: GenerateDocs Command
+
+    init(options: GenerateDocsOptions) {
+        self.init(path: options.configurationFile, optional: isConfigOptional())
+    }
 }
 
 private func isConfigOptional() -> Bool {

@@ -132,7 +132,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
         }
 
         let violationRange = file.linesContainer.byteRangeToNSRange(start: leftmostToken.offset,
-                                                              length: leftmostToken.length)
+                                                                    length: leftmostToken.length)
         return violationRange
     }
 

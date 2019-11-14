@@ -73,7 +73,7 @@ public struct Command: Equatable {
         self.trailingComment = trailingComment
     }
 
-    public init?(string: NSString, range: NSRange, actionString: String, line: Int, character: Int) {
+    public init?(actionString: String, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString(string: "swiftlint:")
         // (enable|disable)(:previous|:this|:next)

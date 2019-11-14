@@ -99,8 +99,8 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
 
     private func isSwiftLintCommand(token: SwiftLintSyntaxToken, file: SwiftLintFile) -> Bool {
         guard let range = file.linesContainer.byteRangeToNSRange(start: token.offset,
-                                                                    length: token.length) else {
-            return false
+                                                                 length: token.length) else {
+                                                                    return false
         }
 
         return !file.commands(in: range).isEmpty

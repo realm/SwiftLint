@@ -113,7 +113,7 @@ private extension SourceKittenDictionary {
             return false
         }
 
-        let contents = file.contents
+        let contents = file.linesContainer.nsString
         let contentAfterName = contents.substring(from: afterNameRange.location)
         let initCallRegex =
             regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\(")
@@ -130,7 +130,7 @@ private extension SourceKittenDictionary {
             return false
         }
 
-        let contents = file.contents
+        let contents = file.linesContainer.nsString
         let contentAfterName = contents.substring(from: afterNameRange.location)
         let typeAssignment = regex("^\\s*=\\s*(?:\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\.)*self")
 

@@ -39,10 +39,10 @@ extension CallPairRule {
 
         let violatingLocations: [Int] = firstRanges.compactMap { range in
             guard let bodyByteRange = linesContainer.NSRangeToByteRange(start: range.location,
-                                                                  length: range.length),
+                                                                        length: range.length),
                 case let firstLocation = range.location + range.length - 1,
                 let firstByteRange = linesContainer.NSRangeToByteRange(start: firstLocation,
-                                                                 length: 1) else {
+                                                                       length: 1) else {
                 return nil
             }
 

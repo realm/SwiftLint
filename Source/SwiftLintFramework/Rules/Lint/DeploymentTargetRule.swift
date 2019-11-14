@@ -54,7 +54,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
             guard let availabilityToken = tokens.first,
                 availabilityToken.kind == .keyword,
                 let tokenRange = file.linesContainer.byteRangeToNSRange(start: availabilityToken.offset,
-                                                                           length: availabilityToken.length) else {
+                                                                        length: availabilityToken.length) else {
                     return []
             }
 

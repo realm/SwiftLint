@@ -63,10 +63,11 @@ extension SwiftLintFile {
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
         return match(pattern: pattern, with: [.comment], range: range).compactMap { range -> Command? in
             let actionString = contents.substring(with: range)
-            guard let lineAndCharacter = linesContainer.lineAndCharacter(forCharacterOffset: NSMaxRange(range)) else { return nil }
-            return Command(string: contents, range: range, actionString: actionString,
+            guard let lineAndCharacter = linesContainer.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
+                else { return nil }
+            return Command(actionString: actionString,
                            line: lineAndCharacter.line,
-                           character:lineAndCharacter.character)
+                           character: lineAndCharacter.character)
         }.flatMap { command in
             return command.expand()
         }
@@ -238,7 +239,7 @@ extension SwiftLintFile {
         fileHandle.write(stringData)
         fileHandle.closeFile()
 
-        file.contents = file.contents + string
+        file.contents += string
     }
 
     internal func write<S: StringProtocol>(_ string: S) {

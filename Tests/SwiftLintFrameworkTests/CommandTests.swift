@@ -8,7 +8,9 @@ import XCTest
 private extension Command {
     init?(string: String) {
         let nsString = string.bridge()
-        self.init(string: nsString, range: NSRange(location: 3, length: nsString.length - 4))
+        guard nsString.length > 7 else { return nil }
+        let subString = nsString.substring(with: NSRange(location: 3, length: nsString.length - 4))
+        self.init(actionString: subString, line: 1, character: nsString.length)
     }
 }
 
@@ -21,7 +23,7 @@ class CommandTests: XCTestCase {
     }
 
     func testEmptyString() {
-        XCTAssertNil(Command(string: "", range: NSRange(location: 0, length: 0)))
+        XCTAssertNil(Command(string: ""))
     }
 
     func testDisable() {

@@ -89,8 +89,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         } else {
             var correctedContents = originalContents.nsString
 
-            violatingRanges.reversed().forEach { (arg) in
-
+            violatingRanges.reversed().forEach { arg in
                 let (preferredModifierRange, declaredModifierRange) = arg
                 correctedContents = correctedContents.replacingCharacters(
                     in: declaredModifierRange,

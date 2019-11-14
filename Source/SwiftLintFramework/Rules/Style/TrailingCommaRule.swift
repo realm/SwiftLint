@@ -143,8 +143,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
     }
 
     private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: Int) -> Int? {
-        let container = StringLinesContainer(contents)
-        let nsstring = container.nsString
+        let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: nsstring.length)
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
@@ -153,8 +152,10 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
             let range = NSRange(location: $0.location + offset, length: $0.length)
             let kinds = file.syntaxMap.kinds(inByteRange: range)
             return SyntaxKind.commentKinds.isDisjoint(with: kinds)
-        }.flatMap {
-            container.NSRangeToByteRange(start: $0.location, length: $0.length)
+        }.flatMap { _ -> NSRange? in
+            // TODO : Fix this
+//            container.NSRangeToByteRange(start: $0.location, length: $0.length)
+            return nil
         }?.location
     }
 }

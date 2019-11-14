@@ -1,6 +1,6 @@
 import Foundation // swiftlint:disable:this file_name
 
-#if os(Linux)
+#if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
 

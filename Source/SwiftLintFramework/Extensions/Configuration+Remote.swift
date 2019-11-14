@@ -11,12 +11,11 @@ public extension Configuration.FileGraph.FilePath {
     // MARK: - Methods: Resolving
     mutating func resolve(
         remoteConfigLoadingTimeout: Double,
-        remoteConfigLoadingTimeoutIfCached: Double,
-        rootDirectory: String
+        remoteConfigLoadingTimeoutIfCached: Double
     ) throws -> String {
         switch self {
         case let .existing(path):
-            return resolve(existingPath: path, rootDirectory: rootDirectory)
+            return path
 
         case let .promised(urlString):
             return try resolve(
@@ -25,10 +24,6 @@ public extension Configuration.FileGraph.FilePath {
                 remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
             )
         }
-    }
-
-    private func resolve(existingPath path: String, rootDirectory: String) -> String {
-        return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
     }
 
     private mutating func resolve(
@@ -55,7 +50,9 @@ public extension Configuration.FileGraph.FilePath {
         // Load from url
         var taskResult: (Data?, URLResponse?, Error?)
         var taskDone: Bool = false
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+
+        // `.ephemeral` disables caching (which we don't want to be managed by the system)
+        let task = URLSession(configuration: .ephemeral).dataTask(with: url) { data, response, error in
             taskResult = (data, response, error)
             taskDone = true
         }

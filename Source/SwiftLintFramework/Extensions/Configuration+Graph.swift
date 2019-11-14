@@ -9,29 +9,36 @@ internal extension Configuration {
         }
 
         private class Vertix: Hashable { // swiftlint:disable:this nesting
+            internal var originatesFromRemote: Bool { originalRemoteString != nil }
+            internal let originalRemoteString: String?
+
             private(set) var filePath: FilePath
+
             private(set) var configurationString: String = ""
             private(set) var configurationDict: [String: Any] = [:]
 
-            init(string: String) {
-                // Get file path
+            init(string: String, rootDirectory: String) {
                 let remotePrefix = "remote:"
+
                 if string.hasPrefix(remotePrefix) {
-                    filePath = .promised(urlString: String(string.dropFirst(remotePrefix.count)))
+                    let urlString = String(string.dropFirst(remotePrefix.count))
+                    originalRemoteString = urlString
+                    filePath = .promised(urlString: urlString)
                 } else {
-                    filePath = .existing(path: string)
+                    originalRemoteString = nil
+                    filePath = .existing(
+                        path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+                    )
                 }
             }
 
             internal func build(
-                rootDirectory: String,
                 remoteConfigLoadingTimeout: Double,
                 remoteConfigLoadingTimeoutIfCached: Double
             ) throws {
                 let path = try filePath.resolve(
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
-                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached,
-                    rootDirectory: rootDirectory
+                    remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
                 )
 
                 filePath = .existing(path: path)
@@ -57,18 +64,18 @@ internal extension Configuration {
         }
 
         private struct Edge: Hashable { // swiftlint:disable:this nesting
-            var edgeType: EdgeType
+            var type: EdgeType
             unowned var origin: Vertix!
             unowned var target: Vertix!
 
             internal static func == (lhs: Edge, rhs: Edge) -> Bool {
-                return lhs.edgeType == rhs.edgeType &&
+                return lhs.type == rhs.type &&
                     lhs.origin == rhs.origin &&
                     lhs.target == rhs.target
             }
 
             internal func hash(into hasher: inout Hasher) {
-                hasher.combine(edgeType)
+                hasher.combine(type)
                 hasher.combine(origin)
                 hasher.combine(target)
             }
@@ -92,9 +99,9 @@ internal extension Configuration {
 
         // MARK: - Initializers
         internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
-            vertices = Set(commandLineChildConfigs.map { Vertix(string: $0) })
+            vertices = Set(commandLineChildConfigs.map { Vertix(string: $0, rootDirectory: rootDirectory) })
             edges = Set(zip(vertices, vertices.dropFirst()).map {
-                Edge(edgeType: .commandLineChildConfig, origin: $0.0, target: $0.1)
+                Edge(type: .commandLineChildConfig, origin: $0.0, target: $0.1)
             })
 
             self.rootDirectory = rootDirectory
@@ -129,7 +136,6 @@ internal extension Configuration {
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
                 )
-                isBuilt = true
             }
 
             return try merged(
@@ -155,41 +161,70 @@ internal extension Configuration {
             remoteConfigLoadingTimeout: Double,
             remoteConfigLoadingTimeoutIfCached: Double
         ) throws {
+            func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
+                vertices.first {
+                    $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
+                } ?? vertices.first { $0.filePath == vertix.filePath }
+            }
+
+            func processPossibleReference(ofType type: EdgeType, from vertix: Vertix) throws {
+                let key = type == .childConfig ? Configuration.Key.childConfig.rawValue
+                    : Configuration.Key.parentConfig.rawValue
+
+                if let reference = vertix.configurationDict[key] as? String {
+                    var rootDirectory: String = ""
+                    if case let .existing(path) = vertix.filePath {
+                        rootDirectory = path.bridge().deletingLastPathComponent
+                    }
+
+                    let referencedVertix = Vertix(string: reference, rootDirectory: rootDirectory)
+
+                    // Local vertices are allowed to have local / remote references
+                    // Remote vertices are only allowed to have remote references
+                    if vertix.originatesFromRemote && !referencedVertix.originatesFromRemote {
+                        throw ConfigurationError.generic("Remote configs are not allowed to reference local configs.")
+                    } else {
+                        let existingVertix = findPossiblyExistingVertix(sameAs: referencedVertix)
+
+                        if existingVertix == nil {
+                            vertices.insert(referencedVertix)
+                        }
+
+                        let edge: Edge
+                        switch type {
+                        case .childConfig, .commandLineChildConfig: // The latter should not happen
+                            edge = Edge(type: .childConfig, origin: vertix, target: existingVertix ?? referencedVertix)
+
+                        case .parentConfig:
+                            edge = Edge(type: .parentConfig, origin: existingVertix ?? referencedVertix, target: vertix)
+                        }
+
+                        edges.insert(edge)
+
+                        if existingVertix == nil {
+                            try process(vertix: referencedVertix)
+                        }
+                    }
+                }
+            }
+
             func process(vertix: Vertix) throws {
                 try vertix.build(
-                    rootDirectory: rootDirectory,
                     remoteConfigLoadingTimeout: remoteConfigLoadingTimeout,
                     remoteConfigLoadingTimeoutIfCached: remoteConfigLoadingTimeoutIfCached
                 )
 
                 if !ignoreParentAndChildConfigs {
-                    if
-                        let childConfigReference =
-                            vertix.configurationDict[Configuration.Key.childConfig.rawValue] as? String
-                    {
-                        let childVertix = Vertix(string: childConfigReference)
-                        vertices.insert(childVertix)
-                        let childEdge = Edge(edgeType: .childConfig, origin: vertix, target: childVertix)
-                        edges.insert(childEdge)
-                        try process(vertix: childVertix)
-                    }
-
-                    if
-                        let parentConfigReference =
-                            vertix.configurationDict[Configuration.Key.parentConfig.rawValue] as? String
-                    {
-                        let parentVertix = Vertix(string: parentConfigReference)
-                        vertices.insert(parentVertix)
-                        let parentEdge = Edge(edgeType: .parentConfig, origin: parentVertix, target: vertix)
-                        edges.insert(parentEdge)
-                        try process(vertix: parentVertix)
-                    }
+                    try processPossibleReference(ofType: .childConfig, from: vertix)
+                    try processPossibleReference(ofType: .parentConfig, from: vertix)
                 }
             }
 
             for vertix in vertices {
                 try process(vertix: vertix)
             }
+
+            isBuilt = true
         }
 
         /// Validates the Graph and throws failures

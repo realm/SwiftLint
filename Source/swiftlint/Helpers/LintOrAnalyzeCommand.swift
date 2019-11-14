@@ -142,6 +142,7 @@ struct LintOrAnalyzeOptions {
     let enableAllRules: Bool
     let autocorrect: Bool
     let compilerLogPath: String
+    let compileCommands: String
 
     init(_ options: LintOptions) {
         mode = .lint
@@ -160,6 +161,7 @@ struct LintOrAnalyzeOptions {
         enableAllRules = options.enableAllRules
         autocorrect = false
         compilerLogPath = ""
+        compileCommands = ""
     }
 
     init(_ options: AnalyzeOptions) {
@@ -179,6 +181,7 @@ struct LintOrAnalyzeOptions {
         enableAllRules = options.enableAllRules
         autocorrect = options.autocorrect
         compilerLogPath = options.compilerLogPath
+        compileCommands = options.compileCommands
     }
 
     var verb: String {

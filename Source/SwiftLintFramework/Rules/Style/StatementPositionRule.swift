@@ -141,23 +141,24 @@ private extension StatementPositionRule {
 
     static let uncuddledRegex = regex(uncuddledPattern, options: [])
 
-    static func uncuddledMatchValidator(contents: StringLinesContainer) -> ((NSTextCheckingResult) -> NSTextCheckingResult?) {
-        return { match in
-            if match.numberOfRanges != 5 {
+    static func uncuddledMatchValidator(contents: StringLinesContainer) -> ((NSTextCheckingResult)
+        -> NSTextCheckingResult?) {
+            return { match in
+                if match.numberOfRanges != 5 {
+                    return match
+                }
+                if match.range(at: 2).length == 0 {
+                    return match
+                }
+                let range1 = match.range(at: 1)
+                let range2 = match.range(at: 3)
+                let whitespace1 = contents.string.substring(from: range1.location, length: range1.length)
+                let whitespace2 = contents.string.substring(from: range2.location, length: range2.length)
+                if whitespace1 == whitespace2 {
+                    return nil
+                }
                 return match
             }
-            if match.range(at: 2).length == 0 {
-                return match
-            }
-            let range1 = match.range(at: 1)
-            let range2 = match.range(at: 3)
-            let whitespace1 = contents.string.substring(from: range1.location, length: range1.length)
-            let whitespace2 = contents.string.substring(from: range2.location, length: range2.length)
-            if whitespace1 == whitespace2 {
-                return nil
-            }
-            return match
-        }
     }
 
     static func uncuddledMatchFilter(contents: StringLinesContainer,
@@ -165,7 +166,7 @@ private extension StatementPositionRule {
         return { match in
             let range = match.range
             guard let matchRange = contents.NSRangeToByteRange(start: range.location,
-                                                                        length: range.length) else {
+                                                               length: range.length) else {
                 return false
             }
             return syntaxMap.kinds(inByteRange: matchRange) == [.keyword]

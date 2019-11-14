@@ -66,8 +66,9 @@ extension SwiftLintFile {
         }.compactMap { match -> Command? in
             let range = match.0
             let actionString = contents.substring(with: range)
-            guard let lineAndCharacter = linesContainer.lineAndCharacter(forCharacterOffset: NSMaxRange(range)) else { return nil }
-            return Command(string: contents, range: range, actionString: actionString,
+            guard let lineAndCharacter = linesContainer.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
+                else { return nil }
+            return Command(actionString: actionString,
                            line: lineAndCharacter.line,
                            character: lineAndCharacter.character)
         }.flatMap { command in
@@ -241,7 +242,7 @@ extension SwiftLintFile {
         fileHandle.write(stringData)
         fileHandle.closeFile()
 
-        file.contents = file.contents + string
+        file.contents += string
     }
 
     internal func write<S: StringProtocol>(_ string: S) {

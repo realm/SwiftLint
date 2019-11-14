@@ -120,7 +120,8 @@ public extension Configuration.FileGraph.FilePath {
                 queuedPrint("Unable to load remote config from \"\(urlString)\". Using cached version as a fallback.")
             } else {
                 queuedPrint(
-                    "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
+                    "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "
+                        + "Using cached version as a fallback."
                 )
             }
 

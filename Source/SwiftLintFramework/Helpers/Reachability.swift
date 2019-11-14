@@ -1,8 +1,16 @@
 import Foundation
+
+#if !os(Linux)
 import SystemConfiguration
+#endif
 
 public class Reachability {
+    /// Returns whether the device is connected to a network.
+    /// On Linux, this always evaluates to true.
     public static func isConnectedToNetwork() -> Bool {
+        #if os(Linux)
+        return true
+        #else
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
         zeroAddress.sin_family = sa_family_t(AF_INET)
@@ -27,5 +35,6 @@ public class Reachability {
         let needsConnection = flags.contains(.connectionRequired)
 
         return (isReachable && !needsConnection)
+        #endif
     }
 }

@@ -6,7 +6,13 @@ struct GenerateDocsCommand: CommandProtocol {
     let function = "Generates markdown documentation for all rules"
 
     func run(_ options: GenerateDocsOptions) -> Result<(), CommandantError<()>> {
-        let text = masterRuleList.generateDocumentation()
+
+        if options.onlyDisabledRules && options.onlyEnabledRules {
+            return .failure(.usageError(description: "You can't use --disabled and --enabled at the same time."))
+        }
+
+        let text = ruleList(for: options)
+            .generateDocumentation()
 
         if let path = options.path {
             do {
@@ -19,6 +25,13 @@ struct GenerateDocsCommand: CommandProtocol {
         }
 
         return .success(())
+    }
+}
+
+private extension GenerateDocsCommand {
+    func ruleList(for options: GenerateDocsOptions) -> RuleList {
+        guard options.onlyDisabledRules || options.onlyEnabledRules else { return masterRuleList }
+        fatalError("Not implemented")
     }
 }
 

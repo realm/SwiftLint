@@ -58,13 +58,18 @@ extension SwiftLintFile {
         if sourcekitdFailed {
             return []
         }
-        let contents = self.linesContainer.nsString
+        let contents = linesContainer.nsString
         let range = range ?? NSRange(location: 0, length: contents.length)
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
         return match(pattern: pattern, range: range).filter { match in
             return Set(match.1).isSubset(of: [.comment, .commentURL])
-        }.compactMap { match in
-            return Command(string: contents, range: match.0)
+        }.compactMap { match -> Command? in
+            let range = match.0
+            let actionString = contents.substring(with: range)
+            guard let lineAndCharacter = linesContainer.lineAndCharacter(forCharacterOffset: NSMaxRange(range)) else { return nil }
+            return Command(string: contents, range: range, actionString: actionString,
+                           line: lineAndCharacter.line,
+                           character: lineAndCharacter.character)
         }.flatMap { command in
             return command.expand()
         }
@@ -236,7 +241,7 @@ extension SwiftLintFile {
         fileHandle.write(stringData)
         fileHandle.closeFile()
 
-        file.contents = StringLinesContainer(file.contents.string + string)
+        file.contents = file.contents + string
     }
 
     internal func write<S: StringProtocol>(_ string: S) {
@@ -254,7 +259,7 @@ extension SwiftLintFile {
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        file.contents = StringLinesContainer("\(string)") 
+        file.contents = String(string)
         invalidateCache()
     }
 

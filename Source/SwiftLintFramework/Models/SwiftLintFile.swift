@@ -38,11 +38,11 @@ public final class SwiftLintFile {
     }
 
     public var contents: String {
-        return file.contents.string
+        return file.contents
     }
 
     public var linesContainer: StringLinesContainer {
-        return file.contents
+        return file.linesContainer
     }
 
     public var lines: [Line] {

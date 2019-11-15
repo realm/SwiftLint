@@ -260,8 +260,6 @@ end
 def set_globals
   @effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`.chomp
   @changed_swift_files = `git diff --diff-filter=d #{@effective_master_commitish} --name-only | grep "\.swift$" || true`.split("\n")
-  # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
-  @only_rules_changed = !@changed_swift_files.empty? && @changed_swift_files.all? { |file| file.start_with? 'Source/SwiftLintFramework/Rules/' }
   @changed_rule_files = @changed_swift_files.select do |file|
     file.start_with? 'Source/SwiftLintFramework/Rules/'
   end
@@ -272,6 +270,8 @@ def set_globals
       nil
     end
   end.compact.sort
+  # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
+  @only_rules_changed = !@rules_changed.empty? && @changed_swift_files.count == @rules_changed.count
 end
 
 def print_rules_changed

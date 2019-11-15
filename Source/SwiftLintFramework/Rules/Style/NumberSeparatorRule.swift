@@ -110,9 +110,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
     private func isDecimal(number: String) -> Bool {
         let lowercased = number.lowercased()
-        let prefixes = ["0x", "0o", "0b"].flatMap { [$0, "-" + $0, "+" + $0] }
+        let prefixes = ["0x", "0o", "0b"].flatMap { [$0, "-\($0)", "+\($0)"] }
 
-        return !prefixes.contains { lowercased.hasPrefix($0) }
+        return !prefixes.contains(where: lowercased.hasPrefix)
     }
 
     private func isInValidRanges(number: String) -> Bool {

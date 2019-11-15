@@ -37,45 +37,57 @@ private func trailingClosure(_ violationSymbol: String = "",
                              codeLinesCount: Int,
                              commentLinesCount: Int,
                              emptyLinesCount: Int) -> String {
-    return "foo.bar \(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-        repeatElement("\t// toto\n", count: commentLinesCount).joined() +
-        repeatElement("\t\n", count: emptyLinesCount).joined() +
-    "}"
+    return """
+        foo.bar \(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \(repeatElement("\t// toto\n", count: commentLinesCount).joined())\
+        \(repeatElement("\t\n", count: emptyLinesCount).joined())\
+        }
+        """
 }
 
 private func argumentClosure(_ violationSymbol: String = "", codeLinesCount: Int) -> String {
-    return "foo.bar(\(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-    "})"
+    return """
+        foo.bar(\(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        })
+        """
 }
 
 private func labeledArgumentClosure(_ violationSymbol: String = "", codeLinesCount: Int) -> String {
-    return "foo.bar(label: \(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-    "})"
+    return """
+        foo.bar(label: \(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        })
+        """
 }
 
 private func multiLabeledArgumentClosures(_ violationSymbol: String = "", codeLinesCount: Int) -> String {
-    return "foo.bar(label: \(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-        "}, anotherLabel: \(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-    "})"
+    return """
+        foo.bar(label: \(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        }, anotherLabel: \(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        })
+        """
 }
 
 private func labeledAndTrailingClosures(_ violationSymbol: String = "", codeLinesCount: Int) -> String {
-    return "foo.bar(label: \(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-        "}) \(violationSymbol){ toto in\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-    "}"
+    return """
+        foo.bar(label: \(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        }) \(violationSymbol){ toto in
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        }
+        """
 }
 
 private func lazyInitialization(_ violationSymbol: String = "", codeLinesCount: Int) -> String {
-    return "let foo: Bar = \(violationSymbol){ toto in\n" +
-        "\tlet bar = Bar()\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-        "\treturn bar\n" +
-    "}()"
+    return """
+        let foo: Bar = \(violationSymbol){ toto in
+        \tlet bar = Bar()
+        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \treturn bar
+        }()
+        """
 }

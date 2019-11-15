@@ -64,12 +64,12 @@ public extension Configuration.FileGraph.FilePath {
         task.resume()
 
         let timeout = cachedFilePath == nil ? remoteConfigTimeout : remoteConfigTimeoutIfCached
-        let time = CFAbsoluteTimeGetCurrent()
+        let startDate = Date()
 
         // Block main thread until timeout is reached / task is done
         while true {
             if taskDone { break }
-            if CFAbsoluteTimeGetCurrent() - time > timeout { task.cancel(); break }
+            if Date().timeIntervalSince(startDate) > timeout { task.cancel(); break }
             usleep(50_000) // Sleep for 50 ms
         }
 

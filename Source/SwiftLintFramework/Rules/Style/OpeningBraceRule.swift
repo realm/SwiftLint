@@ -100,7 +100,17 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             "struct Rule↓{}\n",
             "struct Rule\n↓{\n}\n",
             "struct Rule\n\n\t↓{\n}\n",
-            "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"
+            "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n",
+            """
+            // Get the current thread's TLS pointer. On first call for a given thread,
+            // creates and initializes a new one.
+            internal static func getPointer()
+              -> UnsafeMutablePointer<_ThreadLocalStorage>
+            { // <- here
+              return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
+                to: _ThreadLocalStorage.self)
+            }
+            """
         ],
         corrections: [
             "struct Rule↓{}\n": "struct Rule {}\n",

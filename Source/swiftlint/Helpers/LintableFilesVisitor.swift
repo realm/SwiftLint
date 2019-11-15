@@ -166,6 +166,10 @@ struct LintableFilesVisitor {
         return database.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
             if let file = entry["file"] as? String, let arguments = entry["arguments"] as? [String] {
                 commands[file] = arguments
+                if let directory = entry["directory"] as? String {
+                    let absolutePath = directory.bridge().appendingPathComponent(file)
+                    commands[absolutePath] = arguments
+                }
             }
         }
     }

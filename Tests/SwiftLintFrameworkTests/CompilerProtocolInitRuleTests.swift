@@ -29,7 +29,8 @@ private enum UnwrapError: Error {
     case missingValue
 }
 
-private func XCTUnwrap<T>(_ expression: @autoclosure () rethrows -> T?) throws -> T {
+private func XCTUnwrap<T>(_ expression: @autoclosure () rethrows -> T?,
+                          _ message: @autoclosure () -> String = "") throws -> T {
     if let value = try expression() {
         return value
     } else {

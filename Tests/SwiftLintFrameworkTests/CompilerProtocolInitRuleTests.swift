@@ -23,3 +23,17 @@ class CompilerProtocolInitRuleTests: XCTestCase {
         )
     }
 }
+
+#if compiler(<5.1)
+private enum UnwrapError: Error {
+    case missingValue
+}
+
+private func XCTUnwrap<T>(_ expression: @autoclosure () rethrows -> T?) throws -> T {
+    if let value = try expression() {
+        return value
+    } else {
+        throw UnwrapError.missingValue
+    }
+}
+#endif

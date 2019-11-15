@@ -126,7 +126,7 @@ struct LintableFilesVisitor {
             }
 
             return .success(.buildLog(compilerInvocations: compilerInvocations))
-        } else if options.compileCommands.isEmpty {
+        } else if !options.compileCommands.isEmpty {
             let path = options.compileCommands
             guard let compileCommands = self.loadCompileCommands(path) else {
                 return .failure(

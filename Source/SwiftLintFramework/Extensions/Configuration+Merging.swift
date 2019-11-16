@@ -24,17 +24,24 @@ extension Configuration {
     private func mergedIncludedAndExcluded(
         with childConfiguration: Configuration
     ) -> (included: [String], excluded: [String]) {
-        if rootDirectory != childConfiguration.rootDirectory {
-            // Configurations aren't on same level => use child configuration
+        let parentRootPath = rootDirectory?.bridge().pathComponents ?? []
+        var childRootPath = childConfiguration.rootDirectory?.bridge().pathComponents ?? []
+
+        // Safeguard against the case that should'nt happen
+        guard childRootPath.starts(with: parentRootPath) else {
             return (included: childConfiguration.includedPaths, excluded: childConfiguration.excludedPaths)
         }
 
+        // Express child paths relative to parent root directory
+        childRootPath.removeFirst(parentRootPath.count)
+        let prefix = childRootPath.joined(separator: "/")
+        let childConfigIncluded = childConfiguration.includedPaths.map { "\(prefix)/\($0)" }
+        let childConfigExcluded = childConfiguration.excludedPaths.map { "\(prefix)/\($0)" }
+
         // Prefer child configuration over parent configuration
         return (
-            included: includedPaths.filter { !childConfiguration.excludedPaths.contains($0) }
-                + childConfiguration.includedPaths,
-            excluded: excludedPaths.filter { !childConfiguration.includedPaths.contains($0) }
-                + childConfiguration.excludedPaths
+            included: includedPaths.filter { !childConfigExcluded.contains($0) } + childConfigIncluded,
+            excluded: excludedPaths.filter { !childConfigIncluded.contains($0) } + childConfigExcluded
         )
     }
 
@@ -62,10 +69,9 @@ extension Configuration {
         // Allow nested configuration processing even if config wasn't created via files (-> rootDir present)
         let rootDirectory = self.rootDirectory ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
 
-        // Include nested configurations, but ignore their parent_config / child_config specifications!
         let directoryNSString = directory.bridge()
-        let configurationSearchPath = directoryNSString.appendingPathComponent(Configuration.fileName)
         let fullDirectory = directoryNSString.absolutePathRepresentation()
+        let configurationSearchPath = directoryNSString.appendingPathComponent(Configuration.fileName)
         let cacheIdentifier = "nestedPath" + rootDirectory + configurationSearchPath
 
         if Configuration.getIsNestedConfigurationSelf(forIdentifier: cacheIdentifier) == true {
@@ -73,7 +79,7 @@ extension Configuration {
         } else if let cached = Configuration.getCached(forIdentifier: cacheIdentifier) {
             return cached
         } else {
-            let config: Configuration
+            var config: Configuration
 
             if directory == rootDirectory {
                 // Use self if at level self
@@ -84,6 +90,8 @@ extension Configuration {
             {
                 // Use self merged with the nested config that was found
                 // iff that nested config has not already been used to build the main config
+
+                // Ignore parent_config / child_config specifications of nested configs
                 config = merged(
                     with: Configuration(
                         configurationFiles: [configurationSearchPath],
@@ -93,6 +101,7 @@ extension Configuration {
                         ignoreParentAndChildConfigs: true
                     )
                 )
+                config.fileGraph = fileGraph
 
                 // Cache merged result to circumvent heavy merge recomputations
                 config.setCached(forIdentifier: cacheIdentifier)

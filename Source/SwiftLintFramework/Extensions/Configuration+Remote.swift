@@ -42,7 +42,7 @@ public extension Configuration.FileGraph.FilePath {
         let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: rootDirectory)
 
         // Handle missing network
-        guard Reachability.isConnectedToNetwork() else {
+        guard Reachability.isConnectedToNetwork() != false else {
             return try handleMissingNetwork(urlString: urlString, cachedFilePath: cachedFilePath)
         }
 

@@ -57,8 +57,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.declarationKind else { return nil }
+        return file.traverseDeclarations { kind, subDict in
             return correct(file: file, kind: kind, dictionary: subDict)
         }
     }

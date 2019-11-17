@@ -35,8 +35,7 @@ public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderR
     }
 
     private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
+        return file.traverseExpressions { kind, subDict in
             return validate(file: file, kind: kind, dictionary: subDict)
         }
     }

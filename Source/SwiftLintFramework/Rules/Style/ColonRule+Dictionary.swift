@@ -8,8 +8,7 @@ extension ColonRule {
             return []
         }
 
-        let ranges: [NSRange] = dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
+        let ranges: [NSRange] = file.traverseExpressions { kind, subDict in
             return dictionaryColonViolationRanges(in: file, kind: kind, dictionary: subDict)
         }
 

@@ -1,6 +1,11 @@
 import Foundation
 import SourceKittenFramework
 
+private struct TraversingInfo {
+    let declarations: [(SwiftDeclarationKind, SourceKittenDictionary)]
+    let expressions: [(SwiftExpressionKind, SourceKittenDictionary)]
+}
+
 public final class SwiftLintFile {
     private static var id = 0
     private static var lock = NSLock()
@@ -44,6 +49,39 @@ public final class SwiftLintFile {
     public var lines: [Line] {
         return file.lines
     }
+
+    private lazy var traversingInfo: TraversingInfo = {
+        return TraversingInfo(
+            declarations: structureDictionary.traverseDepthFirst { dict in
+                guard let kind = dict.declarationKind else { return nil }
+                return [(kind, dict)]
+            },
+            expressions: structureDictionary.traverseDepthFirst { dict in
+                guard let kind = dict.expressionKind else { return nil }
+                return [(kind, dict)]
+            })
+    }()
+}
+
+extension SwiftLintFile {
+    func traverseDeclarations<T>(_ block: (SwiftDeclarationKind, SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traversingInfo.declarations.forEach {
+            guard let items = block($0.0, $0.1) else { return }
+            result += items
+        }
+        return result
+    }
+
+    func traverseExpressions<T>(_ block: (SwiftExpressionKind, SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traversingInfo.expressions.forEach {
+            guard let items = block($0.0, $0.1) else { return }
+            result += items
+        }
+        return result
+    }
+
 }
 
 extension SwiftLintFile: Hashable {

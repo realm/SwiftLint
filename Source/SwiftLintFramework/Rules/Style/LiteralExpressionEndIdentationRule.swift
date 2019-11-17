@@ -178,8 +178,7 @@ extension LiteralExpressionEndIdentationRule {
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
+        return file.traverseExpressions { kind, subDict in
             guard let violation = violation(in: file, of: kind, dictionary: subDict) else { return nil }
             return [violation]
         }

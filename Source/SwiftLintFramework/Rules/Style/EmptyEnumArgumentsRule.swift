@@ -73,7 +73,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
             return []
         }
 
-        let contents = file.linesContainer
+        let contents = file.stringView
 
         let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
             guard dict.expressionKind == .call,

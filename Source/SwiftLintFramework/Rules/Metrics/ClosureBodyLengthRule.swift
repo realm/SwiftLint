@@ -25,8 +25,8 @@ public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRu
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
-            let startLine = file.linesContainer.lineAndCharacter(forByteOffset: bodyOffset)?.line,
-            let endLine = file.linesContainer.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
+            let startLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset)?.line,
+            let endLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
             else {
                 return []
         }

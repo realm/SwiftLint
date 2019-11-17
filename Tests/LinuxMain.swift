@@ -194,7 +194,6 @@ extension ConfigurationTests {
         ("testLevel1", testLevel1),
         ("testLevel2", testLevel2),
         ("testLevel3", testLevel3),
-        ("testMergedConfigurationNilRootPath", testMergedConfigurationNilRootPath),
         ("testMergedWarningThreshold", testMergedWarningThreshold),
         ("testNestedWhitelistedRules", testNestedWhitelistedRules),
         ("testNestedConfigurationsWithCustomRulesMerge", testNestedConfigurationsWithCustomRulesMerge),

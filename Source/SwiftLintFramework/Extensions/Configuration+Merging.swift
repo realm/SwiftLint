@@ -11,7 +11,7 @@ extension Configuration {
 
         return Configuration(
             rulesWrapper: rulesWrapper.merged(with: childConfiguration.rulesWrapper),
-            fileGraph: nil, // The merge result doesn't have a file "background" anymore
+            fileGraph: childConfiguration.rootDirectory.map(FileGraph.init(rootDirectory:)),
             includedPaths: mergedIncludedAndExcluded.included,
             excludedPaths: mergedIncludedAndExcluded.excluded,
             indentation: childConfiguration.indentation,
@@ -24,24 +24,45 @@ extension Configuration {
     private func mergedIncludedAndExcluded(
         with childConfiguration: Configuration
     ) -> (included: [String], excluded: [String]) {
-        let parentRootPath = rootDirectory?.bridge().pathComponents ?? []
-        var childRootPath = childConfiguration.rootDirectory?.bridge().pathComponents ?? []
+        let parentRootPathComps = rootDirectory?.components(separatedBy: "/") ?? []
+        var childRootPathComps = childConfiguration.rootDirectory?.components(separatedBy: "/") ?? []
 
-        // Safeguard against the case that should'nt happen
-        guard childRootPath.starts(with: parentRootPath) else {
-            return (included: childConfiguration.includedPaths, excluded: childConfiguration.excludedPaths)
+        let parentConfigIncluded: [String]
+        let parentConfigExcluded: [String]
+        let childConfigIncluded: [String] = childConfiguration.includedPaths
+        let childConfigExcluded: [String] = childConfiguration.excludedPaths
+
+        if parentRootPathComps == childRootPathComps {
+            // If we are on the on same level, things are quite easy
+            parentConfigIncluded = includedPaths
+            parentConfigExcluded = excludedPaths
+        } else {
+            // Safeguard whether child is actually child (should always be the case)
+            guard childRootPathComps.starts(with: parentRootPathComps) else {
+                return (included: childConfigIncluded, excluded: childConfigExcluded)
+            }
+
+            childRootPathComps.removeFirst(parentRootPathComps.count)
+
+            // Get parent paths relative to child root directory; filter out irrelevant paths
+            func process(parentPaths: [String]) -> [String] {
+                return parentPaths.filter {
+                    $0.components(separatedBy: "/").starts(with: childRootPathComps)
+                }.map {
+                    var pathComponents = $0.components(separatedBy: "/")
+                    pathComponents.removeFirst(childRootPathComps.count)
+                    return pathComponents.joined(separator: "/")
+                }
+            }
+
+            parentConfigIncluded = process(parentPaths: includedPaths)
+            parentConfigExcluded = process(parentPaths: excludedPaths)
         }
-
-        // Express child paths relative to parent root directory
-        childRootPath.removeFirst(parentRootPath.count)
-        let prefix = childRootPath.joined(separator: "/")
-        let childConfigIncluded = childConfiguration.includedPaths.map { "\(prefix)/\($0)" }
-        let childConfigExcluded = childConfiguration.excludedPaths.map { "\(prefix)/\($0)" }
 
         // Prefer child configuration over parent configuration
         return (
-            included: includedPaths.filter { !childConfigExcluded.contains($0) } + childConfigIncluded,
-            excluded: excludedPaths.filter { !childConfigIncluded.contains($0) } + childConfigExcluded
+            included: parentConfigIncluded.filter { !childConfigExcluded.contains($0) } + childConfigIncluded,
+            excluded: parentConfigExcluded.filter { !childConfigIncluded.contains($0) } + childConfigExcluded
         )
     }
 
@@ -101,7 +122,6 @@ extension Configuration {
                         ignoreParentAndChildConfigs: true
                     )
                 )
-                config.fileGraph = fileGraph
 
                 // Cache merged result to circumvent heavy merge recomputations
                 config.setCached(forIdentifier: cacheIdentifier)

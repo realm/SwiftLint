@@ -116,12 +116,15 @@ internal extension Configuration {
             )
         }
 
-        internal init(rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
+        /// Dummy init to get a FileGraph that just represents a root directory
+        internal init(rootDirectory: String) {
             self.init(
                 commandLineChildConfigs: [],
                 rootDirectory: rootDirectory,
-                ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
+                ignoreParentAndChildConfigs: false
             )
+
+            isBuilt = true
         }
 
         // MARK: - Methods
@@ -283,7 +286,11 @@ internal extension Configuration {
             guard
                 let startingVertix = (vertices.first { vertix in !edges.contains { $0.target == vertix } })
             else {
-                throw ConfigurationError.generic("Unknown Configuration Error")
+                guard vertices.isEmpty else {
+                    throw ConfigurationError.generic("Unknown Configuration Error")
+                }
+
+                return []
             }
 
             var verticesToMerge = [startingVertix]
@@ -304,10 +311,7 @@ internal extension Configuration {
             configurationDicts: [[String: Any]],
             enableAllRules: Bool
         ) throws -> Configuration {
-            guard let firstConfigurationDict = configurationDicts.first else {
-                throw ConfigurationError.generic("Unknown Configuration Error")
-            }
-
+            let firstConfigurationDict = configurationDicts.first ?? [:] // Use empty dict if nothing else provided
             let configurationDicts = Array(configurationDicts.dropFirst())
             let firstConfiguration = try Configuration(dict: firstConfigurationDict, enableAllRules: enableAllRules)
             return try configurationDicts.reduce(firstConfiguration) {

@@ -40,10 +40,6 @@ extension ConfigurationTests {
                        projectMockConfig0.merged(with: projectMockConfig3))
     }
 
-    func testMergedConfigurationNilRootPath() {
-        XCTAssertNil(projectMockConfig0.merged(with: projectMockConfig3).rootDirectory)
-    }
-
     func testMergedWarningThreshold() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             return Configuration(

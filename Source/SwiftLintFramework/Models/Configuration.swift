@@ -116,7 +116,7 @@ public struct Configuration {
 
     // MARK: Public
     /// Initialize with configuration files
-    public init(
+    public init( // swiftlint:disable:this function_body_length
         configurationFiles: [String],
         rootPath: String? = nil,
         optional: Bool = true,
@@ -125,19 +125,31 @@ public struct Configuration {
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false
     ) {
-        func rootDirectory(from rootPath: String?) -> String {
+        func rootDirectory(from rootPath: String?) -> String? {
             var isDirectory: ObjCBool = false
             guard
                 let rootPath = rootPath,
                 FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectory)
             else {
-                return FileManager.default.currentDirectoryPath.bridge().standardizingPath
+                return nil
             }
 
             return isDirectory.boolValue ? rootPath : rootPath.bridge().deletingLastPathComponent
         }
 
-        let rootDir = rootDirectory(from: rootPath)
+        let rootDir: String
+        var configurationFiles = configurationFiles
+        if let root = rootDirectory(from: rootPath) {
+            rootDir = root
+        } else if let rootDirComps = configurationFiles.first?.components(separatedBy: "/").dropLast(),
+            !rootDirComps.isEmpty,
+            !configurationFiles.contains { $0.components(separatedBy: "/").dropLast() != rootDirComps } {
+            rootDir = rootDirComps.joined(separator: "/")
+            configurationFiles = configurationFiles.map { $0.components(separatedBy: "/").last ?? "" }
+        } else {
+            rootDir = ""
+        }
+
         let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
         let cacheIdentifier = "\(rootDir) - \(configurationFiles)"
 

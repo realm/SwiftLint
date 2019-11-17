@@ -33,9 +33,7 @@ extension NSRegularExpression {
         regexCache[key] = result
         return result
     }
-}
 
-extension NSRegularExpression {
     internal func matches(in stringView: StringView,
                           options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
         return matches(in: stringView.string, options: options, range: stringView.range)

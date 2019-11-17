@@ -130,7 +130,7 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
             return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         return dictionary.elements
             .filter { $0.kind == "source.lang.swift.structure.elem.pattern" }
             .compactMap { dictionary in

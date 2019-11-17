@@ -9,7 +9,7 @@
 	url = https://github.com/Carthage/Commandant.git
 [submodule "Carthage/Checkouts/SourceKitten"]
 	path = Carthage/Checkouts/SourceKitten
-	url = https://github.com/jpsim/SourceKitten.git
+	url = https://github.com/PaulTaykalo/SourceKitten.git
 [submodule "Carthage/Checkouts/SwiftyTextTable"]
 	path = Carthage/Checkouts/SwiftyTextTable
 	url = https://github.com/scottrhoyt/SwiftyTextTable.git

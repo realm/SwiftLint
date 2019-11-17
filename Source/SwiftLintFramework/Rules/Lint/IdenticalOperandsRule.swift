@@ -174,10 +174,6 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
 }
 
 private extension StringView {
-//    func NSRangeToByteRange(_ range: NSRange) -> NSRange? {
-//        return NSRangeToByteRange(start: range.location, length: range.length)
-//    }
-
     func subStringWithSyntaxToken(_ syntaxToken: SwiftLintSyntaxToken) -> String? {
         return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)
     }

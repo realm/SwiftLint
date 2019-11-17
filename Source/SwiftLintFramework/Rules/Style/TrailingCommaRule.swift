@@ -68,7 +68,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard let (offset, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary),
             case let length = reason == .extraTrailingCommaReason ? 1 : 0,
-            let range = file.linesContainer.byteRangeToNSRange(start: offset, length: length) else {
+            let range = file.stringView.byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }
 
@@ -102,7 +102,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
             return nil
         }
 
-        let contents = file.linesContainer
+        let contents = file.stringView
         if let (startLine, _) = contents.lineAndCharacter(forByteOffset: bodyOffset),
             let (endLine, _) = contents.lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
@@ -144,7 +144,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: Int) -> Int? {
         let nsstring = contents.bridge()
-        let range = NSRange(location: 0, length: nsstring.length)
+        let range = contents.fullNSRange
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
         // skip commas in comments

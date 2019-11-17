@@ -76,7 +76,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
 
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let contents = file.linesContainer
+        let contents = file.stringView
         guard kind == .closure,
             let offset = dictionary.offset,
             let length = dictionary.length,
@@ -93,7 +93,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         guard captureListRange.location != NSNotFound,
             captureListRange.length > 0 else { return [] }
 
-        let captureList = contents.nsString.substring(with: captureListRange)
+        let captureList = contents.substring(with: captureListRange)
         let references = referencesAndLocationsFromCaptureList(captureList)
 
         let restOfClosureLocation = captureListRange.location + captureListRange.length + 1

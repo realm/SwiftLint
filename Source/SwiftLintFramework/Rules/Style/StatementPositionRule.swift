@@ -141,7 +141,7 @@ private extension StatementPositionRule {
 
     static let uncuddledRegex = regex(uncuddledPattern, options: [])
 
-    static func uncuddledMatchValidator(contents: StringLinesContainer) -> ((NSTextCheckingResult)
+    static func uncuddledMatchValidator(contents: StringView) -> ((NSTextCheckingResult)
         -> NSTextCheckingResult?) {
             return { match in
                 if match.numberOfRanges != 5 {
@@ -161,7 +161,7 @@ private extension StatementPositionRule {
             }
     }
 
-    static func uncuddledMatchFilter(contents: StringLinesContainer,
+    static func uncuddledMatchFilter(contents: StringView,
                                      syntaxMap: SwiftLintSyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
@@ -174,10 +174,9 @@ private extension StatementPositionRule {
     }
 
     func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.linesContainer
-        let range = NSRange(location: 0, length: contents.nsString.length)
+        let contents = file.stringView
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegex.matches(in: contents.string, options: [], range: range)
+        let matches = StatementPositionRule.uncuddledRegex.matches(in: file)
         let validator = type(of: self).uncuddledMatchValidator(contents: contents)
         let filterMatches = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
@@ -188,11 +187,10 @@ private extension StatementPositionRule {
 
     func uncuddledCorrect(file: SwiftLintFile) -> [Correction] {
         var contents = file.contents
-        let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegex.matches(in: contents, options: [], range: range)
-        let validator = type(of: self).uncuddledMatchValidator(contents: file.linesContainer)
-        let filterRanges = type(of: self).uncuddledMatchFilter(contents: file.linesContainer, syntaxMap: syntaxMap)
+        let matches = StatementPositionRule.uncuddledRegex.matches(in: file)
+        let validator = type(of: self).uncuddledMatchValidator(contents: file.stringView)
+        let filterRanges = type(of: self).uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
 
         let validMatches = matches.compactMap(validator).filter(filterRanges)
                   .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }

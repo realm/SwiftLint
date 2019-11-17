@@ -42,7 +42,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.linesContainer
+        let contents = file.stringView
         return file.match(pattern: "let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
                 return false

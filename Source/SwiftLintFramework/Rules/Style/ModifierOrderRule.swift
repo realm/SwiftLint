@@ -66,7 +66,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
                          kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [Correction] {
         guard let offset = dictionary.offset else { return [] }
-        let originalContents = file.linesContainer
+        let originalContents = file.stringView
         let violatingRanges = violatingModifiers(dictionary: dictionary)
             .compactMap { preferred, declared -> (NSRange, NSRange)? in
                 guard
@@ -93,7 +93,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
                 let (preferredModifierRange, declaredModifierRange) = arg
                 correctedContents = correctedContents.replacingCharacters(
                     in: declaredModifierRange,
-                    with: originalContents.nsString.substring(with: preferredModifierRange)
+                    with: originalContents.substring(with: preferredModifierRange)
                 ).bridge()
             }
 

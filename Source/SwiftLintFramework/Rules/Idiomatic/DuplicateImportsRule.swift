@@ -23,7 +23,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
     )
 
     private func rangesInConditionalCompilation(file: SwiftLintFile) -> [NSRange] {
-        let contents = file.linesContainer
+        let contents = file.stringView
 
         let ranges = file.syntaxMap.tokens
             .filter { $0.kind == .buildconfigKeyword }
@@ -39,7 +39,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let contents = file.linesContainer
+        let contents = file.stringView
 
         let ignoredRanges = self.rangesInConditionalCompilation(file: file)
 

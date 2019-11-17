@@ -52,12 +52,12 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
             let offset = dictionary.offset,
             case let start = nameOffset + nameLength,
             case let end = dictionary.bodyOffset ?? offset + length,
-            case let contents = file.linesContainer,
-            let range = file.linesContainer.byteRangeToNSRange(start: start, length: end - start),
+            case let contents = file.stringView,
+            let range = file.stringView.byteRangeToNSRange(start: start, length: end - start),
             let match = file.match(pattern: "->\\s*(.*?)\\{", excludingSyntaxKinds: excludingKinds, range: range).first
             else { return [] }
 
-        return contents.nsString.substring(with: match).optionalCollectionRanges().map { _ in nameOffset }
+        return contents.substring(with: match).optionalCollectionRanges().map { _ in nameOffset }
     }
 
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])

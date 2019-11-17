@@ -68,7 +68,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         }
 
         if let path = file.path {
-            let pathRange = NSRange(location: 0, length: path.bridge().length)
+            let pathRange = path.fullNSRange
             configurations = configurations.filter { config in
                 let included: Bool
                 if let includedRegex = config.included {

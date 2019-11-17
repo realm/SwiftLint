@@ -136,7 +136,7 @@ private class Lazy<Result> {
 
 private extension String {
     var strippingURLs: String {
-        let range = NSRange(location: 0, length: bridge().length)
+        let range = fullNSRange
         // Workaround for Linux until NSDataDetector is available
         #if os(Linux)
             // Regex pattern from http://daringfireball.net/2010/07/improved_regex_for_matching_urls

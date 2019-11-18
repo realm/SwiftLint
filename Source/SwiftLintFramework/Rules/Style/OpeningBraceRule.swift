@@ -31,7 +31,7 @@ private extension SwiftLintFile {
         }
 
         let closingBracketRange = NSRange(location: closingBracketPosition + 1, length: lengthAfterClosingBracket)
-        let firstMatch = regex("(\\s)*\\(").matches(in: closureCode, options: [], range: closingBracketRange).first
+        let firstMatch = regex("^(\\s)*\\(").matches(in: closureCode, options: [], range: closingBracketRange).first
         return firstMatch != nil && firstMatch?.range.location != NSNotFound
     }
 
@@ -109,6 +109,22 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             { // <- here
               return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                 to: _ThreadLocalStorage.self)
+            }
+            """,
+            """
+            func run_Array_method1x(_ N: Int) {
+              let existentialArray = array!
+              for _ in 0 ..< N * 100 {
+                for elt in existentialArray {
+                  if !elt.doIt()  {
+                    fatalError("expected true")
+                  }
+                }
+              }
+            }
+
+            func run_Array_method2x(_ N: Int) {
+
             }
             """
         ],

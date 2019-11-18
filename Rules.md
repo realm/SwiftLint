@@ -15338,6 +15338,23 @@ internal static func getPointer()
 }
 ```
 
+```swift
+func run_Array_method1x(_ N: Int) {
+  let existentialArray = array!
+  for _ in 0 ..< N * 100 {
+    for elt in existentialArray {
+      if !elt.doIt()  {
+        fatalError("expected true")
+      }
+    }
+  }
+}
+
+func run_Array_method2x(_ N: Int) {
+
+}
+```
+
 </details>
 
 

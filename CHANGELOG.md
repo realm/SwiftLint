@@ -123,6 +123,7 @@
   todos with an expiration date.  
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
+  
 * Add option to specify a `child_config` / `parent_config` file
   (local or remote) in any SwiftLint configuration file.
   Allow passing multiple configuration files via the command line.  

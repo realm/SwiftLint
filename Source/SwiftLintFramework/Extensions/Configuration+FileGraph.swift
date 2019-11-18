@@ -62,8 +62,8 @@ internal extension Configuration {
 
         private struct Edge: Hashable { // swiftlint:disable:this nesting
             var type: EdgeType
-            unowned var origin: Vertix!
-            unowned var target: Vertix!
+            var origin: Vertix!
+            var target: Vertix!
 
             internal static func == (lhs: Edge, rhs: Edge) -> Bool {
                 return lhs.type == rhs.type &&

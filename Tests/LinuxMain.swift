@@ -401,7 +401,9 @@ extension ExpiringTodoRuleTests {
         ("testExpiredFixMe", testExpiredFixMe),
         ("testApproachingExpiryTodo", testApproachingExpiryTodo),
         ("testNonExpiredTodo", testNonExpiredTodo),
-        ("testExpiredCustomDelimiters", testExpiredCustomDelimiters)
+        ("testExpiredCustomDelimiters", testExpiredCustomDelimiters),
+        ("testExpiredCustomSeparator", testExpiredCustomSeparator),
+        ("testExpiredCustomFormat", testExpiredCustomFormat)
     ]
 }
 

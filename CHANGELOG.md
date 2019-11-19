@@ -2,9 +2,10 @@
 
 #### Breaking
 
-* Replace the `SyntaxToken` and `SyntaxMap` structures used in  
-  public SwiftLintFramework APIs with a new  `SwiftLintSyntaxToken`  
-  and `SwiftlintSyntaxMap` wrappers over structures returned from SourceKitten
+* Replace the `SyntaxToken` and `SyntaxMap` structures used in
+  public SwiftLintFramework APIs with a new  `SwiftLintSyntaxToken`
+  and `SwiftlintSyntaxMap` wrappers over structures returned from
+  SourceKitten.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2955](https://github.com/realm/SwiftLint/issues/2955)
 
@@ -13,6 +14,9 @@
 * None.
 
 #### Enhancements
+
+* Make `control_statement` rule correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
 
 #### Bug Fixes
 
@@ -77,9 +81,6 @@
 
 * Add GitHub Actions Logging reporter (`github-actions-logging`).  
   [Norio Nomura](https://github.com/norio-nomura)
-
-* Make `control_statement` rule substitution correctable.  
-  [MaxHaertwig](https://github.com/maxhaertwig)
 
 #### Bug Fixes
 

@@ -17,6 +17,9 @@
 
 * Make `control_statement` rule correctable.  
   [MaxHaertwig](https://github.com/maxhaertwig)
+* Add `expiring_todo` opt-in rule to allow developers to mark their todos with an expiration date.  
+  [Dan Loman](https://github.com/namolnad)
+  [#727](https://github.com/realm/SwiftLint/issues/727)
 
 #### Bug Fixes
 
@@ -98,10 +101,6 @@
 * None.
 
 #### Enhancements
-
-* Add `expiring_todo` opt-in rule to allow developers to mark their todos with an expiration date.  
-  [Dan Loman](https://github.com/namolnad)
-  [#727](https://github.com/realm/SwiftLint/issues/727)
 
 * Add `contains_over_range_nil_comparison` opt-in rule to prefer
   using `contains` over comparison of `range(of:)` to `nil`.  

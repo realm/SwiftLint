@@ -17,7 +17,7 @@
 
 * Make `control_statement` rule correctable.  
   [MaxHaertwig](https://github.com/maxhaertwig)
-* Add `expiring_todo` opt-in rule to allow developers to mark their todos with an expiration date.  
+
 * Add `expiring_todo` opt-in rule to allow developers to mark their
   todos with an expiration date.  
   [Dan Loman](https://github.com/namolnad)

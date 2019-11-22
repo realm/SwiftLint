@@ -30,9 +30,10 @@ private extension SwiftLintFile {
             return false
         }
 
-        let closingBracketRange = NSRange(location: closingBracketPosition + 1, length: lengthAfterClosingBracket)
-        let firstMatch = regex("^(\\s)*\\(").matches(in: closureCode, options: [], range: closingBracketRange).first
-        return firstMatch != nil && firstMatch?.range.location != NSNotFound
+        //First non-whitespace character should be "(" - otherwise it is not an anonymous closure
+        let afterBracketCode = closureCode.substring(from: closingBracketPosition + 1)
+                                            .trimmingCharacters(in: .whitespaces)
+        return afterBracketCode.first == "("
     }
 
     func closingBracket(_ closureCode: String) -> Int? {

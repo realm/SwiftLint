@@ -23,6 +23,12 @@
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
 
+* Add option to configure which kinds of `return` statements should omit their
+  `return` keyword by introducting an `included` configuration for the
+  `implicit_return` rule.  
+  [Sven Münnich](https://github.com/svenmuennich)
+  [#2870](https://github.com/realm/SwiftLint/issues/2870)
+
 #### Bug Fixes
 
 * Fix false positive for LetVarWhitespaceRule.  

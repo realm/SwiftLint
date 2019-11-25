@@ -641,9 +641,19 @@ extension ImplicitGetterRuleTests {
     ]
 }
 
+extension ImplicitReturnConfigurationTests {
+    static var allTests: [(String, (ImplicitReturnConfigurationTests) -> () throws -> Void)] = [
+        ("testImplicitReturnConfigurationFromDictionary", testImplicitReturnConfigurationFromDictionary),
+        ("testImplicitReturnConfigurationThrowsOnUnrecognizedModifierGroup", testImplicitReturnConfigurationThrowsOnUnrecognizedModifierGroup)
+    ]
+}
+
 extension ImplicitReturnRuleTests {
     static var allTests: [(String, (ImplicitReturnRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testOnlyClosureKindIncluded", testOnlyClosureKindIncluded),
+        ("testOnlyFunctionKindIncluded", testOnlyFunctionKindIncluded),
+        ("testOnlyGetterKindIncluded", testOnlyGetterKindIncluded)
     ]
 }
 
@@ -1664,6 +1674,7 @@ XCTMain([
     testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),
+    testCase(ImplicitReturnConfigurationTests.allTests),
     testCase(ImplicitReturnRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),

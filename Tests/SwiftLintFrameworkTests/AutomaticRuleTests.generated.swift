@@ -276,12 +276,6 @@ class ImplicitGetterRuleTests: XCTestCase {
     }
 }
 
-class ImplicitReturnRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitReturnRule.description)
-    }
-}
-
 class InertDeferRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InertDeferRule.description)

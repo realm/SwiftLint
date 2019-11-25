@@ -10,7 +10,12 @@
 
 #### Enhancements
 
-* None.
+* Add option to configure which kinds of expressions should omit their
+  `return` keyword by introducing an `included` configuration for the
+  `implicit_return` rule. Supported values are `closure`, `function` and
+  `getter`. Defaults to all three.  
+  [Sven Münnich](https://github.com/svenmuennich)
+  [#2870](https://github.com/realm/SwiftLint/issues/2870)
 
 #### Bug Fixes
 

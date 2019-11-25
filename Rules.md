@@ -10419,12 +10419,18 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `implicit_return` | Disabled | Yes | style | No | 3.0.0 
 
-Prefer implicit returns in closures.
+Prefer implicit returns in closures, functions and getters.
 
 ### Examples
 
 <details>
 <summary>Non Triggering Examples</summary>
+
+```swift
+if foo {
+  return 0
+}
+```
 
 ```swift
 foo.map { $0 + 1 }
@@ -10439,19 +10445,43 @@ foo.map { value in value + 1 }
 ```
 
 ```swift
+[1, 2].first(where: {
+    true
+})
+```
+
+```swift
 func foo() -> Int {
-  return 0
+    0
 }
 ```
 
 ```swift
-if foo {
-  return 0
+class Foo {
+    func foo() -> Int { 0 }
 }
 ```
 
 ```swift
-var foo: Bool { return true }
+var foo: Bool { true }
+```
+
+```swift
+class Foo {
+    var bar: Int {
+        get {
+            0
+        }
+    }
+}
+```
+
+```swift
+class Foo {
+    static var bar: Int {
+        0
+    }
+}
 ```
 
 </details>
@@ -10460,24 +10490,58 @@ var foo: Bool { return true }
 
 ```swift
 foo.map { value in
-  ↓return value + 1
+    return value + 1
 }
 ```
 
 ```swift
 foo.map {
-  ↓return $0 + 1
+    return $0 + 1
 }
 ```
 
 ```swift
-foo.map({ ↓return $0 + 1})
+foo.map({ return $0 + 1})
 ```
 
 ```swift
 [1, 2].first(where: {
-    ↓return true
+    return true
 })
+```
+
+```swift
+func foo() -> Int {
+    return 0
+}
+```
+
+```swift
+class Foo {
+    func foo() -> Int { return 0 }
+}
+```
+
+```swift
+var foo: Bool { return true }
+```
+
+```swift
+class Foo {
+    var bar: Int {
+        get {
+            return 0
+        }
+    }
+}
+```
+
+```swift
+class Foo {
+    static var bar: Int {
+        return 0
+    }
+}
 ```
 
 </details>

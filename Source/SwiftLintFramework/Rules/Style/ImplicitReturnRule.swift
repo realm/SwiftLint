@@ -1,56 +1,25 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule,
-                                  AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
+    public var configuration = ImplicitReturnConfiguration()
 
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "implicit_return",
         name: "Implicit Return",
-        description: "Prefer implicit returns in closures.",
+        description: "Prefer implicit returns in closures, functions and getters.",
         kind: .style,
-        nonTriggeringExamples: [
-            "foo.map { $0 + 1 }",
-            "foo.map({ $0 + 1 })",
-            "foo.map { value in value + 1 }",
-            "func foo() -> Int {\n  return 0\n}",
-            "if foo {\n  return 0\n}",
-            "var foo: Bool { return true }"
-        ],
-        triggeringExamples: [
-            "foo.map { value in\n  ↓return value + 1\n}",
-            "foo.map {\n  ↓return $0 + 1\n}",
-            "foo.map({ ↓return $0 + 1})",
-            """
-            [1, 2].first(where: {
-                ↓return true
-            })
-            """
-        ],
-        corrections: [
-            "foo.map { value in\n  ↓return value + 1\n}": "foo.map { value in\n  value + 1\n}",
-            "foo.map {\n  ↓return $0 + 1\n}": "foo.map {\n  $0 + 1\n}",
-            "foo.map({ ↓return $0 + 1})": "foo.map({ $0 + 1})",
-            """
-            [1, 2].first(where: {
-                ↓return true
-            })
-            """:
-            """
-            [1, 2].first(where: {
-                true
-            })
-            """
-        ]
+        nonTriggeringExamples: ImplicitReturnRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ImplicitReturnRuleExamples.triggeringExamples,
+        corrections: ImplicitReturnRuleExamples.corrections
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
@@ -68,13 +37,28 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location,
                                                             length: range.length),
-                let outerKindString = file.structureDictionary.kinds(forByteOffset: byteRange.location).last?.kind,
-                let outerKind = SwiftExpressionKind(rawValue: outerKindString),
-                [.call, .argument, .closure].contains(outerKind) else {
+                let outerKindString = file.structureDictionary.kinds(forByteOffset: byteRange.location).last?.kind
+                else {
                     return nil
             }
 
-            return result.range(at: 1)
+            func isKindIncluded(_ kind: ImplicitReturnConfiguration.ReturnKind) -> Bool {
+                return self.configuration.isKindIncluded(kind)
+            }
+
+            if let outerKind = SwiftExpressionKind(rawValue: outerKindString),
+                isKindIncluded(.closure),
+                [.call, .argument, .closure].contains(outerKind) {
+                    return result.range(at: 1)
+            }
+
+            if let outerKind = SwiftDeclarationKind(rawValue: outerKindString),
+                (isKindIncluded(.function) && SwiftDeclarationKind.functionKinds.contains(outerKind)) ||
+                (isKindIncluded(.getter) && SwiftDeclarationKind.variableKinds.contains(outerKind)) {
+                    return result.range(at: 1)
+            }
+
+            return nil
         }
     }
 }

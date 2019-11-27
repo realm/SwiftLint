@@ -165,7 +165,7 @@ struct LintableFilesVisitor {
         // This `reduce` converts that structure into a [File: Arguments] argument lookup table.
         return database.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
             if let file = entry["file"] as? String, let arguments = entry["arguments"] as? [String] {
-                commands[file] = arguments
+                commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
             }
         }
     }

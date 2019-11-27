@@ -59,7 +59,7 @@ struct AnalyzeOptions: OptionsProtocol {
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, enableAllRules: enableAllRules, autocorrect: autocorrect, compilerLogPath: compilerLogPath, compileCommands: compileCommands)
+            return self.init(paths: allPaths, configurationFiles: configurationFiles, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, enableAllRules: enableAllRules, autocorrect: autocorrect, compilerLogPath: compilerLogPath, compileCommands: compileCommands)
             // swiftlint:enable line_length
         }}}}}}}}}}}}}
     }

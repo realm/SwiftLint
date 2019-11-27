@@ -123,12 +123,6 @@
   todos with an expiration date.  
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
-  
-* Add option to specify a `child_config` / `parent_config` file
-  (local or remote) in any SwiftLint configuration file.
-  Allow passing multiple configuration files via the command line.  
-  [Frederick Pietschmann](https://github.com/fredpi)
-  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 * Support compilation databases for `swiftlint analayze`.  
   [kastiglione](https://github.com/kastiglione)
@@ -1622,7 +1616,11 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* None.
+* Add option to specify a `child_config` / `parent_config` file
+  (local or remote) in any SwiftLint configuration file.
+  Allow passing multiple configuration files via the command line.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 #### Bug Fixes
 

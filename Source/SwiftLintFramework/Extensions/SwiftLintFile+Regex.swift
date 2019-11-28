@@ -127,9 +127,9 @@ extension SwiftLintFile {
         return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
     }
 
-    internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+    internal func match(pattern: String, range: NSRange? = nil, captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
         return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
-            (textCheckingResult.range, syntaxKinds)
+            (textCheckingResult.range(at: captureGroup), syntaxKinds)
         }
     }
 
@@ -208,8 +208,9 @@ extension SwiftLintFile {
      */
     internal func match(pattern: String,
                         excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
-                        range: NSRange? = nil) -> [NSRange] {
-        return match(pattern: pattern, range: range)
+                        range: NSRange? = nil,
+                        captureGroup: Int = 0) -> [NSRange] {
+        return match(pattern: pattern, range: range, captureGroup: captureGroup)
             .filter { syntaxKinds.isDisjoint(with: $0.1) }
             .map { $0.0 }
     }

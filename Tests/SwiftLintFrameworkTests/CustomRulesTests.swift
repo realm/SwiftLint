@@ -112,9 +112,18 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    private func getCustomRules(_ extraConfig: [String: String] = [:]) -> (RegexConfiguration, CustomRules) {
-        var config = ["regex": "pattern",
-                      "match_kinds": "comment"]
+    func testCustomRulesCaptureGroup() {
+        let (_, customRules) = getCustomRules(["regex": #"\ba\s+(\w+)"#,
+                                               "capture_group": 1])
+        let violations = customRules.validate(file: getTestTextFile())
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations[0].location.line, 2)
+        XCTAssertEqual(violations[0].location.character, 6)
+    }
+
+    private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (RegexConfiguration, CustomRules) {
+        var config: [String: Any] = ["regex": "pattern",
+                                     "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }
 
         var regexConfig = RegexConfiguration(identifier: "custom")

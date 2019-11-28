@@ -22,6 +22,10 @@
   full configuration details regardless of your terminal width.  
   [Optional Endeavors](https://github.com/optionalendeavors)
 
+* Add `capture_group` option to `custom_rules` for more fine-grained placement
+  of the location marker for violating code.  
+  [pyrtsa](https://github.com/pyrtsa)
+
 #### Bug Fixes
 
 * None.

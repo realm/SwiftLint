@@ -10,6 +10,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var excluded: NSRegularExpression?
     public var matchKinds = SyntaxKind.allKinds
     public var severityConfiguration = SeverityConfiguration(.warning)
+    public var captureGroup: Int = 0
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
@@ -73,6 +74,12 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
+        }
+        if let captureGroup = configurationDict["capture_group"] as? Int {
+            guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
+                throw ConfigurationError.unknownConfiguration
+            }
+            self.captureGroup = captureGroup
         }
     }
 

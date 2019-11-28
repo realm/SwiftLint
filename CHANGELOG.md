@@ -23,6 +23,11 @@
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
 
+* Add `capture_group` option to `custom_rules` for more fine-grained placement
+  of the location marker for violating code.  
+  [pyrtsa](https://github.com/pyrtsa)
+  [#2982](https://github.com/realm/SwiftLint/pull/2982)
+
 #### Bug Fixes
 
 * Fix false positive for LetVarWhitespaceRule.  

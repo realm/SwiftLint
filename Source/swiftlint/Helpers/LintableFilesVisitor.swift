@@ -160,7 +160,7 @@ struct LintableFilesVisitor {
             return nil
         }
 
-        // Convert the compilation database into dictionary, with source paths as keys and compiler arguments as values.
+        // Convert the compilation database to a dictionary, with source files as keys and compiler arguments as values.
         //
         // Compilation databases are an array of dictionaries. Each dict has "file" and "arguments" keys.
         return compileDB.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in

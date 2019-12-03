@@ -33,6 +33,10 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2953](https://github.com/realm/SwiftLint/issues/2953)
 
+* Support compilation databases for `swiftlint analayze`.  
+  [kastiglione](https://github.com/kastiglione)
+  [#2962](https://github.com/realm/SwiftLint/issues/2962)
+
 ## 0.37.0: Double Load
 
 #### Breaking

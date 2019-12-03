@@ -25,6 +25,37 @@ struct CompilerArgumentsExtractor {
 
         return parseCLIArguments(compilerInvocation)
     }
+
+    /**
+     Filters compiler arguments from `xcodebuild` to something that SourceKit/Clang will accept.
+
+     - parameter args: Compiler arguments, as parsed from `xcodebuild`.
+
+     - returns: Filtered compiler arguments.
+     */
+    static func filterCompilerArguments(_ args: [String]) -> [String] {
+        var args = args
+        args.append(contentsOf: ["-D", "DEBUG"])
+        var shouldContinueToFilterArguments = true
+        while shouldContinueToFilterArguments {
+            (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
+        }
+        return args.filter {
+            ![
+                "-parseable-output",
+                "-incremental",
+                "-serialize-diagnostics",
+                "-emit-dependencies"
+            ].contains($0)
+        }.map {
+            if $0 == "-O" {
+                return "-Onone"
+            } else if $0 == "-DNDEBUG=1" {
+                return "-DDEBUG=1"
+            }
+            return $0
+        }
+    }
 }
 
 // MARK: - Private
@@ -66,7 +97,7 @@ private func parseCLIArguments(_ string: String) -> [String] {
         _ = scanner.scanString("\"")
         didStart.toggle()
     }
-    return filter(arguments:
+    return CompilerArgumentsExtractor.filterCompilerArguments(
         str.trimmingCharacters(in: .whitespaces)
             .replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder)
             .components(separatedBy: " ")
@@ -90,37 +121,6 @@ private func partiallyFilter(arguments args: [String]) -> ([String], Bool) {
     args.remove(at: args.index(after: indexOfFlagToRemove))
     args.remove(at: indexOfFlagToRemove)
     return (args, true)
-}
-
-/**
- Filters compiler arguments from `xcodebuild` to something that SourceKit/Clang will accept.
-
- - parameter args: Compiler arguments, as parsed from `xcodebuild`.
-
- - returns: Filtered compiler arguments.
- */
-private func filter(arguments args: [String]) -> [String] {
-    var args = args
-    args.append(contentsOf: ["-D", "DEBUG"])
-    var shouldContinueToFilterArguments = true
-    while shouldContinueToFilterArguments {
-        (args, shouldContinueToFilterArguments) = partiallyFilter(arguments: args)
-    }
-    return args.filter {
-        ![
-            "-parseable-output",
-            "-incremental",
-            "-serialize-diagnostics",
-            "-emit-dependencies"
-        ].contains($0)
-    }.map {
-        if $0 == "-O" {
-            return "-Onone"
-        } else if $0 == "-DNDEBUG=1" {
-            return "-DDEBUG=1"
-        }
-        return $0
-    }
 }
 
 private extension Array where Element == String {

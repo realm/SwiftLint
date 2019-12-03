@@ -23,6 +23,10 @@
   [Dan Loman](https://github.com/namolnad)
   [#727](https://github.com/realm/SwiftLint/issues/727)
 
+* Support compilation databases for `swiftlint analayze`.  
+  [kastiglione](https://github.com/kastiglione)
+  [#2962](https://github.com/realm/SwiftLint/issues/2962)
+
 #### Bug Fixes
 
 * Fix false positive for LetVarWhitespaceRule.  
@@ -33,9 +37,9 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#2953](https://github.com/realm/SwiftLint/issues/2953)
 
-* Support compilation databases for `swiftlint analayze`.  
-  [kastiglione](https://github.com/kastiglione)
-  [#2962](https://github.com/realm/SwiftLint/issues/2962)
+* Fixed false positive in `opening_brace` rule on anonymous closure.  
+  [Andrey Uryadov](https://github.com/a-25)
+  [#2879](https://github.com/realm/SwiftLint/issues/2879)
 
 ## 0.37.0: Double Load
 
@@ -93,9 +97,7 @@
 
 #### Bug Fixes
 
-* Fixed false positive in `opening_brace` rule on anonymous closure.  
-  [Andrey Uryadov](https://github.com/a-25)
-  [#2879](https://github.com/realm/SwiftLint/issues/2879)
+* None.
 
 ## 0.36.0: 👕👚👗
 

@@ -156,15 +156,20 @@ struct LintableFilesVisitor {
     private static func loadCompileCommands(_ path: String) -> [String: [String]]? {
         guard let jsonContents = FileManager.default.contents(atPath: path),
             let object = try? JSONSerialization.jsonObject(with: jsonContents),
-            let database = object as? [[String: Any]] else {
+            let compileDB = object as? [[String: Any]] else {
             return nil
         }
 
-        // Convert compile_commands.json into a structure convenient for subscripting.
-        // Compile commands are an array of dictionaries. Each dict has a key for "file", and a key for "arguments".
-        // This `reduce` converts that structure into a [File: Arguments] argument lookup table.
-        return database.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
-            if let file = entry["file"] as? String, let arguments = entry["arguments"] as? [String] {
+        // Convert the compilation database into dictionary, with source paths as keys and compiler arguments as values.
+        //
+        // Compilation databases are an array of dictionaries. Each dict has "file" and "arguments" keys.
+        return compileDB.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
+            if let file = entry["file"] as? String, var arguments = entry["arguments"] as? [String] {
+                // Compilation databases include the compiler, but it's left out when sending to SourceKit.
+                if arguments.first == "swiftc" {
+                    arguments.removeFirst()
+                }
+
                 commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
             }
         }

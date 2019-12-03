@@ -15233,6 +15233,15 @@ struct Parent {
 
 ```
 
+```swift
+func f(rect: CGRect) {
+   {
+      let centre = CGPoint(x: rect.midX, y: rect.midY)
+      print(centre)
+   }()
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -15316,6 +15325,34 @@ struct Parent {
 	}
 }
 
+```
+
+```swift
+// Get the current thread's TLS pointer. On first call for a given thread,
+// creates and initializes a new one.
+internal static func getPointer()
+  -> UnsafeMutablePointer<_ThreadLocalStorage>
+{ // <- here
+  return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
+    to: _ThreadLocalStorage.self)
+}
+```
+
+```swift
+func run_Array_method1x(_ N: Int) {
+  let existentialArray = array!
+  for _ in 0 ..< N * 100 {
+    for elt in existentialArray {
+      if !elt.doIt()  {
+        fatalError("expected true")
+      }
+    }
+  }
+}
+
+func run_Array_method2x(_ N: Int) {
+
+}
 ```
 
 </details>

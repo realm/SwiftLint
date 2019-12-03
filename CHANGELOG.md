@@ -93,7 +93,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fixed false positive in `opening_brace` rule on anonymous closure.  
+  [Andrey Uryadov](https://github.com/a-25)
+  [#2879](https://github.com/realm/SwiftLint/issues/2879)
 
 ## 0.36.0: 👕👚👗
 

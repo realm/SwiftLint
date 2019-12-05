@@ -90,11 +90,29 @@ class CommandTests: XCTestCase {
         XCTAssertEqual(Command(string: input), expected)
     }
 
-    func testTrailingCOmment() {
+    func testTrailingComment() {
         let input = "// swiftlint:enable:next rule_id - Comment\n"
         let file = SwiftLintFile(contents: input)
         let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 43, modifier: .next,
                                trailingComment: "Comment")
+        XCTAssertEqual(file.commands(), expected.expand())
+        XCTAssertEqual(Command(string: input), expected)
+    }
+
+    func testTrailingCommentWithUrl() {
+        let input = "// swiftlint:enable:next rule_id - Comment with URL https://github.com/realm/SwiftLint\n"
+        let file = SwiftLintFile(contents: input)
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 87, modifier: .next,
+                               trailingComment: "Comment with URL https://github.com/realm/SwiftLint")
+        XCTAssertEqual(file.commands(), expected.expand())
+        XCTAssertEqual(Command(string: input), expected)
+    }
+
+    func testTrailingCommentUrlOnly() {
+        let input = "// swiftlint:enable:next rule_id - https://github.com/realm/SwiftLint\n"
+        let file = SwiftLintFile(contents: input)
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 70, modifier: .next,
+                               trailingComment: "https://github.com/realm/SwiftLint")
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }

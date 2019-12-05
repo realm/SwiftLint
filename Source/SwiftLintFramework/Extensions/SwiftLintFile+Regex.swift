@@ -61,8 +61,10 @@ extension SwiftLintFile {
         let contents = self.contents.bridge()
         let range = range ?? NSRange(location: 0, length: contents.length)
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment], range: range).compactMap { range in
-            return Command(string: contents, range: range)
+        return match(pattern: pattern, range: range).filter { match in
+            return Set(match.1).isSubset(of: [.comment, .commentURL])
+        }.compactMap { match in
+            return Command(string: contents, range: match.0)
         }.flatMap { command in
             return command.expand()
         }

@@ -201,6 +201,11 @@ private extension SwiftLintFile {
             }
 
             appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+
+            // Return early if all imports are used.
+            if imports.subtracting(usrFragments).isEmpty && !imports.isEmpty {
+                return []
+            }
         }
 
         // Always disallow 'import Swift' because it's available without importing.

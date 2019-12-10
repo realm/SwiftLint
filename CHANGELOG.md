@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Speedup unused_import rule..  
+  [niilohlin](https://github.com/niilohlin)
 
 #### Bug Fixes
 

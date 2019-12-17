@@ -226,7 +226,7 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                return self.match(pattern: #"^(@testable )?import \#(module)\b.*?\n"#).first.map { match in
+                return self.match(pattern: #"^(@testable\s+)?import\s+\#(module)\b.*?\n"#).first.map { match in
                     return (module, match.0)
                 }
             }

@@ -115,6 +115,15 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             dispatchMain()
             """,
             """
+            ↓@_exported import Foundation
+            import Dispatch
+            dispatchMain()
+            """:
+            """
+            import Dispatch
+            dispatchMain()
+            """,
+            """
             ↓import Foundation
             // @objc
             class A {}
@@ -226,7 +235,7 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                return self.match(pattern: #"^(@testable\s+)?import\s+\#(module)\b.*?\n"#).first.map { match in
+                return self.match(pattern: #"^(@.+\s+)?import\s+\#(module)\b.*?\n"#).first.map { match in
                     return (module, match.0)
                 }
             }

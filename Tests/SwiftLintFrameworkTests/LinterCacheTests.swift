@@ -303,7 +303,7 @@ class LinterCacheTests: XCTestCase {
     func testDetectSwiftVersion() {
         #if compiler(>=5.1.3)
             let version = "5.1.3"
-        #if compiler(>=5.1.2)
+        #elseif compiler(>=5.1.2)
             let version = "5.1.2"
         #elseif compiler(>=5.1.1)
             let version = "5.1.1"

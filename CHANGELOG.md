@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix crash in `unused_import` rule when unused imports have trailing
+  comments.  
+  [JP Simard](https://github.com/jpsim)
+  [#2990](https://github.com/realm/SwiftLint/issues/2990)
 
 ## 0.38.0: Toroidal Agitation
 

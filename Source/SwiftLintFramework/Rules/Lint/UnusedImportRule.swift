@@ -13,7 +13,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         kind: .lint,
         nonTriggeringExamples: [
             """
-            import Dispatch
+            import Dispatch // This is used
             dispatchMain()
             """,
             """
@@ -45,7 +45,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             A.dispatchMain()
             """,
             """
-            ↓import Foundation
+            ↓import Foundation // This is unused
             struct A {
               static func dispatchMain() {}
             }
@@ -83,7 +83,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             A.dispatchMain()
             """,
             """
-            ↓import Foundation
+            ↓import Foundation // This is unused
             struct A {
               static func dispatchMain() {}
             }
@@ -225,13 +225,10 @@ private extension SwiftLintFile {
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
-            .map { module in
-                let testableImportRange = contents.range(of: "@testable import \(module)\n")
-                if testableImportRange.location != NSNotFound {
-                    return (module, testableImportRange)
+            .compactMap { module in
+                return self.match(pattern: #"^(@testable )?import \#(module)\b.*?\n"#).first.map { match in
+                    return (module, match.0)
                 }
-
-                return (module, contents.range(of: "import \(module)\n"))
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }

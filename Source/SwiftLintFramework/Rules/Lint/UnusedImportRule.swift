@@ -235,7 +235,12 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                return self.match(pattern: #"^(@.+\s+)?import\s+\#(module)\b.*?\n"#).first.map { match in
+                // We can't use raw string literals because it breaks SourceKit
+                // https://bugs.swift.org/browse/SR-11099
+                // When we require Swift 5.2 or later to build SwiftLint we can switch this back.
+                // let pattern = #"^(@.+\s+)?import\s+\#(module)\b.*?\n"#
+                let pattern = "^(@.+\\s+)?import\\s+\(module)\\b.*?\\n"
+                return self.match(pattern: pattern).first.map { match in
                     return (module, match.0)
                 }
             }

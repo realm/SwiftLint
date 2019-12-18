@@ -24761,7 +24761,7 @@ All imported modules should be required to make the file compile.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-import Dispatch
+import Dispatch // This is used
 dispatchMain()
 ```
 
@@ -24801,7 +24801,7 @@ A.dispatchMain()
 ```
 
 ```swift
-↓import Foundation
+↓import Foundation // This is unused
 struct A {
   static func dispatchMain() {}
 }

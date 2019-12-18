@@ -13,7 +13,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         kind: .lint,
         nonTriggeringExamples: [
             """
-            import Dispatch
+            import Dispatch // This is used
             dispatchMain()
             """,
             """
@@ -45,7 +45,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             A.dispatchMain()
             """,
             """
-            ↓import Foundation
+            ↓import Foundation // This is unused
             struct A {
               static func dispatchMain() {}
             }
@@ -83,7 +83,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             A.dispatchMain()
             """,
             """
-            ↓import Foundation
+            ↓import Foundation // This is unused
             struct A {
               static func dispatchMain() {}
             }
@@ -107,6 +107,15 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """,
             """
             ↓@testable import Foundation
+            import Dispatch
+            dispatchMain()
+            """:
+            """
+            import Dispatch
+            dispatchMain()
+            """,
+            """
+            ↓@_exported import Foundation
             import Dispatch
             dispatchMain()
             """:
@@ -225,13 +234,15 @@ private extension SwiftLintFile {
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
-            .map { module in
-                let testableImportRange = contents.range(of: "@testable import \(module)\n")
-                if testableImportRange.location != NSNotFound {
-                    return (module, testableImportRange)
+            .compactMap { module in
+                // We can't use raw string literals because it breaks SourceKit
+                // https://bugs.swift.org/browse/SR-11099
+                // When we require Swift 5.2 or later to build SwiftLint we can switch this back.
+                // let pattern = #"^(@.+\s+)?import\s+\#(module)\b.*?\n"#
+                let pattern = "^(@.+\\s+)?import\\s+\(module)\\b.*?\n"
+                return self.match(pattern: pattern).first.map { match in
+                    return (module, match.0)
                 }
-
-                return (module, contents.range(of: "import \(module)\n"))
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }

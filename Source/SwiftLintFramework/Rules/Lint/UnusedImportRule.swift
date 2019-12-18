@@ -239,7 +239,7 @@ private extension SwiftLintFile {
                 // https://bugs.swift.org/browse/SR-11099
                 // When we require Swift 5.2 or later to build SwiftLint we can switch this back.
                 // let pattern = #"^(@.+\s+)?import\s+\#(module)\b.*?\n"#
-                let pattern = "^(@.+\\s+)?import\\s+\(module)\\b.*?\\n"
+                let pattern = "^(@.+\\s+)?import\\s+\(module)\\b.*?\n"
                 return self.match(pattern: pattern).first.map { match in
                     return (module, match.0)
                 }

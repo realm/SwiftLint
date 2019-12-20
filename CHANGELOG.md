@@ -17,6 +17,11 @@
   [Sven Münnich](https://github.com/svenmuennich)
   [#2870](https://github.com/realm/SwiftLint/issues/2870)
 
+* Add `--correctable` and `--verbose` arguments to the `rules` command
+  to allow displaying only correctable rules, and to always print the
+  full configuration details regardless of your terminal width.  
+  [Optional Endeavors](https://github.com/optionalendeavors)
+
 #### Bug Fixes
 
 * None.
@@ -413,7 +418,7 @@ This is the last release to support building with Swift 4.2.x.
   [Kevin Randrup](https://github.com/kevinrandrup)
 
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
-  condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 
+  condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST`
   environment variable to test like:
     ```terminal.sh-session
     $ SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST=1 \
@@ -457,7 +462,7 @@ This is the last release to support building with Swift 4.2.x.
   [alvarhansen](https://github.com/alvarhansen)
   [#2746](https://github.com/realm/SwiftLint/issues/2746)
 
-* Don't trigger `file_types_order` violations in files only containing 
+* Don't trigger `file_types_order` violations in files only containing
   extensions.  
   [Sam Rayner](https://github.com/samrayner)
   [#2749](https://github.com/realm/SwiftLint/issues/2749)
@@ -564,7 +569,7 @@ This is the last release to support building with Swift 4.2.x.
   declaring extensions that add protocol conformances with Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2705](https://github.com/realm/SwiftLint/issues/2705)
-  
+
 * Let `disable all` command override `superfluous_disable_command` rule.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2670](https://github.com/realm/SwiftLint/issues/2670)

@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Modified `rules` command to allow displaying only correctable rules, and to always print the full configuration details regardless of your terminal width.
+  [Optional Endeavors](https://github.com/optionalendeavors)
 
 #### Bug Fixes
 
@@ -153,7 +154,7 @@
   using `flatMap` over `map { ... }.reduce([], +)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
-  
+
 * Add autocorrection to `syntactic_sugar`.  
   [Ivan Vavilov](https://github.com/vani2)
 
@@ -167,7 +168,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
 
-* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values 
+* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values
   for camel cased Codable String enum cases.  
   [Marko Pejovic](https://github.com/00FA9A)
   [#2888](https://github.com/realm/SwiftLint/issues/2888)
@@ -354,7 +355,7 @@ This is the last release to support building with Swift 4.2.x.
   [Kevin Randrup](https://github.com/kevinrandrup)
 
 * Make `testSimulateHomebrewTest()` test opt-in because it may fail on unknown
-  condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST` 
+  condition. Set `SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST`
   environment variable to test like:
     ```terminal.sh-session
     $ SWIFTLINT_FRAMEWORK_TEST_ENABLE_SIMULATE_HOMEBREW_TEST=1 \
@@ -398,7 +399,7 @@ This is the last release to support building with Swift 4.2.x.
   [alvarhansen](https://github.com/alvarhansen)
   [#2746](https://github.com/realm/SwiftLint/issues/2746)
 
-* Don't trigger `file_types_order` violations in files only containing 
+* Don't trigger `file_types_order` violations in files only containing
   extensions.  
   [Sam Rayner](https://github.com/samrayner)
   [#2749](https://github.com/realm/SwiftLint/issues/2749)
@@ -505,7 +506,7 @@ This is the last release to support building with Swift 4.2.x.
   declaring extensions that add protocol conformances with Swift 5.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2705](https://github.com/realm/SwiftLint/issues/2705)
-  
+
 * Let `disable all` command override `superfluous_disable_command` rule.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2670](https://github.com/realm/SwiftLint/issues/2670)

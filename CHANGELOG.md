@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* Modified `rules` command to allow displaying only correctable rules, and to always print the full configuration details regardless of your terminal width.
+* Modified `rules` command to allow displaying only correctable rules, and
+  to always print the full configuration details regardless of your terminal 
+  width.
   [Optional Endeavors](https://github.com/optionalendeavors)
 
 #### Bug Fixes

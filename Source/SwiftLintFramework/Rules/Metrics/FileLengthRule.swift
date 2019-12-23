@@ -23,7 +23,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
         func lineCountWithoutComments() -> Int {
             let commentKinds = SyntaxKind.commentKinds
             let lineCount = file.syntaxKindsByLines.filter { kinds in
-                return !Set(kinds).isSubset(of: commentKinds)
+                return kinds.isEmpty || !Set(kinds).isSubset(of: commentKinds)
             }.count
             return lineCount
         }

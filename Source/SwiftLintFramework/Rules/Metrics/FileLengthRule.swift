@@ -25,7 +25,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
             let lineCount = file.syntaxKindsByLines.filter { kinds in
                 return kinds.isEmpty || !Set(kinds).isSubset(of: commentKinds)
             }.count
-            return lineCount
+            return lineCount - 1
         }
 
         var lineCount = file.lines.count

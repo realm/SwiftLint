@@ -30,6 +30,7 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTes
             "[Int]().↓count == 0b00\n",
             "[Int]().↓count == 0o00\n",
             "↓count == 0\n",
+            "[Int]().↓count >= 1\n",
             "[Int]().↓count < 1\n",
             "[Int]().↓count < 0x001\n",
             "[Int]().↓count < 0b1\n",

@@ -5703,6 +5703,26 @@ order.discount == 0
 
 ```
 
+```swift
+[Int]().↓count >= 1
+
+```
+
+```swift
+[Int]().↓count >= 0x001
+
+```
+
+```swift
+[Int]().↓count >= 0b1
+
+```
+
+```swift
+[Int]().↓count >= 0o01
+
+```
+
 </details>
 
 

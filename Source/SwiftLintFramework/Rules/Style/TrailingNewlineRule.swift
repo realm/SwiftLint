@@ -52,7 +52,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
     }
 
     public func correct(file: File) -> [Correction] {
-        guard let count = file.contents.trailingNewlineCount(), count != 1 else {
+        guard let newLineCount = file.contents.trailingNewlineCount(), newLineCount != 1 else {
             return []
         }
         guard let lastLineRange = file.lines.last?.range else {
@@ -62,8 +62,8 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
             return []
         }
 
-        if count >= 1 {
-            let index = file.contents.index(file.contents.endIndex, offsetBy: 1 - count)
+        if newLineCount >= 1 {
+            let index = file.contents.index(file.contents.endIndex, offsetBy: 1 - newLineCount)
             file.write(file.contents[..<index])
         } else {
             file.append("\n")

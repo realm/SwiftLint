@@ -38,7 +38,7 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTes
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "\\bcount\\s*(((==|!=|<|<=|>|>=)\\s*0(\\b|([box][0_]+\\b){1}))|<\\s*(1|0[box]0*1){1}\\b)"
+        let pattern = "\\bcount\\s*(((==|!=|<|<=|>|>=)\\s*0(\\b|([box][0_]+\\b){1}))|(<|>=)\\s*(1|0[box]0*1){1}\\b)"
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,

@@ -21,13 +21,13 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private let typeKinds = SwiftDeclarationKind.typeKinds
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +
-            validate(file: file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: file.structureDictionary)
     }
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard typeKinds.contains(kind),
             let name = dictionary.name,
             let offset = dictionary.nameOffset else {
@@ -37,7 +37,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         return validate(name: name, dictionary: dictionary, file: file, offset: offset)
     }
 
-    private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
+    private func validateTypeAliasesAndAssociatedTypes(in file: SwiftLintFile) -> [StyleViolation] {
         guard SwiftVersion.current < .fourDotOne else {
             return []
         }
@@ -47,14 +47,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             guard tokens.count == 2,
                 let keywordToken = tokens.first,
                 let nameToken = tokens.last,
-                SyntaxKind(rawValue: keywordToken.type) == .keyword,
-                SyntaxKind(rawValue: nameToken.type) == .identifier else {
+                keywordToken.kind == .keyword,
+                nameToken.kind == .identifier else {
                     return []
             }
 
-            let contents = file.contents.bridge()
-            guard let name = contents.substringWithByteRange(start: nameToken.offset,
-                                                             length: nameToken.length) else {
+            guard let name = file.contents(for: nameToken) else {
                 return []
             }
 
@@ -62,8 +60,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(name: String, dictionary: [String: SourceKitRepresentable] = [:], file: File,
-                          offset: Int) -> [StyleViolation] {
+    private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary([:]),
+                          file: SwiftLintFile, offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }
@@ -96,7 +94,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 }
 
 private extension String {
-    func nameStrippingTrailingSwiftUIPreviewProvider(_ dictionary: [String: SourceKitRepresentable]) -> String {
+    func nameStrippingTrailingSwiftUIPreviewProvider(_ dictionary: SourceKittenDictionary) -> String {
         guard dictionary.inheritedTypes.contains("PreviewProvider"),
             hasSuffix("_Previews"),
             let lastPreviewsIndex = lastIndex(of: "_Previews")

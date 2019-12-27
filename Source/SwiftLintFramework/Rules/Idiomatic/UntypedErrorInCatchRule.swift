@@ -102,7 +102,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
             "do {\n    try foo() \n} ↓catch (let error) {}": "do {\n    try foo() \n} catch {}"
         ])
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
@@ -111,14 +111,14 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
         }
     }
 
-    fileprivate func violationRanges(in file: File) -> [NSRange] {
+    fileprivate func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return file.match(pattern: type(of: self).regularExpression,
                           with: [.keyword, .keyword, .identifier])
     }
 }
 
 extension UntypedErrorInCatchRule: CorrectableRule {
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violations = violationRanges(in: file)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }

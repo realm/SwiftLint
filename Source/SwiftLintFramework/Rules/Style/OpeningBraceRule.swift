@@ -3,14 +3,55 @@ import SourceKittenFramework
 
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
-private extension File {
+private extension SwiftLintFile {
     func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
         return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").map {
+                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").compactMap {
+            if isAnonimousClosure(range: $0) {
+                return nil
+            }
             let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
             return ($0, branceRange.location)
         }
+    }
+
+    func isAnonimousClosure(range: NSRange) -> Bool {
+        let contentsBridge = contents.bridge()
+        guard range.location != NSNotFound else {
+            return false
+        }
+        let closureCode = contentsBridge.substring(from: range.location)
+        guard let closingBracketPosition = closingBracket(closureCode) else {
+            return false
+        }
+        let lengthAfterClosingBracket = closureCode.count - closingBracketPosition - 1
+        if lengthAfterClosingBracket <= 0 {
+            return false
+        }
+
+        //First non-whitespace character should be "(" - otherwise it is not an anonymous closure
+        let afterBracketCode = closureCode.substring(from: closingBracketPosition + 1)
+                                            .trimmingCharacters(in: .whitespaces)
+        return afterBracketCode.first == "("
+    }
+
+    func closingBracket(_ closureCode: String) -> Int? {
+        var bracketCount = 0
+        var location = 0
+        for letter in closureCode {
+            if letter == "{" {
+                bracketCount += 1
+            } else if letter == "}" {
+                if bracketCount == 1 {
+                    // The closing bracket found
+                    return location
+                }
+                bracketCount -= 1
+            }
+            location += 1
+        }
+        return nil
     }
 }
 
@@ -36,7 +77,15 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
             "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }",
             "struct Rule {}\n",
-            "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"
+            "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
+            """
+            func f(rect: CGRect) {
+               {
+                  let centre = CGPoint(x: rect.midX, y: rect.midY)
+                  print(centre)
+               }()
+            }
+            """
         ],
         triggeringExamples: [
             "func abc()↓{\n}",
@@ -52,7 +101,33 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             "struct Rule↓{}\n",
             "struct Rule\n↓{\n}\n",
             "struct Rule\n\n\t↓{\n}\n",
-            "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"
+            "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n",
+            """
+            // Get the current thread's TLS pointer. On first call for a given thread,
+            // creates and initializes a new one.
+            internal static func getPointer()
+              -> UnsafeMutablePointer<_ThreadLocalStorage>
+            { // <- here
+              return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
+                to: _ThreadLocalStorage.self)
+            }
+            """,
+            """
+            func run_Array_method1x(_ N: Int) {
+              let existentialArray = array!
+              for _ in 0 ..< N * 100 {
+                for elt in existentialArray {
+                  if !elt.doIt()  {
+                    fatalError("expected true")
+                  }
+                }
+              }
+            }
+
+            func run_Array_method2x(_ N: Int) {
+
+            }
+            """
         ],
         corrections: [
             "struct Rule↓{}\n": "struct Rule {}\n",
@@ -67,7 +142,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -75,7 +150,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.violatingOpeningBraceRanges().filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }

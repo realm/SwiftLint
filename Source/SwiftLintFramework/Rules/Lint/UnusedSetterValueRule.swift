@@ -98,12 +98,13 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let setTokens = file.rangesAndTokens(matching: "\\bset\\b").keywordTokens()
 
         let violatingLocations = setTokens.compactMap { setToken -> Int? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: setToken.offset, structure: file.structure).last,
+            guard let dict = declarations(forByteOffset: setToken.offset,
+                                          structureDictionary: file.structureDictionary).last,
                 let bodyOffset = dict.bodyOffset, let bodyLength = dict.bodyLength,
                 case let contents = file.contents.bridge(),
                 let propertyRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
@@ -155,14 +156,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         }
     }
 
-    private func findNamedArgument(after token: SyntaxToken,
-                                   file: File) -> (name: String, token: SyntaxToken)? {
+    private func findNamedArgument(after token: SwiftLintSyntaxToken,
+                                   file: SwiftLintFile) -> (name: String, token: SwiftLintSyntaxToken)? {
         guard let firstToken = file.syntaxMap.tokens.first(where: { $0.offset > token.offset }),
-            SyntaxKind(rawValue: firstToken.type) == .identifier else {
+            firstToken.kind == .identifier else {
                 return nil
         }
 
-        let declaration = file.structure.structures(forByteOffset: firstToken.offset)
+        let declaration = file.structureDictionary.structures(forByteOffset: firstToken.offset)
             .first(where: { $0.offset == firstToken.offset && $0.length == firstToken.length })
 
         guard let name = declaration?.name else {
@@ -172,13 +173,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         return (name, firstToken)
     }
 
-    private func findGetToken(in range: NSRange, file: File,
-                              propertyStructure: [String: SourceKitRepresentable]) -> SyntaxToken? {
+    private func findGetToken(in range: NSRange, file: SwiftLintFile,
+                              propertyStructure: SourceKittenDictionary) -> SwiftLintSyntaxToken? {
         let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last,
-                propertyStructure.isEqualTo(dict) else {
+            guard let dict = declarations(forByteOffset: token.offset,
+                                          structureDictionary: file.structureDictionary).last,
+                propertyStructure.value.isEqualTo(dict.value) else {
                     return false
             }
 
@@ -187,15 +189,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 
     private func declarations(forByteOffset byteOffset: Int,
-                              structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
+                              structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
 
-        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
+        func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
-            guard let kindString = dictionary.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString),
+            guard let kind = dictionary.declarationKind,
                 let bodyOffset = dictionary.bodyOffset,
                 let bodyLength = dictionary.bodyLength,
                 case let byteRange = NSRange(location: bodyOffset, length: bodyLength),
@@ -212,7 +213,9 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
             }
         }
 
-        for dictionary in structure.dictionary.substructure {
+        let dict = structureDictionary
+
+        for dictionary in dict.substructure {
             parse(dictionary: dictionary, parentKind: nil)
         }
 
@@ -220,14 +223,12 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     }
 }
 
-private extension Array where Element == (NSRange, [SyntaxToken]) {
-    func keywordTokens() -> [SyntaxToken] {
+private extension Array where Element == (NSRange, [SwiftLintSyntaxToken]) {
+    func keywordTokens() -> [SwiftLintSyntaxToken] {
         return compactMap { _, tokens in
-            guard let token = tokens.last,
-                SyntaxKind(rawValue: token.type) == .keyword else {
-                    return nil
+            guard let token = tokens.last, token.kind == .keyword else {
+                return nil
             }
-
             return token
         }
     }

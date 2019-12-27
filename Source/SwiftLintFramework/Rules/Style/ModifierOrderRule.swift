@@ -30,9 +30,9 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         triggeringExamples: ModifierOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
         }
@@ -56,26 +56,15 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         }
     }
 
-    public func correct(file: File) -> [Correction] {
-        return correct(file: file, dictionary: file.structure.dictionary)
-    }
-
-    private func correct(file: File, dictionary: [String: SourceKitRepresentable]) -> [Correction] {
-        return dictionary.substructure.flatMap { subDict -> [Correction] in
-            var corrections = correct(file: file, dictionary: subDict)
-
-            if let kindString = subDict.kind,
-                let kind = KindType(rawValue: kindString) {
-                corrections += correct(file: file, kind: kind, dictionary: subDict)
-            }
-
-            return corrections
+    public func correct(file: SwiftLintFile) -> [Correction] {
+        return file.structureDictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return correct(file: file, kind: kind, dictionary: subDict)
         }
     }
-
-    private func correct(file: File,
+    private func correct(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [Correction] {
+                         dictionary: SourceKittenDictionary) -> [Correction] {
         guard let offset = dictionary.offset else { return [] }
         let originalContents = file.contents.bridge()
         let violatingRanges = violatingModifiers(dictionary: dictionary)
@@ -144,7 +133,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 
     private func violatingModifiers(
-        dictionary: [String: SourceKitRepresentable]
+        dictionary: SourceKittenDictionary
     ) -> [(preferredModifier: ModifierDescription, declaredModifier: ModifierDescription)] {
         let violatableModifiers = self.violatableModifiers(declaredModifiers: dictionary.modifierDescriptions)
         let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
@@ -156,7 +145,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     }
 }
 
-private extension Dictionary where Key == String, Value == SourceKitRepresentable {
+private extension SourceKittenDictionary {
     var modifierDescriptions: [ModifierDescription] {
         let staticKinds = [SwiftDeclarationKind.functionMethodClass, .functionMethodStatic, .varClass, .varStatic]
         let staticKindsAndOffsets = kindsAndOffsets(in: staticKinds).map { [$0] } ?? []
@@ -191,14 +180,14 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
             }
     }
 
-    private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> [String: SourceKitRepresentable]? {
-        guard let kind = kind, let offset = offset,
-            let declarationKind = SwiftDeclarationKind(rawValue: kind),
+    private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> SourceKittenDictionary? {
+        guard let offset = offset,
+            let declarationKind = declarationKind,
             declarationKinds.contains(declarationKind) else {
                 return nil
         }
 
-        return ["key.kind": kind, "key.offset": Int64(offset)]
+        return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset)])
     }
 }
 

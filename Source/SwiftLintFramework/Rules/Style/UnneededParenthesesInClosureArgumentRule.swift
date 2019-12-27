@@ -59,7 +59,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -67,7 +67,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         }
     }
 
-    private func violationRanges(file: File) -> [NSRange] {
+    private func violationRanges(file: SwiftLintFile) -> [NSRange] {
         let capturesPattern = "(?:\\[[^\\]]+\\])?"
         let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+?\\))\\s*(in|->)"
         let contents = file.contents.bridge()
@@ -84,13 +84,11 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
 
             let parametersTokens = file.syntaxMap.tokens(inByteRange: parametersByteRange)
             let parametersAreValid = parametersTokens.allSatisfy { token in
-                let kind = SyntaxKind(rawValue: token.type)
-                if kind == .identifier {
+                if token.kind == .identifier {
                     return true
                 }
 
-                return kind == .keyword &&
-                    file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) == "_"
+                return token.kind == .keyword && file.contents(for: token) == "_"
             }
 
             let inKinds = Set(file.syntaxMap.kinds(inByteRange: inByteRange))
@@ -103,7 +101,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()

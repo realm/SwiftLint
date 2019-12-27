@@ -20,8 +20,8 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule
         ].map(wrapExample)
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
         }

@@ -74,8 +74,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
 
     private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\]")
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let contents = file.contents.bridge()
         guard kind == .closure,
             let offset = dictionary.offset,
@@ -131,20 +131,17 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             }
     }
 
-    private func identifierStrings(in file: File, byteRange: NSRange) -> Set<String> {
-        let contents = file.contents.bridge()
+    private func identifierStrings(in file: SwiftLintFile, byteRange: NSRange) -> Set<String> {
         let identifiers = file.syntaxMap
             .tokens(inByteRange: byteRange)
             .compactMap { token -> String? in
-                guard token.type == SyntaxKind.identifier.rawValue || token.type == SyntaxKind.keyword.rawValue,
-                    let range = contents.byteRangeToNSRange(start: token.offset, length: token.length)
-                    else { return nil }
-                return contents.substring(with: range)
+                guard token.kind == .identifier || token.kind == .keyword else { return nil }
+                return file.contents(for: token)
             }
         return Set(identifiers)
     }
 
-    private func violations(in file: File, references: [(String, Int)],
+    private func violations(in file: SwiftLintFile, references: [(String, Int)],
                             identifiers: Set<String>, captureListRange: NSRange) -> [StyleViolation] {
         return references.compactMap { reference, location -> StyleViolation? in
             guard !identifiers.contains(reference) else { return nil }

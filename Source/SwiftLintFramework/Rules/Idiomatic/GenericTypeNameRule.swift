@@ -52,17 +52,17 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private let shouldUseLegacyImplementation = SwiftVersion.current < .fourDotTwo
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         if shouldUseLegacyImplementation {
-            return validate(file: file, dictionary: file.structure.dictionary) +
+            return validate(file: file, dictionary: file.structureDictionary) +
                 validateGenericTypeAliases(in: file)
         } else {
-            return validate(file: file, dictionary: file.structure.dictionary)
+            return validate(file: file, dictionary: file.structureDictionary)
         }
     }
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         if shouldUseLegacyImplementation {
             let types = genericTypesForType(in: file, kind: kind, dictionary: dictionary) +
                 genericTypesForFunction(in: file, kind: kind, dictionary: dictionary)
@@ -79,7 +79,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(name: String, file: File, offset: Int) -> [StyleViolation] {
+    private func validate(name: String, file: SwiftLintFile, offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }
@@ -120,7 +120,7 @@ extension GenericTypeNameRule {
     private static let genericTypePattern = "<(\\s*\\w.*?)>"
     private static let genericTypeRegex = regex(genericTypePattern)
 
-    private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
+    private func validateGenericTypeAliases(in file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "typealias\\s+\\w+?\\s*" + type(of: self).genericTypePattern + "\\s*="
         return file.match(pattern: pattern).flatMap { range, tokens -> [(String, Int)] in
             guard tokens.first == .keyword,
@@ -135,8 +135,8 @@ extension GenericTypeNameRule {
         }.flatMap { validate(name: $0.0, file: file, offset: $0.1) }
     }
 
-    private func genericTypesForType(in file: File, kind: SwiftDeclarationKind,
-                                     dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
+    private func genericTypesForType(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                     dictionary: SourceKittenDictionary) -> [(String, Int)] {
         guard SwiftDeclarationKind.typeKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
@@ -154,8 +154,8 @@ extension GenericTypeNameRule {
         return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 
-    private func genericTypesForFunction(in file: File, kind: SwiftDeclarationKind,
-                                         dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
+    private func genericTypesForFunction(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                         dictionary: SourceKittenDictionary) -> [(String, Int)] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
@@ -171,7 +171,7 @@ extension GenericTypeNameRule {
         return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 
-    private func minParameterOffset(parameters: [[String: SourceKitRepresentable]], file: File) -> Int {
+    private func minParameterOffset(parameters: [SourceKittenDictionary], file: SwiftLintFile) -> Int {
         let offsets = parameters.compactMap { param -> Int? in
             return param.offset.flatMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location
@@ -181,7 +181,8 @@ extension GenericTypeNameRule {
         return offsets.min() ?? .max
     }
 
-    private func extractTypes(fromGenericConstraint constraint: String, offset: Int, file: File) -> [(String, Int)] {
+    private func extractTypes(fromGenericConstraint constraint: String, offset: Int,
+                              file: SwiftLintFile) -> [(String, Int)] {
         guard let beforeWhere = constraint.components(separatedBy: "where").first else {
             return []
         }

@@ -42,9 +42,9 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
 
     // MARK: - ASTRule
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -54,13 +54,13 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
 
     // MARK: - SubstitutionCorrectableASTRule
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File,
+    public func violationRanges(in file: SwiftLintFile,
                                 kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .call,
             let bodyOffset = dictionary.bodyOffset,
             let nameOffset = dictionary.nameOffset,
@@ -76,7 +76,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
 
         // Don't trigger if it's a single parameter trailing closure without parens
         if let subDict = dictionary.substructure.last,
-            subDict.kind.flatMap(SwiftExpressionKind.init) == .closure,
+            subDict.expressionKind == .closure,
             let closureBodyOffset = subDict.bodyOffset,
             closureBodyOffset == bodyOffset {
             return []

@@ -23,8 +23,8 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance else {
             return []
         }
@@ -34,7 +34,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         guard isOutlet else { return [] }
 
         // Check if private
-        let isPrivate = isPrivateLevel(identifier: dictionary.accessibility)
+        let isPrivate = dictionary.accessibility?.isPrivate ?? false
         let isPrivateSet = isPrivateLevel(identifier: dictionary.setterAccessibility)
 
         if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {

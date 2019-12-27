@@ -16,16 +16,17 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: TypeContentsOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let substructures = file.structure.dictionary.substructure
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let dict = file.structureDictionary
+        let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
             violations.append(contentsOf: validateTypeSubstructure(substructure, in: file))
         }
     }
 
     private func validateTypeSubstructure(
-        _ substructure: [String: SourceKitRepresentable],
-        in file: File
+        _ substructure: SourceKittenDictionary,
+        in file: SwiftLintFile
     ) -> [StyleViolation] {
         let typeContentOffsets = self.typeContentOffsets(in: substructure)
         let orderedTypeContentOffsets = typeContentOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
@@ -68,7 +69,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         return violations
     }
 
-    private func typeContentOffsets(in typeStructure: [String: SourceKitRepresentable]) -> [TypeContentOffset] {
+    private func typeContentOffsets(in typeStructure: SourceKittenDictionary) -> [TypeContentOffset] {
         return typeStructure.substructure.compactMap { typeContentStructure in
             guard let typeContent = self.typeContent(for: typeContentStructure) else { return nil }
             return (typeContent, typeContentStructure.offset!)
@@ -76,8 +77,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
-    private func typeContent(for typeContentStructure: [String: SourceKitRepresentable]) -> TypeContent? {
-        guard let typeContentKind = SwiftDeclarationKind(rawValue: typeContentStructure.kind!) else { return nil }
+    private func typeContent(for typeContentStructure: SourceKittenDictionary) -> TypeContent? {
+        guard let typeContentKind = typeContentStructure.declarationKind else { return nil }
 
         switch typeContentKind {
         case .enumcase, .enumelement:

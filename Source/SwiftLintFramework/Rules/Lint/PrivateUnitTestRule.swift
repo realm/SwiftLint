@@ -1,25 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-private extension AccessControlLevel {
-    init?(_ dictionary: [String: SourceKitRepresentable]) {
-        guard let accessibility = dictionary.accessibility,
-            let acl = AccessControlLevel(rawValue: accessibility) else { return nil }
-        self = acl
-    }
-}
-
-private extension Dictionary where Key: ExpressibleByStringLiteral {
+private extension SourceKittenDictionary {
     var superclass: String? {
-        guard let kindString = self.kind,
-            let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class,
+        guard declarationKind == .class,
             let className = inheritedTypes.first else { return nil }
         return className
     }
 
-    var parameters: [[String: SourceKitRepresentable]] {
+    var parameters: [SourceKittenDictionary] {
         return substructure.filter { dict in
-            guard let kind = dict.kind.flatMap(SwiftDeclarationKind.init) else {
+            guard let kind = dict.declarationKind else {
                 return false
             }
 
@@ -112,8 +103,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .class && isTestClass(dictionary) else { return [] }
 
         /* It's not strictly necessary to check for `private` on classes because a
@@ -134,7 +125,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         }
     }
 
-    private func isTestClass(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isTestClass(_ dictionary: SourceKittenDictionary) -> Bool {
         guard let regex = configuration.regex, let superclass = dictionary.superclass else {
             return false
         }
@@ -142,9 +133,9 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         return !regex.matches(in: superclass, options: [], range: range).isEmpty
     }
 
-    private func validateFunction(file: File,
-                                  dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+    private func validateFunction(file: SwiftLintFile,
+                                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        guard let kind = dictionary.declarationKind,
             kind == .functionMethodInstance,
             let name = dictionary.name, name.hasPrefix("test"),
             dictionary.parameters.isEmpty else {
@@ -153,9 +144,9 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         return validateAccessControlLevel(file: file, dictionary: dictionary)
     }
 
-    private func validateAccessControlLevel(file: File,
-                                            dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let acl = AccessControlLevel(dictionary), acl.isPrivate,
+    private func validateAccessControlLevel(file: SwiftLintFile,
+                                            dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        guard let acl = dictionary.accessibility, acl.isPrivate,
             !dictionary.enclosedSwiftAttributes.contains(.objc)
             else { return [] }
         let offset = dictionary.offset ?? 0

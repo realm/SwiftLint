@@ -34,7 +34,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrec
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -42,7 +42,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrec
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let voidPattern = "\\(Void\\)"
         let pattern = voidPattern + "\\s*(throws\\s+)?->"
         let excludingPattern = "->\\s*" + pattern // excludes curried functions
@@ -55,7 +55,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrec
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "()")
     }
 }

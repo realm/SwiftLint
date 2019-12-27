@@ -39,20 +39,20 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        var violations = validateAttributes(file: file, dictionary: file.structure.dictionary)
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        var violations = validateAttributes(file: file, dictionary: file.structureDictionary)
         violations += validateConditions(file: file)
         violations.sort(by: { $0.location < $1.location })
 
         return violations
     }
 
-    private func validateConditions(file: File) -> [StyleViolation] {
+    private func validateConditions(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "#available\\s*\\([^\\(]+\\)"
 
         return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
             guard let availabilityToken = tokens.first,
-                SyntaxKind(rawValue: availabilityToken.type) == .keyword,
+                availabilityToken.kind == .keyword,
                 let tokenRange = file.contents.bridge().byteRangeToNSRange(start: availabilityToken.offset,
                                                                            length: availabilityToken.length) else {
                     return []
@@ -64,22 +64,16 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         }
     }
 
-    private func validateAttributes(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            var violations = validateAttributes(file: file, dictionary: subDict)
-
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
-                violations += validateAttributes(file: file, kind: kind, dictionary: subDict)
-            }
-
-            return violations
+    private func validateAttributes(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        return dictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return validateAttributes(file: file, kind: kind, dictionary: subDict)
         }
     }
 
-    private func validateAttributes(file: File,
+    private func validateAttributes(file: SwiftLintFile,
                                     kind: SwiftDeclarationKind,
-                                    dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                                    dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let attributes = dictionary.swiftAttributes.filter {
             $0.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .available
         }
@@ -98,7 +92,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         }.unique
     }
 
-    private func validate(range: NSRange, file: File, violationType: String,
+    private func validate(range: NSRange, file: SwiftLintFile, violationType: String,
                           byteOffsetToReport: Int) -> [StyleViolation] {
         let platformToConfiguredMinVersion = self.platformToConfiguredMinVersion
         let allPlatforms = "(?:" + platformToConfiguredMinVersion.keys.joined(separator: "|") + ")"

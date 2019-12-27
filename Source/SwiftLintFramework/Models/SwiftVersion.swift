@@ -48,12 +48,12 @@ public extension SwiftVersion {
         }
 
         if !Request.disableSourceKit,
-            case let dynamicCallableFile = File(contents: "@dynamicCallable"),
-            dynamicCallableFile.syntaxMap.tokens.compactMap({ SyntaxKind(rawValue: $0.type) }) == [.attributeID] {
+            case let dynamicCallableFile = SwiftLintFile(contents: "@dynamicCallable"),
+            dynamicCallableFile.syntaxMap.tokens.compactMap({ $0.kind }) == [.attributeID] {
             return .five
         }
 
-        let file = File(contents: """
+        let file = SwiftLintFile(contents: """
             #if swift(>=4.2.0)
                 let version = "4.2.0"
             #elseif swift(>=4.1.50)
@@ -100,12 +100,10 @@ public extension SwiftVersion {
                 let version = "3.0.0"
             #endif
             """)
-        func isString(token: SyntaxToken) -> Bool {
-            return token.type == SyntaxKind.string.rawValue
-        }
         if !Request.disableSourceKit,
-            let decl = file.structure.kinds().first(where: { $0.kind == SwiftDeclarationKind.varGlobal.rawValue }),
-            let token = file.syntaxMap.tokens(inByteRange: decl.byteRange).first(where: isString ) {
+            let decl = file.structureDictionary.kinds()
+                .first(where: { $0.kind == SwiftDeclarationKind.varGlobal.rawValue }),
+            let token = file.syntaxMap.tokens(inByteRange: decl.byteRange).first(where: { $0.kind == .string }) {
             return .init(rawValue: file.contents.substring(from: token.offset + 1, length: token.length - 2))
         }
 

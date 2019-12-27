@@ -18,7 +18,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     )
 
     // swiftlint:disable:next function_body_length
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
             let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 
@@ -85,34 +85,35 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func extensionsSubstructures(
-        in file: File,
-        mainTypeSubstructure: [String: SourceKitRepresentable]
-    ) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter { substructure in
+        in file: SwiftLintFile,
+        mainTypeSubstructure: SourceKittenDictionary
+    ) -> [SourceKittenDictionary] {
+        let dict = file.structureDictionary
+        return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
-            return substructure.bridge() != mainTypeSubstructure.bridge() &&
+            return substructure.offset != mainTypeSubstructure.offset &&
                 kind.contains(SwiftDeclarationKind.extension.rawValue)
         }
     }
 
     private func supportingTypesSubstructures(
-        in file: File,
-        mainTypeSubstructure: [String: SourceKitRepresentable]
-    ) -> [[String: SourceKitRepresentable]] {
+        in file: SwiftLintFile,
+        mainTypeSubstructure: SourceKittenDictionary
+    ) -> [SourceKittenDictionary] {
         var supportingTypeKinds = SwiftDeclarationKind.typeKinds
         supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
 
-        return file.structure.dictionary.substructure.filter { substructure in
-            guard let kind = substructure.kind else { return false }
-            guard let declarationKind = SwiftDeclarationKind(rawValue: kind) else { return false }
+        let dict = file.structureDictionary
+        return dict.substructure.filter { substructure in
+            guard let declarationKind = substructure.declarationKind else { return false }
 
-            return substructure.bridge() != mainTypeSubstructure.bridge() &&
+            return substructure.offset != mainTypeSubstructure.offset &&
                 supportingTypeKinds.contains(declarationKind)
         }
     }
 
-    private func mainTypeSubstructure(in file: File) -> [String: SourceKitRepresentable]? {
-        let dict = file.structure.dictionary
+    private func mainTypeSubstructure(in file: SwiftLintFile) -> SourceKittenDictionary? {
+        let dict = file.structureDictionary
 
         guard let filePath = file.path else {
             return self.mainTypeSubstructure(in: dict)
@@ -120,20 +121,19 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
         let fileName = URL(fileURLWithPath: filePath).lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return self.mainTypeSubstructure(in: file.structure.dictionary)
+            return self.mainTypeSubstructure(in: file.structureDictionary)
         }
 
         // specify type with name matching the files name as main type
         return mainTypeSubstructure
     }
 
-    private func mainTypeSubstructure(in dict: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? {
+    private func mainTypeSubstructure(in dict: SourceKittenDictionary) -> SourceKittenDictionary? {
         let priorityKinds: [SwiftDeclarationKind] = [.class, .enum, .struct]
-        let priorityKindRawValues = priorityKinds.map { $0.rawValue }
 
         let priorityKindSubstructures = dict.substructure.filter { substructure in
-            guard let kind = substructure.kind else { return false }
-            return priorityKindRawValues.contains(kind)
+            guard let kind = substructure.declarationKind else { return false }
+            return priorityKinds.contains(kind)
         }
 
         let substructuresSortedByBodyLength = priorityKindSubstructures.sorted { lhs, rhs in

@@ -21,8 +21,8 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
         ].map(wrapExample)
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance,
             case let attributes = dictionary.enclosedSwiftAttributes,
             attributes.contains(.iboutlet),

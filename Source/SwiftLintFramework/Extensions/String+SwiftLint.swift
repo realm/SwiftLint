@@ -22,9 +22,8 @@ extension String {
         return self == lowercased()
     }
 
-    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: [String: SourceKitRepresentable]) -> String {
-        if let aclString = dict.accessibility,
-           let acl = AccessControlLevel(identifier: aclString),
+    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
+        if let acl = dict.accessibility,
             acl.isPrivate && first == "_" {
             return String(self[index(after: startIndex)...])
         }

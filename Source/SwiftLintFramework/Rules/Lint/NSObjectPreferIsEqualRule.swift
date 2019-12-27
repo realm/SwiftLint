@@ -14,17 +14,17 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         triggeringExamples: NSObjectPreferIsEqualRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return objcVisibleClasses(in: file).flatMap { violations(in: file, for: $0) }
     }
 
     // MARK: - Private
 
-    private func objcVisibleClasses(in file: File) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter { dictionary in
-            guard
-                let kind = dictionary.kind,
-                SwiftDeclarationKind(rawValue: kind) == .class
+    private func objcVisibleClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
+        let dict = file.structureDictionary
+
+        return dict.substructure.filter { dictionary in
+            guard dictionary.declarationKind == .class
             else { return false }
             let isDirectNSObjectSubclass = dictionary.inheritedTypes.contains("NSObject")
             let isMarkedObjc = dictionary.enclosedSwiftAttributes.contains(.objc)
@@ -32,8 +32,8 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         }
     }
 
-    private func violations(in file: File,
-                            for dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func violations(in file: SwiftLintFile,
+                            for dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let typeName = dictionary.name else { return [] }
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard
@@ -46,10 +46,10 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         }
     }
 
-    private func isDoubleEqualsMethod(_ method: [String: SourceKitRepresentable],
+    private func isDoubleEqualsMethod(_ method: SourceKittenDictionary,
                                       onType typeName: String) -> Bool {
         guard
-            let kind = method.kind.flatMap(SwiftDeclarationKind.init),
+            let kind = method.declarationKind,
             let name = method.name,
             kind == .functionMethodStatic,
             name == "==(_:_:)",
@@ -58,7 +58,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
         return true
     }
 
-    private func areAllArguments(toMethod method: [String: SourceKitRepresentable],
+    private func areAllArguments(toMethod method: SourceKittenDictionary,
                                  ofType typeName: String) -> Bool {
         return method.enclosedVarParameters.allSatisfy { param in
             param.typeName == typeName

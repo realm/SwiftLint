@@ -57,8 +57,8 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset,
             [.class, .struct].contains(kind),
             dictionary.inheritedTypes.isEmpty,
@@ -67,7 +67,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         }
 
         let containsInstanceDeclarations = dictionary.substructure.contains { dict in
-            guard let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) else {
+            guard let kind = dict.declarationKind else {
                 return false
             }
 
@@ -94,7 +94,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         ]
     }
 
-    private func isFunctionUnavailable(file: File, dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isFunctionUnavailable(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
         return dictionary.swiftAttributes.contains { dict -> Bool in
             guard dict.attribute.flatMap(SwiftDeclarationAttributeKind.init(rawValue:)) == .available,
                 let offset = dict.offset, let length = dict.length,

@@ -87,15 +87,15 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        return violations(in: file.structure.dictionary, file: file)
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return violations(in: file.structureDictionary, file: file)
     }
 
-    private func violations(in substructure: [String: SourceKitRepresentable], file: File) -> [StyleViolation] {
+    private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {
         var violations = [StyleViolation]()
 
         // find violations at current level
-        if let kindString = substructure.kind, let kind = SwiftDeclarationKind(rawValue: kindString),
+        if let kind = substructure.declarationKind,
             SwiftDeclarationKind.functionKinds.contains(kind) {
             guard
                 let nameOffset = substructure.nameOffset,
@@ -107,7 +107,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
 
             let isMultiline = functionName.contains("\n")
 
-            let parameters = substructure.substructure.filter { $0.kind == SwiftDeclarationKind.varParameter.rawValue }
+            let parameters = substructure.substructure.filter { $0.declarationKind == .varParameter }
             if isMultiline && !parameters.isEmpty {
                 if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
                     violations.append(openingBracketViolation)
@@ -127,8 +127,8 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         return violations
     }
 
-    private func openingBracketViolation(parameters: [[String: SourceKitRepresentable]],
-                                         file: File) -> StyleViolation? {
+    private func openingBracketViolation(parameters: [SourceKittenDictionary],
+                                         file: SwiftLintFile) -> StyleViolation? {
         guard
             let firstParamByteOffset = parameters.first?.offset,
             let firstParamByteLength = parameters.first?.length,
@@ -154,8 +154,8 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         )
     }
 
-    private func closingBracketViolation(parameters: [[String: SourceKitRepresentable]],
-                                         file: File) -> StyleViolation? {
+    private func closingBracketViolation(parameters: [SourceKittenDictionary],
+                                         file: SwiftLintFile) -> StyleViolation? {
         guard
             let lastParamByteOffset = parameters.last?.offset,
             let lastParamByteLength = parameters.last?.length,

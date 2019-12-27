@@ -32,12 +32,12 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "break", with: [.keyword]).compactMap { range in
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                let innerStructure = file.structure.structures(forByteOffset: byteRange.location).last,
-                innerStructure.kind.flatMap(StatementKind.init) == .case,
+                let innerStructure = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
+                innerStructure.statementKind == .case,
                 let caseOffset = innerStructure.offset,
                 let caseLength = innerStructure.length,
                 let lastPatternEnd = patternEnd(dictionary: innerStructure) else {
@@ -46,7 +46,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
 
             let caseRange = NSRange(location: caseOffset, length: caseLength)
             let tokens = file.syntaxMap.tokens(inByteRange: caseRange).filter { token in
-                guard let kind = SyntaxKind(rawValue: token.type),
+                guard let kind = token.kind,
                     token.offset > lastPatternEnd else {
                         return false
                 }
@@ -61,7 +61,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
 
             // is the `break` found the last (non-comment) token inside `case`?
             guard let lastValidToken = tokens.last,
-                SyntaxKind(rawValue: lastValidToken.type) == .keyword,
+                lastValidToken.kind == .keyword,
                 lastValidToken.offset == byteRange.location,
                 lastValidToken.length == byteRange.length else {
                     return nil
@@ -73,7 +73,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         }
     }
 
-    private func patternEnd(dictionary: [String: SourceKitRepresentable]) -> Int? {
+    private func patternEnd(dictionary: SourceKittenDictionary) -> Int? {
         let patternEnds = dictionary.elements.compactMap { subDictionary -> Int? in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,

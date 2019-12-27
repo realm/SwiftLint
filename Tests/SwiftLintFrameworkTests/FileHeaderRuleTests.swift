@@ -8,7 +8,7 @@ private let fixturesDirectory = #file.bridge()
 
 class FileHeaderRuleTests: XCTestCase {
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {
-        let file = File(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
+        let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule = try FileHeaderRule(configuration: configuration)
         return rule.validate(file: file)
     }
@@ -157,7 +157,8 @@ class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
         let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
-        let configuration2 = ["required_pattern": "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
+        let configuration2 = ["required_pattern":
+            "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
 
         // Non triggering tests
         XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)

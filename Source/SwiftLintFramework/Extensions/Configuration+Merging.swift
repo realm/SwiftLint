@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 extension Configuration {
-    public func configuration(for file: File) -> Configuration {
+    public func configuration(for file: SwiftLintFile) -> Configuration {
         if let containingDir = file.path?.bridge().deletingLastPathComponent {
             return configuration(forPath: containingDir)
         }

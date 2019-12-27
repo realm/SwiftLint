@@ -89,13 +89,13 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }
     }
 
-    private func styleViolation(for violation: Violation, in file: File) -> StyleViolation {
+    private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
         let reason = "\(LiteralExpressionEndIdentationRule.description.description) " +
                      "Expected \(violation.indentationRanges.expected.length), " +
                      "got \(violation.indentationRanges.actual.length)."
@@ -110,7 +110,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
 }
 
 extension LiteralExpressionEndIdentationRule: CorrectableRule {
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let allViolations = violations(in: file).reversed().filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }
@@ -177,27 +177,16 @@ extension LiteralExpressionEndIdentationRule {
         var range: NSRange
     }
 
-    fileprivate func violations(in file: File) -> [Violation] {
-        return violations(in: file, dictionary: file.structure.dictionary)
-    }
-
-    private func violations(in file: File,
-                            dictionary: [String: SourceKitRepresentable]) -> [Violation] {
-        return dictionary.substructure.flatMap { subDict -> [Violation] in
-            var subViolations = violations(in: file, dictionary: subDict)
-
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString),
-                let violation = violation(in: file, of: kind, dictionary: subDict) {
-                subViolations.append(violation)
-            }
-
-            return subViolations
+    fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
+        return file.structureDictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            guard let violation = violation(in: file, of: kind, dictionary: subDict) else { return nil }
+            return [violation]
         }
     }
 
-    private func violation(in file: File, of kind: SwiftExpressionKind,
-                           dictionary: [String: SourceKitRepresentable]) -> Violation? {
+    private func violation(in file: SwiftLintFile, of kind: SwiftExpressionKind,
+                           dictionary: SourceKittenDictionary) -> Violation? {
         guard kind == .dictionary || kind == .array else {
             return nil
         }

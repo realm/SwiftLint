@@ -70,7 +70,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -78,7 +78,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
     }
 
-    private func violationRanges(file: File) -> [(NSRange, String)] {
+    private func violationRanges(file: SwiftLintFile) -> [(NSRange, String)] {
         let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ "\\\($0)" }).joined()
         let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
         let notEqualsPattern = "\\!\\=\\=?" // != or !==
@@ -138,7 +138,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
     }
 
-    private func kinds(in range: NSRange, file: File) -> [SyntaxKind] {
+    private func kinds(in range: NSRange, file: SwiftLintFile) -> [SyntaxKind] {
         let contents = file.contents.bridge()
         guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
             return []
@@ -147,11 +147,11 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         return file.syntaxMap.kinds(inByteRange: byteRange)
     }
 
-    private func operatorInRange(file: File, range: NSRange) -> String {
+    private func operatorInRange(file: SwiftLintFile, range: NSRange) -> String {
         return file.contents.bridge().substring(with: range).trimmingCharacters(in: .whitespaces)
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = violationRanges(file: file).filter { range, _ in
             return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }

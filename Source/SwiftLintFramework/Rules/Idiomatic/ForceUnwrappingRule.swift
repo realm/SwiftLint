@@ -55,7 +55,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -79,7 +79,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         SyntaxKind.commentAndStringKinds.union([.keyword, .typeidentifier])
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds
 
-    private func violationRanges(in file: File) -> [NSRange] {
+    private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: nsstring.length)
@@ -108,8 +108,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
             }
     }
 
-    private func violationRange(match: NSTextCheckingResult, nsstring: NSString, syntaxMap: SyntaxMap,
-                                file: File) -> NSRange? {
+    private func violationRange(match: NSTextCheckingResult, nsstring: NSString, syntaxMap: SwiftLintSyntaxMap,
+                                file: SwiftLintFile) -> NSRange? {
         if match.numberOfRanges < 3 { return nil }
 
         let firstRange = match.range(at: 1)
@@ -155,24 +155,22 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
     }
 
     // check if first captured range is comment, string, typeidentifier, or a keyword that is not `self`.
-    private func isFirstRangeExcludedToken(byteRange: NSRange, syntaxMap: SyntaxMap, file: File) -> Bool {
+    private func isFirstRangeExcludedToken(byteRange: NSRange, syntaxMap: SwiftLintSyntaxMap,
+                                           file: SwiftLintFile) -> Bool {
         let tokens = syntaxMap.tokens(inByteRange: byteRange)
-        let nsString = file.contents.bridge()
         return tokens.contains { token in
-            guard let kind = SyntaxKind(rawValue: token.type),
+            guard let kind = token.kind,
                 ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains(kind)
                 else { return false }
             // check for `self
-            guard kind == .keyword,
-                let nsRange = nsString.byteRangeToNSRange(start: token.offset, length: token.length)
-                else { return true }
-            return nsString.substring(with: nsRange) != "self"
+            guard kind == .keyword else { return true }
+            return file.contents(for: token) != "self"
         }
     }
 
     // check deepest kind matching range in structure is a typeAnnotation
-    private func isTypeAnnotation(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
-        let kinds = file.structure.kinds(forByteOffset: byteRange.location)
+    private func isTypeAnnotation(in file: SwiftLintFile, contents: NSString, byteRange: NSRange) -> Bool {
+        let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.location)
         guard let lastItem = kinds.last,
             let lastKind = SwiftDeclarationKind(rawValue: lastItem.kind),
             SwiftDeclarationKind.variableKinds.contains(lastKind) else {

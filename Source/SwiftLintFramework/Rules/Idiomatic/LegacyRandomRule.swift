@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -30,9 +28,9 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
     ]
 
     public func validate(
-        file: File,
+        file: SwiftLintFile,
         kind: SwiftExpressionKind,
-        dictionary: [String: SourceKitRepresentable]
+        dictionary: SourceKittenDictionary
     ) -> [StyleViolation] {
         guard containsViolation(kind: kind, dictionary: dictionary),
         let offset = dictionary.offset else {
@@ -47,7 +45,7 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
         ]
     }
 
-    private func containsViolation(kind: SwiftExpressionKind, dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func containsViolation(kind: SwiftExpressionKind, dictionary: SourceKittenDictionary) -> Bool {
         guard kind == .call,
             let name = dictionary.name,
             legacyRandomFunctions.contains(name) else {

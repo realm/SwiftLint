@@ -51,13 +51,13 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let defers = file.match(pattern: "defer\\s*\\{", with: [.keyword])
 
         return defers.compactMap { range -> StyleViolation? in
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                case let kinds = file.structure.kinds(forByteOffset: byteRange.upperBound),
+                case let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.upperBound),
                 let brace = kinds.enumerated().lazy.reversed().first(where: isBrace),
                 brace.offset > kinds.startIndex,
                 case let outerKindIndex = kinds.index(before: brace.offset),
@@ -80,8 +80,8 @@ private func isBrace(offset: Int, element: (kind: String, byteRange: NSRange)) -
     return StatementKind(rawValue: element.kind) == .brace
 }
 
-private func isNotComment(token: SyntaxToken) -> Bool {
-    guard let kind = SyntaxKind(rawValue: token.type) else {
+private func isNotComment(token: SwiftLintSyntaxToken) -> Bool {
+    guard let kind = token.kind else {
         return false
     }
 

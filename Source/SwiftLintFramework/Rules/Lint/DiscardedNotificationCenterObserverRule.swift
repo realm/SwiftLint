@@ -38,8 +38,8 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationOffsets(in: file, dictionary: dictionary, kind: kind).map { location in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -47,7 +47,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         }
     }
 
-    private func violationOffsets(in file: File, dictionary: [String: SourceKitRepresentable],
+    private func violationOffsets(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                   kind: SwiftExpressionKind) -> [Int] {
         guard kind == .call,
             let name = dictionary.name,
@@ -73,7 +73,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
 
         if let lastMatch = file.match(pattern: "\\breturn\\s+", with: [.keyword], range: range).last,
             lastMatch.location == range.length - lastMatch.length,
-            let lastFunction = file.structure.functions(forByteOffset: offset).last,
+            let lastFunction = file.structureDictionary.functions(forByteOffset: offset).last,
             !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
             return []
         }
@@ -82,24 +82,9 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
     }
 }
 
-private extension Structure {
-    func functions(forByteOffset byteOffset: Int) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
-
-        func parse(_ dictionary: [String: SourceKitRepresentable]) {
-            guard let offset = dictionary.offset,
-                let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
-                NSLocationInRange(byteOffset, byteRange) else {
-                    return
-            }
-
-            if let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-                SwiftDeclarationKind.functionKinds.contains(kind) {
-                results.append(dictionary)
-            }
-            dictionary.substructure.forEach(parse)
-        }
-        parse(dictionary)
-        return results
+private extension SourceKittenDictionary {
+    func functions(forByteOffset byteOffset: Int) -> [SourceKittenDictionary] {
+        return structures(forByteOffset: byteOffset)
+            .filter { $0.declarationKind.map(SwiftDeclarationKind.functionKinds.contains) == true }
     }
 }

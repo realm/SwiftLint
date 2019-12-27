@@ -1,12 +1,31 @@
 import Commandant
 import Foundation
-import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
+typealias File = String
+typealias Arguments = [String]
+
+enum CompilerInvocations {
+    case buildLog(compilerInvocations: [String])
+    case compilationDatabase(compileCommands: [File: Arguments])
+
+    func arguments(forFile path: String?) -> [String] {
+        return path.flatMap { path in
+            switch self {
+            case let .buildLog(compilerInvocations):
+                return CompilerArgumentsExtractor
+                    .compilerArgumentsForFile(path, compilerInvocations: compilerInvocations)
+            case let .compilationDatabase(compileCommands):
+                return compileCommands[path]
+            }
+        } ?? []
+    }
+}
+
 enum LintOrAnalyzeModeWithCompilerArguments {
     case lint
-    case analyze(allCompilerInvocations: [String])
+    case analyze(allCompilerInvocations: CompilerInvocations)
 }
 
 struct LintableFilesVisitor {
@@ -36,7 +55,7 @@ struct LintableFilesVisitor {
     }
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool,
-                 forceExclude: Bool, cache: LinterCache?, compilerLogContents: String,
+                 forceExclude: Bool, cache: LinterCache?, compilerInvocations: CompilerInvocations?,
                  block: @escaping (CollectedLinter) -> Void) {
         self.paths = paths
         self.action = action
@@ -46,35 +65,33 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.cache = cache
         self.parallel = true
-        if compilerLogContents.isEmpty {
-            self.mode = .lint
+        if let compilerInvocations = compilerInvocations {
+            self.mode = .analyze(allCompilerInvocations: compilerInvocations)
         } else {
-            let allCompilerInvocations = CompilerArgumentsExtractor
-                .allCompilerInvocations(compilerLogs: compilerLogContents)
-            self.mode = .analyze(allCompilerInvocations: allCompilerInvocations)
+            self.mode = .lint
         }
         self.block = block
     }
 
     static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, CommandantError<()>> {
-        let compilerLogContents: String
+        let compilerInvocations: CompilerInvocations?
         if options.mode == .lint {
-            compilerLogContents = ""
-        } else if let logContents = LintableFilesVisitor.compilerLogContents(logPath: options.compilerLogPath),
-            !logContents.isEmpty {
-            compilerLogContents = logContents
+            compilerInvocations = nil
         } else {
-            return .failure(
-                .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
-            )
+            switch loadCompilerInvocations(options) {
+            case let .success(invocations):
+                compilerInvocations = invocations
+            case let .failure(error):
+                return .failure(error)
+            }
         }
 
         let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
                                            useSTDIN: options.useSTDIN, quiet: options.quiet,
                                            useScriptInputFiles: options.useScriptInputFiles,
                                            forceExclude: options.forceExclude, cache: cache,
-                                           compilerLogContents: compilerLogContents, block: block)
+                                           compilerInvocations: compilerInvocations, block: block)
         return .success(visitor)
     }
 
@@ -82,37 +99,79 @@ struct LintableFilesVisitor {
         switch self.mode {
         case .lint:
             return false
-        case let .analyze(allCompilerInvocations):
-            let compilerArguments = path.flatMap {
-                CompilerArgumentsExtractor.compilerArgumentsForFile($0, compilerInvocations: allCompilerInvocations)
-            } ?? []
+        case let .analyze(compilerInvocations):
+            let compilerArguments = compilerInvocations.arguments(forFile: path)
             return compilerArguments.isEmpty
         }
     }
 
-    func linter(forFile file: File, configuration: Configuration) -> Linter {
+    func linter(forFile file: SwiftLintFile, configuration: Configuration) -> Linter {
         switch self.mode {
         case .lint:
             return Linter(file: file, configuration: configuration, cache: cache)
-        case let .analyze(allCompilerInvocations):
-            let compilerArguments = file.path.flatMap {
-                CompilerArgumentsExtractor.compilerArgumentsForFile($0, compilerInvocations: allCompilerInvocations)
-            } ?? []
+        case let .analyze(compilerInvocations):
+            let compilerArguments = compilerInvocations.arguments(forFile: file.path)
             return Linter(file: file, configuration: configuration, compilerArguments: compilerArguments)
         }
     }
 
-    private static func compilerLogContents(logPath: String) -> String? {
-        if logPath.isEmpty {
+    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions)
+        -> Result<CompilerInvocations, CommandantError<()>> {
+        if !options.compilerLogPath.isEmpty {
+            let path = options.compilerLogPath
+            guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
+                return .failure(
+                    .usageError(description: "Could not read compiler log at path: '\(path)'")
+                )
+            }
+
+            return .success(.buildLog(compilerInvocations: compilerInvocations))
+        } else if !options.compileCommands.isEmpty {
+            let path = options.compileCommands
+            guard let compileCommands = self.loadCompileCommands(path) else {
+                return .failure(
+                    .usageError(description: "Could not read compilation database at path: '\(path)'")
+                )
+            }
+
+            return .success(.compilationDatabase(compileCommands: compileCommands))
+        }
+
+        return .failure(.usageError(description: "Could not read compiler invocations"))
+    }
+
+    private static func loadLogCompilerInvocations(_ path: String) -> [String]? {
+        if let data = FileManager.default.contents(atPath: path),
+            let logContents = String(data: data, encoding: .utf8) {
+            if logContents.isEmpty {
+                return nil
+            }
+
+            return CompilerArgumentsExtractor.allCompilerInvocations(compilerLogs: logContents)
+        }
+
+        return nil
+    }
+
+    private static func loadCompileCommands(_ path: String) -> [String: [String]]? {
+        guard let jsonContents = FileManager.default.contents(atPath: path),
+            let object = try? JSONSerialization.jsonObject(with: jsonContents),
+            let compileDB = object as? [[String: Any]] else {
             return nil
         }
 
-        if let data = FileManager.default.contents(atPath: logPath),
-            let logContents = String(data: data, encoding: .utf8) {
-            return logContents
-        }
+        // Convert the compilation database to a dictionary, with source files as keys and compiler arguments as values.
+        //
+        // Compilation databases are an array of dictionaries. Each dict has "file" and "arguments" keys.
+        return compileDB.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
+            if let file = entry["file"] as? String, var arguments = entry["arguments"] as? [String] {
+                // Compilation databases include the compiler, but it's left out when sending to SourceKit.
+                if arguments.first == "swiftc" {
+                    arguments.removeFirst()
+                }
 
-        print("couldn't read log file at path '\(logPath)'")
-        return nil
+                commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
+            }
+        }
     }
 }

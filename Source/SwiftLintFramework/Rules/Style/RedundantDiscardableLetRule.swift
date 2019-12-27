@@ -29,7 +29,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -37,11 +37,11 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "_")
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents.bridge()
         return file.match(pattern: "let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
@@ -49,13 +49,13 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
             }
 
             return !isInBooleanCondition(byteOffset: byteRange.location,
-                                         dictionary: file.structure.dictionary)
+                                         dictionary: file.structureDictionary)
                 && !hasExplicitType(utf16Range: range.location ..< range.location + range.length,
                                     fileContents: contents)
         }
     }
 
-    private func isInBooleanCondition(byteOffset: Int, dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isInBooleanCondition(byteOffset: Int, dictionary: SourceKittenDictionary) -> Bool {
         guard let offset = dictionary.offset,
             let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
             NSLocationInRange(byteOffset, byteRange) else {
@@ -63,7 +63,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         }
 
         let kinds: Set<StatementKind> = [.if, .guard, .while]
-        if let kind = dictionary.kind.flatMap(StatementKind.init), kinds.contains(kind) {
+        if let kind = dictionary.statementKind, kinds.contains(kind) {
             let conditionKind = "source.lang.swift.structure.elem.condition_expr"
             for element in dictionary.elements where element.kind == conditionKind {
                 guard let elementOffset = element.offset,

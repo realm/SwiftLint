@@ -46,8 +46,8 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
 
     private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -55,12 +55,12 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .call else {
             return []
         }
@@ -76,7 +76,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
 
         // avoid the more expensive regex match if there's no trailing closure in the substructure
         if SwiftVersion.current >= .fourDotTwo,
-            dictionary.substructure.last?.kind.flatMap(SwiftExpressionKind.init(rawValue:)) != .closure {
+            dictionary.substructure.last?.expressionKind != .closure {
             return []
         }
 

@@ -14,16 +14,17 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let testClasses = file.structure.dictionary.substructure.filter {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let dict = file.structureDictionary
+        let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
-                $0.kind.flatMap(SwiftDeclarationKind.init) == .class
+                $0.declarationKind == .class
         }
 
         let specDeclarations = testClasses.flatMap { classDict in
             return classDict.substructure.filter {
                 return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance &&
+                    $0.declarationKind == .functionMethodInstance &&
                     $0.enclosedSwiftAttributes.contains(.override)
             }
         }
@@ -33,22 +34,16 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         }
     }
 
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            var violations = validate(file: file, dictionary: subDict)
-
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) {
-                violations += validate(file: file, kind: kind, dictionary: subDict)
-            }
-
-            return violations
+    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        return dictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            return validate(file: file, kind: kind, dictionary: subDict)
         }
     }
 
-    private func validate(file: File,
+    private func validate(file: SwiftLintFile,
                           kind: SwiftExpressionKind,
-                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
             let name = dictionary.name,

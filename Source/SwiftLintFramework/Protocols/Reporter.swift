@@ -5,7 +5,7 @@ public protocol Reporter: CustomStringConvertible {
     static func generateReport(_ violations: [StyleViolation]) -> String
 }
 
-public func reporterFrom(identifier: String) -> Reporter.Type {
+public func reporterFrom(identifier: String) -> Reporter.Type { // swiftlint:disable:this cyclomatic_complexity
     switch identifier {
     case XcodeReporter.identifier:
         return XcodeReporter.self
@@ -25,6 +25,8 @@ public func reporterFrom(identifier: String) -> Reporter.Type {
         return SonarQubeReporter.self
     case MarkdownReporter.identifier:
         return MarkdownReporter.self
+    case GitHubActionsLoggingReporter.identifier:
+        return GitHubActionsLoggingReporter.self
     default:
         queuedFatalError("no reporter with identifier '\(identifier)' available.")
     }

@@ -41,7 +41,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
 
     // MARK: - Rule
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "(?!\\b\\s*)%\(RegexHelpers.variableOrNumber)[=!]=\\s*0\\b"
         return file.match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
             .map {

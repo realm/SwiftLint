@@ -84,7 +84,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         requiresFileOnDisk: true
     )
 
-    public func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return violationRanges(in: file, compilerArguments: compilerArguments).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -92,7 +92,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         }
     }
 
-    public func correct(file: File, compilerArguments: [String]) -> [Correction] {
+    public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let violations = violationRanges(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
@@ -109,7 +109,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         return corrections
     }
 
-    private func violationRanges(in file: File, compilerArguments: [String]) -> [NSRange] {
+    private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
@@ -155,7 +155,7 @@ private let kindsToFind: Set = [
     "source.lang.swift.ref.var.instance"
 ]
 
-private extension File {
+private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [Int]) throws
         -> [[String: SourceKitRepresentable]] {
         return try byteOffsets.compactMap { offset in
@@ -194,7 +194,7 @@ private extension NSString {
     }
 }
 
-private func binaryOffsets(file: File, compilerArguments: [String]) throws -> [Int] {
+private func binaryOffsets(file: SwiftLintFile, compilerArguments: [String]) throws -> [Int] {
     let absoluteFile = file.path!.bridge().absolutePathRepresentation()
     let index = try Request.index(file: absoluteFile, arguments: compilerArguments).sendIfNotDisabled()
     let binaryOffsets = file.contents.bridge().recursiveByteOffsets(index)

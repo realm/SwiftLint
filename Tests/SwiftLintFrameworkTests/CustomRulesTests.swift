@@ -59,7 +59,7 @@ class CustomRulesTests: XCTestCase {
     func testCustomRules() {
         let (regexConfig, customRules) = getCustomRules()
 
-        let file = File(contents: "// My file with\n// a pattern")
+        let file = SwiftLintFile(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validate(file: file),
                        [StyleViolation(ruleDescription: regexConfig.description,
                                        severity: .warning,
@@ -69,13 +69,13 @@ class CustomRulesTests: XCTestCase {
 
     func testLocalDisableCustomRule() {
         let (_, customRules) = getCustomRules()
-        let file = File(contents: "//swiftlint:disable custom \n// file with a pattern")
+        let file = SwiftLintFile(contents: "//swiftlint:disable custom \n// file with a pattern")
         XCTAssertEqual(customRules.validate(file: file), [])
     }
 
     func testLocalDisableCustomRuleWithMultipleRules() {
         let (configs, customRules) = getCustomRulesWithTwoRules()
-        let file = File(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
+        let file = SwiftLintFile(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
         XCTAssertEqual(customRules.validate(file: file),
                        [StyleViolation(ruleDescription: configs.0.description,
                                        severity: .warning,
@@ -161,7 +161,7 @@ class CustomRulesTests: XCTestCase {
         return ((regexConfig1, regexConfig2), customRules)
     }
 
-    private func getTestTextFile() -> File {
-        return File(path: "\(testResourcesPath)/test.txt")!
+    private func getTestTextFile() -> SwiftLintFile {
+        return SwiftLintFile(path: "\(testResourcesPath)/test.txt")!
     }
 }

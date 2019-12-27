@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -13,7 +11,7 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
         kind: .lint
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         // This rule is implemented in Linter.swift
         return []
     }

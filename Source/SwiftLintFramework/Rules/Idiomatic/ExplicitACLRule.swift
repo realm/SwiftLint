@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private typealias SourceKittenElement = [String: SourceKitRepresentable]
+private typealias SourceKittenElement = SourceKittenDictionary
 
 public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
@@ -53,14 +53,14 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         ]
     )
 
-    private func findAllExplicitInternalTokens(in file: File) -> [NSRange] {
+    private func findAllExplicitInternalTokens(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.contents.bridge()
         return file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }
     }
 
-    private func offsetOfElements(from elements: [SourceKittenElement], in file: File,
+    private func offsetOfElements(from elements: [SourceKittenElement], in file: SwiftLintFile,
                                   thatAreNotInRanges ranges: [NSRange]) -> [Int] {
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
                                                          .extensionProtocol, .extensionStruct]
@@ -70,7 +70,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                 return nil
             }
 
-            guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            guard let kind = element.declarationKind,
                 !extensionKinds.contains(kind) else {
                     return nil
             }
@@ -90,8 +90,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         }
     }
 
-    public func validate(file: File) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structure.dictionary)
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary )
 
         guard !implicitAndExplicitInternalElements.isEmpty else {
             return []
@@ -116,7 +116,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     private func internalTypeElements(in element: SourceKittenElement) -> [SourceKittenElement] {
         return element.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) else {
+            guard let elementKind = element.declarationKind else {
                 return []
             }
 
@@ -125,11 +125,11 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                 return []
             }
 
-            let isPrivate = element.accessibility.flatMap(AccessControlLevel.init(rawValue:))?.isPrivate ?? false
+            let isPrivate = element.accessibility?.isPrivate ?? false
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
+            if element.accessibility == .internal {
                 return internalTypeElementsInSubstructure + [element]
             }
 
@@ -148,7 +148,7 @@ private extension SwiftDeclarationKind {
              .varGlobal, .varInstance, .varStatic, .typealias, .functionAccessorModify, .functionAccessorRead,
              .functionConstructor, .functionDestructor, .functionFree, .functionMethodClass,
              .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
-             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol:
+             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol, .opaqueType:
             return true
         case .class, .enum, .extension, .extensionClass, .extensionEnum,
              .extensionProtocol, .extensionStruct, .struct:

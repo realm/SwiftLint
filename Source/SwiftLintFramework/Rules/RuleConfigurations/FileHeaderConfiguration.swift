@@ -72,7 +72,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    private func makeRegex(for file: File, using pattern: String,
+    private func makeRegex(for file: SwiftLintFile, using pattern: String,
                            options: NSRegularExpression.Options, escapeFileName: Bool) -> NSRegularExpression? {
         // Recompile the regex for this file...
         let replacedPattern = file.path.map { path in
@@ -91,17 +91,17 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    private func regexFromString(for file: File, using pattern: String) -> NSRegularExpression? {
+    private func regexFromString(for file: SwiftLintFile, using pattern: String) -> NSRegularExpression? {
         return makeRegex(for: file, using: pattern, options: FileHeaderConfiguration.stringRegexOptions,
                          escapeFileName: false)
     }
 
-    private func regexFromPattern(for file: File, using pattern: String) -> NSRegularExpression? {
+    private func regexFromPattern(for file: SwiftLintFile, using pattern: String) -> NSRegularExpression? {
         return makeRegex(for: file, using: pattern, options: FileHeaderConfiguration.patternRegexOptions,
                          escapeFileName: true)
     }
 
-    func forbiddenRegex(for file: File) -> NSRegularExpression? {
+    func forbiddenRegex(for file: SwiftLintFile) -> NSRegularExpression? {
         if _forbiddenRegex != nil {
             return _forbiddenRegex
         }
@@ -121,7 +121,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         return nil
     }
 
-    func requiredRegex(for file: File) -> NSRegularExpression? {
+    func requiredRegex(for file: SwiftLintFile) -> NSRegularExpression? {
         if _requiredRegex != nil {
             return _requiredRegex
         }

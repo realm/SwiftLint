@@ -28,7 +28,7 @@ public struct ContainsOverFilterIsEmptyRule: CallPairRule, OptInRule, Configurat
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "[\\}\\)]\\s*\\.isEmpty\\b"
         return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter", severity: configuration.severity)

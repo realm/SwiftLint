@@ -29,12 +29,12 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return validate(file: file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    private func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
+    private func validate(file: SwiftLintFile, kind: SwiftDeclarationKind, dictionary: SourceKittenDictionary,
                           level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds = SwiftDeclarationKind.typeKinds
@@ -52,7 +52,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
             }
         }
         violations.append(contentsOf: dictionary.substructure.compactMap { subDict in
-            if let kind = (subDict.kind).flatMap(SwiftDeclarationKind.init) {
+            if let kind = subDict.declarationKind {
                 return (kind, subDict)
             }
             return nil

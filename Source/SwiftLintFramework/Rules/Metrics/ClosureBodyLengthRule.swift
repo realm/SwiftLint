@@ -17,9 +17,9 @@ public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRu
 
     // MARK: - ASTRule
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .closure,
             let offset = dictionary.offset,

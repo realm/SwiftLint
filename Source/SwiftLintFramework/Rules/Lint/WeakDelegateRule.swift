@@ -32,8 +32,8 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance else {
             return []
         }
@@ -50,7 +50,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
 
         // if the declaration is inside a protocol
         if let offset = dictionary.offset,
-            !protocolDeclarations(forByteOffset: offset, structure: file.structure).isEmpty {
+            !protocolDeclarations(forByteOffset: offset, structureDictionary: file.structureDictionary).isEmpty {
             return []
         }
 
@@ -76,25 +76,14 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
     }
 
     private func protocolDeclarations(forByteOffset byteOffset: Int,
-                                      structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
-
-        func parse(dictionary: [String: SourceKitRepresentable]) {
-            // Only accepts protocols declarations which contains a body and contains the
-            // searched byteOffset
-            if let kindString = (dictionary.kind),
-                SwiftDeclarationKind(rawValue: kindString) == .protocol,
-                let offset = dictionary.bodyOffset,
-                let length = dictionary.bodyLength {
-                let byteRange = NSRange(location: offset, length: length)
-
-                if NSLocationInRange(byteOffset, byteRange) {
-                    results.append(dictionary)
-                }
+                                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        return structureDictionary.traverseBreadthFirst { dictionary in
+            guard dictionary.declarationKind == .protocol,
+                let byteRange = dictionary.byteRange,
+                NSLocationInRange(byteOffset, byteRange) else {
+                    return nil
             }
-            dictionary.substructure.forEach(parse)
+            return [dictionary]
         }
-        parse(dictionary: structure.dictionary)
-        return results
     }
 }

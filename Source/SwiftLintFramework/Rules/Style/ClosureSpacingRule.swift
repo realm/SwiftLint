@@ -69,11 +69,11 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     // returns ranges of braces `{` or `}` in the same line
-    private func validBraces(in file: File) -> [NSRange] {
+    private func validBraces(in file: SwiftLintFile) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let bracePattern = regex("\\{|\\}")
         let linesTokens = file.syntaxTokensByLines
-        let kindsToExclude = SyntaxKind.commentAndStringKinds.map { $0.rawValue }
+        let kindsToExclude = SyntaxKind.commentAndStringKinds
 
         // find all lines and occurences of open { and closed } braces
         var linesWithBraces = [[NSRange]]()
@@ -85,7 +85,10 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             let braces = bracePattern.matches(in: file.contents, options: [],
                                               range: nsrange).map { $0.range }
             // filter out braces in comments and strings
-            let tokens = linesTokens[eachLine.index].filter { kindsToExclude.contains($0.type) }
+            let tokens = linesTokens[eachLine.index].filter {
+                guard let tokenKind = $0.kind else { return false }
+                return kindsToExclude.contains(tokenKind)
+            }
             let tokenRanges = tokens.compactMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0.offset, length: $0.length)
             }
@@ -95,7 +98,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     // find ranges where violation exist. Returns ranges sorted by location.
-    private func findViolations(file: File) -> [NSRange] {
+    private func findViolations(file: SwiftLintFile) -> [NSRange] {
         // match open braces to corresponding closing braces
         func matchBraces(validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }
@@ -133,7 +136,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             }
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return findViolations(file: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -148,7 +151,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         var matches = removeNested(findViolations(file: file)).filter {
             !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty
         }

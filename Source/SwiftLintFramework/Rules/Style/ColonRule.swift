@@ -23,7 +23,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         corrections: ColonRuleExamples.corrections
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let violations = typeColonViolationRanges(in: file, matching: pattern).compactMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
@@ -32,7 +32,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
         let dictionaryViolations: [StyleViolation]
         if configuration.applyToDictionaries {
-            dictionaryViolations = validate(file: file, dictionary: file.structure.dictionary)
+            dictionaryViolations = validate(file: file, dictionary: file.structureDictionary)
         } else {
             dictionaryViolations = []
         }
@@ -40,7 +40,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         return (violations + dictionaryViolations).sorted { $0.location < $1.location }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violations = correctionRanges(in: file)
         let matches = violations.filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
@@ -71,11 +71,11 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     private typealias RangeWithKind = (range: NSRange, kind: ColonKind)
 
-    private func correctionRanges(in file: File) -> [RangeWithKind] {
+    private func correctionRanges(in file: SwiftLintFile) -> [RangeWithKind] {
         let violations: [RangeWithKind] = typeColonViolationRanges(in: file, matching: pattern).map {
             (range: $0, kind: ColonKind.type)
         }
-        let dictionary = file.structure.dictionary
+        let dictionary = file.structureDictionary
         let contents = file.contents.bridge()
         let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file,
                                                                              dictionary: dictionary).compactMap {
@@ -100,8 +100,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
 extension ColonRule: ASTRule {
     /// Only returns dictionary and function calls colon violations
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let ranges = dictionaryColonViolationRanges(in: file, kind: kind, dictionary: dictionary) +
             functionCallColonViolationRanges(in: file, kind: kind, dictionary: dictionary)
 

@@ -31,19 +31,20 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
                                                          .extensionProtocol, .extensionStruct]
 
         // find all top-level types marked as internal (either explictly or implictly)
-        let internalTypesOffsets = file.structure.dictionary.substructure.compactMap { element -> Int? in
+        let dictionary = file.structureDictionary
+        let internalTypesOffsets = dictionary.substructure.compactMap { element -> Int? in
             // ignore extensions
-            guard let kind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)),
+            guard let kind = element.declarationKind,
                 !extensionKinds.contains(kind) else {
                     return nil
             }
 
-            if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
+            if element.accessibility == .internal {
                 return element.offset
             }
 

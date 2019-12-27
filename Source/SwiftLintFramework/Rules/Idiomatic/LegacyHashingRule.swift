@@ -78,9 +78,9 @@ public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule, AutomaticTe
 
     // MARK: - ASTRule
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .varInstance,
             dictionary.setterAccessibility == nil,
             dictionary.typeName == "Int",

@@ -23,8 +23,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
             return []
         }
@@ -79,7 +79,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         } ?? []
     }
 
-    private func validateName(dictionary: [String: SourceKitRepresentable],
+    private func validateName(dictionary: SourceKittenDictionary,
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard var name = dictionary.name,
             let offset = dictionary.offset,

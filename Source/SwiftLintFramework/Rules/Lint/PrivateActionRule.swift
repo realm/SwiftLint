@@ -33,14 +33,14 @@ public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         ]
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             let offset = dictionary.offset,
             kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.ibaction),
-            let controlLevel = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)),
+            let controlLevel = dictionary.accessibility,
             controlLevel.isPrivate == false
             else {
                 return []

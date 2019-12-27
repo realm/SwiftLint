@@ -54,8 +54,8 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         ]
     )
 
-    public func validate(file: File, kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: StatementKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -63,12 +63,12 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File, kind: StatementKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile, kind: StatementKind,
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .case else {
             return []
         }
@@ -76,7 +76,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         let contents = file.contents.bridge()
 
         let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
-            guard dict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
+            guard dict.expressionKind == .call,
                 let offset = dict.offset,
                 let length = dict.length,
                 let range = contents.byteRangeToNSRange(start: offset, length: length) else {

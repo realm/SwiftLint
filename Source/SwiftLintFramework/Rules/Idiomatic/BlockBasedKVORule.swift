@@ -37,8 +37,8 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftVersion.current >= .four, kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.override),
             dictionary.name == "observeValue(forKeyPath:of:change:context:)",
@@ -67,10 +67,10 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
     }
 }
 
-private extension Array where Element == [String: SourceKitRepresentable] {
+private extension Array where Element == SourceKittenDictionary {
     var parameterTypes: [String] {
         return compactMap { element in
-            guard element.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
+            guard element.declarationKind == .varParameter else {
                 return nil
             }
 

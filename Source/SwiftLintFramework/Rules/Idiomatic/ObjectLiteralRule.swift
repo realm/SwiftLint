@@ -33,8 +33,8 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             let offset = dictionary.offset,
             (configuration.imageLiteral && isImageNamedInit(dictionary: dictionary, file: file)) ||
@@ -49,7 +49,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         ]
     }
 
-    private func isImageNamedInit(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isImageNamedInit(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let name = dictionary.name,
             inits(forClasses: ["UIImage", "NSImage"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
@@ -63,7 +63,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         return true
     }
 
-    private func isColorInit(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isColorInit(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         guard let name = dictionary.name,
             inits(forClasses: ["UIColor", "NSColor"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
@@ -85,7 +85,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
     }
 
-    private func validateColorKinds(arguments: [[String: SourceKitRepresentable]], file: File) -> Bool {
+    private func validateColorKinds(arguments: [SourceKittenDictionary], file: SwiftLintFile) -> Bool {
         for dictionary in arguments where kinds(forArgument: dictionary, file: file) != [.number] {
             return false
         }
@@ -93,7 +93,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         return true
     }
 
-    private func kinds(forArgument argument: [String: SourceKitRepresentable], file: File) -> Set<SyntaxKind> {
+    private func kinds(forArgument argument: SourceKittenDictionary, file: SwiftLintFile) -> Set<SyntaxKind> {
         guard let offset = argument.bodyOffset, let length = argument.bodyLength else {
             return []
         }

@@ -2,6 +2,132 @@
 
 #### Breaking
 
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix crash in `unused_import` rule when unused imports have trailing
+  comments.  
+  [JP Simard](https://github.com/jpsim)
+  [#2990](https://github.com/realm/SwiftLint/issues/2990)
+
+* Handle `@_exported` imports in `unused_import` rule.  
+  [JP Simard](https://github.com/jpsim)
+  [#2877](https://github.com/realm/SwiftLint/issues/2877)
+
+## 0.38.0: Toroidal Agitation
+
+#### Breaking
+
+* Replace the `SyntaxToken` and `SyntaxMap` structures used in
+  public SwiftLintFramework APIs with a new  `SwiftLintSyntaxToken`
+  and `SwiftlintSyntaxMap` wrappers over structures returned from
+  SourceKitten.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2955](https://github.com/realm/SwiftLint/issues/2955)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Make `control_statement` rule correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
+* Add `expiring_todo` opt-in rule to allow developers to mark their
+  todos with an expiration date.  
+  [Dan Loman](https://github.com/namolnad)
+  [#727](https://github.com/realm/SwiftLint/issues/727)
+
+* Support compilation databases for `swiftlint analayze`.  
+  [kastiglione](https://github.com/kastiglione)
+  [#2962](https://github.com/realm/SwiftLint/issues/2962)
+
+#### Bug Fixes
+
+* Fix false positive for LetVarWhitespaceRule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2956](https://github.com/realm/SwiftLint/issues/2956)
+
+* Fix for false-positive identical operands rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2953](https://github.com/realm/SwiftLint/issues/2953)
+
+* Fixed false positive in `opening_brace` rule on anonymous closure.  
+  [Andrey Uryadov](https://github.com/a-25)
+  [#2879](https://github.com/realm/SwiftLint/issues/2879)
+
+## 0.37.0: Double Load
+
+#### Breaking
+
+* Replace the `[String: SourceKittenRepresentable]` dictionaries used in
+  public SwiftLintFramework APIs with a new `SourceKittenDictionary`
+  wrapper over dictionaries returned from SourceKitten.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2922](https://github.com/realm/SwiftLint/issues/2922)
+
+* Update Commandant dependency to version 0.17.0, removing the
+  `antitypical/Result` dependency in favor of the Swift standard
+  library's `Result` type.  
+  [JP Simard](https://github.com/jpsim)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Speed up many operations by using SwiftLintFile wrapper over File from
+  SourceKitten, caching most members derived from the File.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2929](https://github.com/realm/SwiftLint/issues/2929)
+
+* Speed up Swiftlint by using swift enums instead of raw values for
+  dictionary lookups.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2924](https://github.com/realm/SwiftLint/issues/2924)
+
+* Speed up Identical Operands rule by using syntaxmap instead of regular
+  expressions.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2918](https://github.com/realm/SwiftLint/issues/2918)
+
+* Speed up syntax token lookups, which can improve performance when
+  linting large files.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)  
+  [#2916](https://github.com/realm/SwiftLint/issues/2916)  
+
+* Use faster comparison in 'file_types_order' rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2949](https://github.com/realm/SwiftLint/issues/2949)
+
+* Speed up recursively executed rules (all AST rules and some others) by
+  avoiding the creation of many intermediate collections when
+  accumulating results.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2951](https://github.com/realm/SwiftLint/issues/2951)
+
+* Add GitHub Actions Logging reporter (`github-actions-logging`).  
+  [Norio Nomura](https://github.com/norio-nomura)
+
+#### Bug Fixes
+
+* None.
+
+## 0.36.0: 👕👚👗
+
+#### Breaking
+
 * SwiftLint now requires Swift 5.0 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
@@ -27,6 +153,9 @@
   using `flatMap` over `map { ... }.reduce([], +)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
+  
+* Add autocorrection to `syntactic_sugar`.  
+  [Ivan Vavilov](https://github.com/vani2)
 
 * Make `toggle_bool` rule substitution correctable.  
   [MaxHaertwig](https://github.com/maxhaertwig)
@@ -35,9 +164,27 @@
   [Ivan Vavilov](https://github.com/vani2)
   [#2872](https://github.com/realm/SwiftLint/issues/2872)
 
+* Optimize the performance of `redundant_void_return` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Support building with Swift 5.1 on Linux.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2874](https://github.com/realm/SwiftLint/issues/2874)
+
+* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values 
+  for camel cased Codable String enum cases.  
+  [Marko Pejovic](https://github.com/00FA9A)
+  [#2888](https://github.com/realm/SwiftLint/issues/2888)
+
+* Speedup `LetVarWhiteSpacesRule`.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#2901](https://github.com/realm/SwiftLint/issues/2901)  
+
 #### Bug Fixes
 
-* None.
+* Fix running analyzer rules on the output of builds performed with
+  Xcode 11 or later.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.35.0: Secondary Lint Trap
 

@@ -394,6 +394,19 @@ extension EmptyXCTestMethodRuleTests {
     ]
 }
 
+extension ExpiringTodoRuleTests {
+    static var allTests: [(String, (ExpiringTodoRuleTests) -> () throws -> Void)] = [
+        ("testExpiringTodo", testExpiringTodo),
+        ("testExpiredTodo", testExpiredTodo),
+        ("testExpiredFixMe", testExpiredFixMe),
+        ("testApproachingExpiryTodo", testApproachingExpiryTodo),
+        ("testNonExpiredTodo", testNonExpiredTodo),
+        ("testExpiredCustomDelimiters", testExpiredCustomDelimiters),
+        ("testExpiredCustomSeparator", testExpiredCustomSeparator),
+        ("testExpiredCustomFormat", testExpiredCustomFormat)
+    ]
+}
+
 extension ExplicitACLRuleTests {
     static var allTests: [(String, (ExplicitACLRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1058,6 +1071,12 @@ extension QuickDiscouragedPendingTestRuleTests {
     ]
 }
 
+extension RawValueForCamelCasedCodableEnumRuleTests {
+    static var allTests: [(String, (RawValueForCamelCasedCodableEnumRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ReduceBooleanRuleTests {
     static var allTests: [(String, (ReduceBooleanRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1134,6 +1153,7 @@ extension ReporterTests {
         ("testReporterFromString", testReporterFromString),
         ("testXcodeReporter", testXcodeReporter),
         ("testEmojiReporter", testEmojiReporter),
+        ("testGitHubActionsLoggingReporter", testGitHubActionsLoggingReporter),
         ("testJSONReporter", testJSONReporter),
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),
@@ -1614,6 +1634,7 @@ XCTMain([
     testCase(EmptyParenthesesWithTrailingClosureRuleTests.allTests),
     testCase(EmptyStringRuleTests.allTests),
     testCase(EmptyXCTestMethodRuleTests.allTests),
+    testCase(ExpiringTodoRuleTests.allTests),
     testCase(ExplicitACLRuleTests.allTests),
     testCase(ExplicitEnumRawValueRuleTests.allTests),
     testCase(ExplicitInitRuleTests.allTests),
@@ -1704,6 +1725,7 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
+    testCase(RawValueForCamelCasedCodableEnumRuleTests.allTests),
     testCase(ReduceBooleanRuleTests.allTests),
     testCase(ReduceIntoRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),

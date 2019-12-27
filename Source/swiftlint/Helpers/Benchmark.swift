@@ -1,5 +1,5 @@
 import Foundation
-import SourceKittenFramework
+import SwiftLintFramework
 
 struct BenchmarkEntry {
     let id: String
@@ -18,7 +18,7 @@ struct Benchmark {
         entries.append(BenchmarkEntry(id: id, time: time))
     }
 
-    mutating func record(file: File, from start: Date) {
+    mutating func record(file: SwiftLintFile, from start: Date) {
         record(id: file.path ?? "<nopath>", time: -start.timeIntervalSinceNow)
     }
 

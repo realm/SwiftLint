@@ -11,7 +11,7 @@ internal func regex(_ pattern: String,
     return try! .cached(pattern: pattern, options: options)
 }
 
-extension File {
+extension SwiftLintFile {
     internal func regions(restrictingRuleIdentifiers: Set<RuleIdentifier>? = nil) -> [Region] {
         var regions = [Region]()
         var disabledRules = Set<RuleIdentifier>()
@@ -95,7 +95,7 @@ extension File {
     }
 
     internal func matchesAndTokens(matching pattern: String,
-                                   range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxToken])] {
+                                   range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
         let contents = self.contents.bridge()
         let range = range ?? NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
@@ -115,7 +115,7 @@ extension File {
     }
 
     internal func rangesAndTokens(matching pattern: String,
-                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+                                  range: NSRange? = nil) -> [(NSRange, [SwiftLintSyntaxToken])] {
         return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
     }
 
@@ -131,7 +131,7 @@ extension File {
         }
         var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
         var lineIterator = lines.makeIterator()
-        var structureIterator = structure.kinds().makeIterator()
+        var structureIterator = structureDictionary.kinds().makeIterator()
         var maybeLine = lineIterator.next()
         var maybeStructure = structureIterator.next()
         while let line = maybeLine, let structure = maybeStructure {
@@ -149,17 +149,17 @@ extension File {
         return results
     }
 
-    internal func syntaxTokensByLine() -> [[SyntaxToken]]? {
+    internal func syntaxTokensByLine() -> [[SwiftLintSyntaxToken]]? {
         if sourcekitdFailed {
             return nil
         }
-        var results = [[SyntaxToken]](repeating: [], count: lines.count + 1)
+        var results = [[SwiftLintSyntaxToken]](repeating: [], count: lines.count + 1)
         var tokenGenerator = syntaxMap.tokens.makeIterator()
         var lineGenerator = lines.makeIterator()
         var maybeLine = lineGenerator.next()
         var maybeToken = tokenGenerator.next()
         while let line = maybeLine, let token = maybeToken {
-            let tokenRange = NSRange(location: token.offset, length: token.length)
+            let tokenRange = token.range
             if NSLocationInRange(token.offset, line.byteRange) ||
                 NSLocationInRange(line.byteRange.location, tokenRange) {
                     results[line.index].append(token)
@@ -233,7 +233,7 @@ extension File {
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
-        contents += string
+        file.contents += string
     }
 
     internal func write<S: StringProtocol>(_ string: S) {
@@ -251,7 +251,7 @@ extension File {
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        contents = String(string)
+        file.contents = String(string)
         invalidateCache()
     }
 
@@ -317,17 +317,16 @@ extension File {
         return corrections
     }
 
-    internal func isACL(token: SyntaxToken) -> Bool {
-        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+    internal func isACL(token: SwiftLintSyntaxToken) -> Bool {
+        guard token.kind == .attributeBuiltin else {
             return false
         }
 
-        let aclString = contents.bridge().substringWithByteRange(start: token.offset,
-                                                                 length: token.length)
+        let aclString = contents(for: token)
         return aclString.flatMap(AccessControlLevel.init(description:)) != nil
     }
 
-    internal func contents(for token: SyntaxToken) -> String? {
+    internal func contents(for token: SwiftLintSyntaxToken) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset,
                                                         length: token.length)
     }

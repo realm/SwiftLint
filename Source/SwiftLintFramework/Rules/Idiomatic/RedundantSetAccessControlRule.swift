@@ -46,27 +46,16 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structure.dictionary, parentDictionary: nil)
-    }
-
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable],
-                          parentDictionary: [String: SourceKitRepresentable]?) -> [StyleViolation] {
-        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            var violations = validate(file: file, dictionary: subDict, parentDictionary: dictionary)
-
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
-                violations += validate(file: file, kind: kind, dictionary: subDict, parentDictionary: dictionary)
-            }
-
-            return violations
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return file.structureDictionary.traverseWithParentDepthFirst { parent, subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return validate(file: file, kind: kind, dictionary: subDict, parentDictionary: parent)
         }
     }
 
-    private func validate(file: File, kind: SwiftDeclarationKind,
-                          dictionary: [String: SourceKitRepresentable],
-                          parentDictionary: [String: SourceKitRepresentable]?) -> [StyleViolation] {
+    private func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                          dictionary: SourceKittenDictionary,
+                          parentDictionary: SourceKittenDictionary?) -> [StyleViolation] {
         let aclAttributes: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate, .internal, .public, .open]
         let explicitACL = dictionary.swiftAttributes.compactMap { dict -> SwiftDeclarationAttributeKind? in
             guard let attribute = dict.attribute.flatMap(SwiftDeclarationAttributeKind.init),
@@ -77,9 +66,9 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
             return attribute
         }.first
 
-        let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:))
+        let acl = dictionary.accessibility
         let resolvedAccessibility: AccessControlLevel? = explicitACL?.acl ?? {
-            let parentACL = parentDictionary?.accessibility.flatMap(AccessControlLevel.init(identifier:))
+            let parentACL = parentDictionary?.accessibility
 
             if acl == .internal, let parentACL = parentACL, parentACL == .fileprivate {
                 return .fileprivate
@@ -102,7 +91,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         }
 
         // if it's an inferred `private`, it means the variable is actually inside a fileprivate structure
-        if dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .private,
+        if dictionary.accessibility == .private,
             explicitACL == nil,
             dictionary.setterAccessibility.flatMap(AccessControlLevel.init(identifier:)) == .private {
                 return []

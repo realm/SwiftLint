@@ -47,7 +47,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -55,11 +55,11 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
         let contents = file.contents.bridge()
 
@@ -68,7 +68,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location,
                                                             length: range.length),
-                let outerKindString = file.structure.kinds(forByteOffset: byteRange.location).last?.kind,
+                let outerKindString = file.structureDictionary.kinds(forByteOffset: byteRange.location).last?.kind,
                 let outerKind = SwiftExpressionKind(rawValue: outerKindString),
                 [.call, .argument, .closure].contains(outerKind) else {
                     return nil

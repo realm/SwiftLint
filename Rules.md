@@ -40,6 +40,7 @@
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
 * [Empty String](#empty-string)
 * [Empty XCTest Method](#empty-xctest-method)
+* [ExpiringTodo](#expiringtodo)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
@@ -124,6 +125,7 @@
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
+* [Raw Value For Camel Cased Codable Enum](#raw-value-for-camel-cased-codable-enum)
 * [Reduce Boolean](#reduce-boolean)
 * [Reduce Into](#reduce-into)
 * [Redundant Discardable Let](#redundant-discardable-let)
@@ -2952,7 +2954,7 @@ resourceString.range(of: rule.regex, options: .regularExpression) != nil
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`control_statement` | Enabled | No | style | No | 3.0.0 
+`control_statement` | Enabled | Yes | style | No | 3.0.0 
 
 `if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their conditionals or arguments in parentheses.
 
@@ -6183,6 +6185,82 @@ class BarTests: XCTestCase {
 
 
 
+## ExpiringTodo
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`expiring_todo` | Disabled | No | lint | No | 3.0.0 
+
+TODOs and FIXMEs should be resolved prior to their expiry date.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+// notaTODO:
+
+```
+
+```swift
+// notaFIXME:
+
+```
+
+```swift
+// TODO: [12/31/9999]
+
+```
+
+```swift
+// TODO(note)
+
+```
+
+```swift
+// FIXME(note)
+
+```
+
+```swift
+/* FIXME: */
+
+```
+
+```swift
+/* TODO: */
+
+```
+
+```swift
+/** FIXME: */
+
+```
+
+```swift
+/** TODO: */
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+// TODO: [10/14/2019]
+
+```
+
+```swift
+// FIXME: [10/14/2019]
+
+```
+
+</details>
+
+
+
 ## Explicit ACL
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -9245,6 +9323,10 @@ _ = num != nil && num == num?.byteSwapped
 ```
 
 ```swift
+num == num!.byteSwapped
+```
+
+```swift
 1 != 2
 ```
 
@@ -9299,6 +9381,10 @@ string != string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num != num?.byteSwapped
+```
+
+```swift
+num != num!.byteSwapped
 ```
 
 ```swift
@@ -9359,6 +9445,10 @@ _ = num != nil && num === num?.byteSwapped
 ```
 
 ```swift
+num === num!.byteSwapped
+```
+
+```swift
 1 !== 2
 ```
 
@@ -9413,6 +9503,10 @@ string !== string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num !== num?.byteSwapped
+```
+
+```swift
+num !== num!.byteSwapped
 ```
 
 ```swift
@@ -9473,6 +9567,10 @@ _ = num != nil && num > num?.byteSwapped
 ```
 
 ```swift
+num > num!.byteSwapped
+```
+
+```swift
 1 >= 2
 ```
 
@@ -9527,6 +9625,10 @@ string >= string.lowercased()
 ```swift
 let num: Int? = 0
 _ = num != nil && num >= num?.byteSwapped
+```
+
+```swift
+num >= num!.byteSwapped
 ```
 
 ```swift
@@ -9587,6 +9689,10 @@ _ = num != nil && num < num?.byteSwapped
 ```
 
 ```swift
+num < num!.byteSwapped
+```
+
+```swift
 1 <= 2
 ```
 
@@ -9644,11 +9750,31 @@ _ = num != nil && num <= num?.byteSwapped
 ```
 
 ```swift
+num <= num!.byteSwapped
+```
+
+```swift
 func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>
 ```
 
 ```swift
 let array = Array<Array<Int>>()
+```
+
+```swift
+guard Set(identifiers).count != identifiers.count else { return }
+```
+
+```swift
+expect("foo") == "foo"
+```
+
+```swift
+type(of: model).cachePrefix == cachePrefix
+```
+
+```swift
+histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1
 ```
 
 </details>
@@ -9676,6 +9802,22 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b == a?.b
+```
+
+```swift
+if (↓elem == elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 == s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView == tab.webView
+```
+
+```swift
 ↓1 != 1
 ```
 
@@ -9693,6 +9835,22 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 != $0
+```
+
+```swift
+↓a?.b != a?.b
+```
+
+```swift
+if (↓elem != elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 != s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView != tab.webView
 ```
 
 ```swift
@@ -9716,6 +9874,22 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b === a?.b
+```
+
+```swift
+if (↓elem === elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 === s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView === tab.webView
+```
+
+```swift
 ↓1 !== 1
 ```
 
@@ -9733,6 +9907,22 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 !== $0
+```
+
+```swift
+↓a?.b !== a?.b
+```
+
+```swift
+if (↓elem !== elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 !== s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView !== tab.webView
 ```
 
 ```swift
@@ -9756,6 +9946,22 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b > a?.b
+```
+
+```swift
+if (↓elem > elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 > s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView > tab.webView
+```
+
+```swift
 ↓1 >= 1
 ```
 
@@ -9773,6 +9979,22 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 >= $0
+```
+
+```swift
+↓a?.b >= a?.b
+```
+
+```swift
+if (↓elem >= elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 >= s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView >= tab.webView
 ```
 
 ```swift
@@ -9796,6 +10018,22 @@ let array = Array<Array<Int>>()
 ```
 
 ```swift
+↓a?.b < a?.b
+```
+
+```swift
+if (↓elem < elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 < s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView < tab.webView
+```
+
+```swift
 ↓1 <= 1
 ```
 
@@ -9813,6 +10051,22 @@ let array = Array<Array<Int>>()
 
 ```swift
 ↓$0 <= $0
+```
+
+```swift
+↓a?.b <= a?.b
+```
+
+```swift
+if (↓elem <= elem) {}
+```
+
+```swift
+XCTAssertTrue(↓s3 <= s3)
+```
+
+```swift
+if let tab = tabManager.selectedTab, ↓tab.webView <= tab.webView
 ```
 
 </details>
@@ -15024,6 +15278,15 @@ struct Parent {
 
 ```
 
+```swift
+func f(rect: CGRect) {
+   {
+      let centre = CGPoint(x: rect.midX, y: rect.midY)
+      print(centre)
+   }()
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -15107,6 +15370,34 @@ struct Parent {
 	}
 }
 
+```
+
+```swift
+// Get the current thread's TLS pointer. On first call for a given thread,
+// creates and initializes a new one.
+internal static func getPointer()
+  -> UnsafeMutablePointer<_ThreadLocalStorage>
+{ // <- here
+  return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
+    to: _ThreadLocalStorage.self)
+}
+```
+
+```swift
+func run_Array_method1x(_ N: Int) {
+  let existentialArray = array!
+  for _ in 0 ..< N * 100 {
+    for elt in existentialArray {
+      if !elt.doIt()  {
+        fatalError("expected true")
+      }
+    }
+  }
+}
+
+func run_Array_method2x(_ N: Int) {
+
+}
 ```
 
 </details>
@@ -16918,6 +17209,103 @@ class TotoTests: QuickSpec {
 
 
 
+## Raw Value For Camel Cased Codable Enum
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`raw_value_for_camel_cased_codable_enum` | Disabled | No | lint | No | 3.0.0 
+
+Camel cased cases of Codable String enums should have raw value.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Numbers: Codable {
+  case int(Int)
+  case short(Int16)
+}
+```
+
+```swift
+enum Numbers: Int, Codable {
+  case one = 1
+  case two = 2
+}
+```
+
+```swift
+enum Numbers: Double, Codable {
+  case one = 1.1
+  case two = 2.2
+}
+```
+
+```swift
+enum Numbers: String, Codable {
+  case one = "one"
+  case two = "two"
+}
+```
+
+```swift
+enum Status: String {
+    case ok
+    case notAcceptable
+    case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: Int, Codable {
+    case ok
+    case notAcceptable
+    case maybeAcceptable = -1
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Status: String, Codable {
+    case ok
+    case ↓notAcceptable
+    case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: String, Decodable {
+   case ok
+   case ↓notAcceptable
+   case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: String, Encodable {
+   case ok
+   case ↓notAcceptable
+   case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+```swift
+enum Status: String, Codable {
+    case ok
+    case ↓notAcceptable
+    case maybeAcceptable = "maybe_acceptable"
+}
+```
+
+</details>
+
+
+
 ## Reduce Boolean
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -17823,6 +18211,10 @@ protocol Foo {
 ```swift
 func foo()↓ -> () {}
 
+```
+
+```swift
+func foo()↓ -> ( ) {}
 ```
 
 ```swift
@@ -19308,7 +19700,7 @@ switch foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`syntactic_sugar` | Enabled | No | idiomatic | No | 3.0.0 
+`syntactic_sugar` | Enabled | Yes | idiomatic | No | 3.0.0 
 
 Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.
 
@@ -24414,7 +24806,7 @@ All imported modules should be required to make the file compile.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-import Dispatch
+import Dispatch // This is used
 dispatchMain()
 ```
 
@@ -24454,7 +24846,7 @@ A.dispatchMain()
 ```
 
 ```swift
-↓import Foundation
+↓import Foundation // This is unused
 struct A {
   static func dispatchMain() {}
 }
@@ -24851,14 +25243,14 @@ Function parameters should be aligned vertically if they're in multiple lines in
 <summary>Non Triggering Examples</summary>
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable]) { }
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                      dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                      dictionary: SourceKittenDictionary) -> [StyleViolation]
 
 ```
 
@@ -24873,23 +25265,23 @@ func foo(bar: Int) -> String
 ```
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable])
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                      dictionary: SourceKittenDictionary)
                       -> [StyleViolation]
 
 ```
 
 ```swift
 func validateFunction(
-   _ file: File, kind: SwiftDeclarationKind,
-   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
+   _ file: SwiftLintFile, kind: SwiftDeclarationKind,
+   dictionary: SourceKittenDictionary) -> [StyleViolation]
 
 ```
 
 ```swift
 func validateFunction(
-   _ file: File, kind: SwiftDeclarationKind,
-   dictionary: [String: SourceKitRepresentable]
+   _ file: SwiftLintFile, kind: SwiftDeclarationKind,
+   dictionary: SourceKittenDictionary
 ) -> [StyleViolation]
 
 ```
@@ -24924,21 +25316,21 @@ func foo(data: Data,
 <summary>Triggering Examples</summary>
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                  ↓dictionary: [String: SourceKitRepresentable]) { }
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                  ↓dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
-func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                       ↓dictionary: [String: SourceKitRepresentable]) { }
+func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                       ↓dictionary: SourceKittenDictionary) { }
 
 ```
 
 ```swift
-func validateFunction(_ file: File,
+func validateFunction(_ file: SwiftLintFile,
                   ↓kind: SwiftDeclarationKind,
-                  ↓dictionary: [String: SourceKitRepresentable]) { }
+                  ↓dictionary: SourceKittenDictionary) { }
 
 ```
 

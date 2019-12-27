@@ -1,95 +1,125 @@
+import Foundation
 import SourceKittenFramework
 
-extension Dictionary where Key: ExpressibleByStringLiteral {
-    /// Accessibility.
-    var accessibility: String? {
-        return self["key.accessibility"] as? String
+public struct SourceKittenDictionary {
+    public let value: [String: SourceKitRepresentable]
+    public let substructure: [SourceKittenDictionary]
+
+    public let expressionKind: SwiftExpressionKind?
+    public let declarationKind: SwiftDeclarationKind?
+    public let statementKind: StatementKind?
+
+    public let accessibility: AccessControlLevel?
+
+    init(_ value: [String: SourceKitRepresentable]) {
+        self.value = value
+
+        let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
+        self.substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(SourceKittenDictionary.init)
+
+        let stringKind = value["key.kind"] as? String
+        self.expressionKind = stringKind.flatMap(SwiftExpressionKind.init)
+        self.declarationKind = stringKind.flatMap(SwiftDeclarationKind.init)
+        self.statementKind = stringKind.flatMap(StatementKind.init)
+
+        self.accessibility = (value["key.accessibility"] as? String).flatMap(AccessControlLevel.init(identifier:))
     }
-    /// Body length.
+
+    /// Body length
     var bodyLength: Int? {
-        return (self["key.bodylength"] as? Int64).flatMap({ Int($0) })
+        return (value["key.bodylength"] as? Int64).flatMap({ Int($0) })
     }
+
     /// Body offset.
     var bodyOffset: Int? {
-        return (self["key.bodyoffset"] as? Int64).flatMap({ Int($0) })
+        return (value["key.bodyoffset"] as? Int64).flatMap({ Int($0) })
     }
+
     /// Kind.
     var kind: String? {
-        return self["key.kind"] as? String
+        return value["key.kind"] as? String
     }
+
     /// Length.
     var length: Int? {
-        return (self["key.length"] as? Int64).flatMap({ Int($0) })
+        return (value["key.length"] as? Int64).flatMap({ Int($0) })
     }
     /// Name.
     var name: String? {
-        return self["key.name"] as? String
+        return value["key.name"] as? String
     }
+
     /// Name length.
     var nameLength: Int? {
-        return (self["key.namelength"] as? Int64).flatMap({ Int($0) })
+        return (value["key.namelength"] as? Int64).flatMap({ Int($0) })
     }
+
     /// Name offset.
     var nameOffset: Int? {
-        return (self["key.nameoffset"] as? Int64).flatMap({ Int($0) })
+        return (value["key.nameoffset"] as? Int64).flatMap({ Int($0) })
     }
+
     /// Offset.
     var offset: Int? {
-        return (self["key.offset"] as? Int64).flatMap({ Int($0) })
+        return (value["key.offset"] as? Int64).flatMap({ Int($0) })
     }
+
+    /// Returns byte range starting from `offset` with `length` bytes
+    var byteRange: NSRange? {
+        guard let offset = offset, let length = length else { return nil }
+        return NSRange(location: offset, length: length)
+    }
+
     /// Setter accessibility.
     var setterAccessibility: String? {
-        return self["key.setter_accessibility"] as? String
+        return value["key.setter_accessibility"] as? String
     }
+
     /// Type name.
     var typeName: String? {
-        return self["key.typename"] as? String
+        return value["key.typename"] as? String
     }
+
     /// Documentation length.
     var docLength: Int? {
-        return (self["key.doclength"] as? Int64).flatMap({ Int($0) })
+        return (value["key.doclength"] as? Int64).flatMap({ Int($0) })
     }
 
     var attribute: String? {
-        return self["key.attribute"] as? String
+        return value["key.attribute"] as? String
     }
 
     var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
         return swiftAttributes.compactMap { $0.attribute }
-                              .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
+            .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
     }
 
-    var swiftAttributes: [[String: SourceKitRepresentable]] {
-        let array = self["key.attributes"] as? [SourceKitRepresentable] ?? []
-        let dictionaries = array.compactMap { ($0 as? [String: SourceKitRepresentable]) }
+    var swiftAttributes: [SourceKittenDictionary] {
+        let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
+        let dictionaries = array.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(SourceKittenDictionary.init)
         return dictionaries
     }
 
-    var substructure: [[String: SourceKitRepresentable]] {
-        let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
-    }
-
-    var elements: [[String: SourceKitRepresentable]] {
-        let elements = self["key.elements"] as? [SourceKitRepresentable] ?? []
+    var elements: [SourceKittenDictionary] {
+        let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
         return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
+        .map(SourceKittenDictionary.init)
     }
 
-    var entities: [[String: SourceKitRepresentable]] {
-        let entities = self["key.entities"] as? [SourceKitRepresentable] ?? []
+    var entities: [SourceKittenDictionary] {
+        let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
         return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
+            .map(SourceKittenDictionary.init)
     }
 
-    var enclosedVarParameters: [[String: SourceKitRepresentable]] {
-        return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
-            guard let kindString = subDict.kind else {
-                return []
-            }
-
-            if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
+    var enclosedVarParameters: [SourceKittenDictionary] {
+        return substructure.flatMap { subDict -> [SourceKittenDictionary] in
+            if subDict.declarationKind == .varParameter {
                 return [subDict]
-            } else if SwiftExpressionKind(rawValue: kindString) == .argument ||
-                SwiftExpressionKind(rawValue: kindString) == .closure {
+            } else if subDict.expressionKind == .argument ||
+                subDict.expressionKind == .closure {
                 return subDict.enclosedVarParameters
             }
 
@@ -97,11 +127,10 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         }
     }
 
-    var enclosedArguments: [[String: SourceKitRepresentable]] {
-        return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
-            guard let kindString = subDict.kind,
-                SwiftExpressionKind(rawValue: kindString) == .argument else {
-                    return []
+    var enclosedArguments: [SourceKittenDictionary] {
+        return substructure.flatMap { subDict -> [SourceKittenDictionary] in
+            guard subDict.expressionKind == .argument else {
+                return []
             }
 
             return [subDict]
@@ -109,8 +138,8 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 
     var inheritedTypes: [String] {
-        let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
-        return array.compactMap { ($0 as? [String: String])?.name }
+        let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
+        return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
 
     internal func extractCallsToSuper(methodName: String) -> [String] {
@@ -119,12 +148,77 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         }
         let superCall = "super.\(methodNameWithoutArguments)"
         return substructure.flatMap { elems -> [String] in
-            guard let type = elems.kind.flatMap(SwiftExpressionKind.init),
+            guard let type = elems.expressionKind,
                 let name = elems.name,
                 type == .call && superCall == name else {
                     return elems.extractCallsToSuper(methodName: methodName)
             }
             return [name]
+        }
+    }
+}
+
+extension SourceKittenDictionary {
+    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
+    ///
+    /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
+    func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        return result
+    }
+
+    private func traverseDepthFirst<T>(collectingValuesInto array: inout [T],
+                                       traverseBlock: (SourceKittenDictionary) -> [T]?) {
+        substructure.forEach { subDict in
+            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+
+            if let collectedValues = traverseBlock(subDict) {
+                array += collectedValues
+            }
+        }
+    }
+
+    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
+    ///
+    /// - parameter traverseBlock: block that will be called for each substructure and its parent.
+    func traverseWithParentDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?)
+        -> [T] {
+        var result: [T] = []
+        traverseWithParentDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        return result
+    }
+
+    private func traverseWithParentDepthFirst<T>(
+        collectingValuesInto array: inout [T],
+        traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
+        substructure.forEach { subDict in
+            subDict.traverseWithParentDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+
+            if let collectedValues = traverseBlock(self, subDict) {
+                array += collectedValues
+            }
+        }
+    }
+
+    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
+    /// Traversing using breadth first strategy, so deepest substructures will be passed to `traverseBlock` last.
+    /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
+    func traverseBreadthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
+        var result: [T] = []
+        traverseBreadthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
+        return result
+    }
+
+    private func traverseBreadthFirst<T>(collectingValuesInto array: inout [T],
+                                         traverseBlock: (SourceKittenDictionary) -> [T]?) {
+        substructure.forEach { subDict in
+            if let collectedValues = traverseBlock(subDict) {
+                array += collectedValues
+            }
+            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
         }
     }
 }

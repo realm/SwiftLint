@@ -76,7 +76,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         let inheritedTypes: [String]
         let cases: [String]
 
-        init(from dictionary: [String: SourceKitRepresentable], in file: File) {
+        init(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) {
             location = Enum.location(from: dictionary, in: file)
             inheritedTypes = dictionary.inheritedTypes
             cases = Enum.cases(from: dictionary)
@@ -86,9 +86,9 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ///
         /// - Parameters:
         ///   - dictionary: Parsed source for the enum.
-        ///   - file: File that contains the enum.
+        ///   - file: SwiftLintFile that contains the enum.
         /// - Returns: Location of where the enum declaration starts.
-        static func location(from dictionary: [String: SourceKitRepresentable], in file: File) -> Location {
+        static func location(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) -> Location {
             return Location(file: file, characterOffset: dictionary.offset ?? 0)
         }
 
@@ -96,9 +96,9 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ///
         /// - Parameter dictionary: Parsed source for the enum.
         /// - Returns: Names of cases found in the enum.
-        static func cases(from dictionary: [String: SourceKitRepresentable]) -> [String] {
+        static func cases(from dictionary: SourceKittenDictionary) -> [String] {
             let caseSubstructures = dictionary.substructure.filter { dict in
-                return dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) == .enumcase
+                return dict.declarationKind == .enumcase
             }.flatMap { $0.substructure }
 
             return caseSubstructures.compactMap { $0.name }.map { name in
@@ -159,8 +159,8 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .enum else {
             return []
         }

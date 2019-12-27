@@ -14,8 +14,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let startOffset = dictionary.nameOffset,
             let length = dictionary.nameLength,
@@ -24,7 +24,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         }
 
         let params = dictionary.substructure.filter { subDict in
-            return subDict.kind.flatMap(SwiftDeclarationKind.init) == .varParameter &&
+            return subDict.declarationKind == .varParameter &&
                 (subDict.offset ?? .max) < endOffset
         }
 
@@ -33,7 +33,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         }
 
         let contents = file.contents.bridge()
-        let calculateLocation = { (dict: [String: SourceKitRepresentable]) -> Location? in
+        let calculateLocation = { (dict: SourceKittenDictionary) -> Location? in
             guard let byteOffset = dict.offset,
                 let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
                     return nil

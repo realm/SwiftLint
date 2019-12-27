@@ -125,8 +125,8 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
                                                        "NSEdgeInsetsMake": "NSEdgeInsets",
                                                        "UIOffsetMake": "UIOffset"]
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard containsViolation(kind: kind, dictionary: dictionary),
             let offset = dictionary.offset else {
                 return []
@@ -139,8 +139,8 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
         ]
     }
 
-    private func violations(in file: File, kind: SwiftExpressionKind,
-                            dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
+    private func violations(in file: SwiftLintFile, kind: SwiftExpressionKind,
+                            dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         guard containsViolation(kind: kind, dictionary: dictionary) else {
             return []
         }
@@ -149,7 +149,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
     }
 
     private func containsViolation(kind: SwiftExpressionKind,
-                                   dictionary: [String: SourceKitRepresentable]) -> Bool {
+                                   dictionary: SourceKittenDictionary) -> Bool {
         guard kind == .call,
             let name = dictionary.name,
             dictionary.offset != nil,
@@ -161,25 +161,21 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
         return true
     }
 
-    private func violations(in file: File,
-                            dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
-        return dictionary.substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
-            var dictionaries = violations(in: file, dictionary: subDict)
-            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
-                dictionaries += violations(in: file, kind: kind, dictionary: subDict)
-            }
-
-            return dictionaries
+    private func violations(in file: SwiftLintFile,
+                            dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        return dictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            return violations(in: file, kind: kind, dictionary: subDict)
         }
     }
 
-    private func violations(in file: File) -> [[String: SourceKitRepresentable]] {
-        return violations(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
+    private func violations(in file: SwiftLintFile) -> [SourceKittenDictionary] {
+        return violations(in: file, dictionary: file.structureDictionary).sorted { lhs, rhs in
             (lhs.offset ?? 0) < (rhs.offset ?? 0)
         }
     }
 
-    public func correct(file: File) -> [Correction] {
+    public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingDictionaries = violations(in: file)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
@@ -214,7 +210,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
         return corrections
     }
 
-    private func argumentsContents(file: File, arguments: [[String: SourceKitRepresentable]]) -> [String] {
+    private func argumentsContents(file: SwiftLintFile, arguments: [SourceKittenDictionary]) -> [String] {
         let contents = file.contents.bridge()
         return arguments.compactMap { argument -> String? in
             guard argument.name == nil,

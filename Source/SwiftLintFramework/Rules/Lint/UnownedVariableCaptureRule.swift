@@ -27,8 +27,8 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .closure, let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength,
             case let contents = file.contents.bridge(),
             let closureRange = contents.byteRangeToNSRange(start: bodyOffset, length: bodyLength),
@@ -40,7 +40,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
 
         let length = inTokenByteRange.location - bodyOffset
         let variables = localVariableDeclarations(inByteRange: NSRange(location: bodyOffset, length: length),
-                                                  structure: file.structure)
+                                                  structureDictionary: file.structureDictionary)
         let unownedVariableOffsets = variables.compactMap { dictionary in
             return dictionary.swiftAttributes.first { attributeDict in
                 guard attributeDict.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .weak,
@@ -60,23 +60,14 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
     }
 
     private func localVariableDeclarations(inByteRange byteRange: NSRange,
-                                           structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
-
-        func parse(dictionary: [String: SourceKitRepresentable]) {
-            if let kindString = (dictionary.kind),
-                SwiftDeclarationKind(rawValue: kindString) == .varLocal,
-                let offset = dictionary.offset,
-                let length = dictionary.length {
-                let variableByteRange = NSRange(location: offset, length: length)
-
-                if byteRange.intersects(variableByteRange) {
-                    results.append(dictionary)
-                }
+                                           structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        return structureDictionary.traverseBreadthFirst { dictionary in
+            guard dictionary.declarationKind == .varLocal,
+                let variableByteRange = dictionary.byteRange,
+                byteRange.intersects(variableByteRange) else {
+                    return nil
             }
-            dictionary.substructure.forEach(parse)
+            return [dictionary]
         }
-        parse(dictionary: structure.dictionary)
-        return results
     }
 }

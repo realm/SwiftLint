@@ -15,9 +15,9 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
         triggeringExamples: NoFallthroughOnlyRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .case,
             let length = dictionary.length,
             let offset = dictionary.offset,
@@ -49,17 +49,17 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
         return []
     }
 
-    private func isNextTokenUnknownAttribute(afterOffset offset: Int, file: File) -> Bool {
+    private func isNextTokenUnknownAttribute(afterOffset offset: Int, file: SwiftLintFile) -> Bool {
         let nextNonCommentToken = file.syntaxMap.tokens
             .first { token in
-                guard let kind = SyntaxKind(rawValue: token.type), !kind.isCommentLike else {
+                guard let kind = token.kind, !kind.isCommentLike else {
                     return false
                 }
 
                 return token.offset > offset
             }
 
-        return (nextNonCommentToken?.type).flatMap(SyntaxKind.init(rawValue:)) == .attributeID &&
+        return nextNonCommentToken?.kind == .attributeID &&
             nextNonCommentToken.flatMap(file.contents(for:)) == "@unknown"
     }
 

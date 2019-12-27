@@ -76,16 +76,16 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .extension, let offset = dictionary.offset,
             dictionary.inheritedTypes.isEmpty else {
                 return []
         }
 
         let declarations = dictionary.substructure.compactMap { entry -> (acl: AccessControlLevel, offset: Int)? in
-            guard entry.kind.flatMap(SwiftDeclarationKind.init) != nil,
-                let acl = entry.accessibility.flatMap(AccessControlLevel.init(identifier:)),
+            guard entry.declarationKind != nil,
+                let acl = entry.accessibility,
                 let offset = entry.offset else {
                 return nil
             }
@@ -114,9 +114,9 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         ]
     }
 
-    private func declarationsViolations(file: File, acl: AccessControlLevel,
+    private func declarationsViolations(file: SwiftLintFile, acl: AccessControlLevel,
                                         declarationOffsets: [Int],
-                                        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                                        dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset, let length = dictionary.length,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length) else {

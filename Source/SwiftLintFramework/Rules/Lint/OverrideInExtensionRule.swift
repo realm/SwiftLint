@@ -31,8 +31,8 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structure.dictionary)
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let collector = NamespaceCollector(dictionary: file.structureDictionary)
         let elements = collector.findAllElements(of: [.class, .struct, .enum, .extension])
 
         let susceptibleNames = Set(elements.compactMap { $0.kind == .class ? $0.name : nil })
@@ -41,7 +41,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
             .filter { $0.kind == .extension && !susceptibleNames.contains($0.name) }
             .flatMap { element in
                 return element.dictionary.substructure.compactMap { element -> Int? in
-                    guard element.kind.flatMap(SwiftDeclarationKind.init) != nil,
+                    guard element.declarationKind != nil,
                         element.enclosedSwiftAttributes.contains(.override),
                         let offset = element.offset else {
                             return nil

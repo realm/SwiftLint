@@ -175,13 +175,13 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
         ]
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "\\{[^\\{]*?\\s+get\\b"
         let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
-        let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
+        let getTokens: [SwiftLintSyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
             let kinds = tokens.kinds
             guard let token = tokens.last,
-                SyntaxKind(rawValue: token.type) == .keyword,
+                token.kind == .keyword,
                 attributesKinds.isDisjoint(with: kinds) else {
                     return nil
             }
@@ -191,7 +191,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
 
         let violatingLocations = getTokens.compactMap { token -> (Int, SwiftDeclarationKind?)? in
             // the last element is the deepest structure
-            guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last else {
+            guard let dict = declarations(forByteOffset: token.offset,
+                                          structureDictionary: file.structureDictionary).last else {
                 return nil
             }
 
@@ -200,7 +201,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                 return nil
             }
 
-            let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:))
+            let kind = dict.declarationKind
             return (token.offset, kind)
         }
 
@@ -216,18 +217,19 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                                   reason: reason)
         }
     }
+}
 
-    private func declarations(forByteOffset byteOffset: Int,
-                              structure: Structure) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
+private extension ImplicitGetterRule {
+    func declarations(forByteOffset byteOffset: Int,
+                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
+        var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
-                                                             .union([.functionSubscript])
+            .union([.functionSubscript])
 
-        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
+        func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
-            guard let kindString = dictionary.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString),
+            guard let kind = dictionary.declarationKind,
                 let bodyOffset = dictionary.bodyOffset,
                 let bodyLength = dictionary.bodyLength,
                 case let byteRange = NSRange(location: bodyOffset, length: bodyLength),
@@ -244,7 +246,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             }
         }
 
-        for dictionary in structure.dictionary.substructure {
+        let dict = structureDictionary
+        for dictionary in dict.substructure {
             parse(dictionary: dictionary, parentKind: nil)
         }
 

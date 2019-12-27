@@ -14,16 +14,17 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let testClasses = file.structure.dictionary.substructure.filter {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let dict = file.structureDictionary
+        let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.contains("QuickSpec") &&
-                $0.kind.flatMap(SwiftDeclarationKind.init) == .class
+                $0.declarationKind == .class
         }
 
         let specDeclarations = testClasses.flatMap { classDict in
             return classDict.substructure.filter {
                 return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance &&
+                    $0.declarationKind == .functionMethodInstance &&
                     $0.enclosedSwiftAttributes.contains(.override)
             }
         }
@@ -33,22 +34,16 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            var violations = validate(file: file, dictionary: subDict)
-
-            if let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) {
-                violations += validate(file: file, kind: kind, dictionary: subDict)
-            }
-
-            return violations
+    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        return dictionary.traverseDepthFirst { subDict in
+            guard let kind = subDict.expressionKind else { return nil }
+            return validate(file: file, kind: kind, dictionary: subDict)
         }
     }
 
-    private func validate(file: File,
+    private func validate(file: SwiftLintFile,
                           kind: SwiftExpressionKind,
-                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // is it a call to a restricted method?
         guard
             kind == .call,
@@ -65,10 +60,10 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func violationOffsets(in substructure: [[String: SourceKitRepresentable]]) -> [Int] {
+    private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [Int] {
         return substructure.flatMap { dictionary -> [Int] in
-            let substructure = dictionary.substructure.flatMap { dict -> [[String: SourceKitRepresentable]] in
-                if dict.kind.flatMap(SwiftExpressionKind.init) == .closure {
+            let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
+                if dict.expressionKind == .closure {
                     return dict.substructure
                 } else {
                     return [dict]
@@ -79,28 +74,27 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func toViolationOffsets(dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [Int] {
         guard
-            let kind = dictionary.kind,
+            dictionary.kind != nil,
             let offset = dictionary.offset
             else { return [] }
 
-        if SwiftExpressionKind(rawValue: kind) == .call,
+        if dictionary.expressionKind == .call,
             let name = dictionary.name, QuickCallKind(rawValue: name) == nil {
             return [offset]
         }
 
-        guard SwiftExpressionKind(rawValue: kind) != .call else { return [] }
+        guard dictionary.expressionKind != .call else { return [] }
 
         return dictionary.substructure.compactMap(toViolationOffset)
     }
 
-    private func toViolationOffset(dictionary: [String: SourceKitRepresentable]) -> Int? {
+    private func toViolationOffset(dictionary: SourceKittenDictionary) -> Int? {
         guard
             let name = dictionary.name,
             let offset = dictionary.offset,
-            let kind = dictionary.kind,
-            SwiftExpressionKind(rawValue: kind) == .call,
+            dictionary.expressionKind == .call,
             QuickCallKind(rawValue: name) == nil
             else { return nil }
 

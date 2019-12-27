@@ -49,8 +49,8 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         ].map(wrapInSwitch)
     )
 
-    public func validate(file: File, kind: StatementKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: StatementKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .case,
             let offset = dictionary.offset,
             let length = dictionary.length,
@@ -74,9 +74,9 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         ]
     }
 
-    private func firstNonCommentToken(inByteRange byteRange: NSRange, file: File) -> SyntaxToken? {
+    private func firstNonCommentToken(inByteRange byteRange: NSRange, file: SwiftLintFile) -> SwiftLintSyntaxToken? {
         return file.syntaxMap.tokens(inByteRange: byteRange).first { token -> Bool in
-            guard let kind = SyntaxKind(rawValue: token.type) else {
+            guard let kind = token.kind else {
                 return false
             }
 

@@ -1,9 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
+private typealias FileCacheKey = Int
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
-        return try Request.editorOpen(file: file).sendIfNotDisabled()
+        return try Request.editorOpen(file: file.file).sendIfNotDisabled()
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil
@@ -18,13 +19,20 @@ private var structureCache = Cache({ file -> Structure? in
     }
     return nil
 })
-private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxMap.init) })
+
+private var structureDictionaryCache = Cache({ file in
+    return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
+})
+
+private var syntaxMapCache = Cache({ file in
+    responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
+})
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
 
 internal typealias AssertHandler = () -> Void
 
-private var assertHandlers = [String: AssertHandler]()
+private var assertHandlers = [FileCacheKey: AssertHandler]()
 private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
 
 private struct RebuildQueue {
@@ -47,15 +55,15 @@ private struct RebuildQueue {
 private var queueForRebuild = RebuildQueue()
 
 private class Cache<T> {
-    private var values = [String: T]()
-    private let factory: (File) -> T
+    private var values = [FileCacheKey: T]()
+    private let factory: (SwiftLintFile) -> T
     private let lock = NSLock()
 
-    fileprivate init(_ factory: @escaping (File) -> T) {
+    fileprivate init(_ factory: @escaping (SwiftLintFile) -> T) {
         self.factory = factory
     }
 
-    fileprivate func get(_ file: File) -> T {
+    fileprivate func get(_ file: SwiftLintFile) -> T {
         let key = file.cacheKey
         lock.lock()
         defer { lock.unlock() }
@@ -67,7 +75,7 @@ private class Cache<T> {
         return value
     }
 
-    fileprivate func invalidate(_ file: File) {
+    fileprivate func invalidate(_ file: SwiftLintFile) {
         doLocked { values.removeValue(forKey: file.cacheKey) }
     }
 
@@ -75,11 +83,11 @@ private class Cache<T> {
         doLocked { values.removeAll(keepingCapacity: false) }
     }
 
-    fileprivate func set(key: String, value: T) {
+    fileprivate func set(key: FileCacheKey, value: T) {
         doLocked { values[key] = value }
     }
 
-    fileprivate func unset(key: String) {
+    fileprivate func unset(key: FileCacheKey) {
         doLocked { values.removeValue(forKey: key) }
     }
 
@@ -90,9 +98,9 @@ private class Cache<T> {
     }
 }
 
-extension File {
-    fileprivate var cacheKey: String {
-        return path ?? contents
+extension SwiftLintFile {
+    fileprivate var cacheKey: FileCacheKey {
+        return id
     }
 
     internal var sourcekitdFailed: Bool {
@@ -128,18 +136,29 @@ extension File {
         return structure
     }
 
-    internal var syntaxMap: SyntaxMap {
+    internal var structureDictionary: SourceKittenDictionary {
+        guard let structureDictionary = structureDictionaryCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SourceKittenDictionary([:])
+            }
+            queuedFatalError("Never call this for file that sourcekitd fails.")
+        }
+        return structureDictionary
+    }
+
+    internal var syntaxMap: SwiftLintSyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
                 handler()
-                return SyntaxMap(data: [])
+                return SwiftLintSyntaxMap(value: SyntaxMap(data: []))
             }
             queuedFatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxMap
     }
 
-    internal var syntaxTokensByLines: [[SyntaxToken]] {
+    internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -165,6 +184,7 @@ extension File {
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
+        structureDictionaryCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
@@ -175,6 +195,7 @@ extension File {
         responseCache.clear()
         assertHandlerCache.clear()
         structureCache.clear()
+        structureDictionaryCache.clear()
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()

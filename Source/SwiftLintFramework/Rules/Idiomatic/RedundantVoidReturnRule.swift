@@ -40,6 +40,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
             }
             """,
             "func foo()↓ -> () {}\n",
+            "func foo()↓ -> ( ) {}",
             """
             protocol Foo {
               func foo()↓ -> ()
@@ -60,8 +61,8 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
     private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -69,9 +70,10 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         }
     }
 
-    public func violationRanges(in file: File, kind: SwiftDeclarationKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard functionKinds.contains(kind),
+            !shouldReturnEarlyBasedOnTypeName(dictionary: dictionary),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,
@@ -88,7 +90,23 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         return [match]
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "")
+    }
+
+    private func shouldReturnEarlyBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
+        guard SwiftVersion.current >= .fourDotOne else {
+            return false
+        }
+
+        return !containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary)
+    }
+
+    private func containsVoidReturnTypeBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
+        guard let typeName = dictionary.typeName else {
+            return false
+        }
+
+        return typeName == "Void" || typeName.components(separatedBy: .whitespaces).joined() == "()"
     }
 }

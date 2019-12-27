@@ -20,7 +20,7 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         triggeringExamples: RedundantObjcAttributeRuleExamples.triggeringExamples,
         corrections: RedundantObjcAttributeRuleExamples.corrections)
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -28,28 +28,17 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         }
     }
 
-    public func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(file: file, dictionary: file.structure.dictionary, parentStructure: nil)
-    }
-
-    private func violationRanges(file: File, dictionary: [String: SourceKitRepresentable],
-                                 parentStructure: [String: SourceKitRepresentable]?) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            var violations = violationRanges(file: file, dictionary: subDict, parentStructure: dictionary)
-
-            if let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) {
-                violations += violationRanges(file: file, kind: kind, dictionary: subDict, parentStructure: dictionary)
-            }
-
-            return violations
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        return file.structureDictionary.traverseWithParentDepthFirst { parent, subDict in
+            guard let kind = subDict.declarationKind else { return nil }
+            return violationRanges(file: file, kind: kind, dictionary: subDict, parentStructure: parent)
         }
     }
 
-    private func violationRanges(file: File,
+    private func violationRanges(file: SwiftLintFile,
                                  kind: SwiftDeclarationKind,
-                                 dictionary: [String: SourceKitRepresentable],
-                                 parentStructure: [String: SourceKitRepresentable]?) -> [NSRange] {
+                                 dictionary: SourceKittenDictionary,
+                                 parentStructure: SourceKittenDictionary?) -> [NSRange] {
         let objcAttribute = dictionary.swiftAttributes
                                       .first(where: { $0.attribute == SwiftDeclarationAttributeKind.objc.rawValue })
         guard let objcOffset = objcAttribute?.offset,
@@ -61,9 +50,9 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
 
         let isInObjcVisibleScope = { () -> Bool in
             guard let parentStructure = parentStructure,
-                let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-                let parentKind = parentStructure.kind.flatMap(SwiftDeclarationKind.init),
-                let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) else {
+                let kind = dictionary.declarationKind,
+                let parentKind = parentStructure.declarationKind,
+                let acl = dictionary.accessibility else {
                     return false
             }
 
@@ -89,9 +78,9 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
     }
 }
 
-private extension Dictionary where Key == String, Value == SourceKitRepresentable {
+private extension SourceKittenDictionary {
     var isObjcAndIBDesignableDeclaredExtension: Bool {
-        guard let kind = kind, let declaration = SwiftDeclarationKind(rawValue: kind) else {
+        guard let declaration = declarationKind else {
             return false
         }
         return [.extensionClass, .extension].contains(declaration)
@@ -100,7 +89,7 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
 }
 
 public extension RedundantObjcAttributeRule {
-     func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         var whitespaceAndNewlineOffset = 0
         let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()
         let nsContent = file.contents.bridge()

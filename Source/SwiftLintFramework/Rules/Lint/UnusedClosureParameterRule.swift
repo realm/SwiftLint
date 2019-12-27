@@ -98,8 +98,8 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, dictionary: dictionary, kind: kind).map { range, name in
             let reason = "Unused parameter \"\(name)\" in a closure should be replaced with _."
             return StyleViolation(ruleDescription: type(of: self).description,
@@ -109,16 +109,16 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         }
     }
 
-    public func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         return violationRanges(in: file, dictionary: dictionary, kind: kind).map { $0.range }
     }
 
-    public func substitution(for violationRange: NSRange, in file: File) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
         return (violationRange, "_")
     }
 
-    private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable],
+    private func violationRanges(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                  kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
         guard kind == .call,
             !isClosure(dictionary: dictionary),
@@ -160,8 +160,8 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                 }
 
                 let token = tokens.first(where: { token -> Bool in
-                    return (SyntaxKind(rawValue: token.type) == .identifier
-                        || (SyntaxKind(rawValue: token.type) == .keyword && name == "self")) &&
+                    return (token.kind == .identifier
+                        || (token.kind == .keyword && name == "self")) &&
                         token.offset == byteRange.location &&
                         token.length == byteRange.length
                 })
@@ -178,7 +178,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         }
     }
 
-    private func isClosure(dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isClosure(dictionary: SourceKittenDictionary) -> Bool {
         return dictionary.name.flatMap { name -> Bool in
             let length = name.bridge().length
             let range = NSRange(location: 0, length: length)

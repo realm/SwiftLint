@@ -16,9 +16,9 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File,
+    public func validate(file: SwiftLintFile,
                          kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
@@ -31,7 +31,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
             guard
                 let offset = subStructure.offset,
                 let length = subStructure.length,
-                let kind = subStructure.kind, SwiftDeclarationKind(rawValue: kind) == .varParameter
+                subStructure.declarationKind == .varParameter
                 else {
                     return nil
             }

@@ -30,7 +30,7 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
         }
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "[\\}\\)]\\s*(==|!=)\\s*nil"
         let firstViolations = validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
                                        callNameSuffix: ".first", severity: configuration.severity,

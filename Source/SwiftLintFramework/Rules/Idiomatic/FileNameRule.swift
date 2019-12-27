@@ -3,10 +3,10 @@ import SourceKittenFramework
 
 private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds + [.extension, .protocol]
 
-private extension Dictionary where Key: ExpressibleByStringLiteral {
+private extension SourceKittenDictionary {
     func recursiveDeclaredTypeNames() -> [String] {
         let subNames = substructure.flatMap { $0.recursiveDeclaredTypeNames() }
-        if let kind = kind.flatMap(SwiftDeclarationKind.init),
+        if let kind = declarationKind,
             typeAndExtensionKinds.contains(kind), let name = name {
             return [name] + subNames
         }
@@ -32,7 +32,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         kind: .idiomatic
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
             case let fileName = filePath.bridge().lastPathComponent,
             !configuration.excluded.contains(fileName) else {
@@ -57,7 +57,8 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         }
 
         // Process nested type separator
-        let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames().map {
+        let dictionary = file.structureDictionary
+        let allDeclaredTypeNames = dictionary.recursiveDeclaredTypeNames().map {
             $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
         }
 

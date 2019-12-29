@@ -23,6 +23,10 @@
   [JP Simard](https://github.com/jpsim)
   [#2877](https://github.com/realm/SwiftLint/issues/2877)
 
+* Fix false positives from the `unused_declaration` rule involving
+  functions in protocol extensions.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.38.0: Toroidal Agitation
 
 #### Breaking

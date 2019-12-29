@@ -25,6 +25,27 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             _ = kConstant
             """,
             """
+            enum Change<T> {
+              case insert(T)
+              case delete(T)
+            }
+
+            extension Sequence {
+              func deletes<T>() -> [T] where Element == Change<T> {
+                return compactMap { operation in
+                  if case .delete(let value) = operation {
+                    return value
+                  } else {
+                    return nil
+                  }
+                }
+              }
+            }
+
+            let changes = [Change.insert(0), .delete(0)]
+            changes.deletes()
+            """,
+            """
             struct Item {}
             struct ResponseModel: Codable {
                 let items: [Item]
@@ -219,7 +240,10 @@ private extension SwiftLintFile {
     private static func referencedUSR(cursorInfo: SourceKittenDictionary) -> String? {
         if let usr = cursorInfo.usr,
             let kind = cursorInfo.kind,
-            kind.contains("source.lang.swift.ref") {
+            kind.starts(with: "source.lang.swift.ref") {
+            if let synthesizedLocation = usr.range(of: "::SYNTHESIZED::")?.lowerBound {
+                return String(usr.prefix(upTo: synthesizedLocation))
+            }
             return usr
         }
 

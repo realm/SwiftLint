@@ -24611,6 +24611,28 @@ _ = kConstant
 ```
 
 ```swift
+enum Change<T> {
+  case insert(T)
+  case delete(T)
+}
+
+extension Sequence {
+  func deletes<T>() -> [T] where Element == Change<T> {
+    return compactMap { operation in
+      if case .delete(let value) = operation {
+        return value
+      } else {
+        return nil
+      }
+    }
+  }
+}
+
+let changes = [Change.insert(0), .delete(0)]
+changes.deletes()
+```
+
+```swift
 struct Item {}
 struct ResponseModel: Codable {
     let items: [Item]

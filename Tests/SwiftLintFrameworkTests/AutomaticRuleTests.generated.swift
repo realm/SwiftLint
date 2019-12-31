@@ -492,6 +492,12 @@ class OperatorUsageWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class OverexposedDeclarationRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(OverexposedDeclarationRule.description)
+    }
+}
+
 class OverriddenSuperCallRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OverriddenSuperCallRule.description)

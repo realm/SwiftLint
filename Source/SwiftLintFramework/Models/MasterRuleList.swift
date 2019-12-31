@@ -112,6 +112,7 @@ public let masterRuleList = RuleList(rules: [
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
+    OverexposedDeclarationRule.self,
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,

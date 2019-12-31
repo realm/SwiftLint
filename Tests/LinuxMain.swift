@@ -983,6 +983,12 @@ extension OperatorUsageWhitespaceRuleTests {
     ]
 }
 
+extension OverexposedDeclarationRuleTests {
+    static var allTests: [(String, (OverexposedDeclarationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension OverriddenSuperCallRuleTests {
     static var allTests: [(String, (OverriddenSuperCallRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1711,6 +1717,7 @@ XCTMain([
     testCase(OpeningBraceRuleTests.allTests),
     testCase(OperatorFunctionWhitespaceRuleTests.allTests),
     testCase(OperatorUsageWhitespaceRuleTests.allTests),
+    testCase(OverexposedDeclarationRuleTests.allTests),
     testCase(OverriddenSuperCallRuleTests.allTests),
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),

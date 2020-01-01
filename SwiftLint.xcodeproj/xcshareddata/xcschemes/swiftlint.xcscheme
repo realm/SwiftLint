@@ -68,7 +68,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "~/Projects/Yams"
+      customWorkingDirectory = "~/Projects/Lyft-iOS"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "NO"
       debugXPCServices = "NO"
@@ -88,6 +88,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "analyze --compiler-log-path /Users/jsimard/Projects/Yams/xcodebuild.log"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "analyze --compile-commands /private/var/folders/8_/sm32hcd162v1dm0fw00gyrph0000gn/T/tmp.AFJsIr5v/sourcekit.deadcode.compile_commands.json"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

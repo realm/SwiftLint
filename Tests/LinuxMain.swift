@@ -983,6 +983,12 @@ extension OperatorUsageWhitespaceRuleTests {
     ]
 }
 
+extension OptionalEnumCaseMatchingRuleTests {
+    static var allTests: [(String, (OptionalEnumCaseMatchingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension OverriddenSuperCallRuleTests {
     static var allTests: [(String, (OverriddenSuperCallRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1711,6 +1717,7 @@ XCTMain([
     testCase(OpeningBraceRuleTests.allTests),
     testCase(OperatorFunctionWhitespaceRuleTests.allTests),
     testCase(OperatorUsageWhitespaceRuleTests.allTests),
+    testCase(OptionalEnumCaseMatchingRuleTests.allTests),
     testCase(OverriddenSuperCallRuleTests.allTests),
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),

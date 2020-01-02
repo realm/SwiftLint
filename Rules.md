@@ -112,6 +112,7 @@
 * [Opening Brace Spacing](#opening-brace-spacing)
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
+* [Optional Enum Case Match](#optional-enum-case-match)
 * [Overridden methods call super](#overridden-methods-call-super)
 * [Override in Extension](#override-in-extension)
 * [Pattern Matching Keywords](#pattern-matching-keywords)
@@ -15662,6 +15663,66 @@ func abc(lhs: Int, rhs: Int) -> Int {}
 ```swift
 ↓func  <|< <A>(lhs: A, rhs: A) -> A {}
 
+```
+
+</details>
+
+
+
+## Optional Enum Case Match
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`optional_enum_case_matching` | Disabled | Yes | style | No | 5.1.0 
+
+Matching an enum case against an optional enum without '?' is supported on Swift 5.1 and above. 
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+ case .bar: break
+ case .baz: break
+ default: break
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+ case .bar↓?: break
+ case .baz: break
+ default: break
+}
+```
+
+```swift
+switch foo {
+ case Foo.bar↓?: break
+ case .baz: break
+ default: break
+}
+```
+
+```swift
+switch foo {
+ case .bar↓?, .baz↓?: break
+ default: break
+}
+```
+
+```swift
+switch foo {
+ case .bar↓? where x > 1: break
+ case .baz: break
+ default: break
+}
 ```
 
 </details>

@@ -34,7 +34,7 @@ public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
     }
 

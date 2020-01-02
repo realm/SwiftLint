@@ -38,7 +38,7 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Sub
         return file.match(pattern: "\\bset\\s*get\\b", with: [.keyword, .keyword])
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "get set")
     }
 }

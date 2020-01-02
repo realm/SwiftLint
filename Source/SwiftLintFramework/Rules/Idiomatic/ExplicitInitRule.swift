@@ -83,7 +83,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
         return [range]
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
     }
 }

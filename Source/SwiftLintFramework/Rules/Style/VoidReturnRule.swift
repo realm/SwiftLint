@@ -62,7 +62,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "Void")
     }
 }

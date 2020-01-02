@@ -53,7 +53,7 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
 
     // MARK: - SubstitutionCorrectableASTRule
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
     }
 

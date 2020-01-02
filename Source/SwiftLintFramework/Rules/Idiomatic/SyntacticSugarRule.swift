@@ -82,7 +82,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         return violationResults(in: file).map { $0.range }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         let contents = file.contents.bridge()
         let declaration = contents.substring(with: violationRange)
         let originalRange = NSRange(location: 0, length: declaration.count)

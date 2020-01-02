@@ -89,6 +89,7 @@
 		47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */; };
 		47ACC89C1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */; };
 		47FF3BE11E7C75B600187E6D /* ImplicitlyUnwrappedOptionalRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FF3BDF1E7C745100187E6D /* ImplicitlyUnwrappedOptionalRule.swift */; };
+		4968919223BEAC3D00AB8EF9 /* EnumCaseAssociatedValuesLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4968919123BEAC3D00AB8EF9 /* EnumCaseAssociatedValuesLengthRule.swift */; };
 		4A9A3A3A1DC1D75F00DF5183 /* HTMLReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */; };
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
@@ -575,6 +576,7 @@
 		47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalConfigurationTests.swift; sourceTree = "<group>"; };
 		47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalRuleTests.swift; sourceTree = "<group>"; };
 		47FF3BDF1E7C745100187E6D /* ImplicitlyUnwrappedOptionalRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalRule.swift; sourceTree = "<group>"; };
+		4968919123BEAC3D00AB8EF9 /* EnumCaseAssociatedValuesLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumCaseAssociatedValuesLengthRule.swift; sourceTree = "<group>"; };
 		4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLReporter.swift; sourceTree = "<group>"; };
 		4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyCGGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexHelpers.swift; sourceTree = "<group>"; };
@@ -1082,6 +1084,7 @@
 				62426A022118BA6E007E6340 /* ClosureBodyLengthRule.swift */,
 				62426A042118F991007E6340 /* ClosureBodyLengthRuleExamples.swift */,
 				2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */,
+				4968919123BEAC3D00AB8EF9 /* EnumCaseAssociatedValuesLengthRule.swift */,
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
 				2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */,
@@ -2152,6 +2155,7 @@
 				D93DA3D11E699E6300809827 /* NestingConfiguration.swift in Sources */,
 				CC26ED07204DEB510013BBBC /* RuleIdentifier.swift in Sources */,
 				C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */,
+				4968919223BEAC3D00AB8EF9 /* EnumCaseAssociatedValuesLengthRule.swift in Sources */,
 				2882895F222975D00037CF5F /* NSObjectPreferIsEqualRule.swift in Sources */,
 				18B90B6B21ADD99800B60749 /* RedundantObjcAttributeRule.swift in Sources */,
 				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */,

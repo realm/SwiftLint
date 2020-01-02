@@ -40,6 +40,7 @@
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
 * [Empty String](#empty-string)
 * [Empty XCTest Method](#empty-xctest-method)
+* [Enum Case Associated Values Count](#enum-case-associated-values-count)
 * [ExpiringTodo](#expiringtodo)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
@@ -6133,6 +6134,53 @@ class FooTests: XCTestCase {
 
 class BarTests: XCTestCase {
     ↓func testFoo() {}
+}
+```
+
+</details>
+
+
+
+## Enum Case Associated Values Count
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`enum_case_associated_values_count` | Disabled | No | metrics | No | 3.0.0 
+
+Number of associated values in an enum case should be low
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Employee {
+    case fullTime(name: String, retirement: Date, designation: String, contactNumber: Int)
+    case partTime(name: String, age: Int, contractEndDate: Date)
+}
+```
+
+```swift
+enum Barcode {
+    case upc(Int, Int, Int, Int)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Employee {
+    case ↓fullTime(name: String, retirement: Date, age: Int, designation: String, contactNumber: Int)
+    case ↓partTime(name: String, contractEndDate: Date, age: Int, designation: String, contactNumber: Int)
+}
+```
+
+```swift
+enum Barcode {
+    case ↓upc(Int, Int, Int, Int, Int, Int)
 }
 ```
 

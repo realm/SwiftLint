@@ -294,7 +294,9 @@ This is the last release to support building with Swift 4.2.x.
 
 #### Enhancements
 
-* None.
+* Add `enum_case_associated_value_count` opt-in rule.  
+  [lakpa](https://github.com/lakpa)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/2997)
 
 #### Bug Fixes
 

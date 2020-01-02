@@ -41,6 +41,7 @@ public let masterRuleList = RuleList(rules: [
     EmptyParenthesesWithTrailingClosureRule.self,
     EmptyStringRule.self,
     EmptyXCTestMethodRule.self,
+    EnumCaseAssociatedValuesLengthRule.self,
     ExpiringTodoRule.self,
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,

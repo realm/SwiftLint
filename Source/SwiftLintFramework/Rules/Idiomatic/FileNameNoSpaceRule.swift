@@ -19,11 +19,8 @@ public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
             case let fileName = filePath.bridge().lastPathComponent,
-            !configuration.excluded.contains(fileName) else {
-            return []
-        }
-
-        if fileName.rangeOfCharacter(from: .whitespaces) == nil {
+            !configuration.excluded.contains(fileName),
+            fileName.rangeOfCharacter(from: .whitespaces) != nil else {
             return []
         }
 

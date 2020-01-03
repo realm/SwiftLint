@@ -535,6 +535,16 @@ extension FileNameRuleTests {
     ]
 }
 
+extension FileNameNoSpaceRuleTests {
+    static var allTests: [(String, (FileNameNoSpaceRuleTests) -> () throws -> Void)] = [
+        ("testFileNameDoesntTrigger", testFileNameDoesntTrigger),
+        ("testFileWithSpaceDoesTrigger", testFileWithSpaceDoesTrigger),
+        ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
+        ("testExtensionWithSpaceDoesTrigger", testExtensionWithSpaceDoesTrigger),
+        ("testCustomExcludedList", testCustomExcludedList)
+    ]
+}
+
 extension FileTypesOrderRuleTests {
     static var allTests: [(String, (FileTypesOrderRuleTests) -> () throws -> Void)] = [
         ("testFileTypesOrderWithDefaultConfiguration", testFileTypesOrderWithDefaultConfiguration),
@@ -1664,6 +1674,7 @@ XCTMain([
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
     testCase(FileNameRuleTests.allTests),
+    testCase(FileNameNoSpaceRuleTests.allTests),
     testCase(FileTypesOrderRuleTests.allTests),
     testCase(FirstWhereRuleTests.allTests),
     testCase(FlatMapOverMapReduceRuleTests.allTests),

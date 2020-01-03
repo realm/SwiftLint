@@ -55,6 +55,7 @@ public let masterRuleList = RuleList(rules: [
     FileHeaderRule.self,
     FileLengthRule.self,
     FileNameRule.self,
+    FileNameNoSpaceRule.self,
     FileTypesOrderRule.self,
     FirstWhereRule.self,
     FlatMapOverMapReduceRule.self,

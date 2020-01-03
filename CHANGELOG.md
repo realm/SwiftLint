@@ -319,7 +319,9 @@ This is the last release to support building with Swift 4.2.x.
 
 #### Enhancements
 
-* None.
+* Added 'file_name_no_space' opt-in rule.  
+  [timcmiller](https://github.com/timcmiller)
+  [#3007](https://github.com/realm/SwiftLint/issues/3007)
 
 #### Bug Fixes
 

@@ -54,6 +54,7 @@
 * [File Header](#file-header)
 * [File Line Length](#file-line-length)
 * [File Name](#file-name)
+* [File Name No Space](#file-name-no-space)
 * [File Types Order](#file-types-order)
 * [First Where](#first-where)
 * [FlatMap over map and reduce](#flatmap-over-map-and-reduce)
@@ -8249,6 +8250,16 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `file_name` | Disabled | No | idiomatic | No | 3.0.0 
 
 File name should match a type or extension declared in the file (if any).
+
+
+
+## File Name No Space
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`file_name_no_space` | Disabled | No | idiomatic | No | 3.0.0 
+
+File name should not contain any whitespace.
 
 
 

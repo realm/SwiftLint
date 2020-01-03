@@ -84,6 +84,11 @@
 		3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
+		4100D7A323BEAB69009464E0 /* FileNameNoSpaceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7A123BEAB5A009464E0 /* FileNameNoSpaceRuleTests.swift */; };
+		4100D7A423BEAB78009464E0 /* FileNameNoSpaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */; };
+		4100D7A723BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7A523BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift */; };
+		4100D7BA23BEC285009464E0 /* FileNameNoSpaceRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = 4100D7B923BEC284009464E0 /* FileNameNoSpaceRuleFixtures */; };
+		4100D7BC23BEC35F009464E0 /* FileNameNoSpaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7BB23BEC35F009464E0 /* FileNameNoSpaceRule.swift */; };
 		429644B61FB0A9B400D75128 /* SortedFirstLastRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */; };
 		47ACC8981E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */; };
 		47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */; };
@@ -573,6 +578,11 @@
 		3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfigurationTests.swift; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
+		4100D7A123BEAB5A009464E0 /* FileNameNoSpaceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceRuleTests.swift; sourceTree = "<group>"; };
+		4100D7A523BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceConfiguration.swift; sourceTree = "<group>"; };
+		4100D7B923BEC284009464E0 /* FileNameNoSpaceRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileNameNoSpaceRuleFixtures; sourceTree = "<group>"; };
+		4100D7BB23BEC35F009464E0 /* FileNameNoSpaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceRule.swift; sourceTree = "<group>"; };
+		41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceRule.swift; sourceTree = "<group>"; };
 		429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedFirstLastRule.swift; sourceTree = "<group>"; };
 		47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalConfiguration.swift; sourceTree = "<group>"; };
 		47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalConfigurationTests.swift; sourceTree = "<group>"; };
@@ -995,6 +1005,7 @@
 			isa = PBXGroup;
 			children = (
 				D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */,
+				4100D7B923BEC284009464E0 /* FileNameNoSpaceRuleFixtures */,
 				D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */,
 				3B12C9BF1C3209AC000B423F /* test.yml */,
 				3BDB224A1C345B4900473680 /* ProjectMock */,
@@ -1058,6 +1069,7 @@
 				CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */,
 				8FE3CCBB22DBF8D000B8EA87 /* UnusedDeclarationConfiguration.swift */,
 				006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */,
+				4100D7A523BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift */,
 			);
 			path = RuleConfigurations;
 			sourceTree = "<group>";
@@ -1282,6 +1294,7 @@
 				D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */,
 				D4B472401F66486300BD6EF1 /* FallthroughRule.swift */,
 				C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */,
+				4100D7BB23BEC35F009464E0 /* FileNameNoSpaceRule.swift */,
 				E83530C51ED6328A00FBAF79 /* FileNameRule.swift */,
 				E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */,
 				E816194D1BFBFEAB00946723 /* ForceTryRule.swift */,
@@ -1327,6 +1340,7 @@
 				D4EA77C71F817FD200C315FB /* UnneededBreakInSwitchRule.swift */,
 				181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */,
 				D43B04631E0620AB004016AF /* UnusedEnumeratedRule.swift */,
+				41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 				622AD7FF216ACE6200A002C6 /* XCTSpecificMatcherRule.swift */,
 				622AD7FE216ACE6200A002C6 /* XCTSpecificMatcherRuleExamples.swift */,
@@ -1498,6 +1512,7 @@
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
 				D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */,
 				29FFC37B1F157BA8007E4825 /* FileLengthRuleTests.swift */,
+				4100D7A123BEAB5A009464E0 /* FileNameNoSpaceRuleTests.swift */,
 				8F2CC1CC20A6A189006ED34F /* FileNameRuleTests.swift */,
 				821F70B6210720C700E2C84F /* FileTypesOrderRuleTests.swift */,
 				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
@@ -1832,6 +1847,7 @@
 				D495B1A321165DAA00E2CD7B /* FileHeaderRuleFixtures in Resources */,
 				584B0D3C2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json in Resources */,
 				B3935522DC192D38D4852FA3 /* CannedXcodeReporterOutput.txt in Resources */,
+				4100D7BA23BEC285009464E0 /* FileNameNoSpaceRuleFixtures in Resources */,
 				B39358AA2D2AF5219D3FD7C0 /* CannedEmojiReporterOutput.txt in Resources */,
 				B3935A1C3BCA03A6B902E7AF /* CannedJSONReporterOutput.json in Resources */,
 				6C15818F23702DCE00F582A2 /* CannedGitHubActionsLoggingReporterOutput.txt in Resources */,
@@ -2092,6 +2108,7 @@
 				1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */,
 				F90DBD7F2092E669002CC310 /* MissingDocsRuleConfiguration.swift in Sources */,
 				67EB4DFA1E4CC111004E9ACD /* CyclomaticComplexityConfiguration.swift in Sources */,
+				4100D7A423BEAB78009464E0 /* FileNameNoSpaceRule.swift in Sources */,
 				57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */,
 				D43B04691E072291004016AF /* ColonConfiguration.swift in Sources */,
 				E82367E01ED3BD1E0040A88E /* Configuration+Cache.swift in Sources */,
@@ -2122,6 +2139,7 @@
 				D43CDEDC23BDB8D30074F3EE /* OptionalEnumCaseMatchingRule.swift in Sources */,
 				094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */,
 				82F614F22106014500D23904 /* MultilineParametersBracketsRule.swift in Sources */,
+				4100D7A723BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift in Sources */,
 				6BE79EB12204EC0700B5A2FE /* RequiredDeinitRule.swift in Sources */,
 				3B1DF0121C5148140011BCED /* CustomRules.swift in Sources */,
 				2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */,
@@ -2244,6 +2262,7 @@
 				62FE5D32200CABDD00F68793 /* DiscouragedOptionalCollectionExamples.swift in Sources */,
 				D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */,
 				E4A6CF752363CBFB00DD5B18 /* RandomAccessCollection+Swiftlint.swift in Sources */,
+				4100D7BC23BEC35F009464E0 /* FileNameNoSpaceRule.swift in Sources */,
 				29FFC37A1F15764D007E4825 /* FileLengthRuleConfiguration.swift in Sources */,
 				ED641C3820AA07B400212C62 /* NoFallthroughOnlyRule.swift in Sources */,
 				D4B31ADC22A0581B000300F1 /* DuplicateEnumCasesRule.swift in Sources */,
@@ -2363,6 +2382,7 @@
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
 				8F2CC1CD20A6A189006ED34F /* FileNameRuleTests.swift in Sources */,
+				4100D7A323BEAB69009464E0 /* FileNameNoSpaceRuleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

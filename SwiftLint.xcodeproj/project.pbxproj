@@ -88,6 +88,10 @@
 		4100D7A423BEAB78009464E0 /* FileNameNoSpaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */; };
 		4100D7A723BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7A523BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift */; };
 		4100D7BA23BEC285009464E0 /* FileNameNoSpaceRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = 4100D7B923BEC284009464E0 /* FileNameNoSpaceRuleFixtures */; };
+		4100D7BE23BFC0B4009464E0 /* DirectoryNameNoSpaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7BD23BFC0B4009464E0 /* DirectoryNameNoSpaceRule.swift */; };
+		4100D7C023BFC106009464E0 /* DirectoryNameNoSpaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7BF23BFC106009464E0 /* DirectoryNameNoSpaceConfiguration.swift */; };
+		4100D7C423BFDC4D009464E0 /* DirectoryNameNoSpaceRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = 4100D7C323BFDC4D009464E0 /* DirectoryNameNoSpaceRuleFixtures */; };
+		4100D7C523BFDFDC009464E0 /* DirectoryNameNoSpaceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100D7C123BFDBF6009464E0 /* DirectoryNameNoSpaceRuleTests.swift */; };
 		429644B61FB0A9B400D75128 /* SortedFirstLastRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */; };
 		47ACC8981E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */; };
 		47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */; };
@@ -600,6 +604,10 @@
 		4100D7A123BEAB5A009464E0 /* FileNameNoSpaceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceRuleTests.swift; sourceTree = "<group>"; };
 		4100D7A523BEACBF009464E0 /* FileNameNoSpaceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceConfiguration.swift; sourceTree = "<group>"; };
 		4100D7B923BEC284009464E0 /* FileNameNoSpaceRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileNameNoSpaceRuleFixtures; sourceTree = "<group>"; };
+		4100D7BD23BFC0B4009464E0 /* DirectoryNameNoSpaceRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameNoSpaceRule.swift; sourceTree = "<group>"; };
+		4100D7BF23BFC106009464E0 /* DirectoryNameNoSpaceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameNoSpaceConfiguration.swift; sourceTree = "<group>"; };
+		4100D7C123BFDBF6009464E0 /* DirectoryNameNoSpaceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameNoSpaceRuleTests.swift; sourceTree = "<group>"; };
+		4100D7C323BFDC4D009464E0 /* DirectoryNameNoSpaceRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DirectoryNameNoSpaceRuleFixtures; sourceTree = "<group>"; };
 		41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameNoSpaceRule.swift; sourceTree = "<group>"; };
 		429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedFirstLastRule.swift; sourceTree = "<group>"; };
 		47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalConfiguration.swift; sourceTree = "<group>"; };
@@ -1042,6 +1050,7 @@
 		3B12C9BE1C3209AC000B423F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4100D7C323BFDC4D009464E0 /* DirectoryNameNoSpaceRuleFixtures */,
 				D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */,
 				4100D7B923BEC284009464E0 /* FileNameNoSpaceRuleFixtures */,
 				D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */,
@@ -1071,6 +1080,8 @@
 				D43B04671E07228D004016AF /* ColonConfiguration.swift */,
 				824AB64C2105C39F004B5A8F /* ConditionalReturnsOnNewlineConfiguration.swift */,
 				67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */,
+				4100D7BF23BFC106009464E0 /* DirectoryNameNoSpaceConfiguration.swift */,
+				62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */,
 				D41985EA21FAB63E003BE2B7 /* DeploymentTargetConfiguration.swift */,
 				62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */,
 				6A804EF023D8F6A200976471 /* EmptyCountConfiguration.swift */,
@@ -1327,6 +1338,7 @@
 			children = (
 				D4FD4C841F2A260A00DD8AA8 /* BlockBasedKVORule.swift */,
 				D42DEAAA20D5EE4400E86F31 /* ConvenienceTypeRule.swift */,
+				4100D7BD23BFC0B4009464E0 /* DirectoryNameNoSpaceRule.swift */,
 				6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */,
 				62640150201552E0005B9C4A /* DiscouragedOptionalBooleanRule.swift */,
 				6264015320155533005B9C4A /* DiscouragedOptionalBooleanRuleExamples.swift */,
@@ -1342,6 +1354,7 @@
 				D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */,
 				D4B472401F66486300BD6EF1 /* FallthroughRule.swift */,
 				C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */,
+				41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */,
 				E83530C51ED6328A00FBAF79 /* FileNameRule.swift */,
 				E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */,
 				E816194D1BFBFEAB00946723 /* ForceTryRule.swift */,
@@ -1387,7 +1400,6 @@
 				D4EA77C71F817FD200C315FB /* UnneededBreakInSwitchRule.swift */,
 				181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */,
 				D43B04631E0620AB004016AF /* UnusedEnumeratedRule.swift */,
-				41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 				622AD7FF216ACE6200A002C6 /* XCTSpecificMatcherRule.swift */,
 				622AD7FE216ACE6200A002C6 /* XCTSpecificMatcherRuleExamples.swift */,
@@ -1560,6 +1572,7 @@
 				67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */,
 				D41985EC21FAD033003BE2B7 /* DeploymentTargetConfigurationTests.swift */,
 				D41985EE21FAD5E8003BE2B7 /* DeploymentTargetRuleTests.swift */,
+				4100D7C123BFDBF6009464E0 /* DirectoryNameNoSpaceRuleTests.swift */,
 				CCD8B87720559C4A00B75847 /* DisableAllTests.swift */,
 				62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */,
 				D414D6AB21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift */,
@@ -1915,6 +1928,7 @@
 				4100D7BA23BEC285009464E0 /* FileNameNoSpaceRuleFixtures in Resources */,
 				B39358AA2D2AF5219D3FD7C0 /* CannedEmojiReporterOutput.txt in Resources */,
 				B3935A1C3BCA03A6B902E7AF /* CannedJSONReporterOutput.json in Resources */,
+				4100D7C423BFDC4D009464E0 /* DirectoryNameNoSpaceRuleFixtures in Resources */,
 				6C15818F23702DCE00F582A2 /* CannedGitHubActionsLoggingReporterOutput.txt in Resources */,
 				D495B1A221165DAA00E2CD7B /* FileNameRuleFixtures in Resources */,
 				B0270FB0242E48D600A43E8B /* CannedGitLabJUnitReporterOutput.xml in Resources */,
@@ -2179,6 +2193,7 @@
 				E48F715F23789824003E1775 /* SwiftLintSyntaxToken.swift in Sources */,
 				1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */,
 				B1FD3ABF238BC6D400CE121E /* ImplicitReturnRuleExamples.swift in Sources */,
+				4100D7BE23BFC0B4009464E0 /* DirectoryNameNoSpaceRule.swift in Sources */,
 				F90DBD7F2092E669002CC310 /* MissingDocsRuleConfiguration.swift in Sources */,
 				67EB4DFA1E4CC111004E9ACD /* CyclomaticComplexityConfiguration.swift in Sources */,
 				4100D7A423BEAB78009464E0 /* FileNameNoSpaceRule.swift in Sources */,
@@ -2349,6 +2364,7 @@
 				62A498561F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift in Sources */,
 				29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */,
 				C946FECB1EAE67EE007DD778 /* LetVarWhitespaceRule.swift in Sources */,
+				4100D7C023BFC106009464E0 /* DirectoryNameNoSpaceConfiguration.swift in Sources */,
 				E881985D1BEA97EB00333A11 /* TrailingWhitespaceRule.swift in Sources */,
 				E832F10B1B17E2F5003F265F /* FileManager+SwiftLint.swift in Sources */,
 				8FC1DFAE23FC7D0400F49E2C /* UnusedImportConfiguration.swift in Sources */,
@@ -2405,6 +2421,7 @@
 				750BBD0B214180AF007EC437 /* CollectionAlignmentRuleTests.swift in Sources */,
 				8B01E50220A4349100C9233E /* FunctionParameterCountRuleTests.swift in Sources */,
 				47ACC89C1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift in Sources */,
+				4100D7C523BFDFDC009464E0 /* DirectoryNameNoSpaceRuleTests.swift in Sources */,
 				E81ADD741ED6052F000CD451 /* CommandTests.swift in Sources */,
 				29FFC37D1F157BDE007E4825 /* FileLengthRuleTests.swift in Sources */,
 				006204DE1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift in Sources */,

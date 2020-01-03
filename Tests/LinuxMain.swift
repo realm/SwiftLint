@@ -283,6 +283,18 @@ extension DeploymentTargetRuleTests {
     ]
 }
 
+extension DirectoryNameNoSpaceRuleTests {
+    static var allTests: [(String, (DirectoryNameNoSpaceRuleTests) -> () throws -> Void)] = [
+        ("testDirectoryDoesNotTrigger", testDirectoryDoesNotTrigger),
+        ("testDirectoryNameDoesTrigger", testDirectoryNameDoesTrigger),
+        ("testSubdirectoryNameDoesNotTrigger", testSubdirectoryNameDoesNotTrigger),
+        ("testSubdirectoryNameDoesTrigger", testSubdirectoryNameDoesTrigger),
+        ("testFileNameDoesNotTrigger", testFileNameDoesNotTrigger),
+        ("testCustomParentDirectory", testCustomParentDirectory),
+        ("testCustomExcluded", testCustomExcluded)
+    ]
+}
+
 extension DisableAllTests {
     static var allTests: [(String, (DisableAllTests) -> () throws -> Void)] = [
         ("testViolatingPhrase", testViolatingPhrase),
@@ -1695,6 +1707,7 @@ XCTMain([
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(DeploymentTargetConfigurationTests.allTests),
     testCase(DeploymentTargetRuleTests.allTests),
+    testCase(DirectoryNameNoSpaceRuleTests.allTests),
     testCase(DisableAllTests.allTests),
     testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),

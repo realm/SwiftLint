@@ -116,6 +116,7 @@
 * [Overridden methods call super](#overridden-methods-call-super)
 * [Override in Extension](#override-in-extension)
 * [Pattern Matching Keywords](#pattern-matching-keywords)
+* [Prefer Self Type Over Type of Self](#prefer-self-type-over-type-of-self)
 * [Prefixed Top-Level Constant](#prefixed-top-level-constant)
 * [Private Actions](#private-actions)
 * [Private Outlets](#private-outlets)
@@ -16016,6 +16017,83 @@ switch foo {
 ```swift
 switch foo {
     case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
+}
+```
+
+</details>
+
+
+
+## Prefer Self Type Over Type of Self
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`prefer_self_type_over_type_of_self` | Disabled | Yes | style | No | 5.1.0 
+
+Prefer `Self` over `type(of: self)` when accessing properties or calling methods.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Foo {
+    func bar() {
+        Self.baz()
+    }
+}
+```
+
+```swift
+class Foo {
+    func bar() {
+        print(Self.baz)
+    }
+}
+```
+
+```swift
+class A {
+    func foo(param: B) {
+        type(of: param).bar()
+    }
+}
+```
+
+```swift
+class A {
+    func foo() {
+        print(type(of: self))
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo {
+    func bar() {
+        ↓type(of: self).baz()
+    }
+}
+```
+
+```swift
+class Foo {
+    func bar() {
+        print(↓type(of: self).baz)
+    }
+}
+```
+
+```swift
+class Foo {
+    func bar() {
+        print(↓Swift.type(of: self).baz)
+    }
 }
 ```
 

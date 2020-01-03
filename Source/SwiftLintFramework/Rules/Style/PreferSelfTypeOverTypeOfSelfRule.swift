@@ -1,0 +1,137 @@
+import Foundation
+import SourceKittenFramework
+
+public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule,
+                                                AutomaticTestableRule {
+    public var configuration = SeverityConfiguration(.warning)
+
+    public static let description = RuleDescription(
+        identifier: "prefer_self_type_over_type_of_self",
+        name: "Prefer Self Type Over Type of Self",
+        description: "Prefer `Self` over `type(of: self)` when accessing properties or calling methods.",
+        kind: .style,
+        minSwiftVersion: .fiveDotOne,
+        nonTriggeringExamples: [
+            """
+            class Foo {
+                func bar() {
+                    Self.baz()
+                }
+            }
+            """,
+            """
+            class Foo {
+                func bar() {
+                    print(Self.baz)
+                }
+            }
+            """,
+            """
+            class A {
+                func foo(param: B) {
+                    type(of: param).bar()
+                }
+            }
+            """,
+            """
+            class A {
+                func foo() {
+                    print(type(of: self))
+                }
+            }
+            """
+        ],
+        triggeringExamples: [
+            """
+            class Foo {
+                func bar() {
+                    ↓type(of: self).baz()
+                }
+            }
+            """,
+            """
+            class Foo {
+                func bar() {
+                    print(↓type(of: self).baz)
+                }
+            }
+            """,
+            """
+            class Foo {
+                func bar() {
+                    print(↓Swift.type(of: self).baz)
+                }
+            }
+            """
+        ],
+        corrections: [
+            """
+            class Foo {
+                func bar() {
+                    ↓type(of: self).baz()
+                }
+            }
+            """: """
+            class Foo {
+                func bar() {
+                    Self.baz()
+                }
+            }
+            """,
+            """
+            class Foo {
+                func bar() {
+                    print(↓type(of: self).baz)
+                }
+            }
+            """: """
+            class Foo {
+                func bar() {
+                    print(Self.baz)
+                }
+            }
+            """,
+            """
+            class Foo {
+                func bar() {
+                    print(↓Swift.type(of: self).baz)
+                }
+            }
+            """: """
+            class Foo {
+                func bar() {
+                    print(Self.baz)
+                }
+            }
+            """
+        ]
+    )
+
+    public init() {}
+
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return violationRanges(in: file).map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
+        }
+    }
+
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        guard SwiftVersion.current >= type(of: self).description.minSwiftVersion else {
+            return []
+        }
+
+        let pattern = "((?:Swift\\s*\\.\\s*)?type\\(\\s*of\\:\\s*self\\s*\\))\\s*\\."
+        return file.matchesAndSyntaxKinds(matching: pattern)
+            .filter {
+                $0.1 == [.identifier, .identifier, .identifier, .keyword] ||
+                $0.1 == [.identifier, .identifier, .keyword]
+            }
+            .map { $0.0.range(at: 1) }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        return (violationRange, "Self")
+    }
+}

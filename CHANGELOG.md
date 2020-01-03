@@ -27,6 +27,11 @@
   details.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `prefer_self_type_over_type_of_self` opt-in rule to enforce using
+  `Self` instead of `type(of: self)` when using Swift 5.1 or above.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3003](https://github.com/realm/SwiftLint/issues/3003)
+
 #### Bug Fixes
 
 * Fix crash in `unused_import` rule when unused imports have trailing

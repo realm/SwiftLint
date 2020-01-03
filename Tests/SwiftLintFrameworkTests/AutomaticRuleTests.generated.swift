@@ -522,6 +522,12 @@ class PatternMatchingKeywordsRuleTests: XCTestCase {
     }
 }
 
+class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
+    }
+}
+
 class PrivateActionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)

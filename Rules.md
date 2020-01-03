@@ -26180,7 +26180,7 @@ let foo: (ConfigurationTests) -> () throws -> ↓())
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`weak_delegate` | Enabled | No | lint | No | 3.0.0 
+`weak_delegate` | Enabled | Yes | lint | No | 3.0.0 
 
 Delegates should be weak to avoid reference cycles.
 

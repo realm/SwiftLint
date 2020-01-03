@@ -10,6 +10,9 @@
 
 #### Enhancements
 
+* Make `weak_delegate` rule correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
 * Allow `SubstitutionCorrectableRule` to return `nil` instead of a correction
   to indicate that a suitable correction couldn't be found for a specific case.  
   [MaxHaertwig](https://github.com/maxhaertwig)

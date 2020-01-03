@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, ConfigurationProviderRule,
+AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -29,11 +30,25 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         triggeringExamples: [
             "class Foo {\n  ↓var delegate: SomeProtocol?\n}\n",
             "class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n"
+        ],
+        corrections: [
+            "class Foo {\n  ↓var delegate: SomeProtocol?\n}\n": "class Foo {\n  weak var delegate: SomeProtocol?\n}\n",
+            "class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n":
+                "class Foo {\n  weak var scrollDelegate: ScrollDelegate?\n}\n"
         ]
     )
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
+        }
+    }
+
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .varInstance else {
             return []
         }
@@ -58,21 +73,14 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
 
-        // Violation found!
-        let location: Location
-        if let offset = dictionary.offset {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
-        }
+        guard let offset = dictionary.offset,
+            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: 3) else { return [] }
 
-        return [
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: location
-            )
-        ]
+        return [range]
+    }
+
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        return (violationRange, "weak var")
     }
 
     private func protocolDeclarations(forByteOffset byteOffset: Int,

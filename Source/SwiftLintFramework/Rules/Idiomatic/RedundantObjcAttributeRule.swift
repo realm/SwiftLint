@@ -89,7 +89,7 @@ private extension SourceKittenDictionary {
 }
 
 public extension RedundantObjcAttributeRule {
-     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         var whitespaceAndNewlineOffset = 0
         let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()
         let nsContent = file.contents.bridge()

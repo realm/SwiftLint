@@ -37,7 +37,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "_")
     }
 

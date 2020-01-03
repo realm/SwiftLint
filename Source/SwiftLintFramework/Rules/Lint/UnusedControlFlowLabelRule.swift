@@ -98,7 +98,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         var rangeToRemove = violationRange
         let contentsNSString = file.contents.bridge()
         if let byteRange = contentsNSString.NSRangeToByteRange(start: violationRange.location,

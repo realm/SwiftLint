@@ -69,7 +69,7 @@ public extension CorrectableRule {
 
 public protocol SubstitutionCorrectableRule: CorrectableRule {
     func violationRanges(in file: SwiftLintFile) -> [NSRange]
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)?
 }
 
 public extension SubstitutionCorrectableRule {
@@ -82,11 +82,11 @@ public extension SubstitutionCorrectableRule {
         var contents = file.contents
         for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
             let contentsNSString = contents.bridge()
-
-            let (rangeToRemove, substitution) = self.substitution(for: range, in: file)
-            contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: substitution)
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
+            if let (rangeToRemove, substitution) = self.substitution(for: range, in: file) {
+                contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: substitution)
+                let location = Location(file: file, characterOffset: range.location)
+                corrections.append(Correction(ruleDescription: description, location: location))
+            }
         }
 
         file.write(contents)

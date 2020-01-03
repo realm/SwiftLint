@@ -50,7 +50,7 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
 
     // MARK: - SubstitutionCorrectableASTRule
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "AnyObject")
     }
 

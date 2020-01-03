@@ -46,7 +46,7 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds)
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String) {
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         let violationString = file.contents.bridge().substring(with: violationRange)
         let identifier = violationString.components(separatedBy: .whitespaces).first { !$0.isEmpty }
         return (violationRange, identifier! + ".toggle()")

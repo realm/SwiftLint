@@ -151,6 +151,9 @@
 
 * Fix crash when SourceKit returns out of bounds string byte offsets.  
   [JP Simard](https://github.com/jpsim)
+* Fix `file_length` rule misidentifying non-whitespace lines without any syntax
+  tokens as whitespace-only lines.  
+  [Keith Smiley](https://github.com/keith)
 
 ## 0.38.0: Toroidal Agitation
 

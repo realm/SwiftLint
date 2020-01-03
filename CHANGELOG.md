@@ -14,6 +14,10 @@
   to indicate that a suitable correction couldn't be found for a specific case.  
   [MaxHaertwig](https://github.com/maxhaertwig)
 
+* Add `enum_case_associated_value_count` opt-in rule.  
+  [lakpa](https://github.com/lakpa)
+  [#2997](https://github.com/realm/SwiftLint/issues/2997)
+
 #### Bug Fixes
 
 * Fix crash in `unused_import` rule when unused imports have trailing

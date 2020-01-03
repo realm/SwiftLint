@@ -23,10 +23,9 @@ public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
-        let whitespaceRegex = regex("(?:[\\s])")
         let typeInFileName = fileName.bridge().deletingPathExtension
 
-        if whitespaceRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) == nil {
+        if typeInFileName.rangeOfCharacter(from: CharacterSet.whitespaces) == nil {
             return []
         }
 

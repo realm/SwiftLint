@@ -1,8 +1,6 @@
 import Foundation
 import SourceKittenFramework
 
-private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds + [.extension, .protocol]
-
 public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
     public var configuration = FileNameNoSpaceConfiguration(
         severity: .warning,

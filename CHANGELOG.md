@@ -1616,11 +1616,7 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* Add option to specify a `child_config` / `parent_config` file
-  (local or remote) in any SwiftLint configuration file.
-  Allow passing multiple configuration files via the command line.  
-  [Frederick Pietschmann](https://github.com/fredpi)
-  [#1352](https://github.com/realm/SwiftLint/issues/1352)
+* None.
 
 #### Bug Fixes
 

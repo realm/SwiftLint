@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-AutomaticTestableRule {
+    AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

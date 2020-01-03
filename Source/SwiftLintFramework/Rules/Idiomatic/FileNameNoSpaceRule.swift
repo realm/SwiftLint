@@ -25,7 +25,7 @@ public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
 
         let typeInFileName = fileName.bridge().deletingPathExtension
 
-        if typeInFileName.rangeOfCharacter(from: CharacterSet.whitespaces) == nil {
+        if typeInFileName.rangeOfCharacter(from: .whitespaces) == nil {
             return []
         }
 

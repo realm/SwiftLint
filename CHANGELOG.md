@@ -50,6 +50,10 @@
 * Fix parsing of SwiftLint commands containing a URL in their trailing comment.  
   [Sven Münnich](https://github.com/svenmuennich)
 
+* Added missing parameters to `FileNameConfiguration.consoleDescription`.  
+  [timcmiller](https://github.com/timcmiller)
+  [#3009](https://github.com/realm/SwiftLint/issues/3009)
+
 ## 0.38.0: Toroidal Agitation
 
 #### Breaking

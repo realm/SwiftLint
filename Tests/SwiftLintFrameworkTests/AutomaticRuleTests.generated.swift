@@ -174,7 +174,7 @@ class EmptyXCTestMethodRuleTests: XCTestCase {
     }
 }
 
-final class EnumCaseAssociatedValuesLengthRuleTests: XCTestCase {
+class EnumCaseAssociatedValuesLengthRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EnumCaseAssociatedValuesLengthRule.description)
     }

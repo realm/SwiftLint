@@ -394,6 +394,12 @@ extension EmptyXCTestMethodRuleTests {
     ]
 }
 
+extension EnumCaseAssociatedValuesLengthRuleTests {
+    static var allTests: [(String, (EnumCaseAssociatedValuesLengthRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ExpiringTodoRuleTests {
     static var allTests: [(String, (ExpiringTodoRuleTests) -> () throws -> Void)] = [
         ("testExpiringTodo", testExpiringTodo),
@@ -1634,6 +1640,7 @@ XCTMain([
     testCase(EmptyParenthesesWithTrailingClosureRuleTests.allTests),
     testCase(EmptyStringRuleTests.allTests),
     testCase(EmptyXCTestMethodRuleTests.allTests),
+    testCase(EnumCaseAssociatedValuesLengthRuleTests.allTests),
     testCase(ExpiringTodoRuleTests.allTests),
     testCase(ExplicitACLRuleTests.allTests),
     testCase(ExplicitEnumRawValueRuleTests.allTests),

@@ -7,14 +7,11 @@ private let fixturesDirectory = #file.bridge()
     .appendingPathComponent("Resources/FileNameNoSpaceRuleFixtures")
 
 class FileNameNoSpaceRuleTests: XCTestCase {
-    private func validate(fileName: String, excludedOverride: [String]? = nil, suffixPattern: String? = nil,
-                          nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {
+    private func validate(fileName: String, excludedOverride: [String]? = nil) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameNoSpaceRule
         if let excluded = excludedOverride {
             rule = try FileNameNoSpaceRule(configuration: ["excluded": excluded])
-        } else if let suffixPattern = suffixPattern {
-            rule = try FileNameNoSpaceRule(configuration: ["suffix_pattern": suffixPattern])
         } else {
             rule = FileNameNoSpaceRule()
         }
@@ -36,10 +33,6 @@ class FileNameNoSpaceRuleTests: XCTestCase {
 
     func testExtensionWithSpaceDoesTrigger() {
         XCTAssertEqual(try validate(fileName: "File+Test Extension.swift").count, 1)
-    }
-
-    func testCustomSuffixPattern() {
-        XCTAssert(try validate(fileName: "File+Test Extension.swift", suffixPattern: "\\+.*").isEmpty)
     }
 
     func testCustomExcludedList() {

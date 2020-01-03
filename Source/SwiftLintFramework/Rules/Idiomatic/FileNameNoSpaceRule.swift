@@ -4,8 +4,7 @@ import SourceKittenFramework
 public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
     public var configuration = FileNameNoSpaceConfiguration(
         severity: .warning,
-        excluded: [],
-        suffixPattern: "\\.*"
+        excluded: []
     )
 
     public init() {}
@@ -24,16 +23,8 @@ public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
-        let suffixRegex = regex("(?:\(configuration.suffixPattern))\\z")
         let whitespaceRegex = regex("(?:[\\s])")
-
-        var typeInFileName = fileName.bridge().deletingPathExtension
-
-        // Process suffix
-        if let match = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
-            let range = typeInFileName.nsrangeToIndexRange(match.range) {
-            typeInFileName.removeSubrange(range)
-        }
+        let typeInFileName = fileName.bridge().deletingPathExtension
 
         if whitespaceRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) == nil {
             return []

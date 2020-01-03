@@ -8250,6 +8250,8 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 
 File name should match a type or extension declared in the file (if any).
 
+
+
 ## File Name No Space
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -8257,6 +8259,8 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `file_name_no_space` | Disabled | No | idiomatic | No | 3.0.0 
 
 File name should not contain any whitespace.
+
+
 
 ## File Types Order
 

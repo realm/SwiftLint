@@ -2,6 +2,7 @@ import SourceKittenFramework
 
 public struct EnumCaseAssociatedValuesLengthRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

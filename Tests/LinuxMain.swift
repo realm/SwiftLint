@@ -541,7 +541,6 @@ extension FileNameNoSpaceRuleTests {
         ("testFileWithSpaceDoesTrigger", testFileWithSpaceDoesTrigger),
         ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
         ("testExtensionWithSpaceDoesTrigger", testExtensionWithSpaceDoesTrigger),
-        ("testCustomSuffixPattern", testCustomSuffixPattern),
         ("testCustomExcludedList", testCustomExcludedList)
     ]
 }

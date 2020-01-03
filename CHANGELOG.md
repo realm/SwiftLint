@@ -39,6 +39,9 @@
   functions in protocol extensions.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix parsing of SwiftLint commands containing a URL in their trailing comment.  
+  [Sven Münnich](https://github.com/svenmuennich)
+
 ## 0.38.0: Toroidal Agitation
 
 #### Breaking

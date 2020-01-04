@@ -2,7 +2,6 @@ import SourceKittenFramework
 
 public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

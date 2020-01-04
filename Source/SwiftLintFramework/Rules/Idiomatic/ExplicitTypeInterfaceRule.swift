@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     public var configuration = ExplicitTypeInterfaceConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

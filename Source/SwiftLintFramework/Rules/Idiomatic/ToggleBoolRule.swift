@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

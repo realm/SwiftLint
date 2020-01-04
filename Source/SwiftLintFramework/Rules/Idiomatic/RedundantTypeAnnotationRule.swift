@@ -4,7 +4,6 @@ import SourceKittenFramework
 public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRule,
                                            ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

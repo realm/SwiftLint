@@ -7,7 +7,6 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         minimumFractionLength: nil,
         excludeRanges: []
     )
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

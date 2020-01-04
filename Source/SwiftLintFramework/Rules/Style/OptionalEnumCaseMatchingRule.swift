@@ -4,7 +4,6 @@ import SourceKittenFramework
 public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
                                             AutomaticTestableRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

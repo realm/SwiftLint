@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     public var configuration = FileHeaderConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

@@ -75,12 +75,12 @@ public struct Configuration {
     }
 
     /// Initialize with all properties,
-    /// except that rules are still to be synthesized from rulesMode, ruleList & allRulesWithConfigurations
+    /// except that rules are still to be synthesized from rulesMode, ruleList & allRulesWrapped
     /// and a check against the pinnedVersion is performed if given.
     internal init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         ruleList: RuleList = masterRuleList,
-        allRulesWithConfigurations: [Rule]? = nil,
+        allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
         fileGraph: FileGraph? = nil,
         includedPaths: [String] = [],
         excludedPaths: [String] = [],
@@ -101,7 +101,7 @@ public struct Configuration {
         self.init(
             rulesWrapper: RulesWrapper(
                 mode: rulesMode,
-                allRulesWithConfigurations: allRulesWithConfigurations ?? (try? ruleList.allRules()) ?? [],
+                allRulesWrapped: allRulesWrapped ?? (try? ruleList.allRulesWrapped()) ?? [],
                 aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
             ),
             fileGraph: fileGraph,

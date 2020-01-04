@@ -71,8 +71,6 @@ configuration object via the `configuration` property:
   names.
 * If none of the provided `RuleConfiguration`s are applicable, you can create one
   specifically for your rule.
-* Your rule conforming to `ConfigurationProviderRule` must include the following line:
-  `public var initializedWithNonEmptyConfiguration: Bool = false`
 
 See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/ForceCastRule.swift)
 for a rule that allows severity configuration,

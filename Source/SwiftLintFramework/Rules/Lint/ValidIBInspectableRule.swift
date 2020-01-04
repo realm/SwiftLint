@@ -2,7 +2,6 @@ import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 

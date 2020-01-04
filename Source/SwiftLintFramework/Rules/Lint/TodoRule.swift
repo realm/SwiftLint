@@ -10,7 +10,6 @@ public extension SyntaxKind {
 
 public struct TodoRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
     public var configuration = ImplicitReturnConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

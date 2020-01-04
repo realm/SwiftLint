@@ -2,7 +2,6 @@ import SourceKittenFramework
 
 public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

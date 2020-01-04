@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = MultilineArgumentsConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

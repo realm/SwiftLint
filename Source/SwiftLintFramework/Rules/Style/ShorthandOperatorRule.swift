@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

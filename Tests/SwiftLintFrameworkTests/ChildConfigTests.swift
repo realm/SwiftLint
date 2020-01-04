@@ -33,8 +33,8 @@ class ChildConfigTests: XCTestCase, ProjectMock {
             )
 
             XCTAssertEqual(
-                Set(config.rulesWrapper.allRulesWithConfigurations.map { $0.configurationDescription }),
-                Set(expectedConfig.rulesWrapper.allRulesWithConfigurations.map { $0.configurationDescription })
+                Set(config.rulesWrapper.allRulesWrapped.map { $0.rule.configurationDescription }),
+                Set(expectedConfig.rulesWrapper.allRulesWrapped.map { $0.rule.configurationDescription })
             )
             XCTAssertEqual(
                 Set(config.includedPaths),

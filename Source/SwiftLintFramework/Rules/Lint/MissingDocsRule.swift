@@ -37,7 +37,6 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     public typealias ConfigurationType = MissingDocsRuleConfiguration
     public var configuration: MissingDocsRuleConfiguration
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public static let description = RuleDescription(
         identifier: "missing_docs",

@@ -4,7 +4,6 @@ import SourceKittenFramework
 public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                                ignoresComments: true)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

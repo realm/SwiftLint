@@ -26,8 +26,8 @@ public struct RuleList {
         aliases = tmpAliases
     }
 
-    internal func allRules(configurationDict: [String: Any] = [:]) throws -> [Rule] {
-        var rules = [String: Rule]()
+    internal func allRulesWrapped(configurationDict: [String: Any] = [:]) throws -> [ConfigurationRuleWrapper] {
+        var rules = [String: ConfigurationRuleWrapper]()
 
         // Add rules where configuration exists
         for (key, configuration) in configurationDict {
@@ -35,25 +35,21 @@ public struct RuleList {
             guard rules[identifier] == nil else { throw RuleListError.duplicatedConfigurations(rule: ruleType) }
             do {
                 let configuredRule = try ruleType.init(configuration: configuration)
-                if
-                    (configuration as? [String: Any])?.isEmpty == false
-                        || ([Any].array(of: configuration))?.isEmpty == false,
-                    var settableRule = configuredRule as? InitializedWithNonEmptyConfigurationSettableRule
-                {
-                    settableRule.initializedWithNonEmptyConfiguration = true
-                    rules[identifier] = settableRule
-                } else {
-                    rules[identifier] = configuredRule
-                }
+                let isConfigured = (configuration as? [String: Any])?.isEmpty == false
+                    || ([Any].array(of: configuration))?.isEmpty == false
+                rules[identifier] = ConfigurationRuleWrapper(
+                    rule: configuredRule,
+                    initializedWithNonEmptyConfiguration: isConfigured
+                )
             } catch {
                 queuedPrintError("Invalid configuration for '\(identifier)'. Falling back to default.")
-                rules[identifier] = ruleType.init()
+                rules[identifier] = (ruleType.init(), false)
             }
         }
 
         // Add remaining rules without configuring them
         for (identifier, ruleType) in list where rules[identifier] == nil {
-            rules[identifier] = ruleType.init()
+            rules[identifier] = (ruleType.init(), false)
         }
 
         return Array(rules.values)

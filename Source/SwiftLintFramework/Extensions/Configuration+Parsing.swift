@@ -43,9 +43,9 @@ extension Configuration {
             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList
         )
 
-        let allRulesWithConfigurations: [Rule]
+        let allRulesWrapped: [ConfigurationRuleWrapper]
         do {
-            allRulesWithConfigurations = try ruleList.allRules(configurationDict: dict)
+            allRulesWrapped = try ruleList.allRulesWrapped(configurationDict: dict)
         } catch let RuleListError.duplicatedConfigurations(ruleType) {
             let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
             let identifier = ruleType.description.identifier
@@ -69,7 +69,7 @@ extension Configuration {
         self.init(
             rulesMode: rulesMode,
             ruleList: ruleList,
-            allRulesWithConfigurations: allRulesWithConfigurations,
+            allRulesWrapped: allRulesWrapped,
             includedPaths: defaultStringArray(dict[Key.included.rawValue]),
             excludedPaths: defaultStringArray(dict[Key.excluded.rawValue]),
             indentation: Configuration.getIndentationLogIfInvalid(from: dict),

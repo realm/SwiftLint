@@ -8,7 +8,6 @@ private enum AttributesRuleError: Error {
 
 public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
     private static let regularExpression = regex(parametersPattern, options: [])

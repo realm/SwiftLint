@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

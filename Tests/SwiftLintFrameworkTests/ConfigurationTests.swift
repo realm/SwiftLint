@@ -302,13 +302,13 @@ class ConfigurationTests: XCTestCase, ProjectMock {
     func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = try testRuleList.allRules(configurationDict: config)
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = try testRuleList.allRules(configurationDict: config)
+        let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }
 }

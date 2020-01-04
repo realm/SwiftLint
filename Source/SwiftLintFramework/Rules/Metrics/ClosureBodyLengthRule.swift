@@ -2,7 +2,6 @@ import SourceKittenFramework
 
 public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityLevelsConfiguration(warning: 20, error: 100)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

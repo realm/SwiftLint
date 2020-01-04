@@ -1,6 +1,5 @@
 public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
     public var configuration = DiscouragedDirectInitConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

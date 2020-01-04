@@ -4,7 +4,6 @@ import SourceKittenFramework
 public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
                                                                         severity: SeverityConfiguration(.warning))
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

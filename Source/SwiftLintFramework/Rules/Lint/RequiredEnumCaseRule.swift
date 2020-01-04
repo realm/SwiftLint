@@ -115,7 +115,6 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
     }
 
     public var configuration = RequiredEnumCaseRuleConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

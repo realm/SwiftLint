@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestableRule, SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

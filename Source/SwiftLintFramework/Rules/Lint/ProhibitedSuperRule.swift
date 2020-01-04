@@ -2,7 +2,6 @@ import SourceKittenFramework
 
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
     public var configuration = ProhibitedSuperConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

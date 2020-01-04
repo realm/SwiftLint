@@ -3,7 +3,6 @@ import XCTest
 
 struct RuleWithLevelsMock: ConfigurationProviderRule {
     var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
-    var initializedWithNonEmptyConfiguration: Bool = false
 
     static let description = RuleDescription(identifier: "severity_level_mock",
                                              name: "",
@@ -49,7 +48,6 @@ class RuleTests: XCTestCase {
 
     fileprivate struct RuleWithLevelsMock2: ConfigurationProviderRule {
         var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
-        var initializedWithNonEmptyConfiguration: Bool = false
 
         static let description = RuleDescription(identifier: "violation_level_mock2",
                                                  name: "",

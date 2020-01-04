@@ -4,7 +4,6 @@ import SourceKittenFramework
 public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
                                      ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

@@ -39,7 +39,6 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     )
 
     public var configuration: ExpiringTodoConfiguration = .init()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

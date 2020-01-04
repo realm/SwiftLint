@@ -57,7 +57,6 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         kind: .style)
 
     public var configuration = CustomRulesConfiguration()
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

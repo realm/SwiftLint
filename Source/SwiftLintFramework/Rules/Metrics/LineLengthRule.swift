@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule {
     public var configuration = LineLengthConfiguration(warning: 120, error: 200)
-    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

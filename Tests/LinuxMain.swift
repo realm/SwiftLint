@@ -516,6 +516,16 @@ extension FileLengthRuleTests {
     ]
 }
 
+extension FileNameNoSpaceRuleTests {
+    static var allTests: [(String, (FileNameNoSpaceRuleTests) -> () throws -> Void)] = [
+        ("testFileNameDoesntTrigger", testFileNameDoesntTrigger),
+        ("testFileWithSpaceDoesTrigger", testFileWithSpaceDoesTrigger),
+        ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
+        ("testExtensionWithSpaceDoesTrigger", testExtensionWithSpaceDoesTrigger),
+        ("testCustomExcludedList", testCustomExcludedList)
+    ]
+}
+
 extension FileNameRuleTests {
     static var allTests: [(String, (FileNameRuleTests) -> () throws -> Void)] = [
         ("testMainDoesntTrigger", testMainDoesntTrigger),
@@ -532,16 +542,6 @@ extension FileNameRuleTests {
         ("testCustomSuffixPattern", testCustomSuffixPattern),
         ("testCustomPrefixPattern", testCustomPrefixPattern),
         ("testCustomPrefixAndSuffixPatterns", testCustomPrefixAndSuffixPatterns)
-    ]
-}
-
-extension FileNameNoSpaceRuleTests {
-    static var allTests: [(String, (FileNameNoSpaceRuleTests) -> () throws -> Void)] = [
-        ("testFileNameDoesntTrigger", testFileNameDoesntTrigger),
-        ("testFileWithSpaceDoesTrigger", testFileWithSpaceDoesTrigger),
-        ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
-        ("testExtensionWithSpaceDoesTrigger", testExtensionWithSpaceDoesTrigger),
-        ("testCustomExcludedList", testCustomExcludedList)
     ]
 }
 
@@ -1021,6 +1021,12 @@ extension OverrideInExtensionRuleTests {
 
 extension PatternMatchingKeywordsRuleTests {
     static var allTests: [(String, (PatternMatchingKeywordsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension PreferSelfTypeOverTypeOfSelfRuleTests {
+    static var allTests: [(String, (PreferSelfTypeOverTypeOfSelfRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1673,8 +1679,8 @@ XCTMain([
     testCase(FatalErrorMessageRuleTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
-    testCase(FileNameRuleTests.allTests),
     testCase(FileNameNoSpaceRuleTests.allTests),
+    testCase(FileNameRuleTests.allTests),
     testCase(FileTypesOrderRuleTests.allTests),
     testCase(FirstWhereRuleTests.allTests),
     testCase(FlatMapOverMapReduceRuleTests.allTests),
@@ -1741,6 +1747,7 @@ XCTMain([
     testCase(OverriddenSuperCallRuleTests.allTests),
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
+    testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
     testCase(PrivateActionRuleTests.allTests),
     testCase(PrivateOutletRuleTests.allTests),

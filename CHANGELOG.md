@@ -367,7 +367,6 @@ This is the last release to support building with Swift 4.2.x.
 * Added 'file_name_no_space' opt-in rule.  
   [timcmiller](https://github.com/timcmiller)
   [#3007](https://github.com/realm/SwiftLint/issues/3007)
-* None.
 
 #### Bug Fixes
 
@@ -1060,9 +1059,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 
 #### Enhancements
 
-* Add option to specify a `sub_config` file in any SwiftLint configuration file. Recursive sub configs are also possible.  
-  [Frederick Pietschmann](https://github.com/fredpi)
-  [#1352](https://github.com/realm/SwiftLint/issues/1352)
+* None.
 
 #### Bug Fixes
 
@@ -1616,7 +1613,11 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* None.
+* Add option to specify a `child_config` / `parent_config` file
+  (local or remote) in any SwiftLint configuration file.
+  Allow passing multiple configuration files via the command line.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 #### Bug Fixes
 

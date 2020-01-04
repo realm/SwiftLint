@@ -6,6 +6,7 @@ public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
         severity: .warning,
         excluded: []
     )
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public init() {}
 

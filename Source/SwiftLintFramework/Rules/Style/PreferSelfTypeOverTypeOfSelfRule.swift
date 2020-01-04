@@ -4,6 +4,7 @@ import SourceKittenFramework
 public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule,
                                                 AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public var initializedWithNonEmptyConfiguration: Bool = false
 
     public static let description = RuleDescription(
         identifier: "prefer_self_type_over_type_of_self",

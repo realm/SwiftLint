@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -52,8 +51,8 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
             let offset = dictionary.offset,
             case let start = nameOffset + nameLength,
             case let end = dictionary.bodyOffset ?? offset + length,
-            case let contents = file.contents.bridge(),
-            let range = contents.byteRangeToNSRange(start: start, length: end - start),
+            case let contents = file.stringView,
+            let range = file.stringView.byteRangeToNSRange(start: start, length: end - start),
             let match = file.match(pattern: "->\\s*(.*?)\\{", excludingSyntaxKinds: excludingKinds, range: range).first
             else { return [] }
 

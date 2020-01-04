@@ -68,7 +68,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard let (offset, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary),
             case let length = reason == .extraTrailingCommaReason ? 1 : 0,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+            let range = file.stringView.byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }
 
@@ -102,7 +102,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
             return nil
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         if let (startLine, _) = contents.lineAndCharacter(forByteOffset: bodyOffset),
             let (endLine, _) = contents.lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
@@ -144,7 +144,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: Int) -> Int? {
         let nsstring = contents.bridge()
-        let range = NSRange(location: 0, length: nsstring.length)
+        let range = contents.fullNSRange
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
         // skip commas in comments
@@ -155,5 +155,26 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
         }.flatMap {
             nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
+    }
+}
+
+private extension NSString {
+    func NSRangeToByteRange(start: Int, length: Int) -> NSRange? {
+        let string = bridge()
+        let utf16View = string.utf16
+        let utf8View = string.utf8
+
+        let startUTF16Index = utf16View.index(utf16View.startIndex, offsetBy: start)
+        let endUTF16Index = utf16View.index(startUTF16Index, offsetBy: length)
+
+        guard let startUTF8Index = startUTF16Index.samePosition(in: utf8View),
+            let endUTF8Index = endUTF16Index.samePosition(in: utf8View) else {
+                return nil
+        }
+
+        let byteOffset = utf8View.distance(from: utf8View.startIndex, to: startUTF8Index)
+
+        let length = utf8View.distance(from: startUTF8Index, to: endUTF8Index)
+        return NSRange(location: byteOffset, length: length)
     }
 }

@@ -129,7 +129,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         guard let regex = configuration.regex, let superclass = dictionary.superclass else {
             return false
         }
-        let range = NSRange(location: 0, length: superclass.bridge().length)
+        let range = superclass.fullNSRange
         return !regex.matches(in: superclass, options: [], range: range).isEmpty
     }
 

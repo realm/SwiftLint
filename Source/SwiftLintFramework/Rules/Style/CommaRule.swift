@@ -73,9 +73,8 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds.union([.objectLiteral])
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.contents
-        let nsstring = contents.bridge()
-        let range = NSRange(location: 0, length: nsstring.length)
+        let contents = file.stringView
+        let range = contents.range
         let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
             .matches(in: contents, options: [], range: range)
@@ -89,7 +88,7 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
 
                 // check first captured range
                 let firstRange = match.range(at: indexStartRange)
-                guard let matchByteFirstRange = nsstring
+                guard let matchByteFirstRange = contents
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
 
@@ -102,13 +101,13 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
 
                 // If the first range does not start with comma, it already violates this rule
                 // no matter what is contained in the second range.
-                if !nsstring.substring(with: firstRange).hasPrefix(", ") {
+                if !contents.substring(with: firstRange).hasPrefix(", ") {
                     return firstRange
                 }
 
                 // check second captured range
                 let secondRange = match.range(at: indexStartRange + 1)
-                guard let matchByteSecondRange = nsstring
+                guard let matchByteSecondRange = contents
                     .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 

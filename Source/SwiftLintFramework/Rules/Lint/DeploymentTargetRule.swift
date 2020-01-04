@@ -53,8 +53,8 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
             guard let availabilityToken = tokens.first,
                 availabilityToken.kind == .keyword,
-                let tokenRange = file.contents.bridge().byteRangeToNSRange(start: availabilityToken.offset,
-                                                                           length: availabilityToken.length) else {
+                let tokenRange = file.stringView.byteRangeToNSRange(start: availabilityToken.offset,
+                                                                    length: availabilityToken.length) else {
                     return []
             }
 
@@ -81,7 +81,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
             return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         return attributes.flatMap { dictionary -> [StyleViolation] in
             guard let offset = dictionary.offset, let length = dictionary.length,
                 let range = contents.byteRangeToNSRange(start: offset, length: length) else {

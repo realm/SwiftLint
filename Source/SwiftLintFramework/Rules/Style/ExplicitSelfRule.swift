@@ -137,7 +137,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
             return []
         }
 
-        let contents = file.contents.bridge()
+        let contents = file.stringView
 
         return cursorsMissingExplicitSelf.compactMap { cursorInfo in
             guard let byteOffset = cursorInfo["swiftlint.offset"] as? Int64 else {
@@ -159,7 +159,7 @@ private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [Int]) throws
         -> [[String: SourceKitRepresentable]] {
         return try byteOffsets.compactMap { offset in
-            if contents.bridge().substringWithByteRange(start: offset - 1, length: 1)! == "." { return nil }
+            if stringView.substringWithByteRange(start: offset - 1, length: 1)! == "." { return nil }
             var cursorInfo = try Request.cursorInfo(file: self.path!, offset: Int64(offset),
                                                     arguments: compilerArguments).sendIfNotDisabled()
             cursorInfo["swiftlint.offset"] = Int64(offset)
@@ -168,10 +168,10 @@ private extension SwiftLintFile {
     }
 }
 
-private extension NSString {
+private extension StringView {
     func byteOffset(forLine line: Int, column: Int) -> Int {
         var byteOffset = 0
-        for line in lines()[..<(line - 1)] {
+        for line in lines[..<(line - 1)] {
             byteOffset += line.byteRange.length
         }
         return byteOffset + column - 1
@@ -197,6 +197,6 @@ private extension NSString {
 private func binaryOffsets(file: SwiftLintFile, compilerArguments: [String]) throws -> [Int] {
     let absoluteFile = file.path!.bridge().absolutePathRepresentation()
     let index = try Request.index(file: absoluteFile, arguments: compilerArguments).sendIfNotDisabled()
-    let binaryOffsets = file.contents.bridge().recursiveByteOffsets(index)
+    let binaryOffsets = file.stringView.recursiveByteOffsets(index)
     return binaryOffsets.sorted()
 }

@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 
 private var regexCache = [RegexCacheKey: NSRegularExpression]()
 private let regexCacheLock = NSLock()
@@ -31,5 +32,21 @@ extension NSRegularExpression {
         let result = try NSRegularExpression(pattern: pattern, options: options)
         regexCache[key] = result
         return result
+    }
+
+    internal func matches(in stringView: StringView,
+                          options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
+        return matches(in: stringView.string, options: options, range: stringView.range)
+    }
+
+    internal func matches(in stringView: StringView,
+                          options: NSRegularExpression.MatchingOptions = [],
+                          range: NSRange) -> [NSTextCheckingResult] {
+        return matches(in: stringView.string, options: options, range: range)
+    }
+
+    internal func matches(in file: SwiftLintFile,
+                          options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
+        return matches(in: file.stringView.string, options: options, range: file.stringView.range)
     }
 }

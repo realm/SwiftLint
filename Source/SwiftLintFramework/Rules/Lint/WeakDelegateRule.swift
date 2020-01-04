@@ -74,7 +74,7 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
         guard !isComputed else { return [] }
 
         guard let offset = dictionary.offset,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: 3) else { return [] }
+            let range = file.stringView.byteRangeToNSRange(start: offset, length: 3) else { return [] }
 
         return [range]
     }

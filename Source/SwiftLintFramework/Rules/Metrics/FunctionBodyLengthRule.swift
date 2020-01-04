@@ -18,7 +18,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
-            case let contentsNSString = file.contents.bridge(),
+            case let contentsNSString = file.stringView,
             let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)?.line,
             let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
         else {

@@ -54,6 +54,9 @@
   [timcmiller](https://github.com/timcmiller)
   [#3009](https://github.com/realm/SwiftLint/issues/3009)
 
+* Fix crash when SourceKit returns out of bounds string byte offsets.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.38.0: Toroidal Agitation
 
 #### Breaking

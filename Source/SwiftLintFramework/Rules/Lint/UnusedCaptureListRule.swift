@@ -76,7 +76,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
 
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         guard kind == .closure,
             let offset = dictionary.offset,
             let length = dictionary.length,

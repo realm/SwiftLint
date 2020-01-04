@@ -99,13 +99,13 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func defaultFunctionParameterCount(file: SwiftLintFile, byteOffset: Int, byteLength: Int) -> Int {
-        let substring = file.contents.bridge().substringWithByteRange(start: byteOffset, length: byteLength)!
+        let substring = file.stringView.substringWithByteRange(start: byteOffset, length: byteLength)!
         let equals = substring.filter { $0 == "=" }
         return equals.count
     }
 
     private func functionIsInitializer(file: SwiftLintFile, byteOffset: Int, byteLength: Int) -> Bool {
-        guard let name = file.contents.bridge()
+        guard let name = file.stringView
             .substringWithByteRange(start: byteOffset, length: byteLength),
             name.hasPrefix("init"),
             let funcName = name.components(separatedBy: CharacterSet(charactersIn: "<(")).first else {

@@ -10,6 +10,6 @@ Pod::Spec.new do |s|
   s.source_files        = 'Source/SwiftLintFramework/**/*.swift'
   s.swift_versions      = ['5.0', '5.1']
   s.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
-  s.dependency            'SourceKittenFramework', '~> 0.27.0'
+  s.dependency            'SourceKittenFramework', '~> 0.28.0'
   s.dependency            'Yams', '~> 2.0'
 end

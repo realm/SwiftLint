@@ -41,6 +41,10 @@ public final class SwiftLintFile {
         return file.contents
     }
 
+    public var stringView: StringView {
+        return file.stringView
+    }
+
     public var lines: [Line] {
         return file.lines
     }

@@ -100,7 +100,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
             guard
                 let nameOffset = substructure.nameOffset,
                 let nameLength = substructure.nameLength,
-                let functionName = file.contents.bridge().substringWithByteRange(start: nameOffset, length: nameLength)
+                let functionName = file.stringView.substringWithByteRange(start: nameOffset, length: nameLength)
             else {
                 return []
             }
@@ -132,7 +132,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         guard
             let firstParamByteOffset = parameters.first?.offset,
             let firstParamByteLength = parameters.first?.length,
-            let firstParamRange = file.contents.bridge().byteRangeToNSRange(
+            let firstParamRange = file.stringView.byteRangeToNSRange(
                 start: firstParamByteOffset,
                 length: firstParamByteLength
             )
@@ -140,7 +140,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
                 return nil
         }
 
-        let prefix = file.contents.bridge().substring(to: firstParamRange.lowerBound)
+        let prefix = file.stringView.nsString.substring(to: firstParamRange.lowerBound)
         let invalidRegex = regex("\\([ \\t]*\\z")
 
         guard let invalidMatch = invalidRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange) else {
@@ -159,7 +159,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         guard
             let lastParamByteOffset = parameters.last?.offset,
             let lastParamByteLength = parameters.last?.length,
-            let lastParamRange = file.contents.bridge().byteRangeToNSRange(
+            let lastParamRange = file.stringView.byteRangeToNSRange(
                 start: lastParamByteOffset,
                 length: lastParamByteLength
             )
@@ -167,7 +167,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
             return nil
         }
 
-        let suffix = file.contents.bridge().substring(from: lastParamRange.upperBound)
+        let suffix = file.stringView.nsString.substring(from: lastParamRange.upperBound)
         let invalidRegex = regex("\\A[ \\t]*\\)")
 
         guard let invalidMatch = invalidRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange) else {

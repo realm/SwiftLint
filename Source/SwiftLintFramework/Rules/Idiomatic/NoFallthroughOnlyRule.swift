@@ -21,9 +21,9 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
         guard kind == .case,
             let length = dictionary.length,
             let offset = dictionary.offset,
-            case let nsstring = file.contents.bridge(),
-            let range = nsstring.byteRangeToNSRange(start: offset, length: length),
-            let colonLocation = findCaseColon(text: nsstring, range: range)
+            case let contents = file.stringView,
+            let range = contents.byteRangeToNSRange(start: offset, length: length),
+            let colonLocation = findCaseColon(text: file.stringView.nsString, range: range)
         else {
             return []
         }
@@ -39,7 +39,7 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
         }
 
         let nsRange = nonCommentCaseBody[0].0
-        if nsstring.substring(with: nsRange) == "fallthrough" && nonCommentCaseBody[0].1 == [.keyword] &&
+        if contents.substring(with: nsRange) == "fallthrough" && nonCommentCaseBody[0].1 == [.keyword] &&
             !isNextTokenUnknownAttribute(afterOffset: offset + length, file: file) {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: configuration.severity,

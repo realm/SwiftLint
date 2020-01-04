@@ -88,7 +88,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
                                     file: SwiftLintFile) -> Bool {
         let length = firstToken.offset - nameEndPosition
         guard length > 0,
-            case let contents = file.contents.bridge(),
+            case let contents = file.stringView,
             let byteRange = contents.byteRangeToNSRange(start: nameEndPosition, length: length) else {
                 return false
         }
@@ -131,7 +131,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 
     private func containsContent(inByteRange byteRange: NSRange, file: SwiftLintFile) -> Bool {
-        let nsstring = file.contents.bridge()
+        let nsstring = file.stringView
         let remainingTokens = file.syntaxMap.tokens(inByteRange: byteRange)
         let ranges = NSMutableIndexSet(indexesIn: byteRange)
 

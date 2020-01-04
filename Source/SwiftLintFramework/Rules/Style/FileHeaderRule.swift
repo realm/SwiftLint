@@ -63,7 +63,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         if let firstToken = firstToken, let lastToken = lastToken {
             let start = firstToken.offset
             let length = lastToken.offset + lastToken.length - firstToken.offset
-            guard let range = file.contents.bridge().byteRangeToNSRange(start: start, length: length) else {
+            guard let range = file.stringView.byteRangeToNSRange(start: start, length: length) else {
                 return []
             }
 
@@ -98,9 +98,9 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func isSwiftLintCommand(token: SwiftLintSyntaxToken, file: SwiftLintFile) -> Bool {
-        guard let range = file.contents.bridge().byteRangeToNSRange(start: token.offset,
-                                                                    length: token.length) else {
-            return false
+        guard let range = file.stringView.byteRangeToNSRange(start: token.offset,
+                                                             length: token.length) else {
+                                                                    return false
         }
 
         return !file.commands(in: range).isEmpty

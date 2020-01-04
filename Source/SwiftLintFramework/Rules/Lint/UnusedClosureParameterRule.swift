@@ -134,7 +134,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         let rangeStart = nameOffset + nameLength
         let rangeLength = (offset + length) - (nameOffset + nameLength)
         let parameters = dictionary.enclosedVarParameters
-        let contents = file.contents.bridge()
+        let contents = file.stringView
 
         return parameters.compactMap { param -> (NSRange, String)? in
             guard let paramOffset = param.offset,
@@ -180,8 +180,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
 
     private func isClosure(dictionary: SourceKittenDictionary) -> Bool {
         return dictionary.name.flatMap { name -> Bool in
-            let length = name.bridge().length
-            let range = NSRange(location: 0, length: length)
+            let range = name.fullNSRange
             return regex("\\A[\\s\\(]*?\\{").firstMatch(in: name, options: [], range: range) != nil
         } ?? false
     }

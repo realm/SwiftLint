@@ -65,10 +65,8 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestabl
     }()
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let contents = file.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
-
-        let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
+        let contents = file.stringView
+        let matches = ShorthandOperatorRule.violationRegex.matches(in: file)
 
         return matches.compactMap { match -> StyleViolation? in
             // byteRanges will have the ranges of captured groups

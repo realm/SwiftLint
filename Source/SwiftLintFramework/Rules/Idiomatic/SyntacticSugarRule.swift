@@ -68,7 +68,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         return violationResults(in: file).map {
             let typeString = contents.substring(with: $0.range(at: 1))
             return StyleViolation(ruleDescription: type(of: self).description,
@@ -83,7 +83,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         let declaration = contents.substring(with: violationRange)
         let originalRange = NSRange(location: 0, length: declaration.count)
         var substitutionResult = declaration
@@ -126,10 +126,8 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
 
     private func violationResults(in file: SwiftLintFile) -> [NSTextCheckingResult] {
         let excludingKinds = SyntaxKind.commentAndStringKinds
-        let contents = file.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
-
-        return regex(pattern).matches(in: file.contents, options: [], range: range).compactMap { result in
+        let contents = file.stringView
+        return regex(pattern).matches(in: contents).compactMap { result in
             let range = result.range
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
                 return nil
@@ -146,11 +144,11 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
     }
 
     private func isValidViolation(range: NSRange, file: SwiftLintFile) -> Bool {
-        let contents = file.contents.bridge()
+        let contents = file.stringView
 
         // avoid triggering when referring to an associatedtype
         let start = range.location + range.length
-        let restOfFileRange = NSRange(location: start, length: contents.length - start)
+        let restOfFileRange = NSRange(location: start, length: contents.nsString.length - start)
         if regex("\\s*\\.").firstMatch(in: file.contents, options: [],
                                        range: restOfFileRange)?.range.location == start {
             guard let byteOffset = contents.NSRangeToByteRange(start: range.location,

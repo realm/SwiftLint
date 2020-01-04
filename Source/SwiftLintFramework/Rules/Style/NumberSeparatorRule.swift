@@ -60,9 +60,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             guard let integerSubstring = components.first,
                 case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
                 !valid || !validFraction,
-                let range = file.contents.bridge().byteRangeToNSRange(start: token.offset,
-                                                                      length: token.length) else {
-                    return nil
+                let range = file.stringView.byteRangeToNSRange(start: token.offset,
+                                                               length: token.length) else {
+                                                                    return nil
             }
 
             var corrected = ""

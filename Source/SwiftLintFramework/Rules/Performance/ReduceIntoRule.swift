@@ -103,7 +103,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
             kind == .call,
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
-            let nameRange = file.contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
+            let nameRange = file.stringView.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let match = reduceExpression.firstMatch(in: file.contents, options: [], range: nameRange),
             dictionary.enclosedArguments.count == 2,
             // would otherwise equal "into"
@@ -131,7 +131,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
             }
         }
 
-        let contents = file.contents
+        let contents = file.stringView
         guard let offset = argument.offset,
             let length = argument.length,
             let range = contents.byteRangeToNSRange(start: offset, length: length)
@@ -145,7 +145,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
         }
 
         // check for Array or Dictionary init
-        let initMatch = initExpression.firstMatch(in: contents, options: [], range: range)
+        let initMatch = initExpression.firstMatch(in: contents.string, options: [], range: range)
         return initMatch != nil
     }
 }

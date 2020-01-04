@@ -108,13 +108,13 @@ private extension SourceKittenDictionary {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
-            case let contents = file.contents.bridge(),
-            let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            let afterNameRange = file.stringView.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
         else {
             return false
         }
 
-        let contentAfterName = contents.substring(from: afterNameRange.location)
+        let contents = file.stringView
+        let contentAfterName = contents.nsString.substring(from: afterNameRange.location)
         let initCallRegex =
             regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\(")
 
@@ -125,13 +125,13 @@ private extension SourceKittenDictionary {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
-            case let contents = file.contents.bridge(),
-            let afterNameRange = contents.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            let afterNameRange = file.stringView.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
         else {
             return false
         }
 
-        let contentAfterName = contents.substring(from: afterNameRange.location)
+        let contents = file.stringView
+        let contentAfterName = contents.nsString.substring(from: afterNameRange.location)
         let typeAssignment = regex("^\\s*=\\s*(?:\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\.)*self")
 
         return typeAssignment.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
@@ -170,7 +170,7 @@ private extension SwiftLintFile {
     var captureGroupByteRanges: [NSRange] {
         return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
                      excludingSyntaxKinds: SyntaxKind.commentKinds)
-                .compactMap { contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length) }
+                .compactMap { stringView.NSRangeToByteRange(start: $0.location, length: $0.length) }
     }
 }
 

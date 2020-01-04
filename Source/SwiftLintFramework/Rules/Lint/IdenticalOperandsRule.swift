@@ -79,7 +79,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     }
 
     private func violationRangeFrom(match: NSTextCheckingResult, in file: SwiftLintFile) -> NSRange? {
-        let contents = file.contents.bridge()
+        let contents = file.stringView
         let operatorRange = match.range(at: 1)
         guard let operatorByteRange = contents.NSRangeToByteRange(operatorRange) else {
             return nil
@@ -131,8 +131,8 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             }
         }
 
-        let violationRange = file.contents.byteRangeToNSRange(start: leftmostToken.offset,
-                                                              length: leftmostToken.length)
+        let violationRange = file.stringView.byteRangeToNSRange(start: leftmostToken.offset,
+                                                                length: leftmostToken.length)
         return violationRange
     }
 
@@ -147,7 +147,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             while currentIndex > 0 {
                 let prevToken = tokens[currentIndex - 1]
 
-                guard file.contents.isDotOrOptionalChainingBetweenTokens(prevToken, leftMostToken) else { break }
+                guard file.stringView.isDotOrOptionalChainingBetweenTokens(prevToken, leftMostToken) else { break }
 
                 leftTokens.insert(prevToken, at: 0)
                 currentIndex -= 1
@@ -161,7 +161,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             while currentIndex < tokens.count - 1 {
                 let nextToken = tokens[currentIndex + 1]
 
-                guard file.contents.isDotOrOptionalChainingBetweenTokens(rightMostToken, nextToken) else { break }
+                guard file.stringView.isDotOrOptionalChainingBetweenTokens(rightMostToken, nextToken) else { break }
 
                 rightTokens.append(nextToken)
                 currentIndex += 1
@@ -173,11 +173,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     }
 }
 
-private extension NSString {
-    func NSRangeToByteRange(_ range: NSRange) -> NSRange? {
-        return NSRangeToByteRange(start: range.location, length: range.length)
-    }
-
+private extension StringView {
     func subStringWithSyntaxToken(_ syntaxToken: SwiftLintSyntaxToken) -> String? {
         return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)
     }
@@ -195,7 +191,7 @@ private extension NSString {
     func isWhiteSpaceBetweenTokens(_ startToken: SwiftLintSyntaxToken,
                                    _ endToken: SwiftLintSyntaxToken) -> Bool {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
-        let range = NSRange(location: 0, length: betweenTokens.utf16.count)
+        let range = betweenTokens.fullNSRange
         return !regex(#"^[\s\(,]*$"#).matches(in: betweenTokens, options: [], range: range).isEmpty
     }
 
@@ -203,7 +199,7 @@ private extension NSString {
                               _ endToken: SwiftLintSyntaxToken) -> Bool {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
 
-        let range = NSRange(location: 0, length: betweenTokens.utf16.count)
+        let range = betweenTokens.fullNSRange
         return !regex("^\\s*\(regexString)\\s*$").matches(in: betweenTokens, options: [], range: range).isEmpty
     }
 }

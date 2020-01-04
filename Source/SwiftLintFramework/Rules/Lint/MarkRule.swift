@@ -183,14 +183,13 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             guard let syntaxKind = syntaxTokens.first?.kind else {
                 return false
             }
             return !syntaxTokens.isEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
         }.compactMap { range, syntaxTokens in
-            let identifierRange = nsstring
+            let identifierRange = file.stringView
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
         }

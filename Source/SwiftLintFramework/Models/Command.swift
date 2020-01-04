@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 
 #if os(Linux)
 private extension Scanner {
@@ -72,8 +73,8 @@ public struct Command: Equatable {
         self.trailingComment = trailingComment
     }
 
-    public init?(string: NSString, range: NSRange) {
-        let scanner = Scanner(string: string.substring(with: range))
+    public init?(actionString: String, line: Int, character: Int) {
+        let scanner = Scanner(string: actionString)
         _ = scanner.scanString(string: "swiftlint:")
         // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" ") else {
@@ -81,14 +82,13 @@ public struct Command: Equatable {
         }
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         guard let actionString = actionAndModifierScanner.scanUpToString(":"),
-            let action = Action(rawValue: actionString),
-            let lineAndCharacter = string.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
+            let action = Action(rawValue: actionString)
             else {
                 return nil
         }
         self.action = action
-        line = lineAndCharacter.line
-        character = lineAndCharacter.character
+        self.line = line
+        self.character = character
 
         let rawRuleTexts = scanner.scanUpToString(Command.commentDelimiter) ?? ""
         if scanner.isAtEnd {

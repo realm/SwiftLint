@@ -23,7 +23,7 @@ internal extension ColonRule {
     }
 
     func typeColonViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        let nsstring = file.contents.bridge()
+        let contents = file.stringView
         return file.matchesAndTokens(matching: pattern).filter { match, syntaxTokens in
             if match.range(at: 2).length > 0 && syntaxTokens.count > 2 { // captured a generic definition
                 let tokens = [syntaxTokens.first, syntaxTokens.last].compactMap { $0 }
@@ -32,7 +32,7 @@ internal extension ColonRule {
 
             return isValidMatch(syntaxTokens: syntaxTokens, file: file)
         }.compactMap { match, syntaxTokens in
-            let identifierRange = nsstring
+            let identifierRange = contents
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, match.range) }
         }

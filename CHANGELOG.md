@@ -1,3 +1,21 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.38.1: Extra Shiny Pulsator Cap
 
 #### Breaking

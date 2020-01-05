@@ -1285,7 +1285,8 @@ extension RulesTests {
         ("testLeadingWhitespace", testLeadingWhitespace),
         ("testMark", testMark),
         ("testRequiredEnumCase", testRequiredEnumCase),
-        ("testTrailingNewline", testTrailingNewline)
+        ("testTrailingNewline", testTrailingNewline),
+        ("testOrphanedDocComment", testOrphanedDocComment)
     ]
 }
 

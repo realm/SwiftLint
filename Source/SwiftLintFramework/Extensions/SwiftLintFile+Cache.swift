@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 private typealias FileCacheKey = Int
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
@@ -29,6 +30,18 @@ private var syntaxMapCache = Cache({ file in
 })
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
+
+private var syntaxCache = Cache({ file -> SourceFileSyntax? in
+    do {
+        if let path = file.path {
+            return try SyntaxParser.parse(URL(fileURLWithPath: path))
+        }
+
+        return try SyntaxParser.parse(source: file.contents)
+    } catch {
+        return nil
+    }
+})
 
 internal typealias AssertHandler = () -> Void
 
@@ -180,6 +193,17 @@ extension SwiftLintFile {
         return syntaxKindsByLines
     }
 
+    internal var syntax: SourceFileSyntax {
+        guard let syntax = syntaxCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SourceFileSyntax({ _ in })
+            }
+            queuedFatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntax
+    }
+
     public func invalidateCache() {
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
@@ -188,6 +212,7 @@ extension SwiftLintFile {
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
+        syntaxCache.invalidate(self)
     }
 
     internal static func clearCaches() {
@@ -199,5 +224,6 @@ extension SwiftLintFile {
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
+        syntaxCache.clear()
     }
 }

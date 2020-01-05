@@ -143,6 +143,7 @@
 * [Required Deinit](#required-deinit)
 * [Required Enum Case](#required-enum-case)
 * [Returning Whitespace](#returning-whitespace)
+* [Return Value from Void Function](#return-value-from-void-function)
 * [Shorthand Operator](#shorthand-operator)
 * [Single Test Class](#single-test-class)
 * [Min or Max over Sorted First or Last](#min-or-max-over-sorted-first-or-last)
@@ -18630,6 +18631,284 @@ var abc = {(param: Int)↓ ->Bool in }
 ```swift
 var abc = {(param: Int)↓->Bool in }
 
+```
+
+</details>
+
+
+
+## Return Value from Void Function
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`return_value_from_void_function` | Enabled | No | lint | No | 3.0.0 
+
+Returning values Void functions should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func foo() {
+    return
+}
+```
+
+```swift
+func foo() {
+    return /* a comment */
+}
+```
+
+```swift
+func foo() -> Int {
+    return 1
+}
+```
+
+```swift
+func foo() -> Void {
+    if condition {
+        return
+    }
+    bar()
+}
+```
+
+```swift
+func foo() {
+    return;
+    bar()
+}
+```
+
+```swift
+
+```
+
+```swift
+func test() {}
+```
+
+```swift
+init?() {
+    guard condition else {
+        return nil
+    }
+}
+```
+
+```swift
+init?(arg: String?) {
+    guard arg != nil else {
+        return nil
+    }
+}
+```
+
+```swift
+func test() {
+    guard condition else {
+        return
+    }
+}
+```
+
+```swift
+func test() -> Result<String, Error> {
+    func other() {}
+    func otherVoid() -> Void {}
+}
+```
+
+```swift
+func test() -> Int? {
+    return nil
+}
+```
+
+```swift
+func test() {
+    if bar {
+        print("")
+        return
+    }
+    let foo = [1, 2, 3].filter { return true }
+    return
+}
+```
+
+```swift
+func test() {
+    guard foo else {
+        bar()
+        return
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func foo() {
+    ↓return bar()
+}
+```
+
+```swift
+func foo() {
+    ↓return self.bar()
+}
+```
+
+```swift
+func foo() -> Void {
+    ↓return bar()
+}
+```
+
+```swift
+func foo() -> Void {
+    ↓return /* comment */ bar()
+}
+```
+
+```swift
+func foo() {
+    ↓return
+    self.bar()
+}
+```
+
+```swift
+func foo() {
+    variable += 1
+    ↓return
+    variable += 1
+}
+```
+
+```swift
+func initThing() {
+    guard foo else {
+        ↓return print("")
+    }
+}
+```
+
+```swift
+// Leading comment
+func test() {
+    guard condition else {
+        ↓return assertionfailure("")
+    }
+}
+```
+
+```swift
+func test() -> Result<String, Error> {
+    func other() {
+        guard false else {
+            ↓return assertionfailure("")
+        }
+    }
+    func otherVoid() -> Void {}
+}
+```
+
+```swift
+func test() {
+    guard conditionIsTrue else {
+        sideEffects()
+        return // comment
+    }
+    guard otherCondition else {
+        ↓return assertionfailure("")
+    }
+    differentSideEffect()
+}
+```
+
+```swift
+func test() {
+    guard otherCondition else {
+        ↓return assertionfailure(""); // comment
+    }
+    differentSideEffect()
+}
+```
+
+```swift
+func test() {
+  if x {
+    ↓return foo()
+  }
+  bar()
+}
+```
+
+```swift
+func test() {
+  switch x {
+    case .a:
+      ↓return foo() // return to skip baz()
+    case .b:
+      bar()
+  }
+  baz()
+}
+```
+
+```swift
+func test() {
+  if check {
+    if otherCheck {
+      ↓return foo()
+    }
+  }
+  bar()
+}
+```
+
+```swift
+func test() {
+    ↓return foo()
+}
+```
+
+```swift
+func test() {
+  ↓return foo({
+    return bar()
+  })
+}
+```
+
+```swift
+func test() {
+  guard x else {
+    ↓return foo()
+  }
+  bar()
+}
+```
+
+```swift
+func test() {
+  let closure: () -> () = {
+    return assert()
+  }
+  if check {
+    if otherCheck {
+      return // comments are fine
+    }
+  }
+  ↓return foo()
+}
 ```
 
 </details>

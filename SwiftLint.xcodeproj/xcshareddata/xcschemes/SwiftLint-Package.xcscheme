@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SwiftLint::swiftlint"
-               BuildableName = "swiftlint"
-               BlueprintName = "swiftlint"
+               BlueprintIdentifier = "SwiftLint::SwiftLintFramework"
+               BuildableName = "SwiftLintFramework.framework"
+               BlueprintName = "SwiftLintFramework"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,9 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SwiftLint::SwiftLintFramework"
-               BuildableName = "SwiftLintFramework.framework"
-               BlueprintName = "SwiftLintFramework"
+               BlueprintIdentifier = "SwiftLint::swiftlint"
+               BuildableName = "swiftlint"
+               BlueprintName = "swiftlint"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

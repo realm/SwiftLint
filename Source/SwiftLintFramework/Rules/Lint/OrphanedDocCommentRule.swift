@@ -16,6 +16,13 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
             """
             /// My great property
             var myGreatProperty: String!
+            """,
+            """
+            //////////////////////////////////////
+            //
+            // Copyright header.
+            //
+            //////////////////////////////////////
             """
         ],
         triggeringExamples: [
@@ -27,13 +34,11 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let docStringsTokens = file.syntaxMap.tokens.compactMap { token -> NSRange? in
-            guard token.kind == .docComment || token.kind == .docCommentField else {
-                return nil
-            }
+    private static let characterSet = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "/"))
 
-            return token.range
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let docStringsTokens = file.syntaxMap.tokens.filter { token in
+            return token.kind == .docComment || token.kind == .docCommentField
         }
 
         let docummentedDeclsRanges = file.structureDictionary.traverseDepthFirst { dictionary -> [NSRange]? in
@@ -45,12 +50,17 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
         }.sorted { $0.location < $1.location }
 
         return docStringsTokens
-            .filter { tokenRange in
-                return docummentedDeclsRanges.firstIndexAssumingSorted(where: tokenRange.intersects) == nil
-            }.map { range in
+            .filter { token in
+                guard docummentedDeclsRanges.firstIndexAssumingSorted(where: token.range.intersects) == nil,
+                    let contents = file.contents(for: token) else {
+                        return false
+                }
+
+                return !contents.trimmingCharacters(in: type(of: self).characterSet).isEmpty
+            }.map { token in
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: configuration.severity,
-                                      location: Location(file: file, byteOffset: range.location))
+                                      location: Location(file: file, byteOffset: token.offset))
             }
     }
 }

@@ -15824,6 +15824,14 @@ A doc comment should be attached to a declaration.
 var myGreatProperty: String!
 ```
 
+```swift
+//////////////////////////////////////
+//
+// Copyright header.
+//
+//////////////////////////////////////
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

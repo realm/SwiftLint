@@ -121,7 +121,9 @@ public extension Configuration.FileGraph.FilePath {
     ) throws -> String {
         if let cachedFilePath = cachedFilePath {
             if taskDone {
-                queuedPrint("warning: Unable to load remote config from \"\(urlString)\". Using cached version as a fallback.")
+                queuedPrint(
+                    "warning: Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
+                )
             } else {
                 queuedPrint(
                     "warning: Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "

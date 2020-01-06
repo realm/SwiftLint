@@ -121,3 +121,8 @@ jobs:
       inputs:
         artifactName: 'API Docs'
         targetPath: 'docs'
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: doc_deploy_key
+    - script: ./script/push-docs
+      displayName: Publish

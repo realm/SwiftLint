@@ -124,6 +124,5 @@ jobs:
     - task: DownloadSecureFile@1
       inputs:
         secureFile: doc_deploy_key
-      displayName: Get the deploy key
     - script: ./script/push-docs
       displayName: Publish

@@ -1,3 +1,0 @@
-struct A {}
-
-print("hello")

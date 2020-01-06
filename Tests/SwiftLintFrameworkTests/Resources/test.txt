@@ -1,2 +1,0 @@
-// My file with
-// a pattern

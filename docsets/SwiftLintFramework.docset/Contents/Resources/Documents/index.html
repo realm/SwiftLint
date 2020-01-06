@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SwiftLintFramework  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="SwiftLintFramework  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          SwiftLintFramework Docs
+        </a>
+         (2% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/realm/SwiftLint">
+            <img class="header-icon" src="img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="dash-feed://https%3A%2F%2Fjpsim%2Ecom%2FSwiftLint%2Fdocsets%2FSwiftLintFramework%2Exml">
+            <img class="header-icon" src="img/dash.png"/>
+            Install in Dash
+          </a>
+        </p>
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
+      <img class="carat" src="img/carat.png" />
+      SwiftLintFramework  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Rules.html">Rules</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="rule-directory.html">Rule Directory</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/LinterCache.html">LinterCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/RuleStorage.html">RuleStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/SwiftLintFile.html">SwiftLintFile</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Global%20Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework14masterRuleListAA0eF0Vvp">masterRuleList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/AccessControlLevel.html">AccessControlLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ConfigurationError.html">ConfigurationError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ImplicitlyUnwrappedOptionalModeConfiguration.html">ImplicitlyUnwrappedOptionalModeConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleIdentifier.html">RuleIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleKind.html">RuleKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleListError.html">RuleListError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/StatementModeConfiguration.html">StatementModeConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/SwiftExpressionKind.html">SwiftExpressionKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ViolationSeverity.html">ViolationSeverity</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/FileManager.html">FileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/NSRegularExpression.html">NSRegularExpression</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/NSRegularExpression/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/SwiftDeclarationAttributeKind.html">SwiftDeclarationAttributeKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/SwiftDeclarationAttributeKind/ModifierGroup.html">– ModifierGroup</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/SyntaxKind.html">SyntaxKind</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedFatalError_4file4lines5NeverOSS_s12StaticStringVSutF">queuedFatalError(_:file:line:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework11queuedPrintyyxlF">queuedPrint(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedPrintErroryySSF">queuedPrintError(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework12reporterFrom10identifierAA8Reporter_pXpSS_tF">reporterFrom(identifier:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ASTRule.html">ASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/AnalyzerRule.html">AnalyzerRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17AnyCollectingRuleP">AnyCollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework21AutomaticTestableRuleP">AutomaticTestableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingCorrectableRule.html">CollectingCorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingRule.html">CollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CorrectableRule.html">CorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LintableFileManager.html">LintableFileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework9OptInRuleP">OptInRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Reporter.html">Reporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Rule.html">Rule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/RuleConfiguration.html">RuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17SourceKitFreeRuleP">SourceKitFreeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableASTRule.html">SubstitutionCorrectableASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableRule.html">SubstitutionCorrectableRule</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AnyObjectProtocolRule.html">AnyObjectProtocolRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ArrayInitRule.html">ArrayInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AttributesConfiguration.html">AttributesConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AttributesRule.html">AttributesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/BlockBasedKVORule.html">BlockBasedKVORule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CSVReporter.html">CSVReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CheckstyleReporter.html">CheckstyleReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClassDelegateProtocolRule.html">ClassDelegateProtocolRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosingBraceRule.html">ClosingBraceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureBodyLengthRule.html">ClosureBodyLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureEndIndentationRule.html">ClosureEndIndentationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureParameterPositionRule.html">ClosureParameterPositionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureSpacingRule.html">ClosureSpacingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectedLinter.html">CollectedLinter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectionAlignmentConfiguration.html">CollectionAlignmentConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectionAlignmentRule.html">CollectionAlignmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ColonConfiguration.html">ColonConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ColonRule.html">ColonRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CommaRule.html">CommaRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command.html">Command</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Action.html">– Action</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Modifier.html">– Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CompilerProtocolInitRule.html">CompilerProtocolInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConditionalReturnsOnNewlineConfiguration.html">ConditionalReturnsOnNewlineConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConditionalReturnsOnNewlineRule.html">ConditionalReturnsOnNewlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverFilterCountRule.html">ContainsOverFilterCountRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverFilterIsEmptyRule.html">ContainsOverFilterIsEmptyRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverFirstNotNilRule.html">ContainsOverFirstNotNilRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverRangeNilComparisonRule.html">ContainsOverRangeNilComparisonRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ControlStatementRule.html">ControlStatementRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConvenienceTypeRule.html">ConvenienceTypeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CustomRules.html">CustomRules</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CustomRulesConfiguration.html">CustomRulesConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CyclomaticComplexityConfiguration.html">CyclomaticComplexityConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CyclomaticComplexityRule.html">CyclomaticComplexityRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DeploymentTargetConfiguration.html">DeploymentTargetConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DeploymentTargetConfiguration/Version.html">– Version</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DeploymentTargetRule.html">DeploymentTargetRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscardedNotificationCenterObserverRule.html">DiscardedNotificationCenterObserverRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedDirectInitConfiguration.html">DiscouragedDirectInitConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedDirectInitRule.html">DiscouragedDirectInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedObjectLiteralRule.html">DiscouragedObjectLiteralRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedOptionalBooleanRule.html">DiscouragedOptionalBooleanRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedOptionalCollectionRule.html">DiscouragedOptionalCollectionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DuplicateEnumCasesRule.html">DuplicateEnumCasesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DuplicateImportsRule.html">DuplicateImportsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DynamicInlineRule.html">DynamicInlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmojiReporter.html">EmojiReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyCollectionLiteralRule.html">EmptyCollectionLiteralRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyCountRule.html">EmptyCountRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyEnumArgumentsRule.html">EmptyEnumArgumentsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyParametersRule.html">EmptyParametersRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyParenthesesWithTrailingClosureRule.html">EmptyParenthesesWithTrailingClosureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyStringRule.html">EmptyStringRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyXCTestMethodRule.html">EmptyXCTestMethodRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EnumCaseAssociatedValuesLengthRule.html">EnumCaseAssociatedValuesLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExpiringTodoConfiguration.html">ExpiringTodoConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExpiringTodoConfiguration/DelimiterConfiguration.html">– DelimiterConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExpiringTodoRule.html">ExpiringTodoRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitACLRule.html">ExplicitACLRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitEnumRawValueRule.html">ExplicitEnumRawValueRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitInitRule.html">ExplicitInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitSelfRule.html">ExplicitSelfRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitTopLevelACLRule.html">ExplicitTopLevelACLRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitTypeInterfaceConfiguration.html">ExplicitTypeInterfaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitTypeInterfaceRule.html">ExplicitTypeInterfaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExtensionAccessModifierRule.html">ExtensionAccessModifierRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FallthroughRule.html">FallthroughRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FatalErrorMessageRule.html">FatalErrorMessageRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileHeaderConfiguration.html">FileHeaderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileHeaderRule.html">FileHeaderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileLengthRule.html">FileLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileLengthRuleConfiguration.html">FileLengthRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameConfiguration.html">FileNameConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameNoSpaceConfiguration.html">FileNameNoSpaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameNoSpaceRule.html">FileNameNoSpaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameRule.html">FileNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileTypesOrderConfiguration.html">FileTypesOrderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileTypesOrderRule.html">FileTypesOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FirstWhereRule.html">FirstWhereRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FlatMapOverMapReduceRule.html">FlatMapOverMapReduceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForWhereRule.html">ForWhereRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForceCastRule.html">ForceCastRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForceTryRule.html">ForceTryRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForceUnwrappingRule.html">ForceUnwrappingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionBodyLengthRule.html">FunctionBodyLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionDefaultParameterAtEndRule.html">FunctionDefaultParameterAtEndRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionParameterCountConfiguration.html">FunctionParameterCountConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionParameterCountRule.html">FunctionParameterCountRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GenericTypeNameRule.html">GenericTypeNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GitHubActionsLoggingReporter.html">GitHubActionsLoggingReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/HTMLReporter.html">HTMLReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IdenticalOperandsRule.html">IdenticalOperandsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IdentifierNameRule.html">IdentifierNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitGetterRule.html">ImplicitGetterRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitReturnConfiguration.html">ImplicitReturnConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitReturnConfiguration/ReturnKind.html">– ReturnKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitReturnRule.html">ImplicitReturnRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitlyUnwrappedOptionalConfiguration.html">ImplicitlyUnwrappedOptionalConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitlyUnwrappedOptionalRule.html">ImplicitlyUnwrappedOptionalRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/InertDeferRule.html">InertDeferRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IsDisjointRule.html">IsDisjointRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JSONReporter.html">JSONReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JUnitReporter.html">JUnitReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JoinedDefaultParameterRule.html">JoinedDefaultParameterRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LargeTupleRule.html">LargeTupleRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LastWhereRule.html">LastWhereRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LeadingWhitespaceRule.html">LeadingWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyCGGeometryFunctionsRule.html">LegacyCGGeometryFunctionsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyConstantRule.html">LegacyConstantRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyConstructorRule.html">LegacyConstructorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyHashingRule.html">LegacyHashingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyMultipleRule.html">LegacyMultipleRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyNSGeometryFunctionsRule.html">LegacyNSGeometryFunctionsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyRandomRule.html">LegacyRandomRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LetVarWhitespaceRule.html">LetVarWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LineLengthConfiguration.html">LineLengthConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LineLengthRule.html">LineLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LineLengthRuleOptions.html">LineLengthRuleOptions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Linter.html">Linter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LiteralExpressionEndIdentationRule.html">LiteralExpressionEndIdentationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Location.html">Location</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LowerACLThanParentRule.html">LowerACLThanParentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MarkRule.html">MarkRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MarkdownReporter.html">MarkdownReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MissingDocsRule.html">MissingDocsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MissingDocsRuleConfiguration.html">MissingDocsRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ModifierOrderConfiguration.html">ModifierOrderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ModifierOrderRule.html">ModifierOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsBracketsRule.html">MultilineArgumentsBracketsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsConfiguration.html">MultilineArgumentsConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsConfiguration/FirstArgumentLocation.html">– FirstArgumentLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsRule.html">MultilineArgumentsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineFunctionChainsRule.html">MultilineFunctionChainsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineLiteralBracketsRule.html">MultilineLiteralBracketsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineParametersBracketsRule.html">MultilineParametersBracketsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineParametersRule.html">MultilineParametersRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultipleClosuresWithTrailingClosureRule.html">MultipleClosuresWithTrailingClosureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NSLocalizedStringKeyRule.html">NSLocalizedStringKeyRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NSLocalizedStringRequireBundleRule.html">NSLocalizedStringRequireBundleRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NSObjectPreferIsEqualRule.html">NSObjectPreferIsEqualRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NameConfiguration.html">NameConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NestingConfiguration.html">NestingConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NestingRule.html">NestingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NimbleOperatorRule.html">NimbleOperatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoExtensionAccessModifierRule.html">NoExtensionAccessModifierRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoFallthroughOnlyRule.html">NoFallthroughOnlyRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoGroupingExtensionRule.html">NoGroupingExtensionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoSpaceInMethodCallRule.html">NoSpaceInMethodCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NotificationCenterDetachmentRule.html">NotificationCenterDetachmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NumberSeparatorConfiguration.html">NumberSeparatorConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NumberSeparatorRule.html">NumberSeparatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ObjectLiteralConfiguration.html">ObjectLiteralConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ObjectLiteralRule.html">ObjectLiteralRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OpeningBraceRule.html">OpeningBraceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OperatorFunctionWhitespaceRule.html">OperatorFunctionWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OperatorUsageWhitespaceRule.html">OperatorUsageWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OptionalEnumCaseMatchingRule.html">OptionalEnumCaseMatchingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OverriddenSuperCallRule.html">OverriddenSuperCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OverrideInExtensionRule.html">OverrideInExtensionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OverridenSuperCallConfiguration.html">OverridenSuperCallConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PatternMatchingKeywordsRule.html">PatternMatchingKeywordsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PreferSelfTypeOverTypeOfSelfRule.html">PreferSelfTypeOverTypeOfSelfRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrefixedConstantRuleConfiguration.html">PrefixedConstantRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrefixedTopLevelConstantRule.html">PrefixedTopLevelConstantRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateActionRule.html">PrivateActionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOutletRule.html">PrivateOutletRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOutletRuleConfiguration.html">PrivateOutletRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOverFilePrivateRule.html">PrivateOverFilePrivateRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOverFilePrivateRuleConfiguration.html">PrivateOverFilePrivateRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateUnitTestConfiguration.html">PrivateUnitTestConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateUnitTestRule.html">PrivateUnitTestRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProhibitedInterfaceBuilderRule.html">ProhibitedInterfaceBuilderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProhibitedSuperConfiguration.html">ProhibitedSuperConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProhibitedSuperRule.html">ProhibitedSuperRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProtocolPropertyAccessorsOrderRule.html">ProtocolPropertyAccessorsOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/QuickDiscouragedCallRule.html">QuickDiscouragedCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/QuickDiscouragedFocusedTestRule.html">QuickDiscouragedFocusedTestRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/QuickDiscouragedPendingTestRule.html">QuickDiscouragedPendingTestRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RawValueForCamelCasedCodableEnumRule.html">RawValueForCamelCasedCodableEnumRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReduceBooleanRule.html">ReduceBooleanRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReduceIntoRule.html">ReduceIntoRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantDiscardableLetRule.html">RedundantDiscardableLetRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantNilCoalescingRule.html">RedundantNilCoalescingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantObjcAttributeRule.html">RedundantObjcAttributeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantOptionalInitializationRule.html">RedundantOptionalInitializationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantSetAccessControlRule.html">RedundantSetAccessControlRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantStringEnumValueRule.html">RedundantStringEnumValueRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantTypeAnnotationRule.html">RedundantTypeAnnotationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantVoidReturnRule.html">RedundantVoidReturnRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RegexConfiguration.html">RegexConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Region.html">Region</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RequiredDeinitRule.html">RequiredDeinitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RequiredEnumCaseRule.html">RequiredEnumCaseRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RequiredEnumCaseRuleConfiguration.html">RequiredEnumCaseRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReturnArrowWhitespaceRule.html">ReturnArrowWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleList.html">RuleList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleParameter.html">RuleParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SeverityConfiguration.html">SeverityConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SeverityLevelsConfiguration.html">SeverityLevelsConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ShorthandOperatorRule.html">ShorthandOperatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SingleTestClassRule.html">SingleTestClassRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SonarQubeReporter.html">SonarQubeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SortedFirstLastRule.html">SortedFirstLastRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SortedImportsRule.html">SortedImportsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SourceKittenDictionary.html">SourceKittenDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StatementConfiguration.html">StatementConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StatementPositionRule.html">StatementPositionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StaticOperatorRule.html">StaticOperatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StrictFilePrivateRule.html">StrictFilePrivateRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StrongIBOutletRule.html">StrongIBOutletRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StyleViolation.html">StyleViolation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SuperfluousDisableCommandRule.html">SuperfluousDisableCommandRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxMap.html">SwiftLintSyntaxMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxToken.html">SwiftLintSyntaxToken</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftVersion.html">SwiftVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwitchCaseAlignmentConfiguration.html">SwitchCaseAlignmentConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwitchCaseAlignmentRule.html">SwitchCaseAlignmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwitchCaseOnNewlineRule.html">SwitchCaseOnNewlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SyntacticSugarRule.html">SyntacticSugarRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TodoRule.html">TodoRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ToggleBoolRule.html">ToggleBoolRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingClosureConfiguration.html">TrailingClosureConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingClosureRule.html">TrailingClosureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingCommaConfiguration.html">TrailingCommaConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingCommaRule.html">TrailingCommaRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingNewlineRule.html">TrailingNewlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingSemicolonRule.html">TrailingSemicolonRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingWhitespaceConfiguration.html">TrailingWhitespaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingWhitespaceRule.html">TrailingWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeBodyLengthRule.html">TypeBodyLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeContentsOrderConfiguration.html">TypeContentsOrderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeContentsOrderRule.html">TypeContentsOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeNameRule.html">TypeNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnavailableFunctionRule.html">UnavailableFunctionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnneededBreakInSwitchRule.html">UnneededBreakInSwitchRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnneededParenthesesInClosureArgumentRule.html">UnneededParenthesesInClosureArgumentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnownedVariableCaptureRule.html">UnownedVariableCaptureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UntypedErrorInCatchRule.html">UntypedErrorInCatchRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedCaptureListRule.html">UnusedCaptureListRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedClosureParameterRule.html">UnusedClosureParameterRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedControlFlowLabelRule.html">UnusedControlFlowLabelRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedDeclarationConfiguration.html">UnusedDeclarationConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedDeclarationRule.html">UnusedDeclarationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedDeclarationRule.html#/s:18SwiftLintFramework21UnusedDeclarationRuleV8FileUSRsV">– FileUSRs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedEnumeratedRule.html">UnusedEnumeratedRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedImportRule.html">UnusedImportRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedOptionalBindingConfiguration.html">UnusedOptionalBindingConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedOptionalBindingRule.html">UnusedOptionalBindingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedSetterValueRule.html">UnusedSetterValueRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ValidIBInspectableRule.html">ValidIBInspectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Version.html">Version</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalParameterAlignmentOnCallRule.html">VerticalParameterAlignmentOnCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalParameterAlignmentRule.html">VerticalParameterAlignmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceBetweenCasesRule.html">VerticalWhitespaceBetweenCasesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceClosingBracesRule.html">VerticalWhitespaceClosingBracesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceConfiguration.html">VerticalWhitespaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceOpeningBracesRule.html">VerticalWhitespaceOpeningBracesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceRule.html">VerticalWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VoidReturnRule.html">VoidReturnRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/WeakDelegateRule.html">WeakDelegateRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XCTFailMessageRule.html">XCTFailMessageRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XCTSpecificMatcherRule.html">XCTSpecificMatcherRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XcodeReporter.html">XcodeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/YamlParser.html">YamlParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/YodaConditionRule.html">YodaConditionRule</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='swiftlint' class='heading'>SwiftLint</h1>
+
+<p>A tool to enforce Swift style and conventions, loosely based on
+<a href="https://github.com/github/swift-style-guide">GitHub&rsquo;s Swift Style Guide</a>.</p>
+
+<p>SwiftLint hooks into <a href="http://clang.llvm.org">Clang</a> and
+<a href="http://www.jpsim.com/uncovering-sourcekit">SourceKit</a> to use the
+<a href="http://clang.llvm.org/docs/IntroductionToTheClangAST.html">AST</a> representation
+of your source files for more accurate results.</p>
+
+<p><a href="https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=master"><img src="https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=master" alt="Build Status"></a>
+<a href="https://codecov.io/github/realm/SwiftLint?branch=master"><img src="https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master" alt="codecov.io"></a></p>
+
+<p><img src="assets/screenshot.png" alt=""></p>
+
+<p>This project adheres to the <a href="https://realm.io/conduct">Contributor Covenant Code of Conduct</a>.
+By participating, you are expected to uphold this code. Please report
+unacceptable behavior to <a href="mailto:info@realm.io">info@realm.io</a>.</p>
+
+<blockquote>
+<p>Language Switch: <a href="https://github.com/realm/SwiftLint/blob/master/README_CN.md">中文</a>, <a href="https://github.com/realm/SwiftLint/blob/master/README_KR.md">한국어</a>.</p>
+</blockquote>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='using-a-href-http-brew-sh-homebrew-a' class='heading'>Using <a href="http://brew.sh/">Homebrew</a>:</h3>
+<pre class="highlight plaintext"><code>brew install swiftlint
+</code></pre>
+<h3 id='using-a-href-https-cocoapods-org-cocoapods-a' class='heading'>Using <a href="https://cocoapods.org">CocoaPods</a>:</h3>
+
+<p>Simply add the following line to your Podfile:</p>
+<pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'SwiftLint'</span>
+</code></pre>
+
+<p>This will download the SwiftLint binaries and dependencies in <code>Pods/</code> during your next
+<code>pod install</code> execution and will allow you to invoke it via <code>${PODS_ROOT}/SwiftLint/swiftlint</code>
+in your Script Build Phases.</p>
+
+<p>This is the recommended way to install a specific version of SwiftLint since it supports
+installing a pinned version rather than simply the latest (which is the case with Homebrew).</p>
+
+<p>Note that this will add the SwiftLint binaries, its dependencies&rsquo; binaries and the Swift binary
+library distribution to the <code>Pods/</code> directory, so checking in this directory to SCM such as
+git is discouraged.</p>
+<h3 id='using-a-href-https-github-com-yonaskolb-mint-mint-a' class='heading'>Using <a href="https://github.com/yonaskolb/mint">Mint</a>:</h3>
+<pre class="highlight plaintext"><code>$ mint install realm/SwiftLint
+</code></pre>
+<h3 id='using-a-pre-built-package' class='heading'>Using a pre-built package:</h3>
+
+<p>You can also install SwiftLint by downloading <code>SwiftLint.pkg</code> from the
+<a href="https://github.com/realm/SwiftLint/releases/latest">latest GitHub release</a> and
+running it.</p>
+<h3 id='compiling-from-source' class='heading'>Compiling from source:</h3>
+
+<p>You can also build from source by cloning this project and running
+<code>git submodule update --init --recursive; make install</code> (Xcode 10.2 or later).</p>
+<h3 id='known-installation-issues-on-macos-before-10-14-4' class='heading'>Known Installation Issues On MacOS Before 10.14.4</h3>
+
+<p>Starting with <a href="https://github.com/realm/SwiftLint/releases/tag/0.32.0">SwiftLint 0.32.0</a>, if you get
+an error similar to <code>dyld: Symbol not found: _$s11SubSequenceSlTl</code> when running SwiftLint,
+you&rsquo;ll need to install the <a href="https://support.apple.com/kb/DL1998">Swift 5 Runtime Support for Command Line Tools</a>.</p>
+
+<p>Alternatively, you can:</p>
+
+<ul>
+<li>Update to macOS 10.14.4 or later</li>
+<li>Install Xcode 10.2 or later at <code>/Applications/Xcode.app</code></li>
+<li>Rebuild SwiftLint from source using Xcode 10.2 or later</li>
+</ul>
+<h2 id='usage' class='heading'>Usage</h2>
+<h3 id='presentation' class='heading'>Presentation</h3>
+
+<p>To get a high-level overview of recommended ways to integrate SwiftLint into your project,
+we encourage you to watch this presentation or read the transcript:</p>
+
+<p><a href="https://academy.realm.io/posts/slug-jp-simard-swiftlint/"><img src="assets/presentation.svg" alt="Presentation"></a></p>
+<h3 id='xcode' class='heading'>Xcode</h3>
+
+<p>Integrate SwiftLint into an Xcode scheme to get warnings and errors displayed
+in the IDE. Just add a new &ldquo;Run Script Phase&rdquo; with:</p>
+<pre class="highlight shell"><code><span class="k">if </span>which swiftlint <span class="o">&gt;</span>/dev/null<span class="p">;</span> <span class="k">then
+  </span>swiftlint
+<span class="k">else
+  </span><span class="nb">echo</span> <span class="s2">"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"</span>
+<span class="k">fi</span>
+</code></pre>
+
+<p><img src="assets/runscript.png" alt=""></p>
+
+<p>Alternatively, if you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
+<pre class="highlight shell"><code><span class="s2">"</span><span class="k">${</span><span class="nv">PODS_ROOT</span><span class="k">}</span><span class="s2">/SwiftLint/swiftlint"</span>
+</code></pre>
+<h4 id='format-on-save-xcode-plugin' class='heading'>Format on Save Xcode Plugin</h4>
+
+<p>To run <code>swiftlint autocorrect</code> on save in Xcode, install the
+<a href="https://github.com/ypresto/SwiftLintXcode">SwiftLintXcode</a> plugin from Alcatraz.</p>
+
+<p>⚠️This plugin will not work with Xcode 8 or later without disabling SIP.
+This is not recommended.</p>
+<h3 id='appcode' class='heading'>AppCode</h3>
+
+<p>To integrate SwiftLint with AppCode, install
+<a href="https://plugins.jetbrains.com/plugin/9175">this plugin</a> and configure
+SwiftLint&rsquo;s installed path in the plugin&rsquo;s preferences.
+The <code>autocorrect</code> action is available via <code>⌥⏎</code>.</p>
+<h3 id='atom' class='heading'>Atom</h3>
+
+<p>To integrate SwiftLint with <a href="https://atom.io/">Atom</a>, install the
+<a href="https://atom.io/packages/linter-swiftlint"><code>linter-swiftlint</code></a> package from
+APM.</p>
+<h3 id='fastlane' class='heading'>fastlane</h3>
+
+<p>You can use the <a href="https://docs.fastlane.tools/actions/swiftlint">official swiftlint fastlane action</a> to run SwiftLint as part of your fastlane process.</p>
+<pre class="highlight ruby"><code><span class="n">swiftlint</span><span class="p">(</span>
+    <span class="ss">mode: :lint</span><span class="p">,</span>                            <span class="c1"># SwiftLint mode: :lint (default) or :autocorrect</span>
+    <span class="ss">executable: </span><span class="s2">"Pods/SwiftLint/swiftlint"</span><span class="p">,</span> <span class="c1"># The SwiftLint binary path (optional). Important if you've installed it via CocoaPods</span>
+    <span class="ss">path: </span><span class="s2">"/path/to/lint"</span><span class="p">,</span>                  <span class="c1"># Specify path to lint (optional)</span>
+    <span class="ss">output_file: </span><span class="s2">"swiftlint.result.json"</span><span class="p">,</span>   <span class="c1"># The path of the output file (optional)</span>
+    <span class="ss">reporter: </span><span class="s2">"json"</span><span class="p">,</span>                       <span class="c1"># The custom reporter to use (optional)</span>
+    <span class="ss">config_file: </span><span class="s2">".swiftlint-ci.yml"</span><span class="p">,</span>       <span class="c1"># The path of the configuration file (optional)</span>
+    <span class="ss">files: </span><span class="p">[</span>                                <span class="c1"># List of files to process (optional)</span>
+        <span class="s2">"AppDelegate.swift"</span><span class="p">,</span>
+        <span class="s2">"path/to/project/Model.swift"</span>
+    <span class="p">],</span>
+    <span class="ss">ignore_exit_status: </span><span class="kp">true</span><span class="p">,</span>               <span class="c1"># Allow fastlane to continue even if SwiftLint returns a non-zero exit status (Default: false)</span>
+    <span class="ss">quiet: </span><span class="kp">true</span><span class="p">,</span>                            <span class="c1"># Don't print status logs like 'Linting ' &amp; 'Done linting' (Default: false)</span>
+    <span class="ss">strict: </span><span class="kp">true</span>                            <span class="c1"># Fail on warnings? (Default: false)</span>
+<span class="p">)</span>
+</code></pre>
+<h3 id='command-line' class='heading'>Command Line</h3>
+<pre class="highlight plaintext"><code>$ swiftlint help
+Available commands:
+
+   analyze         [Experimental] Run analysis rules
+   autocorrect     Automatically correct warnings and errors
+   generate-docs   Generates markdown documentation for all rules
+   help            Display general or command-specific help
+   lint            Print lint warnings and errors (default command)
+   rules           Display the list of rules and their identifiers
+   version         Display the current version of SwiftLint
+</code></pre>
+
+<p>Run <code>swiftlint</code> in the directory containing the Swift files to lint. Directories
+will be searched recursively.</p>
+
+<p>To specify a list of files when using <code>lint</code>, <code>autocorrect</code> or <code>analyze</code>
+(like the list of files modified by Xcode specified by the
+<a href="https://github.com/norio-nomura/ExtraBuildPhase"><code>ExtraBuildPhase</code></a> Xcode
+plugin, or modified files in the working tree based on <code>git ls-files -m</code>), you
+can do so by passing the option <code>--use-script-input-files</code> and setting the
+following instance variables: <code>SCRIPT_INPUT_FILE_COUNT</code> and
+<code>SCRIPT_INPUT_FILE_0</code>, <code>SCRIPT_INPUT_FILE_1</code>&hellip;<code>SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}</code>.</p>
+
+<p>These are same environment variables set for input files to
+<a href="http://indiestack.com/2014/12/speeding-up-custom-script-phases/">custom Xcode script phases</a>.</p>
+<h3 id='working-with-multiple-swift-versions' class='heading'>Working With Multiple Swift Versions</h3>
+
+<p>SwiftLint hooks into SourceKit so it continues working even as Swift evolves!</p>
+
+<p>This also keeps SwiftLint lean, as it doesn&rsquo;t need to ship with a full Swift
+compiler, it just communicates with the official one you already have installed
+on your machine.</p>
+
+<p>You should always run SwiftLint with the same toolchain you use to compile your
+code.</p>
+
+<p>You may want to override SwiftLint&rsquo;s default Swift toolchain if you have
+multiple toolchains or Xcodes installed.</p>
+
+<p>Here&rsquo;s the order in which SwiftLint determines which Swift toolchain to use:</p>
+
+<ul>
+<li><code>$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE</code></li>
+<li><code>$TOOLCHAIN_DIR</code> or <code>$TOOLCHAINS</code></li>
+<li><code>xcrun -find swift</code></li>
+<li><code>/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+<li><code>/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+<li><code>~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+<li><code>~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+</ul>
+
+<p><code>sourcekitd.framework</code> is expected to be found in the <code>usr/lib/</code> subdirectory of
+the value passed in the paths above.</p>
+
+<p>You may also set the <code>TOOLCHAINS</code> environment variable to the reverse-DNS
+notation that identifies a Swift toolchain version:</p>
+<pre class="highlight shell"><code><span class="nv">$ TOOLCHAINS</span><span class="o">=</span>com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
+</code></pre>
+
+<p>On Linux, SourceKit is expected to be located in
+<code>/usr/lib/libsourcekitdInProc.so</code> or specified by the <code>LINUX_SOURCEKIT_LIB_PATH</code>
+environment variable.</p>
+<h3 id='swift-version-support' class='heading'>Swift Version Support</h3>
+
+<p>Here&rsquo;s a reference of which SwiftLint version to use for a given Swift version.</p>
+
+<table><thead>
+<tr>
+<th style="text-align: left">Swift version</th>
+<th style="text-align: left">Last supported SwiftLint release</th>
+</tr>
+</thead><tbody>
+<tr>
+<td style="text-align: left">Swift 1.x</td>
+<td style="text-align: left">SwiftLint 0.1.2</td>
+</tr>
+<tr>
+<td style="text-align: left">Swift 2.x</td>
+<td style="text-align: left">SwiftLint 0.18.1</td>
+</tr>
+<tr>
+<td style="text-align: left">Swift 3.x</td>
+<td style="text-align: left">SwiftLint 0.25.1</td>
+</tr>
+<tr>
+<td style="text-align: left">Swift 4.0-4.1.x</td>
+<td style="text-align: left">SwiftLint 0.28.2</td>
+</tr>
+<tr>
+<td style="text-align: left">Swift 4.2.x</td>
+<td style="text-align: left">SwiftLint 0.35.0</td>
+</tr>
+<tr>
+<td style="text-align: left">Swift 5.x</td>
+<td style="text-align: left">Latest</td>
+</tr>
+</tbody></table>
+<h2 id='rules' class='heading'>Rules</h2>
+
+<p>Over 75 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)
+continues to contribute more over time.
+<a href="CONTRIBUTING.md">Pull requests</a> are encouraged.</p>
+
+<p>You can find an updated list of rules and more information about them
+in <a href="Rules.md">Rules.md</a>.</p>
+
+<p>You can also check <a href="Source/SwiftLintFramework/Rules">Source/SwiftLintFramework/Rules</a>
+directory to see their implementation.</p>
+<h3 id='opt-in-rules' class='heading'>Opt-In Rules</h3>
+
+<p><code>opt_in_rules</code> are disabled by default (i.e., you have to explicitly enable them
+in your configuration file).</p>
+
+<p>Guidelines on when to mark a rule as opt-in:</p>
+
+<ul>
+<li>A rule that can have many false positives (e.g. <code><a href="empty_count.html">empty_count</a></code>)</li>
+<li>A rule that is too slow</li>
+<li>A rule that is not general consensus or is only useful in some cases
+(e.g. <code><a href="force_unwrapping.html">force_unwrapping</a></code>)</li>
+</ul>
+<h3 id='disable-rules-in-code' class='heading'>Disable rules in code</h3>
+
+<p>Rules can be disabled with a comment inside a source file with the following
+format:</p>
+
+<p><code>// swiftlint:disable &lt;rule1&gt; [&lt;rule2&gt; &lt;rule3&gt;...]</code></p>
+
+<p>The rules will be disabled until the end of the file or until the linter sees a
+matching enable comment:</p>
+
+<p><code>// swiftlint:enable &lt;rule1&gt; [&lt;rule2&gt; &lt;rule3&gt;...]</code></p>
+
+<p>For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable colon</span>
+<span class="k">let</span> <span class="nv">noWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// No warning about colons immediately after variable names!</span>
+<span class="c1">// swiftlint:enable colon</span>
+<span class="k">let</span> <span class="nv">hasWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about colons immediately after variable names</span>
+</code></pre>
+
+<p>Including the <code>all</code> keyword will disable all rules until the linter sees a matching enable comment:</p>
+
+<p><code>// swiftlint:disable all</code>
+<code>// swiftlint:enable all</code></p>
+
+<p>For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable all</span>
+<span class="k">let</span> <span class="nv">noWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// No warning about colons immediately after variable names!</span>
+<span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Also no warning about short identifier names</span>
+<span class="c1">// swiftlint:enable all</span>
+<span class="k">let</span> <span class="nv">hasWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about colons immediately after variable names</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about short identifier names</span>
+</code></pre>
+
+<p>It&rsquo;s also possible to modify a <code>disable</code> or <code>enable</code> command by appending
+<code>:previous</code>, <code>:this</code> or <code>:next</code> for only applying the command to the previous,
+this (current) or next line respectively.</p>
+
+<p>For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable:next force_cast</span>
+<span class="k">let</span> <span class="nv">noWarning</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span>
+<span class="k">let</span> <span class="nv">hasWarning</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span>
+<span class="k">let</span> <span class="nv">noWarning2</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span> <span class="c1">// swiftlint:disable:this force_cast</span>
+<span class="k">let</span> <span class="nv">noWarning3</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span>
+<span class="c1">// swiftlint:disable:previous force_cast</span>
+</code></pre>
+
+<p>Run <code>swiftlint rules</code> to print a list of all available rules and their
+identifiers.</p>
+<h3 id='configuration' class='heading'>Configuration</h3>
+
+<p>Configure SwiftLint by adding a <code>.swiftlint.yml</code> file from the directory you&rsquo;ll
+run SwiftLint from. The following parameters can be configured:</p>
+
+<p>Rule inclusion:</p>
+
+<ul>
+<li><code>disabled_rules</code>: Disable rules from the default enabled set.</li>
+<li><code>opt_in_rules</code>: Enable rules not from the default set.</li>
+<li><code>whitelist_rules</code>: Acts as a whitelist, only the rules specified in this list
+will be enabled. Can not be specified alongside <code>disabled_rules</code> or
+<code>opt_in_rules</code>.</li>
+<li><code>analyzer_rules</code>: This is an entirely separate list of rules that are only
+run by the <code>analyze</code> command. All analyzer rules are opt-in, so this is the
+only configurable rule list (there is no disabled/whitelist equivalent).</li>
+</ul>
+<pre class="highlight yaml"><code><span class="na">disabled_rules</span><span class="pi">:</span> <span class="c1"># rule identifiers to exclude from running</span>
+  <span class="pi">-</span> <span class="s">colon</span>
+  <span class="pi">-</span> <span class="s">comma</span>
+  <span class="pi">-</span> <span class="s">control_statement</span>
+<span class="na">opt_in_rules</span><span class="pi">:</span> <span class="c1"># some rules are only opt-in</span>
+  <span class="pi">-</span> <span class="s">empty_count</span>
+  <span class="c1"># Find all the available rules by running:</span>
+  <span class="c1"># swiftlint rules</span>
+<span class="na">included</span><span class="pi">:</span> <span class="c1"># paths to include during linting. `--path` is ignored if present.</span>
+  <span class="pi">-</span> <span class="s">Source</span>
+<span class="na">excluded</span><span class="pi">:</span> <span class="c1"># paths to ignore during linting. Takes precedence over `included`.</span>
+  <span class="pi">-</span> <span class="s">Carthage</span>
+  <span class="pi">-</span> <span class="s">Pods</span>
+  <span class="pi">-</span> <span class="s">Source/ExcludedFolder</span>
+  <span class="pi">-</span> <span class="s">Source/ExcludedFile.swift</span>
+  <span class="pi">-</span> <span class="s">Source/*/ExcludedFile.swift</span> <span class="c1"># Exclude files with a wildcard</span>
+<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze` (experimental)</span>
+  <span class="pi">-</span> <span class="s">explicit_self</span>
+
+<span class="c1"># configurable rules can be customized from this configuration file</span>
+<span class="c1"># binary rules can set their severity level</span>
+<span class="na">force_cast</span><span class="pi">:</span> <span class="s">warning</span> <span class="c1"># implicitly</span>
+<span class="na">force_try</span><span class="pi">:</span>
+  <span class="na">severity</span><span class="pi">:</span> <span class="s">warning</span> <span class="c1"># explicitly</span>
+<span class="c1"># rules that have both warning and error levels, can set just the warning level</span>
+<span class="c1"># implicitly</span>
+<span class="na">line_length</span><span class="pi">:</span> <span class="m">110</span>
+<span class="c1"># they can set both implicitly with an array</span>
+<span class="na">type_body_length</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="m">300</span> <span class="c1"># warning</span>
+  <span class="pi">-</span> <span class="m">400</span> <span class="c1"># error</span>
+<span class="c1"># or they can set both explicitly</span>
+<span class="na">file_length</span><span class="pi">:</span>
+  <span class="na">warning</span><span class="pi">:</span> <span class="m">500</span>
+  <span class="na">error</span><span class="pi">:</span> <span class="m">1200</span>
+<span class="c1"># naming rules can set warnings/errors for min_length and max_length</span>
+<span class="c1"># additionally they can set excluded names</span>
+<span class="na">type_name</span><span class="pi">:</span>
+  <span class="na">min_length</span><span class="pi">:</span> <span class="m">4</span> <span class="c1"># only warning</span>
+  <span class="na">max_length</span><span class="pi">:</span> <span class="c1"># warning and error</span>
+    <span class="na">warning</span><span class="pi">:</span> <span class="m">40</span>
+    <span class="na">error</span><span class="pi">:</span> <span class="m">50</span>
+  <span class="na">excluded</span><span class="pi">:</span> <span class="s">iPhone</span> <span class="c1"># excluded via string</span>
+  <span class="na">allowed_symbols</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">_"</span><span class="pi">]</span> <span class="c1"># these are allowed in type names</span>
+<span class="na">identifier_name</span><span class="pi">:</span>
+  <span class="na">min_length</span><span class="pi">:</span> <span class="c1"># only min_length</span>
+    <span class="na">error</span><span class="pi">:</span> <span class="m">4</span> <span class="c1"># only error</span>
+  <span class="na">excluded</span><span class="pi">:</span> <span class="c1"># excluded via string array</span>
+    <span class="pi">-</span> <span class="s">id</span>
+    <span class="pi">-</span> <span class="s">URL</span>
+    <span class="pi">-</span> <span class="s">GlobalAPIKey</span>
+<span class="na">reporter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">xcode"</span> <span class="c1"># reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown)</span>
+</code></pre>
+
+<p>You can also use environment variables in your configuration file,
+by using <code>${SOME_VARIABLE}</code> in a string.</p>
+<h4 id='defining-custom-rules' class='heading'>Defining Custom Rules</h4>
+
+<p>You can define custom regex-based rules in your configuration file using the
+following syntax:</p>
+<pre class="highlight yaml"><code><span class="na">custom_rules</span><span class="pi">:</span>
+  <span class="na">pirates_beat_ninjas</span><span class="pi">:</span> <span class="c1"># rule identifier</span>
+    <span class="na">included</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.*</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to include during linting. optional.</span>
+    <span class="na">excluded</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.*Test</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to exclude during linting. optional</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">Beat</span><span class="nv"> </span><span class="s">Ninjas"</span> <span class="c1"># rule name. optional.</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([n,N]inja)"</span> <span class="c1"># matching pattern</span>
+    <span class="na">capture_group</span><span class="pi">:</span> <span class="m">0</span> <span class="c1"># number of regex capture group to highlight the rule violation at. optional.</span>
+    <span class="na">match_kinds</span><span class="pi">:</span> <span class="c1"># SyntaxKinds to match. optional.</span>
+      <span class="pi">-</span> <span class="s">comment</span>
+      <span class="pi">-</span> <span class="s">identifier</span>
+    <span class="na">message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">better</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">ninjas."</span> <span class="c1"># violation message. optional.</span>
+    <span class="na">severity</span><span class="pi">:</span> <span class="s">error</span> <span class="c1"># violation severity. optional.</span>
+  <span class="na">no_hiding_in_strings</span><span class="pi">:</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([n,N]inja)"</span>
+    <span class="na">match_kinds</span><span class="pi">:</span> <span class="s">string</span>
+</code></pre>
+
+<p>This is what the output would look like:</p>
+
+<p><img src="assets/custom-rule.png" alt=""></p>
+
+<p>You can filter the matches by providing one or more <code>match_kinds</code>, which will
+reject matches that include syntax kinds that are not present in this list. Here
+are all the possible syntax kinds:</p>
+
+<ul>
+<li>argument</li>
+<li>attribute.builtin</li>
+<li>attribute.id</li>
+<li>buildconfig.id</li>
+<li>buildconfig.keyword</li>
+<li>comment</li>
+<li>comment.mark</li>
+<li>comment.url</li>
+<li>doccomment</li>
+<li>doccomment.field</li>
+<li>identifier</li>
+</ul><div class="aside aside-keyword">
+    <p class="aside-title">Keyword</p>
+    keyword
+
+</div><ul>
+<li>number</li>
+<li>objectliteral</li>
+<li>placeholder</li>
+<li>string</li>
+<li>string_interpolation_anchor</li>
+<li>typeidentifier</li>
+</ul>
+
+<p>If using custom rules alongside a whitelist, make sure to add <code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>whitelist_rules</code>.</p>
+<h4 id='nested-configurations' class='heading'>Nested Configurations</h4>
+
+<p>SwiftLint supports nesting configuration files for more granular control over
+the linting process.</p>
+
+<ul>
+<li>Include additional <code>.swiftlint.yml</code> files where necessary in your directory
+structure.</li>
+<li>Each file will be linted using the configuration file that is in its
+directory or at the deepest level of its parent directories. Otherwise the
+root configuration will be used.</li>
+<li><code>included</code> is ignored for nested configurations.</li>
+</ul>
+<h3 id='auto-correct' class='heading'>Auto-correct</h3>
+
+<p>SwiftLint can automatically correct certain violations. Files on disk are
+overwritten with a corrected version.</p>
+
+<p>Please make sure to have backups of these files before running
+<code>swiftlint autocorrect</code>, otherwise important data may be lost.</p>
+
+<p>Standard linting is disabled while correcting because of the high likelihood of
+violations (or their offsets) being incorrect after modifying a file while
+applying corrections.</p>
+<h3 id='analyze-experimental' class='heading'>Analyze (experimental)</h3>
+
+<p>The <em>experimental</em> <code>swiftlint analyze</code> command can lint Swift files using the
+full type-checked AST. The compiler log path containing the clean <code>swiftc</code> build
+command invocation (incremental builds will fail) must be passed to <code>analyze</code>
+via the <code>--compiler-log-path</code> flag.
+e.g. <code>--compiler-log-path /path/to/xcodebuild.log</code></p>
+
+<p>This can be obtained by running
+<code>xcodebuild -workspace {WORKSPACE}.xcworkspace -scheme {SCHEME} &gt; xcodebuild.log</code>
+with a clean <code>DerivedData</code> folder.</p>
+
+<p>This command and related code in SwiftLint is subject to substantial changes at
+any time while this feature is marked as experimental. Analyzer rules also tend
+to be considerably slower than lint rules.</p>
+<h2 id='license' class='heading'>License</h2>
+
+<p><a href="LICENSE">MIT licensed.</a></p>
+<h2 id='about' class='heading'>About</h2>
+
+<p><img src="assets/realm.png" width="184" /></p>
+
+<p>SwiftLint is maintained and funded by Realm Inc. The names and logos for
+Realm are trademarks of Realm Inc.</p>
+
+<p>We :heart: open source software!
+See <a href="https://github.com/realm">our other open source projects</a>,
+read <a href="https://realm.io/news">our blog</a>, or say hi on twitter
+(<a href="https://twitter.com/realm">@realm</a>).</p>
+
+<p><img src="assets/macstadium.png" width="184" /></p>
+
+<p>Our thanks to MacStadium for providing a Mac Mini to run our performance
+tests.</p>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2020 <a class="link" href="https://jpsim.com" target="_blank" rel="external">JP Simard</a> under MIT.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

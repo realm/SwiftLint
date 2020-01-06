@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Rules Directory  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="Rules Directory  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          SwiftLintFramework Docs
+        </a>
+         (2% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/realm/SwiftLint">
+            <img class="header-icon" src="img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="dash-feed://https%3A%2F%2Fjpsim%2Ecom%2FSwiftLint%2Fdocsets%2FSwiftLintFramework%2Exml">
+            <img class="header-icon" src="img/dash.png"/>
+            Install in Dash
+          </a>
+        </p>
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
+      <img class="carat" src="img/carat.png" />
+      Rules Directory  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Rules.html">Rules</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="rule-directory.html">Rule Directory</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/LinterCache.html">LinterCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/RuleStorage.html">RuleStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/SwiftLintFile.html">SwiftLintFile</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Global%20Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework14masterRuleListAA0eF0Vvp">masterRuleList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/AccessControlLevel.html">AccessControlLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ConfigurationError.html">ConfigurationError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ImplicitlyUnwrappedOptionalModeConfiguration.html">ImplicitlyUnwrappedOptionalModeConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleIdentifier.html">RuleIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleKind.html">RuleKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleListError.html">RuleListError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/StatementModeConfiguration.html">StatementModeConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/SwiftExpressionKind.html">SwiftExpressionKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ViolationSeverity.html">ViolationSeverity</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/FileManager.html">FileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/NSRegularExpression.html">NSRegularExpression</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/NSRegularExpression/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/SwiftDeclarationAttributeKind.html">SwiftDeclarationAttributeKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/SwiftDeclarationAttributeKind/ModifierGroup.html">– ModifierGroup</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/SyntaxKind.html">SyntaxKind</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedFatalError_4file4lines5NeverOSS_s12StaticStringVSutF">queuedFatalError(_:file:line:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework11queuedPrintyyxlF">queuedPrint(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedPrintErroryySSF">queuedPrintError(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework12reporterFrom10identifierAA8Reporter_pXpSS_tF">reporterFrom(identifier:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ASTRule.html">ASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/AnalyzerRule.html">AnalyzerRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17AnyCollectingRuleP">AnyCollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework21AutomaticTestableRuleP">AutomaticTestableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingCorrectableRule.html">CollectingCorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingRule.html">CollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CorrectableRule.html">CorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LintableFileManager.html">LintableFileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework9OptInRuleP">OptInRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Reporter.html">Reporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Rule.html">Rule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/RuleConfiguration.html">RuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17SourceKitFreeRuleP">SourceKitFreeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableASTRule.html">SubstitutionCorrectableASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableRule.html">SubstitutionCorrectableRule</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AnyObjectProtocolRule.html">AnyObjectProtocolRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ArrayInitRule.html">ArrayInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AttributesConfiguration.html">AttributesConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/AttributesRule.html">AttributesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/BlockBasedKVORule.html">BlockBasedKVORule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CSVReporter.html">CSVReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CheckstyleReporter.html">CheckstyleReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClassDelegateProtocolRule.html">ClassDelegateProtocolRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosingBraceRule.html">ClosingBraceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureBodyLengthRule.html">ClosureBodyLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureEndIndentationRule.html">ClosureEndIndentationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureParameterPositionRule.html">ClosureParameterPositionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ClosureSpacingRule.html">ClosureSpacingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectedLinter.html">CollectedLinter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectionAlignmentConfiguration.html">CollectionAlignmentConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectionAlignmentRule.html">CollectionAlignmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ColonConfiguration.html">ColonConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ColonRule.html">ColonRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CommaRule.html">CommaRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command.html">Command</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Action.html">– Action</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Modifier.html">– Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CompilerProtocolInitRule.html">CompilerProtocolInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConditionalReturnsOnNewlineConfiguration.html">ConditionalReturnsOnNewlineConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConditionalReturnsOnNewlineRule.html">ConditionalReturnsOnNewlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverFilterCountRule.html">ContainsOverFilterCountRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverFilterIsEmptyRule.html">ContainsOverFilterIsEmptyRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverFirstNotNilRule.html">ContainsOverFirstNotNilRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ContainsOverRangeNilComparisonRule.html">ContainsOverRangeNilComparisonRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ControlStatementRule.html">ControlStatementRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ConvenienceTypeRule.html">ConvenienceTypeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CustomRules.html">CustomRules</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CustomRulesConfiguration.html">CustomRulesConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CyclomaticComplexityConfiguration.html">CyclomaticComplexityConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CyclomaticComplexityRule.html">CyclomaticComplexityRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DeploymentTargetConfiguration.html">DeploymentTargetConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DeploymentTargetConfiguration/Version.html">– Version</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DeploymentTargetRule.html">DeploymentTargetRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscardedNotificationCenterObserverRule.html">DiscardedNotificationCenterObserverRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedDirectInitConfiguration.html">DiscouragedDirectInitConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedDirectInitRule.html">DiscouragedDirectInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedObjectLiteralRule.html">DiscouragedObjectLiteralRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedOptionalBooleanRule.html">DiscouragedOptionalBooleanRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DiscouragedOptionalCollectionRule.html">DiscouragedOptionalCollectionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DuplicateEnumCasesRule.html">DuplicateEnumCasesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DuplicateImportsRule.html">DuplicateImportsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DynamicInlineRule.html">DynamicInlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmojiReporter.html">EmojiReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyCollectionLiteralRule.html">EmptyCollectionLiteralRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyCountRule.html">EmptyCountRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyEnumArgumentsRule.html">EmptyEnumArgumentsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyParametersRule.html">EmptyParametersRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyParenthesesWithTrailingClosureRule.html">EmptyParenthesesWithTrailingClosureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyStringRule.html">EmptyStringRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmptyXCTestMethodRule.html">EmptyXCTestMethodRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EnumCaseAssociatedValuesLengthRule.html">EnumCaseAssociatedValuesLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExpiringTodoConfiguration.html">ExpiringTodoConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExpiringTodoConfiguration/DelimiterConfiguration.html">– DelimiterConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExpiringTodoRule.html">ExpiringTodoRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitACLRule.html">ExplicitACLRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitEnumRawValueRule.html">ExplicitEnumRawValueRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitInitRule.html">ExplicitInitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitSelfRule.html">ExplicitSelfRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitTopLevelACLRule.html">ExplicitTopLevelACLRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitTypeInterfaceConfiguration.html">ExplicitTypeInterfaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExplicitTypeInterfaceRule.html">ExplicitTypeInterfaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExtensionAccessModifierRule.html">ExtensionAccessModifierRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FallthroughRule.html">FallthroughRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FatalErrorMessageRule.html">FatalErrorMessageRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileHeaderConfiguration.html">FileHeaderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileHeaderRule.html">FileHeaderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileLengthRule.html">FileLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileLengthRuleConfiguration.html">FileLengthRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameConfiguration.html">FileNameConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameNoSpaceConfiguration.html">FileNameNoSpaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameNoSpaceRule.html">FileNameNoSpaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileNameRule.html">FileNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileTypesOrderConfiguration.html">FileTypesOrderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FileTypesOrderRule.html">FileTypesOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FirstWhereRule.html">FirstWhereRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FlatMapOverMapReduceRule.html">FlatMapOverMapReduceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForWhereRule.html">ForWhereRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForceCastRule.html">ForceCastRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForceTryRule.html">ForceTryRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ForceUnwrappingRule.html">ForceUnwrappingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionBodyLengthRule.html">FunctionBodyLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionDefaultParameterAtEndRule.html">FunctionDefaultParameterAtEndRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionParameterCountConfiguration.html">FunctionParameterCountConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FunctionParameterCountRule.html">FunctionParameterCountRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GenericTypeNameRule.html">GenericTypeNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GitHubActionsLoggingReporter.html">GitHubActionsLoggingReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/HTMLReporter.html">HTMLReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IdenticalOperandsRule.html">IdenticalOperandsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IdentifierNameRule.html">IdentifierNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitGetterRule.html">ImplicitGetterRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitReturnConfiguration.html">ImplicitReturnConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitReturnConfiguration/ReturnKind.html">– ReturnKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitReturnRule.html">ImplicitReturnRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitlyUnwrappedOptionalConfiguration.html">ImplicitlyUnwrappedOptionalConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ImplicitlyUnwrappedOptionalRule.html">ImplicitlyUnwrappedOptionalRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/InertDeferRule.html">InertDeferRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IsDisjointRule.html">IsDisjointRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JSONReporter.html">JSONReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JUnitReporter.html">JUnitReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JoinedDefaultParameterRule.html">JoinedDefaultParameterRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LargeTupleRule.html">LargeTupleRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LastWhereRule.html">LastWhereRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LeadingWhitespaceRule.html">LeadingWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyCGGeometryFunctionsRule.html">LegacyCGGeometryFunctionsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyConstantRule.html">LegacyConstantRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyConstructorRule.html">LegacyConstructorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyHashingRule.html">LegacyHashingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyMultipleRule.html">LegacyMultipleRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyNSGeometryFunctionsRule.html">LegacyNSGeometryFunctionsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LegacyRandomRule.html">LegacyRandomRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LetVarWhitespaceRule.html">LetVarWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LineLengthConfiguration.html">LineLengthConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LineLengthRule.html">LineLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LineLengthRuleOptions.html">LineLengthRuleOptions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Linter.html">Linter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LiteralExpressionEndIdentationRule.html">LiteralExpressionEndIdentationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Location.html">Location</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/LowerACLThanParentRule.html">LowerACLThanParentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MarkRule.html">MarkRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MarkdownReporter.html">MarkdownReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MissingDocsRule.html">MissingDocsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MissingDocsRuleConfiguration.html">MissingDocsRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ModifierOrderConfiguration.html">ModifierOrderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ModifierOrderRule.html">ModifierOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsBracketsRule.html">MultilineArgumentsBracketsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsConfiguration.html">MultilineArgumentsConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsConfiguration/FirstArgumentLocation.html">– FirstArgumentLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineArgumentsRule.html">MultilineArgumentsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineFunctionChainsRule.html">MultilineFunctionChainsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineLiteralBracketsRule.html">MultilineLiteralBracketsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineParametersBracketsRule.html">MultilineParametersBracketsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultilineParametersRule.html">MultilineParametersRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MultipleClosuresWithTrailingClosureRule.html">MultipleClosuresWithTrailingClosureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NSLocalizedStringKeyRule.html">NSLocalizedStringKeyRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NSLocalizedStringRequireBundleRule.html">NSLocalizedStringRequireBundleRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NSObjectPreferIsEqualRule.html">NSObjectPreferIsEqualRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NameConfiguration.html">NameConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NestingConfiguration.html">NestingConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NestingRule.html">NestingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NimbleOperatorRule.html">NimbleOperatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoExtensionAccessModifierRule.html">NoExtensionAccessModifierRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoFallthroughOnlyRule.html">NoFallthroughOnlyRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoGroupingExtensionRule.html">NoGroupingExtensionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NoSpaceInMethodCallRule.html">NoSpaceInMethodCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NotificationCenterDetachmentRule.html">NotificationCenterDetachmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NumberSeparatorConfiguration.html">NumberSeparatorConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/NumberSeparatorRule.html">NumberSeparatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ObjectLiteralConfiguration.html">ObjectLiteralConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ObjectLiteralRule.html">ObjectLiteralRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OpeningBraceRule.html">OpeningBraceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OperatorFunctionWhitespaceRule.html">OperatorFunctionWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OperatorUsageWhitespaceRule.html">OperatorUsageWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OptionalEnumCaseMatchingRule.html">OptionalEnumCaseMatchingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OverriddenSuperCallRule.html">OverriddenSuperCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OverrideInExtensionRule.html">OverrideInExtensionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/OverridenSuperCallConfiguration.html">OverridenSuperCallConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PatternMatchingKeywordsRule.html">PatternMatchingKeywordsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PreferSelfTypeOverTypeOfSelfRule.html">PreferSelfTypeOverTypeOfSelfRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrefixedConstantRuleConfiguration.html">PrefixedConstantRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrefixedTopLevelConstantRule.html">PrefixedTopLevelConstantRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateActionRule.html">PrivateActionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOutletRule.html">PrivateOutletRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOutletRuleConfiguration.html">PrivateOutletRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOverFilePrivateRule.html">PrivateOverFilePrivateRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateOverFilePrivateRuleConfiguration.html">PrivateOverFilePrivateRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateUnitTestConfiguration.html">PrivateUnitTestConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PrivateUnitTestRule.html">PrivateUnitTestRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProhibitedInterfaceBuilderRule.html">ProhibitedInterfaceBuilderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProhibitedSuperConfiguration.html">ProhibitedSuperConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProhibitedSuperRule.html">ProhibitedSuperRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ProtocolPropertyAccessorsOrderRule.html">ProtocolPropertyAccessorsOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/QuickDiscouragedCallRule.html">QuickDiscouragedCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/QuickDiscouragedFocusedTestRule.html">QuickDiscouragedFocusedTestRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/QuickDiscouragedPendingTestRule.html">QuickDiscouragedPendingTestRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RawValueForCamelCasedCodableEnumRule.html">RawValueForCamelCasedCodableEnumRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReduceBooleanRule.html">ReduceBooleanRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReduceIntoRule.html">ReduceIntoRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantDiscardableLetRule.html">RedundantDiscardableLetRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantNilCoalescingRule.html">RedundantNilCoalescingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantObjcAttributeRule.html">RedundantObjcAttributeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantOptionalInitializationRule.html">RedundantOptionalInitializationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantSetAccessControlRule.html">RedundantSetAccessControlRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantStringEnumValueRule.html">RedundantStringEnumValueRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantTypeAnnotationRule.html">RedundantTypeAnnotationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RedundantVoidReturnRule.html">RedundantVoidReturnRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RegexConfiguration.html">RegexConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Region.html">Region</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RequiredDeinitRule.html">RequiredDeinitRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RequiredEnumCaseRule.html">RequiredEnumCaseRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RequiredEnumCaseRuleConfiguration.html">RequiredEnumCaseRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReturnArrowWhitespaceRule.html">ReturnArrowWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleList.html">RuleList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleParameter.html">RuleParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SeverityConfiguration.html">SeverityConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SeverityLevelsConfiguration.html">SeverityLevelsConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ShorthandOperatorRule.html">ShorthandOperatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SingleTestClassRule.html">SingleTestClassRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SonarQubeReporter.html">SonarQubeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SortedFirstLastRule.html">SortedFirstLastRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SortedImportsRule.html">SortedImportsRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SourceKittenDictionary.html">SourceKittenDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StatementConfiguration.html">StatementConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StatementPositionRule.html">StatementPositionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StaticOperatorRule.html">StaticOperatorRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StrictFilePrivateRule.html">StrictFilePrivateRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StrongIBOutletRule.html">StrongIBOutletRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StyleViolation.html">StyleViolation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SuperfluousDisableCommandRule.html">SuperfluousDisableCommandRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxMap.html">SwiftLintSyntaxMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxToken.html">SwiftLintSyntaxToken</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftVersion.html">SwiftVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwitchCaseAlignmentConfiguration.html">SwitchCaseAlignmentConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwitchCaseAlignmentRule.html">SwitchCaseAlignmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwitchCaseOnNewlineRule.html">SwitchCaseOnNewlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SyntacticSugarRule.html">SyntacticSugarRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TodoRule.html">TodoRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ToggleBoolRule.html">ToggleBoolRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingClosureConfiguration.html">TrailingClosureConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingClosureRule.html">TrailingClosureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingCommaConfiguration.html">TrailingCommaConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingCommaRule.html">TrailingCommaRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingNewlineRule.html">TrailingNewlineRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingSemicolonRule.html">TrailingSemicolonRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingWhitespaceConfiguration.html">TrailingWhitespaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TrailingWhitespaceRule.html">TrailingWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeBodyLengthRule.html">TypeBodyLengthRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeContentsOrderConfiguration.html">TypeContentsOrderConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeContentsOrderRule.html">TypeContentsOrderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TypeNameRule.html">TypeNameRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnavailableFunctionRule.html">UnavailableFunctionRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnneededBreakInSwitchRule.html">UnneededBreakInSwitchRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnneededParenthesesInClosureArgumentRule.html">UnneededParenthesesInClosureArgumentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnownedVariableCaptureRule.html">UnownedVariableCaptureRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UntypedErrorInCatchRule.html">UntypedErrorInCatchRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedCaptureListRule.html">UnusedCaptureListRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedClosureParameterRule.html">UnusedClosureParameterRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedControlFlowLabelRule.html">UnusedControlFlowLabelRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedDeclarationConfiguration.html">UnusedDeclarationConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedDeclarationRule.html">UnusedDeclarationRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedDeclarationRule.html#/s:18SwiftLintFramework21UnusedDeclarationRuleV8FileUSRsV">– FileUSRs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedEnumeratedRule.html">UnusedEnumeratedRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedImportRule.html">UnusedImportRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedOptionalBindingConfiguration.html">UnusedOptionalBindingConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedOptionalBindingRule.html">UnusedOptionalBindingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UnusedSetterValueRule.html">UnusedSetterValueRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ValidIBInspectableRule.html">ValidIBInspectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Version.html">Version</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalParameterAlignmentOnCallRule.html">VerticalParameterAlignmentOnCallRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalParameterAlignmentRule.html">VerticalParameterAlignmentRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceBetweenCasesRule.html">VerticalWhitespaceBetweenCasesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceClosingBracesRule.html">VerticalWhitespaceClosingBracesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceConfiguration.html">VerticalWhitespaceConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceOpeningBracesRule.html">VerticalWhitespaceOpeningBracesRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VerticalWhitespaceRule.html">VerticalWhitespaceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/VoidReturnRule.html">VoidReturnRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/WeakDelegateRule.html">WeakDelegateRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XCTFailMessageRule.html">XCTFailMessageRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XCTSpecificMatcherRule.html">XCTSpecificMatcherRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XcodeReporter.html">XcodeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/YamlParser.html">YamlParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/YodaConditionRule.html">YodaConditionRule</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='rules' class='heading'>Rules</h1>
+
+<ul>
+<li><a href="anyobject_protocol.html">AnyObject Protocol</a></li>
+<li><a href="array_init.html">Array Init</a></li>
+<li><a href="attributes.html">Attributes</a></li>
+<li><a href="block_based_kvo.html">Block Based KVO</a></li>
+<li><a href="class_delegate_protocol.html">Class Delegate Protocol</a></li>
+<li><a href="closing_brace.html">Closing Brace Spacing</a></li>
+<li><a href="closure_body_length.html">Closure Body Length</a></li>
+<li><a href="closure_end_indentation.html">Closure End Indentation</a></li>
+<li><a href="closure_parameter_position.html">Closure Parameter Position</a></li>
+<li><a href="closure_spacing.html">Closure Spacing</a></li>
+<li><a href="collection_alignment.html">Collection Element Alignment</a></li>
+<li><a href="colon.html">Colon</a></li>
+<li><a href="comma.html">Comma Spacing</a></li>
+<li><a href="compiler_protocol_init.html">Compiler Protocol Init</a></li>
+<li><a href="conditional_returns_on_newline.html">Conditional Returns on Newline</a></li>
+<li><a href="contains_over_filter_count.html">Contains Over Filter Count</a></li>
+<li><a href="contains_over_filter_is_empty.html">Contains Over Filter Is Empty</a></li>
+<li><a href="contains_over_first_not_nil.html">Contains over first not nil</a></li>
+<li><a href="contains_over_range_nil_comparison.html">Contains over range(of:) comparison to nil</a></li>
+<li><a href="control_statement.html">Control Statement</a></li>
+<li><a href="convenience_type.html">Convenience Type</a></li>
+<li><a href="custom_rules.html">Custom Rules</a></li>
+<li><a href="cyclomatic_complexity.html">Cyclomatic Complexity</a></li>
+<li><a href="deployment_target.html">Deployment Target</a></li>
+<li><a href="discarded_notification_center_observer.html">Discarded Notification Center Observer</a></li>
+<li><a href="discouraged_direct_init.html">Discouraged Direct Initialization</a></li>
+<li><a href="discouraged_object_literal.html">Discouraged Object Literal</a></li>
+<li><a href="discouraged_optional_boolean.html">Discouraged Optional Boolean</a></li>
+<li><a href="discouraged_optional_collection.html">Discouraged Optional Collection</a></li>
+<li><a href="duplicate_enum_cases.html">Duplicate Enum Cases</a></li>
+<li><a href="duplicate_imports.html">Duplicate Imports</a></li>
+<li><a href="dynamic_inline.html">Dynamic Inline</a></li>
+<li><a href="empty_collection_literal.html">Empty Collection Literal</a></li>
+<li><a href="empty_count.html">Empty Count</a></li>
+<li><a href="empty_enum_arguments.html">Empty Enum Arguments</a></li>
+<li><a href="empty_parameters.html">Empty Parameters</a></li>
+<li><a href="empty_parentheses_with_trailing_closure.html">Empty Parentheses with Trailing Closure</a></li>
+<li><a href="empty_string.html">Empty String</a></li>
+<li><a href="empty_xctest_method.html">Empty XCTest Method</a></li>
+<li><a href="enum_case_associated_values_count.html">Enum Case Associated Values Count</a></li>
+<li><a href="expiring_todo.html">ExpiringTodo</a></li>
+<li><a href="explicit_acl.html">Explicit ACL</a></li>
+<li><a href="explicit_enum_raw_value.html">Explicit Enum Raw Value</a></li>
+<li><a href="explicit_init.html">Explicit Init</a></li>
+<li><a href="explicit_self.html">Explicit Self</a></li>
+<li><a href="explicit_top_level_acl.html">Explicit Top Level ACL</a></li>
+<li><a href="explicit_type_interface.html">Explicit Type Interface</a></li>
+<li><a href="extension_access_modifier.html">Extension Access Modifier</a></li>
+<li><a href="fallthrough.html">Fallthrough</a></li>
+<li><a href="fatal_error_message.html">Fatal Error Message</a></li>
+<li><a href="file_header.html">File Header</a></li>
+<li><a href="file_length.html">File Line Length</a></li>
+<li><a href="file_name.html">File Name</a></li>
+<li><a href="file_name_no_space.html">File Name No Space</a></li>
+<li><a href="file_types_order.html">File Types Order</a></li>
+<li><a href="first_where.html">First Where</a></li>
+<li><a href="flatmap_over_map_reduce.html">FlatMap over map and reduce</a></li>
+<li><a href="for_where.html">For Where</a></li>
+<li><a href="force_cast.html">Force Cast</a></li>
+<li><a href="force_try.html">Force Try</a></li>
+<li><a href="force_unwrapping.html">Force Unwrapping</a></li>
+<li><a href="function_body_length.html">Function Body Length</a></li>
+<li><a href="function_default_parameter_at_end.html">Function Default Parameter at End</a></li>
+<li><a href="function_parameter_count.html">Function Parameter Count</a></li>
+<li><a href="generic_type_name.html">Generic Type Name</a></li>
+<li><a href="identical_operands.html">Identical Operands</a></li>
+<li><a href="identifier_name.html">Identifier Name</a></li>
+<li><a href="implicit_getter.html">Implicit Getter</a></li>
+<li><a href="implicit_return.html">Implicit Return</a></li>
+<li><a href="implicitly_unwrapped_optional.html">Implicitly Unwrapped Optional</a></li>
+<li><a href="inert_defer.html">Inert Defer</a></li>
+<li><a href="is_disjoint.html">Is Disjoint</a></li>
+<li><a href="joined_default_parameter.html">Joined Default Parameter</a></li>
+<li><a href="large_tuple.html">Large Tuple</a></li>
+<li><a href="last_where.html">Last Where</a></li>
+<li><a href="leading_whitespace.html">Leading Whitespace</a></li>
+<li><a href="legacy_cggeometry_functions.html">Legacy CGGeometry Functions</a></li>
+<li><a href="legacy_constant.html">Legacy Constant</a></li>
+<li><a href="legacy_constructor.html">Legacy Constructor</a></li>
+<li><a href="legacy_hashing.html">Legacy Hashing</a></li>
+<li><a href="legacy_multiple.html">Legacy Multiple</a></li>
+<li><a href="legacy_nsgeometry_functions.html">Legacy NSGeometry Functions</a></li>
+<li><a href="legacy_random.html">Legacy Random</a></li>
+<li><a href="let_var_whitespace.html">Variable Declaration Whitespace</a></li>
+<li><a href="line_length.html">Line Length</a></li>
+<li><a href="literal_expression_end_indentation.html">Literal Expression End Indentation</a></li>
+<li><a href="lower_acl_than_parent.html">Lower ACL than parent</a></li>
+<li><a href="mark.html">Mark</a></li>
+<li><a href="missing_docs.html">Missing Docs</a></li>
+<li><a href="modifier_order.html">Modifier Order</a></li>
+<li><a href="multiline_arguments.html">Multiline Arguments</a></li>
+<li><a href="multiline_arguments_brackets.html">Multiline Arguments Brackets</a></li>
+<li><a href="multiline_function_chains.html">Multiline Function Chains</a></li>
+<li><a href="multiline_literal_brackets.html">Multiline Literal Brackets</a></li>
+<li><a href="multiline_parameters.html">Multiline Parameters</a></li>
+<li><a href="multiline_parameters_brackets.html">Multiline Parameters Brackets</a></li>
+<li><a href="multiple_closures_with_trailing_closure.html">Multiple Closures with Trailing Closure</a></li>
+<li><a href="nesting.html">Nesting</a></li>
+<li><a href="nimble_operator.html">Nimble Operator</a></li>
+<li><a href="no_extension_access_modifier.html">No Extension Access Modifier</a></li>
+<li><a href="no_fallthrough_only.html">No Fallthrough Only</a></li>
+<li><a href="no_grouping_extension.html">No Grouping Extension</a></li>
+<li><a href="no_space_in_method_call.html">No Space in Method Call</a></li>
+<li><a href="notification_center_detachment.html">Notification Center Detachment</a></li>
+<li><a href="nslocalizedstring_key.html">NSLocalizedString Key</a></li>
+<li><a href="nslocalizedstring_require_bundle.html">NSLocalizedString Require Bundle</a></li>
+<li><a href="nsobject_prefer_isequal.html">NSObject Prefer isEqual</a></li>
+<li><a href="number_separator.html">Number Separator</a></li>
+<li><a href="object_literal.html">Object Literal</a></li>
+<li><a href="opening_brace.html">Opening Brace Spacing</a></li>
+<li><a href="operator_usage_whitespace.html">Operator Usage Whitespace</a></li>
+<li><a href="operator_whitespace.html">Operator Function Whitespace</a></li>
+<li><a href="optional_enum_case_matching.html">Optional Enum Case Match</a></li>
+<li><a href="overridden_super_call.html">Overridden methods call super</a></li>
+<li><a href="override_in_extension.html">Override in Extension</a></li>
+<li><a href="pattern_matching_keywords.html">Pattern Matching Keywords</a></li>
+<li><a href="prefer_self_type_over_type_of_self.html">Prefer Self Type Over Type of Self</a></li>
+<li><a href="prefixed_toplevel_constant.html">Prefixed Top-Level Constant</a></li>
+<li><a href="private_action.html">Private Actions</a></li>
+<li><a href="private_outlet.html">Private Outlets</a></li>
+<li><a href="private_over_fileprivate.html">Private over fileprivate</a></li>
+<li><a href="private_unit_test.html">Private Unit Test</a></li>
+<li><a href="prohibited_interface_builder.html">Prohibited Interface Builder</a></li>
+<li><a href="prohibited_super_call.html">Prohibited calls to super</a></li>
+<li><a href="protocol_property_accessors_order.html">Protocol Property Accessors Order</a></li>
+<li><a href="quick_discouraged_call.html">Quick Discouraged Call</a></li>
+<li><a href="quick_discouraged_focused_test.html">Quick Discouraged Focused Test</a></li>
+<li><a href="quick_discouraged_pending_test.html">Quick Discouraged Pending Test</a></li>
+<li><a href="raw_value_for_camel_cased_codable_enum.html">Raw Value For Camel Cased Codable Enum</a></li>
+<li><a href="reduce_boolean.html">Reduce Boolean</a></li>
+<li><a href="reduce_into.html">Reduce Into</a></li>
+<li><a href="redundant_discardable_let.html">Redundant Discardable Let</a></li>
+<li><a href="redundant_nil_coalescing.html">Redundant Nil Coalescing</a></li>
+<li><a href="redundant_objc_attribute.html">Redundant @objc Attribute</a></li>
+<li><a href="redundant_optional_initialization.html">Redundant Optional Initialization</a></li>
+<li><a href="redundant_set_access_control.html">Redundant Set Access Control Rule</a></li>
+<li><a href="redundant_string_enum_value.html">Redundant String Enum Value</a></li>
+<li><a href="redundant_type_annotation.html">Redundant Type Annotation</a></li>
+<li><a href="redundant_void_return.html">Redundant Void Return</a></li>
+<li><a href="required_deinit.html">Required Deinit</a></li>
+<li><a href="required_enum_case.html">Required Enum Case</a></li>
+<li><a href="return_arrow_whitespace.html">Returning Whitespace</a></li>
+<li><a href="shorthand_operator.html">Shorthand Operator</a></li>
+<li><a href="single_test_class.html">Single Test Class</a></li>
+<li><a href="sorted_first_last.html">Min or Max over Sorted First or Last</a></li>
+<li><a href="sorted_imports.html">Sorted Imports</a></li>
+<li><a href="statement_position.html">Statement Position</a></li>
+<li><a href="static_operator.html">Static Operator</a></li>
+<li><a href="strict_fileprivate.html">Strict fileprivate</a></li>
+<li><a href="strong_iboutlet.html">Strong IBOutlet</a></li>
+<li><a href="superfluous_disable_command.html">Superfluous Disable Command</a></li>
+<li><a href="switch_case_alignment.html">Switch and Case Statement Alignment</a></li>
+<li><a href="switch_case_on_newline.html">Switch Case on Newline</a></li>
+<li><a href="syntactic_sugar.html">Syntactic Sugar</a></li>
+<li><a href="todo.html">Todo</a></li>
+<li><a href="toggle_bool.html">Toggle Bool</a></li>
+<li><a href="trailing_closure.html">Trailing Closure</a></li>
+<li><a href="trailing_comma.html">Trailing Comma</a></li>
+<li><a href="trailing_newline.html">Trailing Newline</a></li>
+<li><a href="trailing_semicolon.html">Trailing Semicolon</a></li>
+<li><a href="trailing_whitespace.html">Trailing Whitespace</a></li>
+<li><a href="type_body_length.html">Type Body Length</a></li>
+<li><a href="type_contents_order.html">Type Contents Order</a></li>
+<li><a href="type_name.html">Type Name</a></li>
+<li><a href="unavailable_function.html">Unavailable Function</a></li>
+<li><a href="unneeded_break_in_switch.html">Unneeded Break in Switch</a></li>
+<li><a href="unneeded_parentheses_in_closure_argument.html">Unneeded Parentheses in Closure Argument</a></li>
+<li><a href="unowned_variable_capture.html">Unowned Variable Capture</a></li>
+<li><a href="untyped_error_in_catch.html">Untyped Error in Catch</a></li>
+<li><a href="unused_capture_list.html">Unused Capture List</a></li>
+<li><a href="unused_closure_parameter.html">Unused Closure Parameter</a></li>
+<li><a href="unused_control_flow_label.html">Unused Control Flow Label</a></li>
+<li><a href="unused_declaration.html">Unused Declaration</a></li>
+<li><a href="unused_enumerated.html">Unused Enumerated</a></li>
+<li><a href="unused_import.html">Unused Import</a></li>
+<li><a href="unused_optional_binding.html">Unused Optional Binding</a></li>
+<li><a href="unused_setter_value.html">Unused Setter Value</a></li>
+<li><a href="valid_ibinspectable.html">Valid IBInspectable</a></li>
+<li><a href="vertical_parameter_alignment.html">Vertical Parameter Alignment</a></li>
+<li><a href="vertical_parameter_alignment_on_call.html">Vertical Parameter Alignment On Call</a></li>
+<li><a href="vertical_whitespace.html">Vertical Whitespace</a></li>
+<li><a href="vertical_whitespace_between_cases.html">Vertical Whitespace Between Cases</a></li>
+<li><a href="vertical_whitespace_closing_braces.html">Vertical Whitespace before Closing Braces</a></li>
+<li><a href="vertical_whitespace_opening_braces.html">Vertical Whitespace after Opening Braces</a></li>
+<li><a href="void_return.html">Void Return</a></li>
+<li><a href="weak_delegate.html">Weak Delegate</a></li>
+<li><a href="xct_specific_matcher.html">XCTest Specific Matcher</a></li>
+<li><a href="xctfail_message.html">XCTFail Message</a></li>
+<li><a href="yoda_condition.html">Yoda condition rule</a></li>
+</ul>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2020 <a class="link" href="https://jpsim.com" target="_blank" rel="external">JP Simard</a> under MIT.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

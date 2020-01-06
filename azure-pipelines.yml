@@ -113,7 +113,9 @@ jobs:
       displayName: Run swiftlint generate-docs
     - script: bundle install --path vendor/bundle
       displayName: bundle install
-    - script: bundle exec jazzy
+    - script: sourcekitten doc --spm-module SwiftLintFramework > docs.json
+      displayName: Generate documentation json
+    - script: bundle exec jazzy --sourcekitten-sourcefile docs.json
       displayName: Run jazzy
     - task: PublishPipelineArtifact@0
       inputs:

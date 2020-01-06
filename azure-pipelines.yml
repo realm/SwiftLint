@@ -103,3 +103,19 @@ jobs:
       displayName: Post-cache SwiftLint Run
     - script: make test_tsan
       displayName: Test With TSan
+
+- job: jazzy
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  container: norionomura/jazzy:0.13.0_swift-5.1.3
+  steps:
+    - script: swift run swiftlint generate-docs
+      displayName: Run swiftlint generate-docs
+    - script: bundle install --path vendor/bundle
+      displayName: bundle install
+    - script: bundle exec jazzy
+      displayName: Run jazzy
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: 'API Docs'
+        targetPath: 'docs'

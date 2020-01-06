@@ -26,6 +26,11 @@
   of the location marker for violating code.  
   [pyrtsa](https://github.com/pyrtsa)
 
+* Add `orphaned_doc_comment` rule to catch doc comments that are not attached
+  to any declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2989](https://github.com/realm/SwiftLint/issues/2989)
+
 #### Bug Fixes
 
 * None.

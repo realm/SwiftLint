@@ -115,6 +115,7 @@ public let masterRuleList = RuleList(rules: [
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
     OptionalEnumCaseMatchingRule.self,
+    OrphanedDocCommentRule.self,
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,

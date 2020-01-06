@@ -114,6 +114,7 @@
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Optional Enum Case Match](#optional-enum-case-match)
+* [Orphaned Doc Comment](#orphaned-doc-comment)
 * [Overridden methods call super](#overridden-methods-call-super)
 * [Override in Extension](#override-in-extension)
 * [Pattern Matching Keywords](#pattern-matching-keywords)
@@ -15799,6 +15800,46 @@ switch foo {
  case .baz: break
  default: break
 }
+```
+
+</details>
+
+
+
+## Orphaned Doc Comment
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`orphaned_doc_comment` | Enabled | No | lint | No | 4.1.0 
+
+A doc comment should be attached to a declaration.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+/// My great property
+var myGreatProperty: String!
+```
+
+```swift
+//////////////////////////////////////
+//
+// Copyright header.
+//
+//////////////////////////////////////
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓/// My great property
+// Not a doc string
+var myGreatProperty: String!
 ```
 
 </details>

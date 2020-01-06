@@ -20,4 +20,8 @@ class RulesTests: XCTestCase {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)
     }
+
+    func testOrphanedDocComment() {
+        verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
+    }
 }

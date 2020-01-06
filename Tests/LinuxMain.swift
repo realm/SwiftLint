@@ -244,7 +244,8 @@ extension CustomRulesTests {
         ("testLocalDisableCustomRuleWithMultipleRules", testLocalDisableCustomRuleWithMultipleRules),
         ("testCustomRulesIncludedDefault", testCustomRulesIncludedDefault),
         ("testCustomRulesIncludedExcludesFile", testCustomRulesIncludedExcludesFile),
-        ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile)
+        ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile),
+        ("testCustomRulesCaptureGroup", testCustomRulesCaptureGroup)
     ]
 }
 
@@ -699,6 +700,7 @@ extension IndentationWidthRuleTests {
         ("testIndentationLength", testIndentationLength),
         ("testUnindentation", testUnindentation),
         ("testEmptyLinesBetween", testEmptyLinesBetween),
+        ("testsBrackets", testsBrackets),
         ("testCommentLines", testCommentLines),
         ("testDuplicateWarningAvoidanceMechanism", testDuplicateWarningAvoidanceMechanism)
     ]

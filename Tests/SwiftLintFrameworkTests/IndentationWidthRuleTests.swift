@@ -2,7 +2,7 @@
 import XCTest
 
 class IndentationWidthRuleTests: XCTestCase {
-    // MARK: Triggering Examples
+    // MARK: Examples
     /// It's not okay to have the first line indented.
     func testFirstLineIndentation() {
         assert1Violation(in: "    firstLine")
@@ -85,6 +85,28 @@ class IndentationWidthRuleTests: XCTestCase {
         assert1Violation(in: "firstLine\n\tsecondLine\n\n            fourthLine")
         assert1Violation(in: "firstLine\n\tsecondLine\n \n            fourthLine")
         assert1Violation(in: "firstLine\n\tsecondLine\n           \n            fourthLine")
+    }
+
+    func testsBrackets() {
+        assertNoViolation(
+            in: "firstLine\n    [\n        .thirdLine\n    ]\nfifthLine",
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in: "firstLine\n    [\n        .thirdLine\n    ]\nfifthLine",
+            includeComments: false
+        )
+
+        assertNoViolation(
+            in: "firstLine\n    (\n        .thirdLine\n    )\nfifthLine",
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in: "firstLine\n    (\n        .thirdLine\n    )\nfifthLine",
+            includeComments: false
+        )
     }
 
     /// It's okay to have comments not following the indentation pattern iff the configuration allows this.

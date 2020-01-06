@@ -51,15 +51,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         var previousLineIndentations: [Indentation] = []
 
         for line in file.lines {
+            // Skip line if it's a whitespace-only line
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            if line.content.count == indentationCharacterCount { continue }
 
-            if configuration.includeComments {
-                // Skip line if it's a whitespace-only line
-                if line.content.count == indentationCharacterCount { continue }
-            } else {
-                // Skip line if it only has whitespaces or is a part of a comment
+            if !configuration.includeComments {
+                // Skip line if it's part of a comment
                 let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
-                if SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
+                if !syntaxKindsInLine.isEmpty && SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
             }
 
             // Get space and tab count in prefix

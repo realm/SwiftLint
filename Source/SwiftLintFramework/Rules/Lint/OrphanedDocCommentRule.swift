@@ -23,11 +23,25 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
             // Copyright header.
             //
             //////////////////////////////////////
+            """,
+            """
+            /// Look here for more info: https://github.com.
+            var myGreatProperty: String!
+            """,
+            """
+            /// Look here for more info:
+            /// https://github.com.
+            var myGreatProperty: String!
             """
         ],
         triggeringExamples: [
             """
             ↓/// My great property
+            // Not a doc string
+            var myGreatProperty: String!
+            """,
+            """
+            ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
             """

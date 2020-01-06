@@ -15832,12 +15832,29 @@ var myGreatProperty: String!
 //////////////////////////////////////
 ```
 
+```swift
+/// Look here for more info: https://github.com.
+var myGreatProperty: String!
+```
+
+```swift
+/// Look here for more info:
+/// https://github.com.
+var myGreatProperty: String!
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
 ↓/// My great property
+// Not a doc string
+var myGreatProperty: String!
+```
+
+```swift
+↓/// Look here for more info: https://github.com.
 // Not a doc string
 var myGreatProperty: String!
 ```

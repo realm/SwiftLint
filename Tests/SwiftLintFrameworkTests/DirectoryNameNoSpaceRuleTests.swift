@@ -8,15 +8,14 @@ private let fixturesDirectory = #file.bridge()
 
 class DirectoryNameNoSpaceRuleTests: XCTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
-                          parentDirectory: String? = nil) throws -> [StyleViolation] {
+                          parentDirectory: String = "DirectoryNameNoSpaceRuleFixtures") throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: DirectoryNameNoSpaceRule
         if let excluded = excludedOverride {
-            rule = try DirectoryNameNoSpaceRule(configuration: ["excluded": excluded])
-        } else if let parentDirectory = parentDirectory {
-            rule = try DirectoryNameNoSpaceRule(configuration: ["parent_directory": parentDirectory])
+            rule = try DirectoryNameNoSpaceRule(configuration: ["excluded": excluded,
+                                                                "parent_directory": parentDirectory])
         } else {
-            rule = DirectoryNameNoSpaceRule()
+            rule = try DirectoryNameNoSpaceRule(configuration: ["parent_directory": parentDirectory])
         }
 
         return rule.validate(file: file)

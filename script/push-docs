@@ -4,8 +4,8 @@ mkdir ~/.ssh && mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
 chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
 ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-local source_sha="$(git rev-parse HEAD)"
-local user="swiftlintbot@jpsim.com"
+source_sha="$(git rev-parse HEAD)"
+user="swiftlintbot@jpsim.com"
 git config --global user.email "$user"
 git config --global user.name "$user"
 git clone "https://github.com/realm/SwiftLint.git" out

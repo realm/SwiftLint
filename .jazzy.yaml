@@ -1,7 +1,7 @@
 module: SwiftLintFramework
 author: JP Simard
 author_url: https://jpsim.com
-root_url: https://jpsim.com/SwiftLint/
+root_url: https://realm.github.io/SwiftLint/
 github_url: https://github.com/realm/SwiftLint
 github_file_prefix: https://github.com/realm/SwiftLint/tree/master
 swift_build_tool: spm

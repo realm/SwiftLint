@@ -136,6 +136,11 @@ publish:
 	pod trunk push SwiftLintFramework.podspec
 	pod trunk push SwiftLint.podspec
 
+docs:
+	swift run swiftlint generate-docs
+	bundle install --path vendor/bundle
+	bundle exec jazzy
+
 get_version:
 	@echo $(VERSION_STRING)
 

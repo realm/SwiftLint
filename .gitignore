@@ -49,6 +49,8 @@ SwiftLintFramework.framework.zip
 benchmark_*
 portable_swiftlint.zip
 osscheck/
+docs/
+rule_docs/
 
 # Swift Package Manager
 #

@@ -10,7 +10,7 @@ public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            "\(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
+            ", \(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
     }
 
     public init(warning: Int, error: Int?, ignoreCommentOnlyLines: Bool = false) {

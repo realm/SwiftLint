@@ -7,8 +7,8 @@ private let fixturesDirectory = #file.bridge()
     .appendingPathComponent("Resources/DirectoryNameNoSpaceRuleFixtures")
 
 class DirectoryNameNoSpaceRuleTests: XCTestCase {
-    private func validate(fileName: String, excludedOverride: [String]? = nil,
-                          parentDirectory: String = "DirectoryNameNoSpaceRuleFixtures") throws -> [StyleViolation] {
+    private func validate(fileName: String, parentDirectory: String = "DirectoryNameNoSpaceRuleFixtures",
+                          excludedOverride: [String]? = nil) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: DirectoryNameNoSpaceRule
         if let excluded = excludedOverride {

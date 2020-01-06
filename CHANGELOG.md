@@ -30,6 +30,11 @@
   to any declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2989](https://github.com/realm/SwiftLint/issues/2989)
+  
+* Add new indentation opt-in rule (`indentation_width`) checking for
+  super-basic additive indentation pattern.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#227](https://github.com/realm/SwiftLint/issues/227)
 
 #### Bug Fixes
 

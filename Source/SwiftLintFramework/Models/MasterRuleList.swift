@@ -72,6 +72,7 @@ public let masterRuleList = RuleList(rules: [
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
+    IndentationWidthRule.self,
     InertDeferRule.self,
     IsDisjointRule.self,
     JoinedDefaultParameterRule.self,

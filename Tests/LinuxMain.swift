@@ -244,7 +244,8 @@ extension CustomRulesTests {
         ("testLocalDisableCustomRuleWithMultipleRules", testLocalDisableCustomRuleWithMultipleRules),
         ("testCustomRulesIncludedDefault", testCustomRulesIncludedDefault),
         ("testCustomRulesIncludedExcludesFile", testCustomRulesIncludedExcludesFile),
-        ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile)
+        ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile),
+        ("testCustomRulesCaptureGroup", testCustomRulesCaptureGroup)
     ]
 }
 
@@ -687,6 +688,21 @@ extension ImplicitlyUnwrappedOptionalRuleTests {
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
         ("testImplicitlyUnwrappedOptionalRuleDefaultConfiguration", testImplicitlyUnwrappedOptionalRuleDefaultConfiguration),
         ("testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode", testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode)
+    ]
+}
+
+extension IndentationWidthRuleTests {
+    static var allTests: [(String, (IndentationWidthRuleTests) -> () throws -> Void)] = [
+        ("testFirstLineIndentation", testFirstLineIndentation),
+        ("testMixedTabSpaceIndentation", testMixedTabSpaceIndentation),
+        ("testMixedTabsAndSpacesIndentation", testMixedTabsAndSpacesIndentation),
+        ("testKeepingIndentation", testKeepingIndentation),
+        ("testIndentationLength", testIndentationLength),
+        ("testUnindentation", testUnindentation),
+        ("testEmptyLinesBetween", testEmptyLinesBetween),
+        ("testsBrackets", testsBrackets),
+        ("testCommentLines", testCommentLines),
+        ("testDuplicateWarningAvoidanceMechanism", testDuplicateWarningAvoidanceMechanism)
     ]
 }
 
@@ -1711,6 +1727,7 @@ XCTMain([
     testCase(ImplicitReturnRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
+    testCase(IndentationWidthRuleTests.allTests),
     testCase(InertDeferRuleTests.allTests),
     testCase(IntegrationTests.allTests),
     testCase(IsDisjointRuleTests.allTests),

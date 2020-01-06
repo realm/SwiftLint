@@ -243,6 +243,9 @@
 		C946FECB1EAE67EE007DD778 /* LetVarWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */; };
 		C9802F2F1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9802F2E1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift */; };
 		CC26ED07204DEB510013BBBC /* RuleIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC26ED05204DE86E0013BBBC /* RuleIdentifier.swift */; };
+		CC6D28592292F0380052B682 /* IndentationWidthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D28572292EF460052B682 /* IndentationWidthRule.swift */; };
+		CC6D285B2292F0600052B682 /* IndentationWidthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */; };
+		CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */; };
 		CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD8B87720559C4A00B75847 /* DisableAllTests.swift */; };
 		CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -742,6 +745,9 @@
 		C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LetVarWhitespaceRule.swift; sourceTree = "<group>"; };
 		C9802F2E1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaRuleTests.swift; sourceTree = "<group>"; };
 		CC26ED05204DE86E0013BBBC /* RuleIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleIdentifier.swift; sourceTree = "<group>"; };
+		CC6D28572292EF460052B682 /* IndentationWidthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRule.swift; sourceTree = "<group>"; usesTabs = 0; };
+		CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthConfiguration.swift; sourceTree = "<group>"; };
+		CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentationWidthRuleTests.swift; sourceTree = "<group>"; };
 		CCD8B87720559C4A00B75847 /* DisableAllTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisableAllTests.swift; sourceTree = "<group>"; };
 		CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingConfiguration.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -1052,6 +1058,7 @@
 				8B01E4FB20A4183C00C9233E /* FunctionParameterCountConfiguration.swift */,
 				47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */,
 				B1FD3AB8238877F200CE121E /* ImplicitReturnConfiguration.swift */,
+				CC6D285A2292F0600052B682 /* IndentationWidthConfiguration.swift */,
 				3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */,
 				F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */,
 				188B3FF3207D61230073C2D6 /* ModifierOrderConfiguration.swift */,
@@ -1215,10 +1222,10 @@
 				1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */,
 				756B585C2138ECD300D1A4E9 /* CollectionAlignmentRule.swift */,
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
-				D4D0B8F32211428D0053A116 /* ColonRuleExamples.swift */,
 				D47EF4811F69E34D0012C4CA /* ColonRule+Dictionary.swift */,
 				D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */,
 				D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */,
+				D4D0B8F32211428D0053A116 /* ColonRuleExamples.swift */,
 				695BE9CE1BDFD92B0071E985 /* CommaRule.swift */,
 				93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */,
 				65454F451B14D73800319A6C /* ControlStatementRule.swift */,
@@ -1235,6 +1242,7 @@
 				D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */,
 				D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */,
 				B1FD3ABE238BC6D400CE121E /* ImplicitReturnRuleExamples.swift */,
+				CC6D28572292EF460052B682 /* IndentationWidthRule.swift */,
 				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
 				C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */,
 				D4EA77C91F81FACC00C315FB /* LiteralExpressionEndIdentationRule.swift */,
@@ -1537,6 +1545,7 @@
 				47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */,
 				B1FD3ABA238BC5BC00CE121E /* ImplicitReturnConfigurationTests.swift */,
 				B1FD3ABC238BC5FB00CE121E /* ImplicitReturnRuleTests.swift */,
+				CC8C6D2122935F4E00A55D1A /* IndentationWidthRuleTests.swift */,
 				E832F10C1B17E725003F265F /* IntegrationTests.swift */,
 				3B63D46C1E1F05160057BE35 /* LineLengthConfigurationTests.swift */,
 				3B63D46E1E1F09DF0057BE35 /* LineLengthRuleTests.swift */,
@@ -2103,6 +2112,7 @@
 				D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */,
 				D4EA77C81F817FD200C315FB /* UnneededBreakInSwitchRule.swift in Sources */,
 				D4D383852145F550000235BD /* StaticOperatorRule.swift in Sources */,
+				CC6D285B2292F0600052B682 /* IndentationWidthConfiguration.swift in Sources */,
 				006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				623675B21F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */,
@@ -2296,6 +2306,7 @@
 				D4DABFD71E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift in Sources */,
 				3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */,
 				D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */,
+				CC6D28592292F0380052B682 /* IndentationWidthRule.swift in Sources */,
 				C3DE5DAC1E7DF9CA00761483 /* FatalErrorMessageRule.swift in Sources */,
 				A3184D56215BCEFF00621EA2 /* LegacyRandomRule.swift in Sources */,
 				626C16E21F948EBC00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift in Sources */,
@@ -2338,6 +2349,7 @@
 				E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */,
 				D4C27C001E12DFF500DF713E /* LinterCacheTests.swift in Sources */,
 				D45255C81F0932F8003C9B56 /* RuleDescription+Examples.swift in Sources */,
+				CC8C6D2322935F5200A55D1A /* IndentationWidthRuleTests.swift in Sources */,
 				E81ADD721ED5ED9D000CD451 /* RegionTests.swift in Sources */,
 				D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */,
 				750BBD0B214180AF007EC437 /* CollectionAlignmentRuleTests.swift in Sources */,

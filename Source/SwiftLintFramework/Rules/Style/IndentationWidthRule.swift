@@ -1,0 +1,167 @@
+import Foundation
+import SourceKittenFramework
+
+public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
+    // MARK: - Subtypes
+    private enum Indentation: Equatable {
+        case tabs(Int)
+        case spaces(Int)
+
+        func spacesEquivalent(indentationWidth: Int) -> Int {
+            switch self {
+            case let .tabs(tabs): return tabs * indentationWidth
+            case let .spaces(spaces): return spaces
+            }
+        }
+    }
+
+    // MARK: - Properties
+    public var configuration = IndentationWidthConfiguration(
+        severity: .warning,
+        indentationWidth: 4,
+        includeComments: true
+    )
+    public static let description = RuleDescription(
+        identifier: "indentation_width",
+        name: "Indentation Width",
+        description: "Indent code using either one tab or the configured amount of spaces, " +
+            "unindent to match previous indentations. Don't indent the first line.",
+        kind: .style,
+        nonTriggeringExamples: [
+            "firstLine\nsecondLine",
+            "firstLine\n    secondLine",
+            "firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine",
+            "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
+            "firstLine\n    secondLine\n        thirdLine\nfourthLine"
+        ],
+        triggeringExamples: [
+            "    firstLine",
+            "firstLine\n        secondLine",
+            "firstLine\n\tsecondLine\n\n\t\t\tfourthLine",
+            "firstLine\n    secondLine\n        thirdLine\n fourthLine"
+        ]
+    )
+
+    // MARK: - Initializers
+    public init() {}
+
+    // MARK: - Methods: Validation
+    public func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
+        var violations: [StyleViolation] = []
+        var previousLineIndentations: [Indentation] = []
+
+        for line in file.lines {
+            // Skip line if it's a whitespace-only line
+            let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            if line.content.count == indentationCharacterCount { continue }
+
+            if !configuration.includeComments {
+                // Skip line if it's part of a comment
+                let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
+                if !syntaxKindsInLine.isEmpty && SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
+            }
+
+            // Get space and tab count in prefix
+            let prefix = String(line.content.prefix(indentationCharacterCount))
+            let tabCount = prefix.filter { $0 == "\t" }.count
+            let spaceCount = prefix.filter { $0 == " " }.count
+
+            // Determine indentation
+            let indentation: Indentation
+            if tabCount != 0 && spaceCount != 0 {
+                // Catch mixed indentation
+                violations.append(
+                    StyleViolation(
+                        ruleDescription: IndentationWidthRule.description,
+                        severity: .warning,
+                        location: Location(file: file, characterOffset: line.range.location),
+                        reason: "Code should be indented with tabs or " +
+                        "\(configuration.indentationWidth) spaces, but not both in the same line."
+                    )
+                )
+
+                // Model this line's indentation using spaces (although it's tabs & spaces) to let parsing continue
+                indentation = .spaces(spaceCount + tabCount * configuration.indentationWidth)
+            } else if tabCount != 0 {
+                indentation = .tabs(tabCount)
+            } else {
+                indentation = .spaces(spaceCount)
+            }
+
+            // Catch indented first line
+            guard !previousLineIndentations.isEmpty else {
+                previousLineIndentations = [indentation]
+
+                if indentation != .spaces(0) {
+                    // There's an indentation although this is the first line!
+                    violations.append(
+                        StyleViolation(
+                            ruleDescription: IndentationWidthRule.description,
+                            severity: .warning,
+                            location: Location(file: file, characterOffset: line.range.location),
+                            reason: "The first line shall not be indented."
+                        )
+                    )
+                }
+
+                continue
+            }
+
+            let linesValidationResult = previousLineIndentations.map {
+                validate(indentation: indentation, comparingTo: $0)
+            }
+
+            // Catch wrong indentation or wrong unindentation
+            if !linesValidationResult.contains(true) {
+                let isIndentation = previousLineIndentations.last.map {
+                    indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth) >=
+                        $0.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+                } ?? true
+
+                let indentWidth = configuration.indentationWidth
+                violations.append(
+                    StyleViolation(
+                        ruleDescription: IndentationWidthRule.description,
+                        severity: .warning,
+                        location: Location(file: file, characterOffset: line.range.location),
+                        reason: isIndentation ?
+                            "Code should be indented using one tab or \(indentWidth) spaces." :
+                            "Code should be unindented by multiples of one tab or multiples of \(indentWidth) spaces."
+                    )
+                )
+            }
+
+            if linesValidationResult.first == true {
+                // Reset previousLineIndentations to this line only
+                // if this line's indentation matches the last valid line's indentation (first in the array)
+                previousLineIndentations = [indentation]
+            } else {
+                // We not only store this line's indentation, but also keep what was stored before.
+                // Therefore, the next line can be indented either according to the last valid line
+                // or any of the succeeding, failing lines.
+                // This mechanism avoids duplicate warnings.
+                previousLineIndentations.append(indentation)
+            }
+        }
+
+        return violations
+    }
+
+    /// Validates whether the indentation of a specific line is valid
+    /// based on the indentation of the previous line.
+    ///
+    /// Returns a Bool determining the validity of the indentation.
+    private func validate(indentation: Indentation, comparingTo lastIndentation: Indentation) -> Bool {
+        let currentSpaceEquivalent = indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+        let lastSpaceEquivalent = lastIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+
+        return (
+            // Allow indent by indentationWidth
+            currentSpaceEquivalent == lastSpaceEquivalent + configuration.indentationWidth ||
+            (
+                (lastSpaceEquivalent - currentSpaceEquivalent) >= 0 &&
+                (lastSpaceEquivalent - currentSpaceEquivalent) % configuration.indentationWidth == 0
+            ) // Allow unindent if it stays in the grid
+        )
+    }
+}

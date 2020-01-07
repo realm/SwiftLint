@@ -15,8 +15,6 @@ modified_files = git.modified_files + git.added_files
 has_app_changes = !modified_files.grep(/Source/).empty?
 has_test_changes = !modified_files.grep(/Tests/).empty?
 has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
-has_rules_changes = !modified_files.grep(/Source\/SwiftLintFramework\/Rules/).empty?
-has_rules_docs_changes = modified_files.include?('Rules.md')
 
 # Add a CHANGELOG entry for app changes
 if !modified_files.include?('CHANGELOG.md') && has_app_changes

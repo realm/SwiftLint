@@ -1,1 +1,1 @@
-Rule documentation has moved to [jpsim.com/SwiftLint](https://jpsim.com/SwiftLint/).
+Rule documentation has moved [here](https://realm.github.io/SwiftLint/rule-directory.html).

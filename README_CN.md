@@ -178,7 +178,7 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 
 SwiftLint 已经包含了超过 75 条规则，并且我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。
 
-你可以在 [Rules.md](Rules.md) 找到规则的更新列表和更多信息。
+你可以在 [Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html) 找到规则的更新列表和更多信息。
 
 你也可以检视 [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules) 目录来查看它们的实现。
 

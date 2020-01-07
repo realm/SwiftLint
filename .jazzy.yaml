@@ -10,9 +10,8 @@ clean: true
 copyright: '© 2020 [JP Simard](https://jpsim.com) under MIT.'
 
 documentation: rule_docs/*.md
-# TODO: Upstream support for these settings
-# hide_unlisted_documentation: true
-# custom_categories_unlisted_prefix: ''
+hide_unlisted_documentation: true
+custom_categories_unlisted_prefix: ''
 custom_categories:
   - name: Rules
     children:

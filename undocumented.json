@@ -6246,14 +6246,14 @@
     },
     {
       "file": "/__w/1/s/Source/SwiftLintFramework/Rules/Lint/UnusedImportRule.swift",
-      "line": 139,
+      "line": 150,
       "symbol": "UnusedImportRule.validate(file:compilerArguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/__w/1/s/Source/SwiftLintFramework/Rules/Lint/UnusedImportRule.swift",
-      "line": 147,
+      "line": 158,
       "symbol": "UnusedImportRule.correct(file:compilerArguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

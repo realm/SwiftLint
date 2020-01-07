@@ -61,7 +61,7 @@ struct AnalyzeOptions: OptionsProtocol {
             }
             return self.init(paths: allPaths, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, enableAllRules: enableAllRules, autocorrect: autocorrect, compilerLogPath: compilerLogPath, compileCommands: compileCommands)
             // swiftlint:enable line_length
-        }}}}}}}}}}}}}
+            }}}}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AnalyzeOptions, CommandantError<CommandantError<()>>> {

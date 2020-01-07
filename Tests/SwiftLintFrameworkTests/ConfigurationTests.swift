@@ -34,6 +34,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.indentation, .spaces(count: 4))
         XCTAssertEqual(config.reporter, "xcode")
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
+        XCTAssertFalse(config.allowZeroLintableFiles)
     }
 
     func testInitWithRelativePathAndRootPath() {
@@ -42,14 +43,17 @@ class ConfigurationTests: XCTestCase {
         let expectedConfig = projectMockConfig0
         FileManager.default.changeCurrentDirectoryPath(projectMockPathLevel0)
 
-        let config = Configuration(path: ".swiftlint.yml", rootPath: rootPath,
-                                   optional: false, quiet: true)
+        let config = Configuration(path: ".swiftlint.yml",
+                                   rootPath: rootPath,
+                                   optional: false,
+                                   quiet: true)
 
         XCTAssertEqual(config.disabledRules, expectedConfig.disabledRules)
         XCTAssertEqual(config.included, expectedConfig.included)
         XCTAssertEqual(config.excluded, expectedConfig.excluded)
         XCTAssertEqual(config.indentation, expectedConfig.indentation)
         XCTAssertEqual(config.reporter, expectedConfig.reporter)
+        XCTAssertTrue(config.allowZeroLintableFiles)
 
         FileManager.default.changeCurrentDirectoryPath(previousWorkingDir)
     }
@@ -283,5 +287,10 @@ class ConfigurationTests: XCTestCase {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
         let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
+    }
+
+    func testAllowZeroLintableFiles() {
+        let configuration = Configuration(dict: ["allow_zero_lintable_files": true])!
+        XCTAssertTrue(configuration.allowZeroLintableFiles)
     }
 }

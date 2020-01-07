@@ -60,7 +60,7 @@ extension Configuration {
     private func groupFiles(_ files: [SwiftLintFile],
                             visitor: LintableFilesVisitor)
         -> Result<[Configuration: [SwiftLintFile]], CommandantError<()>> {
-        if files.isEmpty {
+        if files.isEmpty && !visitor.allowZeroLintableFiles {
             let errorMessage = "No lintable files found at paths: '\(visitor.paths.joined(separator: ", "))'"
             return .failure(.usageError(description: errorMessage))
         }
@@ -239,7 +239,10 @@ extension Configuration {
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) -> Void)
         -> Result<[SwiftLintFile], CommandantError<()>> {
-        return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap({ visitor in
+            return LintableFilesVisitor.create(options,
+                                               cache: cache,
+                                               allowZeroLintableFiles: allowZeroLintableFiles,
+                                               block: visitorBlock).flatMap({ visitor in
             visitLintableFiles(with: visitor, storage: storage)
         })
     }

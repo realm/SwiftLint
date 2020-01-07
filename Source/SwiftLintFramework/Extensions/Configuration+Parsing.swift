@@ -13,6 +13,7 @@ extension Configuration {
         case whitelistRules = "whitelist_rules"
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
+        case allowZeroLintableFiles  = "allow_zero_lintable_files"
     }
 
     private static let validGlobalKeys: Set<String> = {
@@ -29,7 +30,8 @@ extension Configuration {
             .warningThreshold,
             .whitelistRules,
             .indentation,
-            .analyzerRules
+            .analyzerRules,
+            .allowZeroLintableFiles
         ].map({ $0.rawValue }))
     }()
 
@@ -74,6 +76,7 @@ extension Configuration {
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
         let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
+        let allowZeroLintableFiles = dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
@@ -106,6 +109,7 @@ extension Configuration {
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
                   indentation: indentation,
                   customRulesIdentifiers: customRulesIdentifiers,
+                  allowZeroLintableFiles: allowZeroLintableFiles,
                   dict: dict)
     }
 
@@ -124,6 +128,7 @@ extension Configuration {
                   cachePath: String?,
                   indentation: IndentationStyle,
                   customRulesIdentifiers: [String],
+                  allowZeroLintableFiles: Bool,
                   dict: [String: Any]) {
         let rulesMode: RulesMode
         if enableAllRules {
@@ -153,7 +158,8 @@ extension Configuration {
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath,
                   indentation: indentation,
-                  customRulesIdentifiers: customRulesIdentifiers)
+                  customRulesIdentifiers: customRulesIdentifiers,
+                  allowZeroLintableFiles: allowZeroLintableFiles)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],

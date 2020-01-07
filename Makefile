@@ -138,7 +138,7 @@ publish:
 
 docs:
 	swift run swiftlint generate-docs
-	bundle install --path vendor/bundle
+	bundle install
 	bundle exec jazzy
 
 get_version:

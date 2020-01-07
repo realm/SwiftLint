@@ -10460,21 +10460,21 @@
     },
     {
       "file": "/__w/1/s/Source/SwiftLintFramework/Rules/Style/OptionalEnumCaseMatchingRule.swift",
-      "line": 110,
+      "line": 141,
       "symbol": "OptionalEnumCaseMatchingRule.validate(file:kind:dictionary:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/__w/1/s/Source/SwiftLintFramework/Rules/Style/OptionalEnumCaseMatchingRule.swift",
-      "line": 122,
+      "line": 153,
       "symbol": "OptionalEnumCaseMatchingRule.substitution(for:in:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/__w/1/s/Source/SwiftLintFramework/Rules/Style/OptionalEnumCaseMatchingRule.swift",
-      "line": 126,
+      "line": 157,
       "symbol": "OptionalEnumCaseMatchingRule.violationRanges(in:kind:dictionary:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

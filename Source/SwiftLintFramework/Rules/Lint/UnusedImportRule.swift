@@ -131,6 +131,17 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             // @objc
             class A {}
+            """,
+            """
+            @testable import Foundation
+            ↓import Dispatch
+            @objc
+            class A {}
+            """:
+            """
+            @testable import Foundation
+            @objc
+            class A {}
             """
         ],
         requiresFileOnDisk: true
@@ -235,14 +246,7 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                // We can't use raw string literals because it breaks SourceKit
-                // https://bugs.swift.org/browse/SR-11099
-                // When we require Swift 5.2 or later to build SwiftLint we can switch this back.
-                // let pattern = #"^(@.+\s+)?import\s+\#(module)\b.*?\n"#
-                let pattern = "^(@.+\\s+)?import\\s+\(module)\\b.*?\n"
-                return self.match(pattern: pattern).first.map { match in
-                    return (module, match.0)
-                }
+                self.match(pattern: "^(@.+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }

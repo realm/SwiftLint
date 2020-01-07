@@ -219,6 +219,6 @@ private extension SwiftLintFile {
     func isTokenUnderscoreKeyword(_ token: SwiftLintSyntaxToken) -> Bool {
         return token.kind == .keyword &&
             token.length == 1 &&
-            stringView.substringWithByteRange(start: token.offset, length: token.length) == "_"
+            contents(for: token) == "_"
     }
 }

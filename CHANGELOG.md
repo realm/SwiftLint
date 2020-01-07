@@ -42,7 +42,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix issues in `unused_import` rule when correcting violations in files
+  containing `@testable` imports where more than the unused imports would be
+  removed.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.38.1: Extra Shiny Pulsator Cap
 

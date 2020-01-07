@@ -122,7 +122,9 @@ jobs:
         artifactName: 'API Docs'
         targetPath: 'docs'
     - task: DownloadSecureFile@1
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
       inputs:
         secureFile: doc_deploy_key
     - script: ./script/push-docs
       displayName: Publish
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')

@@ -125,7 +125,7 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
              case (_, .bar↓?): break
              default: break
             }
-            """:"""
+            """: """
             switch foo {
              case (.bar, .baz): break
              case (.bar, _): break

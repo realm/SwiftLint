@@ -15845,6 +15845,15 @@ switch foo {
 }
 ```
 
+```swift
+switch foo {
+ case (.bar, .baz): break
+ case (.bar, _): break
+ case (_, .baz): break
+ default: break
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -15876,6 +15885,15 @@ switch foo {
 switch foo {
  case .bar↓? where x > 1: break
  case .baz: break
+ default: break
+}
+```
+
+```swift
+switch foo {
+ case (.bar↓?, .baz↓?): break
+ case (.bar↓?, _): break
+ case (_, .bar↓?): break
  default: break
 }
 ```

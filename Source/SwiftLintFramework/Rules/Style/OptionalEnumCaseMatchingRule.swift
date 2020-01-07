@@ -20,6 +20,14 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
              case .baz: break
              default: break
             }
+            """,
+            """
+            switch foo {
+             case (.bar, .baz): break
+             case (.bar, _): break
+             case (_, .baz): break
+             default: break
+            }
             """
         ],
         triggeringExamples: [
@@ -47,6 +55,14 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
+             default: break
+            }
+            """,
+            """
+            switch foo {
+             case (.bar↓?, .baz↓?): break
+             case (.bar↓?, _): break
+             case (_, .bar↓?): break
              default: break
             }
             """
@@ -101,6 +117,21 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
              case .baz: break
              default: break
             }
+            """,
+            """
+            switch foo {
+             case (.bar↓?, .baz↓?): break
+             case (.bar↓?, _): break
+             case (_, .bar↓?): break
+             default: break
+            }
+            """: """
+            switch foo {
+             case (.bar, .baz): break
+             case (.bar, _): break
+             case (_, .bar): break
+             default: break
+            }
             """
         ]
     )
@@ -133,26 +164,61 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
         let contents = file.stringView
         return dictionary.elements
             .filter { $0.kind == "source.lang.swift.structure.elem.pattern" }
-            .compactMap { dictionary in
+            .flatMap { dictionary -> [NSRange] in
                 guard let offset = dictionary.offset, let length = dictionary.length else {
-                    return nil
+                    return []
                 }
 
-                let tokens = file.syntaxMap
-                    .tokens(inByteRange: NSRange(location: offset, length: length))
-                    .prefix(while: { $0.kind != .keyword })
+                let pattern = contents.substringWithByteRange(start: offset, length: length)
+                let tupleCommaByteOffsets = pattern?.tupleCommaByteOffsets ?? []
 
-                guard let lastToken = tokens.last else {
-                    return nil
+                let tokensToCheck = (tupleCommaByteOffsets + [length]).compactMap { length in
+                    return file.syntaxMap
+                        .tokens(inByteRange: NSRange(location: offset, length: length))
+                        .prefix { $0.kind != .keyword || file.isTokenUnderscoreKeyword($0) }
+                        .last
                 }
 
-                let questionMarkByteOffset = lastToken.length + lastToken.offset
-                guard contents.substringWithByteRange(start: questionMarkByteOffset, length: 1) == "?",
-                    let range = contents.byteRangeToNSRange(start: questionMarkByteOffset, length: 1) else {
-                    return nil
+                return tokensToCheck.compactMap { tokenToCheck in
+                    let questionMarkByteOffset = tokenToCheck.length + tokenToCheck.offset
+                    guard contents.substringWithByteRange(start: questionMarkByteOffset, length: 1) == "?" else {
+                        return nil
+                    }
+                    return contents.byteRangeToNSRange(start: questionMarkByteOffset, length: 1)
                 }
-
-                return range
             }
+    }
+}
+
+private extension String {
+    func ranges(of substring: String) -> [Range<Index>] {
+        var ranges = [Range<Index>]()
+        while let range = range(of: substring, range: (ranges.last?.upperBound ?? startIndex)..<endIndex) {
+            ranges.append(range)
+        }
+        return ranges
+    }
+
+    var isTuple: Bool {
+        return first == "(" && last == ")" && contains(",")
+    }
+
+    var tupleCommaByteOffsets: [Int] {
+        guard isTuple else {
+            return []
+        }
+
+        let stringView = StringView(self)
+        return ranges(of: ",").map { range in
+            return stringView.byteOffset(fromLocation: distance(from: startIndex, to: range.lowerBound))
+        }
+    }
+}
+
+private extension SwiftLintFile {
+    func isTokenUnderscoreKeyword(_ token: SwiftLintSyntaxToken) -> Bool {
+        return token.kind == .keyword &&
+            token.length == 1 &&
+            contents(for: token) == "_"
     }
 }

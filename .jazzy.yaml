@@ -12,6 +12,8 @@ copyright: '© 2020 [JP Simard](https://jpsim.com) under MIT.'
 documentation: rule_docs/*.md
 hide_unlisted_documentation: true
 custom_categories_unlisted_prefix: ''
+exclude:
+  - Source/SwiftLintFramework/Rules/**/*.swift
 custom_categories:
   - name: Rules
     children:

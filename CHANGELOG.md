@@ -40,6 +40,19 @@
   when case expressions involved tuples.  
   [JP Simard](https://github.com/jpsim)
 
+* API docs for SwiftLintFramework are now available at
+  [realm.github.io/SwiftLint](https://realm.github.io/SwiftLint). `Rules.md`
+  now redirects to the rules directory in the API docs
+  [here](https://realm.github.io/SwiftLint/rule-directory.html). Contributors no
+  longer need to update rule documentation in PRs as this is now done
+  automatically. The rule documentation now includes the default configuration.  
+  [JP Simard](https://github.com/jpsim)
+  [#1653](https://github.com/realm/SwiftLint/issues/1653)
+  [#1704](https://github.com/realm/SwiftLint/issues/1704)
+  [#2808](https://github.com/realm/SwiftLint/issues/2808)
+  [#2933](https://github.com/realm/SwiftLint/issues/2933)
+  [#2961](https://github.com/realm/SwiftLint/issues/2961)
+
 #### Bug Fixes
 
 * Fix issues in `unused_import` rule when correcting violations in files

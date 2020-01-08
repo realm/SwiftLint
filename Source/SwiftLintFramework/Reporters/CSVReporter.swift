@@ -39,7 +39,6 @@ public struct CSVReporter: Reporter {
             violation.ruleDescription.identifier
         ].joined(separator: ",")
     }
-
 }
 
 private extension String {

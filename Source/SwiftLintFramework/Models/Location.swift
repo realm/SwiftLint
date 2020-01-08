@@ -25,7 +25,6 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
         return file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
     }
 
-
     /// Creates a `Location` by specifying its properties directly.
     ///
     /// - parameter file:      The file path on disk for this location.

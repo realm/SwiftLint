@@ -34,7 +34,7 @@ SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
 
 VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
-.PHONY: all bootstrap clean build install package test uninstall
+.PHONY: all bootstrap clean build install package test uninstall docs
 
 all: build
 

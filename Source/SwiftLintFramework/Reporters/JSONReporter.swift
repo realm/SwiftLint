@@ -1,7 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
+/// Reports violations as a JSON array.
 public struct JSONReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "json"
     public static let isRealtime = false
 
@@ -13,7 +16,9 @@ public struct JSONReporter: Reporter {
         return toJSON(violations.map(dictionary(for:)))
     }
 
-    fileprivate static func dictionary(for violation: StyleViolation) -> [String: Any] {
+    // MARK: - Private
+
+    private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
             "file": violation.location.file ?? NSNull() as Any,
             "line": violation.location.line ?? NSNull() as Any,

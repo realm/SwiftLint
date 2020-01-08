@@ -6,18 +6,23 @@ private let formatter: DateFormatter = {
     return formatter
 }()
 
+/// Reports violations as HTML.
 public struct HTMLReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "html"
     public static let isRealtime = false
 
     public var description: String {
-        return "Reports violations as HTML"
+        return "Reports violations as HTML."
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return generateReport(violations, swiftlintVersion: Version.current.value,
                               dateString: formatter.string(from: Date()))
     }
+
+    // MARK: - Internal
 
     // swiftlint:disable:next function_body_length
     internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String,
@@ -142,6 +147,8 @@ public struct HTMLReporter: Reporter {
             "</html>"
         ].joined()
     }
+
+    // MARK: - Private
 
     private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
         let severity: String = violation.severity.rawValue.capitalized

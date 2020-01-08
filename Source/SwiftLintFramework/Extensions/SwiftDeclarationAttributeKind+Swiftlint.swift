@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public extension SwiftDeclarationAttributeKind {
+extension SwiftDeclarationAttributeKind {
     enum ModifierGroup: String, CustomDebugStringConvertible {
         case `override`
         case acl
@@ -85,7 +85,7 @@ public extension SwiftDeclarationAttributeKind {
             }
         }
 
-        public var debugDescription: String {
+        var debugDescription: String {
             return self.rawValue
         }
     }

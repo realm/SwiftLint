@@ -1,21 +1,14 @@
 import Foundation
 
-private extension String {
-    func escapedForMarkdown() -> String {
-        let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
-        if escapedString.contains("|") || escapedString.contains("\n") {
-            return "\"\(escapedString)\""
-        }
-        return escapedString
-    }
-}
-
+/// Reports violations as markdown formated (with tables).
 public struct MarkdownReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "markdown"
     public static let isRealtime = false
 
     public var description: String {
-        return "Reports violations as markdown formated (with tables)"
+        return "Reports violations as markdown formated (with tables)."
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
@@ -31,7 +24,9 @@ public struct MarkdownReporter: Reporter {
         return rows.joined(separator: "\n")
     }
 
-    fileprivate static func markdownRow(for violation: StyleViolation) -> String {
+    // MARK: - Private
+
+    private static func markdownRow(for violation: StyleViolation) -> String {
         return [
             violation.location.file?.escapedForMarkdown() ?? "",
             violation.location.line?.description ?? "",
@@ -41,12 +36,22 @@ public struct MarkdownReporter: Reporter {
         ].joined(separator: " | ")
     }
 
-    fileprivate static func severity(for severity: ViolationSeverity) -> String {
+    private static func severity(for severity: ViolationSeverity) -> String {
         switch severity {
         case .error:
             return ":stop\\_sign:"
         case .warning:
             return ":warning:"
         }
+    }
+}
+
+private extension String {
+    func escapedForMarkdown() -> String {
+        let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
+        if escapedString.contains("|") || escapedString.contains("\n") {
+            return "\"\(escapedString)\""
+        }
+        return escapedString
     }
 }

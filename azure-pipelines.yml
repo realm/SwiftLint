@@ -117,6 +117,13 @@ jobs:
       displayName: Generate documentation json
     - script: bundle exec jazzy --sourcekitten-sourcefile docs.json
       displayName: Run jazzy
+    - script: >
+        if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+          echo "Undocumented declarations:"
+          cat docs/undocumented.json
+          exit 1
+        fi
+      displayName: Validate documentation coverage
     - task: PublishPipelineArtifact@0
       inputs:
         artifactName: 'API Docs'

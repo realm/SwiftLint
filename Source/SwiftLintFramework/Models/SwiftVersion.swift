@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SwiftVersion: RawRepresentable, Codable {
+/// A value describing the version of the Swift compiler.
+public struct SwiftVersion: RawRepresentable, Codable, Comparable {
     public typealias RawValue = String
 
     public let rawValue: String
@@ -9,23 +10,29 @@ public struct SwiftVersion: RawRepresentable, Codable {
     public init(rawValue: String) {
         self.rawValue = rawValue
     }
-}
 
-extension SwiftVersion: Comparable {
-    // Comparable
     public static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
         return lhs.rawValue < rhs.rawValue
     }
 }
 
 public extension SwiftVersion {
+    /// Swift 3.x - https://swift.org/download/#swift-30
     static let three = SwiftVersion(rawValue: "3.0.0")
+    /// Swift 4.0.x - https://swift.org/download/#swift-40
     static let four = SwiftVersion(rawValue: "4.0.0")
+    /// Swift 4.1.x - https://swift.org/download/#swift-41
     static let fourDotOne = SwiftVersion(rawValue: "4.1.0")
+    /// Swift 4.2.x - https://swift.org/download/#swift-42
     static let fourDotTwo = SwiftVersion(rawValue: "4.2.0")
+    /// Swift 5.0.x - https://swift.org/download/#swift-50
     static let five = SwiftVersion(rawValue: "5.0.0")
+    /// Swift 5.1.x - https://swift.org/download/#swift-51
     static let fiveDotOne = SwiftVersion(rawValue: "5.1.0")
 
+    /// The current detected Swift compiler version, based on the currently accessible SourceKit version.
+    ///
+    /// - note: Override by setting the `SWIFTLINT_SWIFT_VERSION` environment variable.
     static let current: SwiftVersion = {
         // Allow forcing the Swift version, useful in cases where SourceKit isn't available
         if let envVersion = ProcessInfo.processInfo.environment["SWIFTLINT_SWIFT_VERSION"] {

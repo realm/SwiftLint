@@ -1,13 +1,20 @@
 import Dispatch
 
+/// A storage mechanism for aggregating the results of `CollectingRule`s.
 public class RuleStorage {
     private var storage: [ObjectIdentifier: [SwiftLintFile: Any]]
     private let access = DispatchQueue(label: "io.realm.swiftlint.ruleStorageAccess", attributes: .concurrent)
 
+    /// Creates a `RuleStorage` with no initial stored data.
     public init() {
         storage = [:]
     }
 
+    /// Collects file info for a given rule into the storage.s
+    ///
+    /// - parameter info: The file information to store.
+    /// - parameter file: The file for which this information pertains to.
+    /// - parameter rule: The SwiftLint rule that generated this info.
     func collect<R: CollectingRule>(info: R.FileInfo, for file: SwiftLintFile, in rule: R) {
         let key = ObjectIdentifier(R.self)
         access.sync(flags: .barrier) {
@@ -15,6 +22,9 @@ public class RuleStorage {
         }
     }
 
+    /// Retrieves all file information for a given rule that was collected via `collect(...)`.
+    ///
+    /// - parameter rule: The rule whose collected information should be retrieved.
     func collectedInfo<R: CollectingRule>(for rule: R) -> [SwiftLintFile: R.FileInfo]? {
         return access.sync {
             storage[ObjectIdentifier(R.self)] as? [SwiftLintFile: R.FileInfo]

@@ -29,11 +29,17 @@ private extension Scanner {
 }
 #endif
 
+/// A SwiftLint-interpretable command to modify SwiftLint's behavior embedded as comments in source code.
 public struct Command: Equatable {
+    /// The action (verb) that SwiftLint should perform when interpreting this command.
     public enum Action: String {
+        /// The rule(s) associated with this command should be enabled by the SwiftLint engine.
         case enable
+        /// The rule(s) associated with this command should be disabled by the SwiftLint engine.
         case disable
 
+        /// Returns the inverse action that can cancel out the current action, restoring the SwifttLint engine's state
+        /// prior to the current action.
         internal func inverse() -> Action {
             switch self {
             case .enable: return .disable
@@ -42,14 +48,18 @@ public struct Command: Equatable {
         }
     }
 
+    /// The modifier for a command, used to modify its scope.
     public enum Modifier: String {
+        /// The command should only apply to the line preceding its definition.
         case previous
+        /// The command should only apply to the same line as its definition.
         case this
+        /// The command should only apply to the line following its definition.
         case next
     }
 
     /// Text after this delimiter is not considered part of the rule.
-    /// The purpose of this delimiter is to allow swiftlint
+    /// The purpose of this delimiter is to allow SwiftLint
     /// commands to be documented in source code.
     ///
     ///     swiftlint:disable:next force_try - Explanation here
@@ -63,6 +73,15 @@ public struct Command: Equatable {
     /// Currently unused but parsed separate from rule identifiers
     internal let trailingComment: String?
 
+    /// Creates a command based on the specified parameters.
+    ///
+    /// - parameter action:          This command's action.
+    /// - parameter ruleIdentifiers: The identifiers for the rules associated with this command.
+    /// - parameter line:            The line in the source file where this command is defined.
+    /// - parameter character:       The character offset within the line in the source file where this command is
+    ///                              defined.
+    /// - parameter modifier:        This command's modifier, if any.
+    /// - parameter trailingComment: The comment following this command's `-` delimeter, if any.
     public init(action: Action, ruleIdentifiers: Set<RuleIdentifier>, line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil, trailingComment: String? = nil) {
         self.action = action
@@ -73,6 +92,12 @@ public struct Command: Equatable {
         self.trailingComment = trailingComment
     }
 
+    /// Creates a command based on the specified parameters.
+    ///
+    /// - parameter actionString: The string in the command's definition describing its action.
+    /// - parameter line:            The line in the source file where this command is defined.
+    /// - parameter character:       The character offset within the line in the source file where this command is
+    ///                              defined.
     public init?(actionString: String, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString(string: "swiftlint:")
@@ -117,6 +142,8 @@ public struct Command: Equatable {
         }
     }
 
+    /// Expands the current command into its fully descriptive form without any modifiers.
+    /// If the command doesn't have a modifier, it is returned as-is.
     internal func expand() -> [Command] {
         guard let modifier = modifier else {
             return [self]

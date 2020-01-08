@@ -1,4 +1,7 @@
+/// Reports violations in the format that's both fun and easy to read.
 public struct EmojiReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "emoji"
     public static let isRealtime = false
 
@@ -12,6 +15,8 @@ public struct EmojiReporter: Reporter {
             .sorted(by: { $0.key < $1.key })
             .map(report).joined(separator: "\n")
     }
+
+    // MARK: - Private
 
     private static func report(for file: String, with violations: [StyleViolation]) -> String {
         let lines = [file] + violations.sorted { lhs, rhs in

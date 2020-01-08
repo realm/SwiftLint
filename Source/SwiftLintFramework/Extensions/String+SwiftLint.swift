@@ -74,6 +74,7 @@ extension String {
         return NSRange(location: 0, length: utf16.count)
     }
 
+    /// Returns a new string, converting the path to a canonical absolute path.
     public func absolutePathStandardized() -> String {
         return bridge().absolutePathRepresentation().bridge().standardizingPath
     }

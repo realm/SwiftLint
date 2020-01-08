@@ -1,10 +1,21 @@
+/// The accessibility of a Swift source declaration.
+///
+/// - SeeAlso: https://github.com/apple/swift/blob/master/docs/AccessControl.rst
 public enum AccessControlLevel: String, CustomStringConvertible {
+    /// Accessible by the declaration's immediate lexical scope.
     case `private` = "source.lang.swift.accessibility.private"
+    /// Accessible by the declaration's same file.
     case `fileprivate` = "source.lang.swift.accessibility.fileprivate"
+    /// Accessible by the declaration's same module, or modules importing it with the `@testable` attribute.
     case `internal` = "source.lang.swift.accessibility.internal"
+    /// Accessible by the declaration's same program.
     case `public` = "source.lang.swift.accessibility.public"
+    /// Accessible and customizable (via subclassing or overrides) by the declaration's same program.
     case `open` = "source.lang.swift.accessibility.open"
 
+    /// Initializes an access control level by its Swift source keyword value.
+    ///
+    /// - parameter value: The value used to describe this level in Swift source code.
     internal init?(description value: String) {
         switch value {
         case "private": self = .private
@@ -16,7 +27,10 @@ public enum AccessControlLevel: String, CustomStringConvertible {
         }
     }
 
-    init?(identifier value: String) {
+    /// Initializes an access control level by its SourceKit unique identifier.
+    ///
+    /// - parameter value: The value used by SourceKit to refer to this access control level.
+    internal init?(identifier value: String) {
         self.init(rawValue: value)
     }
 

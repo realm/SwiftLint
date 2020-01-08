@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+/// The rule list containing all available rules built into SwiftLint.
 public let masterRuleList = RuleList(rules: [
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,

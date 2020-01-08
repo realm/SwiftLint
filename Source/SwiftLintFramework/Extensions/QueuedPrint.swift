@@ -18,7 +18,7 @@ private let outputQueue: DispatchQueue = {
 }()
 
 /**
- A thread-safe version of Swift's standard print().
+ A thread-safe version of Swift's standard `print()`.
 
  - parameter object: Object to print.
  */
@@ -29,7 +29,7 @@ public func queuedPrint<T>(_ object: T) {
 }
 
 /**
- A thread-safe, newline-terminated version of fputs(..., stderr).
+ A thread-safe, newline-terminated version of `fputs(..., stderr)`.
 
  - parameter string: String to print.
  */
@@ -41,7 +41,7 @@ public func queuedPrintError(_ string: String) {
 }
 
 /**
- A thread-safe, newline-terminated version of fatalError that doesn't leak
+ A thread-safe, newline-terminated version of `fatalError(...)` that doesn't leak
  the source path from the compiled binary.
  */
 public func queuedFatalError(_ string: String, file: StaticString = #file, line: UInt = #line) -> Never {

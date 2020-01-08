@@ -1,6 +1,26 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/runner/runners/2.163.1/work/1/s/Source/SwiftLintFramework/Models/Version.swift",
+      "line": 1,
+      "symbol": "Version",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.163.1/work/1/s/Source/SwiftLintFramework/Models/Version.swift",
+      "line": 2,
+      "symbol": "Version.value",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.163.1/work/1/s/Source/SwiftLintFramework/Models/Version.swift",
+      "line": 4,
+      "symbol": "Version.current",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/runner/runners/2.163.1/work/1/s"
 }

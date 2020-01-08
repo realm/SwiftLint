@@ -1,0 +1,25 @@
+#!/bin/bash
+
+mkdir ~/.ssh && mv $DOWNLOADSECUREFILE_SECUREFILEPATH ~/.ssh/id_rsa
+chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_rsa
+ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+source_sha="$(git rev-parse HEAD)"
+user="swiftlintbot@jpsim.com"
+git config --global user.email "$user"
+git config --global user.name "$user"
+git clone git@github.com:realm/SwiftLint.git out
+
+cd out
+git checkout gh-pages
+git rm -rf .
+rm -rf Carthage
+cd ..
+
+cp -a docs/. out/.
+cd out
+
+git add -A
+git commit -m "Automated deployment to GitHub Pages: ${source_sha}" --allow-empty
+
+git push origin gh-pages

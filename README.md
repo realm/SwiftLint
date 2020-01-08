@@ -236,7 +236,7 @@ continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
 
 You can find an updated list of rules and more information about them
-in [Rules.md](Rules.md).
+[here](https://realm.github.io/SwiftLint/rule-directory.html).
 
 You can also check [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see their implementation.

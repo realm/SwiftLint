@@ -331,12 +331,6 @@ extension DiscouragedOptionalCollectionRuleTests {
     ]
 }
 
-extension DocumentationTests {
-    static var allTests: [(String, (DocumentationTests) -> () throws -> Void)] = [
-        ("testRulesDocumentationIsUpdated", testRulesDocumentationIsUpdated)
-    ]
-}
-
 extension DuplicateEnumCasesRuleTests {
     static var allTests: [(String, (DuplicateEnumCasesRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1680,7 +1674,6 @@ XCTMain([
     testCase(DiscouragedObjectLiteralRuleTests.allTests),
     testCase(DiscouragedOptionalBooleanRuleTests.allTests),
     testCase(DiscouragedOptionalCollectionRuleTests.allTests),
-    testCase(DocumentationTests.allTests),
     testCase(DuplicateEnumCasesRuleTests.allTests),
     testCase(DuplicateImportsRuleTests.allTests),
     testCase(DynamicInlineRuleTests.allTests),

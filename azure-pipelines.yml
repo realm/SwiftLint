@@ -103,3 +103,28 @@ jobs:
       displayName: Post-cache SwiftLint Run
     - script: make test_tsan
       displayName: Test With TSan
+
+- job: jazzy
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  container: norionomura/jazzy:0.13.0_swift-5.1.3
+  steps:
+    - script: swift run swiftlint generate-docs
+      displayName: Run swiftlint generate-docs
+    - script: bundle install --path vendor/bundle
+      displayName: bundle install
+    - script: sourcekitten doc --spm-module SwiftLintFramework > docs.json
+      displayName: Generate documentation json
+    - script: bundle exec jazzy --sourcekitten-sourcefile docs.json
+      displayName: Run jazzy
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: 'API Docs'
+        targetPath: 'docs'
+    - task: DownloadSecureFile@1
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      inputs:
+        secureFile: doc_deploy_key
+    - script: ./script/push-docs
+      displayName: Publish
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')

@@ -34,7 +34,7 @@ SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
 
 VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
-.PHONY: all bootstrap clean build install package test uninstall
+.PHONY: all bootstrap clean build install package test uninstall docs
 
 all: build
 
@@ -135,6 +135,11 @@ publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
 	pod trunk push SwiftLintFramework.podspec
 	pod trunk push SwiftLint.podspec
+
+docs:
+	swift run swiftlint generate-docs
+	bundle install
+	bundle exec jazzy
 
 get_version:
 	@echo $(VERSION_STRING)

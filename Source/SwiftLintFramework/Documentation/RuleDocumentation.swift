@@ -1,5 +1,5 @@
 /// User-facing documentation for a SwiftLint rule.
-public struct RuleDocumentation {
+struct RuleDocumentation {
     private let ruleType: Rule.Type
 
     /// Creates a RuleDocumentation instance from a Rule type.

@@ -37,6 +37,8 @@ extension Configuration {
         return cachedConfigurationsByPath[path]
     }
 
+    /// Returns a copy of the current `Configuration` with its `computedCacheDescription` property set to the value of
+    /// `cacheDescription`, which is expensive to compute.
     public func withPrecomputedCacheDescription() -> Configuration {
         var result = self
         result.computedCacheDescription = result.cacheDescription

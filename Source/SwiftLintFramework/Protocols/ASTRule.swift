@@ -1,8 +1,20 @@
 import SourceKittenFramework
 
+/// A rule that leverages the Swift source's pre-typechecked Abstract Syntax Tree to recurse into the source's
+/// structure, validating the rule recursively in nested source bodies.
 public protocol ASTRule: Rule {
+    /// The kind of token being recursed over.
     associatedtype KindType: RawRepresentable
+
+    /// Executes the rule on a file and a subset of its AST structure, returnng any violations to the rule's
+    /// expectations.
+    ///
+    /// - parameter file:       The file for which to execute the rule.
+    /// - parameter kind:       The kind of token being recursed over.
+    /// - parameter dictionary: The dicttionary for an AST subset to validate.
     func validate(file: SwiftLintFile, kind: KindType, dictionary: SourceKittenDictionary) -> [StyleViolation]
+
+    /// Get the `kind` from the specified dictionary.
     func kind(from dictionary: SourceKittenDictionary) -> KindType?
 }
 
@@ -11,6 +23,11 @@ public extension ASTRule {
         return validate(file: file, dictionary: file.structureDictionary)
     }
 
+    /// Executes the rule on a file and a subset of its AST structure, returnng any violations to the rule's
+    /// expectations.
+    ///
+    /// - parameter file:       The file for which to execute the rule.
+    /// - parameter dictionary: The dicttionary for an AST subset to validate.
     func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return dictionary.traverseDepthFirst { subDict in
             guard let kind = self.kind(from: subDict) else { return nil }

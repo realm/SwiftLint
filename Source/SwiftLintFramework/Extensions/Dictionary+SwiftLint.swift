@@ -1,16 +1,27 @@
 import Foundation
 import SourceKittenFramework
 
+/// A collection of keys and values as parsed out of SourceKit, with many conveniences for accessing SwiftLint-specific
+/// values.
 public struct SourceKittenDictionary {
+    /// The underlying SourceKitten dictionary.
     public let value: [String: SourceKitRepresentable]
+    /// The cached substructure for this dictionary. Empty if there is no substructure.
     public let substructure: [SourceKittenDictionary]
 
+    /// The kind of Swift expression represented by this dictionary, if it is an expression.
     public let expressionKind: SwiftExpressionKind?
+    /// The kind of Swift declaration represented by this dictionary, if it is a declaration.
     public let declarationKind: SwiftDeclarationKind?
+    /// The kind of Swift statement represented by this dictionary, if it is a statement.
     public let statementKind: StatementKind?
 
+    /// The accessibility level for this dictionary, if it is a declaration.
     public let accessibility: AccessControlLevel?
 
+    /// Creates a SourceKitten dictionary given a `Dictionary<String, SourceKitRepresentable>` input.
+    ///
+    /// - parameter value: The input dictionary/
     init(_ value: [String: SourceKitRepresentable]) {
         self.value = value
 
@@ -91,15 +102,18 @@ public struct SourceKittenDictionary {
         return (value["key.doclength"] as? Int64).flatMap({ Int($0) })
     }
 
+    /// The attribute for this dictionary, as returned by SourceKit.
     var attribute: String? {
         return value["key.attribute"] as? String
     }
 
+    /// The `SwiftDeclarationAttributeKind` values associated with this dictionary.
     var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
         return swiftAttributes.compactMap { $0.attribute }
             .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
     }
 
+    /// The fully preserved SourceKitten dictionaries for all the attributes associated with this dictionary.
     var swiftAttributes: [SourceKittenDictionary] {
         let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
         let dictionaries = array.compactMap { $0 as? [String: SourceKitRepresentable] }

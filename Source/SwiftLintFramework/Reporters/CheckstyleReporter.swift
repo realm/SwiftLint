@@ -1,4 +1,8 @@
+/// Reports violations as XML conforming to the Checkstyle specification, as defined here:
+/// https://www.jetbrains.com/help/teamcity/xml-report-processing.html
 public struct CheckstyleReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "checkstyle"
     public static let isRealtime = false
 
@@ -16,6 +20,8 @@ public struct CheckstyleReporter: Reporter {
             "\n</checkstyle>"
         ].joined()
     }
+
+    // MARK: - Private
 
     private static func generateForViolationFile(_ file: String, violations: [StyleViolation]) -> String {
         return [

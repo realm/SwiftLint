@@ -1,4 +1,7 @@
+/// Reports violations in the format GitHub-hosted virtual machine for Actions can recognize as messages.
 public struct GitHubActionsLoggingReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "github-actions-logging"
     public static let isRealtime = true
 
@@ -10,7 +13,9 @@ public struct GitHubActionsLoggingReporter: Reporter {
         return violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 
-    internal static func generateForSingleViolation(_ violation: StyleViolation) -> String {
+    // MARK: - Private
+
+    private static func generateForSingleViolation(_ violation: StyleViolation) -> String {
         // swiftlint:disable:next line_length
         // https://help.github.com/en/github/automating-your-workflow-with-github-actions/development-tools-for-github-actions#logging-commands
         // ::(warning|error) file={relative_path_to_file},line={:line},col={:character}::{content}

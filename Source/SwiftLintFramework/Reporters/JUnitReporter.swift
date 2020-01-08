@@ -1,4 +1,7 @@
+/// Reports violations as JUnit XML.
 public struct JUnitReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "junit"
     public static let isRealtime = false
 

@@ -1,19 +1,53 @@
 import Foundation
 import SourceKittenFramework
 
+/// An executable value that can identify issues (violations) in Swift source code.
 public protocol Rule {
+    /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
+
+    /// A description of how this rule has been configured to run.
     var configurationDescription: String { get }
 
-    init() // Rules need to be able to be initialized with default values
+    /// A default initializer for rules. All rules need to be trivially initializable.
+    init()
+
+    /// Creates a rule by applying its configuration.
+    ///
+    /// - throws: Throws if the configuration didn't match the expected format.
     init(configuration: Any) throws
 
+    /// Executes the rule on a file and returns any violations to the rule's expectations.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation]
+
+    /// Executes the rule on a file and returns any violations to the rule's expectations.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
     func validate(file: SwiftLintFile) -> [StyleViolation]
+
+    /// Whether or not the specified rule is equivalent to the current rule.
     func isEqualTo(_ rule: Rule) -> Bool
 
-    // These are called by the linter and are always implemented in extensions.
+    /// Collects information for the specified file in a storage object, to be analyzed by a `CollectedLinter`.
+    ///
+    /// - note: This function is called by the linter and is always implemented in extensions.
+    ///
+    /// - parameter file:              The file for which to collect info.
+    /// - parameter storage:           The storage object where collected info should be saved.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String])
+
+    /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
+    /// expectations.
+    ///
+    /// - note: This function is called by the linter and is always implemented in extensions.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter storage:           The storage object containing all collected info.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 }
 
@@ -40,21 +74,46 @@ extension Rule {
     }
 }
 
+/// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
 
+/// A rule that has unit tests automatically generated using Sourcery.
 public protocol AutomaticTestableRule: Rule {}
 
+/// A rule that is user-configurable.
 public protocol ConfigurationProviderRule: Rule {
+    /// The type of configuration used to configure this rule.
     associatedtype ConfigurationType: RuleConfiguration
 
+    /// This rule's configuration.
     var configuration: ConfigurationType { get set }
 }
 
+/// A rule that can correct violations.
 public protocol CorrectableRule: Rule {
+    /// Attempts to correct the violations to this rule in the specified file.
+    ///
+    /// - parameter file:              The file for which to correct violations.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: All corrections that were applied.
     func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction]
+
+    /// Attempts to correct the violations to this rule in the specified file.
+    ///
+    /// - parameter file: The file for which to correct violations.
+    ///
+    /// - returns: All corrections that were applied.
     func correct(file: SwiftLintFile) -> [Correction]
 
-    // Called by the linter and are always implemented in extensions.
+    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
+    /// and returns all corrections that were applied.
+    ///
+    /// - note: This function is called by the linter and is always implemented in extensions.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter storage:           The storage object containing all collected info.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
 }
 
@@ -67,8 +126,13 @@ public extension CorrectableRule {
     }
 }
 
+/// A correctable rule that can apply its corrections by replacing the content of ranges in the offending file with
+/// updated content.
 public protocol SubstitutionCorrectableRule: CorrectableRule {
+    /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
     func violationRanges(in file: SwiftLintFile) -> [NSRange]
+
+    /// Returns the substitution to apply for the given range.
     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)?
 }
 
@@ -94,7 +158,9 @@ public extension SubstitutionCorrectableRule {
     }
 }
 
+/// A `SubstitutionCorrectableRule` that is also an `ASTRule`.
 public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
+    /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
     func violationRanges(in file: SwiftLintFile, kind: KindType,
                          dictionary: SourceKittenDictionary) -> [NSRange]
 }
@@ -108,8 +174,11 @@ public extension SubstitutionCorrectableASTRule {
     }
 }
 
+/// A rule that does not need SourceKit to operate and can still operate even after SourceKit has crashed.
 public protocol SourceKitFreeRule: Rule {}
 
+/// A rule that can operate on the post-typechecked AST using compiler arguments. Performs rules that are more like
+/// static analysis than syntactic checks.
 public protocol AnalyzerRule: OptInRule {}
 
 public extension AnalyzerRule {
@@ -118,6 +187,7 @@ public extension AnalyzerRule {
     }
 }
 
+/// :nodoc:
 public extension AnalyzerRule where Self: CorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         queuedFatalError("Must call `correct(file:compilerArguments:)` for AnalyzerRule")
@@ -129,12 +199,36 @@ public extension AnalyzerRule where Self: CorrectableRule {
 /// Type-erased protocol used to check whether a rule is collectable.
 public protocol AnyCollectingRule: Rule { }
 
+/// A rule that requires knowledge of all other files being linted.
 public protocol CollectingRule: AnyCollectingRule {
+    /// The kind of information to collect for each file being linted for this rule.
     associatedtype FileInfo
+
+    /// Collects information for the specified file, to be analyzed by a `CollectedLinter`.
+    ///
+    /// - parameter file:              The file for which to collect info.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> FileInfo
+
+    /// Collects information for the specified file, to be analyzed by a `CollectedLinter`.
+    ///
+    /// - parameter file: The file for which to collect info.
     func collectInfo(for file: SwiftLintFile) -> FileInfo
+
+    /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
+    /// expectations.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter collectedInfo:     All collected info for all files.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments: [String]) -> [StyleViolation]
+
+    /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
+    /// expectations.
+    ///
+    /// - parameter file:          The file for which to execute the rule.
+    /// - parameter collectedInfo: All collected info for all files.
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation]
 }
 
@@ -182,9 +276,26 @@ public extension CollectingRule where Self: AnalyzerRule {
     }
 }
 
+/// A `CollectingRule` that is also a `CorrectableRule`.
 public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
+    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
+    /// and returns all corrections that were applied.
+    ///
+    /// - note: This function is called by the linter and is always implemented in extensions.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter collectedInfo:     All collected info.
+    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments: [String]) -> [Correction]
+
+    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
+    /// and returns all corrections that were applied.
+    ///
+    /// - note: This function is called by the linter and is always implemented in extensions.
+    ///
+    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter collectedInfo:     All collected info.
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction]
 }
 
@@ -239,6 +350,7 @@ public extension ConfigurationProviderRule {
 
 // MARK: - == Implementations
 
+/// :nodoc:
 public extension Array where Element == Rule {
     static func == (lhs: Array, rhs: Array) -> Bool {
         if lhs.count != rhs.count { return false }

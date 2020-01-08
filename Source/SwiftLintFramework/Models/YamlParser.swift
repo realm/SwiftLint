@@ -9,7 +9,12 @@ internal enum YamlParserError: Error, Equatable {
 
 // MARK: - YamlParser
 
+/// An interface for parsing YAML.
 public struct YamlParser {
+    /// Parses the input YAML string as an untyped dictionary.
+    ///
+    /// - parameter yaml: YAML-formatted string.
+    /// - parameter env:  The environment to use to expand variables in the YAML.
     public static func parse(_ yaml: String,
                              env: [String: String] = ProcessInfo.processInfo.environment) throws -> [String: Any] {
         do {

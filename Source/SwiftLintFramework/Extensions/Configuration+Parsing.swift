@@ -52,6 +52,14 @@ extension Configuration {
         return .default
     }
 
+    /// Creates a Configuration value based on the specified parameters.
+    ///
+    /// - parameter dict:                   The untyped dictionary to serve as the input for this typed configuration.
+    ///                                     Typically generated from a YAML-formatted file.
+    /// - parameter ruleList:               The list of rules to be available to this configuration.
+    /// - parameter enableAllRules:         Whether all rules from `ruleList` should be enabled, regardless of the
+    ///                                     settings in `dict`.
+    /// - parameter cachePath:              The location of the persisted cache on disk.
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
                  cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.

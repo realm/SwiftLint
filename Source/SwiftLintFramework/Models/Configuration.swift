@@ -1,25 +1,40 @@
 import Foundation
 import SourceKittenFramework
 
+/// The configuration struct for SwiftLint. User-defined in the `.swiftlint.yml` file, drives the behavior of SwiftLint.
 public struct Configuration: Hashable {
-    // Represents how a Configuration object can be configured with regards to rules.
+    /// Represents how a Configuration object can be configured with regards to rules.
     public enum RulesMode {
+        /// The default rules mode, which will enable all rules that aren't defined as being opt-in
+        /// (conforming to the `OptInRule` protocol), minus the rules listed in `disabled`, plus the rules lised in
+        /// `optIn`.
         case `default`(disabled: [String], optIn: [String])
+        /// Only enable the rules explicitly listed.
         case whitelisted([String])
+        /// Enable all available rules.
         case allEnabled
     }
 
     // MARK: Properties
 
+    /// The standard file name to look for user-defined configurations.
     public static let fileName = ".swiftlint.yml"
 
-    public let indentation: IndentationStyle           // style to use when indenting
-    public let included: [String]                      // included
-    public let excluded: [String]                      // excluded
-    public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
-    public let warningThreshold: Int?                  // warning threshold
-    public private(set) var rootPath: String?          // the root path to search for nested configurations
-    public private(set) var configurationPath: String? // if successfully loaded from a path
+    /// The style to use when indenting Swift source code.
+    public let indentation: IndentationStyle
+    /// Included paths to lint.
+    public let included: [String]
+    /// Excluded paths to not lint.
+    public let excluded: [String]
+    /// The identifier for the `Reporter` to use to report style violations.
+    public let reporter: String
+    /// The threshold for the number of warnings to tolerate before treating the lint as having failed.
+    public let warningThreshold: Int?
+    /// The root directory to search for nested configurations.
+    public private(set) var rootPath: String?
+    /// The absolute path from where this configuration was loaded from, if any.
+    public private(set) var configurationPath: String?
+    /// The location of the persisted cache to use whith this configuration.
     public let cachePath: String?
 
     public func hash(into hasher: inout Hasher) {
@@ -45,13 +60,14 @@ public struct Configuration: Hashable {
 
     // MARK: Rules Properties
 
-    // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
+    /// All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
     public let rules: [Rule]
 
     internal let rulesMode: RulesMode
 
     // MARK: Initializers
 
+    /// Creates a `Configuration` by specifying its properties directly.
     public init?(rulesMode: RulesMode = .default(disabled: [], optIn: []),
                  included: [String] = [],
                  excluded: [String] = [],
@@ -126,6 +142,7 @@ public struct Configuration: Hashable {
         indentation = configuration.indentation
     }
 
+    /// Creates a `Configuration` with convenience parameters.
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false,
                 cachePath: String? = nil, customRulesIdentifiers: [String] = []) {

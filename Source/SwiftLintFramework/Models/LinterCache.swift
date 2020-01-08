@@ -16,6 +16,7 @@ private struct FileCache: Codable {
     static var empty: FileCache { return FileCache(entries: [:]) }
 }
 
+/// A persisted cache for storing and retrieving linter results.
 public final class LinterCache {
 #if canImport(Darwin) || compiler(>=5.1.0)
     private typealias Encoder = PropertyListEncoder
@@ -44,6 +45,10 @@ public final class LinterCache {
         self.swiftVersion = swiftVersion
     }
 
+    /// Creates a `LinterCache` by specifying a SwiftLint configuration and a file manager.
+    ///
+    /// - parameter configuration: The SwiftLint configuration for which this cache will be used.
+    /// - parameter fileManager:   The file manager to use to read lintable file information.
     public init(configuration: Configuration, fileManager: LintableFileManager = FileManager.default) {
         location = configuration.cacheURL
         lazyReadCache = Cache()
@@ -85,6 +90,7 @@ public final class LinterCache {
         return entry.violations
     }
 
+    /// Persists the cache to disk.
     public func save() throws {
         guard let url = location else {
             throw LinterCacheError.noLocation

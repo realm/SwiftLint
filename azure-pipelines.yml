@@ -106,17 +106,23 @@ jobs:
 
 - job: jazzy
   pool:
-    vmImage: 'Ubuntu 16.04'
-  container: norionomura/jazzy:0.13.0_swift-5.1.3
+    vmImage: 'macOS 10.14'
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_11.3.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs
     - script: bundle install --path vendor/bundle
       displayName: bundle install
-    - script: sourcekitten doc --spm-module SwiftLintFramework > docs.json
-      displayName: Generate documentation json
-    - script: bundle exec jazzy --sourcekitten-sourcefile docs.json
+    - script: bundle exec jazzy
       displayName: Run jazzy
+    - script: >
+        if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+          echo "Undocumented declarations:"
+          cat docs/undocumented.json
+          exit 1
+        fi
+      displayName: Validate documentation coverage
     - task: PublishPipelineArtifact@0
       inputs:
         artifactName: 'API Docs'

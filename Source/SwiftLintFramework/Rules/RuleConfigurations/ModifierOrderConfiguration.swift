@@ -8,7 +8,11 @@ public struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
         return severityConfiguration.consoleDescription + ", preferred_modifier_order: \(preferredModifierOrder)"
     }
 
-    public init(preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = []) {
+    public init() {
+        self.preferredModifierOrder = []
+    }
+
+    init(preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = []) {
         self.preferredModifierOrder = preferredModifierOrder
     }
 

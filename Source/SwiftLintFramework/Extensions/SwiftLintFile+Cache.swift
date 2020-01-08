@@ -180,6 +180,7 @@ extension SwiftLintFile {
         return syntaxKindsByLines
     }
 
+    /// Invalidates all cached data for this file.
     public func invalidateCache() {
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)

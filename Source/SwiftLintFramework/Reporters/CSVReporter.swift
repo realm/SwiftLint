@@ -1,16 +1,9 @@
 import Foundation
 
-private extension String {
-    func escapedForCSV() -> String {
-        let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
-        if escapedString.contains(",") || escapedString.contains("\n") {
-            return "\"\(escapedString)\""
-        }
-        return escapedString
-    }
-}
-
+/// Reports violations as a newline-separated string of comma-separated values (CSV).
 public struct CSVReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "csv"
     public static let isRealtime = false
 
@@ -33,7 +26,9 @@ public struct CSVReporter: Reporter {
         return rows.joined(separator: "\n")
     }
 
-    fileprivate static func csvRow(for violation: StyleViolation) -> String {
+    // MARK: - Private
+
+    private static func csvRow(for violation: StyleViolation) -> String {
         return [
             violation.location.file?.escapedForCSV() ?? "",
             violation.location.line?.description ?? "",
@@ -43,5 +38,15 @@ public struct CSVReporter: Reporter {
             violation.reason.escapedForCSV(),
             violation.ruleDescription.identifier
         ].joined(separator: ",")
+    }
+}
+
+private extension String {
+    func escapedForCSV() -> String {
+        let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
+        if escapedString.contains(",") || escapedString.contains("\n") {
+            return "\"\(escapedString)\""
+        }
+        return escapedString
     }
 }

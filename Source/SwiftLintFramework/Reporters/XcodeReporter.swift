@@ -1,4 +1,7 @@
+/// Reports violations in the format Xcode uses to display in the IDE. (default)
 public struct XcodeReporter: Reporter {
+    // MARK: - Reporter Conformance
+
     public static let identifier = "xcode"
     public static let isRealtime = true
 
@@ -10,6 +13,9 @@ public struct XcodeReporter: Reporter {
         return violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 
+    /// Generates a report for a single violation.
+    ///
+    /// - parameter violation: The violation to report.
     internal static func generateForSingleViolation(_ violation: StyleViolation) -> String {
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         return [

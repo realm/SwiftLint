@@ -1,0 +1,112 @@
+name: SwiftLint-xcodegen
+options:
+  bundleIdPrefix: io.realm
+
+packages:
+  Commandant:
+    url: https://github.com/Carthage/Commandant.git
+    from: 0.17.0
+  SourceKitten:
+    url: https://github.com/jpsim/SourceKitten.git
+    from: 0.28.0
+  Yams:
+    url: https://github.com/jpsim/Yams
+    from: 2.0.0
+  SwiftyTextTable:
+    url: https://github.com/scottrhoyt/SwiftyTextTable.git
+    from: 0.9.0
+
+targets:
+  swiftlint:
+    type: application
+    platform: macOS
+    deploymentTarget: "10.10"
+    sources: [Source/swiftlint]
+    dependencies:
+      - target: SwiftLintFramework
+      - package: Commandant
+      - package: Yams
+    scheme:
+      testTargets:
+        - SwiftLintFrameworkTests
+      gatherCoverageData: true
+    postCompileScripts:
+      - name: Extract CLI Tool
+        script: . script/extract-tool
+        inputFiles:
+          - $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_PATH)
+        outputFiles:
+          - $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_NAME)
+      - name: Embed Swift libraries into SwiftLintFramework.framework
+        script: |
+                cd "$TARGET_BUILD_DIR"
+                SWIFTLINTFRAMEWORK_BUNDLE="$FRAMEWORKS_FOLDER_PATH/SwiftLintFramework.framework"
+
+                xcrun swift-stdlib-tool --copy --verbose --Xcodesign --timestamp=none \
+                --scan-executable "$EXECUTABLE_PATH" \
+                --scan-folder "$FRAMEWORKS_FOLDER_PATH" \
+                --platform macosx --destination "$SWIFTLINTFRAMEWORK_BUNDLE/Versions/Current/Frameworks" \
+                --strip-bitcode
+      - name: Run SwiftLint
+        script: |
+                if which swiftlint >/dev/null; then
+                  swiftlint
+                else
+                  echo "SwiftLint does not exist, download from https://github.com/realm/SwiftLint"
+                fi
+  SwiftLintFramework:
+    type: framework
+    platform: macOS
+    deploymentTarget: "10.10"
+    sources: [Source/SwiftLintFramework]
+    dependencies:
+      - package: SourceKitten
+        product: SourceKittenFramework
+      - package: SwiftyTextTable
+    scheme:
+      testTargets:
+        - SwiftLintFrameworkTests
+      gatherCoverageData: true
+    preBuildScripts:
+      - name: Update Source/SwiftLintFramework/Models/MasterRuleList.swift
+        script: |
+                if which sourcery >/dev/null; then
+                  make Source/SwiftLintFramework/Models/MasterRuleList.swift
+                else
+                  echo "Sourcery not found, install with 'brew install sourcery'"
+                fi
+        inputFiles:
+          - $(SRCROOT)/Source/SwiftLintFramework/Rules/*.swift
+        outputFiles:
+          - $(SRCROOT)/Source/SwiftLintFramework/Models/MasterRuleList.swift
+      - name: Update Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
+        script: |
+                if which sourcery >/dev/null; then
+                  make Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
+                else
+                  echo "Sourcery not found, install with 'brew install sourcery'"
+                fi
+        inputFiles:
+          - $(SRCROOT)/Source/SwiftLintFramework/Rules/*.swift
+        outputFiles:
+          - $(SRCROOT)/Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
+      - name: Update Tests/LinuxMain.swift
+        script: |
+                if which sourcery >/dev/null; then
+                  make Tests/LinuxMain.swift
+                else
+                  echo "Sourcery not found, install with 'brew install sourcery'"
+                fi
+        inputFiles:
+          - $(SRCROOT)/Tests/*/*.swift
+        outputFiles:
+          - $(SRCROOT)/Tests/LinuxMain.swift
+  SwiftLintFrameworkTests:
+    type: bundle.unit-test
+    dependencies:
+      - target: SwiftLintFramework
+    platform: macOS
+    sources: 
+      - path: Tests/SwiftLintFrameworkTests
+        excludes: 
+          - Resources

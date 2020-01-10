@@ -78,6 +78,10 @@
   removed.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix discarded_notification_center_observer false positives
+  when capturing observers into an array
+  [Petteri Huusko](https://github.com/PetteriHuusko)
+
 ## 0.38.1: Extra Shiny Pulsator Cap
 
 #### Breaking

@@ -27,7 +27,11 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             "func foo(_ notif: Any) {\n" +
             "   obs.append(notif)\n" +
             "}\n" +
-            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"
+            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            "var obs: [NSObjectProtocol] = [\n" +
+            "   nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }),\n" +
+            "   nc.addObserver(forName: .CKAccountChanged, object: nil, queue: nil, using: { })\n" +
+            "]\n"
         ],
         triggeringExamples: [
             "↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
@@ -74,7 +78,13 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         if let lastMatch = file.match(pattern: "\\breturn\\s+", with: [.keyword], range: range).last,
             lastMatch.location == range.length - lastMatch.length,
             let lastFunction = file.structureDictionary.functions(forByteOffset: offset).last,
-            !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
+            lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
+            return [offset]
+        }
+
+        if file.structureDictionary.kinds(forByteOffset: offset).count > 1 {
+            // Pass if addObserver(..) call is part of some kind of expression,
+            // e.g. array literal, parameter to some function or struct/class/tuple init.
             return []
         }
 

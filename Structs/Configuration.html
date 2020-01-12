@@ -754,8 +754,148 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>rulesMode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Structs/Configuration/RulesMode.html">RulesMode</a></code> for this configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>included</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Included paths to lint.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>excluded</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Excluded paths to not lint.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>warningThreshold</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The threshold for the number of warnings to tolerate before treating the
+                                lint as having failed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>reporter</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The identifier for the <code><a href="../Protocols/Reporter.html">Reporter</a></code> to use to report style violations.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ruleList</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>All rules that should be accessible to this configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>configuredRules</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The rules with their own configurations already applied.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>swiftlintVersion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The SwiftLint version defined in this configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>cachePath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The location of the persisted cache to use whith this configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>indentation</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The style to use when indenting Swift source code.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>customRulesIdentifiers</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>All custom rule identifiers defined in the configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L71-L109">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L84-L122">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -786,8 +926,100 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path on disk to the configuration file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>rootPath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The root directory to search for nested configurations.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>optional</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If false, the initializer will trap if the file isn&rsquo;t found.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>quiet</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If false, a message will be logged to stderr when the configuration file is
+                                loaded.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>enableAllRules</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Enable all available rules.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>cachePath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The location of the persisted cache to use whith this configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>customRulesIdentifiers</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>All custom rule identifiers defined in the configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L146-L192">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L168-L214">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -829,7 +1061,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L196-L206">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L218-L228">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -872,8 +1104,12 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A new <code>Configuration</code> value.</p>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Cache.swift#L42-L46">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Cache.swift#L44-L48">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1174,11 +1410,23 @@ child configurations in the directory inheritance graph present until the level 
                                 </div>
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>customRulesIdentifiers</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>All custom rule identifiers defined in the configuration.</p>
+                                </div>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Parsing.swift#L63-L109">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Parsing.swift#L64-L110">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

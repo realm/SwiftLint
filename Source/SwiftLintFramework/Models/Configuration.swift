@@ -72,7 +72,8 @@ public struct Configuration: Hashable {
     /// - parameter rulesMode:              The `RulesMode` for this configuration.
     /// - parameter included:               Included paths to lint.
     /// - parameter excluded:               Excluded paths to not lint.
-    /// - parameter warningThreshold:       The threshold for the number of warnings to tolerate before treating the lint as having failed.
+    /// - parameter warningThreshold:       The threshold for the number of warnings to tolerate before treating the
+    ///                                     lint as having failed.
     /// - parameter reporter:               The identifier for the `Reporter` to use to report style violations.
     /// - parameter ruleList:               All rules that should be accessible to this configuration.
     /// - parameter configuredRules:        The rules with their own configurations already applied.

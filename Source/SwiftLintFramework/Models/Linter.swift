@@ -143,6 +143,10 @@ public struct Linter {
     }
 
     /// Returns a linter capable of checking for violations after running each rule's collection step.
+    ///
+    /// - parameter storage: The storage object where collected info should be saved.
+    ///
+    /// - returns: A linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
         DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
             rules[idx].collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
@@ -171,11 +175,19 @@ public struct CollectedLinter {
     }
 
     /// Computes or retrieves style violations.
+    ///
+    /// - parameter storage: The storage object containing all collected info.
+    ///
+    /// - returns: All style violations found by this linter.
     public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
         return getStyleViolations(using: storage).0
     }
 
     /// Computes or retrieves style violations and the time spent executing each rule.
+    ///
+    /// - parameter storage: The storage object containing all collected info.
+    ///
+    /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
         -> ([StyleViolation], [(id: String, time: Double)]) {
             return getStyleViolations(using: storage, benchmark: true)
@@ -246,6 +258,10 @@ public struct CollectedLinter {
     }
 
     /// Applies corrections for all rules to this file, returning performed corrections.
+    ///
+    /// - parameter storage: The storage object containing all collected info.
+    ///
+    /// - returns: All corrections that were applied.
     public func correct(using storage: RuleStorage) -> [Correction] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
             return []

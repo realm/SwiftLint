@@ -182,6 +182,8 @@ extension SourceKittenDictionary {
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///
     /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
+    ///
+    /// - returns: The list of substructure dictionaries with updated values from the traverse block.
     func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
         var result: [T] = []
         traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
@@ -203,6 +205,8 @@ extension SourceKittenDictionary {
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///
     /// - parameter traverseBlock: block that will be called for each substructure and its parent.
+    ///
+    /// - returns: The list of substructure dictionaries with updated values from the traverse block.
     func traverseWithParentDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?)
         -> [T] {
         var result: [T] = []
@@ -224,7 +228,10 @@ extension SourceKittenDictionary {
 
     /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
     /// Traversing using breadth first strategy, so deepest substructures will be passed to `traverseBlock` last.
+    ///
     /// - parameter traverseBlock: block that will be called for each substructure in the dictionary.
+    ///
+    /// - returns: The list of substructure dictionaries with updated values from the traverse block.
     func traverseBreadthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
         var result: [T] = []
         traverseBreadthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
@@ -244,6 +251,8 @@ extension SourceKittenDictionary {
 
 extension Dictionary where Key == String {
     /// Returns a dictionary with SwiftLint violation markers (↓) removed from keys.
+    ///
+    /// - returns: A new `Dictionary`.
     func removingViolationMarkers() -> [Key: Value] {
         return Dictionary(uniqueKeysWithValues: map { ($0.replacingOccurrences(of: "↓", with: ""), $1) })
     }

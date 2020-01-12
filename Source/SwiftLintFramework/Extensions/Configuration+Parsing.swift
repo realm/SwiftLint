@@ -60,6 +60,7 @@ extension Configuration {
     /// - parameter enableAllRules:         Whether all rules from `ruleList` should be enabled, regardless of the
     ///                                     settings in `dict`.
     /// - parameter cachePath:              The location of the persisted cache on disk.
+    /// - parameter customRulesIdentifiers: All custom rule identifiers defined in the configuration.
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
                  cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.

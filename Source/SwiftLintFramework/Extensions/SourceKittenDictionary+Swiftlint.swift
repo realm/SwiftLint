@@ -4,7 +4,9 @@ extension SourceKittenDictionary {
     /// Returns array of tuples containing "key.kind" and "byteRange" from Structure
     /// that contains the byte offset. Returns all kinds if no parameter specified.
     ///
-    /// - Parameter byteOffset: Int?
+    /// - parameter byteOffset: Int?
+    ///
+    /// - returns: The kinds and byte ranges.
     internal func kinds(forByteOffset byteOffset: Int? = nil)
         -> [(kind: String, byteRange: NSRange)] {
         var results = [(kind: String, byteRange: NSRange)]()

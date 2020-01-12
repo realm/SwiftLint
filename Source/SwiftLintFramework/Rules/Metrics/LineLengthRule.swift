@@ -91,7 +91,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
     ///
     /// - parameter sourceString: Original string, possibly containing literals
     /// - parameter delimiter:    Delimiter of the literal
-    ///     (characters before the parentheses, e.g. `#colorLiteral`)
+    ///                           (characters before the parentheses, e.g. `#colorLiteral`)
     ///
     /// - returns: sourceString with the given literals replaced by `#`
     private func stripLiterals(fromSourceString sourceString: String,

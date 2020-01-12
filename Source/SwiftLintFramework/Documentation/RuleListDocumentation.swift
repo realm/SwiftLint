@@ -16,6 +16,8 @@ public struct RuleListDocumentation {
     /// Write the rule list documentation as markdown files to the specified directory.
     ///
     /// - parameter url: Local URL for directory where the markdown files for this documentation should be saved.
+    ///
+    /// - throws: Throws if the files could not be written to.
     public func write(to url: URL) throws {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         func write(_ text: String, toFile file: String) throws {

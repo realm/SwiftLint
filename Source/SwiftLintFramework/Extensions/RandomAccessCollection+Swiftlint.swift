@@ -11,15 +11,16 @@ extension RandomAccessCollection where Index == Int {
     ///       //                      ^
     ///       // therefore idx == 3
     ///
-    /// - Parameter predicate: A closure that takes an element as its argument
-    ///   and returns a Boolean value that indicates whether the passed element
-    ///   represents a match.
+    /// - parameter predicate: A closure that takes an element as its argument
+    ///                        and returns a Boolean value that indicates whether the passed element
+    ///                        represents a match.
     ///
-    /// - Returns: The index of the first element for which `predicate` returns
-    ///   `true`. If no elements in the collection satisfy the given predicate,
-    ///   returns `nil`.
+    /// - returns: The index of the first element for which `predicate` returns `true`.
+    ///            If no elements in the collection satisfy the given predicate, returns `nil`.
     ///
-    /// - Complexity: O(log(*n*)), where *n* is the length of the collection.
+    /// - complexity: O(log(*n*)), where *n* is the length of the collection.
+    ///
+    /// - throws: Rethrows errors thrown by the predicate.
     @inlinable
     func firstIndexAssumingSorted(where predicate: (Self.Element) throws -> Bool) rethrows -> Int? {
         // Predicate should divide a collection to two pairs of values

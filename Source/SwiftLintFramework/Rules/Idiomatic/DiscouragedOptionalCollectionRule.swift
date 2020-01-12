@@ -89,7 +89,7 @@ private extension String {
     /// = [8, 16]
     /// = [8, 17), mathematical interval, w/ lower and upper bounds.
     ///
-    /// - Returns: An array of ranges.
+    /// - returns: An array of ranges.
     func optionalCollectionRanges() -> [Range<String.Index>] {
         let squareBrackets = balancedRanges(from: "[", to: "]").compactMap { range -> Range<String.Index>? in
             guard
@@ -122,26 +122,29 @@ private extension String {
     ///         ^   ^     ^
     /// = [0, 2, 5]
     ///
-    /// - Parameter character: The character to look for.
-    /// - Returns: Array of indices.
+    /// - parameter character: The character to look for.
+    /// - returns: Array of indices.
     private func indices(of character: Character) -> [String.Index] {
         return indices.compactMap { self[$0] == character ? $0 : nil }
     }
 
     /// Ranges of balanced substrings.
     ///
-    /// Example: ((1+2)*(3+4))
+    /// Example:
     ///
-    ///         (  (  1  +  2  )  *  (  3  +  4  )  )
-    ///         0  1  2  3  4  5  6  7  8  9  10 11 12
-    ///         ^  ^           ^     ^           ^  ^
+    /// ```
+    /// ((1+2)*(3+4))
+    /// (  (  1  +  2  )  *  (  3  +  4  )  )
+    /// 0  1  2  3  4  5  6  7  8  9  10 11 12
+    /// ^ ^            ^     ^           ^  ^
     /// = [0, 12], [1, 5], [7, 11]
     /// = [0, 13), [1, 6), [7, 12), mathematical interval, w/ lower and upper bounds.
+    /// ```
     ///
-    /// - Parameters:
-    ///   - prefix: The prefix to look for.
-    ///   - suffix: The suffix to look for.
-    /// - Returns: Array of ranges of balanced substrings
+    /// - parameter prefix: The prefix to look for.
+    /// - parameter suffix: The suffix to look for.
+    ///
+    /// - returns: Array of ranges of balanced substrings.
     private func balancedRanges(from prefix: Character, to suffix: Character) -> [Range<String.Index>] {
         return indices(of: prefix).compactMap { prefixIndex in
             var pairCount = 0

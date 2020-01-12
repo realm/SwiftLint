@@ -38,8 +38,8 @@ public struct Command: Equatable {
         /// The rule(s) associated with this command should be disabled by the SwiftLint engine.
         case disable
 
-        /// Returns the inverse action that can cancel out the current action, restoring the SwifttLint engine's state
-        /// prior to the current action.
+        /// - returns: The inverse action that can cancel out the current action, restoring the SwifttLint engine's
+        ///            state prior to the current action.
         internal func inverse() -> Action {
             switch self {
             case .enable: return .disable
@@ -95,9 +95,9 @@ public struct Command: Equatable {
     /// Creates a command based on the specified parameters.
     ///
     /// - parameter actionString: The string in the command's definition describing its action.
-    /// - parameter line:            The line in the source file where this command is defined.
-    /// - parameter character:       The character offset within the line in the source file where this command is
-    ///                              defined.
+    /// - parameter line:         The line in the source file where this command is defined.
+    /// - parameter character:    The character offset within the line in the source file where this command is
+    ///                           defined.
     public init?(actionString: String, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString(string: "swiftlint:")
@@ -144,6 +144,8 @@ public struct Command: Equatable {
 
     /// Expands the current command into its fully descriptive form without any modifiers.
     /// If the command doesn't have a modifier, it is returned as-is.
+    ///
+    /// - returns: The expanded commands.
     internal func expand() -> [Command] {
         guard let modifier = modifier else {
             return [self]

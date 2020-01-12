@@ -19,6 +19,8 @@ public protocol Reporter: CustomStringConvertible {
 /// known reporters.
 ///
 /// - parameter identifier: The identifier corresponding to the reporter.
+///
+/// - returns: The reporter type.
 public func reporterFrom(identifier: String) -> Reporter.Type { // swiftlint:disable:this cyclomatic_complexity
     switch identifier {
     case XcodeReporter.identifier:

@@ -68,6 +68,19 @@ public struct Configuration: Hashable {
     // MARK: Initializers
 
     /// Creates a `Configuration` by specifying its properties directly.
+    ///
+    /// - parameter rulesMode:              The `RulesMode` for this configuration.
+    /// - parameter included:               Included paths to lint.
+    /// - parameter excluded:               Excluded paths to not lint.
+    /// - parameter warningThreshold:       The threshold for the number of warnings to tolerate before treating the
+    ///                                     lint as having failed.
+    /// - parameter reporter:               The identifier for the `Reporter` to use to report style violations.
+    /// - parameter ruleList:               All rules that should be accessible to this configuration.
+    /// - parameter configuredRules:        The rules with their own configurations already applied.
+    /// - parameter swiftlintVersion:       The SwiftLint version defined in this configuration.
+    /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
+    /// - parameter indentation:            The style to use when indenting Swift source code.
+    /// - parameter customRulesIdentifiers: All custom rule identifiers defined in the configuration.
     public init?(rulesMode: RulesMode = .default(disabled: [], optIn: []),
                  included: [String] = [],
                  excluded: [String] = [],
@@ -143,6 +156,15 @@ public struct Configuration: Hashable {
     }
 
     /// Creates a `Configuration` with convenience parameters.
+    ///
+    /// - parameter path:                   The path on disk to the configuration file.
+    /// - parameter rootPath:               The root directory to search for nested configurations.
+    /// - parameter optional:               If false, the initializer will trap if the file isn't found.
+    /// - parameter quiet:                  If false, a message will be logged to stderr when the configuration file is
+    ///                                     loaded.
+    /// - parameter enableAllRules:         Enable all available rules.
+    /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
+    /// - parameter customRulesIdentifiers: All custom rule identifiers defined in the configuration.
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false,
                 cachePath: String? = nil, customRulesIdentifiers: [String] = []) {

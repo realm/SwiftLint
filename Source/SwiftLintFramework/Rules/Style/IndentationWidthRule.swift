@@ -147,10 +147,12 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         return violations
     }
 
-    /// Validates whether the indentation of a specific line is valid
-    /// based on the indentation of the previous line.
+    /// Validates whether the indentation of a specific line is valid based on the indentation of the previous line.
     ///
-    /// Returns a Bool determining the validity of the indentation.
+    /// - parameter indentation:     The indentation of the line to validate.
+    /// - parameter lastIndentation: The indentation of the previous line.
+    ///
+    /// - returns: Whether the specified indentation is valid.
     private func validate(indentation: Indentation, comparingTo lastIndentation: Indentation) -> Bool {
         let currentSpaceEquivalent = indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
         let lastSpaceEquivalent = lastIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)

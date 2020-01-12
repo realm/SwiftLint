@@ -23,6 +23,8 @@ public struct Region: Equatable {
     /// Whether the specific location is contained in this region.
     ///
     /// - parameter location: The location to check for containment.
+    ///
+    /// - returns: True if the specific location is contained in this region.
     public func contains(_ location: Location) -> Bool {
         return start <= location && end >= location
     }
@@ -30,6 +32,8 @@ public struct Region: Equatable {
     /// Whether the specified rule is enabled in this region.
     ///
     /// - parameter rule: The rule whose status should be determined.
+    ///
+    /// - returns: True if the specified rule is enabled in this region.
     public func isRuleEnabled(_ rule: Rule) -> Bool {
         return !isRuleDisabled(rule)
     }
@@ -37,6 +41,8 @@ public struct Region: Equatable {
     /// Whether the specified rule is disabled in this region.
     ///
     /// - parameter rule: The rule whose status should be determined.
+    ///
+    /// - returns: True if the specified rule is disabled in this region.
     public func isRuleDisabled(_ rule: Rule) -> Bool {
         guard !disabledRuleIdentifiers.contains(.all) else {
             return true
@@ -51,6 +57,8 @@ public struct Region: Equatable {
     /// Returns the empty set if the rule isn't disabled in this region.
     ///
     /// - parameter rule: The rule to check.
+    ///
+    /// - returns: Deprecated rule aliases.
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
         return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)

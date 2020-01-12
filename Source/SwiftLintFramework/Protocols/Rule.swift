@@ -14,6 +14,8 @@ public protocol Rule {
 
     /// Creates a rule by applying its configuration.
     ///
+    /// - parameter configuration: The untyped configuration value to apply.
+    ///
     /// - throws: Throws if the configuration didn't match the expected format.
     init(configuration: Any) throws
 
@@ -21,14 +23,22 @@ public protocol Rule {
     ///
     /// - parameter file:              The file for which to execute the rule.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation]
 
     /// Executes the rule on a file and returns any violations to the rule's expectations.
     ///
-    /// - parameter file:              The file for which to execute the rule.
+    /// - parameter file: The file for which to execute the rule.
+    ///
+    /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile) -> [StyleViolation]
 
     /// Whether or not the specified rule is equivalent to the current rule.
+    ///
+    /// - parameter rule: The `rule` value to compare against.
+    ///
+    /// - returns: Whether or not the specified rule is equivalent to the current rule.
     func isEqualTo(_ rule: Rule) -> Bool
 
     /// Collects information for the specified file in a storage object, to be analyzed by a `CollectedLinter`.
@@ -48,6 +58,8 @@ public protocol Rule {
     /// - parameter file:              The file for which to execute the rule.
     /// - parameter storage:           The storage object containing all collected info.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
 }
 
@@ -114,6 +126,8 @@ public protocol CorrectableRule: Rule {
     /// - parameter file:              The file for which to execute the rule.
     /// - parameter storage:           The storage object containing all collected info.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: All corrections that were applied.
     func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
 }
 
@@ -130,9 +144,18 @@ public extension CorrectableRule {
 /// updated content.
 public protocol SubstitutionCorrectableRule: CorrectableRule {
     /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
+    ///
+    /// - parameter file: The file in which to find ranges of violations for this rule.
+    ///
+    /// - returns: The NSString-based `NSRange`s to be replaced in the specified file.
     func violationRanges(in file: SwiftLintFile) -> [NSRange]
 
     /// Returns the substitution to apply for the given range.
+    ///
+    /// - parameter violationRange: The NSString-based `NSRange` of the violation that should be replaced.
+    /// - parameter file:           The file in which the violation should be replaced.
+    ///
+    /// - returns: The range of the correction and its contents, if one could be computed.
     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)?
 }
 
@@ -161,6 +184,12 @@ public extension SubstitutionCorrectableRule {
 /// A `SubstitutionCorrectableRule` that is also an `ASTRule`.
 public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
     /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
+    ///
+    /// - parameter file:       The file in which to find ranges of violations for this rule.
+    /// - parameter kind:       The kind of token being recursed over.
+    /// - parameter dictionary: The dicttionary for an AST subset to validate.
+    ///
+    /// - returns: The NSString-based `NSRange`s to be replaced in the specified file.
     func violationRanges(in file: SwiftLintFile, kind: KindType,
                          dictionary: SourceKittenDictionary) -> [NSRange]
 }
@@ -208,11 +237,15 @@ public protocol CollectingRule: AnyCollectingRule {
     ///
     /// - parameter file:              The file for which to collect info.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: The collected file information.
     func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> FileInfo
 
     /// Collects information for the specified file, to be analyzed by a `CollectedLinter`.
     ///
     /// - parameter file: The file for which to collect info.
+    ///
+    /// - returns: The collected file information.
     func collectInfo(for file: SwiftLintFile) -> FileInfo
 
     /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
@@ -221,6 +254,8 @@ public protocol CollectingRule: AnyCollectingRule {
     /// - parameter file:              The file for which to execute the rule.
     /// - parameter collectedInfo:     All collected info for all files.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments: [String]) -> [StyleViolation]
 
@@ -229,6 +264,8 @@ public protocol CollectingRule: AnyCollectingRule {
     ///
     /// - parameter file:          The file for which to execute the rule.
     /// - parameter collectedInfo: All collected info for all files.
+    ///
+    /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation]
 }
 
@@ -286,6 +323,8 @@ public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
     /// - parameter file:              The file for which to execute the rule.
     /// - parameter collectedInfo:     All collected info.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
+    ///
+    /// - returns: All corrections that were applied.
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
                  compilerArguments: [String]) -> [Correction]
 
@@ -294,8 +333,10 @@ public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
     ///
     /// - note: This function is called by the linter and is always implemented in extensions.
     ///
-    /// - parameter file:              The file for which to execute the rule.
-    /// - parameter collectedInfo:     All collected info.
+    /// - parameter file:          The file for which to execute the rule.
+    /// - parameter collectedInfo: All collected info.
+    ///
+    /// - returns: All corrections that were applied.
     func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction]
 }
 

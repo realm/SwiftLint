@@ -99,7 +99,13 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 }
 
 extension ColonRule: ASTRule {
-    /// Only returns dictionary and function calls colon violations
+    /// Only returns dictionary and function calls colon violations.
+    ///
+    /// - parameter file:       The file to validate.
+    /// - parameter kind:       The expression kind to parse.
+    /// - parameter dictionary: The substructure to validate.
+    ///
+    /// - returns: Colon rule style violations in dictionaries and function calls.
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let ranges = dictionaryColonViolationRanges(in: file, kind: kind, dictionary: dictionary) +

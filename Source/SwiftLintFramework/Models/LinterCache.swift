@@ -91,6 +91,9 @@ public final class LinterCache {
     }
 
     /// Persists the cache to disk.
+    ///
+    /// - throws: Throws if the linter cache doesn't have a `location` value, if the cache couldn't be serialized, or if
+    ///           the contents couldn't be written to disk.
     public func save() throws {
         guard let url = location else {
             throw LinterCacheError.noLocation

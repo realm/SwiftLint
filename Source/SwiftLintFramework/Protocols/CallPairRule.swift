@@ -17,14 +17,13 @@ extension CallPairRule {
       callNameSuffix                      pattern
      ```
      
-     - parameters:
-        - file: The file to validate
-        - pattern: Regular expression which matches the second part of the expression
-        - patternSyntaxKinds: Syntax kinds matches should have
-        - callNameSuffix: Suffix of the first method call name
-        - severity: Severity of violations
-        - reason: The reason of the generated violations
-        - predicate: Predicate to apply after checking callNameSuffix
+     - parameter file: The file to validate
+     - parameter pattern: Regular expression which matches the second part of the expression
+     - parameter patternSyntaxKinds: Syntax kinds matches should have
+     - parameter callNameSuffix: Suffix of the first method call name
+     - parameter severity: Severity of violations
+     - parameter reason: The reason of the generated violations
+     - parameter predicate: Predicate to apply after checking callNameSuffix
      */
     internal func validate(file: SwiftLintFile,
                            pattern: String,

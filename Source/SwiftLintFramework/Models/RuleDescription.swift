@@ -60,6 +60,17 @@ public struct RuleDescription: Equatable, Codable {
     }
 
     /// Creates a `RuleDescription` by specifying all its properties directly.
+    ///
+    /// - parameter identifier:            Sets the description's `identifier` property.
+    /// - parameter name:                  Sets the description's `name` property.
+    /// - parameter description:           Sets the description's `description` property.
+    /// - parameter kind:                  Sets the description's `kind` property.
+    /// - parameter minSwiftVersion:       Sets the description's `minSwiftVersion` property.
+    /// - parameter nonTriggeringExamples: Sets the description's `nonTriggeringExamples` property.
+    /// - parameter triggeringExamples:    Sets the description's `triggeringExamples` property.
+    /// - parameter corrections:           Sets the description's `corrections` property.
+    /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
+    /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.
     public init(identifier: String, name: String, description: String, kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .three,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],

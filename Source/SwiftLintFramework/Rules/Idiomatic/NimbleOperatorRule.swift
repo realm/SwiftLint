@@ -167,6 +167,12 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 
 private extension String {
     /// Returns corrected string if the correction is possible, otherwise returns nil.
+    ///
+    /// - parameter name:                 The function name to replace.
+    /// - parameter predicateDescription: The Nimble operators to replace functions with.
+    /// - parameter range:                The range in which replacements should be applied.
+    ///
+    /// - returns: The corrected string if the correction is possible, otherwise returns nil.
     func replace(function name: NimbleOperatorRule.MatcherFunction,
                  with predicateDescription: NimbleOperatorRule.PredicateDescription,
                  in range: NSRange) -> String? {

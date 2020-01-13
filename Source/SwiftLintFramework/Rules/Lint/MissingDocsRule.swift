@@ -2,7 +2,7 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func missingDocOffsets(in dictionary: SourceKittenDictionary,
-                           acls: [AccessControlLevel]) -> [(Int, AccessControlLevel)] {
+                           acls: [AccessControlLevel]) -> [(ByteCount, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
             !dictionary.inheritedTypes.isEmpty {
             return []
@@ -77,8 +77,7 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
         let dict = file.structureDictionary
-        return file.missingDocOffsets(in: dict,
-                                      acls: acls).map { (offset: Int, acl: AccessControlLevel) in
+        return file.missingDocOffsets(in: dict, acls: acls).map { offset, acl in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.parameters.first { $0.value == acl }?.severity ?? .warning,
                            location: Location(file: file, byteOffset: offset),

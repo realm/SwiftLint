@@ -74,7 +74,10 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
         guard !isComputed else { return [] }
 
         guard let offset = dictionary.offset,
-            let range = file.stringView.byteRangeToNSRange(start: offset, length: 3) else { return [] }
+            let range = file.stringView.byteRangeToNSRange(ByteRange(location: offset, length: 3))
+        else {
+            return []
+        }
 
         return [range]
     }
@@ -83,13 +86,14 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
         return (violationRange, "weak var")
     }
 
-    private func protocolDeclarations(forByteOffset byteOffset: Int,
+    private func protocolDeclarations(forByteOffset byteOffset: ByteCount,
                                       structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         return structureDictionary.traverseBreadthFirst { dictionary in
             guard dictionary.declarationKind == .protocol,
                 let byteRange = dictionary.byteRange,
-                NSLocationInRange(byteOffset, byteRange) else {
-                    return nil
+                byteRange.contains(byteOffset)
+            else {
+                return nil
             }
             return [dictionary]
         }

@@ -61,7 +61,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func validate(name: String, dictionary: SourceKittenDictionary = SourceKittenDictionary([:]),
-                          file: SwiftLintFile, offset: Int) -> [StyleViolation] {
+                          file: SwiftLintFile, offset: ByteCount) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }

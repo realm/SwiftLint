@@ -80,7 +80,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func validateName(dictionary: SourceKittenDictionary,
-                              kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
+                              kind: SwiftDeclarationKind) -> (name: String, offset: ByteCount)? {
         guard var name = dictionary.name,
             let offset = dictionary.offset,
             kinds.contains(kind),

@@ -49,14 +49,14 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         guard kind == .call, let name = dictionary.name, name.hasSuffix(".map"),
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
+            let bodyRange = dictionary.bodyByteRange,
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let offset = dictionary.offset else {
                 return []
         }
 
-        let range = NSRange(location: bodyOffset, length: bodyLength)
-        let tokens = file.syntaxMap.tokens(inByteRange: range).filter { token in
+        let tokens = file.syntaxMap.tokens(inByteRange: bodyRange).filter { token in
             guard let kind = token.kind else {
                 return false
             }
@@ -84,37 +84,39 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 
     private func isClosureParameter(firstToken: SwiftLintSyntaxToken,
-                                    nameEndPosition: Int,
+                                    nameEndPosition: ByteCount,
                                     file: SwiftLintFile) -> Bool {
         let length = firstToken.offset - nameEndPosition
         guard length > 0,
             case let contents = file.stringView,
-            let byteRange = contents.byteRangeToNSRange(start: nameEndPosition, length: length) else {
-                return false
+            case let byteRange = ByteRange(location: nameEndPosition, length: length),
+            let nsRange = contents.byteRangeToNSRange(byteRange)
+        else {
+            return false
         }
 
         let pattern = regex("\\A\\s*\\(?\\s*\\{")
-        return pattern.firstMatch(in: file.contents, options: .anchored, range: byteRange) != nil
+        return pattern.firstMatch(in: file.contents, options: .anchored, range: nsRange) != nil
     }
 
     private func containsTrailingContent(lastToken: SwiftLintSyntaxToken,
-                                         bodyEndPosition: Int,
+                                         bodyEndPosition: ByteCount,
                                          file: SwiftLintFile) -> Bool {
         let lastTokenEnd = lastToken.offset + lastToken.length
         let remainingLength = bodyEndPosition - lastTokenEnd
-        let remainingRange = NSRange(location: lastTokenEnd, length: remainingLength)
+        let remainingRange = ByteRange(location: lastTokenEnd, length: remainingLength)
         return containsContent(inByteRange: remainingRange, file: file)
     }
 
     private func containsLeadingContent(tokens: [SwiftLintSyntaxToken],
-                                        bodyStartPosition: Int,
+                                        bodyStartPosition: ByteCount,
                                         file: SwiftLintFile) -> Bool {
         let inTokenPosition = tokens.firstIndex(where: { token in
             token.kind == .keyword && file.contents(for: token) == "in"
         })
 
         let firstToken: SwiftLintSyntaxToken
-        let start: Int
+        let start: ByteCount
         if let position = inTokenPosition {
             let index = tokens.index(after: position)
             firstToken = tokens[index]
@@ -126,25 +128,26 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         }
 
         let length = firstToken.offset - start
-        let remainingRange = NSRange(location: start, length: length)
+        let remainingRange = ByteRange(location: start, length: length)
         return containsContent(inByteRange: remainingRange, file: file)
     }
 
-    private func containsContent(inByteRange byteRange: NSRange, file: SwiftLintFile) -> Bool {
-        let nsstring = file.stringView
+    private func containsContent(inByteRange byteRange: ByteRange, file: SwiftLintFile) -> Bool {
+        let stringView = file.stringView
         let remainingTokens = file.syntaxMap.tokens(inByteRange: byteRange)
-        let ranges = NSMutableIndexSet(indexesIn: byteRange)
+        guard let nsRange = stringView.byteRangeToNSRange(byteRange) else {
+            return false
+        }
 
-        for token in remainingTokens {
-            ranges.remove(in: token.range)
+        let ranges = NSMutableIndexSet(indexesIn: nsRange)
+
+        for tokenNSRange in remainingTokens.compactMap({ stringView.byteRangeToNSRange($0.range) }) {
+            ranges.remove(in: tokenNSRange)
         }
 
         var containsContent = false
         ranges.enumerateRanges(options: []) { range, stop in
-            guard let substring = nsstring.substringWithByteRange(start: range.location, length: range.length) else {
-                return
-            }
-
+            let substring = stringView.substring(with: range)
             let processedSubstring = substring
                 .trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
                 .trimmingCharacters(in: .whitespacesAndNewlines)

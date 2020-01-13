@@ -53,10 +53,10 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
 
         let elements = dictionary.elements.filter { $0.kind == conditionKind }
         return elements.flatMap { element -> [StyleViolation] in
-            guard let offset = element.offset,
-                let length = element.length,
-                let range = file.stringView.byteRangeToNSRange(start: offset, length: length) else {
-                    return []
+            guard let byteRange = element.byteRange,
+                let range = file.stringView.byteRangeToNSRange(byteRange)
+            else {
+                return []
             }
 
             return violations(in: range, of: file, with: kind).map {

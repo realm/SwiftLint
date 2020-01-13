@@ -63,7 +63,7 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
                 case let outerKindIndex = kinds.index(before: brace.offset),
                 case let outerKind = kinds[outerKindIndex],
                 case let braceEnd = brace.element.byteRange.upperBound,
-                case let tokensRange = NSRange(location: braceEnd, length: outerKind.byteRange.upperBound - braceEnd),
+                case let tokensRange = ByteRange(location: braceEnd, length: outerKind.byteRange.upperBound - braceEnd),
                 case let tokens = file.syntaxMap.tokens(inByteRange: tokensRange),
                 !tokens.contains(where: isNotComment) else {
                     return nil
@@ -76,7 +76,7 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
     }
 }
 
-private func isBrace(offset: Int, element: (kind: String, byteRange: NSRange)) -> Bool {
+private func isBrace(offset: Int, element: (kind: String, byteRange: ByteRange)) -> Bool {
     return StatementKind(rawValue: element.kind) == .brace
 }
 

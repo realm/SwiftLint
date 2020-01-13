@@ -94,11 +94,6 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
     }
 
     private func kinds(forArgument argument: SourceKittenDictionary, file: SwiftLintFile) -> Set<SyntaxKind> {
-        guard let offset = argument.bodyOffset, let length = argument.bodyLength else {
-            return []
-        }
-
-        let range = NSRange(location: offset, length: length)
-        return Set(file.syntaxMap.kinds(inByteRange: range))
+        return argument.bodyByteRange.map { Set(file.syntaxMap.kinds(inByteRange: $0)) } ?? []
     }
 }

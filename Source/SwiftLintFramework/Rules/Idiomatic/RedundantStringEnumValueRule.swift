@@ -90,9 +90,9 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [ByteCount] {
         var caseCount = 0
-        var violations = [Int]()
+        var violations = [ByteCount]()
 
         for enumCase in children(of: dictionary, matching: .enumcase) {
             caseCount += enumElementsCount(dictionary: enumCase)
@@ -112,8 +112,8 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
         }).count
     }
 
-    private func violatingOffsetsForEnumCase(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [Int] {
-        return children(of: dictionary, matching: .enumelement).flatMap { element -> [Int] in
+    private func violatingOffsetsForEnumCase(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [ByteCount] {
+        return children(of: dictionary, matching: .enumelement).flatMap { element -> [ByteCount] in
             guard let name = element.name else {
                 return []
             }
@@ -122,18 +122,18 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
     }
 
     private func violatingOffsetsForEnumElement(dictionary: SourceKittenDictionary, name: String,
-                                                file: SwiftLintFile) -> [Int] {
+                                                file: SwiftLintFile) -> [ByteCount] {
         let enumInits = filterEnumInits(dictionary: dictionary)
 
-        return enumInits.compactMap { dictionary -> Int? in
+        return enumInits.compactMap { dictionary -> ByteCount? in
             guard let offset = dictionary.offset,
                 let length = dictionary.length else {
                     return nil
             }
 
             // the string would be quoted if offset and length were used directly
-            let enumCaseName = file.stringView
-                .substringWithByteRange(start: offset + 1, length: length - 2) ?? ""
+            let rangeWithoutQuotes = ByteRange(location: offset + 1, length: length - 2)
+            let enumCaseName = file.stringView.substringWithByteRange(rangeWithoutQuotes) ?? ""
             guard enumCaseName == name else {
                 return nil
             }

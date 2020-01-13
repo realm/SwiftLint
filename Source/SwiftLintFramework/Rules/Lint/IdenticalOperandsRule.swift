@@ -131,8 +131,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
             }
         }
 
-        let violationRange = file.stringView.byteRangeToNSRange(start: leftmostToken.offset,
-                                                                length: leftmostToken.length)
+        let violationRange = file.stringView.byteRangeToNSRange(leftmostToken.range)
         return violationRange
     }
 
@@ -175,12 +174,13 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
 
 private extension StringView {
     func subStringWithSyntaxToken(_ syntaxToken: SwiftLintSyntaxToken) -> String? {
-        return substringWithByteRange(start: syntaxToken.offset, length: syntaxToken.length)
+        return substringWithByteRange(syntaxToken.range)
     }
 
     func subStringBetweenTokens(_ startToken: SwiftLintSyntaxToken, _ endToken: SwiftLintSyntaxToken) -> String? {
-        return substringWithByteRange(start: startToken.offset + startToken.length,
-                                      length: endToken.offset - startToken.offset - startToken.length)
+        let byteRange = ByteRange(location: startToken.range.upperBound,
+                                  length: endToken.offset - startToken.range.upperBound)
+        return substringWithByteRange(byteRange)
     }
 
     func isDotOrOptionalChainingBetweenTokens(_ startToken: SwiftLintSyntaxToken,

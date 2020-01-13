@@ -60,8 +60,8 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [Int] {
-        return substructure.flatMap { dictionary -> [Int] in
+    private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [ByteCount] {
+        return substructure.flatMap { dictionary -> [ByteCount] in
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
                 if dict.expressionKind == .closure {
                     return dict.substructure
@@ -74,7 +74,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         }
     }
 
-    private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [Int] {
+    private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [ByteCount] {
         guard
             dictionary.kind != nil,
             let offset = dictionary.offset
@@ -90,7 +90,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule, Au
         return dictionary.substructure.compactMap(toViolationOffset)
     }
 
-    private func toViolationOffset(dictionary: SourceKittenDictionary) -> Int? {
+    private func toViolationOffset(dictionary: SourceKittenDictionary) -> ByteCount? {
         guard
             let name = dictionary.name,
             let offset = dictionary.offset,

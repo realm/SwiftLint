@@ -100,7 +100,8 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
             guard
                 let nameOffset = substructure.nameOffset,
                 let nameLength = substructure.nameLength,
-                let functionName = file.stringView.substringWithByteRange(start: nameOffset, length: nameLength)
+                case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
+                let functionName = file.stringView.substringWithByteRange(nameByteRange)
             else {
                 return []
             }
@@ -130,14 +131,10 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
     private func openingBracketViolation(parameters: [SourceKittenDictionary],
                                          file: SwiftLintFile) -> StyleViolation? {
         guard
-            let firstParamByteOffset = parameters.first?.offset,
-            let firstParamByteLength = parameters.first?.length,
-            let firstParamRange = file.stringView.byteRangeToNSRange(
-                start: firstParamByteOffset,
-                length: firstParamByteLength
-            )
+            let firstParamByteRange = parameters.first?.byteRange,
+            let firstParamRange = file.stringView.byteRangeToNSRange(firstParamByteRange)
         else {
-                return nil
+            return nil
         }
 
         let prefix = file.stringView.nsString.substring(to: firstParamRange.lowerBound)
@@ -157,12 +154,8 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
     private func closingBracketViolation(parameters: [SourceKittenDictionary],
                                          file: SwiftLintFile) -> StyleViolation? {
         guard
-            let lastParamByteOffset = parameters.last?.offset,
-            let lastParamByteLength = parameters.last?.length,
-            let lastParamRange = file.stringView.byteRangeToNSRange(
-                start: lastParamByteOffset,
-                length: lastParamByteLength
-            )
+            let lastParamByteRange = parameters.last?.byteRange,
+            let lastParamRange = file.stringView.byteRangeToNSRange(lastParamByteRange)
         else {
             return nil
         }

@@ -36,7 +36,7 @@ extension CallPairRule {
         let stringView = file.stringView
         let dictionary = file.structureDictionary
 
-        let violatingLocations: [Int] = firstRanges.compactMap { range in
+        let violatingLocations: [ByteCount] = firstRanges.compactMap { range in
             guard let bodyByteRange = stringView.NSRangeToByteRange(start: range.location, length: range.length),
                 case let firstLocation = range.location + range.length - 1,
                 let firstByteRange = stringView.NSRangeToByteRange(start: firstLocation, length: 1) else {
@@ -63,18 +63,14 @@ extension CallPairRule {
         }
     }
 
-    private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
+    private func methodCall(forByteOffset byteOffset: ByteCount, excludingOffset: ByteCount,
                             dictionary: SourceKittenDictionary,
-                            predicate: (SourceKittenDictionary) -> Bool) -> Int? {
-        if dictionary.expressionKind == .call,
-            let bodyOffset = dictionary.offset,
-            let bodyLength = dictionary.length,
-            let offset = dictionary.offset {
-            let byteRange = NSRange(location: bodyOffset, length: bodyLength)
-
-            if NSLocationInRange(byteOffset, byteRange) &&
-                !NSLocationInRange(excludingOffset, byteRange) && predicate(dictionary) {
-                return offset
+                            predicate: (SourceKittenDictionary) -> Bool) -> ByteCount? {
+        if dictionary.expressionKind == .call, let byteRange = dictionary.byteRange {
+            if byteRange.contains(byteOffset) &&
+                !byteRange.contains(excludingOffset) &&
+                predicate(dictionary) {
+                return dictionary.offset
             }
         }
 

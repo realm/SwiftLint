@@ -52,8 +52,9 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
         guard let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let bodyLength = dictionary.bodyLength,
-            bodyLength > 0 else {
-                return []
+            bodyLength > 0
+        else {
+            return []
         }
 
         let parameters = dictionary.enclosedVarParameters
@@ -70,14 +71,16 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             let rangeLength = paramOffset - rangeStart
             let contents = file.stringView
 
-            guard let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength),
+            let byteRange = ByteRange(location: rangeStart, length: rangeLength)
+            guard let range = contents.byteRangeToNSRange(byteRange),
                 let match = regex.matches(in: file.contents, options: [], range: range).last?.range,
                 match.location != NSNotFound,
                 let braceOffset = contents.NSRangeToByteRange(start: match.location, length: match.length)?.location,
                 let (braceLine, _) = contents.lineAndCharacter(forByteOffset: braceOffset),
                 let (paramLine, _) = contents.lineAndCharacter(forByteOffset: paramOffset),
-                braceLine != paramLine else {
-                    return nil
+                braceLine != paramLine
+            else {
+                return nil
             }
 
             return StyleViolation(ruleDescription: type(of: self).description,

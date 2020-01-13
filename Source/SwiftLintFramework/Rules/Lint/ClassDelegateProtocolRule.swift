@@ -65,8 +65,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
             let bodyOffset = dictionary.bodyOffset,
             case let contents = file.stringView,
             case let start = nameOffset + nameLength,
-            let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
-            !isClassProtocol(file: file, range: range) else {
+            case let byteRange = ByteRange(location: start, length: bodyOffset - start),
+            let range = contents.byteRangeToNSRange(byteRange),
+            !isClassProtocol(file: file, range: range)
+        else {
             return []
         }
 

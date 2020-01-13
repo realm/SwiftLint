@@ -54,13 +54,13 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticT
     }
 
     private func hasEmptyMessage(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength else { return false }
+        guard let bodyRange = dictionary.bodyByteRange else {
+            return false
+        }
 
-        guard bodyLength > 0 else { return true }
+        guard bodyRange.length > 0 else { return true }
 
-        let body = file.stringView.substringWithByteRange(start: bodyOffset, length: bodyLength)
+        let body = file.stringView.substringWithByteRange(bodyRange)
         return body == "\"\""
     }
 }

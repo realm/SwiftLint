@@ -165,26 +165,26 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
         return dictionary.elements
             .filter { $0.kind == "source.lang.swift.structure.elem.pattern" }
             .flatMap { dictionary -> [NSRange] in
-                guard let offset = dictionary.offset, let length = dictionary.length else {
+                guard let byteRange = dictionary.byteRange else {
                     return []
                 }
 
-                let pattern = contents.substringWithByteRange(start: offset, length: length)
+                let pattern = contents.substringWithByteRange(byteRange)
                 let tupleCommaByteOffsets = pattern?.tupleCommaByteOffsets ?? []
 
-                let tokensToCheck = (tupleCommaByteOffsets + [length]).compactMap { length in
+                let tokensToCheck = (tupleCommaByteOffsets + [byteRange.length]).compactMap { length in
                     return file.syntaxMap
-                        .tokens(inByteRange: NSRange(location: offset, length: length))
+                        .tokens(inByteRange: ByteRange(location: byteRange.location, length: length))
                         .prefix { $0.kind != .keyword || file.isTokenUnderscoreKeyword($0) }
                         .last
                 }
 
                 return tokensToCheck.compactMap { tokenToCheck in
-                    let questionMarkByteOffset = tokenToCheck.length + tokenToCheck.offset
-                    guard contents.substringWithByteRange(start: questionMarkByteOffset, length: 1) == "?" else {
+                    let questionMarkByteRange = ByteRange(location: tokenToCheck.range.upperBound, length: 1)
+                    guard contents.substringWithByteRange(questionMarkByteRange) == "?" else {
                         return nil
                     }
-                    return contents.byteRangeToNSRange(start: questionMarkByteOffset, length: 1)
+                    return contents.byteRangeToNSRange(questionMarkByteRange)
                 }
             }
     }
@@ -203,7 +203,7 @@ private extension String {
         return first == "(" && last == ")" && contains(",")
     }
 
-    var tupleCommaByteOffsets: [Int] {
+    var tupleCommaByteOffsets: [ByteCount] {
         guard isTuple else {
             return []
         }

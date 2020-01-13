@@ -82,12 +82,14 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
 
         let rangeStart = nameOffset + nameLength
         let rangeLength = (offset + length) - (nameOffset + nameLength)
+        let byteRange = ByteRange(location: rangeStart, length: rangeLength)
         let regex = EmptyParenthesesWithTrailingClosureRule.emptyParenthesesRegex
 
-        guard let range = file.stringView.byteRangeToNSRange(start: rangeStart, length: rangeLength),
+        guard let range = file.stringView.byteRangeToNSRange(byteRange),
             let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
-            match.location == range.location else {
-                return []
+            match.location == range.location
+        else {
+            return []
         }
 
         return [match]

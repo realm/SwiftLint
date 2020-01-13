@@ -102,14 +102,12 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             [.array, .dictionary].contains(kind),
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength,
-            let range = file.stringView.byteRangeToNSRange(start: bodyOffset, length: bodyLength)
+            let bodyByteRange = dictionary.bodyByteRange,
+            let body = file.stringView.substringWithByteRange(bodyByteRange)
         else {
             return []
         }
 
-        let body = file.contents.substring(from: range.location, length: range.length)
         let isMultiline = body.contains("\n")
         guard isMultiline else {
             return []
@@ -118,13 +116,13 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         let expectedBodyBeginRegex = regex("\\A[ \\t]*\\n")
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
 
-        var violatingByteOffsets = [Int]()
+        var violatingByteOffsets = [ByteCount]()
         if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyOffset)
+            violatingByteOffsets.append(bodyByteRange.location)
         }
 
         if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyOffset + bodyLength)
+            violatingByteOffsets.append(bodyByteRange.upperBound)
         }
 
         return violatingByteOffsets.map { byteOffset in

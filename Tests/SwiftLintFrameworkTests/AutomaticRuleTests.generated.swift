@@ -198,12 +198,6 @@ class ExplicitInitRuleTests: XCTestCase {
     }
 }
 
-class ExplicitSelfRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitSelfRule.description)
-    }
-}
-
 class ExplicitTopLevelACLRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTopLevelACLRule.description)
@@ -768,21 +762,9 @@ class UnusedControlFlowLabelRuleTests: XCTestCase {
     }
 }
 
-class UnusedDeclarationRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedDeclarationRule.description)
-    }
-}
-
 class UnusedEnumeratedRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedEnumeratedRule.description)
-    }
-}
-
-class UnusedImportRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedImportRule.description)
     }
 }
 

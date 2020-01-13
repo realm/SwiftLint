@@ -100,7 +100,7 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [ByteCount] {
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(enumElementsMissingInitExpr)

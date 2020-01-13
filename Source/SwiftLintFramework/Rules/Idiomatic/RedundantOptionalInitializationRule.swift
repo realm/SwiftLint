@@ -127,9 +127,9 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
 
         let contents = file.stringView
         if let bodyOffset = dictionary.bodyOffset {
-            return contents.byteRangeToNSRange(start: offset, length: bodyOffset - offset)
+            return contents.byteRangeToNSRange(ByteRange(location: offset, length: bodyOffset - offset))
         } else {
-            return contents.byteRangeToNSRange(start: offset, length: length)
+            return contents.byteRangeToNSRange(ByteRange(location: offset, length: length))
         }
     }
 
@@ -148,9 +148,9 @@ extension SourceKittenDictionary {
     }
 
     private func isVariable(file: SwiftLintFile) -> Bool {
-        guard let start = offset, let length = length,
+        guard let byteRange = byteRange,
             case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(start: start, length: length),
+            let range = contents.byteRangeToNSRange(byteRange),
             !file.match(pattern: "\\Avar\\b", with: [.keyword], range: range).isEmpty else {
                 return false
         }

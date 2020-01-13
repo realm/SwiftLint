@@ -59,7 +59,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
             let lastElementLength = lastElement.length,
             case let start = lastElementOffset + lastElementLength,
             case let rangeLength = offset + length - start,
-            case let byteRange = NSRange(location: start, length: rangeLength),
+            case let byteRange = ByteRange(location: start, length: rangeLength),
             let firstToken = firstNonCommentToken(inByteRange: byteRange, file: file),
             let (tokenLine, _) = file.stringView.lineAndCharacter(forByteOffset: firstToken.offset),
             let (caseEndLine, _) = file.stringView.lineAndCharacter(forByteOffset: start),
@@ -74,7 +74,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         ]
     }
 
-    private func firstNonCommentToken(inByteRange byteRange: NSRange, file: SwiftLintFile) -> SwiftLintSyntaxToken? {
+    private func firstNonCommentToken(inByteRange byteRange: ByteRange, file: SwiftLintFile) -> SwiftLintSyntaxToken? {
         return file.syntaxMap.tokens(inByteRange: byteRange).first { token -> Bool in
             guard let kind = token.kind else {
                 return false

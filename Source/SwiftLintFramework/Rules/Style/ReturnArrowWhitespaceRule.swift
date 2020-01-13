@@ -86,7 +86,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     // MARK: - Private
 
     private let pattern: String = {
-        //just horizontal spacing so that "func abc()->\n" can pass validation
+        // Just horizontal spacing so that "func abc()->\n" can pass validation
         let space = "[ \\f\\r\\t]"
 
         // Either 0 space characters or 2+

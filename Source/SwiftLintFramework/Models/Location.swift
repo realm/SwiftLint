@@ -37,11 +37,11 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
     }
 
     /// Creates a `Location` based on a `SwiftLintFile` and a byte-offset into the file.
-    /// Fails if tthe specified offset was not a valid location in the file.
+    /// Fails if the specified offset was not a valid location in the file.
     ///
     /// - parameter file:   The file for this location.
     /// - parameter offset: The offset in bytes into the file for this location.
-    public init(file: SwiftLintFile, byteOffset offset: Int) {
+    public init(file: SwiftLintFile, byteOffset offset: ByteCount) {
         self.file = file.path
         if let lineAndCharacter = file.stringView.lineAndCharacter(forByteOffset: offset) {
             line = lineAndCharacter.line

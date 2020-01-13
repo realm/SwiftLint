@@ -428,12 +428,6 @@ extension ExplicitInitRuleTests {
     ]
 }
 
-extension ExplicitSelfRuleTests {
-    static var allTests: [(String, (ExplicitSelfRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension ExplicitTopLevelACLRuleTests {
     static var allTests: [(String, (ExplicitTopLevelACLRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1497,20 +1491,8 @@ extension UnusedControlFlowLabelRuleTests {
     ]
 }
 
-extension UnusedDeclarationRuleTests {
-    static var allTests: [(String, (UnusedDeclarationRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension UnusedEnumeratedRuleTests {
     static var allTests: [(String, (UnusedEnumeratedRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
-extension UnusedImportRuleTests {
-    static var allTests: [(String, (UnusedImportRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1689,7 +1671,6 @@ XCTMain([
     testCase(ExplicitACLRuleTests.allTests),
     testCase(ExplicitEnumRawValueRuleTests.allTests),
     testCase(ExplicitInitRuleTests.allTests),
-    testCase(ExplicitSelfRuleTests.allTests),
     testCase(ExplicitTopLevelACLRuleTests.allTests),
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
     testCase(ExplicitTypeInterfaceRuleTests.allTests),
@@ -1830,9 +1811,7 @@ XCTMain([
     testCase(UnusedCaptureListRuleTests.allTests),
     testCase(UnusedClosureParameterRuleTests.allTests),
     testCase(UnusedControlFlowLabelRuleTests.allTests),
-    testCase(UnusedDeclarationRuleTests.allTests),
     testCase(UnusedEnumeratedRuleTests.allTests),
-    testCase(UnusedImportRuleTests.allTests),
     testCase(UnusedOptionalBindingRuleTests.allTests),
     testCase(UnusedSetterValueRuleTests.allTests),
     testCase(ValidIBInspectableRuleTests.allTests),

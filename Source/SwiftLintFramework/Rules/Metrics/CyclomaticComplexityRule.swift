@@ -89,10 +89,9 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     private func reduceSwitchComplexity(initialComplexity complexity: Int, file: SwiftLintFile,
                                         dictionary: SourceKittenDictionary) -> Int {
-        let bodyOffset = dictionary.bodyOffset ?? 0
-        let bodyLength = dictionary.bodyLength ?? 0
+        let bodyRange = dictionary.bodyByteRange ?? ByteRange(location: 0, length: 0)
 
-        let contents = file.stringView.substringWithByteRange(start: bodyOffset, length: bodyLength) ?? ""
+        let contents = file.stringView.substringWithByteRange(bodyRange) ?? ""
 
         let fallthroughCount = contents.components(separatedBy: "fallthrough").count - 1
         return complexity - fallthroughCount

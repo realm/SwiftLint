@@ -44,7 +44,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
                 return []
         }
 
-        let offset: Int
+        let offset: ByteCount
         let reason: String
         if firstTokenIsUnderscore {
             offset = tokens[0].offset
@@ -83,7 +83,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         return false
     }
 
-    private func byteRangeForVariables(dictionary: SourceKittenDictionary) -> NSRange? {
+    private func byteRangeForVariables(dictionary: SourceKittenDictionary) -> ByteRange? {
         let expectedKind = "source.lang.swift.structure.elem.id"
         for subDict in dictionary.elements where subDict.kind == expectedKind {
             guard let offset = subDict.offset,
@@ -91,7 +91,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
                 continue
             }
 
-            return NSRange(location: offset, length: length)
+            return ByteRange(location: offset, length: length)
         }
 
         return nil

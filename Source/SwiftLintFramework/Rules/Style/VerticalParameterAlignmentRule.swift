@@ -19,13 +19,14 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let startOffset = dictionary.nameOffset,
             let length = dictionary.nameLength,
-            case let endOffset = startOffset + length else {
+            case let endOffset = startOffset + length
+        else {
             return []
         }
 
         let params = dictionary.substructure.filter { subDict in
             return subDict.declarationKind == .varParameter &&
-                (subDict.offset ?? .max) < endOffset
+                (subDict.offset ?? ByteCount(Int.max)) < endOffset
         }
 
         guard params.count > 1 else {
@@ -35,8 +36,9 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         let contents = file.stringView
         let calculateLocation = { (dict: SourceKittenDictionary) -> Location? in
             guard let byteOffset = dict.offset,
-                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
-                    return nil
+                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset)
+            else {
+                return nil
             }
 
             return Location(file: file.path, line: lineAndChar.line, character: lineAndChar.character)

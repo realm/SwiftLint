@@ -69,9 +69,10 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
             case let nameEndPosition = nameOffset + nameLength,
             bodyOffset != nameEndPosition + 1,
             case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(start: nameEndPosition,
-                                                    length: bodyOffset - nameEndPosition - 1) else {
-                return []
+            case let byteRange = ByteRange(location: nameEndPosition, length: bodyOffset - nameEndPosition - 1),
+            let range = contents.byteRangeToNSRange(byteRange)
+        else {
+            return []
         }
 
         // Don't trigger if it's a single parameter trailing closure without parens

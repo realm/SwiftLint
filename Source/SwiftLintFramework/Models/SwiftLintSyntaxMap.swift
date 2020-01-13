@@ -22,7 +22,7 @@ public struct SwiftLintSyntaxMap {
     /// - parameter byteRange: Byte-based NSRange.
     ///
     /// - returns: The array of syntax tokens intersecting with byte range.
-    internal func tokens(inByteRange byteRange: NSRange) -> [SwiftLintSyntaxToken] {
+    internal func tokens(inByteRange byteRange: ByteRange) -> [SwiftLintSyntaxToken] {
         func intersect(_ token: SwiftLintSyntaxToken) -> Bool {
             return token.range.intersects(byteRange)
         }
@@ -46,10 +46,39 @@ public struct SwiftLintSyntaxMap {
 
     /// Returns the syntax kinds in the specified byte range.
     ///
-    /// - parameter byteRange: Byte-based NSRange.
+    /// - parameter byteRange: Byte range.
     ///
     /// - returns: The syntax kinds in the specified byte range.
-    internal func kinds(inByteRange byteRange: NSRange) -> [SyntaxKind] {
+    internal func kinds(inByteRange byteRange: ByteRange) -> [SyntaxKind] {
         return tokens(inByteRange: byteRange).compactMap { $0.kind }
+    }
+}
+
+// TODO: Move to SourceKitten
+
+extension ByteRange {
+    func contains(_ value: ByteCount) -> Bool {
+        return location <= value && upperBound >= value
+    }
+
+    func intersects(_ otherRange: ByteRange) -> Bool {
+        return contains(otherRange.location) ||
+            contains(otherRange.location + otherRange.length) ||
+            otherRange.contains(location) ||
+            otherRange.contains(location + length)
+    }
+
+    func intersects(_ ranges: [ByteRange]) -> Bool {
+        return ranges.contains { intersects($0) }
+    }
+
+    func union(with otherRange: ByteRange) -> ByteRange {
+        let maxUpperBound = max(upperBound, otherRange.upperBound)
+        let minLocation = min(location, otherRange.location)
+        return ByteRange(location: minLocation, length: maxUpperBound - minLocation)
+    }
+
+    var upperBound: ByteCount {
+        return location + length
     }
 }

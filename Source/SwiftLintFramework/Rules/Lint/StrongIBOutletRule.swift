@@ -27,8 +27,9 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
             case let attributes = dictionary.enclosedSwiftAttributes,
             attributes.contains(.iboutlet),
             attributes.contains(.weak),
-            let offset = dictionary.offset else {
-                return []
+            let offset = dictionary.offset
+        else {
+            return []
         }
 
         return [

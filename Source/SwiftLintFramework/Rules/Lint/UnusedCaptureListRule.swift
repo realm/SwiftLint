@@ -80,12 +80,14 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         guard kind == .closure,
             let offset = dictionary.offset,
             let length = dictionary.length,
-            let closureRange = contents.byteRangeToNSRange(start: offset, length: length)
+            let closureByteRange = dictionary.byteRange,
+            let closureRange = contents.byteRangeToNSRange(closureByteRange)
             else { return [] }
 
         let firstSubstructureOffset = dictionary.substructure.first?.offset ?? (offset + length)
         let captureListSearchLength = firstSubstructureOffset - offset
-        guard let captureListSearchRange = contents.byteRangeToNSRange(start: offset, length: captureListSearchLength),
+        let captureListSearchByteRange = ByteRange(location: offset, length: captureListSearchLength)
+        guard let captureListSearchRange = contents.byteRangeToNSRange(captureListSearchByteRange),
             let match = captureListRegex.firstMatch(in: file.contents, options: [], range: captureListSearchRange)
             else { return [] }
 
@@ -131,7 +133,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             }
     }
 
-    private func identifierStrings(in file: SwiftLintFile, byteRange: NSRange) -> Set<String> {
+    private func identifierStrings(in file: SwiftLintFile, byteRange: ByteRange) -> Set<String> {
         let identifiers = file.syntaxMap
             .tokens(inByteRange: byteRange)
             .compactMap { token -> String? in

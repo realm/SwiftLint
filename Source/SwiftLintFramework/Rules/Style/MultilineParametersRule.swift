@@ -3,8 +3,6 @@ import SourceKittenFramework
 public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
-    private typealias ParameterRange = (offset: Int, length: Int)
-
     public init() {}
 
     public static let description = RuleDescription(
@@ -21,22 +19,17 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             SwiftDeclarationKind.functionKinds.contains(kind),
-            let offset = dictionary.nameOffset,
-            let length = dictionary.nameLength
-            else {
-                return []
+            let nameRange = dictionary.nameByteRange
+        else {
+            return []
         }
 
-        let parameterRanges = dictionary.substructure.compactMap { subStructure -> ParameterRange? in
-            guard
-                let offset = subStructure.offset,
-                let length = subStructure.length,
-                subStructure.declarationKind == .varParameter
-                else {
-                    return nil
+        let parameterRanges = dictionary.substructure.compactMap { subStructure -> ByteRange? in
+            guard subStructure.declarationKind == .varParameter else {
+                return nil
             }
 
-            return (offset, length)
+            return subStructure.byteRange
         }
 
         var numberOfParameters = 0
@@ -44,11 +37,11 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
 
         for range in parameterRanges {
             guard
-                let (line, _) = file.stringView.lineAndCharacter(forByteOffset: range.offset),
-                offset..<(offset + length) ~= range.offset,
-                isRange(range, withinRanges: parameterRanges)
-                else {
-                    continue
+                let line = file.stringView.lineAndCharacter(forByteOffset: range.location)?.line,
+                nameRange.contains(range.location),
+                range.intersects(parameterRanges)
+            else {
+                continue
             }
 
             linesWithParameters.insert(line)
@@ -58,18 +51,12 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         guard
             linesWithParameters.count > 1,
             numberOfParameters != linesWithParameters.count
-            else {
-                return []
+        else {
+            return []
         }
 
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
-    }
-
-    // MARK: - Private
-
-    private func isRange(_ range: ParameterRange, withinRanges ranges: [ParameterRange]) -> Bool {
-        return !ranges.contains { $0 != range && ($0.offset..<($0.offset + $0.length)).contains(range.offset) }
+                               location: Location(file: file, byteOffset: nameRange.location))]
     }
 }

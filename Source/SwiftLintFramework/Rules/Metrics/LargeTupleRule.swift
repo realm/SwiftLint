@@ -73,7 +73,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
     }
 
     private func violationOffsetsForTypes(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                          kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
+                                          kind: SwiftDeclarationKind) -> [(offset: ByteCount, size: Int)] {
         let kinds = SwiftDeclarationKind.variableKinds.subtracting([.varLocal])
         guard kinds.contains(kind),
             let type = dictionary.typeName,
@@ -86,12 +86,11 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
     }
 
     private func violationOffsetsForFunctions(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                              kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
+                                              kind: SwiftDeclarationKind) -> [(offset: ByteCount, size: Int)] {
         let contents = file.stringView
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let returnRange = returnRangeForFunction(dictionary: dictionary),
-            let returnSubstring = contents.substringWithByteRange(start: returnRange.location,
-                                                                  length: returnRange.length) else {
+            let returnSubstring = contents.substringWithByteRange(returnRange) else {
                 return []
         }
 
@@ -99,13 +98,13 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         return offsets.sorted { $0.offset < $1.offset }
     }
 
-    private func violationOffsets(for text: String, initialOffset: Int = 0) -> [(offset: Int, size: Int)] {
+    private func violationOffsets(for text: String, initialOffset: ByteCount = 0) -> [(offset: ByteCount, size: Int)] {
         guard let ranges = try? parenthesesRanges(in: text) else {
             return []
         }
 
         var text = text.bridge()
-        var offsets = [(offset: Int, size: Int)]()
+        var offsets = [(offset: ByteCount, size: Int)]()
 
         for (range, kind) in ranges {
             let substring = text.substring(with: range)
@@ -124,7 +123,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         return offsets
     }
 
-    private func returnRangeForFunction(dictionary: SourceKittenDictionary) -> NSRange? {
+    private func returnRangeForFunction(dictionary: SourceKittenDictionary) -> ByteRange? {
         guard let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,
@@ -139,7 +138,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
             return nil
         }
 
-        return NSRange(location: start, length: end - start)
+        return ByteRange(location: start, length: end - start)
     }
 
     private func parenthesesRanges(in text: String) throws -> [(NSRange, RangeKind)] {

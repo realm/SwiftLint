@@ -48,7 +48,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
     }
 
     private func violationOffsets(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                  kind: SwiftExpressionKind) -> [Int] {
+                                  kind: SwiftExpressionKind) -> [ByteCount] {
         guard kind == .call,
             let name = dictionary.name,
             name.hasSuffix(".addObserver"),
@@ -57,7 +57,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             argumentsNames == ["forName", "object", "queue"] ||
                 argumentsNames == ["forName", "object", "queue", "using"],
             let offset = dictionary.offset,
-            let range = file.stringView.byteRangeToNSRange(start: 0, length: offset) else {
+            let range = file.stringView.byteRangeToNSRange(ByteRange(location: 0, length: offset)) else {
                 return []
         }
 
@@ -83,7 +83,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
 }
 
 private extension SourceKittenDictionary {
-    func functions(forByteOffset byteOffset: Int) -> [SourceKittenDictionary] {
+    func functions(forByteOffset byteOffset: ByteCount) -> [SourceKittenDictionary] {
         return structures(forByteOffset: byteOffset)
             .filter { $0.declarationKind.map(SwiftDeclarationKind.functionKinds.contains) == true }
     }

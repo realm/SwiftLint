@@ -22,19 +22,18 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
         triggeringExamples: DuplicateImportsRuleExamples.triggeringExamples
     )
 
-    private func rangesInConditionalCompilation(file: SwiftLintFile) -> [NSRange] {
+    private func rangesInConditionalCompilation(file: SwiftLintFile) -> [ByteRange] {
         let contents = file.stringView
 
         let ranges = file.syntaxMap.tokens
             .filter { $0.kind == .buildconfigKeyword }
             .map { $0.range }
             .filter { range in
-                let keyword = contents.substringWithByteRange(start: range.location, length: range.length)
-                return ["#if", "#endif"].contains(keyword)
+                return ["#if", "#endif"].contains(contents.substringWithByteRange(range))
             }
 
         return stride(from: 0, to: ranges.count, by: 2).reduce(into: []) { result, rangeIndex in
-            result.append(NSUnionRange(ranges[rangeIndex], ranges[rangeIndex + 1]))
+            result.append(ranges[rangeIndex].union(with: ranges[rangeIndex + 1]))
         }
     }
 

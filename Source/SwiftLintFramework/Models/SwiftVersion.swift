@@ -111,7 +111,8 @@ public extension SwiftVersion {
             let decl = file.structureDictionary.kinds()
                 .first(where: { $0.kind == SwiftDeclarationKind.varGlobal.rawValue }),
             let token = file.syntaxMap.tokens(inByteRange: decl.byteRange).first(where: { $0.kind == .string }) {
-            return .init(rawValue: file.contents.substring(from: token.offset + 1, length: token.length - 2))
+            let offsetRange = ByteRange(location: token.offset + 1, length: token.length - 2)
+            return .init(rawValue: file.stringView.substringWithByteRange(offsetRange)!)
         }
 
         return .three

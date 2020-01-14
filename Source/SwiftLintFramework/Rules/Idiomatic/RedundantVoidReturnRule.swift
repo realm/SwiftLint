@@ -15,10 +15,10 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         nonTriggeringExamples: [
             "func foo() {}\n",
             "func foo() -> Int {}\n",
-            "func foo() -> Int -> Void {}\n",
+            "func foo() -> (Int) -> Void {}\n",
             "func foo() -> VoidResponse\n",
             "let foo: Int -> Void\n",
-            "func foo() -> Int -> () {}\n",
+            "func foo() -> (Int) -> () {}\n",
             "let foo: Int -> ()\n",
             "func foo() -> ()?\n",
             "func foo() -> ()!\n",

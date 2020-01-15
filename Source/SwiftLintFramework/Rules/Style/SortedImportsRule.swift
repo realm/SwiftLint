@@ -20,9 +20,17 @@ extension Line {
         return moduleStart!.lowerBound..<content.endIndex
     }
 
-    // Case insensitive comparison of contents of the line
-    // after the word `import`
-    fileprivate static func <= (lhs: Line, rhs: Line) -> Bool {
+    // Case insensitive comparison of contents of the line after the word `import`
+    // Return true if lhs <= rhs
+    fileprivate static func compare(lhs: Line, rhs: Line,
+                                    testableImports: SortedImportsConfiguration.TestableImportsConfiguration) -> Bool {
+        if testableImports != .default {
+            let lhsTestable = lhs.content.contains("@testable")
+            let rhsTestable = rhs.content.contains("@testable")
+            if lhsTestable != rhsTestable {
+                return testableImports == .top ? lhsTestable : rhsTestable
+            }
+        }
         return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
     }
 }
@@ -46,8 +54,8 @@ private extension Sequence where Element == Line {
     }
 }
 
-public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
+    public var configuration = SortedImportsConfiguration()
 
     public init() {}
 
@@ -138,7 +146,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)
             return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
+                                  severity: configuration.severityConfiguration.severity,
                                   location: location)
         }
     }
@@ -164,7 +172,8 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         return groups.flatMap { group in
             return zip(group, group.dropFirst()).reduce(into: []) { violatingOffsets, groupPair in
                 let (previous, current) = groupPair
-                let isOrderedCorrectly = previous <= current
+                let isOrderedCorrectly = Line.compare(lhs: previous, rhs: current,
+                                                      testableImports: configuration.testableImportsConfiguration)
                 if isOrderedCorrectly {
                     return
                 }
@@ -188,10 +197,12 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         }
 
         let correctedContents = NSMutableString(string: file.contents)
-        for group in groups.map({ $0.sorted(by: <=) }) {
-            guard let first = group.first?.contentRange else {
-                continue
+        groups.map { group in
+            return group.sorted {
+                return Line.compare(lhs: $0, rhs: $1, testableImports: self.configuration.testableImportsConfiguration)
             }
+        }.forEach { group in
+            guard let first = group.first?.contentRange else { return }
             let result = group.map { $0.content }.joined(separator: "\n")
             let union = group.dropFirst().reduce(first) { result, line in
                 return NSUnionRange(result, line.contentRange)

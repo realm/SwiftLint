@@ -41,7 +41,9 @@
 
 #### Experimental
 
-* None.
+* Add option to configure SortedImportsRule to sort `@testable` imports on
+  the top or on the bottom of the imports.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
 
 #### Enhancements
 

@@ -678,12 +678,6 @@ class SortedFirstLastRuleTests: XCTestCase {
     }
 }
 
-class SortedImportsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SortedImportsRule.description)
-    }
-}
-
 class StaticOperatorRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)

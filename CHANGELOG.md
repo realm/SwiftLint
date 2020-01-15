@@ -102,7 +102,9 @@ This is the last release to support building with Swift 5.0.x.
 
 #### Experimental
 
-* None.
+* Add option to configure SortedImportsRule to sort `@testable` imports on
+  the top or on the bottom of the imports.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
 
 #### Enhancements
 

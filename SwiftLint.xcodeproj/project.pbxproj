@@ -210,6 +210,8 @@
 		8FF49E0723FC9E40003AC871 /* UnusedImportRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF49E0623FC9E40003AC871 /* UnusedImportRuleExamples.swift */; };
 		92CCB2D71E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */; };
 		93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */; };
+		9DD1361923F03BF000960BE8 /* SortedImportsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD1361723F03BE500960BE8 /* SortedImportsConfiguration.swift */; };
+		9DD1361C23F03D6500960BE8 /* SortedImportsRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD1361A23F03D6000960BE8 /* SortedImportsRuleTests.swift */; };
 		A1A6F3F21EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */; };
 		A3184D56215BCEFF00621EA2 /* LegacyRandomRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3184D55215BCEFF00621EA2 /* LegacyRandomRule.swift */; };
 		A73469421FB121BA009B57C7 /* CallPairRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73469401FB12149009B57C7 /* CallPairRule.swift */; };
@@ -721,6 +723,8 @@
 		8FF49E0623FC9E40003AC871 /* UnusedImportRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedImportRuleExamples.swift; sourceTree = "<group>"; };
 		92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingRule.swift; sourceTree = "<group>"; };
 		93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewlineRule.swift; sourceTree = "<group>"; };
+		9DD1361723F03BE500960BE8 /* SortedImportsConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedImportsConfiguration.swift; sourceTree = "<group>"; };
+		9DD1361A23F03D6000960BE8 /* SortedImportsRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedImportsRuleTests.swift; sourceTree = "<group>"; };
 		A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralConfiguration.swift; sourceTree = "<group>"; };
 		A3184D55215BCEFF00621EA2 /* LegacyRandomRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyRandomRule.swift; sourceTree = "<group>"; };
 		A73469401FB12149009B57C7 /* CallPairRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallPairRule.swift; sourceTree = "<group>"; };
@@ -1096,6 +1100,7 @@
 				B89F3BC71FD5ED7D00931E59 /* RequiredEnumCaseRuleConfiguration.swift */,
 				3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */,
 				3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */,
+				9DD1361723F03BE500960BE8 /* SortedImportsConfiguration.swift */,
 				725094881D0855760039B353 /* StatementModeConfiguration.swift */,
 				787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */,
 				D450D1DA21F1992E00E60010 /* TrailingClosureConfiguration.swift */,
@@ -1597,6 +1602,7 @@
 				D45255C71F0932F8003C9B56 /* RuleDescription+Examples.swift */,
 				E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */,
 				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
+				9DD1361A23F03D6000960BE8 /* SortedImportsRuleTests.swift */,
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				D4F5851620E99B260085C6D8 /* StatementPositionRuleTests.swift */,
 				D0D1217C19E87B05005E4BAA /* Supporting Files */,
@@ -2070,6 +2076,7 @@
 				181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */,
 				47FF3BE11E7C75B600187E6D /* ImplicitlyUnwrappedOptionalRule.swift in Sources */,
 				623E36F01F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift in Sources */,
+				9DD1361923F03BF000960BE8 /* SortedImportsConfiguration.swift in Sources */,
 				288289602229776C0037CF5F /* NSObjectPreferIsEqualRuleExamples.swift in Sources */,
 				BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */,
 				3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */,
@@ -2378,6 +2385,7 @@
 			files = (
 				825F19D11EEFF19700969EF1 /* ObjectLiteralRuleTests.swift in Sources */,
 				B1FD3ABB238BC5BC00CE121E /* ImplicitReturnConfigurationTests.swift in Sources */,
+				9DD1361C23F03D6500960BE8 /* SortedImportsRuleTests.swift in Sources */,
 				D4F5851520E99A8A0085C6D8 /* TrailingWhitespaceTests.swift in Sources */,
 				D450D1E021F19AB300E60010 /* TrailingClosureRuleTests.swift in Sources */,
 				3B12C9C31C320A53000B423F /* YamlSwiftLintTests.swift in Sources */,

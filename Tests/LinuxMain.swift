@@ -1341,7 +1341,9 @@ extension SortedFirstLastRuleTests {
 
 extension SortedImportsRuleTests {
     static var allTests: [(String, (SortedImportsRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithTestableImportsTop", testWithTestableImportsTop),
+        ("testWithTestableImportsBottom", testWithTestableImportsBottom)
     ]
 }
 

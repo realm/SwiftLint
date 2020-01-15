@@ -18,6 +18,12 @@
 * Add `deinitializer` type content to `type_contents_order` rule instead of
   grouping it with initializers.  
   [Steven Magdy](https://github.com/StevenMagdy)
+* Inline test failure messages to make development of SwiftLint easier. Test
+  failures in triggering and non-triggering examples will appear inline in
+  their respective files so you can immediately see which cases are working
+  and which are not.  
+  [ZevEisenberg](https://github.com/ZevEisenberg)
+  [#3040](https://github.com/realm/SwiftLint/pull/3040)
 
 #### Bug Fixes
 

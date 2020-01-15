@@ -266,7 +266,7 @@ extension Dictionary where Key == Example {
     ///
     /// - returns: A new `Dictionary`.
     func removingViolationMarkers() -> [Key: Value] {
-        Dictionary(uniqueKeysWithValues: map { key, value in
+        return Dictionary(uniqueKeysWithValues: map { key, value in
             return (key.removingViolationMarkers(), value)
         })
     }

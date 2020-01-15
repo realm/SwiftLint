@@ -70,7 +70,7 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
 }
 
 private func wrapInSwitch(_ example: Example) -> Example {
-    example.with(code: """
+    return example.with(code: """
         switch foo {
             \(example): break
         }

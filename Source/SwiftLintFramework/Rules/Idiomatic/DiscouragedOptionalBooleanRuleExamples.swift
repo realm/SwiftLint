@@ -161,5 +161,5 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
 // MARK: - Private
 
 private func wrapExample(_ type: String, _ test: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    Example("\(type) Foo {\n\t\(test)\n}", file: file, line: line)
+    return Example("\(type) Foo {\n\t\(test)\n}", file: file, line: line)
 }

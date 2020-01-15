@@ -16,14 +16,14 @@ public extension Example {
         self.line = line
     }
 
-    func with(code: String) -> Self {
+    func with(code: String) -> Example {
         var new = self
         new.code = code
         return new
     }
 
-    func removingViolationMarkers() -> Self {
-        with(code: code.replacingOccurrences(of: "↓", with: ""))
+    func removingViolationMarkers() -> Example {
+        return with(code: code.replacingOccurrences(of: "↓", with: ""))
     }
 }
 
@@ -31,7 +31,7 @@ extension Example: Hashable {
     public static func == (lhs: Example, rhs: Example) -> Bool {
         // Ignoring file/line metadata beacuse two Examples could represent
         // the same idea, but captured at two different points in the code
-        lhs.code == rhs.code
+        return lhs.code == rhs.code
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -78,6 +78,6 @@ extension Example: ExpressibleByStringLiteral {
 
 extension Example: Comparable {
     public static func < (lhs: Example, rhs: Example) -> Bool {
-        lhs.code < rhs.code
+        return lhs.code < rhs.code
     }
 }

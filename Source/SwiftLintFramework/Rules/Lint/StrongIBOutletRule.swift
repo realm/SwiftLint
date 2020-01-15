@@ -41,7 +41,7 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
 }
 
 private func wrapExample(_ text: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    Example("""
+    return Example("""
     class ViewController: UIViewController {
         \(text)
     }

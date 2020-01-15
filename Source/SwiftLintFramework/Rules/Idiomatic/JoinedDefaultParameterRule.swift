@@ -13,29 +13,30 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
         description: "Discouraged explicit usage of the default separator.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "let foo = bar.joined()",
-            "let foo = bar.joined(separator: \",\")",
-            "let foo = bar.joined(separator: toto)"
+            Example("let foo = bar.joined()"),
+            Example("let foo = bar.joined(separator: \",\")"),
+            Example("let foo = bar.joined(separator: toto)")
         ],
         triggeringExamples: [
-            "let foo = bar.joined(↓separator: \"\")",
-            """
+            Example("let foo = bar.joined(↓separator: \"\")"),
+            Example("""
             let foo = bar.filter(toto)
                          .joined(↓separator: ""),
-            """,
-            """
+            """),
+            Example("""
             func foo() -> String {
               return ["1", "2"].joined(↓separator: "")
             }
-            """
+            """)
         ],
         corrections: [
-            "let foo = bar.joined(↓separator: \"\")": "let foo = bar.joined()",
-            "let foo = bar.filter(toto)\n.joined(↓separator: \"\")": "let foo = bar.filter(toto)\n.joined()",
-            "func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}":
-                "func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}",
-            "class C {\n#if true\nlet foo = bar.joined(↓separator: \"\")\n#endif\n}":
-                "class C {\n#if true\nlet foo = bar.joined()\n#endif\n}"
+            Example("let foo = bar.joined(↓separator: \"\")"): Example("let foo = bar.joined()"),
+            Example("let foo = bar.filter(toto)\n.joined(↓separator: \"\")"):
+                Example("let foo = bar.filter(toto)\n.joined()"),
+            Example("func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}"):
+                Example("func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}"),
+            Example("class C {\n#if true\nlet foo = bar.joined(↓separator: \"\")\n#endif\n}"):
+                Example("class C {\n#if true\nlet foo = bar.joined()\n#endif\n}")
         ]
     )
 

@@ -12,98 +12,98 @@ public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProvider
         kind: .style,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: [
-            """
+            Example("""
             class Foo {
                 func bar() {
                     Self.baz()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 func bar() {
                     print(Self.baz)
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class A {
                 func foo(param: B) {
                     type(of: param).bar()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class A {
                 func foo() {
                     print(type(of: self))
                 }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             class Foo {
                 func bar() {
                     ↓type(of: self).baz()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 func bar() {
                     print(↓type(of: self).baz)
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 func bar() {
                     print(↓Swift.type(of: self).baz)
                 }
             }
-            """
+            """)
         ],
         corrections: [
-            """
+            Example("""
             class Foo {
                 func bar() {
                     ↓type(of: self).baz()
                 }
             }
-            """: """
+            """): Example("""
             class Foo {
                 func bar() {
                     Self.baz()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 func bar() {
                     print(↓type(of: self).baz)
                 }
             }
-            """: """
+            """): Example("""
             class Foo {
                 func bar() {
                     print(Self.baz)
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 func bar() {
                     print(↓Swift.type(of: self).baz)
                 }
             }
-            """: """
+            """): Example("""
             class Foo {
                 func bar() {
                     print(Self.baz)
                 }
             }
-            """
+            """)
         ]
     )
 

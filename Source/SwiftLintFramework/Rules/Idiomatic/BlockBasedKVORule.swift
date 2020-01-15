@@ -12,28 +12,27 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             let observer = foo.observe(\\.value, options: [.new]) { (foo, change) in
                print(change.newValue)
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             class Foo: NSObject {
               override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                                           change: [NSKeyValueChangeKey : Any]?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """
-           ,
-            """
+            """),
+            Example("""
             class Foo: NSObject {
               override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                                           change: Dictionary<NSKeyValueChangeKey, Any>?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """
+            """)
         ]
     )
 

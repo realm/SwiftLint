@@ -11,11 +11,11 @@ public struct FlatMapOverMapReduceRule: CallPairRule, OptInRule, ConfigurationPr
         description: "Prefer `flatMap` over `map` followed by `reduce([], +)`.",
         kind: .performance,
         nonTriggeringExamples: [
-            "let foo = bar.map { $0.count }.reduce(0, +)",
-            "let foo = bar.flatMap { $0.array }"
+            Example("let foo = bar.map { $0.count }.reduce(0, +)"),
+            Example("let foo = bar.flatMap { $0.array }")
         ],
         triggeringExamples: [
-            "let foo = ↓bar.map { $0.array }.reduce([], +)"
+            Example("let foo = ↓bar.map { $0.array }.reduce([], +)")
         ]
     )
 

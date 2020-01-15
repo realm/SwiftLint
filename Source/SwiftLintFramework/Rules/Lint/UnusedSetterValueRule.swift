@@ -12,7 +12,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         description: "Setter value is not used.",
         kind: .lint,
         nonTriggeringExamples: [
-            """
+            Example("""
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -21,8 +21,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = newValue
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var aValue: String {
                 set {
                     Persister.shared.aValue = newValue
@@ -31,8 +31,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -41,10 +41,10 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = value
                 }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -53,8 +53,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = aValue
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var aValue: String {
                 ↓set {
                     Persister.shared.aValue = aValue
@@ -63,8 +63,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     return Persister.shared.aValue
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -73,8 +73,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = aValue
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var aValue: String {
                 get {
                     let newValue = Persister.shared.aValue
@@ -84,8 +84,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = aValue
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -94,7 +94,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = aValue
                 }
             }
-            """
+            """)
         ]
     )
 

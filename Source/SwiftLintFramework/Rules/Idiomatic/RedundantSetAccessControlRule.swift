@@ -13,36 +13,36 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         kind: .idiomatic,
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
-            "private(set) public var foo: Int",
-            "public let foo: Int",
-            "public var foo: Int",
-            "var foo: Int",
-            """
+            Example("private(set) public var foo: Int"),
+            Example("public let foo: Int"),
+            Example("public var foo: Int"),
+            Example("var foo: Int"),
+            Example("""
             private final class A {
               private(set) var value: Int
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            "↓private(set) private var foo: Int",
-            "↓fileprivate(set) fileprivate var foo: Int",
-            "↓internal(set) internal var foo: Int",
-            "↓public(set) public var foo: Int",
-            """
+            Example("↓private(set) private var foo: Int"),
+            Example("↓fileprivate(set) fileprivate var foo: Int"),
+            Example("↓internal(set) internal var foo: Int"),
+            Example("↓public(set) public var foo: Int"),
+            Example("""
             open class Foo {
               ↓open(set) open var bar: Int
             }
-            """,
-            """
+            """),
+            Example("""
             class A {
               ↓internal(set) var value: Int
             }
-            """,
-            """
+            """),
+            Example("""
             fileprivate class A {
               ↓fileprivate(set) var value: Int
             }
-            """
+            """)
         ]
     )
 

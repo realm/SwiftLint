@@ -80,7 +80,7 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
             Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
             Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
             Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
-                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n})")
+                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}")
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {

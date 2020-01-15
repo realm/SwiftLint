@@ -1,21 +1,24 @@
 import Foundation
 import SourceKittenFramework
 
-private func wrapInSwitch(variable: String = "foo", _ str: String) -> String {
-    return  "switch \(variable) {\n" +
-            "    \(str): break\n" +
-            "}"
+private func wrapInSwitch(variable: String = "foo", _ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
+    Example(
+        """
+        switch \(variable) {
+        \(str): break
+        }
+        """, file: file, line: line)
 }
 
-private func wrapInFunc(_ str: String) -> String {
-    return """
+private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
+    Example("""
     func example(foo: Foo) {
         switch foo {
         case \(str):
             break
         }
     }
-    """
+    """, file: file, line: line)
 }
 
 public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, AutomaticTestableRule {

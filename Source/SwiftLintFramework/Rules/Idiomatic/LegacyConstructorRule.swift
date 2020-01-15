@@ -80,10 +80,10 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
             "NSRect(x: xPos, y: yPos, width: width, height: height)\n",
             "↓NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
             "↓NSMakeRange(loc, len)\n": "NSRange(location: loc, length: len)\n",
-            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)\n": "CGVector(dx: 10, dy: 10)\n" +
-                "NSRange(location: 10, length: 1)\n",
-            "↓CGVectorMake(dx, dy)\n↓NSMakeRange(loc, len)\n": "CGVector(dx: dx, dy: dy)\n" +
-            "NSRange(location: loc, length: len)\n",
+            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)\n": Example("CGVector(dx: 10, dy: 10)\n" +
+                "NSRange(location: 10, length: 1)\n"),
+            "↓CGVectorMake(dx, dy)\n↓NSMakeRange(loc, len)\n": Example("CGVector(dx: dx, dy: dy)\n" +
+                "NSRange(location: loc, length: len)\n"),
             "↓UIEdgeInsetsMake(0, 0, 10, 10)\n":
             "UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)\n",
             "↓UIEdgeInsetsMake(top, left, bottom, right)\n":

@@ -1,13 +1,12 @@
 internal struct MultilineArgumentsRuleExamples {
     static let nonTriggeringExamples = [
         "foo()",
-        "foo(\n" +
-        "    \n" +
-        ")",
+        Example("foo(\n" +
+                    ")"),
         "foo { }",
-        "foo {\n" +
+        Example("foo {\n" +
         "    \n" +
-        "}",
+        "}"),
         "foo(0)",
         "foo(0, 1)",
         "foo(0, 1) { }",
@@ -17,32 +16,32 @@ internal struct MultilineArgumentsRuleExamples {
         "foo(param1: 1) { }",
         "foo(param1: 1, param2: true) { }",
         "foo(param1: 1, param2: true, param3: [3]) { }",
-        "foo(param1: 1, param2: true, param3: [3]) {\n" +
+        Example("foo(param1: 1, param2: true, param3: [3]) {\n" +
         "    bar()\n" +
-        "}",
-        "foo(param1: 1,\n" +
+        "}"),
+        Example("foo(param1: 1,\n" +
         "    param2: true,\n" +
-        "    param3: [3])",
-        "foo(\n" +
+        "    param3: [3])"),
+        Example("foo(\n" +
         "    param1: 1, param2: true, param3: [3]\n" +
-        ")",
-        "foo(\n" +
+        ")"),
+        Example("foo(\n" +
         "    param1: 1,\n" +
         "    param2: true,\n" +
         "    param3: [3]\n" +
-        ")"
+        ")")
     ]
 
     static let triggeringExamples = [
-        "foo(0,\n" +
-        "    param1: 1, ↓param2: true, ↓param3: [3])",
-        "foo(0, ↓param1: 1,\n" +
-        "    param2: true, ↓param3: [3])",
-        "foo(0, ↓param1: 1, ↓param2: true,\n" +
-        "    param3: [3])",
-        "foo(\n" +
+        Example("foo(0,\n" +
+        "    param1: 1, ↓param2: true, ↓param3: [3])"),
+        Example("foo(0, ↓param1: 1,\n" +
+        "    param2: true, ↓param3: [3])"),
+        Example("foo(0, ↓param1: 1, ↓param2: true,\n" +
+        "    param3: [3])"),
+        Example("foo(\n" +
         "    0, ↓param1: 1,\n" +
         "    param2: true, ↓param3: [3]\n" +
-        ")"
+        ")")
     ]
 }

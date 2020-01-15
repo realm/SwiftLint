@@ -12,7 +12,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private static let nonTriggeringExamples = [
+    private static let nonTriggeringExamples: [Example] = [
         """
         switch x {
 
@@ -48,16 +48,16 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
         """
         ,
         // Testing handling of trailing spaces: do not convert to """ style
-        "switch x {    \n" +
+        Example("switch x {    \n" +
         "case 1:    \n" +
         "    print(\"one\")    \n" +
         "    \n" +
         "default:    \n" +
         "    print(\"not one\")    \n" +
-        "}    "
+        "}    ")
     ]
 
-    private static let violatingToValidExamples: [String: String] = [
+    private static let violatingToValidExamples: [Example: Example] = [
         """
             switch x {
             case 0..<5:

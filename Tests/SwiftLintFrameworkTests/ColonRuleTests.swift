@@ -20,7 +20,7 @@ class ColonRuleTests: XCTestCase {
             "func abc(def:  Void) {}\n",
             "let abc = [Void:  Void]()\n"
         ]
-        let triggeringExamples = [
+        let triggeringExamples: [Example] = [
             "let ↓abc:Void\n",
             "let ↓abc :Void\n",
             "let ↓abc : Void\n",
@@ -44,7 +44,7 @@ class ColonRuleTests: XCTestCase {
             "let abc = [1: [3↓ : 2], 3: 4]\n",
             "let abc = [1: [3↓ : 2], 3:  4]\n"
         ]
-        let corrections = [
+        let corrections: [Example: Example] = [
             "let ↓abc:Void\n": "let abc: Void\n",
             "let ↓abc :Void\n": "let abc: Void\n",
             "let ↓abc : Void\n": "let abc: Void\n",
@@ -85,7 +85,7 @@ class ColonRuleTests: XCTestCase {
             "let abc = [1: [3 : 2], 3: 4]\n",
             "let abc = [1: [3 : 2], 3:  4]\n"
         ]
-        let triggeringExamples = [
+        let triggeringExamples: [Example] = [
             "let ↓abc:Void\n",
             "let ↓abc:  Void\n",
             "let ↓abc :Void\n",
@@ -109,7 +109,7 @@ class ColonRuleTests: XCTestCase {
             "func abc(↓def : Void) {}\n",
             "func abc(def: Void, ↓ghi :Void) {}\n"
         ]
-        let corrections = [
+        let corrections: [Example: Example] = [
             "let ↓abc:Void\n": "let abc: Void\n",
             "let ↓abc:  Void\n": "let abc: Void\n",
             "let ↓abc :Void\n": "let abc: Void\n",

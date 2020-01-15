@@ -12,7 +12,7 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private static let nonTriggeringExamples = [
+    private static let nonTriggeringExamples: [Example] = [
         "[1, 2].map { $0 }.filter {",
         "[1, 2].map { $0 }.filter { num in",
         """
@@ -26,7 +26,7 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
         """
     ]
 
-    private static let violatingToValidExamples: [String: String] = [
+    private static let violatingToValidExamples: [Example: Example] = [
         "    print(\"x is 5\")\n↓\n}": "    print(\"x is 5\")\n}",
         "    print(\"x is 5\")\n↓\n\n}": "    print(\"x is 5\")\n}",
         "    print(\"x is 5\")\n↓    \n}": "    print(\"x is 5\")\n}",

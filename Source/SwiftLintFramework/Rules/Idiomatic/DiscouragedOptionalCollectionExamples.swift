@@ -210,6 +210,6 @@ internal struct DiscouragedOptionalCollectionExamples {
 
 // MARK: - Private
 
-private func wrapExample(_ type: String, _ test: String) -> String {
-    return "\(type) Foo {\n\t\(test)\n}"
+private func wrapExample(_ type: String, _ test: String, file: StaticString = #file, line: UInt = #line) -> Example {
+    Example("\(type) Foo {\n\t\(test)\n}", file: file, line: line)
 }

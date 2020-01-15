@@ -21,7 +21,7 @@ class IdentifierNameRuleTests: XCTestCase {
     func testIdentifierNameWithAllowedSymbolsAndViolation() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
-            "↓let my_Let$ = 0"
+            Example("↓let my_Let$ = 0")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
@@ -31,11 +31,11 @@ class IdentifierNameRuleTests: XCTestCase {
     func testIdentifierNameWithIgnoreStartWithLowercase() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
-            "↓let MyLet = 0",
-            "enum Foo { case ↓MyEnum }"
+            Example("↓let MyLet = 0"),
+            Example("enum Foo { case ↓MyEnum }")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
-            triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }
+            triggeringExamplesToRemove.removingViolationMarkers()
         let triggeringExamples = baseDescription.triggeringExamples
             .filter { !triggeringExamplesToRemove.contains($0) }
 
@@ -48,7 +48,7 @@ class IdentifierNameRuleTests: XCTestCase {
     func testLinuxCrashOnEmojiNames() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
-            "let 👦🏼 = \"👦🏼\""
+            Example("let 👦🏼 = \"👦🏼\"")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)

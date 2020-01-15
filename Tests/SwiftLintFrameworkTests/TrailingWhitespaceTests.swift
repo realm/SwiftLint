@@ -20,7 +20,10 @@ class TrailingWhitespaceTests: XCTestCase {
     func testWithIgnoresCommentsDisabled() {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = TrailingWhitespaceRule.description
-        let triggeringComments = ["// \n", "let name: String // \n"]
+        let triggeringComments = [
+            Example("// \n"),
+            Example("let name: String // \n")
+        ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
         let triggeringExamples = baseDescription.triggeringExamples + triggeringComments

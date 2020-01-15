@@ -1,8 +1,8 @@
 import SwiftLintFramework
 
 extension RuleDescription {
-    func with(nonTriggeringExamples: [String],
-              triggeringExamples: [String]) -> RuleDescription {
+    func with(nonTriggeringExamples: [Example],
+              triggeringExamples: [Example]) -> RuleDescription {
         return RuleDescription(identifier: identifier,
                                name: name,
                                description: description,
@@ -13,17 +13,17 @@ extension RuleDescription {
                                deprecatedAliases: deprecatedAliases)
     }
 
-    func with(nonTriggeringExamples: [String]) -> RuleDescription {
+    func with(nonTriggeringExamples: [Example]) -> RuleDescription {
         return with(nonTriggeringExamples: nonTriggeringExamples,
                     triggeringExamples: triggeringExamples)
     }
 
-    func with(triggeringExamples: [String]) -> RuleDescription {
+    func with(triggeringExamples: [Example]) -> RuleDescription {
         return with(nonTriggeringExamples: nonTriggeringExamples,
                     triggeringExamples: triggeringExamples)
     }
 
-    func with(corrections: [String: String]) -> RuleDescription {
+    func with(corrections: [Example: Example]) -> RuleDescription {
         return RuleDescription(identifier: identifier,
                                name: name,
                                description: description,

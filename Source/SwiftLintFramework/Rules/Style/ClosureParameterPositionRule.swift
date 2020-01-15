@@ -20,14 +20,18 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             "[1, 2].map { [weak self] number in\n number + 1 \n}\n",
             "[1, 2].something(closure: { number in\n number + 1 \n})\n",
             "let isEmpty = [1, 2].isEmpty()\n",
-            "rlmConfiguration.migrationBlock.map { rlmMigration in\n" +
-                "return { migration, schemaVersion in\n" +
-                    "rlmMigration(migration.rlmMigration, schemaVersion)\n" +
-                "}\n" +
-            "}",
-            "let mediaView: UIView = { [weak self] index in\n" +
-            "   return UIView()\n" +
-            "}(index)\n"
+            Example("""
+            rlmConfiguration.migrationBlock.map { rlmMigration in
+                return { migration, schemaVersion in
+                    rlmMigration(migration.rlmMigration, schemaVersion)
+                }
+            }
+            """),
+            Example("""
+            let mediaView: UIView = { [weak self] index in
+               return UIView()
+            }(index)
+            """)
         ],
         triggeringExamples: [
             "[1, 2].map {\n ↓number in\n number + 1 \n}\n",

@@ -13,31 +13,31 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestabl
         kind: .style,
         nonTriggeringExamples: allOperators.flatMap { operation in
             [
-                "foo \(operation)= 1",
-                "foo \(operation)= variable",
-                "foo \(operation)= bar.method()",
-                "self.foo = foo \(operation) 1",
-                "foo = self.foo \(operation) 1",
-                "page = ceilf(currentOffset \(operation) pageWidth)",
-                "foo = aMethod(foo \(operation) bar)",
-                "foo = aMethod(bar \(operation) foo)"
+                Example("foo \(operation)= 1"),
+                Example("foo \(operation)= variable"),
+                Example("foo \(operation)= bar.method()"),
+                Example("self.foo = foo \(operation) 1"),
+                Example("foo = self.foo \(operation) 1"),
+                Example("page = ceilf(currentOffset \(operation) pageWidth)"),
+                Example("foo = aMethod(foo \(operation) bar)"),
+                Example("foo = aMethod(bar \(operation) foo)")
             ]
         } + [
-            "var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld",
-            "angle = someCheck ? angle : -angle",
-            "seconds = seconds * 60 + value"
+            Example("var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld"),
+            Example("angle = someCheck ? angle : -angle"),
+            Example("seconds = seconds * 60 + value")
         ],
         triggeringExamples: allOperators.flatMap { operation in
             [
-                "↓foo = foo \(operation) 1\n",
-                "↓foo = foo \(operation) aVariable\n",
-                "↓foo = foo \(operation) bar.method()\n",
-                "↓foo.aProperty = foo.aProperty \(operation) 1\n",
-                "↓self.aProperty = self.aProperty \(operation) 1\n"
+                Example("↓foo = foo \(operation) 1\n"),
+                Example("↓foo = foo \(operation) aVariable\n"),
+                Example("↓foo = foo \(operation) bar.method()\n"),
+                Example("↓foo.aProperty = foo.aProperty \(operation) 1\n"),
+                Example("↓self.aProperty = self.aProperty \(operation) 1\n")
             ]
         } + [
-            "n = n + i / outputLength",
-            "n = n - i / outputLength"
+            Example("n = n + i / outputLength"),
+            Example("n = n - i / outputLength")
 //            "d = d * 60 * 60"
         ]
     )

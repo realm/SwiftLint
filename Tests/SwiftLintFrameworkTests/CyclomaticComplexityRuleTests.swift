@@ -2,7 +2,7 @@ import SwiftLintFramework
 import XCTest
 
 class CyclomaticComplexityRuleTests: XCTestCase {
-    private lazy var complexSwitchExample: String = {
+    private lazy var complexSwitchExample: Example = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"
         for index in (0...30) {
@@ -10,10 +10,10 @@ class CyclomaticComplexityRuleTests: XCTestCase {
         }
         example += "    }\n"
         example += "}\n"
-        return example
+        return Example(example)
     }()
 
-    private lazy var complexIfExample: String = {
+    private lazy var complexIfExample: Example = {
         let nest = 22
         var example = "func nestThoseIfs() {\n"
         for index in (0...nest) {
@@ -27,7 +27,7 @@ class CyclomaticComplexityRuleTests: XCTestCase {
             example += indent + "}\n"
         }
         example += "}\n"
-        return example
+        return Example(example)
     }()
 
     func testCyclomaticComplexity() {

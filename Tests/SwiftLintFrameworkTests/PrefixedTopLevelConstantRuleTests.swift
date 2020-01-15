@@ -8,13 +8,13 @@ final class PrefixedTopLevelConstantRuleTests: XCTestCase {
 
     func testPrivateOnly() {
         let triggeringExamples = [
-            "private let ↓Foo = 20.0",
-            "fileprivate let ↓foo = 20.0"
+            Example("private let ↓Foo = 20.0"),
+            Example("fileprivate let ↓foo = 20.0")
         ]
         let nonTriggeringExamples = [
-            "let Foo = 20.0",
-            "internal let Foo = \"Foo\"",
-            "public let Foo = 20.0"
+            Example("let Foo = 20.0"),
+            Example("internal let Foo = \"Foo\""),
+            Example("public let Foo = 20.0")
         ]
 
         let description = PrefixedTopLevelConstantRule.description

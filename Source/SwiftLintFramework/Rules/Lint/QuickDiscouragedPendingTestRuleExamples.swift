@@ -1,67 +1,85 @@
 internal struct QuickDiscouragedPendingTestRuleExamples {
     static let nonTriggeringExamples = [
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           describe(\"bar\") { } \n" +
-        "           context(\"bar\") {\n" +
-        "               it(\"bar\") { }\n" +
-        "           }\n" +
-        "           it(\"bar\") { }\n" +
-        "           itBehavesLike(\"bar\")\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n"
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   describe("bar") { }
+                   context("bar") {
+                       it("bar") { }
+                   }
+                   it("bar") { }
+                   itBehavesLike("bar")
+               }
+           }
+        }
+        """)
     ]
 
     static let triggeringExamples = [
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       ↓xdescribe(\"foo\") { }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       ↓xcontext(\"foo\") { }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       ↓xit(\"foo\") { }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           ↓xit(\"bar\") { }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       context(\"foo\") {\n" +
-        "           ↓xit(\"bar\") { }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           context(\"bar\") {\n" +
-        "               ↓xit(\"toto\") { }\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       ↓pending(\"foo\")\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       ↓xitBehavesLike(\"foo\")\n" +
-        "   }\n" +
-        "}\n"
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               ↓xdescribe("foo") { }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               ↓xcontext("foo") { }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               ↓xit("foo") { }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   ↓xit("bar") { }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               context("foo") {
+                   ↓xit("bar") { }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   context("bar") {
+                       ↓xit("toto") { }
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               ↓pending("foo")
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               ↓xitBehavesLike("foo")
+           }
+        }
+        """)
     ]
 }

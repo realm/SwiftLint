@@ -9,12 +9,12 @@ class GenericTypeNameRuleTests: XCTestCase {
     func testGenericTypeNameWithAllowedSymbols() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "func foo<T$>() {}\n",
-            "func foo<T$, U%>(param: U%) -> T$ {}\n",
-            "typealias StringDictionary<T$> = Dictionary<String, T$>\n",
-            "class Foo<T$%> {}\n",
-            "struct Foo<T$%> {}\n",
-            "enum Foo<T$%> {}\n"
+            Example("func foo<T$>() {}\n"),
+            Example("func foo<T$, U%>(param: U%) -> T$ {}\n"),
+            Example("typealias StringDictionary<T$> = Dictionary<String, T$>\n"),
+            Example("class Foo<T$%> {}\n"),
+            Example("struct Foo<T$%> {}\n"),
+            Example("enum Foo<T$%> {}\n")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
@@ -24,7 +24,7 @@ class GenericTypeNameRuleTests: XCTestCase {
     func testGenericTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamples = [
-            "func foo<↓T_$>() {}\n"
+            Example("func foo<↓T_$>() {}\n")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
@@ -34,13 +34,13 @@ class GenericTypeNameRuleTests: XCTestCase {
     func testGenericTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamplesToRemove = [
-            "func foo<↓type>() {}\n",
-            "class Foo<↓type> {}\n",
-            "struct Foo<↓type> {}\n",
-            "enum Foo<↓type> {}\n"
+            Example("func foo<↓type>() {}\n"),
+            Example("class Foo<↓type> {}\n"),
+            Example("struct Foo<↓type> {}\n"),
+            Example("enum Foo<↓type> {}\n")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
-            triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }
+            triggeringExamplesToRemove.removingViolationMarkers()
         let triggeringExamples = baseDescription.triggeringExamples
             .filter { !triggeringExamplesToRemove.contains($0) }
 

@@ -2,7 +2,7 @@ internal struct EmptyXCTestMethodRuleExamples {
     static let nonTriggeringExamples = [
         // Valid XCTestCase class
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             var foobar: Foobar?
 
@@ -28,7 +28,7 @@ internal struct EmptyXCTestMethodRuleExamples {
                 // comment...
             }
         }
-        """,
+        """),
 
         // Not an XCTestCase class
 
@@ -70,7 +70,7 @@ internal struct EmptyXCTestMethodRuleExamples {
     static let triggeringExamples = [
         // XCTestCase class with empty methods
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             override ↓func setUp() {
             }
@@ -93,7 +93,7 @@ internal struct EmptyXCTestMethodRuleExamples {
             func helperFunction() {
             }
         }
-        """,
+        """),
 
         """
         class TotoTests: XCTestCase {

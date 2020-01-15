@@ -20,13 +20,13 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
             "let image = NSImage(named: \"interpolated \\(variable)\")",
             "let color = NSColor(red: value, green: value, blue: value, alpha: 1)"
         ],
-        triggeringExamples: ["", ".init"].flatMap { (method: String) -> [String] in
-            ["UI", "NS"].flatMap { (prefix: String) -> [String] in
+        triggeringExamples: ["", ".init"].flatMap { (method: String) -> [Example] in
+            ["UI", "NS"].flatMap { (prefix: String) -> [Example] in
                 [
-                    "let image = ↓\(prefix)Image\(method)(named: \"foo\")",
-                    "let color = ↓\(prefix)Color\(method)(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)",
-                    "let color = ↓\(prefix)Color\(method)(red: 100 / 255.0, green: 50 / 255.0, blue: 0, alpha: 1)",
-                    "let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)"
+                    Example("let image = ↓\(prefix)Image\(method)(named: \"foo\")"),
+                    Example("let color = ↓\(prefix)Color\(method)(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)"),
+                    Example("let color = ↓\(prefix)Color\(method)(red: 100 / 255.0, green: 50 / 255.0, blue: 0, alpha: 1)"),
+                    Example("let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)")
                 ]
             }
         }

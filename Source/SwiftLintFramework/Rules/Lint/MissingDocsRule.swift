@@ -46,31 +46,52 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             // locally-defined superclass member is documented, but subclass member is not
-            "/// docs\npublic class A {\n/// docs\npublic func b() {}\n}\n" +
-            "/// docs\npublic class B: A { override public func b() {} }\n",
+            Example("""
+            /// docs
+            public class A {
+            /// docs
+            public func b() {}
+            }
+            /// docs
+            public class B: A { override public func b() {} }
+            """),
             // externally-defined superclass member is documented, but subclass member is not
-            "import Foundation\n/// docs\npublic class B: NSObject {\n" +
-            "// no docs\noverride public var description: String { fatalError() } }\n",
-            """
+            Example("""
+            import Foundation
+            /// docs
+            public class B: NSObject {
+            // no docs
+            override public var description: String { fatalError() } }
+            """),
+            Example("""
             /// docs
             public class A {
                 deinit {}
             }
-            """,
-            """
+            """),
+            Example("""
             public extension A {}
-            """
+            """)
         ],
         triggeringExamples: [
             // public, undocumented
-            "public func a() {}\n",
+            Example("public func a() {}\n"),
             // public, undocumented
-            "// regular comment\npublic func a() {}\n",
+            Example("// regular comment\npublic func a() {}\n"),
             // public, undocumented
-            "/* regular comment */\npublic func a() {}\n",
+            Example("/* regular comment */\npublic func a() {}\n"),
             // protocol member and inherited member are both undocumented
-            "/// docs\npublic protocol A {\n// no docs\nvar b: Int { get } }\n" +
-            "/// docs\npublic struct C: A {\n\npublic let b: Int\n}"
+            Example("""
+            /// docs
+            public protocol A {
+            // no docs
+            var b: Int { get } }
+            /// docs
+            public struct C: A {
+
+            public let b: Int
+            }
+            """)
         ]
     )
 

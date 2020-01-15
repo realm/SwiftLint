@@ -1,5 +1,5 @@
 internal struct LegacyConstantRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples: [Example] = [
         "CGRect.infinite",
         "CGPoint.zero",
         "CGRect.zero",
@@ -12,7 +12,7 @@ internal struct LegacyConstantRuleExamples {
         "Float.pi"
     ]
 
-    static let triggeringExamples = [
+    static let triggeringExamples: [Example] = [
         "↓CGRectInfinite",
         "↓CGPointZero",
         "↓CGRectZero",
@@ -25,7 +25,7 @@ internal struct LegacyConstantRuleExamples {
         "↓Float(M_PI)"
     ]
 
-    static let corrections = [
+    static let corrections: [Example: Example] = [
         "↓CGRectInfinite": "CGRect.infinite",
         "↓CGPointZero": "CGPoint.zero",
         "↓CGRectZero": "CGRect.zero",

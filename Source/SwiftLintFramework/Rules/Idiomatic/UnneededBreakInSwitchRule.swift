@@ -1,11 +1,13 @@
 import Foundation
 import SourceKittenFramework
 
-private func embedInSwitch(_ text: String, case: String = "case .bar") -> String {
-    return "switch foo {\n" +
-            "\(`case`):\n" +
-           "    \(text)\n" +
-           "}"
+private func embedInSwitch(_ text: String, case: String = "case .bar", file: StaticString = #file, line: UInt = #line) -> Example {
+    Example("""
+        switch foo {
+        \(`case`):
+            \(text)
+        }
+        """, file: file, line: line)
 }
 public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)

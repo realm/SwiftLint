@@ -1,235 +1,283 @@
 // swiftlint:disable type_body_length
 
 internal struct QuickDiscouragedCallRuleExamples {
-    static let nonTriggeringExamples: [String] = [
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           beforeEach {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           beforeEach {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "           afterEach {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "           describe(\"bar\") {\n" +
-        "           }\n" +
-        "           context(\"bar\") {\n" +
-        "           }\n" +
-        "           it(\"bar\") {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "          itBehavesLike(\"bar\")\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           it(\"does something\") {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       context(\"foo\") {\n" +
-        "           afterEach { toto.append(foo) }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       xcontext(\"foo\") {\n" +
-        "           afterEach { toto.append(foo) }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       xdescribe(\"foo\") {\n" +
-        "           afterEach { toto.append(foo) }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           xit(\"does something\") {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       fcontext(\"foo\") {\n" +
-        "           afterEach { toto.append(foo) }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       fdescribe(\"foo\") {\n" +
-        "           afterEach { toto.append(foo) }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           fit(\"does something\") {\n" +
-        "               let foo = Foo()\n" +
-        "               foo.toto()\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       fitBehavesLike(\"foo\")\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       xitBehavesLike(\"foo\")\n" +
-        "   }\n" +
-        "}\n"
+    static let nonTriggeringExamples: [Example] = [
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   beforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   beforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+                   afterEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+                   describe("bar") {
+                   }
+                   context("bar") {
+                   }
+                   it("bar") {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                  itBehavesLike("bar")
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   it("does something") {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               context("foo") {
+                   afterEach { toto.append(foo) }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               xcontext("foo") {
+                   afterEach { toto.append(foo) }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               xdescribe("foo") {
+                   afterEach { toto.append(foo) }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   xit("does something") {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               fcontext("foo") {
+                   afterEach { toto.append(foo) }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               fdescribe("foo") {
+                   afterEach { toto.append(foo) }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   fit("does something") {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               fitBehavesLike("foo")
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               xitBehavesLike("foo")
+           }
+        }
+        """)
     ]
 
-    static let triggeringExamples: [String]  = [
-        "class TotoTests {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           let foo = Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n" +
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           context(\"foo\") {\n" +
-        "               let foo = ↓Foo()\n" +
-        "           }\n" +
-        "           context(\"bar\") {\n" +
-        "               let foo = ↓Foo()\n" +
-        "               ↓foo.bar()\n" +
-        "               it(\"does something\") {\n" +
-        "                   let foo = Foo()\n" +
-        "                   foo.toto()\n" +
-        "               }\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           context(\"foo\") {\n" +
-        "               context(\"foo\") {\n" +
-        "                   beforeEach {\n" +
-        "                       let foo = Foo()\n" +
-        "                       foo.toto()\n" +
-        "                   }\n" +
-        "                   it(\"bar\") {\n" +
-        "                   }\n" +
-        "                   context(\"foo\") {\n" +
-        "                       let foo = ↓Foo()\n" +
-        "                   }\n" +
-        "               }\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       context(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       sharedExamples(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       describe(\"foo\") {\n" +
-        "           ↓foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       context(\"foo\") {\n" +
-        "           ↓foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       sharedExamples(\"foo\") {\n" +
-        "           ↓foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       xdescribe(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "       fdescribe(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n",
-        "class TotoTests: QuickSpec {\n" +
-        "   override func spec() {\n" +
-        "       xcontext(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "       fcontext(\"foo\") {\n" +
-        "           let foo = ↓Foo()\n" +
-        "       }\n" +
-        "   }\n" +
-        "}\n"
+    static let triggeringExamples: [Example]  = [
+        Example("""
+        class TotoTests {
+           override func spec() {
+               describe("foo") {
+                   let foo = Foo()
+               }
+           }
+        }
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   context("foo") {
+                       let foo = ↓Foo()
+                   }
+                   context("bar") {
+                       let foo = ↓Foo()
+                       ↓foo.bar()
+                       it("does something") {
+                           let foo = Foo()
+                           foo.toto()
+                       }
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   context("foo") {
+                       context("foo") {
+                           beforeEach {
+                               let foo = Foo()
+                               foo.toto()
+                           }
+                           it("bar") {
+                           }
+                           context("foo") {
+                               let foo = ↓Foo()
+                           }
+                       }
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               context("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               sharedExamples("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   ↓foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               context("foo") {
+                   ↓foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               sharedExamples("foo") {
+                   ↓foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               xdescribe("foo") {
+                   let foo = ↓Foo()
+               }
+               fdescribe("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               xcontext("foo") {
+                   let foo = ↓Foo()
+               }
+               fcontext("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
+        """)
     ]
 }

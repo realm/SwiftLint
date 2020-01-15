@@ -13,7 +13,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     public init() {}
 
-    private static let triggeringExamples =  [
+    private static let triggeringExamples: [Example] =  [
         "let foo = [1, 2, 3↓,]\n",
         "let foo = [1, 2, 3↓, ]\n",
         "let foo = [1, 2, 3   ↓,]\n",
@@ -26,9 +26,12 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
         "foo([1: \"\\(error)\"↓,])\n"
     ]
 
-    private static let corrections: [String: String] = {
-        let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓,", with: "") }
-        var result: [String: String] = [:]
+    private static let corrections: [Example: Example] = {
+        let fixed = triggeringExamples.map { example -> Example in
+            let fixedString = example.code.replacingOccurrences(of: "↓,", with: "")
+            return example.with(code: fixedString)
+        }
+        var result: [Example: Example] = [:]
         for (triggering, correction) in zip(triggeringExamples, fixed) {
             result[triggering] = correction
         }

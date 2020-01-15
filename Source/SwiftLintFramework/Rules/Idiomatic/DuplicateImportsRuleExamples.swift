@@ -1,25 +1,25 @@
 internal struct DuplicateImportsRuleExamples {
     static let nonTriggeringExamples: [Example] = [
-        "import A\nimport B\nimport C",
-        "import A.B\nimport A.C",
-        """
+        Example("import A\nimport B\nimport C"),
+        Example("import A.B\nimport A.C"),
+        Example("""
         #if DEBUG
             @testable import KsApi
         #else
             import KsApi
         #endif
-        """,
-        "import A // module\nimport B // module"
+        """),
+        Example("import A // module\nimport B // module")
     ]
 
     static let triggeringExamples: [Example] = {
         var list: [Example] = [
-            "import Foundation\nimport Dispatch\n↓import Foundation",
-            "import Foundation\n↓import Foundation.NSString",
-            "↓import Foundation.NSString\nimport Foundation",
-            "↓import A.B.C\nimport A.B",
-            "import A.B\n↓import A.B.C",
-            """
+            Example("import Foundation\nimport Dispatch\n↓import Foundation"),
+            Example("import Foundation\n↓import Foundation.NSString"),
+            Example("↓import Foundation.NSString\nimport Foundation"),
+            Example("↓import A.B.C\nimport A.B"),
+            Example("import A.B\n↓import A.B.C"),
+            Example("""
             import A
             #if DEBUG
                 @testable import KsApi
@@ -27,7 +27,7 @@ internal struct DuplicateImportsRuleExamples {
                 import KsApi
             #endif
             ↓import A
-            """
+            """)
         ]
 
         list += DuplicateImportsRule.importKinds.map { importKind in

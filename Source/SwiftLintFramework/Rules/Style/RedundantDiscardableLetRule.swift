@@ -13,19 +13,19 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         description: "Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function.",
         kind: .style,
         nonTriggeringExamples: [
-            "_ = foo()\n",
-            "if let _ = foo() { }\n",
-            "guard let _ = foo() else { return }\n",
-            "let _: ExplicitType = foo()",
-            "while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }\n"
+            Example("_ = foo()\n"),
+            Example("if let _ = foo() { }\n"),
+            Example("guard let _ = foo() else { return }\n"),
+            Example("let _: ExplicitType = foo()"),
+            Example("while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }\n")
         ],
         triggeringExamples: [
-            "↓let _ = foo()\n",
-            "if _ = foo() { ↓let _ = bar() }\n"
+            Example("↓let _ = foo()\n"),
+            Example("if _ = foo() { ↓let _ = bar() }\n")
         ],
         corrections: [
-            "↓let _ = foo()\n": "_ = foo()\n",
-            "if _ = foo() { ↓let _ = bar() }\n": "if _ = foo() { _ = bar() }\n"
+            Example("↓let _ = foo()\n"): Example("_ = foo()\n"),
+            Example("if _ = foo() { ↓let _ = bar() }\n"): Example("if _ = foo() { _ = bar() }\n")
         ]
     )
 

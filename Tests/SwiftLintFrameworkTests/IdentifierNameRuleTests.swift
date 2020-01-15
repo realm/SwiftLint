@@ -9,9 +9,9 @@ class IdentifierNameRuleTests: XCTestCase {
     func testIdentifierNameWithAllowedSymbols() {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "let myLet$ = 0",
-            "let myLet% = 0",
-            "let myLet$% = 0"
+            Example("let myLet$ = 0"),
+            Example("let myLet% = 0"),
+            Example("let myLet$% = 0")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)

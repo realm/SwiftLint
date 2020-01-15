@@ -27,7 +27,7 @@ class PrivateOverFilePrivateRuleTests: XCTestCase {
     func testPrivateOverFilePrivateNotValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "fileprivate extension String {}"
+            Example("fileprivate extension String {}")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)

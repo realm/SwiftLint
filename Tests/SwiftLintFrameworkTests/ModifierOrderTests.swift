@@ -162,48 +162,48 @@ class ModifierOrderTests: XCTestCase {
             kind: .style,
             minSwiftVersion: .fourDotOne,
             nonTriggeringExamples: [
-                """
+                Example("""
                 class Foo {
                     weak final override private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     final weak override private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     final override weak private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     final override private weak var bar: UIView?
                 }
-                """
+                """)
             ],
             triggeringExamples: [
-                """
+                Example("""
                 class Foo {
                     weak override final private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     override weak final private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     override final weak private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     override final private weak var bar: UIView?
                 }
-                """
+                """)
             ]
         )
 
@@ -221,37 +221,37 @@ class ModifierOrderTests: XCTestCase {
             nonTriggeringExamples: [],
             triggeringExamples: [],
             corrections: [
-                """
+                Example("""
                 class Foo {
                     private final override var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     final override private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     private final var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     final private var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     class private final var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     final private class var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     @objc
                     private
@@ -260,8 +260,8 @@ class ModifierOrderTests: XCTestCase {
                     override
                     var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     @objc
                     final
@@ -270,13 +270,13 @@ class ModifierOrderTests: XCTestCase {
                     class
                     var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 private final class Foo {}
-                """:
-                """
+                """):
+                Example("""
                 final private class Foo {}
-                """
+                """)
             ]
         )
 
@@ -294,37 +294,37 @@ class ModifierOrderTests: XCTestCase {
             nonTriggeringExamples: [],
             triggeringExamples: [],
             corrections: [
-                """
+                Example("""
                 class Foo {
                     weak class final var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     weak final class var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     static weak final var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     final weak static var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     class final weak var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     final class weak var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     @objc
                     private
@@ -333,8 +333,8 @@ class ModifierOrderTests: XCTestCase {
                     final
                     var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     @objc
                     final
@@ -343,17 +343,17 @@ class ModifierOrderTests: XCTestCase {
                     class
                     var bar: UIView?
                 }
-                """,
-                """
+                """),
+                Example("""
                 class Foo {
                     var bar: UIView?
                 }
-                """:
-                """
+                """):
+                Example("""
                 class Foo {
                     var bar: UIView?
                 }
-                """
+                """)
             ]
         )
 
@@ -371,18 +371,18 @@ class ModifierOrderTests: XCTestCase {
             nonTriggeringExamples: [],
             triggeringExamples: [],
             corrections: [
-                """
+                Example("""
                 private final class Foo {}
-                """:
-                """
+                """):
+                Example("""
                 final private class Foo {}
-                """,
-                """
+                """),
+                Example("""
                 public protocol Foo: class {}\n
-                """:
-                """
+                """):
+                Example("""
                 public protocol Foo: class {}\n
-                """
+                """)
             ]
         )
 
@@ -401,7 +401,7 @@ class ModifierOrderTests: XCTestCase {
             return
         }
 
-        let allViolations = violations("final public var foo: String", config: config)
+        let allViolations = violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleDescription.identifier == ruleID }
         if let violation = modifierOrderRuleViolation {
             XCTAssertEqual(violation.reason, "public modifier should be before final.")

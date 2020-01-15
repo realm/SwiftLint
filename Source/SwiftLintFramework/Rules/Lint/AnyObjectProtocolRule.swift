@@ -14,25 +14,25 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
         kind: .lint,
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
-            "protocol SomeProtocol {}\n",
-            "protocol SomeClassOnlyProtocol: AnyObject {}\n",
-            "protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n",
-            "@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"
+            Example("protocol SomeProtocol {}\n"),
+            Example("protocol SomeClassOnlyProtocol: AnyObject {}\n"),
+            Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"),
+            Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n")
         ],
         triggeringExamples: [
-            "protocol SomeClassOnlyProtocol: ↓class {}\n",
-            "protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n",
-            "@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"
+            Example("protocol SomeClassOnlyProtocol: ↓class {}\n"),
+            Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"),
+            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n")
         ],
         corrections: [
-            "protocol SomeClassOnlyProtocol: ↓class {}\n":
-                "protocol SomeClassOnlyProtocol: AnyObject {}\n",
-            "protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n":
-                "protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n",
-            "protocol SomeClassOnlyProtocol: SomeInheritedProtocol, ↓class {}\n":
-                "protocol SomeClassOnlyProtocol: SomeInheritedProtocol, AnyObject {}\n",
-            "@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n":
-                "@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"
+            Example("protocol SomeClassOnlyProtocol: ↓class {}\n"):
+                Example("protocol SomeClassOnlyProtocol: AnyObject {}\n"),
+            Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"):
+                Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"),
+            Example("protocol SomeClassOnlyProtocol: SomeInheritedProtocol, ↓class {}\n"):
+                Example("protocol SomeClassOnlyProtocol: SomeInheritedProtocol, AnyObject {}\n"),
+            Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"):
+                Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n")
         ]
     )
 

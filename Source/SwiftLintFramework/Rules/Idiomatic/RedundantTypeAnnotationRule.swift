@@ -13,44 +13,44 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         description: "Variables should not have redundant type annotation",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "var url = URL()",
-            "var url: CustomStringConvertible = URL()",
-            "@IBInspectable var color: UIColor = UIColor.white"
+            Example("var url = URL()"),
+            Example("var url: CustomStringConvertible = URL()"),
+            Example("@IBInspectable var color: UIColor = UIColor.white")
         ],
         triggeringExamples: [
-            "var url↓:URL=URL()",
-            "var url↓:URL = URL(string: \"\")",
-            "var url↓: URL = URL()",
-            "let url↓: URL = URL()",
-            "lazy var url↓: URL = URL()",
-            "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics",
-            """
+            Example("var url↓:URL=URL()"),
+            Example("var url↓:URL = URL(string: \"\")"),
+            Example("var url↓: URL = URL()"),
+            Example("let url↓: URL = URL()"),
+            Example("lazy var url↓: URL = URL()"),
+            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
+            Example("""
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar↓: Int = Int(5)
               }
             }
-            """
+            """)
         ],
         corrections: [
-            "var url↓: URL = URL()": "var url = URL()",
-            "let url↓: URL = URL()": "let url = URL()",
-            "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics":
-                "let alphanumerics = CharacterSet.alphanumerics",
-            """
+            Example("var url↓: URL = URL()"): Example("var url = URL()"),
+            Example("let url↓: URL = URL()"): Example("let url = URL()"),
+            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
+                Example("let alphanumerics = CharacterSet.alphanumerics"),
+            Example("""
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar↓: Int = Int(5)
               }
             }
-            """:
-            """
+            """):
+            Example("""
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar = Int(5)
               }
             }
-            """
+            """)
         ]
     )
 

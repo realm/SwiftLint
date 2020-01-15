@@ -11,9 +11,9 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
         description: "Extensions shouldn't override declarations.",
         kind: .lint,
         nonTriggeringExamples: [
-            "extension Person {\n  var age: Int { return 42 }\n}\n",
-            "extension Person {\n  func celebrateBirthday() {}\n}\n",
-            "class Employee: Person {\n  override func celebrateBirthday() {}\n}\n",
+            Example("extension Person {\n  var age: Int { return 42 }\n}\n"),
+            Example("extension Person {\n  func celebrateBirthday() {}\n}\n"),
+            Example("class Employee: Person {\n  override func celebrateBirthday() {}\n}\n"),
             Example("""
             class Foo: NSObject {}
             extension Foo {
@@ -30,8 +30,8 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
             """)
         ],
         triggeringExamples: [
-            "extension Person {\n  override ↓var age: Int { return 42 }\n}\n",
-            "extension Person {\n  override ↓func celebrateBirthday() {}\n}\n"
+            Example("extension Person {\n  override ↓var age: Int { return 42 }\n}\n"),
+            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}\n")
         ]
     )
 

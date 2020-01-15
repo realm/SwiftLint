@@ -18,10 +18,10 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "}\n"),
             Example("if let (_, asd, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
             "}\n"),
-            "if foo() { let _ = bar() }\n",
-            "if foo() { _ = bar() }\n",
-            "if case .some(_) = self {}",
-            "if let point = state.find({ _ in true }) {}"
+            Example("if foo() { let _ = bar() }\n"),
+            Example("if foo() { _ = bar() }\n"),
+            Example("if case .some(_) = self {}"),
+            Example("if let point = state.find({ _ in true }) {}")
         ],
         triggeringExamples: [
             Example("if let ↓_ = Foo.optionalValue {\n" +
@@ -38,8 +38,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "}\n"),
             Example("if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
             "}\n"),
-            "func foo() {\nif let ↓_ = bar {\n}\n",
-            "if case .some(let ↓_) = self {}"
+            Example("func foo() {\nif let ↓_ = bar {\n}\n"),
+            Example("if case .some(let ↓_) = self {}")
         ]
     )
 

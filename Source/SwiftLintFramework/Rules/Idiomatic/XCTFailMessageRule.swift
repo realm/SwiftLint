@@ -11,28 +11,28 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticT
         description: "An XCTFail call should include a description of the assertion.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             func testFoo() {
               XCTFail("bar")
             }
-            """,
-            """
+            """),
+            Example("""
             func testFoo() {
               XCTFail(bar)
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             func testFoo() {
               ↓XCTFail()
             }
-            """,
-            """
+            """),
+            Example("""
             func testFoo() {
               ↓XCTFail("")
             }
-            """
+            """)
         ]
     )
 

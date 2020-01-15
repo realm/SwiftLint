@@ -17,9 +17,9 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
                 Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01\n")
             ]
         } +  [
-            "let result = myList.contains(where: { $0 % 2 == 0 })\n",
-            "let result = !myList.contains(where: { $0 % 2 == 0 })\n",
-            "let result = myList.contains(10)\n"
+            Example("let result = myList.contains(where: { $0 % 2 == 0 })\n"),
+            Example("let result = !myList.contains(where: { $0 % 2 == 0 })\n"),
+            Example("let result = myList.contains(10)\n")
         ],
         triggeringExamples: [">", "==", "!="].flatMap { operation in
             return [

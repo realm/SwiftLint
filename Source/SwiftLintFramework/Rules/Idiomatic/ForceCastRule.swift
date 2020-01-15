@@ -11,9 +11,9 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
         description: "Force casts should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "NSNumber() as? Int\n"
+            Example("NSNumber() as? Int\n")
         ],
-        triggeringExamples: [ "NSNumber() ↓as! Int\n" ]
+        triggeringExamples: [ Example("NSNumber() ↓as! Int\n") ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {

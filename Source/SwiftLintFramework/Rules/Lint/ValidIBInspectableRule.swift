@@ -14,24 +14,24 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
             "and be of a supported type",
         kind: .lint,
         nonTriggeringExamples: [
-            "class Foo {\n  @IBInspectable private var x: Int\n}\n",
-            "class Foo {\n  @IBInspectable private var x: String?\n}\n",
-            "class Foo {\n  @IBInspectable private var x: String!\n}\n",
-            "class Foo {\n  @IBInspectable private var count: Int = 0\n}\n",
-            "class Foo {\n  private var notInspectable = 0\n}\n",
-            "class Foo {\n  private let notInspectable: Int\n}\n",
-            "class Foo {\n  private let notInspectable: UInt8\n}\n"
+            Example("class Foo {\n  @IBInspectable private var x: Int\n}\n"),
+            Example("class Foo {\n  @IBInspectable private var x: String?\n}\n"),
+            Example("class Foo {\n  @IBInspectable private var x: String!\n}\n"),
+            Example("class Foo {\n  @IBInspectable private var count: Int = 0\n}\n"),
+            Example("class Foo {\n  private var notInspectable = 0\n}\n"),
+            Example("class Foo {\n  private let notInspectable: Int\n}\n"),
+            Example("class Foo {\n  private let notInspectable: UInt8\n}\n")
         ],
         triggeringExamples: [
-            "class Foo {\n  @IBInspectable private ↓let count: Int\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var insets: UIEdgeInsets\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var count = 0\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var count: Int?\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var count: Int!\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<Int>\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var count: Optional<Int>\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var x: Optional<String>\n}\n",
-            "class Foo {\n  @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<String>\n}\n"
+            Example("class Foo {\n  @IBInspectable private ↓let count: Int\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var insets: UIEdgeInsets\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var count = 0\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var count: Int?\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var count: Int!\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<Int>\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var count: Optional<Int>\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var x: Optional<String>\n}\n"),
+            Example("class Foo {\n  @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<String>\n}\n")
         ]
     )
 

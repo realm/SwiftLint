@@ -13,17 +13,17 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         kind: .lint,
         minSwiftVersion: .five,
         nonTriggeringExamples: [
-            "foo { [weak self] in _ }",
-            "foo { [weak self] param in _ }",
-            "foo { [weak bar] in _ }",
-            "foo { [weak bar] param in _ }",
-            "foo { bar in _ }",
-            "foo { $0 }"
+            Example("foo { [weak self] in _ }"),
+            Example("foo { [weak self] param in _ }"),
+            Example("foo { [weak bar] in _ }"),
+            Example("foo { [weak bar] param in _ }"),
+            Example("foo { bar in _ }"),
+            Example("foo { $0 }")
         ],
         triggeringExamples: [
-            "foo { [↓unowned self] in _ }",
-            "foo { [↓unowned bar] in _ }",
-            "foo { [bar, ↓unowned self] in _ }"
+            Example("foo { [↓unowned self] in _ }"),
+            Example("foo { [↓unowned bar] in _ }"),
+            Example("foo { [bar, ↓unowned self] in _ }")
         ]
     )
 

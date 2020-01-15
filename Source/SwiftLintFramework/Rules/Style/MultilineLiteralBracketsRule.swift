@@ -12,11 +12,11 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         description: "Multiline literals should have their surrounding brackets in a new line.",
         kind: .style,
         nonTriggeringExamples: [
-            """
+            Example("""
             let trio = ["harry", "ronald", "hermione"]
             let houseCup = ["gryffinder": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
-            """,
-            """
+            """),
+            Example("""
             let trio = [
                 "harry",
                 "ronald",
@@ -28,8 +28,8 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "ravenclaw": 410,
                 "slytherin": 450
             ]
-            """,
-            """
+            """),
+            Example("""
             let trio = [
                 "harry", "ronald", "hermione"
             ]
@@ -37,8 +37,8 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "gryffinder": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450
             ]
-            """,
-            """
+            """),
+            Example("""
                 _ = [
                     1,
                     2,
@@ -47,39 +47,39 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                     5, 6,
                     7, 8, 9
                 ]
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             let trio = [↓"harry",
                         "ronald",
                         "hermione"
             ]
-            """,
-            """
+            """),
+            Example("""
             let houseCup = [↓"gryffinder": 460, "hufflepuff": 370,
                             "ravenclaw": 410, "slytherin": 450
             ]
-            """,
-            """
+            """),
+            Example("""
             let trio = [
                 "harry",
                 "ronald",
                 "hermione"↓]
-            """,
-            """
+            """),
+            Example("""
             let houseCup = [
                 "gryffinder": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450↓]
-            """,
-            """
+            """),
+            Example("""
             class Hogwarts {
                 let houseCup = [
                     "gryffinder": 460, "hufflepuff": 370,
                     "ravenclaw": 410, "slytherin": 450↓]
             }
-            """,
-            """
+            """),
+            Example("""
                 _ = [
                     1,
                     2,
@@ -87,13 +87,13 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                     4,
                     5, 6,
                     7, 8, 9↓]
-            """,
-            """
+            """),
+            Example("""
                 _ = [↓1, 2, 3,
                      4, 5, 6,
                      7, 8, 9
                 ]
-            """
+            """)
         ]
     )
 

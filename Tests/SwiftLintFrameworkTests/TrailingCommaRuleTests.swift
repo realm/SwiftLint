@@ -6,7 +6,7 @@ class TrailingCommaRuleTests: XCTestCase {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         if SwiftVersion.current >= .fourDotOne {
             let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
-                ["class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"]
+                [Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}")]
             verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
         } else {
             verifyRule(TrailingCommaRule.description)

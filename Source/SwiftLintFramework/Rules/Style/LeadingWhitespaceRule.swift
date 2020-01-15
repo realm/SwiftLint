@@ -11,9 +11,9 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
         kind: .style,
-        nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ],
-        corrections: ["\n //": "//"]
+        nonTriggeringExamples: [ Example("//\n") ],
+        triggeringExamples: [ Example("\n"), Example(" //\n") ],
+        corrections: [Example("\n //"): Example("//")]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {

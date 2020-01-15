@@ -13,16 +13,16 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Sub
         description: "When declaring properties in protocols, the order of accessors should be `get set`.",
         kind: .style,
         nonTriggeringExamples: [
-            "protocol Foo {\n var bar: String { get set }\n }",
-            "protocol Foo {\n var bar: String { get }\n }",
-            "protocol Foo {\n var bar: String { set }\n }"
+            Example("protocol Foo {\n var bar: String { get set }\n }"),
+            Example("protocol Foo {\n var bar: String { get }\n }"),
+            Example("protocol Foo {\n var bar: String { set }\n }")
         ],
         triggeringExamples: [
-            "protocol Foo {\n var bar: String { ↓set get }\n }"
+            Example("protocol Foo {\n var bar: String { ↓set get }\n }")
         ],
         corrections: [
-            "protocol Foo {\n var bar: String { ↓set get }\n }":
-                "protocol Foo {\n var bar: String { get set }\n }"
+            Example("protocol Foo {\n var bar: String { ↓set get }\n }"):
+                Example("protocol Foo {\n var bar: String { get set }\n }")
         ]
     )
 

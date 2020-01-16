@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {

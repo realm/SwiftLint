@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 /// Represents a Swift file's syntax information.

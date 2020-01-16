@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 /// A SwiftLint-aware Swift syntax token.

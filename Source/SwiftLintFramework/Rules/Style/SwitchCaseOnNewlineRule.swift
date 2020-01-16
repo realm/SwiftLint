@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 private func wrapInSwitch(_ str: String) -> String {

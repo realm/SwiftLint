@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {

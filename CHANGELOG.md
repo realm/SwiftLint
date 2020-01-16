@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Add `deinitializer` type content to `type_contents_order` rule instead of grouping it with initializers.  
+[Steven Magdy](https://github.com/StevenMagdy)
+[#3042](https://github.com/realm/SwiftLint/issues/3042)
 
 #### Bug Fixes
 

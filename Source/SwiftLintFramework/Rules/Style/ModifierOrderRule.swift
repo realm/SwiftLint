@@ -188,8 +188,7 @@ private extension SourceKittenDictionary {
             return nil
         }
 
-        // FIXME: Should use the underlying offset value instead of its description
-        return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset.description)!])
+        return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset.value)])
     }
 }
 

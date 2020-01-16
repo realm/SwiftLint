@@ -1,5 +1,5 @@
 github "Carthage/Commandant" "0.17.0"
-github "PaulTaykalo/SourceKitten" "76350746e111778cc9e5893d35ddbcabe5f366dd"
+github "PaulTaykalo/SourceKitten" "96610a7ef7689e43c04b289477367cbb9b2fd4c3"
 github "drmohundro/SWXMLHash" "5.0.1"
 github "jpsim/Yams" "2.0.0"
 github "jspahrsummers/xcconfigs" "0.12"

@@ -53,32 +53,3 @@ public struct SwiftLintSyntaxMap {
         return tokens(inByteRange: byteRange).compactMap { $0.kind }
     }
 }
-
-// TODO: Move to SourceKitten
-
-extension ByteRange {
-    func contains(_ value: ByteCount) -> Bool {
-        return location <= value && upperBound >= value
-    }
-
-    func intersects(_ otherRange: ByteRange) -> Bool {
-        return contains(otherRange.location) ||
-            contains(otherRange.location + otherRange.length) ||
-            otherRange.contains(location) ||
-            otherRange.contains(location + length)
-    }
-
-    func intersects(_ ranges: [ByteRange]) -> Bool {
-        return ranges.contains { intersects($0) }
-    }
-
-    func union(with otherRange: ByteRange) -> ByteRange {
-        let maxUpperBound = max(upperBound, otherRange.upperBound)
-        let minLocation = min(location, otherRange.location)
-        return ByteRange(location: minLocation, length: maxUpperBound - minLocation)
-    }
-
-    var upperBound: ByteCount {
-        return location + length
-    }
-}

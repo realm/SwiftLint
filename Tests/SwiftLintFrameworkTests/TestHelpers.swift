@@ -173,30 +173,40 @@ private extension Configuration {
         let linter = collecter.collect(into: storage)
         let corrections = linter.correct(using: storage).sorted { $0.location < $1.location }
         if expectedLocations.isEmpty {
-            XCTAssertEqual(corrections.count, before.code != expected.code ? 1 : 0,
-                           file: before.file ?? #file, line: before.line ?? #line)
+            XCTAssertEqual(
+                corrections.count, before.code != expected.code ? 1 : 0, #function + ".expectedLocationsEmpty",
+                file: before.file ?? #file, line: before.line ?? #line)
         } else {
             XCTAssertEqual(
                 corrections.count,
                 expectedLocations.count,
+                #function + ".expected locations: \(expectedLocations.count)",
                 file: before.file ?? #file, line: before.line ?? #line)
             for (correction, expectedLocation) in zip(corrections, expectedLocations) {
                 XCTAssertEqual(
                     correction.location,
                     expectedLocation,
+                    #function + ".correction location",
                     file: before.file ?? #file, line: before.line ?? #line)
             }
         }
-        XCTAssertEqual(file.contents, expected.code, file: before.file ?? #file, line: before.line ?? #line)
+        XCTAssertEqual(
+            file.contents,
+            expected.code,
+            #function + ".file contents",
+            file: before.file ?? #file, line: before.line ?? #line)
         let path = file.path!
         do {
             let corrected = try String(contentsOfFile: path, encoding: .utf8)
-            XCTAssertEqual(corrected, expected.code, file: before.file ?? #file, line: before.line ?? #line)
+            XCTAssertEqual(
+                corrected,
+                expected.code,
+                #function + ".corrected file equals expected",
+                file: before.file ?? #file, line: before.line ?? #line)
         } catch {
             XCTFail(
                 "couldn't read file at path '\(path)': \(error)",
-                file: before.file ?? #file,
-                line: before.line ?? #line)
+                file: before.file ?? #file, line: before.line ?? #line)
         }
     }
 }

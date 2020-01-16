@@ -47,6 +47,7 @@ public let masterRuleList = RuleList(rules: [
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
+    ExplicitSelfRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,
     ExtensionAccessModifierRule.self,

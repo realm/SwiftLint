@@ -428,6 +428,12 @@ extension ExplicitInitRuleTests {
     ]
 }
 
+extension ExplicitSelfRuleTests {
+    static var allTests: [(String, (ExplicitSelfRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ExplicitTopLevelACLRuleTests {
     static var allTests: [(String, (ExplicitTopLevelACLRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1671,6 +1677,7 @@ XCTMain([
     testCase(ExplicitACLRuleTests.allTests),
     testCase(ExplicitEnumRawValueRuleTests.allTests),
     testCase(ExplicitInitRuleTests.allTests),
+    testCase(ExplicitSelfRuleTests.allTests),
     testCase(ExplicitTopLevelACLRuleTests.allTests),
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
     testCase(ExplicitTypeInterfaceRuleTests.allTests),

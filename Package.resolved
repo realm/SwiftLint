@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "b02b00b30b6353632aa4a5fb6124f8147f7140c0",
-          "version": "8.0.5"
+          "revision": "6abeb3f5c03beba2b9e4dbe20886e773b5b629b6",
+          "version": "8.0.4"
         }
       },
       {
@@ -48,10 +48,10 @@
       },
       {
         "package": "SourceKitten",
-        "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
+        "repositoryURL": "https://github.com/PaulTaykalo/SourceKitten.git",
         "state": {
-          "branch": "master",
-          "revision": "003611a7f24b192ba86eba27e88b39718cd16eba",
+          "branch": "update/framework-api-visibility",
+          "revision": "76350746e111778cc9e5893d35ddbcabe5f366dd",
           "version": null
         }
       },

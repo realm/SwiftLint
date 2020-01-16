@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -29,8 +28,8 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
     }
 
     private func violationOffsets(file: SwiftLintFile,
-                                  dictionary: SourceKittenDictionary) -> [Int] {
-        return dictionary.substructure.flatMap { subDict -> [Int] in
+                                  dictionary: SourceKittenDictionary) -> [ByteCount] {
+        return dictionary.substructure.flatMap { subDict -> [ByteCount] in
             // complete detachment is allowed on `deinit`
             if subDict.declarationKind == .functionMethodInstance,
                 subDict.name == "deinit" {
@@ -51,16 +50,11 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
     private var methodName = "NotificationCenter.default.removeObserver"
 
     private func parameterIsSelf(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength else {
-                return false
-        }
-
-        let range = NSRange(location: bodyOffset, length: bodyLength)
-        let tokens = file.syntaxMap.tokens(inByteRange: range)
-        let types = tokens.kinds
-
-        guard types == [.keyword], let token = tokens.first else {
+        guard let bodyRange = dictionary.bodyByteRange,
+            case let tokens = file.syntaxMap.tokens(inByteRange: bodyRange),
+            tokens.kinds == [.keyword],
+            let token = tokens.first
+        else {
             return false
         }
 

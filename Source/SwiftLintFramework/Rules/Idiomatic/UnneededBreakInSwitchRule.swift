@@ -38,13 +38,11 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
                 let innerStructure = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
                 innerStructure.statementKind == .case,
-                let caseOffset = innerStructure.offset,
-                let caseLength = innerStructure.length,
+                let caseRange = innerStructure.byteRange,
                 let lastPatternEnd = patternEnd(dictionary: innerStructure) else {
                     return nil
             }
 
-            let caseRange = NSRange(location: caseOffset, length: caseLength)
             let tokens = file.syntaxMap.tokens(inByteRange: caseRange).filter { token in
                 guard let kind = token.kind,
                     token.offset > lastPatternEnd else {
@@ -73,8 +71,8 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         }
     }
 
-    private func patternEnd(dictionary: SourceKittenDictionary) -> Int? {
-        let patternEnds = dictionary.elements.compactMap { subDictionary -> Int? in
+    private func patternEnd(dictionary: SourceKittenDictionary) -> ByteCount? {
+        let patternEnds = dictionary.elements.compactMap { subDictionary -> ByteCount? in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,
                 let length = subDictionary.length else {

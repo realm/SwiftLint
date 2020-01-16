@@ -4,7 +4,7 @@ struct NamespaceCollector {
     struct Element {
         let name: String
         let kind: SwiftDeclarationKind
-        let offset: Int
+        let offset: ByteCount
         let dictionary: SourceKittenDictionary
 
         init?(dictionary: SourceKittenDictionary, namespace: [String]) {

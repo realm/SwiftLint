@@ -46,15 +46,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 return firstOffset < secondOffset
             }
             .prefix(2)
-            .compactMap { argument -> String? in
-                guard
-                    let argOffset = argument.offset,
-                    let argLength = argument.length,
-                    let body = file.stringView.substringWithByteRange(start: argOffset, length: argLength)
-                    else { return nil }
-
-                return body
-            }
+            .compactMap { $0.byteRange.flatMap(file.stringView.substringWithByteRange) }
             .sorted { arg1, _ -> Bool in
                 return protectedArguments.contains(arg1)
             }

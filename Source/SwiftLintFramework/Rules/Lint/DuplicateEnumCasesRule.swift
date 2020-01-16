@@ -47,11 +47,12 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap { $0 }
 
-        var elementsByName: [String: [Int]] = [:]
+        var elementsByName: [String: [ByteCount]] = [:]
         for element in enumElements {
             guard let name = element.name,
                 let nameWithoutParameters = name.split(separator: "(").first,
-                let offset = element.offset else {
+                let offset = element.offset
+            else {
                 continue
             }
 

@@ -88,7 +88,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         var previousArgumentWasMultiline = false
 
         let lastIndex = arguments.count - 1
-        let violatingOffsets: [Int] = arguments.enumerated().compactMap { idx, argument in
+        let violatingOffsets: [ByteCount] = arguments.enumerated().compactMap { idx, argument in
             defer {
                 previousArgumentWasMultiline = isMultiline(argument: argument, file: file)
             }
@@ -131,8 +131,9 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             let length = argument.bodyLength,
             case let contents = file.stringView,
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
-            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length) else {
-                return false
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length)
+        else {
+            return false
         }
 
         return endLine > startLine
@@ -142,8 +143,10 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         guard let offset = dictionary.offset,
             let length = dictionary.length,
             case let start = min(offset, offset + length - 1),
-            let text = file.stringView.substringWithByteRange(start: start, length: length) else {
-                return false
+            case let byteRange = ByteRange(location: start, length: length),
+            let text = file.stringView.substringWithByteRange(byteRange)
+        else {
+            return false
         }
 
         return !text.hasSuffix(")")

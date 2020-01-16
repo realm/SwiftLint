@@ -97,9 +97,9 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
     private func isFunctionUnavailable(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
         return dictionary.swiftAttributes.contains { dict -> Bool in
             guard dict.attribute.flatMap(SwiftDeclarationAttributeKind.init(rawValue:)) == .available,
-                let offset = dict.offset, let length = dict.length,
-                let contents = file.stringView.substringWithByteRange(start: offset, length: length) else {
-                    return false
+                let contents = dict.byteRange.flatMap(file.stringView.substringWithByteRange)
+            else {
+                return false
             }
 
             return contents.contains("unavailable")

@@ -203,7 +203,7 @@ private extension SwiftLintFile {
             if syntaxKindsToSkip.contains(tokenKind) {
                 continue
             }
-            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: Int64(token.offset),
+            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
                                                        arguments: compilerArguments)
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
                 queuedPrintError("Could not get cursor info")
@@ -252,7 +252,7 @@ private extension SwiftLintFile {
     }
 
     // Operators are omitted in the editor.open request and thus have to be looked up by the indexsource request
-    func operatorImports(arguments: [String], processedTokenOffsets: Set<Int>) -> Set<String> {
+    func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
         guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
             .map(SourceKittenDictionary.init) else {
             queuedPrintError("Could not get index")
@@ -271,9 +271,9 @@ private extension SwiftLintFile {
                 let offset = lineOffset + column - 1
 
                 // Filter already processed tokens such as static methods that are not operators
-                guard !processedTokenOffsets.contains(Int(offset)) else { continue }
+                guard !processedTokenOffsets.contains(ByteCount(offset)) else { continue }
 
-                let cursorInfoRequest = Request.cursorInfo(file: path!, offset: offset, arguments: arguments)
+                let cursorInfoRequest = Request.cursorInfo(file: path!, offset: ByteCount(offset), arguments: arguments)
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
                     .map(SourceKittenDictionary.init) else {
                     queuedPrintError("Could not get cursor info")

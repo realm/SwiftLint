@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -133,9 +132,9 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
                 return false
         }
 
-        let beforeIfRange = NSRange(location: offset, length: ifOffset - offset)
+        let beforeIfRange = ByteRange(location: offset, length: ifOffset - offset)
         let ifFinalPosition = ifOffset + ifLength
-        let afterIfRange = NSRange(location: ifFinalPosition, length: offset + length - ifFinalPosition)
+        let afterIfRange = ByteRange(location: ifFinalPosition, length: offset + length - ifFinalPosition)
         let allKinds = file.syntaxMap.kinds(inByteRange: beforeIfRange) +
             file.syntaxMap.kinds(inByteRange: afterIfRange)
 
@@ -148,13 +147,11 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
 
     private func isComplexCondition(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
         let kind = "source.lang.swift.structure.elem.condition_expr"
-        let contents = file.stringView
         return dictionary.elements.contains { element in
             guard element.kind == kind,
-                let offset = element.offset,
-                let length = element.length,
-                let range = contents.byteRangeToNSRange(start: offset, length: length) else {
-                    return false
+                let range = element.byteRange.flatMap(file.stringView.byteRangeToNSRange)
+            else {
+                return false
             }
 
             let containsKeyword = !file.match(pattern: "\\blet|var|case\\b", with: [.keyword], range: range).isEmpty

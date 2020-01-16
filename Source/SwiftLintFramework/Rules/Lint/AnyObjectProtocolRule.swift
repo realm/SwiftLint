@@ -61,15 +61,14 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
 
         return dictionary.elements.compactMap { subDict -> NSRange? in
             guard
-                let offset = subDict.offset,
-                let length = subDict.length,
-                let content = file.stringView.substringWithByteRange(start: offset, length: length),
+                let byteRange = subDict.byteRange,
+                let content = file.stringView.substringWithByteRange(byteRange),
                 content == "class"
-                else {
-                    return nil
+            else {
+                return nil
             }
 
-            return file.stringView.byteRangeToNSRange(start: offset, length: length)
+            return file.stringView.byteRangeToNSRange(byteRange)
         }
     }
 }

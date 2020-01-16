@@ -119,7 +119,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
 
     private func lineOffsets(file: SwiftLintFile, statement: SourceKittenDictionary) -> (Int, Int)? {
         guard let offset = statement.offset,
-              let length = statement.length else {
+              let length = statement.length
+        else {
             return nil
         }
         let startLine = file.line(byteOffset: offset)
@@ -230,7 +231,7 @@ private extension SwiftDeclarationKind {
 
 private extension SwiftLintFile {
     // Zero based line number for specified byte offset
-    func line(byteOffset: Int) -> Int {
+    func line(byteOffset: ByteCount) -> Int {
         let lineIndex = lines.firstIndexAssumingSorted { line in
             return line.byteRange.location > byteOffset
         }

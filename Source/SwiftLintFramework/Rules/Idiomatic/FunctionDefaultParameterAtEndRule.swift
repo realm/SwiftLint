@@ -97,10 +97,8 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
     }
 
     private func isDefaultParameter(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
-        let contents = file.stringView
-        guard let offset = dictionary.offset, let length = dictionary.length,
-            let range = contents.byteRangeToNSRange(start: offset, length: length) else {
-                return false
+        guard let range = dictionary.byteRange.flatMap(file.stringView.byteRangeToNSRange) else {
+            return false
         }
 
         return regex("=").firstMatch(in: file.contents, options: [], range: range) != nil

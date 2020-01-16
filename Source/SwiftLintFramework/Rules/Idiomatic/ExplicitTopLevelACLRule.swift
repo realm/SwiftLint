@@ -37,7 +37,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
 
         // find all top-level types marked as internal (either explictly or implictly)
         let dictionary = file.structureDictionary
-        let internalTypesOffsets = dictionary.substructure.compactMap { element -> Int? in
+        let internalTypesOffsets = dictionary.substructure.compactMap { element -> ByteCount? in
             // ignore extensions
             guard let kind = element.declarationKind,
                 !extensionKinds.contains(kind) else {
@@ -72,7 +72,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
             // the "internal" token correspond to the type if there're only
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
-            let range = NSRange(location: previousInternalByteRange.location, length: length)
+            let range = ByteRange(location: previousInternalByteRange.location, length: length)
             let internalDoesntBelongToType = Set(file.syntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
 
             return internalDoesntBelongToType
@@ -85,7 +85,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
         }
     }
 
-    private func lastInternalByteRange(before typeOffset: Int, in ranges: [NSRange]) -> NSRange? {
+    private func lastInternalByteRange(before typeOffset: ByteCount, in ranges: [ByteRange]) -> ByteRange? {
         let firstPartition = ranges.prefix(while: { typeOffset > $0.location })
         return firstPartition.last
     }

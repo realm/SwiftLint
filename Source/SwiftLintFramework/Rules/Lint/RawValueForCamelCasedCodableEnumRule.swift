@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, ConfigurationProviderRule,
-AutomaticTestableRule {
+    AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -104,13 +104,11 @@ AutomaticTestableRule {
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [Int] {
-        let locs = substructureElements(of: dictionary, matching: .enumcase)
+    private func violatingOffsetsForEnum(dictionary: SourceKittenDictionary) -> [ByteCount] {
+        return substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(camelCasedEnumCasesMissingRawValue)
             .compactMap { $0.offset }
-
-        return locs
     }
 
     private func substructureElements(of dict: SourceKittenDictionary,

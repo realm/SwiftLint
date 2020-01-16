@@ -53,9 +53,9 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
             guard let availabilityToken = tokens.first,
                 availabilityToken.kind == .keyword,
-                let tokenRange = file.stringView.byteRangeToNSRange(start: availabilityToken.offset,
-                                                                    length: availabilityToken.length) else {
-                    return []
+                let tokenRange = file.stringView.byteRangeToNSRange(availabilityToken.range)
+            else {
+                return []
             }
 
             let rangeToSearch = NSRange(location: tokenRange.upperBound, length: range.length - tokenRange.length)
@@ -83,17 +83,19 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
 
         let contents = file.stringView
         return attributes.flatMap { dictionary -> [StyleViolation] in
-            guard let offset = dictionary.offset, let length = dictionary.length,
-                let range = contents.byteRangeToNSRange(start: offset, length: length) else {
-                    return []
+            guard let byteRange = dictionary.byteRange,
+                let range = contents.byteRangeToNSRange(byteRange)
+            else {
+                return []
             }
 
-            return validate(range: range, file: file, violationType: "attribute", byteOffsetToReport: offset)
+            return validate(range: range, file: file, violationType: "attribute",
+                            byteOffsetToReport: byteRange.location)
         }.unique
     }
 
     private func validate(range: NSRange, file: SwiftLintFile, violationType: String,
-                          byteOffsetToReport: Int) -> [StyleViolation] {
+                          byteOffsetToReport: ByteCount) -> [StyleViolation] {
         let platformToConfiguredMinVersion = self.platformToConfiguredMinVersion
         let allPlatforms = "(?:" + platformToConfiguredMinVersion.keys.joined(separator: "|") + ")"
         let pattern = "\(allPlatforms) [\\d\\.]+"

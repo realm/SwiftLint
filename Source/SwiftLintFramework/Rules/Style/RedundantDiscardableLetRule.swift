@@ -55,21 +55,17 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
         }
     }
 
-    private func isInBooleanCondition(byteOffset: Int, dictionary: SourceKittenDictionary) -> Bool {
-        guard let offset = dictionary.offset,
-            let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
-            NSLocationInRange(byteOffset, byteRange) else {
-                return false
+    private func isInBooleanCondition(byteOffset: ByteCount, dictionary: SourceKittenDictionary) -> Bool {
+        guard let byteRange = dictionary.byteRange, byteRange.contains(byteOffset) else {
+            return false
         }
 
         let kinds: Set<StatementKind> = [.if, .guard, .while]
         if let kind = dictionary.statementKind, kinds.contains(kind) {
             let conditionKind = "source.lang.swift.structure.elem.condition_expr"
             for element in dictionary.elements where element.kind == conditionKind {
-                guard let elementOffset = element.offset,
-                    let elementRange = element.length.map({ NSRange(location: elementOffset, length: $0) }),
-                    NSLocationInRange(byteOffset, elementRange) else {
-                        continue
+                guard let elementRange = element.byteRange, elementRange.contains(byteOffset) else {
+                    continue
                 }
 
                 return true

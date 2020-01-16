@@ -31,7 +31,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     private func variableViolations(file: SwiftLintFile,
                                     kind: SwiftDeclarationKind,
-                                    dictionary: SourceKittenDictionary) -> [Int] {
+                                    dictionary: SourceKittenDictionary) -> [ByteCount] {
         guard
             SwiftDeclarationKind.variableKinds.contains(kind),
             let offset = dictionary.offset,
@@ -42,7 +42,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     private func functionViolations(file: SwiftLintFile,
                                     kind: SwiftDeclarationKind,
-                                    dictionary: SourceKittenDictionary) -> [Int] {
+                                    dictionary: SourceKittenDictionary) -> [ByteCount] {
         guard
             SwiftDeclarationKind.functionKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
@@ -51,8 +51,9 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
             let offset = dictionary.offset,
             case let start = nameOffset + nameLength,
             case let end = dictionary.bodyOffset ?? offset + length,
+            case let byteRange = ByteRange(location: start, length: end - start),
             case let contents = file.stringView,
-            let range = file.stringView.byteRangeToNSRange(start: start, length: end - start),
+            let range = file.stringView.byteRangeToNSRange(byteRange),
             let match = file.match(pattern: "->\\s*(.*?)\\{", excludingSyntaxKinds: excludingKinds, range: range).first
             else { return [] }
 

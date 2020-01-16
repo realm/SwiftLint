@@ -189,8 +189,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             }
             return !syntaxTokens.isEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
         }.compactMap { range, syntaxTokens in
-            let identifierRange = file.stringView
-                .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
+            let byteRange = ByteRange(location: syntaxTokens[0].offset, length: 0)
+            let identifierRange = file.stringView.byteRangeToNSRange(byteRange)
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }

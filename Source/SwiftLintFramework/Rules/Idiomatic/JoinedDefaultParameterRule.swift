@@ -70,23 +70,18 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
         guard
             // is this single argument called 'separator'?
             let argument = dictionary.enclosedArguments.first,
-            let offset = argument.offset,
-            let length = argument.length,
-            argument.name == "separator"
+            let argumentByteRange = argument.byteRange,
+            argument.name == "separator",
+            let argumentNSRange = file.stringView.byteRangeToNSRange(argumentByteRange)
             else { return [] }
 
         guard
             // is this single argument the default parameter?
-            let bodyOffset = argument.bodyOffset,
-            let bodyLength = argument.bodyLength,
-            let body = file.stringView.substringWithByteRange(start: bodyOffset, length: bodyLength),
+            let bodyRange = argument.bodyByteRange,
+            let body = file.stringView.substringWithByteRange(bodyRange),
             body == "\"\""
             else { return [] }
 
-        guard
-            let range = file.stringView.byteRangeToNSRange(start: offset, length: length)
-            else { return [] }
-
-        return [range]
+        return [argumentNSRange]
     }
 }

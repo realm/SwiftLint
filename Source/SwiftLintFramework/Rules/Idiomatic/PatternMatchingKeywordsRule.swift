@@ -43,10 +43,10 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
         let contents = file.stringView
         return dictionary.elements.flatMap { subDictionary -> [StyleViolation] in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
-                let offset = subDictionary.offset,
-                let length = subDictionary.length,
-                let caseRange = contents.byteRangeToNSRange(start: offset, length: length) else {
-                    return []
+                let caseByteRange = subDictionary.byteRange,
+                let caseRange = contents.byteRangeToNSRange(caseByteRange)
+            else {
+                return []
             }
 
             let letMatches = file.match(pattern: "\\blet\\b", with: [.keyword], range: caseRange)

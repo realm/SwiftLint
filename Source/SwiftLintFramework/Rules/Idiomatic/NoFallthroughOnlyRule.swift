@@ -19,10 +19,9 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
                          kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .case,
-            let length = dictionary.length,
-            let offset = dictionary.offset,
+            let byteRange = dictionary.byteRange,
             case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(start: offset, length: length),
+            let range = contents.byteRangeToNSRange(byteRange),
             let colonLocation = findCaseColon(text: file.stringView.nsString, range: range)
         else {
             return []
@@ -40,7 +39,7 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
 
         let nsRange = nonCommentCaseBody[0].0
         if contents.substring(with: nsRange) == "fallthrough" && nonCommentCaseBody[0].1 == [.keyword] &&
-            !isNextTokenUnknownAttribute(afterOffset: offset + length, file: file) {
+            !isNextTokenUnknownAttribute(afterOffset: byteRange.upperBound, file: file) {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: configuration.severity,
                                    location: Location(file: file, characterOffset: nsRange.location))]
@@ -49,13 +48,12 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
         return []
     }
 
-    private func isNextTokenUnknownAttribute(afterOffset offset: Int, file: SwiftLintFile) -> Bool {
+    private func isNextTokenUnknownAttribute(afterOffset offset: ByteCount, file: SwiftLintFile) -> Bool {
         let nextNonCommentToken = file.syntaxMap.tokens
             .first { token in
                 guard let kind = token.kind, !kind.isCommentLike else {
                     return false
                 }
-
                 return token.offset > offset
             }
 

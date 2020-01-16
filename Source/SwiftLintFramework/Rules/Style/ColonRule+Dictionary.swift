@@ -1,14 +1,13 @@
-import Foundation
 import SourceKittenFramework
 
 extension ColonRule {
     internal func dictionaryColonViolationRanges(in file: SwiftLintFile,
-                                                 dictionary: SourceKittenDictionary) -> [NSRange] {
+                                                 dictionary: SourceKittenDictionary) -> [ByteRange] {
         guard configuration.applyToDictionaries else {
             return []
         }
 
-        let ranges: [NSRange] = dictionary.traverseDepthFirst { subDict in
+        let ranges: [ByteRange] = dictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.expressionKind else { return nil }
             return dictionaryColonViolationRanges(in: file, kind: kind, dictionary: subDict)
         }
@@ -17,7 +16,7 @@ extension ColonRule {
     }
 
     internal func dictionaryColonViolationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
-                                                 dictionary: SourceKittenDictionary) -> [NSRange] {
+                                                 dictionary: SourceKittenDictionary) -> [ByteRange] {
         guard kind == .dictionary,
             let ranges = dictionaryColonRanges(dictionary: dictionary) else {
                 return []
@@ -25,7 +24,7 @@ extension ColonRule {
 
         let contents = file.stringView
         return ranges.filter {
-            guard let colon = contents.substringWithByteRange(start: $0.location, length: $0.length) else {
+            guard let colon = contents.substringWithByteRange($0) else {
                 return false
             }
 
@@ -38,31 +37,28 @@ extension ColonRule {
         }
     }
 
-    private func dictionaryColonRanges(dictionary: SourceKittenDictionary) -> [NSRange]? {
+    private func dictionaryColonRanges(dictionary: SourceKittenDictionary) -> [ByteRange]? {
         let elements = dictionary.elements
         guard elements.count % 2 == 0 else {
             return nil
         }
 
         let expectedKind = "source.lang.swift.structure.elem.expr"
-        let ranges: [NSRange] = elements.compactMap { subDict in
-            guard subDict.kind == expectedKind,
-                let offset = subDict.offset,
-                let length = subDict.length else {
-                    return nil
+        let ranges: [ByteRange] = elements.compactMap { subDict in
+            guard subDict.kind == expectedKind else {
+                return nil
             }
 
-            return NSRange(location: offset, length: length)
+            return subDict.byteRange
         }
 
         let even = ranges.enumerated().compactMap { $0 % 2 == 0 ? $1 : nil }
         let odd = ranges.enumerated().compactMap { $0 % 2 != 0 ? $1 : nil }
 
-        return zip(even, odd).map { evenRange, oddRange -> NSRange in
-            let location = NSMaxRange(evenRange)
+        return zip(even, odd).map { evenRange, oddRange -> ByteRange in
+            let location = evenRange.upperBound
             let length = oddRange.location - location
-
-            return NSRange(location: location, length: length)
+            return ByteRange(location: location, length: length)
         }
     }
 }

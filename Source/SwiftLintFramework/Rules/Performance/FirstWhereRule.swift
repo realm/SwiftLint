@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -47,11 +46,11 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
                 return true // has a substructure, like a closure
             }
 
-            guard let bodyOffset = dictionary.bodyOffset, let bodyLength = dictionary.bodyLength else {
+            guard let bodyRange = dictionary.bodyByteRange else {
                 return true
             }
 
-            let syntaxKinds = file.syntaxMap.kinds(inByteRange: NSRange(location: bodyOffset, length: bodyLength))
+            let syntaxKinds = file.syntaxMap.kinds(inByteRange: bodyRange)
             return !syntaxKinds.contains(.string)
         }
     }

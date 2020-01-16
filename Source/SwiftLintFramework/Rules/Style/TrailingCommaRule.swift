@@ -6,7 +6,7 @@ private enum TrailingCommaReason: String {
     case extraTrailingCommaReason = "Collection literals should not have trailing commas."
 }
 
-private typealias CommaRuleViolation = (index: Int, reason: TrailingCommaReason)
+private typealias CommaRuleViolation = (index: ByteCount, reason: TrailingCommaReason)
 
 public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = TrailingCommaConfiguration()
@@ -67,9 +67,11 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
     public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard let (offset, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary),
-            case let length = reason == .extraTrailingCommaReason ? 1 : 0,
-            let range = file.stringView.byteRangeToNSRange(start: offset, length: length) else {
-                return []
+            case let length: ByteCount = reason == .extraTrailingCommaReason ? 1 : 0,
+            case let byteRange = ByteRange(location: offset, length: length),
+            let range = file.stringView.byteRangeToNSRange(byteRange)
+        else {
+            return []
         }
 
         return [range]
@@ -89,14 +91,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
                 return nil
         }
 
-        let endPositions = dictionary.elements.compactMap { dictionary -> Int? in
-            guard let offset = dictionary.offset,
-                let length = dictionary.length else {
-                    return nil
-            }
-
-            return offset + length
-        }
+        let endPositions = dictionary.elements.compactMap { $0.byteRange?.upperBound }
 
         guard let lastPosition = endPositions.max(), bodyLength + bodyOffset >= lastPosition else {
             return nil
@@ -111,11 +106,12 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
         }
 
         let length = bodyLength + bodyOffset - lastPosition
-        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition, length: length) ?? ""
+        let byteRangeAfterLastElement = ByteRange(location: lastPosition, length: length)
+        let contentsAfterLastElement = contents.substringWithByteRange(byteRangeAfterLastElement) ?? ""
 
         // if a trailing comma is not present
-        guard let commaIndex = trailingCommaIndex(contents: contentsAfterLastElement, file: file,
-                                                  offset: lastPosition) else {
+        guard let commaIndex = trailingCommaIndex(contents: contentsAfterLastElement, file: file, offset: lastPosition)
+        else {
             guard configuration.mandatoryComma else {
                 return nil
             }
@@ -132,49 +128,48 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
         return (violationOffset, .extraTrailingCommaReason)
     }
 
-    private func violations(file: SwiftLintFile, byteOffset: Int, reason: String) -> [StyleViolation] {
+    private func violations(file: SwiftLintFile, byteOffset: ByteCount, reason: String) -> [StyleViolation] {
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: byteOffset),
-                           reason: reason
-            )
+                           reason: reason)
         ]
     }
 
-    private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: Int) -> Int? {
-        let nsstring = contents.bridge()
-        let range = contents.fullNSRange
-        let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
-
+    private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: ByteCount) -> ByteCount? {
         // skip commas in comments
-        return ranges.last {
-            let range = NSRange(location: $0.location + offset, length: $0.length)
-            let kinds = file.syntaxMap.kinds(inByteRange: range)
-            return SyntaxKind.commentKinds.isDisjoint(with: kinds)
-        }.flatMap {
-            nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
-        }?.location
+        return TrailingCommaRule.commaRegex
+            .matches(in: contents, options: [], range: contents.fullNSRange)
+            .map { $0.range }
+            .last { nsRange in
+                let offsetCharacter = file.stringView.location(fromByteOffset: offset)
+                let offsetNSRange = NSRange(location: nsRange.location + offsetCharacter, length: nsRange.length)
+                let byteRange = file.stringView.NSRangeToByteRange(offsetNSRange)!
+                let kinds = file.syntaxMap.kinds(inByteRange: byteRange)
+                return SyntaxKind.commentKinds.isDisjoint(with: kinds)
+            }
+            .flatMap(contents.NSRangeToByteRange)?
+            .location
     }
 }
 
-private extension NSString {
-    func NSRangeToByteRange(start: Int, length: Int) -> NSRange? {
-        let string = bridge()
-        let utf16View = string.utf16
-        let utf8View = string.utf8
+private extension String {
+    func NSRangeToByteRange(_ nsRange: NSRange) -> ByteRange? {
+        let utf16View = utf16
+        let utf8View = utf8
 
-        let startUTF16Index = utf16View.index(utf16View.startIndex, offsetBy: start)
-        let endUTF16Index = utf16View.index(startUTF16Index, offsetBy: length)
+        let startUTF16Index = utf16View.index(utf16View.startIndex, offsetBy: nsRange.location)
+        let endUTF16Index = utf16View.index(startUTF16Index, offsetBy: nsRange.length)
 
         guard let startUTF8Index = startUTF16Index.samePosition(in: utf8View),
-            let endUTF8Index = endUTF16Index.samePosition(in: utf8View) else {
-                return nil
+            let endUTF8Index = endUTF16Index.samePosition(in: utf8View)
+        else {
+            return nil
         }
 
         let byteOffset = utf8View.distance(from: utf8View.startIndex, to: startUTF8Index)
-
         let length = utf8View.distance(from: startUTF8Index, to: endUTF8Index)
-        return NSRange(location: byteOffset, length: length)
+        return ByteRange(location: ByteCount(byteOffset), length: ByteCount(length))
     }
 }

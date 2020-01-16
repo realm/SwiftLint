@@ -79,17 +79,11 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         let contents = file.stringView
         let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file,
                                                                              dictionary: dictionary).compactMap {
-            guard let range = contents.byteRangeToNSRange(start: $0.location, length: $0.length) else {
-                return nil
-            }
-            return (range: range, kind: .dictionary)
+            return contents.byteRangeToNSRange($0).map { (range: $0, kind: .dictionary) }
         }
         let functionViolations: [RangeWithKind] = functionCallColonViolationRanges(in: file,
                                                                                    dictionary: dictionary).compactMap {
-            guard let range = contents.byteRangeToNSRange(start: $0.location, length: $0.length) else {
-                return nil
-            }
-            return (range: range, kind: .functionCall)
+            return contents.byteRangeToNSRange($0).map { (range: $0, kind: .functionCall) }
         }
 
         return (violations + dictViolations + functionViolations).sorted {

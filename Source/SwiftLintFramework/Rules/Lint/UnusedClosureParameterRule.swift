@@ -127,54 +127,62 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let bodyLength = dictionary.bodyLength,
-            bodyLength > 0 else {
-                return []
+            bodyLength > 0
+        else {
+            return []
         }
 
         let rangeStart = nameOffset + nameLength
         let rangeLength = (offset + length) - (nameOffset + nameLength)
+        let byteRange = ByteRange(location: rangeStart, length: rangeLength)
         let parameters = dictionary.enclosedVarParameters
         let contents = file.stringView
 
         return parameters.compactMap { param -> (NSRange, String)? in
-            guard let paramOffset = param.offset,
-                let name = param.name,
-                name != "_",
-                let regex = try? NSRegularExpression(pattern: name,
-                                                     options: [.ignoreMetacharacters]),
-                let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)
+            self.rangeAndName(parameter: param, contents: contents, byteRange: byteRange, file: file)
+        }
+    }
+
+    private func rangeAndName(parameter: SourceKittenDictionary, contents: StringView, byteRange: ByteRange,
+                              file: SwiftLintFile) -> (range: NSRange, name: String)? {
+        guard let paramOffset = parameter.offset,
+            let name = parameter.name,
+            name != "_",
+            let regex = try? NSRegularExpression(pattern: name,
+                                                 options: [.ignoreMetacharacters]),
+            let range = contents.byteRangeToNSRange(byteRange)
+        else {
+            return nil
+        }
+
+        let paramLength = ByteCount(name.lengthOfBytes(using: .utf8))
+
+        let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
+        for range in matches {
+            guard let byteRange = contents.NSRangeToByteRange(start: range.location,
+                                                              length: range.length),
+                // if it's the parameter declaration itself, we should skip
+                byteRange.location > paramOffset,
+                case let tokens = file.syntaxMap.tokens(inByteRange: byteRange)
             else {
+                continue
+            }
+
+            let token = tokens.first(where: { token -> Bool in
+                return (token.kind == .identifier
+                    || (token.kind == .keyword && name == "self")) &&
+                    token.offset == byteRange.location &&
+                    token.length == byteRange.length
+            })
+
+            // found a usage, there's no violation!
+            guard token == nil else {
                 return nil
             }
-
-            let paramLength = name.lengthOfBytes(using: .utf8)
-
-            let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
-            for range in matches {
-                guard let byteRange = contents.NSRangeToByteRange(start: range.location,
-                                                                  length: range.length),
-                    // if it's the parameter declaration itself, we should skip
-                    byteRange.location > paramOffset,
-                    case let tokens = file.syntaxMap.tokens(inByteRange: byteRange) else {
-                        continue
-                }
-
-                let token = tokens.first(where: { token -> Bool in
-                    return (token.kind == .identifier
-                        || (token.kind == .keyword && name == "self")) &&
-                        token.offset == byteRange.location &&
-                        token.length == byteRange.length
-                })
-
-                // found a usage, there's no violation!
-                guard token == nil else {
-                    return nil
-                }
-            }
-            if let range = contents.byteRangeToNSRange(start: paramOffset, length: paramLength) {
-                return (range, name)
-            }
-            return nil
+        }
+        let violationByteRange = ByteRange(location: paramOffset, length: paramLength)
+        return contents.byteRangeToNSRange(violationByteRange).map { range in
+            return (range, name)
         }
     }
 

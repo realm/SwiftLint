@@ -41,10 +41,10 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
                                  parentStructure: SourceKittenDictionary?) -> [NSRange] {
         let objcAttribute = dictionary.swiftAttributes
                                       .first(where: { $0.attribute == SwiftDeclarationAttributeKind.objc.rawValue })
-        guard let objcOffset = objcAttribute?.offset,
-              let objcLength = objcAttribute?.length,
-              let range = file.stringView.byteRangeToNSRange(start: objcOffset, length: objcLength),
-              !dictionary.isObjcAndIBDesignableDeclaredExtension else {
+        guard let objcByteRange = objcAttribute?.byteRange,
+              let range = file.stringView.byteRangeToNSRange(objcByteRange),
+              !dictionary.isObjcAndIBDesignableDeclaredExtension
+        else {
             return []
         }
 

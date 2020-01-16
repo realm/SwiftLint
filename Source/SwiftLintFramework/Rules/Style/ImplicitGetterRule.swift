@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRule {
@@ -189,7 +188,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             return token
         }
 
-        let violatingLocations = getTokens.compactMap { token -> (Int, SwiftDeclarationKind?)? in
+        let violatingLocations = getTokens.compactMap { token -> (ByteCount, SwiftDeclarationKind?)? in
             // the last element is the deepest structure
             guard let dict = declarations(forByteOffset: token.offset,
                                           structureDictionary: file.structureDictionary).last else {
@@ -220,7 +219,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
 }
 
 private extension ImplicitGetterRule {
-    func declarations(forByteOffset byteOffset: Int,
+    func declarations(forByteOffset byteOffset: ByteCount,
                       structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
         var results = [SourceKittenDictionary]()
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
@@ -230,11 +229,10 @@ private extension ImplicitGetterRule {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
             guard let kind = dictionary.declarationKind,
-                let bodyOffset = dictionary.bodyOffset,
-                let bodyLength = dictionary.bodyLength,
-                case let byteRange = NSRange(location: bodyOffset, length: bodyLength),
-                NSLocationInRange(byteOffset, byteRange) else {
-                    return
+                let byteRange = dictionary.byteRange,
+                byteRange.contains(byteOffset)
+            else {
+                return
             }
 
             if parentKind != .protocol && allowedKinds.contains(kind) {

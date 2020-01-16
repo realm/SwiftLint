@@ -152,7 +152,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
     }
 
     // check if first captured range is comment, string, typeidentifier, or a keyword that is not `self`.
-    private func isFirstRangeExcludedToken(byteRange: NSRange, syntaxMap: SwiftLintSyntaxMap,
+    private func isFirstRangeExcludedToken(byteRange: ByteRange, syntaxMap: SwiftLintSyntaxMap,
                                            file: SwiftLintFile) -> Bool {
         let tokens = syntaxMap.tokens(inByteRange: byteRange)
         return tokens.contains { token in
@@ -166,7 +166,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
     }
 
     // check deepest kind matching range in structure is a typeAnnotation
-    private func isTypeAnnotation(in file: SwiftLintFile, byteRange: NSRange) -> Bool {
+    private func isTypeAnnotation(in file: SwiftLintFile, byteRange: ByteRange) -> Bool {
         let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.location)
         guard let lastItem = kinds.last,
             let lastKind = SwiftDeclarationKind(rawValue: lastItem.kind),
@@ -175,9 +175,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         }
 
         // range is in some "source.lang.swift.decl.var.*"
-        let byteOffset = lastItem.byteRange.location
-        let byteLength = byteRange.location - byteOffset
-        if let varDeclarationString = file.stringView.substringWithByteRange(start: byteOffset, length: byteLength),
+        let varRange = ByteRange(location: lastItem.byteRange.location,
+                                 length: byteRange.location - lastItem.byteRange.location)
+        if let varDeclarationString = file.stringView.substringWithByteRange(varRange),
             varDeclarationString.contains("=") {
             // if declarations contains "=", range is not type annotation
             return false

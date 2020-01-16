@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 /// A SwiftLint-aware Swift syntax token.
@@ -18,17 +17,17 @@ public struct SwiftLintSyntaxToken {
     }
 
     /// The byte range in a source file for this token.
-    public var range: NSRange {
-        return NSRange(location: value.offset, length: value.length)
+    public var range: ByteRange {
+        return value.range
     }
 
     /// The starting byte offset in a source file for this token.
-    public var offset: Int {
+    public var offset: ByteCount {
         return value.offset
     }
 
     /// The length in bytes for this token.
-    public var length: Int {
+    public var length: ByteCount {
         return value.length
     }
 }

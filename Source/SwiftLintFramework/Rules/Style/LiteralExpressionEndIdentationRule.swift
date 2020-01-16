@@ -111,8 +111,12 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
 
 extension LiteralExpressionEndIdentationRule: CorrectableRule {
     public func correct(file: SwiftLintFile) -> [Correction] {
-        let allViolations = violations(in: file).reversed().filter {
-            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
+        let allViolations = violations(in: file).reversed().filter { violation in
+            guard let nsRange = file.stringView.byteRangeToNSRange(violation.range) else {
+                return false
+            }
+
+            return !file.ruleEnabled(violatingRanges: [nsRange], for: self).isEmpty
         }
 
         guard !allViolations.isEmpty else {
@@ -173,8 +177,8 @@ extension LiteralExpressionEndIdentationRule: CorrectableRule {
 extension LiteralExpressionEndIdentationRule {
     fileprivate struct Violation {
         var indentationRanges: (expected: NSRange, actual: NSRange)
-        var endOffset: Int
-        var range: NSRange
+        var endOffset: ByteCount
+        var range: ByteRange
     }
 
     fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
@@ -205,8 +209,9 @@ extension LiteralExpressionEndIdentationRule {
             let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: lastParamOffset),
             case let endOffset = offset + length - 1,
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
-            lastParamLine != endLine else {
-                return nil
+            lastParamLine != endLine
+        else {
+            return nil
         }
 
         let range = file.lines[startLine - 1].range
@@ -214,8 +219,9 @@ extension LiteralExpressionEndIdentationRule {
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
-            expected != actual  else {
-                return nil
+            expected != actual
+        else {
+            return nil
         }
 
         var expectedRange = range
@@ -226,6 +232,6 @@ extension LiteralExpressionEndIdentationRule {
 
         return Violation(indentationRanges: (expected: expectedRange, actual: actualRange),
                          endOffset: endOffset,
-                         range: NSRange(location: offset, length: length))
+                         range: ByteRange(location: offset, length: length))
     }
 }

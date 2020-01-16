@@ -77,10 +77,10 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
 
         let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
             guard dict.expressionKind == .call,
-                let offset = dict.offset,
-                let length = dict.length,
-                let range = contents.byteRangeToNSRange(start: offset, length: length) else {
-                    return nil
+                let byteRange = dict.byteRange,
+                let range = contents.byteRangeToNSRange(byteRange)
+            else {
+                return nil
             }
 
             return range
@@ -88,10 +88,10 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
 
         return dictionary.elements.flatMap { subDictionary -> [NSRange] in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
-                let offset = subDictionary.offset,
-                let length = subDictionary.length,
-                let caseRange = contents.byteRangeToNSRange(start: offset, length: length) else {
-                    return []
+                let byteRange = subDictionary.byteRange,
+                let caseRange = contents.byteRangeToNSRange(byteRange)
+            else {
+                return []
             }
 
             let emptyArgumentRegex = regex("\\.\\S+\\s*(\\([,\\s_]*\\))")
@@ -107,8 +107,8 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
                     // avoid matches in "(_, _) where"
                     if let whereByteRange = contents.NSRangeToByteRange(start: whereRange.location,
                                                                         length: whereRange.length),
-                        case let length = whereByteRange.location - offset,
-                        case let byteRange = NSRange(location: offset, length: length),
+                        case let length = whereByteRange.location - byteRange.location,
+                        case let byteRange = ByteRange(location: byteRange.location, length: length),
                         Set(file.syntaxMap.kinds(inByteRange: byteRange)) == [.keyword] {
                         return nil
                     }

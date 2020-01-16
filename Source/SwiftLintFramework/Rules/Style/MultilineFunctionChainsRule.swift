@@ -109,7 +109,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                                   dictionary: SourceKittenDictionary) -> [Int] {
         let ranges = callRanges(file: file, kind: kind, dictionary: dictionary)
 
-        let calls = ranges.compactMap { range -> (dotLine: Int, dotOffset: Int, range: NSRange)? in
+        let calls = ranges.compactMap { range -> (dotLine: Int, dotOffset: Int, range: ByteRange)? in
             guard
                 let offset = callDotOffset(file: file, callRange: range),
                 let line = file.stringView.lineAndCharacter(forCharacterOffset: offset)?.line else {
@@ -134,9 +134,9 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private static let whitespaceDotRegex = regex("\\s*\\.")
 
-    private func callDotOffset(file: SwiftLintFile, callRange: NSRange) -> Int? {
+    private func callDotOffset(file: SwiftLintFile, callRange: ByteRange) -> Int? {
         guard
-            let range = file.stringView.byteRangeToNSRange(start: callRange.location, length: callRange.length),
+            let range = file.stringView.byteRangeToNSRange(callRange),
             case let regex = type(of: self).whitespaceDotRegex,
             let match = regex.matches(in: file.contents, options: [], range: range).last?.range else {
                 return nil
@@ -146,9 +146,9 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private static let newlineWhitespaceDotRegex = regex("\\n\\s*\\.")
 
-    private func callHasLeadingNewline(file: SwiftLintFile, callRange: NSRange) -> Bool {
+    private func callHasLeadingNewline(file: SwiftLintFile, callRange: ByteRange) -> Bool {
         guard
-            let range = file.stringView.byteRangeToNSRange(start: callRange.location, length: callRange.length),
+            let range = file.stringView.byteRangeToNSRange(callRange),
             case let regex = type(of: self).newlineWhitespaceDotRegex,
             regex.firstMatch(in: file.contents, options: [], range: range) != nil else {
                 return false
@@ -159,23 +159,25 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     private func callRanges(file: SwiftLintFile,
                             kind: SwiftExpressionKind,
                             dictionary: SourceKittenDictionary,
-                            parentCallName: String? = nil) -> [NSRange] {
+                            parentCallName: String? = nil) -> [ByteRange] {
         guard
             kind == .call,
             case let contents = file.stringView,
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
-            let name = contents.substringWithByteRange(start: offset, length: length) else {
-                return []
+            case let nameByteRange = ByteRange(location: offset, length: length),
+            let name = contents.substringWithByteRange(nameByteRange)
+        else {
+            return []
         }
 
         let subcalls = dictionary.subcalls
 
         if subcalls.isEmpty, let parentCallName = parentCallName, parentCallName.starts(with: name) {
-            return [NSRange(location: offset, length: length)]
+            return [ByteRange(location: offset, length: length)]
         }
 
-        return subcalls.flatMap { call -> [NSRange] in
+        return subcalls.flatMap { call -> [ByteRange] in
             // Bail out early if there's no subcall, since this means there's no chain.
             guard let range = subcallRange(file: file, call: call, parentName: name, parentNameOffset: offset) else {
                 return []
@@ -188,7 +190,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     private func subcallRange(file: SwiftLintFile,
                               call: SourceKittenDictionary,
                               parentName: String,
-                              parentNameOffset: Int) -> NSRange? {
+                              parentNameOffset: ByteCount) -> ByteRange? {
         guard
             case let contents = file.stringView,
             let nameOffset = call.nameOffset,
@@ -196,17 +198,19 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
             let nameLength = call.nameLength,
             let bodyOffset = call.bodyOffset,
             let bodyLength = call.bodyLength,
-            let name = contents.substringWithByteRange(start: nameOffset, length: nameLength),
-            parentName.starts(with: name) else {
-                return nil
+            case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
+            let name = contents.substringWithByteRange(nameByteRange),
+            parentName.starts(with: name)
+        else {
+            return nil
         }
 
         let nameEndOffset = nameOffset + nameLength
-        let nameLengthDifference = parentName.utf8.count - nameLength
+        let nameLengthDifference = ByteCount(parentName.lengthOfBytes(using: .utf8)) - nameLength
         let offsetDifference = bodyOffset - nameEndOffset
 
-        return NSRange(location: nameEndOffset + offsetDifference + bodyLength,
-                       length: nameLengthDifference - bodyLength - offsetDifference)
+        return ByteRange(location: nameEndOffset + offsetDifference + bodyLength,
+                         length: nameLengthDifference - bodyLength - offsetDifference)
     }
 }
 

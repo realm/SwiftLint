@@ -140,12 +140,12 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         let contents = file.stringView
 
         return cursorsMissingExplicitSelf.compactMap { cursorInfo in
-            guard let byteOffset = cursorInfo["swiftlint.offset"] as? Int64 else {
+            guard let byteOffset = (cursorInfo["swiftlint.offset"] as? Int64).flatMap(ByteCount.init) else {
                 queuedPrintError("couldn't convert offsets")
                 return nil
             }
 
-            return contents.byteRangeToNSRange(start: Int(byteOffset), length: 0)
+            return contents.byteRangeToNSRange(ByteRange(location: byteOffset, length: 0))
         }
     }
 }
@@ -156,29 +156,29 @@ private let kindsToFind: Set = [
 ]
 
 private extension SwiftLintFile {
-    func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [Int]) throws
+    func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [ByteCount]) throws
         -> [[String: SourceKitRepresentable]] {
         return try byteOffsets.compactMap { offset in
-            if stringView.substringWithByteRange(start: offset - 1, length: 1)! == "." { return nil }
-            var cursorInfo = try Request.cursorInfo(file: self.path!, offset: Int64(offset),
+            if stringView.substringWithByteRange(ByteRange(location: offset - 1, length: 1))! == "." { return nil }
+            var cursorInfo = try Request.cursorInfo(file: self.path!, offset: offset,
                                                     arguments: compilerArguments).sendIfNotDisabled()
-            cursorInfo["swiftlint.offset"] = Int64(offset)
+            cursorInfo["swiftlint.offset"] = Int64(offset.value)
             return cursorInfo
         }
     }
 }
 
 private extension StringView {
-    func byteOffset(forLine line: Int, column: Int) -> Int {
-        var byteOffset = 0
+    func byteOffset(forLine line: Int, column: Int) -> ByteCount {
+        var byteOffset = ByteCount(0)
         for line in lines[..<(line - 1)] {
             byteOffset += line.byteRange.length
         }
-        return byteOffset + column - 1
+        return byteOffset + ByteCount(column - 1)
     }
 
-    func recursiveByteOffsets(_ dict: [String: Any]) -> [Int] {
-        let cur: [Int]
+    func recursiveByteOffsets(_ dict: [String: Any]) -> [ByteCount] {
+        let cur: [ByteCount]
         if let line = dict["key.line"] as? Int64,
             let column = dict["key.column"] as? Int64,
             let kindString = dict["key.kind"] as? String,
@@ -194,7 +194,7 @@ private extension StringView {
     }
 }
 
-private func binaryOffsets(file: SwiftLintFile, compilerArguments: [String]) throws -> [Int] {
+private func binaryOffsets(file: SwiftLintFile, compilerArguments: [String]) throws -> [ByteCount] {
     let absoluteFile = file.path!.bridge().absolutePathRepresentation()
     let index = try Request.index(file: absoluteFile, arguments: compilerArguments).sendIfNotDisabled()
     let binaryOffsets = file.stringView.recursiveByteOffsets(index)

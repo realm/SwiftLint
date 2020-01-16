@@ -35,11 +35,10 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         return file.matchesAndSyntaxKinds(matching: pattern).compactMap { result, kinds in
             let range = result.range
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
-                let byteRange = contents.NSRangeToByteRange(start: range.location,
-                                                            length: range.length),
+                let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
                 let outerKindString = file.structureDictionary.kinds(forByteOffset: byteRange.location).last?.kind
-                else {
-                    return nil
+            else {
+                return nil
             }
 
             func isKindIncluded(_ kind: ImplicitReturnConfiguration.ReturnKind) -> Bool {

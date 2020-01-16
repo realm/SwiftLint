@@ -108,7 +108,8 @@ private extension SourceKittenDictionary {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
-            let afterNameRange = file.stringView.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            case let afterNameByteRange = ByteRange(location: nameOffset + nameLength, length: 0),
+            let afterNameRange = file.stringView.byteRangeToNSRange(afterNameByteRange)
         else {
             return false
         }
@@ -125,7 +126,8 @@ private extension SourceKittenDictionary {
         guard
             let nameOffset = nameOffset,
             let nameLength = nameLength,
-            let afterNameRange = file.stringView.byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+            case let afterNameByteRange = ByteRange(location: nameOffset + nameLength, length: 0),
+            let afterNameRange = file.stringView.byteRangeToNSRange(afterNameByteRange)
         else {
             return false
         }
@@ -137,11 +139,11 @@ private extension SourceKittenDictionary {
         return typeAssignment.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }
 
-    var caseStatementPatternRanges: [NSRange] {
+    var caseStatementPatternRanges: [ByteRange] {
         return ranges(with: StatementKind.case.rawValue, for: "source.lang.swift.structure.elem.pattern")
     }
 
-    var caseExpressionRanges: [NSRange] {
+    var caseExpressionRanges: [ByteRange] {
         return ranges(with: SwiftExpressionKind.tuple.rawValue, for: "source.lang.swift.structure.elem.expr")
     }
 
@@ -152,30 +154,27 @@ private extension SourceKittenDictionary {
         return statements.contains(statement)
     }
 
-    func ranges(with parentKind: String, for elementKind: String) -> [NSRange] {
+    func ranges(with parentKind: String, for elementKind: String) -> [ByteRange] {
         guard parentKind == kind else {
             return []
         }
 
         return elements
             .filter { elementKind == $0.kind }
-            .compactMap {
-                guard let location = $0.offset, let length = $0.length else { return nil }
-                return NSRange(location: location, length: length)
-            }
+            .compactMap { $0.byteRange }
     }
 }
 
 private extension SwiftLintFile {
-    var captureGroupByteRanges: [NSRange] {
+    var captureGroupByteRanges: [ByteRange] {
         return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
                      excludingSyntaxKinds: SyntaxKind.commentKinds)
                 .compactMap { stringView.NSRangeToByteRange(start: $0.location, length: $0.length) }
     }
 }
 
-private extension Collection where Element == NSRange {
-    func contains(_ index: Int) -> Bool {
+private extension Collection where Element == ByteRange {
+    func contains(_ index: ByteCount) -> Bool {
         return contains { $0.contains(index) }
     }
 }

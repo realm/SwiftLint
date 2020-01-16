@@ -41,14 +41,14 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
     }
 
     private func validateACL(isHigherThan parentAccessibility: AccessControlLevel,
-                             in substructure: SourceKittenDictionary) -> [Int] {
-        return substructure.substructure.flatMap { element -> [Int] in
+                             in substructure: SourceKittenDictionary) -> [ByteCount] {
+        return substructure.substructure.flatMap { element -> [ByteCount] in
             guard let elementKind = element.declarationKind,
                 elementKind.isRelevantDeclaration else {
                 return []
             }
 
-            var violationOffset: Int?
+            var violationOffset: ByteCount?
             let accessibility = element.accessibility ?? .internal
             // Swift 5 infers members of private types with no explicit ACL attribute to be `internal`.
             let isInferredACL = accessibility == .internal && !element.enclosedSwiftAttributes.contains(.internal)

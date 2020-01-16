@@ -52,10 +52,9 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
             guard compilerProtocol.initCallNames.contains(name),
                 case let arguments = dictionary.enclosedArguments.compactMap({ $0.name }),
                 compilerProtocol.match(arguments: arguments),
-                let offset = dictionary.offset,
-                let length = dictionary.length,
-                let range = file.stringView.byteRangeToNSRange(start: offset, length: length) else {
-                    continue
+                let range = dictionary.byteRange.flatMap(file.stringView.byteRangeToNSRange)
+            else {
+                continue
             }
 
             return [(compilerProtocol, range)]

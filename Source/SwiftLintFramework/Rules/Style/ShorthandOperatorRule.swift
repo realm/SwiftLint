@@ -70,7 +70,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestabl
 
         return matches.compactMap { match -> StyleViolation? in
             // byteRanges will have the ranges of captured groups
-            let byteRanges: [NSRange?] = (1..<match.numberOfRanges).map { rangeIdx in
+            let byteRanges: [ByteRange?] = (1..<match.numberOfRanges).map { rangeIdx in
                 let range = match.range(at: rangeIdx)
                 guard range.location != NSNotFound else {
                     return nil

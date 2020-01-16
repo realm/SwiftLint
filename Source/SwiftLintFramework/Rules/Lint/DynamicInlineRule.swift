@@ -34,9 +34,7 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTe
             case let attributes = dictionary.enclosedSwiftAttributes,
             attributes.contains(.dynamic),
             attributes.contains(.inline),
-            let funcByteOffset = dictionary.offset,
-            let funcOffset = file.stringView
-                .byteRangeToNSRange(start: funcByteOffset, length: 0)?.location,
+            let funcOffset = dictionary.offset.flatMap(file.stringView.location),
             case let inlinePattern = regex("@inline"),
             case let range = NSRange(location: 0, length: funcOffset),
             let inlineMatch = inlinePattern.matches(in: file.contents, options: [], range: range)

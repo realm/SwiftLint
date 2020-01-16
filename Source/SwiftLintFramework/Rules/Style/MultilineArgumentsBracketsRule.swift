@@ -80,9 +80,8 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             kind == .call,
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength,
-            let range = file.stringView.byteRangeToNSRange(start: bodyOffset, length: bodyLength)
+            let bodyRange = dictionary.bodyByteRange,
+            let range = file.stringView.byteRangeToNSRange(bodyRange)
         else {
             return []
         }
@@ -96,13 +95,13 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
         let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
 
-        var violatingByteOffsets = [Int]()
+        var violatingByteOffsets = [ByteCount]()
         if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyOffset)
+            violatingByteOffsets.append(bodyRange.location)
         }
 
         if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyOffset + bodyLength)
+            violatingByteOffsets.append(bodyRange.upperBound)
         }
 
         return violatingByteOffsets.map { byteOffset in

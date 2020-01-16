@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
-    private typealias FileTypeOffset = (fileType: FileType, offset: Int)
+    private typealias FileTypeOffset = (fileType: FileType, offset: ByteCount)
 
     public var configuration = FileTypesOrderConfiguration()
 

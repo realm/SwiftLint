@@ -89,7 +89,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ///
         /// - returns: Location of where the enum declaration starts.
         static func location(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) -> Location {
-            return Location(file: file, characterOffset: dictionary.offset ?? 0)
+            return Location(file: file, byteOffset: dictionary.offset ?? 0)
         }
 
         /// Determines the names of cases found in the enum.

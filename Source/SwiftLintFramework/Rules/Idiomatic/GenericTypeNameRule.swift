@@ -71,15 +71,16 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         } else {
             guard kind == .genericTypeParam,
                 let name = dictionary.name,
-                let offset = dictionary.offset else {
-                    return []
+                let offset = dictionary.offset
+            else {
+                return []
             }
 
             return validate(name: name, file: file, offset: offset)
         }
     }
 
-    private func validate(name: String, file: SwiftLintFile, offset: Int) -> [StyleViolation] {
+    private func validate(name: String, file: SwiftLintFile, offset: ByteCount) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }
@@ -122,7 +123,7 @@ extension GenericTypeNameRule {
 
     private func validateGenericTypeAliases(in file: SwiftLintFile) -> [StyleViolation] {
         let pattern = "typealias\\s+\\w+?\\s*" + type(of: self).genericTypePattern + "\\s*="
-        return file.match(pattern: pattern).flatMap { range, tokens -> [(String, Int)] in
+        return file.match(pattern: pattern).flatMap { range, tokens -> [(String, ByteCount)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
                 let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
@@ -136,7 +137,7 @@ extension GenericTypeNameRule {
     }
 
     private func genericTypesForType(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                     dictionary: SourceKittenDictionary) -> [(String, Int)] {
+                                     dictionary: SourceKittenDictionary) -> [(String, ByteCount)] {
         guard SwiftDeclarationKind.typeKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
@@ -144,7 +145,8 @@ extension GenericTypeNameRule {
             case let contents = file.stringView,
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
-            let range = file.stringView.byteRangeToNSRange(start: start, length: length),
+            case let byteRange = ByteRange(location: start, length: length),
+            let range = file.stringView.byteRangeToNSRange(byteRange),
             let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
                                                                    range: range)?.range(at: 1) else {
                 return []
@@ -155,16 +157,18 @@ extension GenericTypeNameRule {
     }
 
     private func genericTypesForFunction(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                         dictionary: SourceKittenDictionary) -> [(String, Int)] {
+                                         dictionary: SourceKittenDictionary) -> [(String, ByteCount)] {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
             case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(start: offset, length: length),
+            case let byteRange = ByteRange(location: offset, length: length),
+            let range = contents.byteRangeToNSRange(byteRange),
             let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents,
                                                                    options: [], range: range)?.range(at: 1),
-            match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file) else {
-                return []
+            match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file)
+        else {
+            return []
         }
 
         let genericConstraint = contents.substring(with: match)
@@ -174,7 +178,7 @@ extension GenericTypeNameRule {
     private func minParameterOffset(parameters: [SourceKittenDictionary], file: SwiftLintFile) -> Int {
         let offsets = parameters.compactMap { param -> Int? in
             return param.offset.flatMap {
-                file.stringView.byteRangeToNSRange(start: $0, length: 0)?.location
+                file.stringView.byteRangeToNSRange(ByteRange(location: $0, length: 0))?.location
             }
         }
 
@@ -182,7 +186,7 @@ extension GenericTypeNameRule {
     }
 
     private func extractTypes(fromGenericConstraint constraint: String, offset: Int,
-                              file: SwiftLintFile) -> [(String, Int)] {
+                              file: SwiftLintFile) -> [(String, ByteCount)] {
         guard let beforeWhere = constraint.components(separatedBy: "where").first else {
             return []
         }
@@ -196,7 +200,7 @@ extension GenericTypeNameRule {
         }
 
         let contents = file.stringView
-        return namesAndRanges.compactMap { name, range -> (String, Int)? in
+        return namesAndRanges.compactMap { name, range -> (String, ByteCount)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
                 file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {
@@ -228,8 +232,9 @@ private extension String {
         let bridged = bridge()
         let range = NSRange(location: 0, length: bridged.length)
         guard let match = regex("^\\s*(\\S*)\\s*$").firstMatch(in: self, options: [], range: range),
-            NSEqualRanges(range, match.range) else {
-                return (self, range)
+            NSEqualRanges(range, match.range)
+        else {
+            return (self, range)
         }
 
         let trimmedRange = match.range(at: 1)

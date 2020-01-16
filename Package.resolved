@@ -48,10 +48,10 @@
       },
       {
         "package": "SourceKitten",
-        "repositoryURL": "https://github.com/PaulTaykalo/SourceKitten.git",
+        "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
-          "branch": "update/framework-api-visibility",
-          "revision": "96610a7ef7689e43c04b289477367cbb9b2fd4c3",
+          "branch": "master",
+          "revision": "f71cf5711fb4466d9f44fc788de12c9cbd7c4d15",
           "version": null
         }
       },

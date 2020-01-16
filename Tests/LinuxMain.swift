@@ -1497,8 +1497,20 @@ extension UnusedControlFlowLabelRuleTests {
     ]
 }
 
+extension UnusedDeclarationRuleTests {
+    static var allTests: [(String, (UnusedDeclarationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnusedEnumeratedRuleTests {
     static var allTests: [(String, (UnusedEnumeratedRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension UnusedImportRuleTests {
+    static var allTests: [(String, (UnusedImportRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1818,7 +1830,9 @@ XCTMain([
     testCase(UnusedCaptureListRuleTests.allTests),
     testCase(UnusedClosureParameterRuleTests.allTests),
     testCase(UnusedControlFlowLabelRuleTests.allTests),
+    testCase(UnusedDeclarationRuleTests.allTests),
     testCase(UnusedEnumeratedRuleTests.allTests),
+    testCase(UnusedImportRuleTests.allTests),
     testCase(UnusedOptionalBindingRuleTests.allTests),
     testCase(UnusedSetterValueRuleTests.allTests),
     testCase(ValidIBInspectableRuleTests.allTests),

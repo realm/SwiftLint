@@ -105,15 +105,11 @@ extension SwiftLintFile {
     internal func matchesAndTokens(matching pattern: String,
                                    range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
         let contents = stringView
-        let range = range ?? stringView.range
+        let range = range ?? contents.range
         let syntax = syntaxMap
-        return regex(pattern).matches(in: contents, options: [], range: range).map { match in
-            let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
-                                                             length: match.range.length)
-            let fallbackRange = ByteRange(location: ByteCount(match.range.location),
-                                          length: ByteCount(match.range.length))
-            let tokensInRange = syntax.tokens(inByteRange: matchByteRange ?? fallbackRange)
-            return (match, tokensInRange)
+        return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
+            let matchByteRange = contents.NSRangeToByteRange(start: match.range.location, length: match.range.length)
+            return matchByteRange.map { (match, syntax.tokens(inByteRange: $0)) }
         }
     }
 

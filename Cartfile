@@ -1,2 +1,2 @@
-github "PaulTaykalo/SourceKitten" "fix/framework-visibility"
+github "PaulTaykalo/SourceKitten" "update/framework-api-visibility"
 github "scottrhoyt/SwiftyTextTable" ~> 0.9.0

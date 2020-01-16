@@ -13,6 +13,7 @@ enum TypeContent: String {
     case ibAction = "ib_action"
     case otherMethod = "other_method"
     case `subscript` = "subscript"
+    case deinitializer = "deinitializer"
 }
 
 public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
@@ -30,7 +31,8 @@ public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
         [.viewLifeCycleMethod],
         [.ibAction],
         [.otherMethod],
-        [.subscript]
+        [.subscript],
+        [.deinitializer]
     ]
 
     public var consoleDescription: String {

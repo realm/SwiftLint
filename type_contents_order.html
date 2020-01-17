@@ -316,7 +316,7 @@
 <li><strong>Kind:</strong> style</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 3.0.0</li>
-<li><strong>Default configuration:</strong> warning, order: [[SwiftLintFramework.TypeContent.case], [SwiftLintFramework.TypeContent.typeAlias, SwiftLintFramework.TypeContent.associatedType], [SwiftLintFramework.TypeContent.subtype], [SwiftLintFramework.TypeContent.typeProperty], [SwiftLintFramework.TypeContent.instanceProperty], [SwiftLintFramework.TypeContent.ibInspectable], [SwiftLintFramework.TypeContent.ibOutlet], [SwiftLintFramework.TypeContent.initializer], [SwiftLintFramework.TypeContent.typeMethod], [SwiftLintFramework.TypeContent.viewLifeCycleMethod], [SwiftLintFramework.TypeContent.ibAction], [SwiftLintFramework.TypeContent.otherMethod], [SwiftLintFramework.TypeContent.subscript]]</li>
+<li><strong>Default configuration:</strong> warning, order: [[SwiftLintFramework.TypeContent.case], [SwiftLintFramework.TypeContent.typeAlias, SwiftLintFramework.TypeContent.associatedType], [SwiftLintFramework.TypeContent.subtype], [SwiftLintFramework.TypeContent.typeProperty], [SwiftLintFramework.TypeContent.instanceProperty], [SwiftLintFramework.TypeContent.ibInspectable], [SwiftLintFramework.TypeContent.ibOutlet], [SwiftLintFramework.TypeContent.initializer], [SwiftLintFramework.TypeContent.typeMethod], [SwiftLintFramework.TypeContent.viewLifeCycleMethod], [SwiftLintFramework.TypeContent.ibAction], [SwiftLintFramework.TypeContent.otherMethod], [SwiftLintFramework.TypeContent.subscript], [SwiftLintFramework.TypeContent.deinitializer]]</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">TestViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
@@ -412,6 +412,10 @@
             <span class="n">log</span><span class="o">.</span><span class="nf">warning</span><span class="p">(</span><span class="s">"Just a test"</span><span class="p">,</span> <span class="n">newValue</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
+
+    <span class="kd">deinit</span> <span class="p">{</span>
+        <span class="n">log</span><span class="o">.</span><span class="nf">debug</span><span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
@@ -454,6 +458,12 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">TestViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+
+    <span class="c1">// deinitializer</span>
+    <span class="err">↓</span><span class="kd">deinit</span> <span class="p">{</span>
+        <span class="n">log</span><span class="o">.</span><span class="nf">debug</span><span class="p">(</span><span class="s">"deinit"</span><span class="p">)</span>
+    <span class="p">}</span>
+
     <span class="c1">// Initializers</span>
     <span class="k">override</span> <span class="err">↓</span><span class="nf">init</span><span class="p">(</span><span class="n">nibName</span> <span class="nv">nibNameOrNil</span><span class="p">:</span> <span class="kt">String</span><span class="p">?,</span> <span class="n">bundle</span> <span class="nv">nibBundleOrNil</span><span class="p">:</span> <span class="kt">Bundle</span><span class="p">?)</span> <span class="p">{</span>
         <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="n">nibNameOrNil</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="n">nibBundleOrNil</span><span class="p">)</span>

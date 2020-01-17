@@ -65,8 +65,13 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 @IBOutlet private ↓var view1: UIView!
 
                 // Initializers
-                override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+                override ↓init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+                }
+
+                // deinitializer
+                deinit {
+                    log.debug("deinit")
                 }
             }
             """,
@@ -144,6 +149,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
             reversedOrderDescription,
             ruleConfiguration: [
                 "order": [
+                    "deinitializer",
                     "subscript",
                     "other_method",
                     "ib_action",
@@ -224,6 +230,11 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     fatalError("init(coder:) has not been implemented")
                 }
 
+                // deinitializer
+                deinit {
+                    log.debug("deinit")
+                }
+
                 // View Life-Cycle Method
                 override func viewDidLoad() {
                     super.viewDidLoad()
@@ -279,6 +290,11 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // Instance Property
                 ↓var shouldLayoutView1: Bool!
 
+                // deinitializer
+                ↓deinit {
+                    log.debug("deinit")
+                }
+
                 // Subtype
                 class TestClass {
                     // 10 lines
@@ -327,7 +343,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 "order": [
                     ["type_alias", "associated_type", "subtype"],
                     ["type_property", "instance_property", "ib_inspectable", "ib_outlet"],
-                    ["initializer", "type_method"],
+                    ["initializer", "type_method", "deinitializer"],
                     ["view_life_cycle_method", "ib_action", "other_method", "subscript"]
                 ]
             ]

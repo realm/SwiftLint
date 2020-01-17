@@ -104,6 +104,11 @@ internal struct TypeContentsOrderRuleExamples {
                     log.warning("Just a test", newValue)
                 }
             }
+        """,
+        """
+            deinit {
+                log.debug("deinit")
+            }
         """
     ]
 
@@ -160,6 +165,12 @@ internal struct TypeContentsOrderRuleExamples {
         """,
         """
         class TestViewController: UIViewController {
+
+            // deinitializer
+            ↓deinit {
+                log.debug("deinit")
+            }
+
             // Initializers
             override ↓init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                 super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)

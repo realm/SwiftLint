@@ -121,8 +121,10 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 "viewDidDisappear("
             ]
 
-            if typeContentStructure.name!.starts(with: "init") || typeContentStructure.name!.starts(with: "deinit") {
+            if typeContentStructure.name!.starts(with: "init") {
                 return .initializer
+            } else if typeContentStructure.name!.starts(with: "deinit") {
+                return .deinitializer
             } else if viewLifecycleMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
                 return .viewLifeCycleMethod
             } else if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {

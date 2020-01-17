@@ -15,7 +15,9 @@
 
 #### Enhancements
 
-* None.
+* Add `deinitializer` type content to `type_contents_order` rule instead of
+  grouping it with initializers.  
+  [Steven Magdy](https://github.com/StevenMagdy)
 
 #### Bug Fixes
 

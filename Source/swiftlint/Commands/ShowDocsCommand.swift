@@ -6,7 +6,7 @@ struct ShowDocsCommand: CommandProtocol {
     let function = "Open `SwiftLint Framework Docs` on web browser"
 
     func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
-        let url = URL(string: "https://realm.github.io/SwiftLint/rule-directory.html")!
+        let url = URL(string: "https://realm.github.io/SwiftLint")!
         open(url)
         return .success(())
     }

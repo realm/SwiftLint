@@ -176,7 +176,8 @@ This is the last release to support building with Swift 5.0.x.
 
 #### Experimental
 
-* None.
+* Add `swiftlint show-docs` command to easily open online docs.  
+  [417-72KI](https://github.com/417-72KI)
 
 #### Enhancements
 

@@ -97,9 +97,11 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
             """)
         ],
         corrections: [
-            Example("import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"): Example("import AAA\nimport BBB\nimport CCC\nimport ZZZ"),
+            Example("import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"):
+                Example("import AAA\nimport BBB\nimport CCC\nimport ZZZ"),
             Example("import BBB // comment\nimport ↓AAA"): Example("import AAA\nimport BBB // comment"),
-            Example("import BBB\n// comment\nimport CCC\nimport ↓AAA"): Example("import BBB\n// comment\nimport AAA\nimport CCC"),
+            Example("import BBB\n// comment\nimport CCC\nimport ↓AAA"):
+                Example("import BBB\n// comment\nimport AAA\nimport CCC"),
             Example("@testable import CCC\nimport  ↓AAA"): Example("import  AAA\n@testable import CCC"),
             Example("import CCC\n@testable import  ↓AAA"): Example("@testable import  AAA\nimport CCC"),
             Example("""

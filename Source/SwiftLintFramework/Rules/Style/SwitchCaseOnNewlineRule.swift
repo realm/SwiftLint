@@ -36,7 +36,11 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
             wrapInSwitch("case .myCase: // error from network\n return true"),
             wrapInSwitch("case let .myCase(value) where value > 10:\n return false"),
             wrapInSwitch("case let .myCase(value)\n where value > 10:\n return false"),
-            wrapInSwitch("case let .myCase(code: lhsErrorCode, description: _)\n where lhsErrorCode > 10:\n return false"),
+            wrapInSwitch("""
+            case let .myCase(code: lhsErrorCode, description: _)
+             where lhsErrorCode > 10:
+            return false
+            """),
             wrapInSwitch("case #selector(aFunction(_:)):\n return false\n")
         ],
         triggeringExamples: [

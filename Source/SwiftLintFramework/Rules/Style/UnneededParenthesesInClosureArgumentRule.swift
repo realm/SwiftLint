@@ -52,7 +52,8 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         corrections: [
             Example("call(arg: { ↓(bar) in })\n"): Example("call(arg: { bar in })\n"),
             Example("call(arg: { ↓(bar, _) in })\n"): Example("call(arg: { bar, _ in })\n"),
-            Example("let foo = { ↓(bar) -> Bool in return true }\n"): Example("let foo = { bar -> Bool in return true }\n"),
+            Example("let foo = { ↓(bar) -> Bool in return true }\n"):
+                Example("let foo = { bar -> Bool in return true }\n"),
             Example("method { ↓(foo, bar) in }\n"): Example("method { foo, bar in }\n"),
             Example("foo.map { ($0, $0) }.forEach { ↓(x, y) in }"): Example("foo.map { ($0, $0) }.forEach { x, y in }"),
             Example("foo.bar { [weak self] ↓(x, y) in }"): Example("foo.bar { [weak self] x, y in }")

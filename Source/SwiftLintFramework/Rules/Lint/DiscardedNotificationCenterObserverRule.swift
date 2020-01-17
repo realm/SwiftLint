@@ -14,7 +14,9 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         kind: .lint,
         nonTriggeringExamples: [
             Example("let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
-            Example("let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n"),
+            Example("""
+            let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
+            """),
             Example("""
             func foo() -> Any {
                return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })

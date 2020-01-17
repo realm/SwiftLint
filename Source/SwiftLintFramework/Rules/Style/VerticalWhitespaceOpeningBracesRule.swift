@@ -38,7 +38,8 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
         Example("class X {\n    struct Y {\n↓\n    class Z {\n"): Example("class X {\n    struct Y {\n    class Z {\n"),
         Example("[\n↓\n1,\n2,\n3\n]"): Example("[\n1,\n2,\n3\n]"),
         Example("foo(\n↓\nx: 5,\ny:6\n)"): Example("foo(\nx: 5,\ny:6\n)"),
-        Example("class Name {\n↓\n    run(5) { x in print(x) }\n}"): Example("class Name {\n    run(5) { x in print(x) }\n}"),
+        Example("class Name {\n↓\n    run(5) { x in print(x) }\n}"):
+            Example("class Name {\n    run(5) { x in print(x) }\n}"),
         Example("""
         KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
         ↓

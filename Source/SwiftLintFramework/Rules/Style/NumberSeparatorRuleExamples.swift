@@ -61,6 +61,7 @@ internal struct NumberSeparatorRuleExamples {
             result[Example("let foo = \(violation)1000E2")] = Example("let foo = \(sign)1_000E2")
             result[Example("let foo = \(violation)1__000")] = Example("let foo = \(sign)1_000")
             result[Example("let foo = \(violation)1.0001")] = Example("let foo = \(sign)1.000_1")
+            // swiftlint:disable:next line_length
             result[Example("let foo = \(violation)1_000_000.000000_1")] = Example("let foo = \(sign)1_000_000.000_000_1")
             result[Example("let foo = \(violation)1000000.000000_1")] = Example("let foo = \(sign)1_000_000.000_000_1")
         }

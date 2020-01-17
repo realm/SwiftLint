@@ -1,7 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
-private func embedInSwitch(_ text: String, case: String = "case .bar", file: StaticString = #file, line: UInt = #line) -> Example {
+private func embedInSwitch(
+    _ text: String,
+    case: String = "case .bar",
+    file: StaticString = #file, line: UInt = #line) -> Example {
     return Example("""
         switch foo {
         \(`case`):

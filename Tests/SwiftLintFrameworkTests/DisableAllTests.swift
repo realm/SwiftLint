@@ -4,9 +4,9 @@ import XCTest
 class DisableAllTests: XCTestCase {
     /// Example violations. Could be replaced with other single violations.
     private let violatingPhrases = [
-        Example("let r = 0\n"), // Violates identifier_name
-        Example("let myString:String = \"\"\n"), // Violates colon_whitespace
-        Example("// TODO: Some todo\n") // Violates todo
+        Example("let r = 0"), // Violates identifier_name
+        Example(#"let myString:String = """#), // Violates colon_whitespace
+        Example("// TODO: Some todo") // Violates todo
     ]
 
     // MARK: Violating Phrase
@@ -14,7 +14,7 @@ class DisableAllTests: XCTestCase {
     func testViolatingPhrase() {
         for violatingPhrase in violatingPhrases {
             XCTAssertEqual(
-                violations(violatingPhrase).count,
+                violations(violatingPhrase.with(code: violatingPhrase.code + "\n")).count,
                 1,
                 #function,
                 file: violatingPhrase.file ?? #file,
@@ -43,7 +43,7 @@ class DisableAllTests: XCTestCase {
                 // swiftlint:disable all
                 \(violatingPhrase.code)
                 // swiftlint:enable all
-                \(violatingPhrase.code)
+                \(violatingPhrase.code)\n
                 """)
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
@@ -59,7 +59,10 @@ class DisableAllTests: XCTestCase {
     func testDisableAllPrevious() {
         for violatingPhrase in violatingPhrases {
             let protectedPhrase = violatingPhrase
-                .with(code: violatingPhrase.code + "// swiftlint:disable:previous all\n")
+                .with(code: """
+                    \(violatingPhrase.code)
+                    // swiftlint:disable:previous all\n
+                    """)
             XCTAssertEqual(
                 violations(protectedPhrase).count,
                 0,
@@ -76,7 +79,7 @@ class DisableAllTests: XCTestCase {
                 // swiftlint:disable all
                 \(violatingPhrase.code)
                 \(violatingPhrase.code)
-                // swiftlint:enable:previous all
+                // swiftlint:enable:previous all\n
                 """)
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
@@ -108,7 +111,7 @@ class DisableAllTests: XCTestCase {
                 // swiftlint:disable all
                 \(violatingPhrase.code)
                 // swiftlint:enable:next all
-                \(violatingPhrase.code)
+                \(violatingPhrase.code)\n
                 """)
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
@@ -141,8 +144,7 @@ class DisableAllTests: XCTestCase {
             let unprotectedPhrase = violatingPhrase.with(code: """
                 // swiftlint:disable all
                 \(violatingPhrase.code)
-                \(rawViolatingPhrase)
-                // swiftlint:enable:this all\n"
+                \(rawViolatingPhrase)// swiftlint:enable:this all\n"
                 """)
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,

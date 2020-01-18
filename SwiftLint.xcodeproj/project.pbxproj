@@ -164,6 +164,12 @@
 		787CDE3B208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */; };
 		78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
 		78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */; };
+		7A56ABEE23D3A418005287EC /* SwiftLintFile+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A56ABEC23D3A401005287EC /* SwiftLintFile+Testing.swift */; };
+		7A56ABF123D3A49F005287EC /* Collection+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A56ABEF23D3A49C005287EC /* Collection+Testing.swift */; };
+		7A56ABF323D3A58D005287EC /* Configuration+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A56ABF223D3A58D005287EC /* Configuration+Testing.swift */; };
+		7A56ABF523D3A644005287EC /* XCTestCase+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A56ABF423D3A644005287EC /* XCTestCase+Testing.swift */; };
+		7A56ABF723D3A698005287EC /* Example+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A56ABF623D3A698005287EC /* Example+Testing.swift */; };
+		7A56ABF923D3ACCC005287EC /* String+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A56ABF823D3ACCC005287EC /* String+Testing.swift */; };
 		7C0C2E7A1D2866CB0076435A /* ExplicitInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */; };
 		820F451C2107292500AA056A /* TypeContentsOrderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F451B2107292500AA056A /* TypeContentsOrderRuleTests.swift */; };
 		820F451E21073D7200AA056A /* ConditionalReturnsOnNewlineRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F451D21073D7200AA056A /* ConditionalReturnsOnNewlineRuleTests.swift */; };
@@ -669,6 +675,12 @@
 		787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRuleTests.swift; sourceTree = "<group>"; };
 		78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverriddenSuperCallRule.swift; sourceTree = "<group>"; };
 		78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverridenSuperCallConfiguration.swift; sourceTree = "<group>"; };
+		7A56ABEC23D3A401005287EC /* SwiftLintFile+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftLintFile+Testing.swift"; sourceTree = "<group>"; };
+		7A56ABEF23D3A49C005287EC /* Collection+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Testing.swift"; sourceTree = "<group>"; };
+		7A56ABF223D3A58D005287EC /* Configuration+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Testing.swift"; sourceTree = "<group>"; };
+		7A56ABF423D3A644005287EC /* XCTestCase+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Testing.swift"; sourceTree = "<group>"; };
+		7A56ABF623D3A698005287EC /* Example+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Example+Testing.swift"; sourceTree = "<group>"; };
+		7A56ABF823D3ACCC005287EC /* String+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Testing.swift"; sourceTree = "<group>"; };
 		7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitInitRule.swift; sourceTree = "<group>"; };
 		820F451B2107292500AA056A /* TypeContentsOrderRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContentsOrderRuleTests.swift; sourceTree = "<group>"; };
 		820F451D21073D7200AA056A /* ConditionalReturnsOnNewlineRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewlineRuleTests.swift; sourceTree = "<group>"; };
@@ -1119,7 +1131,13 @@
 		7A56ABEB23D3A3CF005287EC /* Test Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				7A56ABEF23D3A49C005287EC /* Collection+Testing.swift */,
+				7A56ABF223D3A58D005287EC /* Configuration+Testing.swift */,
+				7A56ABF623D3A698005287EC /* Example+Testing.swift */,
+				7A56ABEC23D3A401005287EC /* SwiftLintFile+Testing.swift */,
 				E81224991B04F85B001783D2 /* TestHelpers.swift */,
+				7A56ABF423D3A644005287EC /* XCTestCase+Testing.swift */,
+				7A56ABF823D3ACCC005287EC /* String+Testing.swift */,
 			);
 			path = "Test Helpers";
 			sourceTree = "<group>";
@@ -2369,6 +2387,7 @@
 				3B12C9C31C320A53000B423F /* YamlSwiftLintTests.swift in Sources */,
 				D41985ED21FAD033003BE2B7 /* DeploymentTargetConfigurationTests.swift in Sources */,
 				D450D1E221F19B1E00E60010 /* TrailingClosureConfigurationTests.swift in Sources */,
+				7A56ABF323D3A58D005287EC /* Configuration+Testing.swift in Sources */,
 				D4DDFF9822396D62006C3629 /* ContainsOverFirstNotNilRuleTests.swift in Sources */,
 				E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */,
 				D4C27C001E12DFF500DF713E /* LinterCacheTests.swift in Sources */,
@@ -2378,10 +2397,12 @@
 				5B1701BA23CEB00000CC7079 /* ExampleTests.swift in Sources */,
 				D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */,
 				750BBD0B214180AF007EC437 /* CollectionAlignmentRuleTests.swift in Sources */,
+				7A56ABF923D3ACCC005287EC /* String+Testing.swift in Sources */,
 				8B01E50220A4349100C9233E /* FunctionParameterCountRuleTests.swift in Sources */,
 				47ACC89C1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift in Sources */,
 				E81ADD741ED6052F000CD451 /* CommandTests.swift in Sources */,
 				29FFC37D1F157BDE007E4825 /* FileLengthRuleTests.swift in Sources */,
+				7A56ABF123D3A49F005287EC /* Collection+Testing.swift in Sources */,
 				006204DE1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift in Sources */,
 				02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */,
 				12E3D4DC2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift in Sources */,
@@ -2410,6 +2431,7 @@
 				D43B04661E071ED3004016AF /* ColonRuleTests.swift in Sources */,
 				D4F5851920E99B5A0085C6D8 /* PrivateOutletRuleTests.swift in Sources */,
 				3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */,
+				7A56ABF523D3A644005287EC /* XCTestCase+Testing.swift in Sources */,
 				125CE52F20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift in Sources */,
 				D4EAB3A420E9948E0051C09A /* AutomaticRuleTests.generated.swift in Sources */,
 				67EB4DFC1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift in Sources */,
@@ -2418,9 +2440,11 @@
 				D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */,
 				F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */,
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
+				7A56ABF723D3A698005287EC /* Example+Testing.swift in Sources */,
 				47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */,
 				D4F5851720E99B260085C6D8 /* StatementPositionRuleTests.swift in Sources */,
 				1EB7C8531F0C45C2004BAD22 /* ModifierOrderTests.swift in Sources */,
+				7A56ABEE23D3A418005287EC /* SwiftLintFile+Testing.swift in Sources */,
 				67932E2D1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift in Sources */,
 				224E7F9D235A5E800051368B /* ExpiringTodoRuleTests.swift in Sources */,
 				F90DBD812092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift in Sources */,

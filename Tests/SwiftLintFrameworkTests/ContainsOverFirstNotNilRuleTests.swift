@@ -27,10 +27,10 @@ class ContainsOverFirstNotNilRuleTests: XCTestCase {
     // MARK: - Private
 
     private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {
-        guard let config = makeConfig(config, ContainsOverFirstNotNilRule.description.identifier) else {
+        guard let config = TestHelpers.makeConfig(config, ContainsOverFirstNotNilRule.description.identifier) else {
             return []
         }
 
-        return SwiftLintFrameworkTests.violations(example, config: config)
+        return TestHelpers.violations(example, config: config)
     }
 }

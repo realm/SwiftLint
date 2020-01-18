@@ -78,7 +78,7 @@ class ExpiringTodoRuleTests: XCTestCase {
     }
 
     private func violations(_ example: Example) -> [StyleViolation] {
-        return SwiftLintFrameworkTests.violations(example, config: config)
+        return TestHelpers.violations(example, config: config)
     }
 
     private func dateString(for status: ExpiringTodoRule.ExpiryViolationLevel?) -> String {
@@ -127,7 +127,7 @@ class ExpiringTodoRuleTests: XCTestCase {
             ]
         }
 
-        return makeConfig(serializedConfig, ExpiringTodoRule.description.identifier)!
+        return TestHelpers.makeConfig(serializedConfig, ExpiringTodoRule.description.identifier)!
     }
 }
 

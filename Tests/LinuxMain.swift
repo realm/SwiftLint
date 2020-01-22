@@ -358,7 +358,8 @@ extension EmptyCollectionLiteralRuleTests {
 
 extension EmptyCountRuleTests {
     static var allTests: [(String, (EmptyCountRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testEmptyCountWithDefaultConfiguration", testEmptyCountWithDefaultConfiguration),
+        ("testEmptyCountWithOnlyAfterDot", testEmptyCountWithOnlyAfterDot)
     ]
 }
 

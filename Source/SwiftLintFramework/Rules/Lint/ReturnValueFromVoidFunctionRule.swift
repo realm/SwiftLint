@@ -14,6 +14,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
         name: "Return Value from Void Function",
         description: "Returning values Void functions should be avoided.",
         kind: .lint,
+        minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: ReturnValueFromVoidFunctionRuleExamples.nonTriggeringExamples,
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )

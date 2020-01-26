@@ -21,12 +21,16 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         #if canImport(SwiftSyntax)
-        let lock = NSLock()
-        var visitor = ReturnVisitor(lock: lock)
+        var positions = [AbsolutePosition]()
 
+        let lock = NSLock()
         // https://bugs.swift.org/browse/SR-11170
         let work = DispatchWorkItem {
+            var visitor = ReturnVisitor()
             file.syntax.walk(&visitor)
+            lock.lock()
+            positions = visitor.positions
+            lock.unlock()
         }
         if #available(OSX 10.12, *) {
             let thread = Thread {
@@ -41,7 +45,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 
         lock.lock()
         defer { lock.unlock() }
-        return visitor.positions.map { position in
+        return positions.map { position in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
@@ -55,19 +59,12 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 #if canImport(SwiftSyntax)
 private class ReturnVisitor: SyntaxVisitor {
     private(set) var positions = [AbsolutePosition]()
-    private let lock: NSLock
-
-    init(lock: NSLock) {
-        self.lock = lock
-    }
 
     func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
         if node.expression != nil,
             let functionNode = node.enclosingFunction(),
             functionNode.returnsVoid {
-            lock.lock()
             positions.append(node.positionAfterSkippingLeadingTrivia)
-            lock.unlock()
         }
         return .visitChildren
     }

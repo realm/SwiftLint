@@ -35,7 +35,47 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
               public let randomNumber = 2
             }
             """),
-            Example("class DummyClass {}")
+            Example("class DummyClass {}"),
+            Example("""
+            class Foo: NSObject { // class with Obj-C class property
+                class @objc let foo = 1
+            }
+            """),
+            Example("""
+            class Foo: NSObject { // class with Obj-C static property
+                static @objc let foo = 1
+            }
+            """),
+            Example("""
+            class Foo { // non-final class could be inherited
+                class let foo = 1
+            }
+            """),
+            Example("""
+            class Foo { // non-final class with only final members could still be inherited
+                final class let foo = 1
+            }
+            """),
+            Example("""
+            class Foo { // @objc class func can't exist on an enum
+               @objc class func foo() {}
+            }
+            """),
+            Example("""
+            class Foo { // @objc static func can't exist on an enum
+               @objc static func foo() {}
+            }
+            """),
+            Example("""
+            final class Foo { // final class, but @objc class func can't exist on an enum
+               @objc class func foo() {}
+            }
+            """),
+            Example("""
+            final class Foo { // final class, but @objc static func can't exist on an enum
+               @objc static func foo() {}
+            }
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -52,6 +92,11 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             ↓struct Math {
               public static let pi = 3.14
               @available(*, unavailable) init() {}
+            }
+            """),
+            Example("""
+            final class Foo { // final class can't be inherited
+                class let foo = 1
             }
             """)
         ]

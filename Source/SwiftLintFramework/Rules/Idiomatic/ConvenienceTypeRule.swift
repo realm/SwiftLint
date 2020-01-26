@@ -140,11 +140,26 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             return []
         }
 
-        return [
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        let makeViolation = {
+            return [
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: self.configuration.severity,
+                               location: Location(file: file, byteOffset: offset))
+            ]
+        }
+
+        // MARK: Is class?
+        guard kind == .class else {
+            return makeViolation()
+        }
+
+        // MARK: Is final?
+        let isFinal = dictionary.swiftAttributes.contains { attributes in
+            attributes.attribute == SwiftDeclarationAttributeKind.final.rawValue
+        }
+
+        // Final classes can't be inherited from, so we want to turn it into an enum.
+        return isFinal ? makeViolation() : []
     }
 
     private func isFunctionUnavailable(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {

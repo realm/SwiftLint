@@ -295,8 +295,8 @@
 		D4470D591EB6B4D1008A1B2E /* EmptyEnumArgumentsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D581EB6B4D1008A1B2E /* EmptyEnumArgumentsRule.swift */; };
 		D4470D5B1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D5A1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift */; };
 		D4470D5D1EB8004B008A1B2E /* VerticalParameterAlignmentOnCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D5C1EB8004B008A1B2E /* VerticalParameterAlignmentOnCallRule.swift */; };
-		D4492B9323DD499A004EC27B /* _CSwiftSyntax.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4492B9123DD499A004EC27B /* _CSwiftSyntax.framework */; };
-		D4492B9523DD499A004EC27B /* SwiftSyntax.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4492B9223DD499A004EC27B /* SwiftSyntax.framework */; };
+		D4492B9323DD499A004EC27B /* _CSwiftSyntax.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4492B9123DD499A004EC27B /* _CSwiftSyntax.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D4492B9523DD499A004EC27B /* SwiftSyntax.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4492B9223DD499A004EC27B /* SwiftSyntax.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */; };
 		D450D1D121EC4A6900E60010 /* StrongIBOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D450D1D021EC4A6900E60010 /* StrongIBOutletRule.swift */; };
 		D450D1DD21F199F700E60010 /* TrailingClosureConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D450D1DA21F1992E00E60010 /* TrailingClosureConfiguration.swift */; };

@@ -105,12 +105,16 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset,
+            // Is class or struct?
             [.class, .struct].contains(kind),
+            // Inherits from anything?
             dictionary.inheritedTypes.isEmpty,
+            // Substructure has members? i.e. is the type completely empty?
             !dictionary.substructure.isEmpty else {
                 return []
         }
 
+        // Contains instance declarations?
         let containsInstanceDeclarations = dictionary.substructure.contains { dict in
             guard let kind = dict.declarationKind else {
                 return false

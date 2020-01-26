@@ -76,7 +76,7 @@ private extension Syntax {
             return node
         }
 
-        if self is ClosureExprSyntax {
+        if self is ClosureExprSyntax || self is VariableDeclSyntax {
             return nil
         }
 

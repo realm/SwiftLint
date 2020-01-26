@@ -81,6 +81,12 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                 return
             }
         }
+        """,
+        """
+        func spec() {
+            var foo: Int {
+                return 0
+            }
         """
     ]
 

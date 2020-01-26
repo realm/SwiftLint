@@ -7,6 +7,12 @@ private let addCryptoSwift = false
 private let addCryptoSwift = true
 #endif
 
+#if compiler(>=5.1.0)
+private let addSwiftSyntax = false
+#else
+private let addSwiftSyntax = true
+#endif
+
 let package = Package(
     name: "SwiftLint",
     products: [
@@ -19,7 +25,8 @@ let package = Package(
         .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50100.0")),
-    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.0.0"))] : []),
+    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.0.0"))] : []) +
+        (addSwiftSyntax ? [.package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50100.0"))] : []),
     targets: [
         .target(
             name: "swiftlint",
@@ -34,8 +41,8 @@ let package = Package(
             dependencies: [
                 "SourceKittenFramework",
                 "Yams",
-                "SwiftSyntax",
-            ] + (addCryptoSwift ? ["CryptoSwift"] : [])
+            ] + (addCryptoSwift ? ["CryptoSwift"] : []) +
+                (addSwiftSyntax ? ["SwiftSyntax"] : [])
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",

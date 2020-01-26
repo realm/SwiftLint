@@ -90,7 +90,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             }
             """),
             Example("""
-            final class Foo { // final class can't be inherited
+            final ↓class Foo { // final class can't be inherited
                 class let foo = 1
             }
             """)

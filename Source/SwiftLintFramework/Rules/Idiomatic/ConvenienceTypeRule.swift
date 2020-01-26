@@ -136,6 +136,15 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             return []
         }
 
+        // Has @objc members?
+        let hasObjcMembers = dictionary.substructure.contains { dict in
+            return dict.enclosedSwiftAttributes.contains(.objc)
+        }
+
+        guard !hasObjcMembers else {
+            return []
+        }
+
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,

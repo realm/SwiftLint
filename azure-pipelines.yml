@@ -23,10 +23,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode102:
-        DEVELOPER_DIR: /Applications/Xcode_10.2.app
-      xcode103:
-        DEVELOPER_DIR: /Applications/Xcode_10.3.app
       xcode111:
         DEVELOPER_DIR: /Applications/Xcode_11.1.app
   steps:

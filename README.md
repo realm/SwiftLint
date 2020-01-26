@@ -61,7 +61,7 @@ running it.
 ### Compiling from source:
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 10.2 or later).
+`git submodule update --init --recursive; make install` (Xcode 11.0 or later).
 
 ### Known Installation Issues On MacOS Before 10.14.4
 

@@ -21,6 +21,8 @@ main ()
         echo "*** Updating submodules..."
         update_submodules
     fi
+
+    cd "SwiftSyntax" && swift package generate-xcodeproj
 }
 
 bootstrap_submodule ()

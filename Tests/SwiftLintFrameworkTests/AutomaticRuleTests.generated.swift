@@ -648,6 +648,12 @@ class ReturnArrowWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class ReturnValueFromVoidFunctionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReturnValueFromVoidFunctionRule.description)
+    }
+}
+
 class ShorthandOperatorRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)

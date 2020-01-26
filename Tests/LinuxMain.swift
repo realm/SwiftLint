@@ -1260,6 +1260,12 @@ extension ReturnArrowWhitespaceRuleTests {
     ]
 }
 
+extension ReturnValueFromVoidFunctionRuleTests {
+    static var allTests: [(String, (ReturnValueFromVoidFunctionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RuleConfigurationTests {
     static var allTests: [(String, (RuleConfigurationTests) -> () throws -> Void)] = [
         ("testNameConfigurationSetsCorrectly", testNameConfigurationSetsCorrectly),
@@ -1816,6 +1822,7 @@ XCTMain([
     testCase(RequiredDeinitRuleTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
+    testCase(ReturnValueFromVoidFunctionRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),

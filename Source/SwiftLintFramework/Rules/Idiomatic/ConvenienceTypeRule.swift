@@ -84,11 +84,6 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             }
             """),
             Example("""
-            ↓class Math {
-              public static let pi = 3.14
-            }
-            """),
-            Example("""
             ↓struct Math {
               public static let pi = 3.14
               @available(*, unavailable) init() {}

@@ -30,8 +30,8 @@ jobs:
       xcode111:
         DEVELOPER_DIR: /Applications/Xcode_11.1.app
   steps:
-    - script: git submodule update --init --recursive
-      displayName: Update git submodules
+    - script: Script/bootstrap
+      displayName: Bootstrap
     - script: |
         sw_vers
         xcodebuild -version

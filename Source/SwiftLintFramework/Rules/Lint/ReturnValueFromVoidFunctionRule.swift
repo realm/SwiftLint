@@ -21,7 +21,8 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         #if canImport(SwiftSyntax)
-        var visitor = ReturnVisitor()
+        let lock = NSLock()
+        var visitor = ReturnVisitor(lock: lock)
 
         // https://bugs.swift.org/browse/SR-11170
         let work = DispatchWorkItem {
@@ -38,6 +39,8 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
             queuedFatalError("macOS < 10.12")
         }
 
+        lock.lock()
+        defer { lock.unlock() }
         return visitor.positions.map { position in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -50,14 +53,21 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 }
 
 #if canImport(SwiftSyntax)
-private struct ReturnVisitor: SyntaxVisitor {
+private class ReturnVisitor: SyntaxVisitor {
     private(set) var positions = [AbsolutePosition]()
+    private let lock: NSLock
 
-    mutating func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
+    init(lock: NSLock) {
+        self.lock = lock
+    }
+
+    func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
         if node.expression != nil,
             let functionNode = node.enclosingFunction(),
             functionNode.returnsVoid {
+            lock.lock()
             positions.append(node.positionAfterSkippingLeadingTrivia)
+            lock.unlock()
         }
         return .visitChildren
     }

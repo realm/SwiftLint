@@ -167,6 +167,12 @@ public struct SourceKittenDictionary {
         }
     }
 
+    /// Types that this type inerits from or conforms to. Empty if there are none.
+    /// ```swift
+    /// // Example: the inheritedTypes for this type
+    /// // would be String and CodingKey:
+    /// enum CodingKeys: String, CodingKey {}
+    /// ```
     var inheritedTypes: [String] {
         let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }

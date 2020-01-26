@@ -8,9 +8,9 @@ private let addCryptoSwift = true
 #endif
 
 #if compiler(>=5.1.0)
-private let addSwiftSyntax = false
-#else
 private let addSwiftSyntax = true
+#else
+private let addSwiftSyntax = false
 #endif
 
 let package = Package(

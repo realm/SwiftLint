@@ -85,20 +85,12 @@ extension ProjectMock {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
     }
 
-    var projectMockNestedSwift: String {
-        return projectMockNestedPath.stringByAppendingPathComponent("Main.swift")
-    }
-
     var projectMockNestedSubSwift: String {
         return projectMockNestedSubPath.stringByAppendingPathComponent("Sub.swift")
     }
 
     var projectMockNestedYAML: String {
         return projectMockNestedPath.stringByAppendingPathComponent(".swiftlint.yml")
-    }
-
-    var projectMockNestedSubYAML: String {
-        return projectMockNestedSubPath.stringByAppendingPathComponent(".swiftlint.yml")
     }
 
     var projectMockConfig0: Configuration {
@@ -137,9 +129,5 @@ extension ProjectMock {
 
     var projectMockNestedConfig: Configuration {
         return Configuration(configurationFiles: [projectMockNestedYAML], optional: false, quiet: true)
-    }
-
-    var projectMockNestedSubConfig: Configuration {
-        return Configuration(configurationFiles: [projectMockNestedSubYAML], optional: false, quiet: true)
     }
 }

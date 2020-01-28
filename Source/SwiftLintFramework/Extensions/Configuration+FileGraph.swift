@@ -65,8 +65,7 @@ internal extension Configuration {
             var child: Vertix!
 
             internal static func == (lhs: Edge, rhs: Edge) -> Bool {
-                lhs.parent == rhs.parent &&
-                lhs.child == rhs.child
+                return lhs.parent == rhs.parent && lhs.child == rhs.child
             }
 
             internal func hash(into hasher: inout Hasher) {

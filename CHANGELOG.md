@@ -117,6 +117,12 @@ This is the last release to support building with Swift 5.0.x.
 * Add `deinitializer` type content to `type_contents_order` rule instead of
   grouping it with initializers.  
   [Steven Magdy](https://github.com/StevenMagdy)
+  
+* Add option to specify a `child_config` / `parent_config` file
+  (local or remote) in any SwiftLint configuration file.
+  Allow passing multiple configuration files via the command line.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 * Inline test failure messages to make development of SwiftLint easier. Test
   failures in triggering and non-triggering examples will appear inline in
@@ -228,12 +234,6 @@ This is the last release to support building with Swift 5.0.x.
   super-basic additive indentation pattern.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#227](https://github.com/realm/SwiftLint/issues/227)
-  
-* Add option to specify a `child_config` / `parent_config` file
-  (local or remote) in any SwiftLint configuration file.
-  Allow passing multiple configuration files via the command line.  
-  [Frederick Pietschmann](https://github.com/fredpi)
-  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 * Catch previously missed violations in the `optional_enum_case_matching` rule
   when case expressions involved tuples.  

@@ -4,7 +4,7 @@ import Foundation // swiftlint:disable:this file_name
 import FoundationNetworking
 #endif
 
-public extension Configuration.FileGraph.FilePath {
+internal extension Configuration.FileGraph.FilePath {
     // MARK: - Properties: Remote Cache
     /// This should never be touched. Change the version number for changes to the cache format
     private static let remoteCachePath: String = ".swiftlint/RemoteConfigCache"

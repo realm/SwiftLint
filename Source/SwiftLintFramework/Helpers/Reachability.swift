@@ -2,10 +2,11 @@
 import SystemConfiguration
 #endif
 
-public class Reachability {
+/// Helper class providing the static helper method `isConnectedToNetwork()`
+internal class Reachability {
     /// Returns whether the device is connected to a network, if known.
     /// On Linux, this always evaluates to `nil`.
-    public static func isConnectedToNetwork() -> Bool? {
+    internal static func isConnectedToNetwork() -> Bool? {
         #if os(Linux)
         return true
         #else

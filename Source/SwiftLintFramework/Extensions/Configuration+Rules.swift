@@ -1,6 +1,6 @@
 import Foundation
 
-public extension Configuration {
+internal extension Configuration {
     class RulesWrapper {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
@@ -23,7 +23,7 @@ public extension Configuration {
 
         /// All rules enabled in this configuration,
         /// derived from rule mode (whitelist / optIn - disabled) & existing rules
-        public var resultingRules: [Rule] {
+        var resultingRules: [Rule] {
             // Lock for thread-safety (that's also why this is not a lazy var)
             resultingRulesLock.lock()
             defer { resultingRulesLock.unlock() }
@@ -63,7 +63,7 @@ public extension Configuration {
             return resultingRules
         }
 
-        public lazy var disabledRuleIdentifiers: [String] = {
+        lazy var disabledRuleIdentifiers: [String] = {
             switch mode {
             case let .default(disabled, _):
                 return validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
@@ -118,7 +118,7 @@ public extension Configuration {
         }
 
         // MARK: Merging
-        internal func merged(with child: RulesWrapper) -> RulesWrapper {
+        func merged(with child: RulesWrapper) -> RulesWrapper {
             // Merge allRulesWrapped
             let newAllRulesWrapped = mergedAllRulesWrapped(with: child)
 

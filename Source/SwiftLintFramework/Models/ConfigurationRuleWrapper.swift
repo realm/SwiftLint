@@ -1,1 +1,1 @@
-public typealias ConfigurationRuleWrapper = (rule: Rule, initializedWithNonEmptyConfiguration: Bool)
+internal typealias ConfigurationRuleWrapper = (rule: Rule, initializedWithNonEmptyConfiguration: Bool)

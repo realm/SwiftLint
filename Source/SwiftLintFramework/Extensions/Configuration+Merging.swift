@@ -6,7 +6,7 @@ import SourceKittenFramework
 
 extension Configuration {
     // MARK: - Methods: Merging
-    internal func merged(with childConfiguration: Configuration) -> Configuration {
+    internal func merged(withChild childConfiguration: Configuration) -> Configuration {
         let mergedIncludedAndExcluded = self.mergedIncludedAndExcluded(with: childConfiguration)
 
         return Configuration(
@@ -120,7 +120,7 @@ extension Configuration {
 
                 // Ignore parent_config / child_config specifications of nested configs
                 config = merged(
-                    with: Configuration(
+                    withChild: Configuration(
                         configurationFiles: [configurationSearchPath],
                         rootPath: fullDirectory,
                         optional: false,

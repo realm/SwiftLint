@@ -21,12 +21,28 @@ extension ProjectMock {
         return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
     }
 
+    var projectMockNestedPath: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("NestedConfig/Test")
+    }
+
+    var projectMockNestedSubPath: String {
+        return projectMockNestedPath.stringByAppendingPathComponent("Sub")
+    }
+
     var projectMockPathChildConfigValid1: String {
         return projectMockPathLevel0.stringByAppendingPathComponent("ChildConfig/Valid1")
     }
 
     var projectMockPathChildConfigValid2: String {
         return projectMockPathLevel0.stringByAppendingPathComponent("ChildConfig/Valid2")
+    }
+
+    var projectMockPathParentConfigValid1: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("ParentConfig/Valid1")
+    }
+
+    var projectMockPathParentConfigValid2: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("ParentConfig/Valid2")
     }
 
     var projectMockYAML0: String {
@@ -69,6 +85,22 @@ extension ProjectMock {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
     }
 
+    var projectMockNestedSwift: String {
+        return projectMockNestedPath.stringByAppendingPathComponent("Main.swift")
+    }
+
+    var projectMockNestedSubSwift: String {
+        return projectMockNestedSubPath.stringByAppendingPathComponent("Sub.swift")
+    }
+
+    var projectMockNestedYAML: String {
+        return projectMockNestedPath.stringByAppendingPathComponent(".swiftlint.yml")
+    }
+
+    var projectMockNestedSubYAML: String {
+        return projectMockNestedSubPath.stringByAppendingPathComponent(".swiftlint.yml")
+    }
+
     var projectMockConfig0: Configuration {
         return Configuration(configurationFiles: [projectMockYAML0], rootPath: projectMockPathLevel0,
                              optional: false, quiet: true)
@@ -101,5 +133,13 @@ extension ProjectMock {
     var projectMockConfig3: Configuration {
         return Configuration(configurationFiles: [Configuration.fileName], rootPath: projectMockPathLevel3,
                              optional: false, quiet: true)
+    }
+
+    var projectMockNestedConfig: Configuration {
+        return Configuration(configurationFiles: [projectMockNestedYAML], optional: false, quiet: true)
+    }
+
+    var projectMockNestedSubConfig: Configuration {
+        return Configuration(configurationFiles: [projectMockNestedSubYAML], optional: false, quiet: true)
     }
 }

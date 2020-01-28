@@ -7,5 +7,3 @@ excluded:
   - Test/Test2/Test
 
 line_length: 80
-
-child_config: child_config_child1.yml

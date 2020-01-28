@@ -53,10 +53,8 @@ class ConfigurationTests: XCTestCase, ProjectMock {
     func testEnableAllRulesConfiguration() {
         // swiftlint:disable:next force_try
         let configuration = try! Configuration(
-            dict: [:],
-            ruleList: masterRuleList,
-            enableAllRules: true,
-            cachePath: nil
+            dict: [:], ruleList: masterRuleList,
+            enableAllRules: true, cachePath: nil
         )
 
         XCTAssertEqual(configuration.rules.count, masterRuleList.list.count)
@@ -220,7 +218,9 @@ class ConfigurationTests: XCTestCase, ProjectMock {
             "Level2.swift",
             "Level3.swift",
             "Valid1.swift",
-            "Valid2.swift"
+            "Valid2.swift",
+            "Main.swift",
+            "Sub.swift"
         ]
 
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))

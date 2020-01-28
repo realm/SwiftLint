@@ -21,5 +21,3 @@ excluded:
 identifier_name:
   excluded:
     - id
-
-child_config: child_config_child1.yml

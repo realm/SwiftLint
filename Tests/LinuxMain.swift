@@ -33,12 +33,6 @@ extension BlockBasedKVORuleTests {
     ]
 }
 
-extension ChildConfigTests {
-    static var allTests: [(String, (ChildConfigTests) -> () throws -> Void)] = [
-        ("testValidChildConfig", testValidChildConfig)
-    ]
-}
-
 extension ClassDelegateProtocolRuleTests {
     static var allTests: [(String, (ClassDelegateProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -190,15 +184,19 @@ extension ConfigurationTests {
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
         ("testAllowZeroLintableFiles", testAllowZeroLintableFiles),
+        ("testValidChildConfig", testValidChildConfig),
+        ("testValidParentConfig", testValidParentConfig),
+        ("testCommandLineChildConfigs", testCommandLineChildConfigs),
         ("testMerge", testMerge),
-        ("testLevel0", testLevel0),
-        ("testLevel1", testLevel1),
-        ("testLevel2", testLevel2),
-        ("testLevel3", testLevel3),
-        ("testMergedWarningThreshold", testMergedWarningThreshold),
-        ("testNestedWhitelistedRules", testNestedWhitelistedRules),
-        ("testNestedConfigurationsWithCustomRulesMerge", testNestedConfigurationsWithCustomRulesMerge),
-        ("testNestedConfigurationAllowsDisablingParentsCustomRules", testNestedConfigurationAllowsDisablingParentsCustomRules)
+        ("testWarningThresholdMerging", testWarningThresholdMerging),
+        ("testWhitelistedRulesMerging", testWhitelistedRulesMerging),
+        ("testCustomRulesMerging", testCustomRulesMerging),
+        ("testMergingAllowsDisablingParentsCustomRules", testMergingAllowsDisablingParentsCustomRules),
+        ("testNestedConfigurationLevel0", testNestedConfigurationLevel0),
+        ("testNestedConfigurationLevel1", testNestedConfigurationLevel1),
+        ("testNestedConfigurationLevel2", testNestedConfigurationLevel2),
+        ("testNestedConfigurationLevel3", testNestedConfigurationLevel3),
+        ("testParentConfigIsIgnoredAsNestedConfiguration", testParentConfigIsIgnoredAsNestedConfiguration)
     ]
 }
 
@@ -1668,7 +1666,6 @@ XCTMain([
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
-    testCase(ChildConfigTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
     testCase(ClosureBodyLengthRuleTests.allTests),

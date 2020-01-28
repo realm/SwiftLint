@@ -61,27 +61,23 @@ internal extension Configuration {
         }
 
         private struct Edge: Hashable { // swiftlint:disable:this nesting
-            var type: EdgeType
-            var origin: Vertix!
-            var target: Vertix!
+            var parent: Vertix!
+            var child: Vertix!
 
             internal static func == (lhs: Edge, rhs: Edge) -> Bool {
-                return lhs.type == rhs.type &&
-                    lhs.origin == rhs.origin &&
-                    lhs.target == rhs.target
+                lhs.parent == rhs.parent &&
+                lhs.child == rhs.child
             }
 
             internal func hash(into hasher: inout Hasher) {
-                hasher.combine(type)
-                hasher.combine(origin)
-                hasher.combine(target)
+                hasher.combine(parent)
+                hasher.combine(child)
             }
         }
 
         private enum EdgeType: Hashable { // swiftlint:disable:this nesting
             case childConfig
             case parentConfig
-            case commandLineChildConfig
         }
 
         // MARK: - Properties
@@ -99,10 +95,9 @@ internal extension Configuration {
 
         // MARK: - Initializers
         internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
-            vertices = Set(commandLineChildConfigs.map { Vertix(string: $0, rootDirectory: rootDirectory) })
-            edges = Set(zip(vertices, vertices.dropFirst()).map {
-                Edge(type: .commandLineChildConfig, origin: $0.0, target: $0.1)
-            })
+            let verticesArray = commandLineChildConfigs.map { Vertix(string: $0, rootDirectory: rootDirectory) }
+            vertices = Set(verticesArray)
+            edges = Set(zip(verticesArray, verticesArray.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
 
             self.rootDirectory = rootDirectory
             self.ignoreParentAndChildConfigs = ignoreParentAndChildConfigs
@@ -188,12 +183,6 @@ internal extension Configuration {
             }
         }
 
-        private func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
-            return vertices.first {
-                $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
-            } ?? vertices.first { $0.filePath == vertix.filePath }
-        }
-
         private mutating func processPossibleReference(
             ofType type: EdgeType,
             from vertix: Vertix,
@@ -218,16 +207,11 @@ internal extension Configuration {
                 } else {
                     let existingVertix = findPossiblyExistingVertix(sameAs: referencedVertix)
 
-                    let edge: Edge
-                    switch type {
-                    case .childConfig, .commandLineChildConfig: // The latter should not happen
-                        edge = Edge(type: .childConfig, origin: vertix, target: existingVertix ?? referencedVertix)
-
-                    case .parentConfig:
-                        edge = Edge(type: .parentConfig, origin: existingVertix ?? referencedVertix, target: vertix)
-                    }
-
-                    edges.insert(edge)
+                    edges.insert(
+                        type == .childConfig
+                            ? Edge(parent: vertix, child: existingVertix ?? referencedVertix)
+                            : Edge(parent: existingVertix ?? referencedVertix, child: vertix)
+                    )
 
                     if existingVertix == nil {
                         vertices.insert(referencedVertix)
@@ -252,13 +236,19 @@ internal extension Configuration {
             }
         }
 
+        private func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
+            return vertices.first {
+                $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
+            } ?? vertices.first { $0.filePath == vertix.filePath }
+        }
+
         // MARK: Validating
         /// Validates the Graph and throws failures
         /// If successful, returns array of configuration dicts that represents the graph
         private func validate() throws -> [[String: Any]] {
             // Detect cycles via back-edge detection during DFS
             func walkDown(stack: [Vertix]) throws {
-                let neighbours = edges.filter { $0.origin == stack.last }.map { $0.target! }
+                let neighbours = edges.filter { $0.parent == stack.last }.map { $0.child! }
                 if stack.contains(where: neighbours.contains) {
                     throw ConfigurationError.generic("There's a cycle of child / parent config references. "
                         + "Please check the hierarchy of configuration files passed via the command line "
@@ -270,13 +260,13 @@ internal extension Configuration {
             try vertices.forEach { try walkDown(stack: [$0]) }
 
             // Detect ambiguities
-            if (edges.contains { edge in edges.filter { $0.origin == edge.origin }.count > 1 }) {
+            if (edges.contains { edge in edges.filter { $0.parent == edge.parent }.count > 1 }) {
                 throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
                     + "More than one parent is declared for a specific configuration, "
                     + "where there should only be exactly one.")
             }
 
-            if (edges.contains { edge in edges.filter { $0.target == edge.target }.count > 1 }) {
+            if (edges.contains { edge in edges.filter { $0.child == edge.child }.count > 1 }) {
                 throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
                     + "More than one child is declared for a specific configuration, "
                     + "where there should only be exactly one.")
@@ -284,7 +274,7 @@ internal extension Configuration {
 
             // The graph should be like an array if validation passed -> return that array
             guard
-                let startingVertix = (vertices.first { vertix in !edges.contains { $0.target == vertix } })
+                let startingVertix = (vertices.first { vertix in !edges.contains { $0.child == vertix } })
             else {
                 guard vertices.isEmpty else {
                     throw ConfigurationError.generic("Unknown Configuration Error")
@@ -294,7 +284,7 @@ internal extension Configuration {
             }
 
             var verticesToMerge = [startingVertix]
-            while let vertix = (edges.first { $0.origin == verticesToMerge.last }?.target) {
+            while let vertix = (edges.first { $0.parent == verticesToMerge.last }?.child) {
                 guard !verticesToMerge.contains(vertix) else {
                     // This shouldn't happen on a cycle free graph but let's safeguard
                     throw ConfigurationError.generic("Unknown Configuration Error")
@@ -315,7 +305,7 @@ internal extension Configuration {
             let configurationDicts = Array(configurationDicts.dropFirst())
             let firstConfiguration = try Configuration(dict: firstConfigurationDict, enableAllRules: enableAllRules)
             return try configurationDicts.reduce(firstConfiguration) {
-                $0.merged(with: try Configuration(dict: $1, enableAllRules: enableAllRules))
+                $0.merged(withChild: try Configuration(dict: $1, enableAllRules: enableAllRules))
             }
         }
     }

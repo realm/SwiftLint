@@ -6,4 +6,4 @@ excluded:
   - Test/Test1/Test/Test
   - Test/Test2/Test/Test
 
-child_config: child_config_sub2.yml
+child_config: child_config_child2.yml

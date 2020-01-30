@@ -27,7 +27,13 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             "func foo(_ notif: Any) {\n" +
             "   obs.append(notif)\n" +
             "}\n" +
-            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"
+            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
+            """
+            var obs: [NSObjectProtocol] = [
+               nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }),
+               nc.addObserver(forName: .CKAccountChanged, object: nil, queue: nil, using: { })
+            ]
+            """
         ],
         triggeringExamples: [
             "↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
@@ -75,6 +81,11 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             lastMatch.location == range.length - lastMatch.length,
             let lastFunction = file.structureDictionary.functions(forByteOffset: offset).last,
             !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
+            return []
+        }
+
+        let kinds = file.structureDictionary.kinds(forByteOffset: offset)
+        if kinds.count >= 2 && SwiftExpressionKind(rawValue: kinds[kinds.count - 2].0) == .array {
             return []
         }
 

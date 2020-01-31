@@ -21,7 +21,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix `discarded_notification_center_observer` false positives when
+  capturing observers into an array.  
+  [Petteri Huusko](https://github.com/PetteriHuusko)
 
 ## 0.38.2: Machine Repair Manual
 
@@ -84,10 +86,6 @@
   containing `@testable` imports where more than the unused imports would be
   removed.  
   [JP Simard](https://github.com/jpsim)
-
-* Fix discarded_notification_center_observer false positives
-  when capturing observers into an array
-  [Petteri Huusko](https://github.com/PetteriHuusko)
 
 ## 0.38.1: Extra Shiny Pulsator Cap
 

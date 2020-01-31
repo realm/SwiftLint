@@ -124,7 +124,7 @@ public struct Command: Equatable {
             let startOfCommentPastDelimiter = scanner.scanLocation + Command.commentDelimiter.count
             trailingComment = scanner.string.bridge().substring(from: startOfCommentPastDelimiter)
         }
-        let ruleTexts = rawRuleTexts.components(separatedBy: .whitespaces).filter {
+        let ruleTexts = rawRuleTexts.components(separatedBy: .whitespacesAndNewlines).filter {
             let component = $0.trimmingCharacters(in: .whitespaces)
             return !component.isEmpty && component != "*/"
         }

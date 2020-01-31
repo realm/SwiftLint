@@ -25,6 +25,10 @@
   capturing observers into an array.  
   [Petteri Huusko](https://github.com/PetteriHuusko)
 
+* Fix false positives when line ends with carriage return + line feed
+  [John Mueller](https://github.com/john-mueller)
+  [#3060](https://github.com/realm/SwiftLint/issues/3060)
+
 ## 0.38.2: Machine Repair Manual
 
 #### Breaking

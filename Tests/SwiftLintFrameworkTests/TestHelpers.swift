@@ -30,7 +30,7 @@ let allRuleIdentifiers = Array(masterRuleList.list.keys)
 func violations(_ example: Example, config: Configuration = Configuration()!,
                 requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
-    let stringStrippingMarkers = example.with(code: example.code.replacingOccurrences(of: violationMarker, with: ""))
+    let stringStrippingMarkers = example.removingViolationMarkers()
     guard requiresFileOnDisk else {
         let file = SwiftLintFile(contents: stringStrippingMarkers.code)
         let storage = RuleStorage()

@@ -3,6 +3,8 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length
+
 private let violationMarker = "↓"
 
 private extension SwiftLintFile {
@@ -162,6 +164,7 @@ private func render(locations: [Location], in contents: String) -> String {
 }
 
 private extension Configuration {
+    // swiftlint:disable:next function_body_length
     func assertCorrection(_ before: Example, expected: Example) {
         let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before.code)
         let file = SwiftLintFile.temporary(withContents: cleanedBefore)
@@ -368,6 +371,7 @@ extension XCTestCase {
         }
     }
 
+    // swiftlint:disable:next function_body_length
     private func verifyExamples(triggers: [Example], nonTriggers: [Example],
                                 configuration config: Configuration, requiresFileOnDisk: Bool,
                                 file callSiteFile: StaticString = #file,

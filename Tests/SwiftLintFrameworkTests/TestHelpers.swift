@@ -113,7 +113,7 @@ extension Collection where Element == Example {
     ///
     /// - returns: A new `Array`.
     func removingViolationMarkers() -> [Element] {
-        map { $0.removingViolationMarkers() }
+        return map { $0.removingViolationMarkers() }
     }
 }
 
@@ -232,11 +232,11 @@ private func testCorrection(_ correction: (Example, Example),
 }
 
 private func addEmoji(_ example: Example) -> Example {
-    example.with(code: "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(example.code)")
+    return example.with(code: "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(example.code)")
 }
 
 private func addShebang(_ example: Example) -> Example {
-    example.with(code: "#!/usr/bin/env swift\n\(example.code)")
+    return example.with(code: "#!/usr/bin/env swift\n\(example.code)")
 }
 
 extension XCTestCase {

@@ -10,7 +10,7 @@ private func funcWithBody(_ body: String,
 }
 
 private func violatingFuncWithBody(_ body: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    funcWithBody(body, violates: true, file: file, line: line)
+    return funcWithBody(body, violates: true, file: file, line: line)
 }
 
 class FunctionBodyLengthRuleTests: XCTestCase {

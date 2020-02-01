@@ -24,7 +24,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
             [
                1,
                2
-            "]
+            ]
             """),
             Example("""
             [

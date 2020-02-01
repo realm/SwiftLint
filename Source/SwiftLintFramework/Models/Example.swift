@@ -1,22 +1,34 @@
 /// Captures code and context information for an example of a triggering or
 /// non-triggering style
 public struct Example {
+    /// The contents of the example
     public var code: String
 
     // file and line are optional because we need to conform to
     // Codable, and StaticString isn't Codable, so we just ignore
     // them in Codable contexts.
+    /// The path to the file where the example was created
     public var file: StaticString?
+    /// The line in the file where the example was created
     public var line: UInt?
 }
 
 public extension Example {
+    /// Create a new Example with the specified code, file, and line
+    /// - Parameters:
+    ///   - code: The contents of the example
+    ///   - file: The path to the file where the example is located.
+    ///           Defaults to the file where this initializer is called.
+    ///   - line: The line in the file where the example is located.
+    ///           Defaults to the line where this initializer is called.
     init(_ code: String, file: StaticString = #file, line: UInt = #line) {
         self.code = code
         self.file = file
         self.line = line
     }
 
+    /// Retunrs the same example, but with the `code` that is passed in
+    /// - Parameter code: the new code to use in the modified example
     func with(code: String) -> Example {
         var new = self
         new.code = code

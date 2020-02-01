@@ -55,27 +55,6 @@ extension Example: Hashable {
     }
 }
 
-extension Example: Codable {
-    private enum CodingKeys: CodingKey {
-        case code
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-
-        // Can't encode/decode StaticString, but we don't need codable support
-        // for this type in contexts where we are encoding and decoding anyway,
-        // so let them stay as nil.
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(code, forKey: .code)
-        // We don't care about encoding the file and line.
-    }
-}
-
 extension Example: Comparable {
     public static func < (lhs: Example, rhs: Example) -> Bool {
         return lhs.code < rhs.code

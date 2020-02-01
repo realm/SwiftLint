@@ -23,9 +23,9 @@ public struct XcodeReporter: Reporter {
         return [
             "\(violation.location): ",
             "\(violation.severity.rawValue): ",
-            "\(violation.ruleDescription.name) Violation: ",
+            "\(violation.ruleName) Violation: ",
             violation.reason,
-            " (\(violation.ruleDescription.identifier))"
+            " (\(violation.ruleIdentifier))"
         ].joined()
     }
 }

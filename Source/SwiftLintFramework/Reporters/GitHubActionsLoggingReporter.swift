@@ -25,7 +25,7 @@ public struct GitHubActionsLoggingReporter: Reporter {
             "line=\(violation.location.line ?? 1),",
             "col=\(violation.location.character ?? 1)::",
             violation.reason,
-            " (\(violation.ruleDescription.identifier))"
+            " (\(violation.ruleIdentifier))"
         ].joined()
     }
 }

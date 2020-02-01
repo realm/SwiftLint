@@ -34,9 +34,9 @@ public struct CSVReporter: Reporter {
             violation.location.line?.description ?? "",
             violation.location.character?.description ?? "",
             violation.severity.rawValue.capitalized,
-            violation.ruleDescription.name.escapedForCSV(),
+            violation.ruleName.escapedForCSV(),
             violation.reason.escapedForCSV(),
-            violation.ruleDescription.identifier
+            violation.ruleIdentifier
         ].joined(separator: ",")
     }
 }

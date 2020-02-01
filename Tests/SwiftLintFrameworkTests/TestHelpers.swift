@@ -92,8 +92,9 @@ private extension Collection where Element == StyleViolation {
         return map { violation in
             let locationWithoutFile = Location(file: nil, line: violation.location.line,
                                                character: violation.location.character)
-            return StyleViolation(ruleDescription: violation.ruleDescription, severity: violation.severity,
-                                  location: locationWithoutFile, reason: violation.reason)
+            var new = violation
+            new.location = locationWithoutFile
+            return new
         }
     }
 }
@@ -137,9 +138,9 @@ private func render(violations: [StyleViolation], in contents: String) -> String
 
         let message = String(repeating: " ", count: character - 1) + "^ " + [
             "\(violation.severity.rawValue): ",
-            "\(violation.ruleDescription.name) Violation: ",
+            "\(violation.ruleName) Violation: ",
             violation.reason,
-            " (\(violation.ruleDescription.identifier))"].joined()
+            " (\(violation.ruleIdentifier))"].joined()
         if line >= contents.count {
             contents.append(message)
         } else {

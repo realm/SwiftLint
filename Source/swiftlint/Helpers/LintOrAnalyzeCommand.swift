@@ -114,10 +114,9 @@ struct LintOrAnalyzeCommand {
         }
         return violations.map {
             if $0.severity == .error {
-                return StyleViolation(ruleDescription: $0.ruleDescription,
-                                      severity: .warning,
-                                      location: $0.location,
-                                      reason: $0.reason)
+                var new = $0
+                new.severity = .warning
+                return new
             } else {
                 return $0
             }

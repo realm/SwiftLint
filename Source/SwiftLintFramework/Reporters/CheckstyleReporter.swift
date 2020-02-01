@@ -36,7 +36,7 @@ public struct CheckstyleReporter: Reporter {
         let col: Int = violation.location.character ?? 0
         let severity: String = violation.severity.rawValue
         let reason: String = violation.reason.escapedForXML()
-        let identifier: String = violation.ruleDescription.identifier
+        let identifier: String = violation.ruleIdentifier
         let source: String = "swiftlint.rules.\(identifier)".escapedForXML()
         return [
             "\t\t<error line=\"\(line)\" ",

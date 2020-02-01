@@ -105,6 +105,7 @@
 		584B0D3C2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json in Resources */ = {isa = PBXBuildFile; fileRef = 584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */; };
 		5B1701BA23CEB00000CC7079 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1701B823CEAF8C00CC7079 /* ExampleTests.swift */; };
 		5B3BEC3A23CCCC5D00DE5BEE /* Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B3BEC3923CCCC5D00DE5BEE /* Example.swift */; };
+		5BD08DCC23D254BF000B9CE6 /* ImplicitGetterRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD08DCA23D2549F000B9CE6 /* ImplicitGetterRuleExamples.swift */; };
 		621061BF1ED57E640082D51E /* MultilineParametersRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */; };
 		621C8EA420CBC7A10007DA74 /* RedundantTypeAnnotationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6208ED4E20C297AC004E78D1 /* RedundantTypeAnnotationRule.swift */; };
 		622AD800216ACE6300A002C6 /* XCTSpecificMatcherRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622AD7FE216ACE6200A002C6 /* XCTSpecificMatcherRuleExamples.swift */; };
@@ -610,6 +611,7 @@
 		584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CannedSonarQubeReporterOutput.json; sourceTree = "<group>"; };
 		5B1701B823CEAF8C00CC7079 /* ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleTests.swift; sourceTree = "<group>"; };
 		5B3BEC3923CCCC5D00DE5BEE /* Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example.swift; sourceTree = "<group>"; };
+		5BD08DCA23D2549F000B9CE6 /* ImplicitGetterRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplicitGetterRuleExamples.swift; sourceTree = "<group>"; };
 		6208ED4E20C297AC004E78D1 /* RedundantTypeAnnotationRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantTypeAnnotationRule.swift; sourceTree = "<group>"; };
 		621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRuleExamples.swift; sourceTree = "<group>"; };
 		622AD7FE216ACE6200A002C6 /* XCTSpecificMatcherRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTSpecificMatcherRuleExamples.swift; sourceTree = "<group>"; };
@@ -1242,6 +1244,7 @@
 				E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */,
 				D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */,
 				D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */,
+				5BD08DCA23D2549F000B9CE6 /* ImplicitGetterRuleExamples.swift */,
 				D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */,
 				B1FD3ABE238BC6D400CE121E /* ImplicitReturnRuleExamples.swift */,
 				CC6D28572292EF460052B682 /* IndentationWidthRule.swift */,
@@ -2115,6 +2118,7 @@
 				E315B83C1DFA4BC500621B44 /* DynamicInlineRule.swift in Sources */,
 				125AAC78203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift in Sources */,
 				1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */,
+				5BD08DCC23D254BF000B9CE6 /* ImplicitGetterRuleExamples.swift in Sources */,
 				D42D2B381E09CC0D00CD7A2E /* FirstWhereRule.swift in Sources */,
 				550DA0E022DB95AD00B67F03 /* EmptyCollectionLiteralRule.swift in Sources */,
 				D4B0226F1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift in Sources */,

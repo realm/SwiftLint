@@ -140,11 +140,16 @@ struct RedundantObjcAttributeRuleExamples {
     ]
 
     static let corrections = [
-        Example("↓@objc @IBInspectable private var foo: String? {}"): Example("@IBInspectable private var foo: String? {}"),
-        Example("@IBInspectable ↓@objc private var foo: String? {}"): Example("@IBInspectable private var foo: String? {}"),
-        Example("@IBAction ↓@objc private func foo(_ sender: Any) {}"): Example("@IBAction private func foo(_ sender: Any) {}"),
-        Example("↓@objc @GKInspectable private var foo: String! {}"): Example("@GKInspectable private var foo: String! {}"),
-        Example("@GKInspectable ↓@objc private var foo: String! {}"): Example("@GKInspectable private var foo: String! {}"),
+        Example("↓@objc @IBInspectable private var foo: String? {}"):
+            Example("@IBInspectable private var foo: String? {}"),
+        Example("@IBInspectable ↓@objc private var foo: String? {}"):
+            Example("@IBInspectable private var foo: String? {}"),
+        Example("@IBAction ↓@objc private func foo(_ sender: Any) {}"):
+            Example("@IBAction private func foo(_ sender: Any) {}"),
+        Example("↓@objc @GKInspectable private var foo: String! {}"):
+            Example("@GKInspectable private var foo: String! {}"),
+        Example("@GKInspectable ↓@objc private var foo: String! {}"):
+            Example("@GKInspectable private var foo: String! {}"),
         Example("↓@objc @NSManaged private var foo: String!"): Example("@NSManaged private var foo: String!"),
         Example("@NSManaged ↓@objc private var foo: String!"): Example("@NSManaged private var foo: String!"),
         Example("↓@objc @IBDesignable class Foo {}"): Example("@IBDesignable class Foo {}"),

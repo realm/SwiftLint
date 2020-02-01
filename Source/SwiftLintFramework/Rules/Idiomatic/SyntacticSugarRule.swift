@@ -61,7 +61,8 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
             Example("let x: ImplicitlyUnwrappedOptional<Int>"): Example("let x: Int!"),
             Example("let x: ImplicitlyUnwrappedOptional< Int >"): Example("let x: Int!"),
             Example("func x(a: Array<Int>, b: Int) -> [Int: Any]"): Example("func x(a: [Int], b: Int) -> [Int: Any]"),
-            Example("func x(a: [Int], b: Int) -> Dictionary<Int, String>"): Example("func x(a: [Int], b: Int) -> [Int: String]"),
+            Example("func x(a: [Int], b: Int) -> Dictionary<Int, String>"):
+                Example("func x(a: [Int], b: Int) -> [Int: String]"),
             Example("let x = Array<String>.array(of: object)"): Example("let x = [String].array(of: object)"),
             Example("let x: Swift.Optional<String>"): Example("let x: String?")
         ]

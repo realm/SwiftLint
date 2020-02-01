@@ -14,12 +14,33 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
             Example("class FooTests: XCTestCase {  }\n")
         ],
         triggeringExamples: [
-            Example("↓class FooTests: QuickSpec {  }\n↓class BarTests: QuickSpec {  }\n"),
-            Example("↓class FooTests: QuickSpec {  }\n↓class BarTests: QuickSpec {  }\n↓class TotoTests: QuickSpec {  }\n"),
-            Example("↓class FooTests: XCTestCase {  }\n↓class BarTests: XCTestCase {  }\n"),
-            Example("↓class FooTests: XCTestCase {  }\n↓class BarTests: XCTestCase {  }\n↓class TotoTests: XCTestCase {  }\n"),
-            Example("↓class FooTests: QuickSpec {  }\n↓class BarTests: XCTestCase {  }\n"),
-            Example("↓class FooTests: QuickSpec {  }\n↓class BarTests: XCTestCase {  }\nclass TotoTests {  }\n")
+            Example("""
+            ↓class FooTests: QuickSpec {  }
+            ↓class BarTests: QuickSpec {  }
+            """),
+            Example("""
+            ↓class FooTests: QuickSpec {  }
+            ↓class BarTests: QuickSpec {  }
+            ↓class TotoTests: QuickSpec {  }
+            """),
+            Example("""
+            ↓class FooTests: XCTestCase {  }
+            ↓class BarTests: XCTestCase {  }
+            """),
+            Example("""
+            ↓class FooTests: XCTestCase {  }
+            ↓class BarTests: XCTestCase {  }
+            ↓class TotoTests: XCTestCase {  }
+            """),
+            Example("""
+            ↓class FooTests: QuickSpec {  }
+            ↓class BarTests: XCTestCase {  }
+            """),
+            Example("""
+            ↓class FooTests: QuickSpec {  }
+            ↓class BarTests: XCTestCase {  }
+            class TotoTests {  }
+            """)
         ]
     )
 

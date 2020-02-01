@@ -35,6 +35,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 Example("num \(operation) num!.byteSwapped")
             ]
         } + [
+            // swiftlint:disable:next line_length
             Example("func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>"),
             Example("let array = Array<Array<Int>>()"),
             Example("guard Set(identifiers).count != identifiers.count else { return }"),

@@ -1,7 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
-private func wrapInSwitch(variable: String = "foo", _ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
+private func wrapInSwitch(
+    variable: String = "foo",
+    _ str: String,
+    file: StaticString = #file, line: UInt = #line) -> Example {
     return Example(
         """
         switch \(variable) {

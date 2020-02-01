@@ -26,7 +26,12 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             Example("class C {\n\t@objc\n\tfunc a() {}\n}"),
             Example("class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}\n"),
             Example("@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0\n"),
-            Example("// swiftlint:disable superfluous_disable_command\n// swiftlint:disable force_cast\n\nlet x = bar as! Bar"),
+            Example("""
+            // swiftlint:disable superfluous_disable_command
+            // swiftlint:disable force_cast
+
+            let x = bar as! Bar
+            """),
             Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n") // don't trigger on local vars
         ],
         triggeringExamples: [

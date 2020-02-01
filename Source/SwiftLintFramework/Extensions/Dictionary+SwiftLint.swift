@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 /// A collection of keys and values as parsed out of SourceKit, with many conveniences for accessing SwiftLint-specific

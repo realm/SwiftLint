@@ -48,7 +48,7 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("XCTAssertEqual(foo?.bar, toto())"),
         Example("XCTAssertEqual(foo?.bar, .toto(.zoo))"),
         Example("XCTAssertEqual(toto(), foo?.bar)"),
-        "XCTAssertEqual(.toto(.zoo), foo?.bar)"
+        Example("XCTAssertEqual(.toto(.zoo), foo?.bar)")
     ]
 
     static let triggeringExamples = [

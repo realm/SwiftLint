@@ -15,27 +15,27 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         kind: .lint,
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
-            "@available(iOS 12.0, *)\nclass A {}",
-            "@available(watchOS 4.0, *)\nclass A {}",
-            "@available(swift 3.0.2)\nclass A {}",
-            "class A {}",
-            "if #available(iOS 10.0, *) {}",
-            "if #available(iOS 10, *) {}",
-            "guard #available(iOS 12.0, *) else { return }"
+            Example("@available(iOS 12.0, *)\nclass A {}"),
+            Example("@available(watchOS 4.0, *)\nclass A {}"),
+            Example("@available(swift 3.0.2)\nclass A {}"),
+            Example("class A {}"),
+            Example("if #available(iOS 10.0, *) {}"),
+            Example("if #available(iOS 10, *) {}"),
+            Example("guard #available(iOS 12.0, *) else { return }")
         ],
         triggeringExamples: [
-            "↓@available(iOS 6.0, *)\nclass A {}",
-            "↓@available(iOS 7.0, *)\nclass A {}",
-            "↓@available(iOS 6, *)\nclass A {}",
-            "↓@available(iOS 6.0, macOS 10.12, *)\n class A {}",
-            "↓@available(macOS 10.12, iOS 6.0, *)\n class A {}",
-            "↓@available(macOS 10.7, *)\nclass A {}",
-            "↓@available(OSX 10.7, *)\nclass A {}",
-            "↓@available(watchOS 0.9, *)\nclass A {}",
-            "↓@available(tvOS 8, *)\nclass A {}",
-            "if ↓#available(iOS 6.0, *) {}",
-            "if ↓#available(iOS 6, *) {}",
-            "guard ↓#available(iOS 6.0, *) else { return }"
+            Example("↓@available(iOS 6.0, *)\nclass A {}"),
+            Example("↓@available(iOS 7.0, *)\nclass A {}"),
+            Example("↓@available(iOS 6, *)\nclass A {}"),
+            Example("↓@available(iOS 6.0, macOS 10.12, *)\n class A {}"),
+            Example("↓@available(macOS 10.12, iOS 6.0, *)\n class A {}"),
+            Example("↓@available(macOS 10.7, *)\nclass A {}"),
+            Example("↓@available(OSX 10.7, *)\nclass A {}"),
+            Example("↓@available(watchOS 0.9, *)\nclass A {}"),
+            Example("↓@available(tvOS 8, *)\nclass A {}"),
+            Example("if ↓#available(iOS 6.0, *) {}"),
+            Example("if ↓#available(iOS 6, *) {}"),
+            Example("guard ↓#available(iOS 6.0, *) else { return }")
         ]
     )
 

@@ -13,38 +13,38 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
         kind: .lint,
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
-            """
+            Example("""
             /// My great property
             var myGreatProperty: String!
-            """,
-            """
+            """),
+            Example("""
             //////////////////////////////////////
             //
             // Copyright header.
             //
             //////////////////////////////////////
-            """,
-            """
+            """),
+            Example("""
             /// Look here for more info: https://github.com.
             var myGreatProperty: String!
-            """,
-            """
+            """),
+            Example("""
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             ↓/// My great property
             // Not a doc string
             var myGreatProperty: String!
-            """,
-            """
+            """),
+            Example("""
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
-            """
+            """)
         ]
     )
 

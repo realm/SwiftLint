@@ -11,76 +11,76 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
         description: "`where` clauses are preferred over a single `if` inside a `for`.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             for user in users where user.id == 1 { }
-            """,
+            """),
             // if let
-            """
+            Example("""
             for user in users {
               if let id = user.id { }
             }
-            """,
+            """),
             // if var
-            """
+            Example("""
             for user in users {
               if var id = user.id { }
             }
-            """,
+            """),
             // if with else
-            """
+            Example("""
             for user in users {
               if user.id == 1 { } else { }
             }
-            """,
+            """),
             // if with else if
-            """
+            Example("""
             for user in users {
               if user.id == 1 {
               } else if user.id == 2 { }
             }
-            """,
+            """),
             // if is not the only expression inside for
-            """
+            Example("""
             for user in users {
               if user.id == 1 { }
               print(user)
             }
-            """,
+            """),
             // if a variable is used
-            """
+            Example("""
             for user in users {
               let id = user.id
               if id == 1 { }
             }
-            """,
+            """),
             // if something is after if
-            """
+            Example("""
             for user in users {
               if user.id == 1 { }
               return true
             }
-            """,
+            """),
             // condition with multiple clauses
-            """
+            Example("""
             for user in users {
               if user.id == 1 && user.age > 18 { }
             }
-            """,
+            """),
             // if case
-            """
+            Example("""
             for (index, value) in array.enumerated() {
               if case .valueB(_) = value {
                 return index
               }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             for user in users {
               ↓if user.id == 1 { return true }
             }
-            """
+            """)
         ]
     )
 

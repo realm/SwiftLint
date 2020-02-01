@@ -14,125 +14,125 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
         kind: .style,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: [
-            """
+            Example("""
             switch foo {
              case .bar: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case (.bar, .baz): break
              case (.bar, _): break
              case (_, .baz): break
              default: break
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             switch foo {
              case .bar↓?: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case Foo.bar↓?: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case .bar↓?, .baz↓?: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case (.bar↓?, .baz↓?): break
              case (.bar↓?, _): break
              case (_, .bar↓?): break
              default: break
             }
-            """
+            """)
         ],
         corrections: [
-            """
+            Example("""
             switch foo {
              case .bar↓?: break
              case .baz: break
              default: break
             }
-            """: """
+            """): Example("""
             switch foo {
              case .bar: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case Foo.bar↓?: break
              case .baz: break
              default: break
             }
-            """: """
+            """): Example("""
             switch foo {
              case Foo.bar: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case .bar↓?, .baz↓?: break
              default: break
             }
-            """: """
+            """): Example("""
             switch foo {
              case .bar, .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
              default: break
             }
-            """: """
+            """): Example("""
             switch foo {
              case .bar where x > 1: break
              case .baz: break
              default: break
             }
-            """,
-            """
+            """),
+            Example("""
             switch foo {
              case (.bar↓?, .baz↓?): break
              case (.bar↓?, _): break
              case (_, .bar↓?): break
              default: break
             }
-            """: """
+            """): Example("""
             switch foo {
              case (.bar, .baz): break
              case (.bar, _): break
              case (_, .bar): break
              default: break
             }
-            """
+            """)
         ]
     )
 

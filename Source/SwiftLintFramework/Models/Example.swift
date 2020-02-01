@@ -22,6 +22,7 @@ public extension Example {
         return new
     }
 
+    /// Returns a copy of the Example with all instances of the "↓" character removed.
     func removingViolationMarkers() -> Example {
         return with(code: code.replacingOccurrences(of: "↓", with: ""))
     }

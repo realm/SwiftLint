@@ -16,6 +16,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(violatingPhrase).count,
                 1,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -29,6 +30,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(protectedPhrase).count,
                 0,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -46,6 +48,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
                 1,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -60,6 +63,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(protectedPhrase).count,
                 0,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -77,6 +81,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
                 1,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -90,6 +95,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(protectedPhrase).count,
                 0,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -107,6 +113,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
                 1,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -121,6 +128,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(protectedPhrase).count,
                 0,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }
@@ -139,6 +147,7 @@ class DisableAllTests: XCTestCase {
             XCTAssertEqual(
                 violations(unprotectedPhrase).count,
                 1,
+                #function,
                 file: violatingPhrase.file ?? #file,
                 line: violatingPhrase.line ?? #line)
         }

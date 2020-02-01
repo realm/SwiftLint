@@ -4,6 +4,7 @@ import SourceKittenFramework
 import XCTest
 
 // swiftlint:disable type_body_length - Disable the rule and self-test commenting a command
+// swiftlint:disable file_length - Disable the rule and self-test commenting a command
 
 private extension Command {
     init?(string: String) {
@@ -237,41 +238,45 @@ class CommandTests: XCTestCase {
 
     func testSuperfluousDisableCommands() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n"))[0].ruleIdentifier,
+            TestHelpers.violations(Example("// swiftlint:disable nesting\nprint(123)\n"))[0]
+                .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"))[0].ruleIdentifier,
+            TestHelpers.violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"))[0]
+                .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting\n"))[0].ruleIdentifier,
+            TestHelpers.violations(Example("print(123) // swiftlint:disable:this nesting\n"))[0]
+                .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"))[0].ruleIdentifier,
+            TestHelpers.violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"))[0]
+                .ruleIdentifier,
             "superfluous_disable_command"
         )
     }
 
     func testDisableAllOverridesSuperfluousDisableCommand() {
         XCTAssert(
-            violations(
+            TestHelpers.violations(
                 Example("//swiftlint:disable all\n// swiftlint:disable nesting\nprint(123)\n")
             ).isEmpty
         )
         XCTAssert(
-            violations(
+            TestHelpers.violations(
                 Example("//swiftlint:disable all\n// swiftlint:disable:next nesting\nprint(123)\n")
             ).isEmpty
         )
         XCTAssert(
-            violations(
+            TestHelpers.violations(
                 Example("//swiftlint:disable all\n// swiftlint:disable:this nesting\nprint(123)\n")
             ).isEmpty
         )
         XCTAssert(
-            violations(
+            TestHelpers.violations(
                 Example("//swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n")
             ).isEmpty
         )
@@ -280,22 +285,22 @@ class CommandTests: XCTestCase {
     func testSuperfluousDisableCommandsIgnoreDelimiter() {
         let longComment = "Comment with a large number of words that shouldn't register as superfluous"
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n"))[0]
+            TestHelpers.violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting - Comment\nprint(123)\n"))[0]
+            TestHelpers.violations(Example("// swiftlint:disable:next nesting - Comment\nprint(123)\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting - Comment\n"))[0]
+            TestHelpers.violations(Example("print(123) // swiftlint:disable:this nesting - Comment\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting - Comment\n"))[0]
+            TestHelpers.violations(Example("print(123)\n// swiftlint:disable:previous nesting - Comment\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
@@ -303,70 +308,76 @@ class CommandTests: XCTestCase {
 
     func testInvalidDisableCommands() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting_foo\nprint(123)\n"))[0]
+            TestHelpers.violations(Example("// swiftlint:disable nesting_foo\nprint(123)\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n"))[0]
+            TestHelpers.violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting_foo\n"))[0]
+            TestHelpers.violations(Example("print(123) // swiftlint:disable:this nesting_foo\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0]
+            TestHelpers.violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0]
                 .ruleIdentifier,
             "superfluous_disable_command"
         )
 
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo \n")).count,
+            TestHelpers.violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo \n")).count,
             1
         )
 
-        let multipleViolations = violations(Example("// swiftlint:disable nesting this is a comment\n"))
+        let multipleViolations = TestHelpers.violations(Example("// swiftlint:disable nesting this is a comment\n"))
         XCTAssertEqual(multipleViolations.count, 5)
         XCTAssertTrue(multipleViolations.allSatisfy { $0.ruleIdentifier == "superfluous_disable_command" })
 
-        let onlyNonExistentRulesViolations = violations(Example("// swiftlint:disable this is a comment\n"))
+        let onlyNonExistentRulesViolations = TestHelpers.violations(Example("// swiftlint:disable this is a comment\n"))
         XCTAssertEqual(onlyNonExistentRulesViolations.count, 4)
         XCTAssertTrue(onlyNonExistentRulesViolations.allSatisfy {
             $0.ruleIdentifier == "superfluous_disable_command"
         })
 
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,
+            TestHelpers.violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,
             "'nesting_foo' is not a valid SwiftLint rule. Please remove it from the disable command."
         )
 
-        XCTAssertEqual(violations(Example("/* swiftlint:disable nesting */\n")).count, 1)
+        XCTAssertEqual(TestHelpers.violations(Example("/* swiftlint:disable nesting */\n")).count, 1)
     }
 
     func testSuperfluousDisableCommandsDisabled() {
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command nesting\nprint(123)\n")),
+            TestHelpers.violations(Example("// swiftlint:disable superfluous_disable_command nesting\nprint(123)\n")),
             []
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command\n" +
+            TestHelpers.violations(Example("// swiftlint:disable superfluous_disable_command\n" +
                        "// swiftlint:disable nesting\n" +
                        "print(123)\n")),
             []
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")),
+            TestHelpers.violations(
+                Example("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")
+            ),
             []
         )
         XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this superfluous_disable_command nesting\n")),
+            TestHelpers.violations(
+                Example("print(123) // swiftlint:disable:this superfluous_disable_command nesting\n")
+            ),
             []
         )
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous superfluous_disable_command nesting\n")),
+            TestHelpers.violations(
+                Example("print(123)\n// swiftlint:disable:previous superfluous_disable_command nesting\n")
+            ),
             []
         )
     }
@@ -379,19 +390,21 @@ class CommandTests: XCTestCase {
         }
 
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n"), config: configuration),
+            TestHelpers.violations(Example("// swiftlint:disable nesting\nprint(123)\n"), config: configuration),
             []
         )
         XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration),
+            TestHelpers.violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration),
             []
         )
         XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting\n"), config: configuration),
+            TestHelpers.violations(Example("print(123) // swiftlint:disable:this nesting\n"), config: configuration),
             []
         )
         XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"), config: configuration),
+            TestHelpers.violations(
+                Example("print(123)\n// swiftlint:disable:previous nesting\n"), config: configuration
+            ),
             []
         )
     }

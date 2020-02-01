@@ -174,12 +174,12 @@ class IndentationWidthRuleTests: XCTestCase {
         if let indentationWidth = indentationWidth { configDict["indentation_width"] = indentationWidth }
         if let includeComments = includeComments { configDict["include_comments"] = includeComments }
 
-        guard let config = makeConfig(configDict, IndentationWidthRule.description.identifier) else {
+        guard let config = TestHelpers.makeConfig(configDict, IndentationWidthRule.description.identifier) else {
             XCTFail("Unable to create rule configuration.", file: file, line: line)
             return 0
         }
 
-        return violations(example.with(code: example.code + "\n"), config: config).count
+        return TestHelpers.violations(example.with(code: example.code + "\n"), config: config).count
     }
 
     private func assertViolations(

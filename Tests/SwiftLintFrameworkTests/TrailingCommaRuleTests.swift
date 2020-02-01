@@ -82,7 +82,7 @@ class TrailingCommaRuleTests: XCTestCase {
     }
 
     private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
-        let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
-        return violations(example, config: config)
+        let config = TestHelpers.makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
+        return TestHelpers.violations(example, config: config)
     }
 }

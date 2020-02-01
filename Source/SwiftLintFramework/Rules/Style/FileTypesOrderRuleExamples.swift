@@ -60,18 +60,10 @@ internal struct FileTypesOrderRuleExamples {
             // Life-Cycle Methods
             override func viewDidLoad() {
                 super.viewDidLoad()
-
-                view1.setNeedsLayout()
-                view1.layoutIfNeeded()
-                hasLayoutedView1 = true
             }
 
             override func viewDidLayoutSubviews() {
                 super.viewDidLayoutSubviews()
-
-                view2.setNeedsLayout()
-                view2.layoutIfNeeded()
-                hasLayoutedView2 = true
             }
 
             // IBActions
@@ -115,10 +107,6 @@ internal struct FileTypesOrderRuleExamples {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                 return 1
             }
-
-            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                return UITableViewCell()
-            }
         }
         """
     ]
@@ -129,6 +117,17 @@ internal struct FileTypesOrderRuleExamples {
         // Only extensions
         extension Foo {}
         extension Bar {
+        }
+        """),
+        Example("""
+        struct ContentView: View {
+            var body: some View {
+                Text("Hello, World!")
+            }
+        }
+
+        struct ContentView_Previews: PreviewProvider {
+            static var previews: some View { ContentView() }
         }
         """)
     ]
@@ -148,10 +147,6 @@ internal struct FileTypesOrderRuleExamples {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                 return 1
             }
-
-            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                return UITableViewCell()
-            }
         }
 
         class TestViewController: UIViewController {}
@@ -180,10 +175,6 @@ internal struct FileTypesOrderRuleExamples {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                 return 1
             }
-
-            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                return UITableViewCell()
-            }
         }
 
         class TestViewController: UIViewController {}
@@ -193,11 +184,14 @@ internal struct FileTypesOrderRuleExamples {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                 return 1
             }
-
-            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                return UITableViewCell()
-            }
         }
+        """),
+        Example("""
+        // Preview Provider
+        ↓struct ContentView_Previews: PreviewProvider {}
+
+        // Main Type
+        struct ContentView: View {}
         """)
     ]
 }

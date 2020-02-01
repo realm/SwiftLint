@@ -26,6 +26,11 @@
   [ZevEisenberg](https://github.com/ZevEisenberg)
   [#3040](https://github.com/realm/SwiftLint/pull/3040)
 
+* Add case `preview_provider` to the order list of `file_types_order` to fix
+  an issue with false positives for `PreviewProvider` subclasses in SwiftUI.  
+  [Cihat Gündüz](https://github.com/Jeehut)
+  [#2860](https://github.com/realm/SwiftLint/issues/2860)
+
 #### Bug Fixes
 
 * Fix `discarded_notification_center_observer` false positives when
@@ -71,7 +76,7 @@
   to any declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2989](https://github.com/realm/SwiftLint/issues/2989)
-  
+
 * Add new indentation opt-in rule (`indentation_width`) checking for
   super-basic additive indentation pattern.  
   [Frederick Pietschmann](https://github.com/fredpi)
@@ -290,7 +295,7 @@
   using `flatMap` over `map { ... }.reduce([], +)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
-  
+
 * Add autocorrection to `syntactic_sugar`.  
   [Ivan Vavilov](https://github.com/vani2)
 
@@ -304,7 +309,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
 
-* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values 
+* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values
   for camel cased Codable String enum cases.  
   [Marko Pejovic](https://github.com/00FA9A)
   [#2888](https://github.com/realm/SwiftLint/issues/2888)

@@ -43,7 +43,7 @@ class ExampleTests: XCTestCase {
 
         // When modifying the code, it's important that the file and line
         // numbers remain intact
-        XCTAssertEqual(new.file?.description, original.file?.description)
+        XCTAssertEqual(new.file.description, original.file.description)
         XCTAssertEqual(new.line, original.line)
     }
 }

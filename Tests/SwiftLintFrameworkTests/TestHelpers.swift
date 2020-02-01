@@ -176,26 +176,26 @@ private extension Configuration {
         if expectedLocations.isEmpty {
             XCTAssertEqual(
                 corrections.count, before.code != expected.code ? 1 : 0, #function + ".expectedLocationsEmpty",
-                file: before.file ?? #file, line: before.line ?? #line)
+                file: before.file, line: before.line)
         } else {
             XCTAssertEqual(
                 corrections.count,
                 expectedLocations.count,
                 #function + ".expected locations: \(expectedLocations.count)",
-                file: before.file ?? #file, line: before.line ?? #line)
+                file: before.file, line: before.line)
             for (correction, expectedLocation) in zip(corrections, expectedLocations) {
                 XCTAssertEqual(
                     correction.location,
                     expectedLocation,
                     #function + ".correction location",
-                    file: before.file ?? #file, line: before.line ?? #line)
+                    file: before.file, line: before.line)
             }
         }
         XCTAssertEqual(
             file.contents,
             expected.code,
             #function + ".file contents",
-            file: before.file ?? #file, line: before.line ?? #line)
+            file: before.file, line: before.line)
         let path = file.path!
         do {
             let corrected = try String(contentsOfFile: path, encoding: .utf8)
@@ -203,11 +203,11 @@ private extension Configuration {
                 corrected,
                 expected.code,
                 #function + ".corrected file equals expected",
-                file: before.file ?? #file, line: before.line ?? #line)
+                file: before.file, line: before.line)
         } catch {
             XCTFail(
                 "couldn't read file at path '\(path)': \(error)",
-                file: before.file ?? #file, line: before.line ?? #line)
+                file: before.file, line: before.line)
         }
     }
 }
@@ -380,8 +380,8 @@ extension XCTestCase {
             let nonTriggerWithViolations = render(violations: unexpectedViolations, in: nonTrigger.code)
             XCTFail(
                 "nonTriggeringExample violated: \n\(nonTriggerWithViolations)",
-                file: nonTrigger.file ?? callSiteFile,
-                line: nonTrigger.line ?? callSiteLine)
+                file: nonTrigger.file,
+                line: nonTrigger.line)
         }
 
         // Triggering examples violate
@@ -395,8 +395,8 @@ extension XCTestCase {
                 if triggerViolations.isEmpty {
                     XCTFail(
                         "triggeringExample did not violate: \n```\n\(trigger)\n```",
-                        file: trigger.file ?? callSiteFile,
-                        line: trigger.line ?? callSiteLine)
+                        file: trigger.file,
+                        line: trigger.line)
                 }
                 continue
             }
@@ -409,8 +409,8 @@ extension XCTestCase {
             if !violationsAtUnexpectedLocation.isEmpty {
                 XCTFail("triggeringExample violate at unexpected location: \n" +
                     "\(render(violations: violationsAtUnexpectedLocation, in: trigger.code))",
-                    file: trigger.file ?? #file,
-                    line: trigger.line ?? #line)
+                    file: trigger.file,
+                    line: trigger.line)
             }
 
             // Assert locations missing violation
@@ -420,18 +420,18 @@ extension XCTestCase {
             if !locationsWithoutViolation.isEmpty {
                 XCTFail("triggeringExample did not violate at expected location: \n" +
                     "\(render(locations: locationsWithoutViolation, in: cleanTrigger))",
-                    file: trigger.file ?? callSiteFile,
-                    line: trigger.line ?? callSiteLine)
+                    file: trigger.file,
+                    line: trigger.line)
             }
 
             XCTAssertEqual(triggerViolations.count, expectedLocations.count,
-                           file: trigger.file ?? callSiteFile, line: trigger.line ?? callSiteLine)
+                           file: trigger.file, line: trigger.line)
             for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
                 XCTAssertEqual(
                     triggerViolation.location, expectedLocation,
                     "'\(trigger)' violation didn't match expected location.",
-                    file: trigger.file ?? callSiteFile,
-                    line: trigger.line ?? callSiteLine)
+                    file: trigger.file,
+                    line: trigger.line)
             }
         }
     }

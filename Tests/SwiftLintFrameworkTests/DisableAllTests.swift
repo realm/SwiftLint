@@ -17,8 +17,8 @@ class DisableAllTests: XCTestCase {
                 violations(violatingPhrase.with(code: violatingPhrase.code + "\n")).count,
                 1,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -31,8 +31,8 @@ class DisableAllTests: XCTestCase {
                 violations(protectedPhrase).count,
                 0,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -49,8 +49,8 @@ class DisableAllTests: XCTestCase {
                 violations(unprotectedPhrase).count,
                 1,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -67,8 +67,8 @@ class DisableAllTests: XCTestCase {
                 violations(protectedPhrase).count,
                 0,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -85,8 +85,8 @@ class DisableAllTests: XCTestCase {
                 violations(unprotectedPhrase).count,
                 1,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -99,8 +99,8 @@ class DisableAllTests: XCTestCase {
                 violations(protectedPhrase).count,
                 0,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -117,8 +117,8 @@ class DisableAllTests: XCTestCase {
                 violations(unprotectedPhrase).count,
                 1,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -132,8 +132,8 @@ class DisableAllTests: XCTestCase {
                 violations(protectedPhrase).count,
                 0,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -150,8 +150,8 @@ class DisableAllTests: XCTestCase {
                 violations(unprotectedPhrase).count,
                 1,
                 #function,
-                file: violatingPhrase.file ?? #file,
-                line: violatingPhrase.line ?? #line)
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 }

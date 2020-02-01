@@ -3,14 +3,10 @@
 public struct Example {
     /// The contents of the example
     public var code: String
-
-    // file and line are optional because we need to conform to
-    // Codable, and StaticString isn't Codable, so we just ignore
-    // them in Codable contexts.
     /// The path to the file where the example was created
-    public var file: StaticString?
+    public var file: StaticString
     /// The line in the file where the example was created
-    public var line: UInt?
+    public var line: UInt
 }
 
 public extension Example {

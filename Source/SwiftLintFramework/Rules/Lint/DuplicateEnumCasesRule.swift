@@ -11,29 +11,29 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
         description: "Enum can't contain multiple cases with the same name.",
         kind: .lint,
         nonTriggeringExamples: [
-            """
+            Example("""
             enum PictureImport {
                 case addImage(image: UIImage)
                 case addData(data: Data)
             }
-            """,
-            """
+            """),
+            Example("""
             enum A {
                 case add(image: UIImage)
             }
             enum B {
                 case add(image: UIImage)
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             enum PictureImport {
                 case ↓add(image: UIImage)
                 case addURL(url: URL)
                 case ↓add(data: Data)
             }
-            """
+            """)
         ]
     )
 

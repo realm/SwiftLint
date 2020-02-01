@@ -32,7 +32,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
                 }
                 """)
             ]
-        } + ["enum Enum0 { enum Enum1 { case Case } }"],
+        } + [Example("enum Enum0 { enum Enum1 { case Case } }")],
         triggeringExamples: ["class", "struct", "enum"].map { kind -> Example in
             return Example("\(kind) A { \(kind) B { ↓\(kind) C {} } }\n")
         } + [

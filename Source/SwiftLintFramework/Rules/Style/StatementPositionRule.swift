@@ -14,23 +14,23 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
                      "declaration.",
         kind: .style,
         nonTriggeringExamples: [
-            "} else if {",
-            "} else {",
-            "} catch {",
-            "\"}else{\"",
-            "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
-            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
+            Example("} else if {"),
+            Example("} else {"),
+            Example("} catch {"),
+            Example("\"}else{\""),
+            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
+            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
         ],
         triggeringExamples: [
-            "↓}else if {",
-            "↓}  else {",
-            "↓}\ncatch {",
-            "↓}\n\t  catch {"
+            Example("↓}else if {"),
+            Example("↓}  else {"),
+            Example("↓}\ncatch {"),
+            Example("↓}\n\t  catch {")
         ],
         corrections: [
-            "↓}\n else {\n": "} else {\n",
-            "↓}\n   else if {\n": "} else if {\n",
-            "↓}\n catch {\n": "} catch {\n"
+            Example("↓}\n else {\n"): Example("} else {\n"),
+            Example("↓}\n   else if {\n"): Example("} else if {\n"),
+            Example("↓}\n catch {\n"): Example("} catch {\n")
         ]
     )
 
@@ -41,26 +41,26 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
                      "previous declaration.",
         kind: .style,
         nonTriggeringExamples: [
-            "  }\n  else if {",
-            "    }\n    else {",
-            "  }\n  catch {",
-            "  }\n\n  catch {",
-            "\n\n  }\n  catch {",
-            "\"}\nelse{\"",
-            "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
-            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
+            Example("  }\n  else if {"),
+            Example("    }\n    else {"),
+            Example("  }\n  catch {"),
+            Example("  }\n\n  catch {"),
+            Example("\n\n  }\n  catch {"),
+            Example("\"}\nelse{\""),
+            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
+            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
         ],
         triggeringExamples: [
-            "↓  }else if {",
-            "↓}\n  else {",
-            "↓  }\ncatch {",
-            "↓}\n\t  catch {"
+            Example("↓  }else if {"),
+            Example("↓}\n  else {"),
+            Example("↓  }\ncatch {"),
+            Example("↓}\n\t  catch {")
         ],
         corrections: [
-            "  }else if {": "  }\n  else if {",
-            "}\n  else {": "}\nelse {",
-            "  }\ncatch {": "  }\n  catch {",
-            "}\n\t  catch {": "}\ncatch {"
+            Example("  }else if {"): Example("  }\n  else if {"),
+            Example("}\n  else {"): Example("}\nelse {"),
+            Example("  }\ncatch {"): Example("  }\n  catch {"),
+            Example("}\n\t  catch {"): Example("}\ncatch {")
         ]
     )
 

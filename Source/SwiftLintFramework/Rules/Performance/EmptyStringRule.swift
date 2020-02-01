@@ -11,12 +11,12 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal.",
         kind: .performance,
         nonTriggeringExamples: [
-            "myString.isEmpty",
-            "!myString.isEmpty"
+            Example("myString.isEmpty"),
+            Example("!myString.isEmpty")
         ],
         triggeringExamples: [
-            "myString↓ == \"\"",
-            "myString↓ != \"\""
+            Example("myString↓ == \"\""),
+            Example("myString↓ != \"\"")
         ]
     )
 

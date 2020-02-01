@@ -12,19 +12,19 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
         description: "Delegate protocols should be class-only so they can be weakly referenced.",
         kind: .lint,
         nonTriggeringExamples: [
-            "protocol FooDelegate: class {}\n",
-            "protocol FooDelegate: class, BarDelegate {}\n",
-            "protocol Foo {}\n",
-            "class FooDelegate {}\n",
-            "@objc protocol FooDelegate {}\n",
-            "@objc(MyFooDelegate)\n protocol FooDelegate {}\n",
-            "protocol FooDelegate: BarDelegate {}\n",
-            "protocol FooDelegate: AnyObject {}\n",
-            "protocol FooDelegate: NSObjectProtocol {}\n"
+            Example("protocol FooDelegate: class {}\n"),
+            Example("protocol FooDelegate: class, BarDelegate {}\n"),
+            Example("protocol Foo {}\n"),
+            Example("class FooDelegate {}\n"),
+            Example("@objc protocol FooDelegate {}\n"),
+            Example("@objc(MyFooDelegate)\n protocol FooDelegate {}\n"),
+            Example("protocol FooDelegate: BarDelegate {}\n"),
+            Example("protocol FooDelegate: AnyObject {}\n"),
+            Example("protocol FooDelegate: NSObjectProtocol {}\n")
         ],
         triggeringExamples: [
-            "↓protocol FooDelegate {}\n",
-            "↓protocol FooDelegate: Bar {}\n"
+            Example("↓protocol FooDelegate {}\n"),
+            Example("↓protocol FooDelegate: Bar {}\n")
         ]
     )
 

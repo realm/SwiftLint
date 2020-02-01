@@ -16,7 +16,7 @@ class CollectingRuleTests: XCTestCase {
             }
         }
 
-        XCTAssertFalse(violations("", config: Spec.configuration!).isEmpty)
+        XCTAssertFalse(violations(Example(""), config: Spec.configuration!).isEmpty)
     }
 
     func testCollectsAllFiles() {
@@ -51,7 +51,7 @@ class CollectingRuleTests: XCTestCase {
             }
         }
 
-        XCTAssertFalse(violations("", config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
+        XCTAssertFalse(violations(Example(""), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
     }
 
     func testCorrects() {

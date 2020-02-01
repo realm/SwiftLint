@@ -11,21 +11,21 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "for (idx, foo) in bar.enumerated() { }\n",
-            "for (_, foo) in bar.enumerated().something() { }\n",
-            "for (_, foo) in bar.something() { }\n",
-            "for foo in bar.enumerated() { }\n",
-            "for foo in bar { }\n",
-            "for (idx, _) in bar.enumerated().something() { }\n",
-            "for (idx, _) in bar.something() { }\n",
-            "for idx in bar.indices { }\n",
-            "for (section, (event, _)) in data.enumerated() {}\n"
+            Example("for (idx, foo) in bar.enumerated() { }\n"),
+            Example("for (_, foo) in bar.enumerated().something() { }\n"),
+            Example("for (_, foo) in bar.something() { }\n"),
+            Example("for foo in bar.enumerated() { }\n"),
+            Example("for foo in bar { }\n"),
+            Example("for (idx, _) in bar.enumerated().something() { }\n"),
+            Example("for (idx, _) in bar.something() { }\n"),
+            Example("for idx in bar.indices { }\n"),
+            Example("for (section, (event, _)) in data.enumerated() {}\n")
         ],
         triggeringExamples: [
-            "for (↓_, foo) in bar.enumerated() { }\n",
-            "for (↓_, foo) in abc.bar.enumerated() { }\n",
-            "for (↓_, foo) in abc.something().enumerated() { }\n",
-            "for (idx, ↓_) in bar.enumerated() { }\n"
+            Example("for (↓_, foo) in bar.enumerated() { }\n"),
+            Example("for (↓_, foo) in abc.bar.enumerated() { }\n"),
+            Example("for (↓_, foo) in abc.something().enumerated() { }\n"),
+            Example("for (idx, ↓_) in bar.enumerated() { }\n")
         ]
     )
 

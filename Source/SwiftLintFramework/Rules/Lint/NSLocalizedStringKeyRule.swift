@@ -11,12 +11,12 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
         description: "Static strings should be used as key in NSLocalizedString in order to genstrings work.",
         kind: .lint,
         nonTriggeringExamples: [
-            "NSLocalizedString(\"key\", comment: nil)",
-            "NSLocalizedString(\"key\" + \"2\", comment: nil)"
+            Example("NSLocalizedString(\"key\", comment: nil)"),
+            Example("NSLocalizedString(\"key\" + \"2\", comment: nil)")
         ],
         triggeringExamples: [
-            "NSLocalizedString(↓method(), comment: nil)",
-            "NSLocalizedString(↓\"key_\\(param)\", comment: nil)"
+            Example("NSLocalizedString(↓method(), comment: nil)"),
+            Example("NSLocalizedString(↓\"key_\\(param)\", comment: nil)")
         ]
     )
 

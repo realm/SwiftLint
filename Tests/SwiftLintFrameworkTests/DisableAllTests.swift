@@ -55,7 +55,8 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:disable:previous all protects properly
     func testDisableAllPrevious() {
         for violatingPhrase in violatingPhrases {
-            let protectedPhrase = violatingPhrase.with(code: violatingPhrase.code + "// swiftlint:disable:previous all\n")
+            let protectedPhrase = violatingPhrase
+                .with(code: violatingPhrase.code + "// swiftlint:disable:previous all\n")
             XCTAssertEqual(
                 violations(protectedPhrase).count,
                 0,

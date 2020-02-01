@@ -13,32 +13,32 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
                      "separate line.",
         kind: .style,
         nonTriggeringExamples: [
-            "func abc() -> Int {}\n",
-            "func abc() -> [Int] {}\n",
-            "func abc() -> (Int, Int) {}\n",
-            "var abc = {(param: Int) -> Void in }\n",
-            "func abc() ->\n    Int {}\n",
-            "func abc()\n    -> Int {}\n"
+            Example("func abc() -> Int {}\n"),
+            Example("func abc() -> [Int] {}\n"),
+            Example("func abc() -> (Int, Int) {}\n"),
+            Example("var abc = {(param: Int) -> Void in }\n"),
+            Example("func abc() ->\n    Int {}\n"),
+            Example("func abc()\n    -> Int {}\n")
         ],
         triggeringExamples: [
-            "func abc()↓->Int {}\n",
-            "func abc()↓->[Int] {}\n",
-            "func abc()↓->(Int, Int) {}\n",
-            "func abc()↓-> Int {}\n",
-            "func abc()↓ ->Int {}\n",
-            "func abc()↓  ->  Int {}\n",
-            "var abc = {(param: Int)↓ ->Bool in }\n",
-            "var abc = {(param: Int)↓->Bool in }\n"
+            Example("func abc()↓->Int {}\n"),
+            Example("func abc()↓->[Int] {}\n"),
+            Example("func abc()↓->(Int, Int) {}\n"),
+            Example("func abc()↓-> Int {}\n"),
+            Example("func abc()↓ ->Int {}\n"),
+            Example("func abc()↓  ->  Int {}\n"),
+            Example("var abc = {(param: Int)↓ ->Bool in }\n"),
+            Example("var abc = {(param: Int)↓->Bool in }\n")
         ],
         corrections: [
-            "func abc()↓->Int {}\n": "func abc() -> Int {}\n",
-            "func abc()↓-> Int {}\n": "func abc() -> Int {}\n",
-            "func abc()↓ ->Int {}\n": "func abc() -> Int {}\n",
-            "func abc()↓  ->  Int {}\n": "func abc() -> Int {}\n",
-            "func abc()↓\n  ->  Int {}\n": "func abc()\n  -> Int {}\n",
-            "func abc()↓\n->  Int {}\n": "func abc()\n-> Int {}\n",
-            "func abc()↓  ->\n  Int {}\n": "func abc() ->\n  Int {}\n",
-            "func abc()↓  ->\nInt {}\n": "func abc() ->\nInt {}\n"
+            Example("func abc()↓->Int {}\n"): Example("func abc() -> Int {}\n"),
+            Example("func abc()↓-> Int {}\n"): Example("func abc() -> Int {}\n"),
+            Example("func abc()↓ ->Int {}\n"): Example("func abc() -> Int {}\n"),
+            Example("func abc()↓  ->  Int {}\n"): Example("func abc() -> Int {}\n"),
+            Example("func abc()↓\n  ->  Int {}\n"): Example("func abc()\n  -> Int {}\n"),
+            Example("func abc()↓\n->  Int {}\n"): Example("func abc()\n-> Int {}\n"),
+            Example("func abc()↓  ->\n  Int {}\n"): Example("func abc() ->\n  Int {}\n"),
+            Example("func abc()↓  ->\nInt {}\n"): Example("func abc() ->\nInt {}\n")
         ]
     )
 

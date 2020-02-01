@@ -12,34 +12,34 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         description: "Multiline parameters should have their surrounding brackets in a new line.",
         kind: .style,
         nonTriggeringExamples: [
-            """
+            Example("""
             func foo(param1: String, param2: String, param3: String)
-            """,
-            """
+            """),
+            Example("""
             func foo(
                 param1: String, param2: String, param3: String
             )
-            """,
-            """
+            """),
+            Example("""
             func foo(
                 param1: String,
                 param2: String,
                 param3: String
             )
-            """,
-            """
+            """),
+            Example("""
             class SomeType {
                 func foo(param1: String, param2: String, param3: String)
             }
-            """,
-            """
+            """),
+            Example("""
             class SomeType {
                 func foo(
                     param1: String, param2: String, param3: String
                 )
             }
-            """,
-            """
+            """),
+            Example("""
             class SomeType {
                 func foo(
                     param1: String,
@@ -47,43 +47,43 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
                     param3: String
                 )
             }
-            """,
-            """
+            """),
+            Example("""
             func foo<T>(param1: T, param2: String, param3: String) -> T { /* some code */ }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             func foo(↓param1: String, param2: String,
                      param3: String
             )
-            """,
-            """
+            """),
+            Example("""
             func foo(
                 param1: String,
                 param2: String,
                 param3: String↓)
-            """,
-            """
+            """),
+            Example("""
             class SomeType {
                 func foo(↓param1: String, param2: String,
                          param3: String
                 )
             }
-            """,
-            """
+            """),
+            Example("""
             class SomeType {
                 func foo(
                     param1: String,
                     param2: String,
                     param3: String↓)
             }
-            """,
-            """
+            """),
+            Example("""
             func foo<T>(↓param1: T, param2: String,
                      param3: String
             ) -> T
-            """
+            """)
         ]
     )
 

@@ -11,24 +11,24 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
         description: "Ensure definitions have a lower access control level than their enclosing parent",
         kind: .lint,
         nonTriggeringExamples: [
-            "public struct Foo { public func bar() {} }",
-            "internal struct Foo { func bar() {} }",
-            "struct Foo { func bar() {} }",
-            "open class Foo { public func bar() {} }",
-            "open class Foo { open func bar() {} }",
-            "fileprivate struct Foo { private func bar() {} }",
-            "private struct Foo { private func bar(id: String) }",
-            "extension Foo { public func bar() {} }",
-            "private struct Foo { fileprivate func bar() {} }",
-            "private func foo(id: String) {}",
-            "private class Foo { func bar() {} }"
+            Example("public struct Foo { public func bar() {} }"),
+            Example("internal struct Foo { func bar() {} }"),
+            Example("struct Foo { func bar() {} }"),
+            Example("open class Foo { public func bar() {} }"),
+            Example("open class Foo { open func bar() {} }"),
+            Example("fileprivate struct Foo { private func bar() {} }"),
+            Example("private struct Foo { private func bar(id: String) }"),
+            Example("extension Foo { public func bar() {} }"),
+            Example("private struct Foo { fileprivate func bar() {} }"),
+            Example("private func foo(id: String) {}"),
+            Example("private class Foo { func bar() {} }")
         ],
         triggeringExamples: [
-            "struct Foo { public ↓func bar() {} }",
-            "enum Foo { public ↓func bar() {} }",
-            "public class Foo { open ↓func bar() }",
-            "class Foo { public private(set) ↓var bar: String? }",
-            "private class Foo { internal ↓func bar() {} }"
+            Example("struct Foo { public ↓func bar() {} }"),
+            Example("enum Foo { public ↓func bar() {} }"),
+            Example("public class Foo { open ↓func bar() }"),
+            Example("class Foo { public private(set) ↓var bar: String? }"),
+            Example("private class Foo { internal ↓func bar() {} }")
         ]
     )
 

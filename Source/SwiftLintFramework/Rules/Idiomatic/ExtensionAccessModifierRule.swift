@@ -12,67 +12,67 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         description: "Prefer to use extension access modifiers",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             extension Foo: SomeProtocol {
               public var bar: Int { return 1 }
             }
-            """,
-            """
+            """),
+            Example("""
             extension Foo {
               private var bar: Int { return 1 }
               public var baz: Int { return 1 }
             }
-            """,
-            """
+            """),
+            Example("""
             extension Foo {
               private var bar: Int { return 1 }
               public func baz() {}
             }
-            """,
-            """
+            """),
+            Example("""
             extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
-            """,
-            """
+            """),
+            Example("""
             public extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
-            """,
-            """
+            """),
+            Example("""
             extension Foo {
               private bar: Int { return 1 }
               private baz: Int { return 1 }
             }
-            """,
-            """
+            """),
+            Example("""
             extension Foo {
               open bar: Int { return 1 }
               open baz: Int { return 1 }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             ↓extension Foo {
                public var bar: Int { return 1 }
                public var baz: Int { return 1 }
             }
-            """,
-            """
+            """),
+            Example("""
             ↓extension Foo {
                public var bar: Int { return 1 }
                public func baz() {}
             }
-            """,
-            """
+            """),
+            Example("""
             public extension Foo {
                public ↓func bar() {}
                public ↓func baz() {}
             }
-            """
+            """)
         ]
     )
 

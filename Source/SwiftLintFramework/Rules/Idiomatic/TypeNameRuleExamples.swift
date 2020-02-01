@@ -13,21 +13,21 @@ internal struct TypeNameRuleExamples {
         }
 
         let typeAliasAndAssociatedTypeExamples: [Example] = [
-            "typealias Foo = Void",
-            "private typealias Foo = Void",
-            """
+            Example("typealias Foo = Void"),
+            Example("private typealias Foo = Void"),
+            Example("""
             protocol Foo {
               associatedtype Bar
             }
-            """,
-            """
+            """),
+            Example("""
             protocol Foo {
               associatedtype Bar: Equatable
             }
-            """
+            """)
         ]
 
-        return typeExamples + typeAliasAndAssociatedTypeExamples + ["enum MyType {\ncase value\n}"]
+        return typeExamples + typeAliasAndAssociatedTypeExamples + [Example("enum MyType {\ncase value\n}")]
     }()
 
     static let triggeringExamples: [Example] = {
@@ -45,20 +45,20 @@ internal struct TypeNameRuleExamples {
         }
 
         let typeAliasAndAssociatedTypeExamples: [Example] = [
-            "typealias ↓X = Void",
-            "private typealias ↓Foo_Bar = Void",
-            "private typealias ↓foo = Void",
+            Example("typealias ↓X = Void"),
+            Example("private typealias ↓Foo_Bar = Void"),
+            Example("private typealias ↓foo = Void"),
             Example("typealias ↓\(repeatElement("A", count: 41).joined()) = Void"),
-            """
+            Example("""
             protocol Foo {
               associatedtype ↓X
             }
-            """,
-            """
+            """),
+            Example("""
             protocol Foo {
               associatedtype ↓Foo_Bar: Equatable
             }
-            """,
+            """),
             Example("""
             protocol Foo {
               associatedtype ↓\(repeatElement("A", count: 41).joined())

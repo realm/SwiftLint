@@ -3,8 +3,9 @@
 public struct Example {
     public var code: String
 
-    // TODO: unoptionalize these parameters
-    // Using String instead of StaticString for Codable conformance
+    // file and line are optional because we need to conform to
+    // Codable, and StaticString isn't Codable, so we just ignore
+    // them in Codable contexts.
     public var file: StaticString?
     public var line: UInt?
 }
@@ -60,20 +61,6 @@ extension Example: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(code, forKey: .code)
         // We don't care about encoding the file and line.
-    }
-}
-
-// TODO: remove this conformance. It's a band-aid so I didn't have to wrap every
-// string in Example(...) just to get this working
-// Also, this initializer is called all the time because  of a Swift bug:
-// https://bugs.swift.org/browse/SR-12034. So we need to call
-// Example.init("foo") in the places we actually want the other initializer to
-// run. Fortunately, it's all moot once we delete this conformance.
-extension Example: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
-        self.code = value
-        self.file = nil
-        self.line = nil
     }
 }
 

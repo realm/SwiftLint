@@ -27,33 +27,33 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         description: "Closure expressions should have a single space inside each brace.",
         kind: .style,
         nonTriggeringExamples: [
-            "[].map ({ $0.description })",
-            "[].filter { $0.contains(location) }",
-            "extension UITableViewCell: ReusableView { }",
-            "extension UITableViewCell: ReusableView {}"
+            Example("[].map ({ $0.description })"),
+            Example("[].filter { $0.contains(location) }"),
+            Example("extension UITableViewCell: ReusableView { }"),
+            Example("extension UITableViewCell: ReusableView {}")
         ],
         triggeringExamples: [
-            "[].filter(↓{$0.contains(location)})",
-            "[].map(↓{$0})",
-            "(↓{each in return result.contains(where: ↓{e in return e}) }).count",
-            "filter ↓{ sorted ↓{ $0 < $1}}"
+            Example("[].filter(↓{$0.contains(location)})"),
+            Example("[].map(↓{$0})"),
+            Example("(↓{each in return result.contains(where: ↓{e in return e}) }).count"),
+            Example("filter ↓{ sorted ↓{ $0 < $1}}")
         ],
         corrections: [
-            "[].filter(↓{$0.contains(location)})":
-            "[].filter({ $0.contains(location) })",
-            "[].map(↓{$0})":
-            "[].map({ $0 })",
+            Example("[].filter(↓{$0.contains(location)})"):
+                Example("[].filter({ $0.contains(location) })"),
+            Example("[].map(↓{$0})"):
+                Example("[].map({ $0 })"),
             // Nested braces `{ {} }` do not get corrected on the first pass.
-            "filter ↓{sorted { $0 < $1}}":
-            "filter { sorted { $0 < $1} }",
+            Example("filter ↓{sorted { $0 < $1}}"):
+                Example("filter { sorted { $0 < $1} }"),
             // The user has to run tool again to fix remaining nested violations.
-            "filter { sorted ↓{ $0 < $1} }":
-            "filter { sorted { $0 < $1 } }",
-            "(↓{each in return result.contains(where: {e in return 0})}).count":
-            "({ each in return result.contains(where: {e in return 0}) }).count",
+            Example("filter { sorted ↓{ $0 < $1} }"):
+                Example("filter { sorted { $0 < $1 } }"),
+            Example("(↓{each in return result.contains(where: {e in return 0})}).count"):
+                Example("({ each in return result.contains(where: {e in return 0}) }).count"),
             // second pass example
-            "({ each in return result.contains(where: ↓{e in return 0}) }).count":
-            "({ each in return result.contains(where: { e in return 0 }) }).count"
+            Example("({ each in return result.contains(where: ↓{e in return 0}) }).count"):
+                Example("({ each in return result.contains(where: { e in return 0 }) }).count")
         ]
     )
 

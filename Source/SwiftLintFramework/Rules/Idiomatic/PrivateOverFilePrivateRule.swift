@@ -12,46 +12,46 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
         description: "Prefer `private` over `fileprivate` declarations.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "extension String {}",
-            "private extension String {}",
-            "public \n enum MyEnum {}",
-            "open extension \n String {}",
-            "internal extension String {}",
-            """
+            Example("extension String {}"),
+            Example("private extension String {}"),
+            Example("public \n enum MyEnum {}"),
+            Example("open extension \n String {}"),
+            Example("internal extension String {}"),
+            Example("""
             extension String {
               fileprivate func Something(){}
             }
-            """,
-            """
+            """),
+            Example("""
             class MyClass {
               fileprivate let myInt = 4
             }
-            """,
-            """
+            """),
+            Example("""
             class MyClass {
               fileprivate(set) var myInt = 4
             }
-            """,
-            """
+            """),
+            Example("""
             struct Outter {
               struct Inter {
                 fileprivate struct Inner {}
               }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            "↓fileprivate enum MyEnum {}",
-            """
+            Example("↓fileprivate enum MyEnum {}"),
+            Example("""
             ↓fileprivate class MyClass {
               fileprivate(set) var myInt = 4
             }
-            """
+            """)
         ],
         corrections: [
-            "↓fileprivate enum MyEnum {}": "private enum MyEnum {}",
-            "↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}":
-                "private class MyClass {\nfileprivate(set) var myInt = 4\n}"
+            Example("↓fileprivate enum MyEnum {}"): Example("private enum MyEnum {}"),
+            Example("↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}"):
+                Example("private class MyClass {\nfileprivate(set) var myInt = 4\n}")
         ]
     )
 

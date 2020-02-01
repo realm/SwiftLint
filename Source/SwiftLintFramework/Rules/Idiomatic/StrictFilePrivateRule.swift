@@ -12,50 +12,50 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, Autom
         description: "`fileprivate` should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "extension String {}",
-            "private extension String {}",
-            """
+            Example("extension String {}"),
+            Example("private extension String {}"),
+            Example("""
             public
             extension String {}
-            """,
-            """
+            """),
+            Example("""
             open extension
               String {}
-            """,
-            "internal extension String {}"
+            """),
+            Example("internal extension String {}")
         ],
         triggeringExamples: [
-            "↓fileprivate extension String {}",
-            """
+            Example("↓fileprivate extension String {}"),
+            Example("""
             ↓fileprivate
               extension String {}
-            """,
-            """
+            """),
+            Example("""
             ↓fileprivate extension
               String {}
-            """,
-            """
+            """),
+            Example("""
             extension String {
               ↓fileprivate func Something(){}
             }
-            """,
-            """
+            """),
+            Example("""
             class MyClass {
               ↓fileprivate let myInt = 4
             }
-            """,
-            """
+            """),
+            Example("""
             class MyClass {
               ↓fileprivate(set) var myInt = 4
             }
-            """,
-            """
+            """),
+            Example("""
             struct Outter {
               struct Inter {
                 ↓fileprivate struct Inner {}
               }
             }
-            """
+            """)
         ]
     )
 

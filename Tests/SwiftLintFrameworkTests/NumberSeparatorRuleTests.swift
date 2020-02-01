@@ -70,7 +70,7 @@ class NumberSeparatorRuleTests: XCTestCase {
             Example("let foo = 2.10042"),
             Example("let foo = 2.100_42"),
             Example("let foo = 2.833333"),
-            ("let foo = 2.833_333")
+            Example("let foo = 2.833_333")
         ]
         let triggeringExamples = [
             Example("let foo = ↓1000"),

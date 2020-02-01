@@ -12,14 +12,14 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
         description: "Closure parameters should be on the same line as opening brace.",
         kind: .style,
         nonTriggeringExamples: [
-            "[1, 2].map { $0 + 1 }\n",
-            "[1, 2].map({ $0 + 1 })\n",
-            "[1, 2].map { number in\n number + 1 \n}\n",
-            "[1, 2].map { number -> Int in\n number + 1 \n}\n",
-            "[1, 2].map { (number: Int) -> Int in\n number + 1 \n}\n",
-            "[1, 2].map { [weak self] number in\n number + 1 \n}\n",
-            "[1, 2].something(closure: { number in\n number + 1 \n})\n",
-            "let isEmpty = [1, 2].isEmpty()\n",
+            Example("[1, 2].map { $0 + 1 }\n"),
+            Example("[1, 2].map({ $0 + 1 })\n"),
+            Example("[1, 2].map { number in\n number + 1 \n}\n"),
+            Example("[1, 2].map { number -> Int in\n number + 1 \n}\n"),
+            Example("[1, 2].map { (number: Int) -> Int in\n number + 1 \n}\n"),
+            Example("[1, 2].map { [weak self] number in\n number + 1 \n}\n"),
+            Example("[1, 2].something(closure: { number in\n number + 1 \n})\n"),
+            Example("let isEmpty = [1, 2].isEmpty()\n"),
             Example("""
             rlmConfiguration.migrationBlock.map { rlmMigration in
                 return { migration, schemaVersion in
@@ -34,14 +34,14 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             """)
         ],
         triggeringExamples: [
-            "[1, 2].map {\n ↓number in\n number + 1 \n}\n",
-            "[1, 2].map {\n ↓number -> Int in\n number + 1 \n}\n",
-            "[1, 2].map {\n (↓number: Int) -> Int in\n number + 1 \n}\n",
-            "[1, 2].map {\n [weak self] ↓number in\n number + 1 \n}\n",
-            "[1, 2].map { [weak self]\n ↓number in\n number + 1 \n}\n",
-            "[1, 2].map({\n ↓number in\n number + 1 \n})\n",
-            "[1, 2].something(closure: {\n ↓number in\n number + 1 \n})\n",
-            "[1, 2].reduce(0) {\n ↓sum, ↓number in\n number + sum \n}\n"
+            Example("[1, 2].map {\n ↓number in\n number + 1 \n}\n"),
+            Example("[1, 2].map {\n ↓number -> Int in\n number + 1 \n}\n"),
+            Example("[1, 2].map {\n (↓number: Int) -> Int in\n number + 1 \n}\n"),
+            Example("[1, 2].map {\n [weak self] ↓number in\n number + 1 \n}\n"),
+            Example("[1, 2].map { [weak self]\n ↓number in\n number + 1 \n}\n"),
+            Example("[1, 2].map({\n ↓number in\n number + 1 \n})\n"),
+            Example("[1, 2].something(closure: {\n ↓number in\n number + 1 \n})\n"),
+            Example("[1, 2].reduce(0) {\n ↓sum, ↓number in\n number + sum \n}\n")
         ]
     )
 

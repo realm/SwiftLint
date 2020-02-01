@@ -10,7 +10,7 @@ class TrailingWhitespaceTests: XCTestCase {
         // Perform additional tests with the ignores_empty_lines setting enabled.
         // The set of non-triggering examples is extended by a whitespace-indented empty line
         let baseDescription = TrailingWhitespaceRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [Example(" \n")]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(description,

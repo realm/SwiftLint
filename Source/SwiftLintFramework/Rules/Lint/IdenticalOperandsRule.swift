@@ -35,12 +35,12 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 Example("num \(operation) num!.byteSwapped")
             ]
         } + [
-            "func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>",
-            "let array = Array<Array<Int>>()",
-            "guard Set(identifiers).count != identifiers.count else { return }",
-            #"expect("foo") == "foo""#,
-            "type(of: model).cachePrefix == cachePrefix",
-            "histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1"
+            Example("func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>"),
+            Example("let array = Array<Array<Int>>()"),
+            Example("guard Set(identifiers).count != identifiers.count else { return }"),
+            Example(#"expect("foo") == "foo""#),
+            Example("type(of: model).cachePrefix == cachePrefix"),
+            Example("histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1")
         ],
         triggeringExamples: operators.flatMap { operation in
             [

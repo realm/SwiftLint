@@ -13,15 +13,15 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         kind: .idiomatic,
         minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
-            """
+            Example("""
             class ViewController: UIViewController {
               @available(*, unavailable)
               public required init?(coder aDecoder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
               }
             }
-            """,
-            """
+            """),
+            Example("""
             func jsonValue(_ jsonString: String) -> NSObject {
                let data = jsonString.data(using: .utf8)!
                let result = try! JSONSerialization.jsonObject(with: data, options: [])
@@ -32,24 +32,24 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
                }
                fatalError()
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             class ViewController: UIViewController {
               public required ↓init?(coder aDecoder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
               }
             }
-            """,
-            """
+            """),
+            Example("""
             class ViewController: UIViewController {
               public required ↓init?(coder aDecoder: NSCoder) {
                 let reason = "init(coder:) has not been implemented"
                 fatalError(reason)
               }
             }
-            """
+            """)
         ]
     )
 

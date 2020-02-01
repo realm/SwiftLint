@@ -28,17 +28,17 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             "unindent to match previous indentations. Don't indent the first line.",
         kind: .style,
         nonTriggeringExamples: [
-            "firstLine\nsecondLine",
-            "firstLine\n    secondLine",
-            "firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine",
-            "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
-            "firstLine\n    secondLine\n        thirdLine\nfourthLine"
+            Example("firstLine\nsecondLine"),
+            Example("firstLine\n    secondLine"),
+            Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
+            Example("firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine"),
+            Example("firstLine\n    secondLine\n        thirdLine\nfourthLine")
         ],
         triggeringExamples: [
-            "    firstLine",
-            "firstLine\n        secondLine",
-            "firstLine\n\tsecondLine\n\n\t\t\tfourthLine",
-            "firstLine\n    secondLine\n        thirdLine\n fourthLine"
+            Example("    firstLine"),
+            Example("firstLine\n        secondLine"),
+            Example("firstLine\n\tsecondLine\n\n\t\t\tfourthLine"),
+            Example("firstLine\n    secondLine\n        thirdLine\n fourthLine")
         ]
     )
 

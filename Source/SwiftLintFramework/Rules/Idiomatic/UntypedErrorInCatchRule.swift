@@ -35,71 +35,71 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
         description: "Catch statements should not declare error variables without type casting.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             do {
               try foo()
             } catch {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } catch Error.invalidOperation {
             } catch {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } catch let error as MyError {
             } catch {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } catch var error as MyError {
             } catch {}
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             do {
               try foo()
             } ↓catch var error {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } ↓catch let error {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } ↓catch let someError {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } ↓catch var someError {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } ↓catch let e {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } ↓catch(let error) {}
-            """,
-            """
+            """),
+            Example("""
             do {
               try foo()
             } ↓catch (let error) {}
-            """
+            """)
         ],
         corrections: [
-            "do {\n    try foo() \n} ↓catch let error {}": "do {\n    try foo() \n} catch {}",
-            "do {\n    try foo() \n} ↓catch(let error) {}": "do {\n    try foo() \n} catch {}",
-            "do {\n    try foo() \n} ↓catch (let error) {}": "do {\n    try foo() \n} catch {}"
+            Example("do {\n    try foo() \n} ↓catch let error {}"): Example("do {\n    try foo() \n} catch {}"),
+            Example("do {\n    try foo() \n} ↓catch(let error) {}"): Example("do {\n    try foo() \n} catch {}"),
+            Example("do {\n    try foo() \n} ↓catch (let error) {}"): Example("do {\n    try foo() \n} catch {}")
         ])
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {

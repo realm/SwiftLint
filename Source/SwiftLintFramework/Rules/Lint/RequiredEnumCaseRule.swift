@@ -124,54 +124,54 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         description: "Enums conforming to a specified protocol must implement a specific case(s).",
         kind: .lint,
         nonTriggeringExamples: [
-            """
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error, notConnected
             }
-            """,
-            """
+            """),
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error, notConnected(error: Error)
             }
-            """,
-            """
+            """),
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
                 case notConnected
             }
-            """,
-            """
+            """),
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
                 case notConnected(error: Error)
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error
             }
-            """,
-            """
+            """),
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error
             }
-            """,
-            """
+            """),
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
             }
-            """,
-            """
+            """),
+            Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
             }
-            """
+            """)
         ]
     )
 

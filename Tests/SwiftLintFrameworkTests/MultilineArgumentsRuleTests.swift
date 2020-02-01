@@ -8,10 +8,10 @@ class MultilineArgumentsRuleTests: XCTestCase {
 
     func testMultilineArgumentsWithWithNextLine() {
         let nonTriggeringExamples = [
-            "foo()",
-            "foo(0)",
-            "foo(1, bar: baz) { }",
-            "foo(2, bar: baz) {\n}",
+            Example("foo()"),
+            Example("foo(0)"),
+            Example("foo(1, bar: baz) { }"),
+            Example("foo(2, bar: baz) {\n}"),
             Example("foo(\n" +
             "    3,\n" +
             "    bar: baz) { }"),
@@ -33,9 +33,9 @@ class MultilineArgumentsRuleTests: XCTestCase {
 
     func testMultilineArgumentsWithWithSameLine() {
         let nonTriggeringExamples = [
-            "foo()",
-            "foo(0)",
-            "foo(1, bar: 1) { }",
+            Example("foo()"),
+            Example("foo(0)"),
+            Example("foo(1, bar: 1) { }"),
             Example("foo(2, bar: 2) {\n" +
             "    bar()\n" +
             "}"),
@@ -60,9 +60,9 @@ class MultilineArgumentsRuleTests: XCTestCase {
 
     func testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
         let nonTriggeringExamples: [Example] = [
-            "foo()",
-            "foo(0)",
-            "foo(1, bar: 1) { }",
+            Example("foo()"),
+            Example("foo(0)"),
+            Example("foo(1, bar: 1) { }"),
             Example("foo(\n" +
             "    4, bar: baz) { }"),
             Example("foo(a: a, b: {\n" +

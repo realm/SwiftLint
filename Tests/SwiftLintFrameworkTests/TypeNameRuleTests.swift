@@ -9,11 +9,11 @@ class TypeNameRuleTests: XCTestCase {
     func testTypeNameWithAllowedSymbols() {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "class MyType$ {}",
-            "struct MyType$ {}",
-            "enum MyType$ {}",
-            "typealias Foo$ = Void",
-            "protocol Foo {\n associatedtype Bar$\n }"
+            Example("class MyType$ {}"),
+            Example("struct MyType$ {}"),
+            Example("enum MyType$ {}"),
+            Example("typealias Foo$ = Void"),
+            Example("protocol Foo {\n associatedtype Bar$\n }")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
@@ -23,7 +23,7 @@ class TypeNameRuleTests: XCTestCase {
     func testTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = TypeNameRule.description
         let triggeringExamples = [
-            "class ↓My_Type$ {}"
+            Example("class ↓My_Type$ {}")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
@@ -33,13 +33,13 @@ class TypeNameRuleTests: XCTestCase {
     func testTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
-            "private typealias ↓foo = Void",
-            "class ↓myType {}",
-            "struct ↓myType {}",
-            "enum ↓myType {}"
+            Example("private typealias ↓foo = Void"),
+            Example("class ↓myType {}"),
+            Example("struct ↓myType {}"),
+            Example("enum ↓myType {}")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
-            triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }
+            triggeringExamplesToRemove.removingViolationMarkers()
         let triggeringExamples = baseDescription.triggeringExamples
             .filter { !triggeringExamplesToRemove.contains($0) }
 

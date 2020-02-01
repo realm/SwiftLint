@@ -12,32 +12,32 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         description: "Prefer `!= nil` over `let _ =`",
         kind: .style,
         nonTriggeringExamples: [
-            "if let bar = Foo.optionalValue {\n" +
-            "}\n",
-            "if let (_, second) = getOptionalTuple() {\n" +
-            "}\n",
-            "if let (_, asd, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
-            "}\n",
+            Example("if let bar = Foo.optionalValue {\n" +
+            "}\n"),
+            Example("if let (_, second) = getOptionalTuple() {\n" +
+            "}\n"),
+            Example("if let (_, asd, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
+            "}\n"),
             "if foo() { let _ = bar() }\n",
             "if foo() { _ = bar() }\n",
             "if case .some(_) = self {}",
             "if let point = state.find({ _ in true }) {}"
         ],
         triggeringExamples: [
-            "if let ↓_ = Foo.optionalValue {\n" +
-            "}\n",
-            "if let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
-            "}\n",
-            "guard let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
-            "}\n",
-            "if let (first, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
-            "}\n",
-            "if let (first, _) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
-            "}\n",
-            "if let (_, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
-            "}\n",
-            "if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
-            "}\n",
+            Example("if let ↓_ = Foo.optionalValue {\n" +
+            "}\n"),
+            Example("if let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
+            "}\n"),
+            Example("guard let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
+            "}\n"),
+            Example("if let (first, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
+            "}\n"),
+            Example("if let (first, _) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
+            "}\n"),
+            Example("if let (_, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
+            "}\n"),
+            Example("if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
+            "}\n"),
             "func foo() {\nif let ↓_ = bar {\n}\n",
             "if case .some(let ↓_) = self {}"
         ]

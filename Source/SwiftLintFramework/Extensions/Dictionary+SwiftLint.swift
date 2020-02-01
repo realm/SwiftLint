@@ -261,11 +261,13 @@ extension SourceKittenDictionary {
     }
 }
 
-extension Dictionary where Key == String {
+extension Dictionary where Key == Example {
     /// Returns a dictionary with SwiftLint violation markers (↓) removed from keys.
     ///
     /// - returns: A new `Dictionary`.
     func removingViolationMarkers() -> [Key: Value] {
-        return Dictionary(uniqueKeysWithValues: map { ($0.replacingOccurrences(of: "↓", with: ""), $1) })
+        Dictionary(uniqueKeysWithValues: map { key, value in
+            return (key.removingViolationMarkers(), value)
+        })
     }
 }

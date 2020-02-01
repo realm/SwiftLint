@@ -21,13 +21,15 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: [
             "// ↓Copyright\n",
             "//\n// ↓Copyright",
-            "//\n" +
-            "//  FileHeaderRule.swift\n" +
-            "//  SwiftLint\n" +
-            "//\n" +
-            "//  Created by Marcelo Fabri on 27/11/16.\n" +
-            "//  ↓Copyright © 2016 Realm. All rights reserved.\n" +
-            "//"
+            """
+            //
+            //  FileHeaderRule.swift
+            //  SwiftLint
+            //
+            //  Created by Marcelo Fabri on 27/11/16.
+            //  ↓Copyright © 2016 Realm. All rights reserved.
+            //
+            """
         ]
     )
 

@@ -1,6 +1,6 @@
 internal struct IdentifierNameRuleExamples {
     static let nonTriggeringExamples = [
-        "let myLet = 0",
+        Example("let myLet = 0"),
         "var myVar = 0",
         "private let _myLet = 0",
         "class Abc { static let MyLet = 0 }",
@@ -17,7 +17,7 @@ internal struct IdentifierNameRuleExamples {
     ]
 
     static let triggeringExamples = [
-        "↓let MyLet = 0",
+        Example("↓let MyLet = 0"),
         "↓let _myLet = 0",
         "private ↓let myLet_ = 0",
         "↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",

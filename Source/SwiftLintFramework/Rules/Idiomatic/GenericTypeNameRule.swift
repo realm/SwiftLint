@@ -32,20 +32,20 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>\n"
         ],
         triggeringExamples: [
-            "func foo<↓T_Foo>() {}\n",
-            "func foo<T, ↓U_Foo>(param: U_Foo) -> T {}\n",
-            "func foo<↓\(String(repeating: "T", count: 21))>() {}\n",
-            "func foo<↓type>() {}\n",
-            "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n",
-            "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n",
-            "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>\n"
-        ] + ["class", "struct", "enum"].flatMap { type -> [String] in
+            Example("func foo<↓T_Foo>() {}\n"),
+            Example("func foo<T, ↓U_Foo>(param: U_Foo) -> T {}\n"),
+            Example("func foo<↓\(String(repeating: "T", count: 21))>() {}\n"),
+            Example("func foo<↓type>() {}\n"),
+            Example("typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n"),
+            Example("typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n"),
+            Example("typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>\n")
+        ] + ["class", "struct", "enum"].flatMap { type -> [Example] in
             return [
-                "\(type) Foo<↓T_Foo> {}\n",
-                "\(type) Foo<T, ↓U_Foo> {}\n",
-                "\(type) Foo<↓T_Foo, ↓U_Foo> {}\n",
-                "\(type) Foo<↓\(String(repeating: "T", count: 21))> {}\n",
-                "\(type) Foo<↓type> {}\n"
+                Example("\(type) Foo<↓T_Foo> {}\n"),
+                Example("\(type) Foo<T, ↓U_Foo> {}\n"),
+                Example("\(type) Foo<↓T_Foo, ↓U_Foo> {}\n"),
+                Example("\(type) Foo<↓\(String(repeating: "T", count: 21))> {}\n"),
+                Example("\(type) Foo<↓type> {}\n")
             ]
         }
     )

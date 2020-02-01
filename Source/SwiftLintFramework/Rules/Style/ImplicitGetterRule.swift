@@ -14,56 +14,66 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
         triggeringExamples: ImplicitGetterRule.triggeringExamples
     )
 
-    private static var nonTriggeringExamples: [String] {
+    private static var nonTriggeringExamples: [Example] {
         let commonExamples = [
-            """
+            Example("""
             class Foo {
                 var foo: Int {
                     get { return 3 }
                     set { _abc = newValue }
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 var foo: Int {
                     return 20
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 static var foo: Int {
                     return 20
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 static var foo: Int {
                     get { return 3 }
                     set { _abc = newValue }
                 }
             }
-            """,
-            "class Foo {\n    var foo: Int\n}",
-            """
+            """),
+            Example("""
+            class Foo {
+                var foo: Int
+            }
+            """),
+            Example("""
             class Foo {
                 var foo: Int {
                     return getValueFromDisk()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 var foo: String {
                     return "get"
                 }
             }
-            """,
-            "protocol Foo {\n    var foo: Int { get }\n",
-            "protocol Foo {\n    var foo: Int { get set }\n",
-            """
+            """),
+            Example("""
+            protocol Foo {
+                var foo: Int { get }
+            """),
+            Example("""
+            protocol Foo {
+                var foo: Int { get set }
+            """),
+            Example("""
             class Foo {
                 var foo: Int {
                     struct Bar {
@@ -76,20 +86,20 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                     return Bar().bar
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             var _objCTaggedPointerBits: UInt {
                 @inline(__always) get { return 0 }
             }
-            """,
-            """
+            """),
+            Example("""
             var next: Int? {
                 mutating get {
                     defer { self.count += 1 }
                     return self.count
                 }
             }
-            """
+            """)
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {
@@ -97,29 +107,37 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
         }
 
         return commonExamples + [
-            """
+            Example("""
             class Foo {
                 subscript(i: Int) -> Int {
                     return 20
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 subscript(i: Int) -> Int {
                     get { return 3 }
                     set { _abc = newValue }
                 }
             }
-            """,
-            "protocol Foo {\n    subscript(i: Int) -> Int { get }\n}",
-            "protocol Foo {\n    subscript(i: Int) -> Int { get set }\n}"
+            """),
+            Example("""
+            protocol Foo {
+                subscript(i: Int) -> Int { get }
+            }
+            """),
+            Example("""
+            protocol Foo {
+                subscript(i: Int) -> Int { get set }
+            }
+            """)
         ]
     }
 
-    private static var triggeringExamples: [String] {
+    private static var triggeringExamples: [Example] {
         let commonExamples = [
-            """
+            Example("""
             class Foo {
                 var foo: Int {
                     ↓get {
@@ -127,15 +145,15 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                     }
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 var foo: Int {
                     ↓get{ return 20 }
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 static var foo: Int {
                     ↓get {
@@ -143,9 +161,13 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                     }
                 }
             }
-            """,
-            "var foo: Int {\n    ↓get { return 20 }\n}",
-            """
+            """),
+            Example("""
+            var foo: Int {
+                ↓get { return 20 }
+            }
+            """),
+            Example("""
             class Foo {
                 @objc func bar() {}
                 var foo: Int {
@@ -154,7 +176,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                     }
                 }
             }
-            """
+            """)
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {
@@ -162,7 +184,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
         }
 
         return commonExamples + [
-            """
+            Example("""
             class Foo {
                 subscript(i: Int) -> Int {
                     ↓get {
@@ -170,7 +192,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                     }
                 }
             }
-            """
+            """)
         ]
     }
 

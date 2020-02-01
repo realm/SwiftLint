@@ -20,21 +20,21 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             "[1, 2].something { number, idx in\n return number * idx\n}\n",
             "let isEmpty = [1, 2].isEmpty()\n",
             "violations.sorted(by: { lhs, rhs in \n return lhs.location > rhs.location\n})\n",
-            "rlmConfiguration.migrationBlock.map { rlmMigration in\n" +
+            Example("rlmConfiguration.migrationBlock.map { rlmMigration in\n" +
                 "return { migration, schemaVersion in\n" +
                 "rlmMigration(migration.rlmMigration, schemaVersion)\n" +
                 "}\n" +
-            "}",
-            "genericsFunc { (a: Type, b) in\n" +
+            "}"),
+            Example("genericsFunc { (a: Type, b) in\n" +
                 "a + b\n" +
-            "}\n",
-            "var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
+            "}\n"),
+            Example("var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
             "   lbl.backgroundColor = .red\n" +
             "   return lbl\n" +
-            "}(UILabel())\n",
-            "hoge(arg: num) { num in\n" +
+            "}(UILabel())\n"),
+            Example("hoge(arg: num) { num in\n" +
             "  return num\n" +
-            "}\n",
+            "}\n"),
             """
             ({ (manager: FileManager) in
               print(manager)
@@ -58,8 +58,8 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n",
             "[1, 2].something { number, ↓idx in\n return number\n}\n",
             "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
-            "hoge(arg: num) { ↓num in\n" +
-            "}\n",
+            Example("hoge(arg: num) { ↓num in\n" +
+            "}\n"),
             "fooFunc { ↓아 in\n }",
             "func foo () {\n bar { ↓number in\n return 3\n}\n",
             """

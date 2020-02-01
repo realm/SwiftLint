@@ -12,25 +12,29 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         description: "Number of function parameters should be low.",
         kind: .metrics,
         nonTriggeringExamples: [
-            "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "`init`(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "init?(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "init?<T>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "init?<T: String>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func f2(p1: Int, p2: Int) { }",
-            "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
-            "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
-                "let s = a.flatMap { $0 as? [String: Int] } ?? []}}",
-            "override func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"
+            Example("init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("`init`(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("init?(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("init?<T>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("init?<T: String>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("func f2(p1: Int, p2: Int) { }"),
+            Example("func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}"),
+            Example("""
+            func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {
+                let s = a.flatMap { $0 as? [String: Int] } ?? []}}
+            """),
+            Example("override func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}")
         ],
         triggeringExamples: [
-            "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "↓func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
-            "struct Foo {\n" +
-                "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}\n" +
-                "↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}"
+            Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("↓func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
+            Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"),
+            Example("""
+            struct Foo {
+                init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}
+                ↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}
+            """)
         ]
     )
 

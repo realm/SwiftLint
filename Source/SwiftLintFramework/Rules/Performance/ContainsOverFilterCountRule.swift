@@ -12,9 +12,9 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             return [
-                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n",
-                "let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n",
-                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01\n"
+                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n"),
+                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n"),
+                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01\n")
             ]
         } +  [
             "let result = myList.contains(where: { $0 % 2 == 0 })\n",
@@ -23,9 +23,9 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
         ],
         triggeringExamples: [">", "==", "!="].flatMap { operation in
             return [
-                "let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0\n",
-                "let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0\n",
-                "let result = ↓myList.filter(where: someFunction).count \(operation) 0\n"
+                Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0\n"),
+                Example("let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0\n"),
+                Example("let result = ↓myList.filter(where: someFunction).count \(operation) 0\n")
             ]
         }
     )

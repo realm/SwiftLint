@@ -19,10 +19,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
             "let object: Any!",
             "@IBOutlet var constraints: [NSLayoutConstraint]!",
             "setEditing(!editing, animated: true)",
-            "navigationController.setNavigationBarHidden(!navigationController." +
-                "navigationBarHidden, animated: true)",
-            "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
-                "self.searchBar?.text?.isEmpty == false) {}",
+            Example("navigationController.setNavigationBarHidden(!navigationController." +
+                "navigationBarHidden, animated: true)"),
+            Example("if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
+                "self.searchBar?.text?.isEmpty == false) {}"),
             "print(\"\\(xVar)!\")",
             "var test = (!bar)",
             "var a: [Int]!",
@@ -45,11 +45,11 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
             "dict[\"abc\"]↓!.bar(\"B\")",
             "if dict[\"a\"]↓!!!! {",
             "var foo: [Bool]! = dict[\"abc\"]↓!",
-            """
-            context(\"abc\") {
-              var foo: [Bool]! = dict[\"abc\"]↓!
+            Example("""
+            context("abc") {
+              var foo: [Bool]! = dict["abc"]↓!
             }
-            """,
+            """),
             "open var computed: String { return foo.bar↓! }",
             "return self↓!"
         ]

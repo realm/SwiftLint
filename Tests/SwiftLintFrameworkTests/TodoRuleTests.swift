@@ -7,21 +7,21 @@ class TodoRuleTests: XCTestCase {
     }
 
     func testTodoMessage() {
-        let string = "fatalError() // TODO: Implement"
-        let violations = self.violations(string)
+        let example = Example("fatalError() // TODO: Implement")
+        let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement).")
     }
 
     func testFixMeMessage() {
-        let string = "fatalError() // FIXME: Implement"
-        let violations = self.violations(string)
+        let example = Example("fatalError() // FIXME: Implement")
+        let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement).")
     }
 
-    private func violations(_ string: String) -> [StyleViolation] {
+    private func violations(_ example: Example) -> [StyleViolation] {
         let config = makeConfig(nil, TodoRule.description.identifier)!
-        return SwiftLintFrameworkTests.violations(string, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

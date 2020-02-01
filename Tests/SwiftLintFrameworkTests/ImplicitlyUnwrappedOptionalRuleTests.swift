@@ -15,12 +15,12 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
     func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
-            "@IBOutlet private var label: UILabel!",
-            "@IBOutlet var label: UILabel!",
-            "let int: Int!"
+            Example("@IBOutlet private var label: UILabel!"),
+            Example("@IBOutlet var label: UILabel!"),
+            Example("let int: Int!")
         ]
 
-        let nonTriggeringExamples = ["if !boolean {}"]
+        let nonTriggeringExamples = [Example("if !boolean {}")]
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 

@@ -107,17 +107,17 @@ extension CollectionAlignmentRule {
             self.alignColons = alignColons
         }
 
-        var triggeringExamples: [String] {
+        var triggeringExamples: [Example] {
             let examples = alignColons ? alignColonsTriggeringExamples : alignLeftTriggeringExamples
             return examples + sharedTriggeringExamples
         }
 
-        var nonTriggeringExamples: [String] {
+        var nonTriggeringExamples: [Example] {
             let examples = alignColons ? alignColonsNonTriggeringExamples : alignLeftNonTriggeringExamples
             return examples + sharedNonTriggeringExamples
         }
 
-        private var alignColonsTriggeringExamples: [String] {
+        private var alignColonsTriggeringExamples: [Example] {
             return [
                 """
                 doThings(arg: [
@@ -146,7 +146,7 @@ extension CollectionAlignmentRule {
             ]
         }
 
-        private var alignColonsNonTriggeringExamples: [String] {
+        private var alignColonsNonTriggeringExamples: [Example] {
             return [
                 """
                 doThings(arg: [
@@ -175,7 +175,7 @@ extension CollectionAlignmentRule {
             ]
         }
 
-        private var alignLeftTriggeringExamples: [String] {
+        private var alignLeftTriggeringExamples: [Example] {
             return [
                 """
                 doThings(arg: [
@@ -204,7 +204,7 @@ extension CollectionAlignmentRule {
             ]
         }
 
-        private var alignLeftNonTriggeringExamples: [String] {
+        private var alignLeftNonTriggeringExamples: [Example] {
             return [
                 """
                 doThings(arg: [
@@ -233,7 +233,7 @@ extension CollectionAlignmentRule {
             ]
         }
 
-        private var sharedTriggeringExamples: [String] {
+        private var sharedTriggeringExamples: [Example] {
             return [
                 """
                 let coordinates = [
@@ -252,7 +252,7 @@ extension CollectionAlignmentRule {
             ]
         }
 
-        private var sharedNonTriggeringExamples: [String] {
+        private var sharedNonTriggeringExamples: [Example] {
             return [
                 """
                 let coordinates = [

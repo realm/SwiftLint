@@ -164,7 +164,7 @@ class IndentationWidthRuleTests: XCTestCase {
 
     // MARK: Helpers
     private func countViolations(
-        in string: String,
+        in example: Example,
         indentationWidth: Int? = nil,
         includeComments: Bool? = nil,
         file: StaticString = #file,
@@ -179,7 +179,7 @@ class IndentationWidthRuleTests: XCTestCase {
             return 0
         }
 
-        return violations("\(string)\n", config: config).count
+        return violations(example.with(code: example.code + "\n"), config: config).count
     }
 
     private func assertViolations(
@@ -192,7 +192,7 @@ class IndentationWidthRuleTests: XCTestCase {
     ) {
         XCTAssertEqual(
             countViolations(
-                in: string,
+                in: Example(string, file: file, line: line),
                 indentationWidth: indentationWidth,
                 includeComments: includeComments,
                 file: file,

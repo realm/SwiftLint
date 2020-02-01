@@ -30,11 +30,11 @@ struct RuleDocumentation {
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
         if !description.nonTriggeringExamples.isEmpty {
             content += [h2("Non Triggering Examples")]
-            content += description.nonTriggeringExamples.map(formattedCode)
+            content += description.nonTriggeringExamples.map { $0.code }.map(formattedCode)
         }
         if !description.triggeringExamples.isEmpty {
             content += [h2("Triggering Examples")]
-            content += description.triggeringExamples.map(formattedCode)
+            content += description.triggeringExamples.map { $0.code }.map(formattedCode)
         }
         return content.joined(separator: "\n\n")
     }

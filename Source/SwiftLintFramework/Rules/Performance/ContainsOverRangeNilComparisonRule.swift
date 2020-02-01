@@ -19,7 +19,7 @@ public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, Confi
         ],
         triggeringExamples: ["!=", "=="].flatMap { comparison in
             return [
-                "↓myString.range(of: \"Test\") \(comparison) nil"
+                Example("↓myString.range(of: \"Test\") \(comparison) nil")
             ]
         }
     )

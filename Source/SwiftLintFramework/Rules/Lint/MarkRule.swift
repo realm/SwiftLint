@@ -12,58 +12,58 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
         kind: .lint,
         nonTriggeringExamples: [
-            "// MARK: good\n",
-            "// MARK: - good\n",
-            "// MARK: -\n",
-            "// BOOKMARK",
-            "//BOOKMARK",
-            "// BOOKMARKS"
+            Example("// MARK: good\n"),
+            Example("// MARK: - good\n"),
+            Example("// MARK: -\n"),
+            Example("// BOOKMARK"),
+            Example("//BOOKMARK"),
+            Example("// BOOKMARKS")
         ],
         triggeringExamples: [
-            "↓//MARK: bad",
-            "↓// MARK:bad",
-            "↓//MARK:bad",
-            "↓//  MARK: bad",
-            "↓// MARK:  bad",
-            "↓// MARK: -bad",
-            "↓// MARK:- bad",
-            "↓// MARK:-bad",
-            "↓//MARK: - bad",
-            "↓//MARK:- bad",
-            "↓//MARK: -bad",
-            "↓//MARK:-bad",
-            "↓//Mark: bad",
-            "↓// Mark: bad",
-            "↓// MARK bad",
-            "↓//MARK bad",
-            "↓// MARK - bad",
-            "↓//MARK : bad",
-            "↓// MARKL:",
-            "↓// MARKR ",
-            "↓// MARKK -",
-            "↓/// MARK:",
-            "↓/// MARK bad",
+            Example("↓//MARK: bad"),
+            Example("↓// MARK:bad"),
+            Example("↓//MARK:bad"),
+            Example("↓//  MARK: bad"),
+            Example("↓// MARK:  bad"),
+            Example("↓// MARK: -bad"),
+            Example("↓// MARK:- bad"),
+            Example("↓// MARK:-bad"),
+            Example("↓//MARK: - bad"),
+            Example("↓//MARK:- bad"),
+            Example("↓//MARK: -bad"),
+            Example("↓//MARK:-bad"),
+            Example("↓//Mark: bad"),
+            Example("↓// Mark: bad"),
+            Example("↓// MARK bad"),
+            Example("↓//MARK bad"),
+            Example("↓// MARK - bad"),
+            Example("↓//MARK : bad"),
+            Example("↓// MARKL:"),
+            Example("↓// MARKR "),
+            Example("↓// MARKK -"),
+            Example("↓/// MARK:"),
+            Example("↓/// MARK bad"),
             issue1029Example
         ],
         corrections: [
-            "↓//MARK: comment": "// MARK: comment",
-            "↓// MARK:  comment": "// MARK: comment",
-            "↓// MARK:comment": "// MARK: comment",
-            "↓//  MARK: comment": "// MARK: comment",
-            "↓//MARK: - comment": "// MARK: - comment",
-            "↓// MARK:- comment": "// MARK: - comment",
-            "↓// MARK: -comment": "// MARK: - comment",
-            "↓// MARK: -  comment": "// MARK: - comment",
-            "↓// Mark: comment": "// MARK: comment",
-            "↓// Mark: - comment": "// MARK: - comment",
-            "↓// MARK - comment": "// MARK: - comment",
-            "↓// MARK : comment": "// MARK: comment",
-            "↓// MARKL:": "// MARK:",
-            "↓// MARKL: -": "// MARK: -",
-            "↓// MARKK ": "// MARK: ",
-            "↓// MARKK -": "// MARK: -",
-            "↓/// MARK:": "// MARK:",
-            "↓/// MARK comment": "// MARK: comment",
+            Example("↓//MARK: comment"): Example("// MARK: comment"),
+            Example("↓// MARK:  comment"): Example("// MARK: comment"),
+            Example("↓// MARK:comment"): Example("// MARK: comment"),
+            Example("↓//  MARK: comment"): Example("// MARK: comment"),
+            Example("↓//MARK: - comment"): Example("// MARK: - comment"),
+            Example("↓// MARK:- comment"): Example("// MARK: - comment"),
+            Example("↓// MARK: -comment"): Example("// MARK: - comment"),
+            Example("↓// MARK: -  comment"): Example("// MARK: - comment"),
+            Example("↓// Mark: comment"): Example("// MARK: comment"),
+            Example("↓// Mark: - comment"): Example("// MARK: - comment"),
+            Example("↓// MARK - comment"): Example("// MARK: - comment"),
+            Example("↓// MARK : comment"): Example("// MARK: comment"),
+            Example("↓// MARKL:"): Example("// MARK:"),
+            Example("↓// MARKL: -"): Example("// MARK: -"),
+            Example("↓// MARKK "): Example("// MARK: "),
+            Example("↓// MARKK -"): Example("// MARK: -"),
+            Example("↓/// MARK:"): Example("// MARK:"),
+            Example("↓/// MARK comment"): Example("// MARK: comment"),
             issue1029Example: issue1029Correction
         ]
     )
@@ -196,17 +196,21 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 }
 
-private let issue1029Example = "↓//MARK:- Top-Level bad mark\n" +
-                               "↓//MARK:- Another bad mark\n" +
-                               "struct MarkTest {}\n" +
-                               "↓// MARK:- Bad mark\n" +
-                               "extension MarkTest {}\n"
+private let issue1029Example = Example("""
+    ↓//MARK:- Top-Level bad mark
+    ↓//MARK:- Another bad mark
+    struct MarkTest {}
+    ↓// MARK:- Bad mark
+    extension MarkTest {}
+    """)
 
-private let issue1029Correction = "// MARK: - Top-Level bad mark\n" +
-                                 "// MARK: - Another bad mark\n" +
-                                 "struct MarkTest {}\n" +
-                                 "// MARK: - Bad mark\n" +
-                                 "extension MarkTest {}\n"
+private let issue1029Correction = Example("""
+    // MARK: - Top-Level bad mark
+    // MARK: - Another bad mark
+    struct MarkTest {}
+    // MARK: - Bad mark
+    extension MarkTest {}
+    """)
 
 // These need to be at the bottom of the file to work around https://bugs.swift.org/browse/SR-10486
 

@@ -32,7 +32,8 @@ class ExampleTests: XCTestCase {
     }
 
     func testWithCode() {
-        let original = Example("original code")
+        // TODO: get rid of .init, which was a workaround for https://bugs.swift.org/browse/SR-12034
+        let original = Example.init("original code")
         XCTAssertNotNil(original.file)
         XCTAssertNotNil(original.line)
 

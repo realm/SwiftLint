@@ -68,7 +68,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
             Example("""
             let x = [
                key: value
-               ↓]"
+               ↓]
             """)
         ],
         corrections: [

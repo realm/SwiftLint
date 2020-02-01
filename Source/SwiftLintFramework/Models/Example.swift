@@ -31,13 +31,13 @@ public extension Example {
 
 extension Example: Hashable {
     public static func == (lhs: Example, rhs: Example) -> Bool {
-        // Ignoring file/line metadata beacuse two Examples could represent
+        // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
         return lhs.code == rhs.code
     }
 
     public func hash(into hasher: inout Hasher) {
-        // Ignoring file/line metadata beacuse two Examples could represent
+        // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
         hasher.combine(code)
     }

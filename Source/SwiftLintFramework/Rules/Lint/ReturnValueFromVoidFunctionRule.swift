@@ -31,7 +31,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, Syntax
 
 #if canImport(SwiftSyntax)
 private class ReturnVisitor: SyntaxRuleVisitor {
-    private(set) var positions = [AbsolutePosition]()
+    private var positions = [AbsolutePosition]()
 
     func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
         if node.expression != nil,

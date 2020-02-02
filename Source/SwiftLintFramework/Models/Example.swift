@@ -23,7 +23,7 @@ public extension Example {
         self.line = line
     }
 
-    /// Retunrs the same example, but with the `code` that is passed in
+    /// Returns the same example, but with the `code` that is passed in
     /// - Parameter code: the new code to use in the modified example
     func with(code: String) -> Example {
         var new = self

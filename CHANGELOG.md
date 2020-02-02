@@ -120,6 +120,9 @@ This is the last release to support building with Swift 5.0.x.
   and which are not.  
   [ZevEisenberg](https://github.com/ZevEisenberg)
   [#3040](https://github.com/realm/SwiftLint/pull/3040)
+* Restructure test helpers.  
+  [ZevEisenberg](https://github.com/ZevEisenberg)
+  [#3065](https://github.com/realm/SwiftLint/pull/3065)
 
 * Introduce a new `SyntaxRule` that enables writing rules using
   [SwiftSyntax](https://github.com/apple/swift-syntax).  

@@ -8,11 +8,12 @@ import SwiftSyntax
 public protocol SyntaxRule: Rule {}
 
 #if canImport(SwiftSyntax)
+/// A SwiftSyntax visitor that collects data to provide violations for a specific rule.
 public protocol SyntaxRuleVisitor: SyntaxVisitor {
     /// The rule that uses this visitor.
     associatedtype Rule: SyntaxRule
 
-    /// Return the violations that should be calculated based on data that was accumulated during the `visit` methods.
+    /// Returns the violations that should be calculated based on data that was accumulated during the `visit` methods.
     func violations(for rule: Rule, in file: SwiftLintFile) -> [StyleViolation]
 }
 

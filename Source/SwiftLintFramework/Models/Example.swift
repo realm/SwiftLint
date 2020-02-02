@@ -2,9 +2,9 @@
 /// non-triggering style
 public struct Example {
     /// The contents of the example
-    public var code: String
+    public private(set) var code: String
     /// The path to the file where the example was created
-    public var file: StaticString
+    public private(set) var file: StaticString
     /// The line in the file where the example was created
     public var line: UInt
 }

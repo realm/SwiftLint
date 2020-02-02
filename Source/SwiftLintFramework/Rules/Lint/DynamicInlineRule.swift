@@ -12,16 +12,16 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTe
         description: "Avoid using 'dynamic' and '@inline(__always)' together.",
         kind: .lint,
         nonTriggeringExamples: [
-            "class C {\ndynamic func f() {}}",
-            "class C {\n@inline(__always) func f() {}}",
-            "class C {\n@inline(never) dynamic func f() {}}"
+            Example("class C {\ndynamic func f() {}}"),
+            Example("class C {\n@inline(__always) func f() {}}"),
+            Example("class C {\n@inline(never) dynamic func f() {}}")
         ],
         triggeringExamples: [
-            "class C {\n@inline(__always) dynamic ↓func f() {}\n}",
-            "class C {\n@inline(__always) public dynamic ↓func f() {}\n}",
-            "class C {\n@inline(__always) dynamic internal ↓func f() {}\n}",
-            "class C {\n@inline(__always)\ndynamic ↓func f() {}\n}",
-            "class C {\n@inline(__always)\ndynamic\n↓func f() {}\n}"
+            Example("class C {\n@inline(__always) dynamic ↓func f() {}\n}"),
+            Example("class C {\n@inline(__always) public dynamic ↓func f() {}\n}"),
+            Example("class C {\n@inline(__always) dynamic internal ↓func f() {}\n}"),
+            Example("class C {\n@inline(__always)\ndynamic ↓func f() {}\n}"),
+            Example("class C {\n@inline(__always)\ndynamic\n↓func f() {}\n}")
         ]
     )
 

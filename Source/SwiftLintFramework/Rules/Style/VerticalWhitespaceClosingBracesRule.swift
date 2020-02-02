@@ -12,10 +12,10 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private static let nonTriggeringExamples = [
-        "[1, 2].map { $0 }.filter {",
-        "[1, 2].map { $0 }.filter { num in",
-        """
+    private static let nonTriggeringExamples: [Example] = [
+        Example("[1, 2].map { $0 }.filter {"),
+        Example("[1, 2].map { $0 }.filter { num in"),
+        Example("""
         /*
             class X {
 
@@ -23,17 +23,18 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
 
             }
         */
-        """
+        """)
     ]
 
-    private static let violatingToValidExamples: [String: String] = [
-        "    print(\"x is 5\")\n↓\n}": "    print(\"x is 5\")\n}",
-        "    print(\"x is 5\")\n↓\n\n}": "    print(\"x is 5\")\n}",
-        "    print(\"x is 5\")\n↓    \n}": "    print(\"x is 5\")\n}",
-        "        )\n}\n↓\n    }\n}": "        )\n}\n    }\n}",
-        "[\n1,\n2,\n3\n↓\n]": "[\n1,\n2,\n3\n]",
-        "foo(\nx: 5,\ny:6\n↓\n)": "foo(\nx: 5,\ny:6\n)",
-        "class Name {\n    run(5) { x in print(x) }\n↓\n}": "class Name {\n    run(5) { x in print(x) }\n}"
+    private static let violatingToValidExamples: [Example: Example] = [
+        Example("    print(\"x is 5\")\n↓\n}"): Example("    print(\"x is 5\")\n}"),
+        Example("    print(\"x is 5\")\n↓\n\n}"): Example("    print(\"x is 5\")\n}"),
+        Example("    print(\"x is 5\")\n↓    \n}"): Example("    print(\"x is 5\")\n}"),
+        Example("        )\n}\n↓\n    }\n}"): Example("        )\n}\n    }\n}"),
+        Example("[\n1,\n2,\n3\n↓\n]"): Example("[\n1,\n2,\n3\n]"),
+        Example("foo(\nx: 5,\ny:6\n↓\n)"): Example("foo(\nx: 5,\ny:6\n)"),
+        Example("class Name {\n    run(5) { x in print(x) }\n↓\n}"):
+            Example("class Name {\n    run(5) { x in print(x) }\n}")
     ]
 
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"

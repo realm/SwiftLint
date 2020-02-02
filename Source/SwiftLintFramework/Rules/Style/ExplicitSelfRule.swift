@@ -12,74 +12,74 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         description: "Instance variables and functions should be explicitly accessed with 'self.'.",
         kind: .style,
         nonTriggeringExamples: [
-            """
+            Example("""
             struct A {
                 func f1() {}
                 func f2() {
                     self.f1()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             struct A {
                 let p1: Int
                 func f1() {
                     _ = self.p1
                 }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             struct A {
                 func f1() {}
                 func f2() {
                     ↓f1()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             struct A {
                 let p1: Int
                 func f1() {
                     _ = ↓p1
                 }
             }
-            """
+            """)
         ],
         corrections: [
-            """
+            Example("""
             struct A {
                 func f1() {}
                 func f2() {
                     ↓f1()
                 }
             }
-            """:
-            """
+            """):
+            Example("""
             struct A {
                 func f1() {}
                 func f2() {
                     self.f1()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             struct A {
                 let p1: Int
                 func f1() {
                     _ = ↓p1
                 }
             }
-            """:
-            """
+            """):
+            Example("""
             struct A {
                 let p1: Int
                 func f1() {
                     _ = self.p1
                 }
             }
-            """
+            """)
         ],
         requiresFileOnDisk: true
     )

@@ -1,19 +1,24 @@
-import Foundation
+import SwiftLintFramework
 import XCTest
 
 class DisableAllTests: XCTestCase {
     /// Example violations. Could be replaced with other single violations.
     private let violatingPhrases = [
-        "let r = 0\n", // Violates identifier_name
-        "let myString:String = \"\"\n", // Violates colon_whitespace
-        "// TODO: Some todo\n" // Violates todo
+        Example("let r = 0"), // Violates identifier_name
+        Example(#"let myString:String = """#), // Violates colon_whitespace
+        Example("// TODO: Some todo") // Violates todo
     ]
 
     // MARK: Violating Phrase
     /// Tests whether example violating phrases trigger when not applying disable rule
     func testViolatingPhrase() {
         for violatingPhrase in violatingPhrases {
-            XCTAssertEqual(violations(violatingPhrase).count, 1)
+            XCTAssertEqual(
+                violations(violatingPhrase.with(code: violatingPhrase.code + "\n")).count,
+                1,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -21,20 +26,31 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:disable all protects properly
     func testDisableAll() {
         for violatingPhrase in violatingPhrases {
-            let protectedPhrase = "// swiftlint:disable all\n" + violatingPhrase
-            XCTAssertEqual(violations(protectedPhrase).count, 0)
+            let protectedPhrase = violatingPhrase.with(code: "// swiftlint:disable all\n" + violatingPhrase.code)
+            XCTAssertEqual(
+                violations(protectedPhrase).count,
+                0,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
     /// Tests whether swiftlint:enable all unprotects properly
     func testEnableAll() {
         for violatingPhrase in violatingPhrases {
-            let unprotectedPhrase =
-                "// swiftlint:disable all\n" +
-                violatingPhrase +
-                "// swiftlint:enable all\n" +
-                violatingPhrase
-            XCTAssertEqual(violations(unprotectedPhrase).count, 1)
+            let unprotectedPhrase = violatingPhrase.with(code: """
+                // swiftlint:disable all
+                \(violatingPhrase.code)
+                // swiftlint:enable all
+                \(violatingPhrase.code)\n
+                """)
+            XCTAssertEqual(
+                violations(unprotectedPhrase).count,
+                1,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -42,20 +58,35 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:disable:previous all protects properly
     func testDisableAllPrevious() {
         for violatingPhrase in violatingPhrases {
-            let protectedPhrase = violatingPhrase + "// swiftlint:disable:previous all\n"
-            XCTAssertEqual(violations(protectedPhrase).count, 0)
+            let protectedPhrase = violatingPhrase
+                .with(code: """
+                    \(violatingPhrase.code)
+                    // swiftlint:disable:previous all\n
+                    """)
+            XCTAssertEqual(
+                violations(protectedPhrase).count,
+                0,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
     /// Tests whether swiftlint:enable:previous all unprotects properly
     func testEnableAllPrevious() {
         for violatingPhrase in violatingPhrases {
-            let unprotectedPhrase =
-                "// swiftlint:disable all\n" +
-                violatingPhrase +
-                violatingPhrase +
-                "// swiftlint:enable:previous all\n"
-            XCTAssertEqual(violations(unprotectedPhrase).count, 1)
+            let unprotectedPhrase = violatingPhrase.with(code: """
+                // swiftlint:disable all
+                \(violatingPhrase.code)
+                \(violatingPhrase.code)
+                // swiftlint:enable:previous all\n
+                """)
+            XCTAssertEqual(
+                violations(unprotectedPhrase).count,
+                1,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -63,20 +94,31 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:disable:next all protects properly
     func testDisableAllNext() {
         for violatingPhrase in violatingPhrases {
-            let protectedPhrase = "// swiftlint:disable:next all\n" + violatingPhrase
-            XCTAssertEqual(violations(protectedPhrase).count, 0)
+            let protectedPhrase = violatingPhrase.with(code: "// swiftlint:disable:next all\n" + violatingPhrase.code)
+            XCTAssertEqual(
+                violations(protectedPhrase).count,
+                0,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
     /// Tests whether swiftlint:enable:next all unprotects properly
     func testEnableAllNext() {
         for violatingPhrase in violatingPhrases {
-            let unprotectedPhrase =
-                "// swiftlint:disable all\n" +
-                violatingPhrase +
-                "// swiftlint:enable:next all\n" +
-                violatingPhrase
-            XCTAssertEqual(violations(unprotectedPhrase).count, 1)
+            let unprotectedPhrase = violatingPhrase.with(code: """
+                // swiftlint:disable all
+                \(violatingPhrase.code)
+                // swiftlint:enable:next all
+                \(violatingPhrase.code)\n
+                """)
+            XCTAssertEqual(
+                violations(unprotectedPhrase).count,
+                1,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
@@ -84,22 +126,32 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:disable:this all protects properly
     func testDisableAllThis() {
         for violatingPhrase in violatingPhrases {
-            let rawViolatingPhrase = violatingPhrase.replacingOccurrences(of: "\n", with: "")
-            let protectedPhrase = rawViolatingPhrase + "// swiftlint:disable:this all\n"
-            XCTAssertEqual(violations(protectedPhrase).count, 0)
+            let rawViolatingPhrase = violatingPhrase.code.replacingOccurrences(of: "\n", with: "")
+            let protectedPhrase = violatingPhrase.with(code: rawViolatingPhrase + "// swiftlint:disable:this all\n")
+            XCTAssertEqual(
+                violations(protectedPhrase).count,
+                0,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 
     /// Tests whether swiftlint:enable:next all unprotects properly
     func testEnableAllThis() {
         for violatingPhrase in violatingPhrases {
-            let rawViolatingPhrase = violatingPhrase.replacingOccurrences(of: "\n", with: "")
-            let unprotectedPhrase =
-                "// swiftlint:disable all\n" +
-                violatingPhrase +
-                rawViolatingPhrase +
-                "// swiftlint:enable:this all\n"
-            XCTAssertEqual(violations(unprotectedPhrase).count, 1)
+            let rawViolatingPhrase = violatingPhrase.code.replacingOccurrences(of: "\n", with: "")
+            let unprotectedPhrase = violatingPhrase.with(code: """
+                // swiftlint:disable all
+                \(violatingPhrase.code)
+                \(rawViolatingPhrase)// swiftlint:enable:this all\n"
+                """)
+            XCTAssertEqual(
+                violations(unprotectedPhrase).count,
+                1,
+                #function,
+                file: violatingPhrase.file,
+                line: violatingPhrase.line)
         }
     }
 }

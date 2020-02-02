@@ -13,88 +13,88 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         description: "Unused parameter in a closure should be replaced with _.",
         kind: .lint,
         nonTriggeringExamples: [
-            "[1, 2].map { $0 + 1 }\n",
-            "[1, 2].map({ $0 + 1 })\n",
-            "[1, 2].map { number in\n number + 1 \n}\n",
-            "[1, 2].map { _ in\n 3 \n}\n",
-            "[1, 2].something { number, idx in\n return number * idx\n}\n",
-            "let isEmpty = [1, 2].isEmpty()\n",
-            "violations.sorted(by: { lhs, rhs in \n return lhs.location > rhs.location\n})\n",
-            "rlmConfiguration.migrationBlock.map { rlmMigration in\n" +
+            Example("[1, 2].map { $0 + 1 }\n"),
+            Example("[1, 2].map({ $0 + 1 })\n"),
+            Example("[1, 2].map { number in\n number + 1 \n}\n"),
+            Example("[1, 2].map { _ in\n 3 \n}\n"),
+            Example("[1, 2].something { number, idx in\n return number * idx\n}\n"),
+            Example("let isEmpty = [1, 2].isEmpty()\n"),
+            Example("violations.sorted(by: { lhs, rhs in \n return lhs.location > rhs.location\n})\n"),
+            Example("rlmConfiguration.migrationBlock.map { rlmMigration in\n" +
                 "return { migration, schemaVersion in\n" +
                 "rlmMigration(migration.rlmMigration, schemaVersion)\n" +
                 "}\n" +
-            "}",
-            "genericsFunc { (a: Type, b) in\n" +
+            "}"),
+            Example("genericsFunc { (a: Type, b) in\n" +
                 "a + b\n" +
-            "}\n",
-            "var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
+            "}\n"),
+            Example("var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
             "   lbl.backgroundColor = .red\n" +
             "   return lbl\n" +
-            "}(UILabel())\n",
-            "hoge(arg: num) { num in\n" +
+            "}(UILabel())\n"),
+            Example("hoge(arg: num) { num in\n" +
             "  return num\n" +
-            "}\n",
-            """
+            "}\n"),
+            Example("""
             ({ (manager: FileManager) in
               print(manager)
             })(FileManager.default)
-            """,
-            """
+            """),
+            Example("""
             withPostSideEffect { input in
                 if true { print("\\(input)") }
             }
-            """,
-            """
+            """),
+            Example("""
             viewModel?.profileImage.didSet(weak: self) { (self, profileImage) in
                 self.profileImageView.image = profileImage
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            "[1, 2].map { ↓number in\n return 3\n}\n",
-            "[1, 2].map { ↓number in\n return numberWithSuffix\n}\n",
-            "[1, 2].map { ↓number in\n return 3 // number\n}\n",
-            "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n",
-            "[1, 2].something { number, ↓idx in\n return number\n}\n",
-            "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
-            "hoge(arg: num) { ↓num in\n" +
-            "}\n",
-            "fooFunc { ↓아 in\n }",
-            "func foo () {\n bar { ↓number in\n return 3\n}\n",
-            """
+            Example("[1, 2].map { ↓number in\n return 3\n}\n"),
+            Example("[1, 2].map { ↓number in\n return numberWithSuffix\n}\n"),
+            Example("[1, 2].map { ↓number in\n return 3 // number\n}\n"),
+            Example("[1, 2].map { ↓number in\n return 3 \"number\"\n}\n"),
+            Example("[1, 2].something { number, ↓idx in\n return number\n}\n"),
+            Example("genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n"),
+            Example("hoge(arg: num) { ↓num in\n" +
+            "}\n"),
+            Example("fooFunc { ↓아 in\n }"),
+            Example("func foo () {\n bar { ↓number in\n return 3\n}\n"),
+            Example("""
             viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
                 profileImageView.image = profileImage
             }
-            """
+            """)
         ],
         corrections: [
-            "[1, 2].map { ↓number in\n return 3\n}\n":
-                "[1, 2].map { _ in\n return 3\n}\n",
-            "[1, 2].map { ↓number in\n return numberWithSuffix\n}\n":
-                "[1, 2].map { _ in\n return numberWithSuffix\n}\n",
-            "[1, 2].map { ↓number in\n return 3 // number\n}\n":
-                "[1, 2].map { _ in\n return 3 // number\n}\n",
-            "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n":
-                "[1, 2].map { _ in\n return 3 \"number\"\n}\n",
-            "[1, 2].something { number, ↓idx in\n return number\n}\n":
-                "[1, 2].something { number, _ in\n return number\n}\n",
-            "genericsFunc(closure: { (↓int: Int) -> Void in // do something\n}\n":
-                "genericsFunc(closure: { (_: Int) -> Void in // do something\n}\n",
-            "genericsFunc { (↓a, ↓b: Type) -> Void in\n}\n":
-                "genericsFunc { (_, _: Type) -> Void in\n}\n",
-            "genericsFunc { (↓a: Type, ↓b: Type) -> Void in\n}\n":
-                "genericsFunc { (_: Type, _: Type) -> Void in\n}\n",
-            "genericsFunc { (↓a: Type, ↓b) -> Void in\n}\n":
-                "genericsFunc { (_: Type, _) -> Void in\n}\n",
-            "genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n":
-                "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n",
-            "hoge(arg: num) { ↓num in\n}\n":
-                "hoge(arg: num) { _ in\n}\n",
-            "func foo () {\n bar { ↓number in\n return 3\n}\n":
-                "func foo () {\n bar { _ in\n return 3\n}\n",
-            "class C {\n #if true\n func f() {\n [1, 2].map { ↓number in\n return 3\n }\n }\n #endif\n}":
-                "class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}"
+            Example("[1, 2].map { ↓number in\n return 3\n}\n"):
+                Example("[1, 2].map { _ in\n return 3\n}\n"),
+            Example("[1, 2].map { ↓number in\n return numberWithSuffix\n}\n"):
+                Example("[1, 2].map { _ in\n return numberWithSuffix\n}\n"),
+            Example("[1, 2].map { ↓number in\n return 3 // number\n}\n"):
+                Example("[1, 2].map { _ in\n return 3 // number\n}\n"),
+            Example("[1, 2].map { ↓number in\n return 3 \"number\"\n}\n"):
+                Example("[1, 2].map { _ in\n return 3 \"number\"\n}\n"),
+            Example("[1, 2].something { number, ↓idx in\n return number\n}\n"):
+                Example("[1, 2].something { number, _ in\n return number\n}\n"),
+            Example("genericsFunc(closure: { (↓int: Int) -> Void in // do something\n}\n"):
+                Example("genericsFunc(closure: { (_: Int) -> Void in // do something\n}\n"),
+            Example("genericsFunc { (↓a, ↓b: Type) -> Void in\n}\n"):
+                Example("genericsFunc { (_, _: Type) -> Void in\n}\n"),
+            Example("genericsFunc { (↓a: Type, ↓b: Type) -> Void in\n}\n"):
+                Example("genericsFunc { (_: Type, _: Type) -> Void in\n}\n"),
+            Example("genericsFunc { (↓a: Type, ↓b) -> Void in\n}\n"):
+                Example("genericsFunc { (_: Type, _) -> Void in\n}\n"),
+            Example("genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n"):
+                Example("genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n"),
+            Example("hoge(arg: num) { ↓num in\n}\n"):
+                Example("hoge(arg: num) { _ in\n}\n"),
+            Example("func foo () {\n bar { ↓number in\n return 3\n}\n"):
+                Example("func foo () {\n bar { _ in\n return 3\n}\n"),
+            Example("class C {\n #if true\n func f() {\n [1, 2].map { ↓number in\n return 3\n }\n }\n #endif\n}"):
+                Example("class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}")
         ]
     )
 

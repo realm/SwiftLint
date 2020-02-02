@@ -20,11 +20,11 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         description: "Declarations should be referenced at least once within all files linted.",
         kind: .lint,
         nonTriggeringExamples: [
-            """
+            Example("""
             let kConstant = 0
             _ = kConstant
-            """,
-            """
+            """),
+            Example("""
             enum Change<T> {
               case insert(T)
               case delete(T)
@@ -44,8 +44,8 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
 
             let changes = [Change.insert(0), .delete(0)]
             changes.deletes()
-            """,
-            """
+            """),
+            Example("""
             struct Item {}
             struct ResponseModel: Codable {
                 let items: [Item]
@@ -56,20 +56,20 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             }
 
             _ = ResponseModel(items: [Item()]).items
-            """,
-            """
+            """),
+            Example("""
             class ResponseModel {
                 @objc func foo() {
                 }
             }
             _ = ResponseModel()
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             let ↓kConstant = 0
-            """,
-            """
+            """),
+            Example("""
             struct Item {}
             struct ↓ResponseModel: Codable {
                 let ↓items: [Item]
@@ -78,13 +78,13 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
                     case items = "ResponseItems"
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class ↓ResponseModel {
                 func ↓foo() {
                 }
             }
-            """
+            """)
         ],
         requiresFileOnDisk: true
     )

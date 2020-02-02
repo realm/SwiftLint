@@ -13,52 +13,51 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         description: "Initializing an optional variable with nil is redundant.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "var myVar: Int?\n",
-            "let myVar: Int? = nil\n",
-            "var myVar: Int? = 0\n",
-            "func foo(bar: Int? = 0) { }\n",
-            "var myVar: Optional<Int>\n",
-            "let myVar: Optional<Int> = nil\n",
-            "var myVar: Optional<Int> = 0\n",
+            Example("var myVar: Int?\n"),
+            Example("let myVar: Int? = nil\n"),
+            Example("var myVar: Int? = 0\n"),
+            Example("func foo(bar: Int? = 0) { }\n"),
+            Example("var myVar: Optional<Int>\n"),
+            Example("let myVar: Optional<Int> = nil\n"),
+            Example("var myVar: Optional<Int> = 0\n"),
             // properties with body should be ignored
-            """
+            Example("""
             var foo: Int? {
               if bar != nil { }
               return 0
             }
-            """
-            ,
+            """),
             // properties with a closure call
-            """
+            Example("""
             var foo: Int? = {
               if bar != nil { }
               return 0
             }()
-            """,
+            """),
             // lazy variables need to be initialized
-            "lazy var test: Int? = nil",
+            Example("lazy var test: Int? = nil"),
             // local variables
-            """
+            Example("""
             func funcName() {
               var myVar: String?
             }
-            """,
-            """
+            """),
+            Example("""
             func funcName() {
               let myVar: String? = nil
             }
-            """
+            """)
         ],
         triggeringExamples: triggeringExamples,
         corrections: corrections
     )
 
-    private static let triggeringExamples: [String] = {
+    private static let triggeringExamples: [Example] = {
         let commonExamples = [
-            "var myVar: Int?↓ = nil\n",
-            "var myVar: Optional<Int>↓ = nil\n",
-            "var myVar: Int?↓=nil\n",
-            "var myVar: Optional<Int>↓=nil\n"
+            Example("var myVar: Int?↓ = nil\n"),
+            Example("var myVar: Optional<Int>↓ = nil\n"),
+            Example("var myVar: Int?↓=nil\n"),
+            Example("var myVar: Optional<Int>↓=nil\n)")
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {
@@ -66,25 +65,37 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         }
 
         return commonExamples + [
-            "func funcName() {\n    var myVar: String?↓ = nil\n}"
+            Example("""
+            func funcName() {
+                var myVar: String?↓ = nil
+            }
+            """)
         ]
     }()
 
-    private static let corrections: [String: String] = {
+    private static let corrections: [Example: Example] = {
         var corrections = [
-            "var myVar: Int?↓ = nil\n": "var myVar: Int?\n",
-            "var myVar: Optional<Int>↓ = nil\n": "var myVar: Optional<Int>\n",
-            "var myVar: Int?↓=nil\n": "var myVar: Int?\n",
-            "var myVar: Optional<Int>↓=nil\n": "var myVar: Optional<Int>\n",
-            "class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}":
-            "class C {\n#if true\nvar myVar: Int?\n#endif\n}"
+            Example("var myVar: Int?↓ = nil\n"): Example("var myVar: Int?\n"),
+            Example("var myVar: Optional<Int>↓ = nil\n"): Example("var myVar: Optional<Int>\n"),
+            Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
+            Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
+            Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
+                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}")
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {
             return corrections
         }
 
-        corrections["func foo() {\n    var myVar: String?↓ = nil\n}"] = "func foo() {\n    var myVar: String?\n}"
+        corrections[Example("""
+        func foo() {
+            var myVar: String?↓ = nil
+        }
+        """)] = Example("""
+        func foo() {
+            var myVar: String?
+        }
+        """)
         return corrections
     }()
 

@@ -14,20 +14,22 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             "required and forbidden patterns. It will be replaced by the real file name.",
         kind: .style,
         nonTriggeringExamples: [
-            "let foo = \"Copyright\"",
-            "let foo = 2 // Copyright",
-            "let foo = 2\n // Copyright"
+            Example("let foo = \"Copyright\""),
+            Example("let foo = 2 // Copyright"),
+            Example("let foo = 2\n // Copyright")
         ],
         triggeringExamples: [
-            "// ↓Copyright\n",
-            "//\n// ↓Copyright",
-            "//\n" +
-            "//  FileHeaderRule.swift\n" +
-            "//  SwiftLint\n" +
-            "//\n" +
-            "//  Created by Marcelo Fabri on 27/11/16.\n" +
-            "//  ↓Copyright © 2016 Realm. All rights reserved.\n" +
-            "//"
+            Example("// ↓Copyright\n"),
+            Example("//\n// ↓Copyright"),
+            Example("""
+            //
+            //  FileHeaderRule.swift
+            //  SwiftLint
+            //
+            //  Created by Marcelo Fabri on 27/11/16.
+            //  ↓Copyright © 2016 Realm. All rights reserved.
+            //
+            """)
         ]
     )
 

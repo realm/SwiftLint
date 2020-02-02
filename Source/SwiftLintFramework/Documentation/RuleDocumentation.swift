@@ -60,10 +60,10 @@ private func detailsSummary(_ rule: Rule) -> String {
         """
 }
 
-private func formattedCode(_ code: String) -> String {
+private func formattedCode(_ example: Example) -> String {
     return """
         ```swift
-        \(code)
+        \(example.code)
         ```
         """
 }

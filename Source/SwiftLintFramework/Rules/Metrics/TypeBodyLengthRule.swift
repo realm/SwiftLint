@@ -1,11 +1,15 @@
 import SourceKittenFramework
 
-private func example(_ type: String,
-                     _ template: String,
-                     _ count: Int,
-                     _ add: String = "") -> String {
-    return "\(type) Abc {\n" +
-        repeatElement(template, count: count).joined() + "\(add)}\n"
+private func wrapExample(
+    prefix: String = "",
+    _ type: String,
+    _ template: String,
+    _ count: Int,
+    _ add: String = "",
+    file: StaticString = #file,
+    line: UInt = #line) -> Example {
+    return Example("\(prefix)\(type) Abc {\n" +
+        repeatElement(template, count: count).joined() + "\(add)}\n")
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -20,14 +24,14 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticT
         kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
-                example(type, "let abc = 0\n", 199),
-                example(type, "\n", 201),
-                example(type, "// this is a comment\n", 201),
-                example(type, "let abc = 0\n", 199, "\n/* this is\na multiline comment\n*/\n")
+                wrapExample(type, "let abc = 0\n", 199),
+                wrapExample(type, "\n", 201),
+                wrapExample(type, "// this is a comment\n", 201),
+                wrapExample(type, "let abc = 0\n", 199, "\n/* this is\na multiline comment\n*/\n")
             ]
         }),
         triggeringExamples: ["class", "struct", "enum"].map({ type in
-            "↓" + example(type, "let abc = 0\n", 201)
+             wrapExample(prefix: "↓", type, "let abc = 0\n", 201)
         })
     )
 

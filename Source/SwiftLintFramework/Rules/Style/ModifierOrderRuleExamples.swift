@@ -1,160 +1,229 @@
+// swiftlint:disable type_body_length
 internal struct ModifierOrderRuleExamples {
     static let nonTriggeringExamples = [
-        "public class Foo { \n"                                 +
-        "   public convenience required init() {} \n"           +
-        "}",
-        "public class Foo { \n"                                 +
-        "   public static let bar = 42 \n"                      +
-        "}",
-        "public class Foo { \n"                                 +
-        "   public static var bar: Int { \n"                    +
-        "       return 42"                                      +
-        "   }"                                                  +
-        "}",
-        "public class Foo { \n"                                 +
-        "   public class var bar: Int { \n"                     +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "public class Bar { \n"                                 +
-        "   public class var foo: String { \n"                  +
-        "       return \"foo\" \n"                              +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "public class Foo: Bar { \n"                            +
-        "   override public final class var foo: String { \n"   +
-        "       return \"bar\" \n"                              +
-        "   } \n"                                               +
-        "}",
-        "open class Bar { \n"                                   +
-        "   public var foo: Int? { \n"                          +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "open class Foo: Bar { \n"                              +
-        "   override public var foo: Int? { \n"                 +
-        "       return 43 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "open class Bar { \n"                                   +
-        "   open class func foo() -> Int { \n"                  +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "class Foo: Bar { \n"                                   +
-        "   override open class func foo() -> Int { \n"         +
-        "       return 43 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "protocol Foo: class {} \n"                             +
-        "class Bar { \n"                                        +
-        "    public private(set) weak var foo: Foo? \n"         +
-        "} \n",
-        "@objc \n"                                              +
-        "public final class Foo: NSObject {} \n",
-        "@objcMembers \n"                                       +
-        "public final class Foo: NSObject {} \n",
-        "@objc \n"                                              +
-        "override public private(set) weak var foo: Bar? \n",
-        "@objc \n"                                              +
-        "public final class Foo: NSObject {} \n",
-        "@objc \n"                                              +
-        "open final class Foo: NSObject { \n"                   +
-        "   open weak var weakBar: NSString? = nil \n"          +
-        "}",
-        "public final class Foo {}",
-        "class Bar { \n"                                        +
-        "   func bar() {} \n"                                   +
-        "}",
-        "internal class Foo: Bar { \n"                          +
-        "   override internal func bar() {} \n"                 +
-        "}",
-        "public struct Foo { \n"                                +
-        "   internal weak var weakBar: NSObject? = nil \n"      +
-        "}",
-        "class Foo { \n"                                        +
-        "   internal lazy var bar: String = \"foo\" \n"         +
-        "}"
+        Example("""
+        public class Foo {
+           public convenience required init() {}
+        }
+        """),
+        Example("""
+        public class Foo {
+           public static let bar = 42
+        }
+        """),
+        Example("""
+        public class Foo {
+           public static var bar: Int {
+               return
+           }
+        }
+        """),
+        Example("""
+        public class Foo {
+           public class var bar: Int {
+               return 42
+           }
+        }
+        """),
+        Example("""
+        public class Bar {
+           public class var foo: String {
+               return "foo"
+           }
+        }
+        public class Foo: Bar {
+           override public final class var foo: String {
+               return "bar"
+           }
+        }
+        """),
+        Example("""
+        open class Bar {
+           public var foo: Int? {
+               return 42
+           }
+        }
+        open class Foo: Bar {
+           override public var foo: Int? {
+               return 43
+           }
+        }
+        """),
+        Example("""
+        open class Bar {
+           open class func foo() -> Int {
+               return 42
+           }
+        }
+        class Foo: Bar {
+           override open class func foo() -> Int {
+               return 43
+           }
+        }
+        """),
+        Example("""
+        protocol Foo: class {}
+        class Bar {
+            public private(set) weak var foo: Foo?
+        }
+        """),
+        Example("""
+        @objc
+        public final class Foo: NSObject {}
+        """),
+        Example("""
+        @objcMembers
+        public final class Foo: NSObject {}
+        """),
+        Example("""
+        @objc
+        override public private(set) weak var foo: Bar?
+        """),
+        Example("""
+        @objc
+        public final class Foo: NSObject {}
+        """),
+        Example("""
+        @objc
+        open final class Foo: NSObject {
+           open weak var weakBar: NSString? = nil
+        }
+        """),
+        Example("""
+        public final class Foo {}
+        """),
+        Example("""
+        class Bar {
+           func bar() {}
+        }
+        """),
+        Example("""
+        internal class Foo: Bar {
+           override internal func bar() {}
+        }
+        """),
+        Example("""
+        public struct Foo {
+           internal weak var weakBar: NSObject? = nil
+        }
+        """),
+        Example("""
+        class Foo {
+           internal lazy var bar: String = "foo"
+        }
+        """)
     ]
 
     static let triggeringExamples = [
-        "class Foo { \n"                                        +
-        "   convenience required public init() {} \n"           +
-        "}",
-        "public class Foo { \n"                                 +
-        "   static public let bar = 42 \n"                      +
-        "}",
-        "public class Foo { \n"                                 +
-        "   static public var bar: Int { \n"                    +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "} \n",
-        "public class Foo { \n"                                 +
-        "   class public var bar: Int { \n"                     +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "public class RootFoo { \n"                             +
-        "   class public var foo: String { \n"                  +
-        "       return \"foo\" \n"                              +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "public class Foo: RootFoo { \n"                        +
-        "   override final class public var foo: String { \n"   +
-        "       return \"bar\" \n"                              +
-        "   } \n"                                               +
-        "}",
-        "open class Bar { \n"                                   +
-        "   public var foo: Int? { \n"                          +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "open class Foo: Bar { \n"                              +
-        "    public override var foo: Int? { \n"                +
-        "       return 43 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "protocol Foo: class {} \n"                             +
-            "class Bar { \n"                                    +
-            "    private(set) public weak var foo: Foo? \n"     +
-        "} \n",
-        "open class Bar { \n"                                   +
-        "   open class func foo() -> Int { \n"                  +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "class Foo: Bar { \n"                                   +
-        "   class open override func foo() -> Int { \n"         +
-        "       return 43 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "open class Bar { \n"                                   +
-        "   open class func foo() -> Int { \n"                  +
-        "       return 42 \n"                                   +
-        "   } \n"                                               +
-        "} \n"                                                  +
-        "class Foo: Bar { \n"                                   +
-        "   open override class func foo() -> Int { \n"         +
-        "       return 43 \n"                                   +
-        "   } \n"                                               +
-        "}",
-        "@objc \n"                                              +
-        "final public class Foo: NSObject {}",
-        "@objcMembers \n"                                       +
-        "final public class Foo: NSObject {}",
-        "@objc \n"                                              +
-        "final open class Foo: NSObject { \n"                   +
-        "   weak open var weakBar: NSString? = nil \n"          +
-        "}",
-        "final public class Foo {} \n",
-        "internal class Foo: Bar { \n"                          +
-        "   internal override func bar() {} \n"                 +
-        "}",
-        "public struct Foo { \n"                                +
-        "   weak internal var weakBar: NSObjetc? = nil \n"      +
-        "}",
-        "class Foo { \n"                                        +
-        "   lazy internal var bar: String = \"foo\" \n"         +
-        "}"
+        Example("""
+        class Foo {
+           convenience required public init() {}
+        }
+        """),
+        Example("""
+        public class Foo {
+           static public let bar = 42
+        }
+        """),
+        Example("""
+        public class Foo {
+           static public var bar: Int {
+               return 42
+           }
+        }
+        """),
+        Example("""
+        public class Foo {
+           class public var bar: Int {
+               return 42
+           }
+        }
+        """),
+        Example("""
+        public class RootFoo {
+           class public var foo: String {
+               return "foo"
+           }
+        }
+        public class Foo: RootFoo {
+           override final class public var foo: String
+               return "bar"
+           }
+        }
+        """),
+        Example("""
+        open class Bar {
+           public var foo: Int? {
+               return 42
+           }
+        }
+        open class Foo: Bar {
+            public override var foo: Int? {
+               return 43
+           }
+        }
+        """),
+        Example("""
+        protocol Foo: class {}
+            class Bar {
+                private(set) public weak var foo: Foo?
+        }
+        """),
+        Example("""
+        open class Bar {
+           open class func foo() -> Int {
+               return 42
+           }
+        }
+        class Foo: Bar {
+           class open override func foo() -> Int {
+               return 43
+           }
+        }
+        """),
+        Example("""
+        open class Bar {
+           open class func foo() -> Int {
+               return 42
+           }
+        }
+        class Foo: Bar {
+           open override class func foo() -> Int {
+               return 43
+           }
+        }
+        """),
+        Example("""
+        @objc
+        final public class Foo: NSObject {}
+        """),
+        Example("""
+        @objcMembers
+        final public class Foo: NSObject {}
+        """),
+        Example("""
+        @objc
+        final open class Foo: NSObject {
+           weak open var weakBar: NSString? = nil
+        }
+        """),
+        Example("""
+        final public class Foo {}
+        """),
+        Example("""
+        internal class Foo: Bar {
+           internal override func bar() {}
+        }
+        """),
+        Example("""
+        public struct Foo {
+           weak internal var weakBar: NSObjetc? = nil
+        }
+        """),
+        Example("""
+        class Foo {
+           lazy internal var bar: String = "foo"
+        }
+        """)
     ]
 }

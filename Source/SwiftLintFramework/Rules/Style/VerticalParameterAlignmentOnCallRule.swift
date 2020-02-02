@@ -12,64 +12,94 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         description: "Function parameters should be aligned vertically if they're in multiple lines in a method call.",
         kind: .style,
         nonTriggeringExamples: [
-            "foo(param1: 1, param2: bar\n" +
-            "    param3: false, param4: true)",
-            "foo(param1: 1, param2: bar)",
-            "foo(param1: 1, param2: bar\n" +
-            "    param3: false,\n" +
-            "    param4: true)",
-            "foo(\n" +
-            "   param1: 1\n" +
-            ") { _ in }",
-            "UIView.animate(withDuration: 0.4, animations: {\n" +
-            "    blurredImageView.alpha = 1\n" +
-            "}, completion: { _ in\n" +
-            "    self.hideLoading()\n" +
-            "})",
-            "UIView.animate(withDuration: 0.4, animations: {\n" +
-            "    blurredImageView.alpha = 1\n" +
-            "},\n" +
-            "completion: { _ in\n" +
-            "    self.hideLoading()\n" +
-            "})",
-            "foo(param1: 1, param2: { _ in },\n" +
-            "    param3: false, param4: true)",
-            "foo({ _ in\n" +
-            "       bar()\n" +
-            "   },\n" +
-            "   completion: { _ in\n" +
-            "       baz()\n" +
-            "   }\n" +
-            ")",
-            "foo(param1: 1, param2: [\n" +
-            "   0,\n" +
-            "   1\n" +
-            "], param3: 0)",
-            """
+            Example("""
+            foo(param1: 1, param2: bar
+                param3: false, param4: true)
+            """),
+            Example("""
+            foo(param1: 1, param2: bar)
+            """),
+            Example("""
+            foo(param1: 1, param2: bar
+                param3: false,
+                param4: true)
+            """),
+            Example("""
+            foo(
+               param1: 1
+            ) { _ in }
+            """),
+            Example("""
+            UIView.animate(withDuration: 0.4, animations: {
+                blurredImageView.alpha = 1
+            }, completion: { _ in
+                self.hideLoading()
+            })
+            """),
+            Example("""
+            UIView.animate(withDuration: 0.4, animations: {
+                blurredImageView.alpha = 1
+            },
+            completion: { _ in
+                self.hideLoading()
+            })
+            """),
+            Example("""
+            foo(param1: 1, param2: { _ in },
+                param3: false, param4: true)
+            """),
+            Example("""
+            foo({ _ in
+                   bar()
+               },
+               completion: { _ in
+                   baz()
+               }
+            )
+            """),
+            Example("""
+            foo(param1: 1, param2: [
+               0,
+               1
+            ], param3: 0)
+            """),
+            Example("""
             myFunc(foo: 0,
                    bar: baz == 0)
-            """
+            """)
         ],
         triggeringExamples: [
-            "foo(param1: 1, param2: bar\n" +
-            "                ↓param3: false, param4: true)",
-            "foo(param1: 1, param2: bar\n" +
-            " ↓param3: false, param4: true)",
-            "foo(param1: 1, param2: bar\n" +
-            "       ↓param3: false,\n" +
-            "       ↓param4: true)",
-            "foo(param1: 1,\n" +
-            "       ↓param2: { _ in })",
-            "foo(param1: 1,\n" +
-            "    param2: { _ in\n" +
-            "}, param3: 2,\n" +
-            " ↓param4: 0)",
-            "foo(param1: 1, param2: { _ in },\n" +
-            "       ↓param3: false, param4: true)",
-            """
+            Example("""
+            foo(param1: 1, param2: bar
+                            ↓param3: false, param4: true)
+            """),
+            Example("""
+            foo(param1: 1, param2: bar
+             ↓param3: false, param4: true)
+            """),
+            Example("""
+            foo(param1: 1, param2: bar
+                   ↓param3: false,
+                   ↓param4: true)
+            """),
+            Example("""
+            foo(param1: 1,
+                   ↓param2: { _ in })
+            """),
+            Example("""
+            foo(param1: 1,
+                param2: { _ in
+            }, param3: 2,
+             ↓param4: 0)
+            """),
+            Example("""
+            foo(param1: 1, param2: { _ in },
+                   ↓param3: false, param4: true)
+            """),
+            Example("""
             myFunc(foo: 0,
                     ↓bar: baz == 0)
-            """
+            """)
         ]
     )
 

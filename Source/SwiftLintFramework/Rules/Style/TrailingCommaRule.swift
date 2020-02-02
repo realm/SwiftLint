@@ -13,22 +13,25 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     public init() {}
 
-    private static let triggeringExamples =  [
-        "let foo = [1, 2, 3↓,]\n",
-        "let foo = [1, 2, 3↓, ]\n",
-        "let foo = [1, 2, 3   ↓,]\n",
-        "let foo = [1: 2, 2: 3↓, ]\n",
-        "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
-        "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
-        "let example = [ 1,\n2↓,\n // 3,\n]",
-        "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n",
-        "class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}",
-        "foo([1: \"\\(error)\"↓,])\n"
+    private static let triggeringExamples: [Example] =  [
+        Example("let foo = [1, 2, 3↓,]\n"),
+        Example("let foo = [1, 2, 3↓, ]\n"),
+        Example("let foo = [1, 2, 3   ↓,]\n"),
+        Example("let foo = [1: 2, 2: 3↓, ]\n"),
+        Example("struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n"),
+        Example("let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n"),
+        Example("let example = [ 1,\n2↓,\n // 3,\n]"),
+        Example("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"),
+        Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"),
+        Example("foo([1: \"\\(error)\"↓,])\n")
     ]
 
-    private static let corrections: [String: String] = {
-        let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓,", with: "") }
-        var result: [String: String] = [:]
+    private static let corrections: [Example: Example] = {
+        let fixed = triggeringExamples.map { example -> Example in
+            let fixedString = example.code.replacingOccurrences(of: "↓,", with: "")
+            return example.with(code: fixedString)
+        }
+        var result: [Example: Example] = [:]
         for (triggering, correction) in zip(triggeringExamples, fixed) {
             result[triggering] = correction
         }
@@ -41,13 +44,13 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
         description: "Trailing commas in arrays and dictionaries should be avoided/enforced.",
         kind: .style,
         nonTriggeringExamples: [
-            "let foo = [1, 2, 3]\n",
-            "let foo = []\n",
-            "let foo = [:]\n",
-            "let foo = [1: 2, 2: 3]\n",
-            "let foo = [Void]()\n",
-            "let example = [ 1,\n 2\n // 3,\n]",
-            "foo([1: \"\\(error)\"])\n"
+            Example("let foo = [1, 2, 3]\n"),
+            Example("let foo = []\n"),
+            Example("let foo = [:]\n"),
+            Example("let foo = [1: 2, 2: 3]\n"),
+            Example("let foo = [Void]()\n"),
+            Example("let example = [ 1,\n 2\n // 3,\n]"),
+            Example("foo([1: \"\\(error)\"])\n")
         ],
         triggeringExamples: TrailingCommaRule.triggeringExamples,
         corrections: TrailingCommaRule.corrections

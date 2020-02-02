@@ -9,24 +9,24 @@ public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
         description: "Discouraged direct initialization of types that can be harmful.",
         kind: .lint,
         nonTriggeringExamples: [
-            "let foo = UIDevice.current",
-            "let foo = Bundle.main",
-            "let foo = Bundle(path: \"bar\")",
-            "let foo = Bundle(identifier: \"bar\")",
-            "let foo = Bundle.init(path: \"bar\")",
-            "let foo = Bundle.init(identifier: \"bar\")"
+            Example("let foo = UIDevice.current"),
+            Example("let foo = Bundle.main"),
+            Example("let foo = Bundle(path: \"bar\")"),
+            Example("let foo = Bundle(identifier: \"bar\")"),
+            Example("let foo = Bundle.init(path: \"bar\")"),
+            Example("let foo = Bundle.init(identifier: \"bar\")")
         ],
         triggeringExamples: [
-            "↓UIDevice()",
-            "↓Bundle()",
-            "let foo = ↓UIDevice()",
-            "let foo = ↓Bundle()",
-            "let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice())",
-            "↓UIDevice.init()",
-            "↓Bundle.init()",
-            "let foo = ↓UIDevice.init()",
-            "let foo = ↓Bundle.init()",
-            "let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())"
+            Example("↓UIDevice()"),
+            Example("↓Bundle()"),
+            Example("let foo = ↓UIDevice()"),
+            Example("let foo = ↓Bundle()"),
+            Example("let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice())"),
+            Example("↓UIDevice.init()"),
+            Example("↓Bundle.init()"),
+            Example("let foo = ↓UIDevice.init()"),
+            Example("let foo = ↓Bundle.init()"),
+            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())")
         ]
     )
 

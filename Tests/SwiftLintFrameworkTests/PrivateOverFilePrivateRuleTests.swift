@@ -9,14 +9,14 @@ class PrivateOverFilePrivateRuleTests: XCTestCase {
     func testPrivateOverFilePrivateValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [
-            "↓fileprivate extension String {}",
-            "↓fileprivate \n extension String {}",
-            "↓fileprivate extension \n String {}"
+            Example("↓fileprivate extension String {}"),
+            Example("↓fileprivate \n extension String {}"),
+            Example("↓fileprivate extension \n String {}")
         ]
         let corrections = [
-            "↓fileprivate extension String {}": "private extension String {}",
-            "↓fileprivate \n extension String {}": "private \n extension String {}",
-            "↓fileprivate extension \n String {}": "private extension \n String {}"
+            Example("↓fileprivate extension String {}"): Example("private extension String {}"),
+            Example("↓fileprivate \n extension String {}"): Example("private \n extension String {}"),
+            Example("↓fileprivate extension \n String {}"): Example("private extension \n String {}")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: [])
@@ -27,7 +27,7 @@ class PrivateOverFilePrivateRuleTests: XCTestCase {
     func testPrivateOverFilePrivateNotValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "fileprivate extension String {}"
+            Example("fileprivate extension String {}")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)

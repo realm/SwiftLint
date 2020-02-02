@@ -67,42 +67,42 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
                      "as the declaration.",
         kind: .style,
         nonTriggeringExamples: [
-            "func abc() {\n}",
-            "[].map() { $0 }",
-            "[].map({ })",
-            "if let a = b { }",
-            "while a == b { }",
-            "guard let a = b else { }",
-            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
-            "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
-            "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }",
-            "struct Rule {}\n",
-            "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
-            """
+            Example("func abc() {\n}"),
+            Example("[].map() { $0 }"),
+            Example("[].map({ })"),
+            Example("if let a = b { }"),
+            Example("while a == b { }"),
+            Example("guard let a = b else { }"),
+            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
+            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
+            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"),
+            Example("struct Rule {}\n"),
+            Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
+            Example("""
             func f(rect: CGRect) {
                {
                   let centre = CGPoint(x: rect.midX, y: rect.midY)
                   print(centre)
                }()
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            "func abc()↓{\n}",
-            "func abc()\n\t↓{ }",
-            "[].map()↓{ $0 }",
-            "[].map( ↓{ } )",
-            "if let a = b↓{ }",
-            "while a == b↓{ }",
-            "guard let a = b else↓{ }",
-            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
-            "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
-            "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }",
-            "struct Rule↓{}\n",
-            "struct Rule\n↓{\n}\n",
-            "struct Rule\n\n\t↓{\n}\n",
-            "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n",
-            """
+            Example("func abc()↓{\n}"),
+            Example("func abc()\n\t↓{ }"),
+            Example("[].map()↓{ $0 }"),
+            Example("[].map( ↓{ } )"),
+            Example("if let a = b↓{ }"),
+            Example("while a == b↓{ }"),
+            Example("guard let a = b else↓{ }"),
+            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
+            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
+            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }"),
+            Example("struct Rule↓{}\n"),
+            Example("struct Rule\n↓{\n}\n"),
+            Example("struct Rule\n\n\t↓{\n}\n"),
+            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"),
+            Example("""
             // Get the current thread's TLS pointer. On first call for a given thread,
             // creates and initializes a new one.
             internal static func getPointer()
@@ -111,8 +111,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
               return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                 to: _ThreadLocalStorage.self)
             }
-            """,
-            """
+            """),
+            Example("""
             func run_Array_method1x(_ N: Int) {
               let existentialArray = array!
               for _ in 0 ..< N * 100 {
@@ -127,18 +127,18 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             func run_Array_method2x(_ N: Int) {
 
             }
-            """
+            """)
         ],
         corrections: [
-            "struct Rule↓{}\n": "struct Rule {}\n",
-            "struct Rule\n↓{\n}\n": "struct Rule {\n}\n",
-            "struct Rule\n\n\t↓{\n}\n": "struct Rule {\n}\n",
-            "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n":
-                "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
-            "[].map()↓{ $0 }\n": "[].map() { $0 }\n",
-            "[].map( ↓{ })\n": "[].map({ })\n",
-            "if a == b↓{ }\n": "if a == b { }\n",
-            "if\n\tlet a = b,\n\tlet c = d↓{ }\n": "if\n\tlet a = b,\n\tlet c = d { }\n"
+            Example("struct Rule↓{}\n"): Example("struct Rule {}\n"),
+            Example("struct Rule\n↓{\n}\n"): Example("struct Rule {\n}\n"),
+            Example("struct Rule\n\n\t↓{\n}\n"): Example("struct Rule {\n}\n"),
+            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"):
+                Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
+            Example("[].map()↓{ $0 }\n"): Example("[].map() { $0 }\n"),
+            Example("[].map( ↓{ })\n"): Example("[].map({ })\n"),
+            Example("if a == b↓{ }\n"): Example("if a == b { }\n"),
+            Example("if\n\tlet a = b,\n\tlet c = d↓{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n")
         ]
     )
 

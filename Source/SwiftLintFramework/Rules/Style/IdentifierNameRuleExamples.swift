@@ -1,32 +1,32 @@
 internal struct IdentifierNameRuleExamples {
     static let nonTriggeringExamples = [
-        "let myLet = 0",
-        "var myVar = 0",
-        "private let _myLet = 0",
-        "class Abc { static let MyLet = 0 }",
-        "let URL: NSURL? = nil",
-        "let XMLString: String? = nil",
-        "override var i = 0",
-        "enum Foo { case myEnum }",
-        "func isOperator(name: String) -> Bool",
-        "func typeForKind(_ kind: SwiftDeclarationKind) -> String",
-        "func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool",
-        "override func IsOperator(name: String) -> Bool",
-        "enum Foo { case `private` }",
-        "enum Foo { case value(String) }"
+        Example("let myLet = 0"),
+        Example("var myVar = 0"),
+        Example("private let _myLet = 0"),
+        Example("class Abc { static let MyLet = 0 }"),
+        Example("let URL: NSURL? = nil"),
+        Example("let XMLString: String? = nil"),
+        Example("override var i = 0"),
+        Example("enum Foo { case myEnum }"),
+        Example("func isOperator(name: String) -> Bool"),
+        Example("func typeForKind(_ kind: SwiftDeclarationKind) -> String"),
+        Example("func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool"),
+        Example("override func IsOperator(name: String) -> Bool"),
+        Example("enum Foo { case `private` }"),
+        Example("enum Foo { case value(String) }")
     ]
 
     static let triggeringExamples = [
-        "↓let MyLet = 0",
-        "↓let _myLet = 0",
-        "private ↓let myLet_ = 0",
-        "↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-        "↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0",
-        "private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-        "↓let i = 0",
-        "↓var id = 0",
-        "private ↓let _i = 0",
-        "↓func IsOperator(name: String) -> Bool",
-        "enum Foo { case ↓MyEnum }"
+        Example("↓let MyLet = 0"),
+        Example("↓let _myLet = 0"),
+        Example("private ↓let myLet_ = 0"),
+        Example("↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
+        Example("↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),
+        Example("private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
+        Example("↓let i = 0"),
+        Example("↓var id = 0"),
+        Example("private ↓let _i = 0"),
+        Example("↓func IsOperator(name: String) -> Bool"),
+        Example("enum Foo { case ↓MyEnum }")
     ]
 }

@@ -12,55 +12,55 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         description: "Prefer Nimble operator overloads over free matcher functions.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "expect(seagull.squawk) != \"Hi!\"\n",
-            "expect(\"Hi!\") == \"Hi!\"\n",
-            "expect(10) > 2\n",
-            "expect(10) >= 10\n",
-            "expect(10) < 11\n",
-            "expect(10) <= 10\n",
-            "expect(x) === x",
-            "expect(10) == 10",
-            "expect(success) == true",
-            "expect(object.asyncFunction()).toEventually(equal(1))\n",
-            "expect(actual).to(haveCount(expected))\n",
-            """
+            Example("expect(seagull.squawk) != \"Hi!\"\n"),
+            Example("expect(\"Hi!\") == \"Hi!\"\n"),
+            Example("expect(10) > 2\n"),
+            Example("expect(10) >= 10\n"),
+            Example("expect(10) < 11\n"),
+            Example("expect(10) <= 10\n"),
+            Example("expect(x) === x"),
+            Example("expect(10) == 10"),
+            Example("expect(success) == true"),
+            Example("expect(object.asyncFunction()).toEventually(equal(1))\n"),
+            Example("expect(actual).to(haveCount(expected))\n"),
+            Example("""
             foo.method {
                 expect(value).to(equal(expectedValue), description: "Failed")
                 return Bar(value: ())
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            "↓expect(seagull.squawk).toNot(equal(\"Hi\"))\n",
-            "↓expect(12).toNot(equal(10))\n",
-            "↓expect(10).to(equal(10))\n",
-            "↓expect(10, line: 1).to(equal(10))\n",
-            "↓expect(10).to(beGreaterThan(8))\n",
-            "↓expect(10).to(beGreaterThanOrEqualTo(10))\n",
-            "↓expect(10).to(beLessThan(11))\n",
-            "↓expect(10).to(beLessThanOrEqualTo(10))\n",
-            "↓expect(x).to(beIdenticalTo(x))\n",
-            "↓expect(success).to(beTrue())\n",
-            "↓expect(success).to(beFalse())\n",
-            "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n"
+            Example("↓expect(seagull.squawk).toNot(equal(\"Hi\"))\n"),
+            Example("↓expect(12).toNot(equal(10))\n"),
+            Example("↓expect(10).to(equal(10))\n"),
+            Example("↓expect(10, line: 1).to(equal(10))\n"),
+            Example("↓expect(10).to(beGreaterThan(8))\n"),
+            Example("↓expect(10).to(beGreaterThanOrEqualTo(10))\n"),
+            Example("↓expect(10).to(beLessThan(11))\n"),
+            Example("↓expect(10).to(beLessThanOrEqualTo(10))\n"),
+            Example("↓expect(x).to(beIdenticalTo(x))\n"),
+            Example("↓expect(success).to(beTrue())\n"),
+            Example("↓expect(success).to(beFalse())\n"),
+            Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n")
         ],
         corrections: [
-            "↓expect(seagull.squawk).toNot(equal(\"Hi\"))\n": "expect(seagull.squawk) != \"Hi\"\n",
-            "↓expect(\"Hi!\").to(equal(\"Hi!\"))\n": "expect(\"Hi!\") == \"Hi!\"\n",
-            "↓expect(12).toNot(equal(10))\n": "expect(12) != 10\n",
-            "↓expect(value1).to(equal(value2))\n": "expect(value1) == value2\n",
-            "↓expect(   value1  ).to(equal(  value2.foo))\n": "expect(value1) == value2.foo\n",
-            "↓expect(value1).to(equal(10))\n": "expect(value1) == 10\n",
-            "↓expect(10).to(beGreaterThan(8))\n": "expect(10) > 8\n",
-            "↓expect(10).to(beGreaterThanOrEqualTo(10))\n": "expect(10) >= 10\n",
-            "↓expect(10).to(beLessThan(11))\n": "expect(10) < 11\n",
-            "↓expect(10).to(beLessThanOrEqualTo(10))\n": "expect(10) <= 10\n",
-            "↓expect(x).to(beIdenticalTo(x))\n": "expect(x) === x\n",
-            "↓expect(success).to(beTrue())\n": "expect(success) == true\n",
-            "↓expect(success).to(beFalse())\n": "expect(success) == false\n",
-            "↓expect(success).toNot(beFalse())\n": "expect(success) != false\n",
-            "↓expect(success).toNot(beTrue())\n": "expect(success) != true\n",
-            "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n": "expect(10) > 2\n expect(10) > 2\n"
+            Example("↓expect(seagull.squawk).toNot(equal(\"Hi\"))\n"): Example("expect(seagull.squawk) != \"Hi\"\n"),
+            Example("↓expect(\"Hi!\").to(equal(\"Hi!\"))\n"): Example("expect(\"Hi!\") == \"Hi!\"\n"),
+            Example("↓expect(12).toNot(equal(10))\n"): Example("expect(12) != 10\n"),
+            Example("↓expect(value1).to(equal(value2))\n"): Example("expect(value1) == value2\n"),
+            Example("↓expect(   value1  ).to(equal(  value2.foo))\n"): Example("expect(value1) == value2.foo\n"),
+            Example("↓expect(value1).to(equal(10))\n"): Example("expect(value1) == 10\n"),
+            Example("↓expect(10).to(beGreaterThan(8))\n"): Example("expect(10) > 8\n"),
+            Example("↓expect(10).to(beGreaterThanOrEqualTo(10))\n"): Example("expect(10) >= 10\n"),
+            Example("↓expect(10).to(beLessThan(11))\n"): Example("expect(10) < 11\n"),
+            Example("↓expect(10).to(beLessThanOrEqualTo(10))\n"): Example("expect(10) <= 10\n"),
+            Example("↓expect(x).to(beIdenticalTo(x))\n"): Example("expect(x) === x\n"),
+            Example("↓expect(success).to(beTrue())\n"): Example("expect(success) == true\n"),
+            Example("↓expect(success).to(beFalse())\n"): Example("expect(success) == false\n"),
+            Example("↓expect(success).toNot(beFalse())\n"): Example("expect(success) != false\n"),
+            Example("↓expect(success).toNot(beTrue())\n"): Example("expect(success) != true\n"),
+            Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n"): Example("expect(10) > 2\n expect(10) > 2\n")
         ]
     )
 

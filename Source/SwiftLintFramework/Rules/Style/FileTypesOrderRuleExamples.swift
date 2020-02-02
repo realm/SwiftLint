@@ -124,25 +124,25 @@ internal struct FileTypesOrderRuleExamples {
     ]
 
     static let nonTriggeringExamples = [
-        FileTypesOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n"),
-        """
+        Example(FileTypesOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n")),
+        Example("""
         // Only extensions
         extension Foo {}
         extension Bar {
         }
-        """
+        """)
     ]
 
     static let triggeringExamples = [
-        """
+        Example("""
         ↓class TestViewController: UIViewController {}
 
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
         }
-        """,
-        """
+        """),
+        Example("""
         // Extensions
         ↓extension TestViewController: UITableViewDataSource {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -155,8 +155,8 @@ internal struct FileTypesOrderRuleExamples {
         }
 
         class TestViewController: UIViewController {}
-        """,
-        """
+        """),
+        Example("""
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
@@ -168,8 +168,8 @@ internal struct FileTypesOrderRuleExamples {
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
         }
-        """,
-        """
+        """),
+        Example("""
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
@@ -198,6 +198,6 @@ internal struct FileTypesOrderRuleExamples {
                 return UITableViewCell()
             }
         }
-        """
+        """)
     ]
 }

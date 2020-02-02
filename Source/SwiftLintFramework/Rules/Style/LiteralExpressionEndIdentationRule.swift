@@ -12,80 +12,114 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
         description: "Array and dictionary literal end should have the same indentation as the line that started it.",
         kind: .style,
         nonTriggeringExamples: [
-            "[1, 2, 3]",
-            "[1,\n" +
-            " 2\n" +
-            "]",
-            "[\n" +
-            "   1,\n" +
-            "   2\n" +
-            "]",
-            "[\n" +
-            "   1,\n" +
-            "   2]\n",
-            "   let x = [\n" +
-            "       1,\n" +
-            "       2\n" +
-            "   ]",
-            "[key: 2, key2: 3]",
-            "[key: 1,\n" +
-            " key2: 2\n" +
-            "]",
-            "[\n" +
-            "   key: 0,\n" +
-            "   key2: 20\n" +
-            "]"
+            Example("""
+            [1, 2, 3]
+            """),
+            Example("""
+            [1,
+             2
+            ]
+            """),
+            Example("""
+            [
+               1,
+               2
+            ]
+            """),
+            Example("""
+            [
+               1,
+               2]
+            """),
+            Example("""
+               let x = [
+                   1,
+                   2
+               ]
+            """),
+            Example("""
+            [key: 2, key2: 3]
+            """),
+            Example("""
+            [key: 1,
+             key2: 2
+            ]
+            """),
+            Example("""
+            [
+               key: 0,
+               key2: 20
+            ]
+            """)
         ],
         triggeringExamples: [
-            "let x = [\n" +
-            "   1,\n" +
-            "   2\n" +
-            "   ↓]",
-            "   let x = [\n" +
-            "       1,\n" +
-            "       2\n" +
-            "↓]",
-            "let x = [\n" +
-            "   key: value\n" +
-            "   ↓]"
+            Example("""
+            let x = [
+               1,
+               2
+               ↓]
+            """),
+            Example("""
+               let x = [
+                   1,
+                   2
+            ↓]
+            """),
+            Example("""
+            let x = [
+               key: value
+               ↓]
+            """)
         ],
         corrections: [
-            "let x = [\n" +
-            "   key: value\n" +
-            "↓   ]":
-            "let x = [\n" +
-            "   key: value\n" +
-            "]",
-            "   let x = [\n" +
-            "       1,\n" +
-            "       2\n" +
-            "↓]":
-            "   let x = [\n" +
-            "       1,\n" +
-            "       2\n" +
-            "   ]",
-            "let x = [\n" +
-            "   1,\n" +
-            "   2\n" +
-            "↓   ]":
-            "let x = [\n" +
-            "   1,\n" +
-            "   2\n" +
-            "]",
-            "let x = [\n" +
-            "   1,\n" +
-            "   2\n" +
-            "↓   ] + [\n" +
-            "   3,\n" +
-            "   4\n" +
-            "↓   ]":
-            "let x = [\n" +
-            "   1,\n" +
-            "   2\n" +
-            "] + [\n" +
-            "   3,\n" +
-            "   4\n" +
-            "]"
+            Example("""
+            let x = [
+               key: value
+            ↓   ]
+            """): Example("""
+            let x = [
+               key: value
+            ]
+            """),
+            Example("""
+               let x = [
+                   1,
+                   2
+            ↓]
+            """): Example("""
+               let x = [
+                   1,
+                   2
+               ]
+            """),
+            Example("""
+            let x = [
+               1,
+               2
+            ↓   ]
+            """): Example("""
+            let x = [
+               1,
+               2
+            ]
+            """),
+            Example("""
+            let x = [
+               1,
+               2
+            ↓   ] + [
+               3,
+               4
+            ↓   ]
+            """): Example("""
+            let x = [
+               1,
+               2
+            ] + [
+               3,
+               4
+            ]
+            """)
         ]
     )
 

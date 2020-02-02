@@ -9,16 +9,16 @@ class ContainsOverFirstNotNilRuleTests: XCTestCase {
     // MARK: - Reasons
 
     func testFirstReason() {
-        let string = "↓myList.first { $0 % 2 == 0 } != nil"
-        let violations = self.violations(string)
+        let example = Example("↓myList.first { $0 % 2 == 0 } != nil")
+        let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer `contains` over `first(where:) != nil`")
     }
 
     func testFirstIndexReason() {
-        let string = "↓myList.firstIndex { $0 % 2 == 0 } != nil"
-        let violations = self.violations(string)
+        let example = Example("↓myList.firstIndex { $0 % 2 == 0 } != nil")
+        let violations = self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer `contains` over `firstIndex(where:) != nil`")
@@ -26,11 +26,11 @@ class ContainsOverFirstNotNilRuleTests: XCTestCase {
 
     // MARK: - Private
 
-    private func violations(_ string: String, config: Any? = nil) -> [StyleViolation] {
+    private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {
         guard let config = makeConfig(config, ContainsOverFirstNotNilRule.description.identifier) else {
             return []
         }
 
-        return SwiftLintFrameworkTests.violations(string, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

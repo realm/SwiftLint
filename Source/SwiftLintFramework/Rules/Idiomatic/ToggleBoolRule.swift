@@ -13,21 +13,21 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
         kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
-            "isHidden.toggle()\n",
-            "view.clipsToBounds.toggle()\n",
-            "func foo() { abc.toggle() }",
-            "view.clipsToBounds = !clipsToBounds\n",
-            "disconnected = !connected\n"
+            Example("isHidden.toggle()\n"),
+            Example("view.clipsToBounds.toggle()\n"),
+            Example("func foo() { abc.toggle() }"),
+            Example("view.clipsToBounds = !clipsToBounds\n"),
+            Example("disconnected = !connected\n")
         ],
         triggeringExamples: [
-            "↓isHidden = !isHidden\n",
-            "↓view.clipsToBounds = !view.clipsToBounds\n",
-            "func foo() { ↓abc = !abc }"
+            Example("↓isHidden = !isHidden\n"),
+            Example("↓view.clipsToBounds = !view.clipsToBounds\n"),
+            Example("func foo() { ↓abc = !abc }")
         ],
         corrections: [
-            "↓isHidden = !isHidden\n": "isHidden.toggle()\n",
-            "↓view.clipsToBounds = !view.clipsToBounds\n": "view.clipsToBounds.toggle()\n",
-            "func foo() { ↓abc = !abc }": "func foo() { abc.toggle() }"
+            Example("↓isHidden = !isHidden\n"): Example("isHidden.toggle()\n"),
+            Example("↓view.clipsToBounds = !view.clipsToBounds\n"): Example("view.clipsToBounds.toggle()\n"),
+            Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }")
         ]
     )
 

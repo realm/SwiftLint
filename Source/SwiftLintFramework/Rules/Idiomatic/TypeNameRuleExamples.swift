@@ -1,69 +1,69 @@
 internal struct TypeNameRuleExamples {
     private static let types = ["class", "struct", "enum"]
 
-    static let nonTriggeringExamples: [String] = {
-        let typeExamples: [String] = types.flatMap { type -> [String] in
+    static let nonTriggeringExamples: [Example] = {
+        let typeExamples: [Example] = types.flatMap { type -> [Example] in
             [
-                "\(type) MyType {}",
-                "private \(type) _MyType {}",
-                "\(type) \(repeatElement("A", count: 40).joined()) {}",
-                "\(type) MyView_Previews: PreviewProvider",
-                "private \(type) _MyView_Previews: PreviewProvider"
+                Example("\(type) MyType {}"),
+                Example("private \(type) _MyType {}"),
+                Example("\(type) \(repeatElement("A", count: 40).joined()) {}"),
+                Example("\(type) MyView_Previews: PreviewProvider"),
+                Example("private \(type) _MyView_Previews: PreviewProvider")
             ]
         }
 
-        let typeAliasAndAssociatedTypeExamples = [
-            "typealias Foo = Void",
-            "private typealias Foo = Void",
-            """
+        let typeAliasAndAssociatedTypeExamples: [Example] = [
+            Example("typealias Foo = Void"),
+            Example("private typealias Foo = Void"),
+            Example("""
             protocol Foo {
               associatedtype Bar
             }
-            """,
-            """
+            """),
+            Example("""
             protocol Foo {
               associatedtype Bar: Equatable
             }
-            """
+            """)
         ]
 
-        return typeExamples + typeAliasAndAssociatedTypeExamples + ["enum MyType {\ncase value\n}"]
+        return typeExamples + typeAliasAndAssociatedTypeExamples + [Example("enum MyType {\ncase value\n}")]
     }()
 
-    static let triggeringExamples: [String] = {
-        let typeExamples: [String] = types.flatMap { type in
+    static let triggeringExamples: [Example] = {
+        let typeExamples: [Example] = types.flatMap { type in
             [
-                "\(type) ↓myType {}",
-                "\(type) ↓_MyType {}",
-                "private \(type) ↓MyType_ {}",
-                "\(type) ↓My {}",
-                "\(type) ↓\(repeatElement("A", count: 41).joined()) {}",
-                "\(type) ↓MyView_Previews",
-                "private \(type) ↓_MyView_Previews",
-                "\(type) ↓MyView_Previews_Previews: PreviewProvider"
+                Example("\(type) ↓myType {}"),
+                Example("\(type) ↓_MyType {}"),
+                Example("private \(type) ↓MyType_ {}"),
+                Example("\(type) ↓My {}"),
+                Example("\(type) ↓\(repeatElement("A", count: 41).joined()) {}"),
+                Example("\(type) ↓MyView_Previews"),
+                Example("private \(type) ↓_MyView_Previews"),
+                Example("\(type) ↓MyView_Previews_Previews: PreviewProvider")
             ]
         }
 
-        let typeAliasAndAssociatedTypeExamples: [String] = [
-            "typealias ↓X = Void",
-            "private typealias ↓Foo_Bar = Void",
-            "private typealias ↓foo = Void",
-            "typealias ↓\(repeatElement("A", count: 41).joined()) = Void",
-            """
+        let typeAliasAndAssociatedTypeExamples: [Example] = [
+            Example("typealias ↓X = Void"),
+            Example("private typealias ↓Foo_Bar = Void"),
+            Example("private typealias ↓foo = Void"),
+            Example("typealias ↓\(repeatElement("A", count: 41).joined()) = Void"),
+            Example("""
             protocol Foo {
               associatedtype ↓X
             }
-            """,
-            """
+            """),
+            Example("""
             protocol Foo {
               associatedtype ↓Foo_Bar: Equatable
             }
-            """,
-            """
+            """),
+            Example("""
             protocol Foo {
               associatedtype ↓\(repeatElement("A", count: 41).joined())
             }
-            """
+            """)
         ]
 
         return typeExamples + typeAliasAndAssociatedTypeExamples

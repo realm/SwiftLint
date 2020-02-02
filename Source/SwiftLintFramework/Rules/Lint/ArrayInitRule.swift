@@ -12,35 +12,35 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.",
         kind: .lint,
         nonTriggeringExamples: [
-            "Array(foo)\n",
-            "foo.map { $0.0 }\n",
-            "foo.map { $1 }\n",
-            "foo.map { $0() }\n",
-            "foo.map { ((), $0) }\n",
-            "foo.map { $0! }\n",
-            "foo.map { $0! /* force unwrap */ }\n",
-            "foo.something { RouteMapper.map($0) }\n",
-            "foo.map { !$0 }\n",
-            "foo.map { /* a comment */ !$0 }\n"
+            Example("Array(foo)\n"),
+            Example("foo.map { $0.0 }\n"),
+            Example("foo.map { $1 }\n"),
+            Example("foo.map { $0() }\n"),
+            Example("foo.map { ((), $0) }\n"),
+            Example("foo.map { $0! }\n"),
+            Example("foo.map { $0! /* force unwrap */ }\n"),
+            Example("foo.something { RouteMapper.map($0) }\n"),
+            Example("foo.map { !$0 }\n"),
+            Example("foo.map { /* a comment */ !$0 }\n")
         ],
         triggeringExamples: [
-            "↓foo.map({ $0 })\n",
-            "↓foo.map { $0 }\n",
-            "↓foo.map { return $0 }\n",
-            "↓foo.map { elem in\n" +
+            Example("↓foo.map({ $0 })\n"),
+            Example("↓foo.map { $0 }\n"),
+            Example("↓foo.map { return $0 }\n"),
+            Example("↓foo.map { elem in\n" +
             "   elem\n" +
-            "}\n",
-            "↓foo.map { elem in\n" +
+            "}\n"),
+            Example("↓foo.map { elem in\n" +
             "   return elem\n" +
-            "}\n",
-            "↓foo.map { (elem: String) in\n" +
+            "}\n"),
+            Example("↓foo.map { (elem: String) in\n" +
                 "   elem\n" +
-            "}\n",
-            "↓foo.map { elem -> String in\n" +
+            "}\n"),
+            Example("↓foo.map { elem -> String in\n" +
             "   elem\n" +
-            "}\n",
-            "↓foo.map { $0 /* a comment */ }\n",
-            "↓foo.map { /* a comment */ $0 }\n"
+            "}\n"),
+            Example("↓foo.map { $0 /* a comment */ }\n"),
+            Example("↓foo.map { /* a comment */ $0 }\n")
         ]
     )
 

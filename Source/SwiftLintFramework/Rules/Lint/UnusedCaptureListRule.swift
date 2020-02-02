@@ -13,62 +13,62 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         kind: .lint,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
-            """
+            Example("""
             [1, 2].map { [weak self] num in
                 self?.handle(num)
             }
-            """,
-            """
+            """),
+            Example("""
             let failure: Failure = { [weak self, unowned delegate = self.delegate!] foo in
                 delegate.handle(foo, self)
             }
-            """,
-            """
+            """),
+            Example("""
             numbers.forEach({
                 [weak handler] in
                 handler?.handle($0)
             })
-            """,
-            """
+            """),
+            Example("""
             withEnvironment(apiService: MockService(fetchProjectResponse: project)) {
                 [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
                     device.handle()
                 }
             }
-            """,
-            "{ [foo] _ in foo.bar() }()",
-            "sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []"
+            """),
+            Example("{ [foo] _ in foo.bar() }()"),
+            Example("sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []")
         ],
         triggeringExamples: [
-            """
+            Example("""
             [1, 2].map { [↓weak self] num in
                 print(num)
             }
-            """,
-            """
+            """),
+            Example("""
             let failure: Failure = { [weak self, ↓unowned delegate = self.delegate!] foo in
                 self?.handle(foo)
             }
-            """,
-            """
+            """),
+            Example("""
             let failure: Failure = { [↓weak self, ↓unowned delegate = self.delegate!] foo in
                 print(foo)
             }
-            """,
-            """
+            """),
+            Example("""
             numbers.forEach({
                 [weak handler] in
                 print($0)
             })
-            """,
-            """
+            """),
+            Example("""
             withEnvironment(apiService: MockService(fetchProjectResponse: project)) { [↓foo] in
                 [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
                     device.handle()
                 }
             }
-            """,
-            "{ [↓foo] in _ }()"
+            """),
+            Example("{ [↓foo] in _ }()")
         ]
     )
 

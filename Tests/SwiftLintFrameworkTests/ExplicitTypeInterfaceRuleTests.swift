@@ -8,7 +8,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testExcludeLocalVars() {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
-            "func foo() {\nlet intVal = 1\n}"
+            Example("func foo() {\nlet intVal = 1\n}")
         ]
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
         let description = ExplicitTypeInterfaceRule.description
@@ -20,13 +20,13 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testExcludeClassVars() {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
-            "class Foo {\n  static var myStaticVar = 0\n}\n",
-            "class Foo {\n  static let myStaticLet = 0\n}\n"
+            Example("class Foo {\n  static var myStaticVar = 0\n}\n"),
+            Example("class Foo {\n  static let myStaticLet = 0\n}\n")
         ]
-        let triggeringExamples = [
-            "class Foo {\n  ↓var myVar = 0\n\n}\n",
-            "class Foo {\n  ↓let mylet = 0\n\n}\n",
-            "class Foo {\n  ↓class var myClassVar = 0\n}\n"
+        let triggeringExamples: [Example] = [
+            Example("class Foo {\n  ↓var myVar = 0\n\n}\n"),
+            Example("class Foo {\n  ↓let mylet = 0\n\n}\n"),
+            Example("class Foo {\n  ↓class var myClassVar = 0\n}\n")
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -36,28 +36,28 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
     }
 
     func testAllowRedundancy() {
-        let nonTriggeringExamples = [
-            "class Foo {\n  var myVar: Int? = 0\n}\n",
-            "class Foo {\n  let myVar: Int? = 0\n}\n",
-            "class Foo {\n  static var myVar: Int? = 0\n}\n",
-            "class Foo {\n  class var myVar: Int? = 0\n}\n",
-            "class Foo {\n  static let shared = Foo()\n}\n",
-            "class Foo {\n  let myVar = Int(0)\n}\n",
-            "class Foo {\n  let myVar = Set<Int>(0)\n}\n",
-            "class Foo {\n  let regex = try! NSRegularExpression(pattern: \".*\")\n}\n",
-            "class Foo {\n  let regex = try? NSRegularExpression(pattern: \".*\")\n}\n",
-            "class Foo {\n  let array = [String]()\n}\n",
-            "class Foo {\n  let dict = [String: String]()\n}\n",
-            "class Foo {\n  let dict = [String: [String: Array<String>]]()\n}\n",
-            "class Foo {\n  let l10n = L10n.Communication.self\n}\n"
+        let nonTriggeringExamples: [Example] = [
+            Example("class Foo {\n  var myVar: Int? = 0\n}\n"),
+            Example("class Foo {\n  let myVar: Int? = 0\n}\n"),
+            Example("class Foo {\n  static var myVar: Int? = 0\n}\n"),
+            Example("class Foo {\n  class var myVar: Int? = 0\n}\n"),
+            Example("class Foo {\n  static let shared = Foo()\n}\n"),
+            Example("class Foo {\n  let myVar = Int(0)\n}\n"),
+            Example("class Foo {\n  let myVar = Set<Int>(0)\n}\n"),
+            Example("class Foo {\n  let regex = try! NSRegularExpression(pattern: \".*\")\n}\n"),
+            Example("class Foo {\n  let regex = try? NSRegularExpression(pattern: \".*\")\n}\n"),
+            Example("class Foo {\n  let array = [String]()\n}\n"),
+            Example("class Foo {\n  let dict = [String: String]()\n}\n"),
+            Example("class Foo {\n  let dict = [String: [String: Array<String>]]()\n}\n"),
+            Example("class Foo {\n  let l10n = L10n.Communication.self\n}\n")
         ]
-        let triggeringExamples = [
-            "class Foo {\n  ↓var myVar = 0\n\n}\n",
-            "class Foo {\n  ↓let mylet = 0\n\n}\n",
-            "class Foo {\n  ↓static var myStaticVar = 0\n}\n",
-            "class Foo {\n  ↓class var myClassVar = 0\n}\n",
-            "class Foo {\n  ↓let array = [\"foo\", \"bar\"]\n}\n",
-            "class Foo {\n  ↓let dict = [\"foo\": \"bar\"]\n}\n"
+        let triggeringExamples: [Example] = [
+            Example("class Foo {\n  ↓var myVar = 0\n\n}\n"),
+            Example("class Foo {\n  ↓let mylet = 0\n\n}\n"),
+            Example("class Foo {\n  ↓static var myStaticVar = 0\n}\n"),
+            Example("class Foo {\n  ↓class var myClassVar = 0\n}\n"),
+            Example("class Foo {\n  ↓let array = [\"foo\", \"bar\"]\n}\n"),
+            Example("class Foo {\n  ↓let dict = [\"foo\": \"bar\"]\n}\n")
         ]
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -68,22 +68,22 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testEmbededInStatements() {
         let nonTriggeringExamples = [
-            """
+            Example("""
             func foo() {
                 var bar: String?
                 guard let strongBar = bar else {
                     return
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             struct SomeError: Error {}
             var error: Error?
             switch error {
             case let error as SomeError: break
             default: break
             }
-            """
+            """)
         ]
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
         let description = ExplicitTypeInterfaceRule.description
@@ -95,19 +95,19 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testCaptureGroup() {
         let nonTriggeringExamples = [
-            """
+            Example("""
             var k: Int = 0
             _ = { [weak k] in
                 print(k)
             }
-            """,
-            """
+            """),
+            Example("""
             var k: Int = 0
             _ = { [unowned k] in
                 print(k)
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
                 func bar() {
                     var k: Int = 0
@@ -116,7 +116,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
                     }
                 }
             }
-            """
+            """)
         ]
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
         let description = ExplicitTypeInterfaceRule.description
@@ -128,18 +128,18 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testFastEnumerationDeclaration() {
         let nonTriggeringExaples = [
-            """
+            Example("""
             func foo() {
                 let elements: [Int] = [1, 2]
                 for element in elements {}
             }
-            """,
-            """
+            """),
+            Example("""
             func foo() {
                 let elements: [Int] = [1, 2]
                 for (index, element) in elements.enumerated() {}
             }
-            """
+            """)
         ]
 
         let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
@@ -156,7 +156,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         }
 
         let nonTriggeringExamples = [
-            """
+            Example("""
             enum Foo {
                 case failure(Any)
                 case success(Any)
@@ -168,8 +168,8 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
                     case .success(let result): let bar: Int = 2
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             enum Foo {
                 case failure(Any, Any)
             }
@@ -178,11 +178,11 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
                 case var (x, y): break
                 }
             }
-            """
+            """)
         ]
 
         let triggeringExamples = [
-            """
+            Example("""
             enum Foo {
                 case failure(Any)
                 case success(Any)
@@ -194,8 +194,8 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
                 case .success(let result): ↓let fooBar = 1
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             enum Foo {
                 case failure(Any, Any)
             }
@@ -206,7 +206,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
                 default: ↓let fooBar = 1
                 }
             }
-            """
+            """)
         ]
 
         let description = ExplicitTypeInterfaceRule.description

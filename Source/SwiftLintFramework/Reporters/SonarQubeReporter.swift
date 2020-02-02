@@ -21,7 +21,7 @@ public struct SonarQubeReporter: Reporter {
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
             "engineId": "SwiftLint",
-            "ruleId": violation.ruleDescription.identifier,
+            "ruleId": violation.ruleIdentifier,
             "primaryLocation": [
                 "message": violation.reason,
                 "filePath": violation.location.relativeFile ?? "",

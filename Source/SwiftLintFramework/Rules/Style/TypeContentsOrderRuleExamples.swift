@@ -113,15 +113,15 @@ internal struct TypeContentsOrderRuleExamples {
     ]
 
     static let nonTriggeringExamples = [
-        [
-            "class TestViewController: UIViewController {",
-            TypeContentsOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n"),
-            "}"
-        ].joined(separator: "\n")
+        Example("""
+        class TestViewController: UIViewController {
+        \(TypeContentsOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n")),
+        }
+        """)
     ]
 
     static let triggeringExamples = [
-        """
+        Example("""
         class TestViewController: UIViewController {
             // Subtypes
             ↓class TestClass {
@@ -131,8 +131,8 @@ internal struct TypeContentsOrderRuleExamples {
             // Type Aliases
             typealias CompletionHandler = ((TestEnum) -> Void)
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // Stored Type Properties
             ↓static let cellIdentifier: String = "AmazingCell"
@@ -142,8 +142,8 @@ internal struct TypeContentsOrderRuleExamples {
                 // 10 lines
             }
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // Stored Instance Properties
             ↓var shouldLayoutView1: Bool!
@@ -151,8 +151,8 @@ internal struct TypeContentsOrderRuleExamples {
             // Stored Type Properties
             static let cellIdentifier: String = "AmazingCell"
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // IBOutlets
             @IBOutlet private ↓var view1: UIView!
@@ -162,8 +162,8 @@ internal struct TypeContentsOrderRuleExamples {
                  return hasLayoutedView1 || hasLayoutedView2
             }
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
 
             // deinitializer
@@ -180,8 +180,8 @@ internal struct TypeContentsOrderRuleExamples {
             @IBOutlet private var view1: UIView!
             @IBOutlet private var view2: UIView!
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // View Life-Cycle Methods
             override ↓func viewDidLoad() {
@@ -197,8 +197,8 @@ internal struct TypeContentsOrderRuleExamples {
                 // some code
             }
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // IBActions
             @IBAction ↓func goNextButtonPressed() {
@@ -215,8 +215,8 @@ internal struct TypeContentsOrderRuleExamples {
                 hasLayoutedView1 = true
             }
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // Other Methods
             ↓func goToNextVc() { /* TODO */ }
@@ -227,8 +227,8 @@ internal struct TypeContentsOrderRuleExamples {
                 delegate?.didPressTrackedButton()
             }
         }
-        """,
-        """
+        """),
+        Example("""
         class TestViewController: UIViewController {
             // Subscripts
             ↓subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
@@ -244,6 +244,6 @@ internal struct TypeContentsOrderRuleExamples {
             // MARK: Other Methods
             func goToNextVc() { /* TODO */ }
         }
-        """
+        """)
     ]
 }

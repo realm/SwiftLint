@@ -10,14 +10,14 @@ class TypeContentsOrderRuleTests: XCTestCase {
     func testTypeContentsOrderReversedOrder() {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
-            [
+            Example([
                 "class TestViewController: UIViewController {",
                 TypeContentsOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"),
                 "}"
-            ].joined(separator: "\n")
+            ].joined(separator: "\n"))
         ]
         let triggeringExamples = [
-            """
+            Example("""
             class TestViewController: UIViewController {
                 // Type Aliases
                 ↓typealias CompletionHandler = ((TestEnum) -> Void)
@@ -27,8 +27,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     // 10 lines
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // Subtypes
                 ↓class TestClass {
@@ -38,8 +38,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // Stored Type Properties
                 static let cellIdentifier: String = "AmazingCell"
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // Stored Type Properties
                 ↓static let cellIdentifier: String = "AmazingCell"
@@ -47,8 +47,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // Stored Instance Properties
                 var shouldLayoutView1: Bool!
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // Computed Instance Properties
                 private ↓var hasAnyLayoutedView: Bool {
@@ -58,8 +58,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // IBOutlets
                 @IBOutlet private var view1: UIView!
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // IBOutlets
                 @IBOutlet private ↓var view1: UIView!
@@ -74,8 +74,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     log.debug("deinit")
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // Type Methods
                 ↓static func makeViewController() -> TestViewController {
@@ -91,8 +91,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     hasLayoutedView1 = true
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // View Life-Cycle Methods
                 override ↓func viewDidLoad() {
@@ -109,8 +109,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     delegate?.didPressTrackedButton()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // IBActions
                 @IBAction ↓func goNextButtonPressed() {
@@ -121,8 +121,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // Other Methods
                 func goToNextVc() { /* TODO */ }
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // MARK: Other Methods
                 ↓func goToNextVc() { /* TODO */ }
@@ -138,7 +138,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     }
                 }
             }
-            """
+            """)
         ]
 
         let reversedOrderDescription = TypeContentsOrderRule.description
@@ -171,7 +171,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
     func testTypeContentsOrderGroupedOrder() {
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
-            """
+            Example("""
             class TestViewController: UIViewController {
                 // Type Alias
                 typealias CompletionHandler = ((TestClass) -> Void)
@@ -279,10 +279,10 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     hasLayoutedView2 = true
                 }
             }
-            """
+            """)
         ]
         let triggeringExamples = [
-            """
+            Example("""
             class TestViewController: UIViewController {
                 // Type Alias
                 typealias CompletionHandler = ((TestClass) -> Void)
@@ -300,8 +300,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     // 10 lines
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // Instance Property
                 var shouldLayoutView1: Bool!
@@ -314,8 +314,8 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // Type Property
                 static let cellIdentifier: String = "AmazingCell"
             }
-            """,
-            """
+            """),
+            Example("""
             class TestViewController: UIViewController {
                 // Initializer
                 override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -330,7 +330,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
                     // some code
                 }
             }
-            """
+            """)
         ]
 
         let groupedOrderDescription = TypeContentsOrderRule.description

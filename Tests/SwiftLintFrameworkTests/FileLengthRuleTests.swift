@@ -9,11 +9,11 @@ class FileLengthRuleTests: XCTestCase {
 
     func testFileLengthIgnoringLinesWithOnlyComments() {
         let triggeringExamples = [
-            repeatElement("print(\"swiftlint\")\n", count: 401).joined()
+            Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined())
         ]
         let nonTriggeringExamples = [
-            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined(),
-            repeatElement("print(\"swiftlint\")\n", count: 400).joined()
+            Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
+            Example(repeatElement("print(\"swiftlint\")\n", count: 400).joined())
         ]
 
         let description = FileLengthRule.description

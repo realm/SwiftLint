@@ -13,77 +13,77 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
         description: "Unused control flow label should be removed.",
         kind: .lint,
         nonTriggeringExamples: [
-            "loop: while true { break loop }",
-            "loop: while true { continue loop }",
-            "loop:\n    while true { break loop }",
-            "while true { break }",
-            "loop: for x in array { break loop }",
-            """
+            Example("loop: while true { break loop }"),
+            Example("loop: while true { continue loop }"),
+            Example("loop:\n    while true { break loop }"),
+            Example("while true { break }"),
+            Example("loop: for x in array { break loop }"),
+            Example("""
             label: switch number {
             case 1: print("1")
             case 2: print("2")
             default: break label
             }
-            """,
-            """
+            """),
+            Example("""
             loop: repeat {
                 if x == 10 {
                     break loop
                 }
             } while true
-            """
+            """)
         ],
         triggeringExamples: [
-            "↓loop: while true { break }",
-            "↓loop: while true { break loop1 }",
-            "↓loop: while true { break outerLoop }",
-            "↓loop: for x in array { break }",
-            """
+            Example("↓loop: while true { break }"),
+            Example("↓loop: while true { break loop1 }"),
+            Example("↓loop: while true { break outerLoop }"),
+            Example("↓loop: for x in array { break }"),
+            Example("""
             ↓label: switch number {
             case 1: print("1")
             case 2: print("2")
             default: break
             }
-            """,
-            """
+            """),
+            Example("""
             ↓loop: repeat {
                 if x == 10 {
                     break
                 }
             } while true
-            """
+            """)
         ],
         corrections: [
-            "↓loop: while true { break }": "while true { break }",
-            "↓loop: while true { break loop1 }": "while true { break loop1 }",
-            "↓loop: while true { break outerLoop }": "while true { break outerLoop }",
-            "↓loop: for x in array { break }": "for x in array { break }",
-            """
+            Example("↓loop: while true { break }"): Example("while true { break }"),
+            Example("↓loop: while true { break loop1 }"): Example("while true { break loop1 }"),
+            Example("↓loop: while true { break outerLoop }"): Example("while true { break outerLoop }"),
+            Example("↓loop: for x in array { break }"): Example("for x in array { break }"),
+            Example("""
             ↓label: switch number {
             case 1: print("1")
             case 2: print("2")
             default: break
             }
-            """: """
+            """): Example("""
                 switch number {
                 case 1: print("1")
                 case 2: print("2")
                 default: break
                 }
-                """,
-            """
+                """),
+            Example("""
             ↓loop: repeat {
                 if x == 10 {
                     break
                 }
             } while true
-            """: """
+            """): Example("""
                 repeat {
                     if x == 10 {
                         break
                     }
                 } while true
-                """
+                """)
         ]
     )
 

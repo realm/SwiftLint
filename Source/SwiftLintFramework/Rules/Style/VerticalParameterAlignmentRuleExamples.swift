@@ -1,28 +1,51 @@
 internal struct VerticalParameterAlignmentRuleExamples {
-    static let nonTriggeringExamples: [String] = {
+    static let nonTriggeringExamples: [Example] = {
         let commonExamples = [
-            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: SourceKittenDictionary) { }\n",
-            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: SourceKittenDictionary) -> [StyleViolation]\n",
-            "func foo(bar: Int)\n",
-            "func foo(bar: Int) -> String \n",
-            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "                      dictionary: SourceKittenDictionary)\n" +
-            "                      -> [StyleViolation]\n",
-            "func validateFunction(\n" +
-            "   _ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: SourceKittenDictionary) -> [StyleViolation]\n",
-            "func validateFunction(\n" +
-            "   _ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: SourceKittenDictionary\n" +
-            ") -> [StyleViolation]\n",
-            "func regex(_ pattern: String,\n" +
-            "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
-            "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n",
-            "func foo(a: Void,\n         b: [String: String] =\n           [:]) {\n}\n",
-            "func foo(data: (size: CGSize,\n" +
-            "                identifier: String)) {}"
+            Example("""
+            func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                  dictionary: SourceKittenDictionary) { }
+            """),
+            Example("""
+            func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                  dictionary: SourceKittenDictionary) -> [StyleViolation]
+            """),
+            Example("""
+            func foo(bar: Int)
+            """),
+            Example("""
+            func foo(bar: Int) -> String
+            """),
+            Example("""
+            func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                  dictionary: SourceKittenDictionary)
+                                  -> [StyleViolation]
+            """),
+            Example("""
+            func validateFunction(
+               _ file: SwiftLintFile, kind: SwiftDeclarationKind,
+               dictionary: SourceKittenDictionary) -> [StyleViolation]
+            """),
+            Example("""
+            func validateFunction(
+               _ file: SwiftLintFile, kind: SwiftDeclarationKind,
+               dictionary: SourceKittenDictionary
+            ) -> [StyleViolation]
+            """),
+            Example("""
+            func regex(_ pattern: String,
+                       options: NSRegularExpression.Options = [.anchorsMatchLines,
+                                                               .dotMatchesLineSeparators]) -> NSRegularExpression
+            """),
+            Example("""
+            func foo(a: Void,
+                     b: [String: String] =
+                     [:]) {
+            }
+            """),
+            Example("""
+            func foo(data: (size: CGSize,
+                            identifier: String)) {}
+            """)
         ]
 
         guard SwiftVersion.current >= .fiveDotOne else {
@@ -30,22 +53,28 @@ internal struct VerticalParameterAlignmentRuleExamples {
         }
 
         return commonExamples + [
-            """
+            Example("""
             func foo(data: Data,
                      @ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
-            """
+            """)
         ]
     }()
 
-    static let triggeringExamples: [String] = {
+    static let triggeringExamples: [Example] = {
         let commonExamples = [
-            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "                  ↓dictionary: SourceKittenDictionary) { }\n",
-            "func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,\n" +
-            "                       ↓dictionary: SourceKittenDictionary) { }\n",
-            "func validateFunction(_ file: SwiftLintFile,\n" +
-            "                  ↓kind: SwiftDeclarationKind,\n" +
-            "                  ↓dictionary: SourceKittenDictionary) { }\n"
+            Example("""
+            func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                              ↓dictionary: SourceKittenDictionary) { }
+            """),
+            Example("""
+            func validateFunction(_ file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                   ↓dictionary: SourceKittenDictionary) { }
+            """),
+            Example("""
+            func validateFunction(_ file: SwiftLintFile,
+                              ↓kind: SwiftDeclarationKind,
+                              ↓dictionary: SourceKittenDictionary) { }
+            """)
         ]
 
         guard SwiftVersion.current >= .fiveDotOne else {
@@ -53,10 +82,10 @@ internal struct VerticalParameterAlignmentRuleExamples {
         }
 
         return commonExamples + [
-            """
+            Example("""
             func foo(data: Data,
                         ↓@ViewBuilder content: @escaping (Data.Element.IdentifiedValue) -> Content) {}
-            """
+            """)
         ]
     }()
 }

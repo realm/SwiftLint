@@ -124,38 +124,54 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         description: "Enums conforming to a specified protocol must implement a specific case(s).",
         kind: .lint,
         nonTriggeringExamples: [
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success, error, notConnected \n" +
-            "}",
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success, error, notConnected(error: Error) \n" +
-            "}",
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success\n" +
-            "    case error\n" +
-            "    case notConnected\n" +
-            "}",
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success\n" +
-            "    case error\n" +
-            "    case notConnected(error: Error)\n" +
-            "}"
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success, error, notConnected
+            }
+            """),
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success, error, notConnected(error: Error)
+            }
+            """),
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success
+                case error
+                case notConnected
+            }
+            """),
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success
+                case error
+                case notConnected(error: Error)
+            }
+            """)
         ],
         triggeringExamples: [
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success, error \n" +
-            "}",
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success, error \n" +
-            "}",
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success\n" +
-            "    case error\n" +
-            "}",
-            "enum MyNetworkResponse: String, NetworkResponsable {\n" +
-            "    case success\n" +
-            "    case error\n" +
-            "}"
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success, error
+            }
+            """),
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success, error
+            }
+            """),
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success
+                case error
+            }
+            """),
+            Example("""
+            enum MyNetworkResponse: String, NetworkResponsable {
+                case success
+                case error
+            }
+            """)
         ]
     )
 

@@ -6,14 +6,14 @@ class TrailingCommaRuleTests: XCTestCase {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         if SwiftVersion.current >= .fourDotOne {
             let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
-                ["class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"]
+                [Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}")]
             verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
         } else {
             verifyRule(TrailingCommaRule.description)
         }
 
         // Ensure the rule produces the correct reason string.
-        let failingCase = "let array = [\n\t1,\n\t2,\n]\n"
+        let failingCase = Example("let array = [\n\t1,\n\t2,\n]\n")
         XCTAssertEqual(trailingCommaViolations(failingCase), [
             StyleViolation(
                 ruleDescription: TrailingCommaRule.description,
@@ -24,34 +24,34 @@ class TrailingCommaRuleTests: XCTestCase {
     }
 
     private static let triggeringExamples = [
-        "let foo = [1, 2,\n 3↓]\n",
-        "let foo = [1: 2,\n 2: 3↓]\n",
-        "let foo = [1: 2,\n 2: 3↓   ]\n",
-        "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
-        "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n",
-        "let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n"
+        Example("let foo = [1, 2,\n 3↓]\n"),
+        Example("let foo = [1: 2,\n 2: 3↓]\n"),
+        Example("let foo = [1: 2,\n 2: 3↓   ]\n"),
+        Example("struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n"),
+        Example("let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"),
+        Example("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n")
     ]
 
     private static let nonTriggeringExamples = [
-        "let foo = []\n",
-        "let foo = [:]\n",
-        "let foo = [1, 2, 3,]\n",
-        "let foo = [1, 2, 3, ]\n",
-        "let foo = [1, 2, 3   ,]\n",
-        "let foo = [1: 2, 2: 3, ]\n",
-        "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n",
-        "let foo = [Void]()\n",
-        "let foo = [(Void, Void)]()\n",
-        "let foo = [1, 2, 3]\n",
-        "let foo = [1: 2, 2: 3]\n",
-        "let foo = [1: 2, 2: 3   ]\n",
-        "struct Bar {\n let foo = [1: 2, 2: 3]\n}\n",
-        "let foo = [1, 2, 3] + [4, 5, 6]\n"
+        Example("let foo = []\n"),
+        Example("let foo = [:]\n"),
+        Example("let foo = [1, 2, 3,]\n"),
+        Example("let foo = [1, 2, 3, ]\n"),
+        Example("let foo = [1, 2, 3   ,]\n"),
+        Example("let foo = [1: 2, 2: 3, ]\n"),
+        Example("struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n"),
+        Example("let foo = [Void]()\n"),
+        Example("let foo = [(Void, Void)]()\n"),
+        Example("let foo = [1, 2, 3]\n"),
+        Example("let foo = [1: 2, 2: 3]\n"),
+        Example("let foo = [1: 2, 2: 3   ]\n"),
+        Example("struct Bar {\n let foo = [1: 2, 2: 3]\n}\n"),
+        Example("let foo = [1, 2, 3] + [4, 5, 6]\n")
     ]
 
-    private static let corrections: [String: String] = {
-        let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓", with: ",") }
-        var result: [String: String] = [:]
+    private static let corrections: [Example: Example] = {
+        let fixed = triggeringExamples.map { $0.with(code: $0.code.replacingOccurrences(of: "↓", with: ",")) }
+        var result: [Example: Example] = [:]
         for (triggering, correction) in zip(triggeringExamples, fixed) {
             result[triggering] = correction
         }
@@ -71,7 +71,7 @@ class TrailingCommaRuleTests: XCTestCase {
         verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
 
         // Ensure the rule produces the correct reason string.
-        let failingCase = "let array = [\n\t1,\n\t2\n]\n"
+        let failingCase = Example("let array = [\n\t1,\n\t2\n]\n")
         XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration), [
             StyleViolation(
                 ruleDescription: TrailingCommaRule.description,
@@ -81,8 +81,8 @@ class TrailingCommaRuleTests: XCTestCase {
         ])
     }
 
-    private func trailingCommaViolations(_ string: String, ruleConfiguration: Any? = nil) -> [StyleViolation] {
+    private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
         let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
-        return violations(string, config: config)
+        return violations(example, config: config)
     }
 }

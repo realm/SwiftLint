@@ -20,7 +20,7 @@ private func print(ruleDescription desc: RuleDescription) {
         }
         print("\nTriggering Examples (violation is marked with '↓'):")
         for (index, example) in desc.triggeringExamples.enumerated() {
-            print("\nExample #\(index + 1)\n\n\(indent(example))")
+            print("\nExample #\(index + 1)\n\n\(indent(example.code))")
         }
     }
 }

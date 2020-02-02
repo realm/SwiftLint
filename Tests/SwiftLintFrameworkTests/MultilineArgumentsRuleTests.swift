@@ -8,20 +8,20 @@ class MultilineArgumentsRuleTests: XCTestCase {
 
     func testMultilineArgumentsWithWithNextLine() {
         let nonTriggeringExamples = [
-            "foo()",
-            "foo(0)",
-            "foo(1, bar: baz) { }",
-            "foo(2, bar: baz) {\n}",
-            "foo(\n" +
+            Example("foo()"),
+            Example("foo(0)"),
+            Example("foo(1, bar: baz) { }"),
+            Example("foo(2, bar: baz) {\n}"),
+            Example("foo(\n" +
             "    3,\n" +
-            "    bar: baz) { }",
-            "foo(\n" +
-            "    4, bar: baz) { }"
+            "    bar: baz) { }"),
+            Example("foo(\n" +
+            "    4, bar: baz) { }")
         ]
 
         let triggeringExamples = [
-            "foo(↓1,\n" +
-            "    bar: baz) { }"
+            Example("foo(↓1,\n" +
+            "    bar: baz) { }")
         ]
 
         let description = MultilineArgumentsRule.description
@@ -33,22 +33,22 @@ class MultilineArgumentsRuleTests: XCTestCase {
 
     func testMultilineArgumentsWithWithSameLine() {
         let nonTriggeringExamples = [
-            "foo()",
-            "foo(0)",
-            "foo(1, bar: 1) { }",
-            "foo(2, bar: 2) {\n" +
+            Example("foo()"),
+            Example("foo(0)"),
+            Example("foo(1, bar: 1) { }"),
+            Example("foo(2, bar: 2) {\n" +
             "    bar()\n" +
-            "}",
-            "foo(3,\n" +
-            "    bar: 3) { }"
+            "}"),
+            Example("foo(3,\n" +
+            "    bar: 3) { }")
         ]
 
         let triggeringExamples = [
-            "foo(\n" +
-            "    ↓1, ↓bar: baz) { }",
-            "foo(\n" +
+            Example("foo(\n" +
+            "    ↓1, ↓bar: baz) { }"),
+            Example("foo(\n" +
             "    ↓2,\n" +
-            "    bar: baz) { }"
+            "    bar: baz) { }")
         ]
 
         let description = MultilineArgumentsRule.description
@@ -59,39 +59,39 @@ class MultilineArgumentsRuleTests: XCTestCase {
     }
 
     func testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
-        let nonTriggeringExamples: [String] = [
-            "foo()",
-            "foo(0)",
-            "foo(1, bar: 1) { }",
-            "foo(\n" +
-            "    4, bar: baz) { }",
-            "foo(a: a, b: {\n" +
+        let nonTriggeringExamples: [Example] = [
+            Example("foo()"),
+            Example("foo(0)"),
+            Example("foo(1, bar: 1) { }"),
+            Example("foo(\n" +
+            "    4, bar: baz) { }"),
+            Example("foo(a: a, b: {\n" +
             "}, c: {\n" +
-            "})",
-            "foo(\n" +
+            "})"),
+            Example("foo(\n" +
             "    a: a, b: {\n" +
             "    }, c: {\n" +
-            "})",
-            "foo(a: a, b: b, c: {\n" +
+            "})"),
+            Example("foo(a: a, b: b, c: {\n" +
             "}, d: {\n" +
-            "})",
-            "foo(\n" +
+            "})"),
+            Example("foo(\n" +
             "    a: a, b: b, c: {\n" +
             "    }, d: {\n" +
-            "})",
-            "foo(a: a, b: { [weak self] in\n" +
+            "})"),
+            Example("foo(a: a, b: { [weak self] in\n" +
             "}, c: { flag in\n" +
-            "})"
+            "})")
         ]
 
         let triggeringExamples = [
-            "foo(a: a,\n" +
+            Example("foo(a: a,\n" +
             "    b: b, c: {\n" +
-            "})",
-            "foo(a: a, b: b,\n" +
+            "})"),
+            Example("foo(a: a, b: b,\n" +
             "    c: c, d: {\n" +
             "    }, d: {\n" +
-            "})"
+            "})")
         ]
 
         let description = MultilineArgumentsRule.description

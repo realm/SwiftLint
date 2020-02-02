@@ -107,27 +107,27 @@ extension CollectionAlignmentRule {
             self.alignColons = alignColons
         }
 
-        var triggeringExamples: [String] {
+        var triggeringExamples: [Example] {
             let examples = alignColons ? alignColonsTriggeringExamples : alignLeftTriggeringExamples
             return examples + sharedTriggeringExamples
         }
 
-        var nonTriggeringExamples: [String] {
+        var nonTriggeringExamples: [Example] {
             let examples = alignColons ? alignColonsNonTriggeringExamples : alignLeftNonTriggeringExamples
             return examples + sharedNonTriggeringExamples
         }
 
-        private var alignColonsTriggeringExamples: [String] {
+        private var alignColonsTriggeringExamples: [Example] {
             return [
-                """
+                Example("""
                 doThings(arg: [
                     "foo": 1,
                     "bar": 2,
                     "fizz"↓: 2,
                     "buzz"↓: 2
                 ])
-                """,
-                """
+                """),
+                Example("""
                 let abc = [
                     "alpha": "a",
                     "beta"↓: "b",
@@ -135,28 +135,28 @@ extension CollectionAlignmentRule {
                     "delta": "d",
                     "epsilon"↓: "e"
                 ]
-                """,
-                """
+                """),
+                Example("""
                 var weirdColons = [
                     "a"    :  1,
                     "b"  ↓:2,
                     "c"    :      3
                 ]
-                """
+                """)
             ]
         }
 
-        private var alignColonsNonTriggeringExamples: [String] {
+        private var alignColonsNonTriggeringExamples: [Example] {
             return [
-                """
+                Example("""
                 doThings(arg: [
                     "foo": 1,
                     "bar": 2,
                    "fizz": 2,
                    "buzz": 2
                 ])
-                """,
-                """
+                """),
+                Example("""
                 let abc = [
                     "alpha": "a",
                      "beta": "b",
@@ -164,28 +164,28 @@ extension CollectionAlignmentRule {
                     "delta": "d",
                   "epsilon": "e"
                 ]
-                """,
-                """
+                """),
+                Example("""
                 var weirdColons = [
                     "a"    :  1,
                       "b"  :2,
                        "c" :      3
                 ]
-                """
+                """)
             ]
         }
 
-        private var alignLeftTriggeringExamples: [String] {
+        private var alignLeftTriggeringExamples: [Example] {
             return [
-                """
+                Example("""
                 doThings(arg: [
                     "foo": 1,
                     "bar": 2,
                    ↓"fizz": 2,
                    ↓"buzz": 2
                 ])
-                """,
-                """
+                """),
+                Example("""
                 let abc = [
                     "alpha": "a",
                      ↓"beta": "b",
@@ -193,28 +193,28 @@ extension CollectionAlignmentRule {
                     "delta": "d",
                   ↓"epsilon": "e"
                 ]
-                """,
-                """
+                """),
+                Example("""
                 let meals = [
                                 "breakfast": "oatmeal",
                                 "lunch": "sandwich",
                     ↓"dinner": "burger"
                 ]
-                """
+                """)
             ]
         }
 
-        private var alignLeftNonTriggeringExamples: [String] {
+        private var alignLeftNonTriggeringExamples: [Example] {
             return [
-                """
+                Example("""
                 doThings(arg: [
                     "foo": 1,
                     "bar": 2,
                     "fizz": 2,
                     "buzz": 2
                 ])
-                """,
-                """
+                """),
+                Example("""
                 let abc = [
                     "alpha": "a",
                     "beta": "b",
@@ -222,65 +222,65 @@ extension CollectionAlignmentRule {
                     "delta": "d",
                     "epsilon": "e"
                 ]
-                """,
-                """
+                """),
+                Example("""
                 let meals = [
                                 "breakfast": "oatmeal",
                                 "lunch": "sandwich",
                                 "dinner": "burger"
                 ]
-                """
+                """)
             ]
         }
 
-        private var sharedTriggeringExamples: [String] {
+        private var sharedTriggeringExamples: [Example] {
             return [
-                """
+                Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
                         ↓CLLocationCoordinate2D(latitude: 0, longitude: 66),
                     CLLocationCoordinate2D(latitude: 0, longitude: 99)
                 ]
-                """,
-                """
+                """),
+                Example("""
                 var evenNumbers: Set<Int> = [
                     2,
                   ↓4,
                     6
                 ]
-                """
+                """)
             ]
         }
 
-        private var sharedNonTriggeringExamples: [String] {
+        private var sharedNonTriggeringExamples: [Example] {
             return [
-                """
+                Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
                     CLLocationCoordinate2D(latitude: 0, longitude: 66),
                     CLLocationCoordinate2D(latitude: 0, longitude: 99)
                 ]
-                """,
-                """
+                """),
+                Example("""
                 var evenNumbers: Set<Int> = [
                     2,
                     4,
                     6
                 ]
-                """,
-                """
+                """),
+                Example("""
                 let abc = [1, 2, 3, 4]
-                """,
-                """
+                """),
+                Example("""
                 let abc = [
                     1, 2, 3, 4
                 ]
-                """,
-                """
+                """),
+                Example("""
                 let abc = [
                     "foo": "bar", "fizz": "buzz"
                 ]
-                """
+                """)
             ]
         }
     }

@@ -14,18 +14,44 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
         description: "Types should be nested at most 1 level deep, " +
                      "and statements should be nested at most 5 levels deep.",
         kind: .metrics,
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind -> [String] in
+        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind -> [Example] in
             [
-                "\(kind) Class0 { \(kind) Class1 {} }\n",
-                "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-                "func func5() {\n}\n}\n}\n}\n}\n}\n"
+                Example("\(kind) Class0 { \(kind) Class1 {} }\n"),
+                Example("""
+                func func0() {
+                    func func1() {
+                        func func2() {
+                            func func3() {
+                                func func4() {
+                                    func func5() {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                """)
             ]
-        } + ["enum Enum0 { enum Enum1 { case Case } }"],
-        triggeringExamples: ["class", "struct", "enum"].map { kind -> String in
-            return "\(kind) A { \(kind) B { ↓\(kind) C {} } }\n"
+        } + [Example("enum Enum0 { enum Enum1 { case Case } }")],
+        triggeringExamples: ["class", "struct", "enum"].map { kind -> Example in
+            return Example("\(kind) A { \(kind) B { ↓\(kind) C {} } }\n")
         } + [
-            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-            "func func5() {\n↓func func6() {\n}\n}\n}\n}\n}\n}\n}\n"
+            Example("""
+            func func0() {
+                func func1() {
+                    func func2() {
+                        func func3() {
+                            func func4() {
+                                func func5() {
+                                    ↓func func6() {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            """)
         ]
     )
 

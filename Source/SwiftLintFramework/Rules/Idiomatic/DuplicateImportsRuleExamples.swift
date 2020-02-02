@@ -1,25 +1,25 @@
 internal struct DuplicateImportsRuleExamples {
-    static let nonTriggeringExamples: [String] = [
-        "import A\nimport B\nimport C",
-        "import A.B\nimport A.C",
-        """
+    static let nonTriggeringExamples: [Example] = [
+        Example("import A\nimport B\nimport C"),
+        Example("import A.B\nimport A.C"),
+        Example("""
         #if DEBUG
             @testable import KsApi
         #else
             import KsApi
         #endif
-        """,
-        "import A // module\nimport B // module"
+        """),
+        Example("import A // module\nimport B // module")
     ]
 
-    static let triggeringExamples: [String] = {
-        var list: [String] = [
-            "import Foundation\nimport Dispatch\n↓import Foundation",
-            "import Foundation\n↓import Foundation.NSString",
-            "↓import Foundation.NSString\nimport Foundation",
-            "↓import A.B.C\nimport A.B",
-            "import A.B\n↓import A.B.C",
-            """
+    static let triggeringExamples: [Example] = {
+        var list: [Example] = [
+            Example("import Foundation\nimport Dispatch\n↓import Foundation"),
+            Example("import Foundation\n↓import Foundation.NSString"),
+            Example("↓import Foundation.NSString\nimport Foundation"),
+            Example("↓import A.B.C\nimport A.B"),
+            Example("import A.B\n↓import A.B.C"),
+            Example("""
             import A
             #if DEBUG
                 @testable import KsApi
@@ -27,28 +27,28 @@ internal struct DuplicateImportsRuleExamples {
                 import KsApi
             #endif
             ↓import A
-            """
+            """)
         ]
 
         list += DuplicateImportsRule.importKinds.map { importKind in
-            return """
+            Example("""
                 import A
                 ↓import \(importKind) A.Foo
-                """
+                """)
         }
 
         list += DuplicateImportsRule.importKinds.map { importKind in
-            return """
-            import A
-            ↓import \(importKind) A.B.Foo
-            """
+            Example("""
+                import A
+                ↓import \(importKind) A.B.Foo
+                """)
         }
 
         list += DuplicateImportsRule.importKinds.map { importKind in
-            return """
-            import A.B
-            ↓import \(importKind) A.B.Foo
-            """
+            Example("""
+                import A.B
+                ↓import \(importKind) A.B.Foo
+                """)
         }
 
         return list

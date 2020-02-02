@@ -2,7 +2,7 @@ internal struct EmptyXCTestMethodRuleExamples {
     static let nonTriggeringExamples = [
         // Valid XCTestCase class
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             var foobar: Foobar?
 
@@ -28,11 +28,11 @@ internal struct EmptyXCTestMethodRuleExamples {
                 // comment...
             }
         }
-        """,
+        """),
 
         // Not an XCTestCase class
 
-        """
+        Example("""
         class Foobar {
             func setUp() {}
 
@@ -40,11 +40,11 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func testFoo() {}
         }
-        """,
+        """),
 
         // Methods with parameters
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             func setUp(with object: Foobar) {}
 
@@ -54,23 +54,23 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func testBar(bar: (String) -> Int) {}
         }
-        """,
+        """),
 
         // Asserts in one line
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             func testFoo() { XCTAssertTrue(foobar?.foo) }
 
             func testBar() { XCTAssertFalse(foobar?.bar) }
         }
-        """
+        """)
     ]
 
     static let triggeringExamples = [
         // XCTestCase class with empty methods
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             override ↓func setUp() {
             }
@@ -93,9 +93,9 @@ internal struct EmptyXCTestMethodRuleExamples {
             func helperFunction() {
             }
         }
-        """,
+        """),
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             override ↓func setUp() {}
 
@@ -105,11 +105,11 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func helperFunction() {}
         }
-        """,
+        """),
 
         // XCTestCase class with comments (and blank lines)
 
-        """
+        Example("""
         class TotoTests: XCTestCase {
             override ↓func setUp() {
                 // comment...
@@ -141,11 +141,11 @@ internal struct EmptyXCTestMethodRuleExamples {
             func helperFunction() {
             }
         }
-        """,
+        """),
 
         // Two XCTestCase classes on the same file
 
-        """
+        Example("""
         class FooTests: XCTestCase {
             override ↓func setUp() {}
         }
@@ -153,6 +153,6 @@ internal struct EmptyXCTestMethodRuleExamples {
         class BarTests: XCTestCase {
             ↓func testFoo() {}
         }
-        """
+        """)
     ]
 }

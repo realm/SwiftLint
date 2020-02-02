@@ -12,21 +12,25 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
         description: "Trailing closure syntax should not be used when passing more than one closure argument.",
         kind: .style,
         nonTriggeringExamples: [
-            "foo.map { $0 + 1 }\n",
-            "foo.reduce(0) { $0 + $1 }\n",
-            "if let foo = bar.map({ $0 + 1 }) {\n\n}\n",
-            "foo.something(param1: { $0 }, param2: { $0 + 1 })\n",
-            "UIView.animate(withDuration: 1.0) {\n" +
-            "    someView.alpha = 0.0\n" +
-            "}"
+            Example("foo.map { $0 + 1 }\n"),
+            Example("foo.reduce(0) { $0 + $1 }\n"),
+            Example("if let foo = bar.map({ $0 + 1 }) {\n\n}\n"),
+            Example("foo.something(param1: { $0 }, param2: { $0 + 1 })\n"),
+            Example("""
+            UIView.animate(withDuration: 1.0) {
+                someView.alpha = 0.0
+            }
+            """)
         ],
         triggeringExamples: [
-            "foo.something(param1: { $0 }) ↓{ $0 + 1 }",
-            "UIView.animate(withDuration: 1.0, animations: {\n" +
-            "    someView.alpha = 0.0\n" +
-            "}) ↓{ _ in\n" +
-            "    someView.removeFromSuperview()\n" +
-            "}"
+            Example("foo.something(param1: { $0 }) ↓{ $0 + 1 }"),
+            Example("""
+            UIView.animate(withDuration: 1.0, animations: {
+                someView.alpha = 0.0
+            }) ↓{ _ in
+                someView.removeFromSuperview()
+            }
+            """)
         ]
     )
 

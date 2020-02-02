@@ -10,14 +10,14 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
         kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
-            "Int.random(in: 0..<10)\n",
-            "Double.random(in: 8.6...111.34)\n",
-            "Float.random(in: 0 ..< 1)\n"
+            Example("Int.random(in: 0..<10)\n"),
+            Example("Double.random(in: 8.6...111.34)\n"),
+            Example("Float.random(in: 0 ..< 1)\n")
         ],
         triggeringExamples: [
-            "↓arc4random(10)\n",
-            "↓arc4random_uniform(83)\n",
-            "↓drand48(52)\n"
+            Example("↓arc4random(10)\n"),
+            Example("↓arc4random_uniform(83)\n"),
+            Example("↓drand48(52)\n")
         ]
     )
 

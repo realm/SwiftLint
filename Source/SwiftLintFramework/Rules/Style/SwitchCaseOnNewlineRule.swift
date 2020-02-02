@@ -1,7 +1,11 @@
 import SourceKittenFramework
 
-private func wrapInSwitch(_ str: String) -> String {
-    return "switch foo {\n  \(str)\n}\n"
+private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
+    return Example("""
+    switch foo {
+        \(str)
+    }
+    """, file: file, line: line)
 }
 
 public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
@@ -15,37 +19,41 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         description: "Cases inside a switch should always be on a newline",
         kind: .style,
         nonTriggeringExamples: [
-            "/*case 1: */return true",
-            "//case 1:\n return true",
-            "let x = [caseKey: value]",
-            "let x = [key: .default]",
-            "if case let .someEnum(value) = aFunction([key: 2]) { }",
-            "guard case let .someEnum(value) = aFunction([key: 2]) { }",
-            "for case let .someEnum(value) = aFunction([key: 2]) { }",
-            "enum Environment {\n case development\n}",
-            "enum Environment {\n case development(url: URL)\n}",
-            "enum Environment {\n case development(url: URL) // staging\n}"
-        ] + [
-            "case 1:\n return true",
-            "default:\n return true",
-            "case let value:\n return true",
-            "case .myCase: // error from network\n return true",
-            "case let .myCase(value) where value > 10:\n return false",
-            "case let .myCase(value)\n where value > 10:\n return false",
-            "case let .myCase(code: lhsErrorCode, description: _)\n where lhsErrorCode > 10:\n return false",
-            "case #selector(aFunction(_:)):\n return false\n"
-        ].map(wrapInSwitch),
+            Example("/*case 1: */return true"),
+            Example("//case 1:\n return true"),
+            Example("let x = [caseKey: value]"),
+            Example("let x = [key: .default]"),
+            Example("if case let .someEnum(value) = aFunction([key: 2]) { }"),
+            Example("guard case let .someEnum(value) = aFunction([key: 2]) { }"),
+            Example("for case let .someEnum(value) = aFunction([key: 2]) { }"),
+            Example("enum Environment {\n case development\n}"),
+            Example("enum Environment {\n case development(url: URL)\n}"),
+            Example("enum Environment {\n case development(url: URL) // staging\n}"),
+
+            wrapInSwitch("case 1:\n return true"),
+            wrapInSwitch("default:\n return true"),
+            wrapInSwitch("case let value:\n return true"),
+            wrapInSwitch("case .myCase: // error from network\n return true"),
+            wrapInSwitch("case let .myCase(value) where value > 10:\n return false"),
+            wrapInSwitch("case let .myCase(value)\n where value > 10:\n return false"),
+            wrapInSwitch("""
+            case let .myCase(code: lhsErrorCode, description: _)
+             where lhsErrorCode > 10:
+            return false
+            """),
+            wrapInSwitch("case #selector(aFunction(_:)):\n return false\n")
+        ],
         triggeringExamples: [
-            "↓case 1: return true",
-            "↓case let value: return true",
-            "↓default: return true",
-            "↓case \"a string\": return false",
-            "↓case .myCase: return false // error from network",
-            "↓case let .myCase(value) where value > 10: return false",
-            "↓case #selector(aFunction(_:)): return false\n",
-            "↓case let .myCase(value)\n where value > 10: return false",
-            "↓case .first,\n .second: return false"
-        ].map(wrapInSwitch)
+            wrapInSwitch("↓case 1: return true"),
+            wrapInSwitch("↓case let value: return true"),
+            wrapInSwitch("↓default: return true"),
+            wrapInSwitch("↓case \"a string\": return false"),
+            wrapInSwitch("↓case .myCase: return false // error from network"),
+            wrapInSwitch("↓case let .myCase(value) where value > 10: return false"),
+            wrapInSwitch("↓case #selector(aFunction(_:)): return false\n"),
+            wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
+            wrapInSwitch("↓case .first,\n .second: return false")
+        ]
     )
 
     public func validate(file: SwiftLintFile, kind: StatementKind,

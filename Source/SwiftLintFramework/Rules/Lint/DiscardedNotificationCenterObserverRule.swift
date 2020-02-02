@@ -13,34 +13,40 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
                      "returned should be stored so it can be removed later.",
         kind: .lint,
         nonTriggeringExamples: [
-            "let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
-            "let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",
-            "func foo() -> Any {\n" +
+            Example("let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
+            Example("""
+            let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
+            """),
+            Example("func foo() -> Any {\n" +
             "   return nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n" +
-            "}\n",
-            "var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
-            "var obs: [String: Any?] = []\n" +
-            "obs[\"foo\"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",
-            "var obs: [Any?] = []\n" +
-            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
-            "func foo(_ notif: Any) {\n" +
+            "}\n"),
+            Example("var obs: [Any?] = []\n" +
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"),
+            Example("""
+            var obs: [String: Any?] = []
+            obs["foo"] = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
+            """),
+            Example("var obs: [Any?] = []\n" +
+            "obs.append(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"),
+            Example("func foo(_ notif: Any) {\n" +
             "   obs.append(notif)\n" +
             "}\n" +
-            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n",
-            """
+            "foo(nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }))\n"),
+            Example("""
             var obs: [NSObjectProtocol] = [
                nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { }),
                nc.addObserver(forName: .CKAccountChanged, object: nil, queue: nil, using: { })
             ]
-            """
+            """)
         ],
         triggeringExamples: [
-            "↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
-            "↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",
-            "@discardableResult func foo() -> Any {\n" +
-            "   return ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n" +
-            "}\n"
+            Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
+            Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n"),
+            Example("""
+            @discardableResult func foo() -> Any {
+               return ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
+            }
+            """)
         ]
     )
 

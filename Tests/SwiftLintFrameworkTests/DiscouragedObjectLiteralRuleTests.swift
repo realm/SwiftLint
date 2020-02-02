@@ -9,10 +9,10 @@ class DiscouragedObjectLiteralRuleTests: XCTestCase {
     func testWithImageLiteral() {
         let baseDescription = DiscouragedObjectLiteralRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)"
+            Example("let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)")
         ]
         let triggeringExamples = [
-            "let image = ↓#imageLiteral(resourceName: \"image.jpg\")"
+            Example("let image = ↓#imageLiteral(resourceName: \"image.jpg\")")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
@@ -24,10 +24,10 @@ class DiscouragedObjectLiteralRuleTests: XCTestCase {
     func testWithColorLiteral() {
         let baseDescription = DiscouragedObjectLiteralRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "let image = #imageLiteral(resourceName: \"image.jpg\")"
+            Example("let image = #imageLiteral(resourceName: \"image.jpg\")")
         ]
         let triggeringExamples = [
-            "let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)"
+            Example("let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,

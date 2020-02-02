@@ -31,8 +31,8 @@ public struct MarkdownReporter: Reporter {
             violation.location.file?.escapedForMarkdown() ?? "",
             violation.location.line?.description ?? "",
             severity(for: violation.severity),
-            violation.ruleDescription.name.escapedForMarkdown() + ": " + violation.reason.escapedForMarkdown(),
-            violation.ruleDescription.identifier
+            violation.ruleName.escapedForMarkdown() + ": " + violation.reason.escapedForMarkdown(),
+            violation.ruleIdentifier
         ].joined(separator: " | ")
     }
 

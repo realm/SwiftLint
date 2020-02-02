@@ -12,14 +12,14 @@ public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, Confi
         description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`.",
         kind: .performance,
         nonTriggeringExamples: [
-            "let range = myString.range(of: \"Test\")",
-            "myString.contains(\"Test\")",
-            "!myString.contains(\"Test\")",
-            "resourceString.range(of: rule.regex, options: .regularExpression) != nil"
+            Example("let range = myString.range(of: \"Test\")"),
+            Example("myString.contains(\"Test\")"),
+            Example("!myString.contains(\"Test\")"),
+            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil")
         ],
         triggeringExamples: ["!=", "=="].flatMap { comparison in
             return [
-                "↓myString.range(of: \"Test\") \(comparison) nil"
+                Example("↓myString.range(of: \"Test\") \(comparison) nil")
             ]
         }
     )

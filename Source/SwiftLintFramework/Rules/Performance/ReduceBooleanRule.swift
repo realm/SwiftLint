@@ -12,18 +12,18 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
         kind: .performance,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
-            "nums.reduce(0) { $0.0 + $0.1 }",
-            "nums.reduce(0.0) { $0.0 + $0.1 }"
+            Example("nums.reduce(0) { $0.0 + $0.1 }"),
+            Example("nums.reduce(0.0) { $0.0 + $0.1 }")
         ],
         triggeringExamples: [
-            "let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }",
-            "let anyNines = nums.↓reduce(false) { $0.0 || $0.1 == 9 }",
-            "let allValid = validators.↓reduce(true) { $0 && $1(input) }",
-            "let anyValid = validators.↓reduce(false) { $0 || $1(input) }",
-            "let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })",
-            "let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })",
-            "let allValid = validators.↓reduce(true, { $0 && $1(input) })",
-            "let anyValid = validators.↓reduce(false, { $0 || $1(input) })"
+            Example("let allNines = nums.↓reduce(true) { $0.0 && $0.1 == 9 }"),
+            Example("let anyNines = nums.↓reduce(false) { $0.0 || $0.1 == 9 }"),
+            Example("let allValid = validators.↓reduce(true) { $0 && $1(input) }"),
+            Example("let anyValid = validators.↓reduce(false) { $0 || $1(input) }"),
+            Example("let allNines = nums.↓reduce(true, { $0.0 && $0.1 == 9 })"),
+            Example("let anyNines = nums.↓reduce(false, { $0.0 || $0.1 == 9 })"),
+            Example("let allValid = validators.↓reduce(true, { $0 && $1(input) })"),
+            Example("let anyValid = validators.↓reduce(false, { $0 || $1(input) })")
         ]
     )
 

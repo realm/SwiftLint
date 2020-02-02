@@ -12,19 +12,19 @@ public struct ContainsOverFilterIsEmptyRule: CallPairRule, OptInRule, Configurat
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             return [
-                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n",
-                "let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n"
+                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n"),
+                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n")
             ]
         } +  [
-            "let result = myList.contains(where: { $0 % 2 == 0 })\n",
-            "let result = !myList.contains(where: { $0 % 2 == 0 })\n",
-            "let result = myList.contains(10)\n"
+            Example("let result = myList.contains(where: { $0 % 2 == 0 })\n"),
+            Example("let result = !myList.contains(where: { $0 % 2 == 0 })\n"),
+            Example("let result = myList.contains(10)\n")
         ],
         triggeringExamples: [
-            "let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty\n",
-            "let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty\n",
-            "let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty\n",
-            "let result = ↓myList.filter(where: someFunction).isEmpty\n"
+            Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty\n"),
+            Example("let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty\n"),
+            Example("let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty\n"),
+            Example("let result = ↓myList.filter(where: someFunction).isEmpty\n")
         ]
     )
 

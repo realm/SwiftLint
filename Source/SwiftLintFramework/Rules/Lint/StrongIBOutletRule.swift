@@ -11,14 +11,14 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
         description: "@IBOutlets shouldn't be declared as weak.",
         kind: .lint,
         nonTriggeringExamples: [
-            "@IBOutlet var label: UILabel?",
-            "weak var label: UILabel?"
-        ].map(wrapExample),
+            wrapExample("@IBOutlet var label: UILabel?"),
+            wrapExample("weak var label: UILabel?")
+        ],
         triggeringExamples: [
-            "@IBOutlet weak ↓var label: UILabel?",
-            "@IBOutlet unowned ↓var label: UILabel!",
-            "@IBOutlet weak ↓var textField: UITextField?"
-        ].map(wrapExample)
+            wrapExample("@IBOutlet weak ↓var label: UILabel?"),
+            wrapExample("@IBOutlet unowned ↓var label: UILabel!"),
+            wrapExample("@IBOutlet weak ↓var textField: UITextField?")
+        ]
     )
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
@@ -40,10 +40,10 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
     }
 }
 
-private func wrapExample(_ text: String) -> String {
-    return """
+private func wrapExample(_ text: String, file: StaticString = #file, line: UInt = #line) -> Example {
+    return Example("""
     class ViewController: UIViewController {
         \(text)
     }
-    """
+    """, file: file, line: line)
 }

@@ -12,58 +12,58 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         description: "Properties should have a type interface",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            """
+            Example("""
             class Foo {
               var myVar: Int? = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               let myVar: Int? = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               static var myVar: Int? = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               class var myVar: Int? = 0
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             class Foo {
               ↓var myVar = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               ↓let mylet = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               ↓static var myStaticVar = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               ↓class var myClassVar = 0
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               ↓let myVar = Int(0)
             }
-            """,
-            """
+            """),
+            Example("""
             class Foo {
               ↓let myVar = Set<Int>(0)
             }
-            """
+            """)
         ]
     )
 

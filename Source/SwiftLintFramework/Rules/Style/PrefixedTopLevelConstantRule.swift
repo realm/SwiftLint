@@ -13,40 +13,40 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
         description: "Top-level constants should be prefixed by `k`.",
         kind: .style,
         nonTriggeringExamples: [
-            "private let kFoo = 20.0",
-            "public let kFoo = false",
-            "internal let kFoo = \"Foo\"",
-            "let kFoo = true",
-            "struct Foo {\n" +
+            Example("private let kFoo = 20.0"),
+            Example("public let kFoo = false"),
+            Example("internal let kFoo = \"Foo\""),
+            Example("let kFoo = true"),
+            Example("struct Foo {\n" +
             "   let bar = 20.0\n" +
-            "}",
-            "private var foo = 20.0",
-            "public var foo = false",
-            "internal var foo = \"Foo\"",
-            "var foo = true",
-            "var foo = true, bar = true",
-            "var foo = true, let kFoo = true",
-            "let\n" +
-            "   kFoo = true",
-            "var foo: Int {\n" +
+            "}"),
+            Example("private var foo = 20.0"),
+            Example("public var foo = false"),
+            Example("internal var foo = \"Foo\""),
+            Example("var foo = true"),
+            Example("var foo = true, bar = true"),
+            Example("var foo = true, let kFoo = true"),
+            Example("let\n" +
+            "   kFoo = true"),
+            Example("var foo: Int {\n" +
             "   return a + b\n" +
-            "}",
-            "let kFoo = {\n" +
+            "}"),
+            Example("let kFoo = {\n" +
             "   return a + b\n" +
-            "}()"
+            "}()")
         ],
         triggeringExamples: [
-            "private let ↓Foo = 20.0",
-            "public let ↓Foo = false",
-            "internal let ↓Foo = \"Foo\"",
-            "let ↓Foo = true",
-            "let ↓foo = 2, ↓bar = true",
-            "var foo = true, let ↓Foo = true",
-            "let\n" +
-            "    ↓foo = true",
-            "let ↓foo = {\n" +
+            Example("private let ↓Foo = 20.0"),
+            Example("public let ↓Foo = false"),
+            Example("internal let ↓Foo = \"Foo\""),
+            Example("let ↓Foo = true"),
+            Example("let ↓foo = 2, ↓bar = true"),
+            Example("var foo = true, let ↓Foo = true"),
+            Example("let\n" +
+            "    ↓foo = true"),
+            Example("let ↓foo = {\n" +
             "   return a + b\n" +
-            "}()"
+            "}()")
         ]
     )
 

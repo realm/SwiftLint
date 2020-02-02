@@ -1,10 +1,13 @@
 import SwiftLintFramework
 import XCTest
 
-private func funcWithParameters(_ parameters: String, violates: Bool = false) -> String {
+private func funcWithParameters(_ parameters: String,
+                                violates: Bool = false,
+                                file: StaticString = #file,
+                                line: UInt = #line) -> Example {
     let marker = violates ? "↓" : ""
 
-    return "func \(marker)abc(\(parameters)) {}\n"
+    return Example("func \(marker)abc(\(parameters)) {}\n", file: file, line: line)
 }
 
 class FunctionParameterCountRuleTests: XCTestCase {

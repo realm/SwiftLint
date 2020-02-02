@@ -11,20 +11,20 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         description: "Some methods should not call super",
         kind: .lint,
         nonTriggeringExamples: [
-            """
+            Example("""
             class VC: UIViewController {
                 override func loadView() {
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class NSView {
                 func updateLayer() {
                     self.method1()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             public class FileProviderExtension: NSFileProviderExtension {
                 override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {
                     guard let identifier = persistentIdentifierForItem(at: url) else {
@@ -33,25 +33,25 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                     }
                 }
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             class VC: UIViewController {
                 override func loadView() {↓
                     super.loadView()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class VC: NSFileProviderExtension {
                 override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {↓
                     self.method1()
                     super.providePlaceholder(at:url, completionHandler: completionHandler)
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class VC: NSView {
                 override func updateLayer() {↓
                     self.method1()
@@ -59,8 +59,8 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                     self.method2()
                 }
             }
-            """,
-            """
+            """),
+            Example("""
             class VC: NSView {
                 override func updateLayer() {↓
                     defer {
@@ -68,7 +68,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                     }
                 }
             }
-            """
+            """)
         ]
     )
 

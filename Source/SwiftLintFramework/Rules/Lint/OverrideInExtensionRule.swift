@@ -11,23 +11,27 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Aut
         description: "Extensions shouldn't override declarations.",
         kind: .lint,
         nonTriggeringExamples: [
-            "extension Person {\n  var age: Int { return 42 }\n}\n",
-            "extension Person {\n  func celebrateBirthday() {}\n}\n",
-            "class Employee: Person {\n  override func celebrateBirthday() {}\n}\n",
-            "class Foo: NSObject {}\n" +
-            "extension Foo {\n" +
-            "    override var description: String { return \"\" }\n" +
-            "}\n",
-            "struct Foo {\n" +
-            "    class Bar: NSObject {}\n" +
-            "}\n" +
-            "extension Foo.Bar {\n" +
-            "    override var description: String { return \"\" }\n" +
-            "}\n"
+            Example("extension Person {\n  var age: Int { return 42 }\n}\n"),
+            Example("extension Person {\n  func celebrateBirthday() {}\n}\n"),
+            Example("class Employee: Person {\n  override func celebrateBirthday() {}\n}\n"),
+            Example("""
+            class Foo: NSObject {}
+            extension Foo {
+                override var description: String { return "" }
+            }
+            """),
+            Example("""
+            struct Foo {
+                class Bar: NSObject {}
+            }
+            extension Foo.Bar {
+                override var description: String { return "" }
+            }
+            """)
         ],
         triggeringExamples: [
-            "extension Person {\n  override ↓var age: Int { return 42 }\n}\n",
-            "extension Person {\n  override ↓func celebrateBirthday() {}\n}\n"
+            Example("extension Person {\n  override ↓var age: Int { return 42 }\n}\n"),
+            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}\n")
         ]
     )
 

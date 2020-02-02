@@ -12,8 +12,8 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private static let nonTriggeringExamples = [
-        """
+    private static let nonTriggeringExamples: [Example] = [
+        Example("""
         switch x {
 
         case 0..<5:
@@ -26,8 +26,8 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
             print("x is invalid")
 
         }
-        """,
-        """
+        """),
+        Example("""
         switch x {
         case 0..<5:
             print("x is low")
@@ -38,34 +38,35 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
         default:
             print("x is invalid")
         }
-        """,
-        """
+        """),
+        Example("""
         switch x {
         case 0..<5: print("x is low")
         case 5..<10: print("x is high")
         default: print("x is invalid")
         }
-        """
-        ,
+        """),
         // Testing handling of trailing spaces: do not convert to """ style
-        "switch x {    \n" +
-        "case 1:    \n" +
-        "    print(\"one\")    \n" +
-        "    \n" +
-        "default:    \n" +
-        "    print(\"not one\")    \n" +
-        "}    "
+        Example([
+            "switch x {    \n",
+            "case 1:    \n",
+            "    print(\"one\")    \n",
+            "    \n",
+            "default:    \n",
+            "    print(\"not one\")    \n",
+            "}    "
+        ].joined())
     ]
 
-    private static let violatingToValidExamples: [String: String] = [
-        """
+    private static let violatingToValidExamples: [Example: Example] = [
+        Example("""
             switch x {
             case 0..<5:
                 print("x is valid")
         ↓    default:
                 print("x is invalid")
             }
-        """: """
+        """): Example("""
             switch x {
             case 0..<5:
                 print("x is valid")
@@ -73,15 +74,15 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
             default:
                 print("x is invalid")
             }
-        """,
-        """
+        """),
+        Example("""
             switch x {
             case .valid:
                 print("x is valid")
         ↓    case .invalid:
                 print("x is invalid")
             }
-        """: """
+        """): Example("""
             switch x {
             case .valid:
                 print("x is valid")
@@ -89,8 +90,8 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
             case .invalid:
                 print("x is invalid")
             }
-        """,
-        """
+        """),
+        Example("""
             switch x {
             case .valid:
                 print("multiple ...")
@@ -99,7 +100,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
                 print("multiple ...")
                 print("... lines")
             }
-        """: """
+        """): Example("""
             switch x {
             case .valid:
                 print("multiple ...")
@@ -109,7 +110,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
                 print("multiple ...")
                 print("... lines")
             }
-        """
+        """)
     ]
 
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"

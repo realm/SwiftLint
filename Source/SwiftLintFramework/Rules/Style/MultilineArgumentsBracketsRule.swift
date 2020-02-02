@@ -12,66 +12,66 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
         description: "Multiline arguments should have their surrounding brackets in a new line.",
         kind: .style,
         nonTriggeringExamples: [
-            """
+            Example("""
             foo(param1: "Param1", param2: "Param2", param3: "Param3")
-            """,
-            """
+            """),
+            Example("""
             foo(
                 param1: "Param1", param2: "Param2", param3: "Param3"
             )
-            """,
-            """
+            """),
+            Example("""
             func foo(
                 param1: "Param1",
                 param2: "Param2",
                 param3: "Param3"
             )
-            """,
-            """
+            """),
+            Example("""
             foo { param1, param2 in
                 print("hello world")
             }
-            """,
-            """
+            """),
+            Example("""
             foo(
                 bar(
                     x: 5,
                     y: 7
                 )
             )
-            """,
-            """
+            """),
+            Example("""
             AlertViewModel.AlertAction(title: "some title", style: .default) {
                 AlertManager.shared.presentNextDebugAlert()
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             foo(↓param1: "Param1", param2: "Param2",
                      param3: "Param3"
             )
-            """,
-            """
+            """),
+            Example("""
             foo(
                 param1: "Param1",
                 param2: "Param2",
                 param3: "Param3"↓)
-            """,
-            """
+            """),
+            Example("""
             foo(↓bar(
                 x: 5,
                 y: 7
             )
             )
-            """,
-            """
+            """),
+            Example("""
             foo(
                 bar(
                     x: 5,
                     y: 7
             )↓)
-            """
+            """)
         ]
     )
 

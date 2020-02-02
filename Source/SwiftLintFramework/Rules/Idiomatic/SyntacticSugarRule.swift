@@ -18,52 +18,53 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         description: "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            "let x: [Int]",
-            "let x: [Int: String]",
-            "let x: Int?",
-            "func x(a: [Int], b: Int) -> [Int: Any]",
-            "let x: Int!",
-            """
+            Example("let x: [Int]"),
+            Example("let x: [Int: String]"),
+            Example("let x: Int?"),
+            Example("func x(a: [Int], b: Int) -> [Int: Any]"),
+            Example("let x: Int!"),
+            Example("""
             extension Array {
               func x() { }
             }
-            """,
-            """
+            """),
+            Example("""
             extension Dictionary {
               func x() { }
             }
-            """,
-            "let x: CustomArray<String>",
-            "var currentIndex: Array<OnboardingPage>.Index?",
-            "func x(a: [Int], b: Int) -> Array<Int>.Index",
-            "unsafeBitCast(nonOptionalT, to: Optional<T>.self)",
-            "type is Optional<String>.Type",
-            "let x: Foo.Optional<String>"
+            """),
+            Example("let x: CustomArray<String>"),
+            Example("var currentIndex: Array<OnboardingPage>.Index?"),
+            Example("func x(a: [Int], b: Int) -> Array<Int>.Index"),
+            Example("unsafeBitCast(nonOptionalT, to: Optional<T>.self)"),
+            Example("type is Optional<String>.Type"),
+            Example("let x: Foo.Optional<String>")
         ],
         triggeringExamples: [
-            "let x: ↓Array<String>",
-            "let x: ↓Dictionary<Int, String>",
-            "let x: ↓Optional<Int>",
-            "let x: ↓ImplicitlyUnwrappedOptional<Int>",
-            "func x(a: ↓Array<Int>, b: Int) -> [Int: Any]",
-            "func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>",
-            "func x(a: ↓Array<Int>, b: Int) -> ↓Dictionary<Int, String>",
-            "let x = ↓Array<String>.array(of: object)",
-            "let x: ↓Swift.Optional<String>"
+            Example("let x: ↓Array<String>"),
+            Example("let x: ↓Dictionary<Int, String>"),
+            Example("let x: ↓Optional<Int>"),
+            Example("let x: ↓ImplicitlyUnwrappedOptional<Int>"),
+            Example("func x(a: ↓Array<Int>, b: Int) -> [Int: Any]"),
+            Example("func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>"),
+            Example("func x(a: ↓Array<Int>, b: Int) -> ↓Dictionary<Int, String>"),
+            Example("let x = ↓Array<String>.array(of: object)"),
+            Example("let x: ↓Swift.Optional<String>")
         ],
         corrections: [
-            "let x: Array<String>": "let x: [String]",
-            "let x: Array< String >": "let x: [ String ]",
-            "let x: Dictionary<Int, String>": "let x: [Int: String]",
-            "let x: Dictionary<Int , String>": "let x: [Int : String]",
-            "let x: Optional<Int>": "let x: Int?",
-            "let x: Optional< Int >": "let x: Int?",
-            "let x: ImplicitlyUnwrappedOptional<Int>": "let x: Int!",
-            "let x: ImplicitlyUnwrappedOptional< Int >": "let x: Int!",
-            "func x(a: Array<Int>, b: Int) -> [Int: Any]": "func x(a: [Int], b: Int) -> [Int: Any]",
-            "func x(a: [Int], b: Int) -> Dictionary<Int, String>": "func x(a: [Int], b: Int) -> [Int: String]",
-            "let x = Array<String>.array(of: object)": "let x = [String].array(of: object)",
-            "let x: Swift.Optional<String>": "let x: String?"
+            Example("let x: Array<String>"): Example("let x: [String]"),
+            Example("let x: Array< String >"): Example("let x: [ String ]"),
+            Example("let x: Dictionary<Int, String>"): Example("let x: [Int: String]"),
+            Example("let x: Dictionary<Int , String>"): Example("let x: [Int : String]"),
+            Example("let x: Optional<Int>"): Example("let x: Int?"),
+            Example("let x: Optional< Int >"): Example("let x: Int?"),
+            Example("let x: ImplicitlyUnwrappedOptional<Int>"): Example("let x: Int!"),
+            Example("let x: ImplicitlyUnwrappedOptional< Int >"): Example("let x: Int!"),
+            Example("func x(a: Array<Int>, b: Int) -> [Int: Any]"): Example("func x(a: [Int], b: Int) -> [Int: Any]"),
+            Example("func x(a: [Int], b: Int) -> Dictionary<Int, String>"):
+                Example("func x(a: [Int], b: Int) -> [Int: String]"),
+            Example("let x = Array<String>.array(of: object)"): Example("let x = [String].array(of: object)"),
+            Example("let x: Swift.Optional<String>"): Example("let x: String?")
         ]
     )
 

@@ -32,6 +32,9 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
                 return ["#if", "#endif"].contains(contents.substringWithByteRange(range))
             }
 
+        // Make sure that each #if has corresponding #endif
+        guard ranges.count % 2 == 0 else { return [] }
+
         return stride(from: 0, to: ranges.count, by: 2).reduce(into: []) { result, rangeIndex in
             result.append(ranges[rangeIndex].union(with: ranges[rangeIndex + 1]))
         }

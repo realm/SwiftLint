@@ -4,10 +4,17 @@ import SourceKittenFramework
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 private extension SwiftLintFile {
-    func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
-        return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
+    func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
+        let excludingPattern: String
+        if allowMultilineFunc {
+            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
+        } else {
+            excludingPattern = #"(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
+        }
+
+        return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: "(?:(?:if|guard|while)\\n[^\\{]+?\\s|\\{\\s*)\\{").compactMap {
+                     excludingPattern: excludingPattern).compactMap {
             if isAnonimousClosure(range: $0) {
                 return nil
             }
@@ -38,25 +45,24 @@ private extension SwiftLintFile {
 
     func closingBracket(_ closureCode: String) -> Int? {
         var bracketCount = 0
-        var location = 0
-        for letter in closureCode {
+
+        for (index, letter) in closureCode.enumerated() {
             if letter == "{" {
                 bracketCount += 1
             } else if letter == "}" {
                 if bracketCount == 1 {
                     // The closing bracket found
-                    return location
+                    return index
                 }
                 bracketCount -= 1
             }
-            location += 1
         }
         return nil
     }
 }
 
-public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
+    public var configuration = OpeningBraceConfiguration()
 
     public init() {}
 
@@ -103,6 +109,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         triggeringExamples: [
             Example("func abc()↓{\n}"),
             Example("func abc()\n\t↓{ }"),
+            Example("func abc(a: A\n\tb: B)\n↓{"),
             Example("[].map()↓{ $0 }"),
             Example("[].map( ↓{ } )"),
             Example("if let a = b↓{ }"),
@@ -156,17 +163,18 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.violatingOpeningBraceRanges().map {
+        return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = file.violatingOpeningBraceRanges().filter {
-            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
-        }
+        let violatingRanges = file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc)
+            .filter {
+                !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
+            }
         var correctedContents = file.contents
         var adjustedLocations = [Location]()
 

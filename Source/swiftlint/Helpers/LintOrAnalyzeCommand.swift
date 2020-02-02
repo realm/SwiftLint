@@ -114,9 +114,7 @@ struct LintOrAnalyzeCommand {
         }
         return violations.map {
             if $0.severity == .error {
-                var new = $0
-                new.severity = .warning
-                return new
+                return $0.with(severity: .warning)
             } else {
                 return $0
             }

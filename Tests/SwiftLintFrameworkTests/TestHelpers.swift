@@ -94,9 +94,7 @@ private extension Collection where Element == StyleViolation {
         return map { violation in
             let locationWithoutFile = Location(file: nil, line: violation.location.line,
                                                character: violation.location.character)
-            var new = violation
-            new.location = locationWithoutFile
-            return new
+            return violation.with(location: locationWithoutFile)
         }
     }
 }

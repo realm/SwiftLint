@@ -10,10 +10,10 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
     public let ruleName: String
 
     /// The severity of this violation.
-    public var severity: ViolationSeverity
+    public private(set) var severity: ViolationSeverity
 
     /// The location of this violation.
-    public var location: Location
+    public private(set) var location: Location
 
     /// The justification for this violation.
     public let reason: String
@@ -39,5 +39,21 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
         self.severity = severity
         self.location = location
         self.reason = reason ?? ruleDescription.description
+    }
+
+    /// Returns the same violation, but with the `severity` that is passed in
+    /// - Parameter severity: the new severity to use in the modified violation
+    public func with(severity: ViolationSeverity) -> StyleViolation {
+        var new = self
+        new.severity = severity
+        return new
+    }
+
+    /// Returns the same violation, but with the `location` that is passed in
+    /// - Parameter location: the new location to use in the modified violation
+    public func with(location: Location) -> StyleViolation {
+        var new = self
+        new.location = location
+        return new
     }
 }

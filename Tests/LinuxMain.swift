@@ -787,6 +787,12 @@ extension LetVarWhitespaceRuleTests {
     ]
 }
 
+extension LineEndingTests {
+    static var allTests: [(String, (LineEndingTests) -> () throws -> Void)] = [
+        ("testCarriageReturnDoesNotCauseError", testCarriageReturnDoesNotCauseError)
+    ]
+}
+
 extension LineLengthConfigurationTests {
     static var allTests: [(String, (LineLengthConfigurationTests) -> () throws -> Void)] = [
         ("testLineLengthConfigurationInitializerSetsLength", testLineLengthConfigurationInitializerSetsLength),
@@ -1735,6 +1741,7 @@ XCTMain([
     testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
     testCase(LegacyRandomRuleTests.allTests),
     testCase(LetVarWhitespaceRuleTests.allTests),
+    testCase(LineEndingTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),

@@ -33,6 +33,10 @@
 * Fix crash when non-closed #if was present in file.
   [PaulTaykalo](https://github.com/PaulTaykalo)
 
+* Fix false positives when line ends with carriage return + line feed
+  [John Mueller](https://github.com/john-mueller)
+  [#3060](https://github.com/realm/SwiftLint/issues/3060)
+
 ## 0.38.2: Machine Repair Manual
 
 #### Breaking

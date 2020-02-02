@@ -4,7 +4,8 @@ import SourceKittenFramework
 import SwiftSyntax
 #endif
 
-public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, SyntaxRule, OptInRule,
+                                               AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -21,35 +22,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         #if canImport(SwiftSyntax)
-        var positions = [AbsolutePosition]()
-
-        let lock = NSLock()
-        // https://bugs.swift.org/browse/SR-11170
-        let work = DispatchWorkItem {
-            var visitor = ReturnVisitor()
-            file.syntax.walk(&visitor)
-            lock.lock()
-            positions = visitor.positions
-            lock.unlock()
-        }
-        if #available(OSX 10.12, *) {
-            let thread = Thread {
-                work.perform()
-            }
-            thread.stackSize = 8 << 20 // 8 MB.
-            thread.start()
-            work.wait()
-        } else {
-            queuedFatalError("macOS < 10.12")
-        }
-
-        lock.lock()
-        defer { lock.unlock() }
-        return positions.map { position in
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
-        }
+        return validate(file: file, visitor: ReturnVisitor())
         #else
         return []
         #endif
@@ -57,7 +30,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 }
 
 #if canImport(SwiftSyntax)
-private class ReturnVisitor: SyntaxVisitor {
+private class ReturnVisitor: SyntaxRuleVisitor {
     private(set) var positions = [AbsolutePosition]()
 
     func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
@@ -67,6 +40,14 @@ private class ReturnVisitor: SyntaxVisitor {
             positions.append(node.positionAfterSkippingLeadingTrivia)
         }
         return .visitChildren
+    }
+
+    func violations(for rule: ReturnValueFromVoidFunctionRule, in file: SwiftLintFile) -> [StyleViolation] {
+        return positions.map { position in
+            StyleViolation(ruleDescription: type(of: rule).description,
+                           severity: rule.configuration.severity,
+                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
+        }
     }
 }
 

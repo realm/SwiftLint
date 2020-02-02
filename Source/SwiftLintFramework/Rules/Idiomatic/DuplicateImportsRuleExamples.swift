@@ -9,7 +9,12 @@ internal struct DuplicateImportsRuleExamples {
             import KsApi
         #endif
         """),
-        Example("import A // module\nimport B // module")
+        Example("import A // module\nimport B // module"),
+        Example("""
+        #if TEST
+        func test() {
+        }
+        """)
     ]
 
     static let triggeringExamples: [Example] = {

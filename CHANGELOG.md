@@ -30,6 +30,8 @@
 * Fix `discarded_notification_center_observer` false positives when
   capturing observers into an array.  
   [Petteri Huusko](https://github.com/PetteriHuusko)
+* Fix crash when non-closed #if was present in file.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
 
 ## 0.38.2: Machine Repair Manual
 

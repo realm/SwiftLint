@@ -397,6 +397,17 @@ extension EnumCaseAssociatedValuesLengthRuleTests {
     ]
 }
 
+extension ExampleTests {
+    static var allTests: [(String, (ExampleTests) -> () throws -> Void)] = [
+        ("testEquatableDoesNotLookAtFile", testEquatableDoesNotLookAtFile),
+        ("testEquatableDoesNotLookAtLine", testEquatableDoesNotLookAtLine),
+        ("testEquatableLooksAtCode", testEquatableLooksAtCode),
+        ("testRemovingViolationMarkers", testRemovingViolationMarkers),
+        ("testComparable", testComparable),
+        ("testWithCode", testWithCode)
+    ]
+}
+
 extension ExpiringTodoRuleTests {
     static var allTests: [(String, (ExpiringTodoRuleTests) -> () throws -> Void)] = [
         ("testExpiringTodo", testExpiringTodo),
@@ -1691,6 +1702,7 @@ XCTMain([
     testCase(EmptyStringRuleTests.allTests),
     testCase(EmptyXCTestMethodRuleTests.allTests),
     testCase(EnumCaseAssociatedValuesLengthRuleTests.allTests),
+    testCase(ExampleTests.allTests),
     testCase(ExpiringTodoRuleTests.allTests),
     testCase(ExplicitACLRuleTests.allTests),
     testCase(ExplicitEnumRawValueRuleTests.allTests),

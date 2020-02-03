@@ -13,7 +13,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, Syntax
         identifier: "return_value_from_void_function",
         name: "Return Value from Void Function",
         description: "Returning values from Void functions should be avoided.",
-        kind: .lint,
+        kind: .idiomatic,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: ReturnValueFromVoidFunctionRuleExamples.nonTriggeringExamples,
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples

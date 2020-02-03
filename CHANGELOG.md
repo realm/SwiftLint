@@ -18,6 +18,7 @@
 * Add `deinitializer` type content to `type_contents_order` rule instead of
   grouping it with initializers.  
   [Steven Magdy](https://github.com/StevenMagdy)
+
 * Inline test failure messages to make development of SwiftLint easier. Test
   failures in triggering and non-triggering examples will appear inline in
   their respective files so you can immediately see which cases are working
@@ -30,6 +31,7 @@
 * Fix `discarded_notification_center_observer` false positives when
   capturing observers into an array.  
   [Petteri Huusko](https://github.com/PetteriHuusko)
+
 * Fix crash when non-closed #if was present in file.
   [PaulTaykalo](https://github.com/PaulTaykalo)
 

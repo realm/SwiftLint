@@ -20,27 +20,18 @@ public extension SyntaxRule {
     /// Wraps computation of violations based on a visitor.
     func validate<Visitor: SyntaxRuleVisitor>(file: SwiftLintFile,
                                               visitor: Visitor) -> [StyleViolation] where Visitor.Rule == Self {
-        let lock = NSLock()
+        var visitor = visitor
+
         // https://bugs.swift.org/browse/SR-11170
         let work = DispatchWorkItem {
-            var visitor = visitor
-            lock.lock()
             file.syntax.walk(&visitor)
-            lock.unlock()
         }
-        if #available(OSX 10.12, *) {
-            let thread = Thread {
-                work.perform()
-            }
-            thread.stackSize = 8 << 20 // 8 MB.
-            thread.start()
-            work.wait()
-        } else {
-            queuedFatalError("macOS < 10.12")
+        let thread = Thread {
+            work.perform()
         }
-
-        lock.lock()
-        defer { lock.unlock() }
+        thread.stackSize = 8 << 20 // 8 MB.
+        thread.start()
+        work.wait()
 
         return visitor.violations(for: self, in: file)
     }

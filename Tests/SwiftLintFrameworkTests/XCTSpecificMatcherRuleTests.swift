@@ -123,6 +123,6 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
 
     private func violations(_ example: Example) -> [StyleViolation] {
         guard let config = TestHelpers.makeConfig(nil, XCTSpecificMatcherRule.description.identifier) else { return [] }
-        return TestHelpers.violations(example, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

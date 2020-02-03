@@ -22,6 +22,6 @@ class TodoRuleTests: XCTestCase {
 
     private func violations(_ example: Example) -> [StyleViolation] {
         let config = TestHelpers.makeConfig(nil, TodoRule.description.identifier)!
-        return TestHelpers.violations(example, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

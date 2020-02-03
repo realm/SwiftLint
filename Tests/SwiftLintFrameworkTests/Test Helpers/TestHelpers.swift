@@ -2,6 +2,24 @@ import Foundation
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
+func violations(_ example: Example, config: Configuration = Configuration()!,
+                requiresFileOnDisk: Bool = false) -> [StyleViolation] {
+    SwiftLintFile.clearCaches()
+    let stringStrippingMarkers = example.removingViolationMarkers()
+    guard requiresFileOnDisk else {
+        let file = SwiftLintFile(contents: stringStrippingMarkers.code)
+        let storage = RuleStorage()
+        let linter = Linter(file: file, configuration: config).collect(into: storage)
+        return linter.styleViolations(using: storage)
+    }
+
+    let file = SwiftLintFile.temporary(withContents: stringStrippingMarkers.code)
+    let storage = RuleStorage()
+    let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
+    let linter = collecter.collect(into: storage)
+    return linter.styleViolations(using: storage).withoutFiles()
+}
+
 enum TestHelpers {
     static let allRuleIdentifiers = Array(masterRuleList.list.keys)
 
@@ -71,24 +89,6 @@ enum TestHelpers {
             }
         }
         return (["```"] + contents + ["```"]).joined(separator: "\n")
-    }
-
-    static func violations(_ example: Example, config: Configuration = Configuration()!,
-                           requiresFileOnDisk: Bool = false) -> [StyleViolation] {
-        SwiftLintFile.clearCaches()
-        let stringStrippingMarkers = example.removingViolationMarkers()
-        guard requiresFileOnDisk else {
-            let file = SwiftLintFile(contents: stringStrippingMarkers.code)
-            let storage = RuleStorage()
-            let linter = Linter(file: file, configuration: config).collect(into: storage)
-            return linter.styleViolations(using: storage)
-        }
-
-        let file = SwiftLintFile.temporary(withContents: stringStrippingMarkers.code)
-        let storage = RuleStorage()
-        let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
-        let linter = collecter.collect(into: storage)
-        return linter.styleViolations(using: storage).withoutFiles()
     }
 
     static func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,

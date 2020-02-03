@@ -38,7 +38,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
             XCTFail("Failed to create configuration")
             return
         }
-        let allViolations = TestHelpers.violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
+        let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
 
         let verticalWhiteSpaceViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = verticalWhiteSpaceViolation {
@@ -49,7 +49,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
     }
 
     func testViolationMessageWithDefaultConfiguration() {
-        let allViolations = TestHelpers.violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"))
+        let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"))
         let verticalWhiteSpaceViolation = allViolations.first(where: { $0.ruleIdentifier == ruleID })
         if let violation = verticalWhiteSpaceViolation {
             XCTAssertEqual(violation.reason, "Limit vertical whitespace to a single empty line. Currently 3.")

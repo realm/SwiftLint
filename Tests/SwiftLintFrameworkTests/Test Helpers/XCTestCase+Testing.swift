@@ -70,9 +70,9 @@ extension XCTestCase {
         }
 
         func makeViolations(_ example: Example) -> [StyleViolation] {
-            return TestHelpers.violations(example,
-                                          config: config,
-                                          requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+            return violations(example,
+                              config: config,
+                              requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
 
         // Comment doesn't violate
@@ -130,8 +130,8 @@ extension XCTestCase {
         file: StaticString = #file,
         line: UInt = #line) {
         for example in examples {
-            let unexpectedViolations = TestHelpers.violations(example, config: config,
-                                                              requiresFileOnDisk: requiresFileOnDisk)
+            let unexpectedViolations = violations(example, config: config,
+                                                  requiresFileOnDisk: requiresFileOnDisk)
             if unexpectedViolations.isEmpty { continue }
             let nonTriggerWithViolations = TestHelpers.render(violations: unexpectedViolations, in: example.code)
             XCTFail(
@@ -147,8 +147,8 @@ extension XCTestCase {
         requiresFileOnDisk: Bool,
         file callSiteFile: StaticString, line callSiteLine: UInt) {
         for example in examples {
-            let triggerViolations = TestHelpers.violations(example, config: config,
-                                                           requiresFileOnDisk: requiresFileOnDisk)
+            let triggerViolations = violations(example, config: config,
+                                               requiresFileOnDisk: requiresFileOnDisk)
 
             // Triggering examples with violation markers violate at the marker's location
             let (cleanTrigger, markerOffsets) = TestHelpers.cleanedContentsAndMarkerOffsets(from: example.code)

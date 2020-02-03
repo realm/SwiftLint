@@ -31,6 +31,6 @@ class ContainsOverFirstNotNilRuleTests: XCTestCase {
             return []
         }
 
-        return TestHelpers.violations(example, config: config)
+        return violations(example, config: config)
     }
 }

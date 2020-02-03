@@ -401,7 +401,7 @@ class ModifierOrderTests: XCTestCase {
             return
         }
 
-        let allViolations = TestHelpers.violations(Example("final public var foo: String"), config: config)
+        let allViolations = violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {
             XCTAssertEqual(violation.reason, "public modifier should be before final.")

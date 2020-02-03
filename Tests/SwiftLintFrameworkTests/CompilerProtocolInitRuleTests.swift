@@ -10,7 +10,7 @@ class CompilerProtocolInitRuleTests: XCTestCase {
 
     func testViolationMessageForExpressibleByIntegerLiteral() throws {
         let config = try XCTUnwrap(TestHelpers.makeConfig(nil, ruleID))
-        let allViolations = TestHelpers.violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
+        let allViolations = violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
 
         let compilerProtocolInitViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         let violation = try XCTUnwrap(

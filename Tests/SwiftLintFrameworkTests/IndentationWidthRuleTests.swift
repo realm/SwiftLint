@@ -179,7 +179,7 @@ class IndentationWidthRuleTests: XCTestCase {
             return 0
         }
 
-        return TestHelpers.violations(example.with(code: example.code + "\n"), config: config).count
+        return violations(example.with(code: example.code + "\n"), config: config).count
     }
 
     private func assertViolations(

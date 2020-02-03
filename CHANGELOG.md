@@ -333,7 +333,6 @@ This is the last release to support building with Swift 5.0.x.
   converted to enums.  
   [ZevEisenberg](https://github.com/ZevEisenberg)
   [#3033](https://github.com/realm/SwiftLint/issues/3033)
-* None.
 
 ## 0.38.2: Machine Repair Manual
 

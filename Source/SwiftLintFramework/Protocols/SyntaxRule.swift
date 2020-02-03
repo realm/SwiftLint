@@ -20,11 +20,14 @@ public extension SyntaxRule {
     /// Wraps computation of violations based on a visitor.
     func validate<Visitor: SyntaxRuleVisitor>(file: SwiftLintFile,
                                               visitor: Visitor) -> [StyleViolation] where Visitor.Rule == Self {
+        let lock = NSLock()
         var visitor = visitor
 
         // https://bugs.swift.org/browse/SR-11170
         let work = DispatchWorkItem {
+            lock.lock()
             file.syntax.walk(&visitor)
+            lock.unlock()
         }
         let thread = Thread {
             work.perform()
@@ -33,6 +36,8 @@ public extension SyntaxRule {
         thread.start()
         work.wait()
 
+        lock.lock()
+        defer { lock.unlock() }
         return visitor.violations(for: self, in: file)
     }
 }

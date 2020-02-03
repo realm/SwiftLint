@@ -35,7 +35,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `return_value_from_void_function` opt-in rule to warn against using
-  `return <expression>` in a function is `Void`.  
+  `return <expression>` in a function that is `Void`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes

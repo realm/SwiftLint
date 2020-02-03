@@ -100,16 +100,12 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset,
-            // MARK: Is class or struct?
             [.class, .struct].contains(kind),
-            // MARK: Inherits from anything?
             dictionary.inheritedTypes.isEmpty,
-            // MARK: Substructure has members? i.e. is the type completely empty?
             !dictionary.substructure.isEmpty else {
                 return []
         }
 
-        // MARK: Contains instance declarations?
         let containsInstanceDeclarations = dictionary.substructure.contains { dict in
             guard let kind = dict.declarationKind else {
                 return false
@@ -131,7 +127,6 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             return []
         }
 
-        // MARK: Has @objc members?
         let hasObjcMembers = dictionary.substructure.contains { dict in
             return dict.enclosedSwiftAttributes.contains(.objc)
         }
@@ -148,12 +143,10 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             ]
         }
 
-        // MARK: Is class?
         guard kind == .class else {
             return makeViolation()
         }
 
-        // MARK: Is final?
         let isFinal = dictionary.swiftAttributes.contains { attributes in
             attributes.attribute == SwiftDeclarationAttributeKind.final.rawValue
         }

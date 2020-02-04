@@ -56,6 +56,7 @@ private var queueForRebuild = RebuildQueue()
 
 private class Cache<T> {
     private var values = [FileCacheKey: T]()
+    private var _nonreleasedvalues = [T]()
     private let factory: (SwiftLintFile) -> T
     private let lock = NSLock()
 
@@ -76,7 +77,11 @@ private class Cache<T> {
     }
 
     fileprivate func invalidate(_ file: SwiftLintFile) {
-        doLocked { values.removeValue(forKey: file.cacheKey) }
+        doLocked {
+            if let removedValue = values.removeValue(forKey: file.cacheKey) {
+                _nonreleasedvalues.append(removedValue)
+            }
+        }
     }
 
     fileprivate func clear() {

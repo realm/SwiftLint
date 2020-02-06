@@ -1,14 +1,20 @@
 import Foundation
 import SourceKittenFramework
 
+private let escapedSpacePlaceholder = "\u{0}"
+
 struct CompilerArgumentsExtractor {
     static func allCompilerInvocations(compilerLogs: String) -> [String] {
         var compilerInvocations = [String]()
         compilerLogs.enumerateLines { line, _ in
             if let swiftcIndex = line.range(of: "swiftc ")?.upperBound, line.contains(" -module-name ") {
-                let invocation = line[swiftcIndex...]
+                let invocation = line
+                    .replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder)[swiftcIndex...]
                     .components(separatedBy: " ")
+                    .map { $0.replacingOccurrences(of: escapedSpacePlaceholder, with: " ") }
                     .expandingResponseFiles
+                    .map { $0.replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder) }
+                    .map { $0.replacingOccurrences(of: " ", with: escapedSpacePlaceholder) }
                     .joined(separator: " ")
                 compilerInvocations.append(invocation)
             }
@@ -18,7 +24,7 @@ struct CompilerArgumentsExtractor {
     }
 
     static func compilerArgumentsForFile(_ sourceFile: String, compilerInvocations: [String]) -> [String]? {
-        let escapedSourceFile = sourceFile.replacingOccurrences(of: " ", with: "\\ ")
+        let escapedSourceFile = sourceFile.replacingOccurrences(of: " ", with: escapedSpacePlaceholder)
         guard let compilerInvocation = compilerInvocations.first(where: { $0.contains(escapedSourceFile) }) else {
             return nil
         }
@@ -83,7 +89,6 @@ private extension Scanner {
 #endif
 
 private func parseCLIArguments(_ string: String) -> [String] {
-    let escapedSpacePlaceholder = "\u{0}"
     let scanner = Scanner(string: string)
     var str = ""
     var didStart = false

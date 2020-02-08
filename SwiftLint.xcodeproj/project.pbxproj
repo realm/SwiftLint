@@ -306,6 +306,7 @@
 		D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */; };
 		D46252541DF63FB200BE2CA1 /* NumberSeparatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */; };
 		D466B620233D229F0068190B /* FlatMapOverMapReduceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D466B61F233D229F0068190B /* FlatMapOverMapReduceRule.swift */; };
+		D467275823DD971300DE73B6 /* VoidFunctionInTernaryConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D467275723DD971300DE73B6 /* VoidFunctionInTernaryConditionRule.swift */; };
 		D46A317F1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46A317E1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift */; };
 		D46C7C3E23BF2F6A007C517F /* PreferSelfTypeOverTypeOfSelfRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C7C3D23BF2F6A007C517F /* PreferSelfTypeOverTypeOfSelfRule.swift */; };
 		D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */; };
@@ -836,6 +837,7 @@
 		D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRuleExamples.swift; sourceTree = "<group>"; };
 		D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRule.swift; sourceTree = "<group>"; };
 		D466B61F233D229F0068190B /* FlatMapOverMapReduceRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatMapOverMapReduceRule.swift; sourceTree = "<group>"; };
+		D467275723DD971300DE73B6 /* VoidFunctionInTernaryConditionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoidFunctionInTernaryConditionRule.swift; sourceTree = "<group>"; };
 		D46A317E1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnneededParenthesesInClosureArgumentRule.swift; sourceTree = "<group>"; };
 		D46C7C3D23BF2F6A007C517F /* PreferSelfTypeOverTypeOfSelfRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferSelfTypeOverTypeOfSelfRule.swift; sourceTree = "<group>"; };
 		D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaRule.swift; sourceTree = "<group>"; };
@@ -1381,6 +1383,7 @@
 				D4EA77C71F817FD200C315FB /* UnneededBreakInSwitchRule.swift */,
 				181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */,
 				D43B04631E0620AB004016AF /* UnusedEnumeratedRule.swift */,
+				D467275723DD971300DE73B6 /* VoidFunctionInTernaryConditionRule.swift */,
 				41715DE023BEA08E00544BDF /* FileNameNoSpaceRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 				622AD7FF216ACE6200A002C6 /* XCTSpecificMatcherRule.swift */,
@@ -2336,6 +2339,7 @@
 				6C15818D237026AC00F582A2 /* GitHubActionsLoggingReporter.swift in Sources */,
 				62FE5D32200CABDD00F68793 /* DiscouragedOptionalCollectionExamples.swift in Sources */,
 				D41C09BD23C1B99D00F105C4 /* OrphanedDocCommentRule.swift in Sources */,
+				D467275823DD971300DE73B6 /* VoidFunctionInTernaryConditionRule.swift in Sources */,
 				D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */,
 				E4A6CF752363CBFB00DD5B18 /* RandomAccessCollection+Swiftlint.swift in Sources */,
 				29FFC37A1F15764D007E4825 /* FileLengthRuleConfiguration.swift in Sources */,

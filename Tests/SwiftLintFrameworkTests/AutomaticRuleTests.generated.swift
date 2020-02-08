@@ -834,6 +834,12 @@ class VerticalWhitespaceOpeningBracesRuleTests: XCTestCase {
     }
 }
 
+class VoidFunctionInTernaryConditionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(VoidFunctionInTernaryConditionRule.description)
+    }
+}
+
 class VoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)

@@ -64,7 +64,7 @@ struct LintableFilesVisitor {
         self.useScriptInputFiles = useScriptInputFiles
         self.forceExclude = forceExclude
         self.cache = cache
-        self.parallel = true
+        self.parallel = false
         if let compilerInvocations = compilerInvocations {
             self.mode = .analyze(allCompilerInvocations: compilerInvocations)
         } else {

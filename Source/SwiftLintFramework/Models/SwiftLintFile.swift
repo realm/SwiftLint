@@ -16,6 +16,11 @@ public final class SwiftLintFile {
     let file: File
     let id: Int
 
+    private let queue = DispatchQueue(label: "regexQueue")
+    private var items: [RegexRequest] = []
+    private var idx: Int = 0
+    private let regexGroup = DispatchGroup()
+
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///
     /// - parameter file: A file from SourceKitten.
@@ -78,5 +83,91 @@ extension SwiftLintFile: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+
+
+private struct RegexRequest {
+    let id: Int
+    let pattern: String
+    let result: ([SwiftlintTextCheckingResult]) -> ()
+}
+
+struct SwiftlintTextCheckingResult {
+    let offset: Int
+    let ranges: [NSRange]
+    let range: NSRange
+    let numberOfRanges: Int
+    init(original: NSTextCheckingResult) {
+        self.offset = 0
+        self.range = original.range
+        self.numberOfRanges = original.numberOfRanges
+        self.ranges = (0..<original.numberOfRanges).map { original.range(at: $0) }
+    }
+    init(original: NSTextCheckingResult, offset: Int, numberOfRanges: Int ) {
+        self.offset = offset
+        self.range = original.range
+        self.numberOfRanges = numberOfRanges
+        self.ranges = (0...numberOfRanges).map { original.range(at: $0 + offset) }
+    }
+
+    func range(at group: Int) -> NSRange {
+        return ranges[group]
+    }
+}
+extension SwiftLintFile {
+
+    func matches2(pattern: String) -> [SwiftlintTextCheckingResult] {
+
+        var res:[SwiftlintTextCheckingResult] = []
+        let p: Int = queue.sync {
+            self.idx += 1
+            let id = self.idx
+            items.append(RegexRequest(id: id, pattern: pattern, result: { res = $0 }))
+            return id
+        }
+//        Thread.sleep(forTimeInterval: 0.1)
+        queue.async {
+            let lstId = self.items.last?.id
+            guard lstId == p else { return }
+             // process
+            self.process(requests: self.items)
+            self.items.removeAll()
+            self.regexGroup.notify(queue: self.queue) { }
+        }
+        regexGroup.wait()
+        return res
+    }
+
+
+    private func process(requests:[RegexRequest]) {
+        // Gather requests
+        let regexes = requests.map { regex($0.pattern) }
+        let fullRegex = requests.map { "(\($0.pattern))" }.joined(separator: "|")
+//        print("Fill REgex \(fullRegex)")
+
+        // offsets
+        var ofs = 1
+        var offsets: [(Int, Int)] = []
+        regexes.forEach {
+            offsets.append((ofs, $0.numberOfCaptureGroups))
+            ofs += $0.numberOfCaptureGroups + 1
+        }
+
+        let fullR = regex(fullRegex)
+
+//        print("FullR: [\(requests.count)] [\(fullR.numberOfCaptureGroups)] \(fullR) ")
+
+        assert(fullR.numberOfCaptureGroups == ofs - 1, "Total number of capture groups should be the same \(fullR.numberOfCaptureGroups) : \(requests.count) :\(ofs)")
+        let allMatches = fullR.matches(in: stringView)
+
+//        print("Total matches \(allMatches.count)")
+
+        requests.enumerated().forEach { item in
+            let r = allMatches.filter { $0.range(at: offsets[item.offset].0).length != NSNotFound }
+                .map { SwiftlintTextCheckingResult(original: $0, offset: offsets[item.offset].0, numberOfRanges: offsets[item.offset].1)}
+            item.element.result(r)
+        }
     }
 }

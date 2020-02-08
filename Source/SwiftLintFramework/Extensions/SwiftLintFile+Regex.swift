@@ -103,18 +103,25 @@ extension SwiftLintFile {
     }
 
     internal func matchesAndTokens(matching pattern: String,
-                                   range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
+                                   range: NSRange? = nil) -> [(SwiftlintTextCheckingResult, [SwiftLintSyntaxToken])] {
         let contents = stringView
-        let range = range ?? contents.range
+//        let range = range ?? contents.range
         let syntax = syntaxMap
-        return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
+        let matches = range.map { regex(pattern).matches(in: contents, options: [], range: $0).map(SwiftlintTextCheckingResult.init) } ?? fulllFileMatches(pattern: pattern)
+        return matches.compactMap { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location, length: match.range.length)
             return matchByteRange.map { (match, syntax.tokens(inByteRange: $0)) }
         }
     }
 
+    internal func fulllFileMatches(pattern: String) -> [SwiftlintTextCheckingResult] {
+        return matches2(pattern: pattern)
+//        print("\(self.file.path) Check on matching '\(NSRegularExpression.escapedPattern(for: pattern))'")
+//        return regex(pattern).matches(in: stringView, options: [], range: stringView.range)
+    }
+
     internal func matchesAndSyntaxKinds(matching pattern: String,
-                                        range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
+                                        range: NSRange? = nil) -> [(SwiftlintTextCheckingResult, [SyntaxKind])] {
         return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
             (textCheckingResult, tokens.kinds)
         }

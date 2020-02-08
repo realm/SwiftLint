@@ -79,7 +79,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
                 }
     }
 
-    private func violationRangeFrom(match: NSTextCheckingResult, in file: SwiftLintFile) -> NSRange? {
+    private func violationRangeFrom(match: SwiftlintTextCheckingResult, in file: SwiftLintFile) -> NSRange? {
         let contents = file.stringView
         let operatorRange = match.range(at: 1)
         guard let operatorByteRange = contents.NSRangeToByteRange(operatorRange) else {

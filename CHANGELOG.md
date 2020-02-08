@@ -68,7 +68,11 @@
   
 * Implicit_return description now reports current config correctly.
   [John Buckley](https://github.com/nhojb)
-  
+
+* Do not trigger `optional_enum_case_matching` rule on `_?` as the `?` might
+  be required in some situations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3057](https://github.com/realm/SwiftLint/issues/3057)
 
 ## 0.38.2: Machine Repair Manual
 

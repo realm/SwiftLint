@@ -38,6 +38,10 @@
 * Fix false positives when line ends with carriage return + line feed.  
   [John Mueller](https://github.com/john-mueller)
   [#3060](https://github.com/realm/SwiftLint/issues/3060)
+  
+* Implicit_return description now reports current config correctly.
+  [John Buckley](https://github.com/nhojb)
+  
 
 ## 0.38.2: Machine Repair Manual
 

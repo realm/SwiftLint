@@ -18,6 +18,9 @@
 * None.
 
 #### Enhancements
+* Add option to pass successfully if no files passed to SwiftLint are lintable.  
+  [thedavidharris](https://github.com/thedavidharris)
+  [#2608](https://github.com/realm/SwiftLint/issues/2608)i
 
 * Add `deinitializer` type content to `type_contents_order` rule instead of
   grouping it with initializers.  

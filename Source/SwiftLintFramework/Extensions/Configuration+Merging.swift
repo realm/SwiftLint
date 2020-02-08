@@ -157,7 +157,8 @@ extension Configuration {
             rules: mergingRules(with: configuration),
             cachePath: cachePath, // Always use the parent cache path
             rootPath: configuration.rootPath,
-            indentation: configuration.indentation
+            indentation: configuration.indentation,
+            allowZeroLintableFiles: configuration.allowZeroLintableFiles
         )
     }
 }

@@ -37,11 +37,13 @@ struct LintableFilesVisitor {
     let forceExclude: Bool
     let cache: LinterCache?
     let parallel: Bool
+    let allowZeroLintableFiles: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool,
-         cache: LinterCache?, parallel: Bool, block: @escaping (CollectedLinter) -> Void) {
+         cache: LinterCache?, parallel: Bool,
+         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
         self.paths = paths
         self.action = action
         self.useSTDIN = useSTDIN
@@ -51,12 +53,14 @@ struct LintableFilesVisitor {
         self.cache = cache
         self.parallel = parallel
         self.mode = .lint
+        self.allowZeroLintableFiles = allowZeroLintableFiles
         self.block = block
     }
 
-    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool,
-                 forceExclude: Bool, cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 block: @escaping (CollectedLinter) -> Void) {
+    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool,
+                 useScriptInputFiles: Bool, forceExclude: Bool,
+                 cache: LinterCache?, compilerInvocations: CompilerInvocations?,
+                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
         self.paths = paths
         self.action = action
         self.useSTDIN = useSTDIN
@@ -71,9 +75,13 @@ struct LintableFilesVisitor {
             self.mode = .lint
         }
         self.block = block
+        self.allowZeroLintableFiles = allowZeroLintableFiles
     }
 
-    static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (CollectedLinter) -> Void)
+    static func create(_ options: LintOrAnalyzeOptions,
+                       cache: LinterCache?,
+                       allowZeroLintableFiles: Bool,
+                       block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, CommandantError<()>> {
         let compilerInvocations: CompilerInvocations?
         if options.mode == .lint {
@@ -91,7 +99,8 @@ struct LintableFilesVisitor {
                                            useSTDIN: options.useSTDIN, quiet: options.quiet,
                                            useScriptInputFiles: options.useScriptInputFiles,
                                            forceExclude: options.forceExclude, cache: cache,
-                                           compilerInvocations: compilerInvocations, block: block)
+                                           compilerInvocations: compilerInvocations,
+                                           allowZeroLintableFiles: allowZeroLintableFiles, block: block)
         return .success(visitor)
     }
 

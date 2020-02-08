@@ -183,6 +183,7 @@ extension ConfigurationTests {
         ("testIndentationFallback", testIndentationFallback),
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
+        ("testAllowZeroLintableFiles", testAllowZeroLintableFiles),
         ("testMerge", testMerge),
         ("testLevel0", testLevel0),
         ("testLevel1", testLevel1),

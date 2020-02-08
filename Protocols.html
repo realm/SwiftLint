@@ -220,6 +220,12 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableRule.html">SubstitutionCorrectableRule</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SyntaxRule.html">SyntaxRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SyntaxRuleVisitor.html">SyntaxRuleVisitor</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -822,6 +828,68 @@ static analysis than syntactic checks.</p>
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Protocols/RuleConfiguration.swift#L2-L19">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework10SyntaxRuleP"></a>
+                    <a name="//apple_ref/swift/Protocol/SyntaxRule" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework10SyntaxRuleP">SyntaxRule</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A rule that leverages the SwiftSyntax library.</p>
+
+                        <a href="Protocols/SyntaxRule.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">SyntaxRule</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Protocols/SyntaxRule.swift#L7">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework17SyntaxRuleVisitorP"></a>
+                    <a name="//apple_ref/swift/Protocol/SyntaxRuleVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework17SyntaxRuleVisitorP">SyntaxRuleVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A SwiftSyntax visitor that collects data to provide violations for a specific rule.</p>
+
+                        <a href="Protocols/SyntaxRuleVisitor.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">SyntaxRuleVisitor</span> <span class="p">:</span> <span class="kt">SyntaxVisitor</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Protocols/SyntaxRule.swift#L11-L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

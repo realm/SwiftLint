@@ -1450,6 +1450,12 @@ extension TrailingWhitespaceTests {
     ]
 }
 
+extension TuplePatternRuleTests {
+    static var allTests: [(String, (TuplePatternRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension TypeBodyLengthRuleTests {
     static var allTests: [(String, (TypeBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1852,6 +1858,7 @@ XCTMain([
     testCase(TrailingCommaRuleTests.allTests),
     testCase(TrailingSemicolonRuleTests.allTests),
     testCase(TrailingWhitespaceTests.allTests),
+    testCase(TuplePatternRuleTests.allTests),
     testCase(TypeBodyLengthRuleTests.allTests),
     testCase(TypeContentsOrderRuleTests.allTests),
     testCase(TypeNameRuleTests.allTests),

@@ -38,6 +38,12 @@
   [SwiftSyntax](https://github.com/apple/swift-syntax).  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `tuple_pattern` opt-in rule to warn against using
+  assigning variables through a tuple pattern when the left side
+  of the assignment contains labels.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2203](https://github.com/realm/SwiftLint/issues/2203)
+
 * Add `return_value_from_void_function` opt-in rule to warn against using
   `return <expression>` in a function that is `Void`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

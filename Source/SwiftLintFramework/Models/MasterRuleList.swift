@@ -121,6 +121,7 @@ public let masterRuleList = RuleList(rules: [
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
+    PhohibitedNaNComparisonRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
     PrefixedTopLevelConstantRule.self,
     PrivateActionRule.self,

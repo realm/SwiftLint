@@ -47,6 +47,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2358](https://github.com/realm/SwiftLint/issues/2358)
 
+* Add `prohibited_nan_comparison` opt-in rule to validate using `isNaN`
+  instead of comparing values to the `.nan` constant.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2086](https://github.com/realm/SwiftLint/issues/2086)
+
 #### Bug Fixes
 
 * Fix `discarded_notification_center_observer` false positives when

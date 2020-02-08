@@ -28,6 +28,16 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
              case (_, .baz): break
              default: break
             }
+            """),
+            Example("""
+            switch (x, y) {
+            case (.c, _?):
+                break
+            case (.c, nil):
+                break
+            case (_, _):
+                break
+            }
             """)
         ],
         triggeringExamples: [
@@ -180,6 +190,9 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
                 }
 
                 return tokensToCheck.compactMap { tokenToCheck in
+                    guard !file.isTokenUnderscoreKeyword(tokenToCheck) else {
+                        return nil
+                    }
                     let questionMarkByteRange = ByteRange(location: tokenToCheck.range.upperBound, length: 1)
                     guard contents.substringWithByteRange(questionMarkByteRange) == "?" else {
                         return nil

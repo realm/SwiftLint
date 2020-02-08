@@ -6,15 +6,12 @@ private let escapedSpacePlaceholder = "\u{0}"
 struct CompilerArgumentsExtractor {
     static func allCompilerInvocations(compilerLogs: String) -> [String] {
         var compilerInvocations = [String]()
-        compilerLogs.enumerateLines { line, _ in
+        let escapedCompilerLogs = compilerLogs.replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder)
+        escapedCompilerLogs.enumerateLines { line, _ in
             if let swiftcIndex = line.range(of: "swiftc ")?.upperBound, line.contains(" -module-name ") {
-                let invocation = line
-                    .replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder)[swiftcIndex...]
+                let invocation = line[swiftcIndex...]
                     .components(separatedBy: " ")
-                    .map { $0.replacingOccurrences(of: escapedSpacePlaceholder, with: " ") }
                     .expandingResponseFiles
-                    .map { $0.replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder) }
-                    .map { $0.replacingOccurrences(of: " ", with: escapedSpacePlaceholder) }
                     .joined(separator: " ")
                 compilerInvocations.append(invocation)
             }
@@ -136,8 +133,10 @@ private extension Array where Element == String {
                 return [arg]
             }
             let responseFile = String(arg.dropFirst())
-            return (try? String(contentsOf: URL(fileURLWithPath: responseFile))).flatMap {
+            let unescapedResponseFile = responseFile.replacingOccurrences(of: escapedSpacePlaceholder, with: " ")
+            return (try? String(contentsOf: URL(fileURLWithPath: unescapedResponseFile))).flatMap {
                 $0.trimmingCharacters(in: .newlines)
+                  .replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder)
                   .components(separatedBy: "\n")
                   .expandingResponseFiles
             } ?? [arg]

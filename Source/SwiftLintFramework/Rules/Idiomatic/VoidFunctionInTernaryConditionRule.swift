@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 #if canImport(SwiftSyntax)
 import SwiftSyntax
@@ -11,8 +10,8 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Syn
 
     public static let description = RuleDescription(
         identifier: "void_function_in_ternary",
-        name: "VoidFunctionInTernaryConditionRule",
-        description: "Returning values Void functions should be avoided.",
+        name: "Void Function in Ternary",
+        description: "Using ternary to call Void functions should be avoided.",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: [

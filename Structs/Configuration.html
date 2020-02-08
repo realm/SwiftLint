@@ -647,6 +647,36 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:18SwiftLintFramework13ConfigurationV22allowZeroLintableFilesSbvp"></a>
+                    <a name="//apple_ref/swift/Property/allowZeroLintableFiles" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework13ConfigurationV22allowZeroLintableFilesSbvp">allowZeroLintableFiles</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Allow or disallow SwiftLint to exit successfully when passed only ignored or unlintable files</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">allowZeroLintableFiles</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L40">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:SH4hash4intoys6HasherVz_tF"></a>
                     <a name="//apple_ref/swift/Method/hash(into:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:SH4hash4intoys6HasherVz_tF">hash(into:)</a>
@@ -668,7 +698,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L40-L52">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L42-L55">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -711,7 +741,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L64">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L67">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -732,9 +762,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:18SwiftLintFramework13ConfigurationV9rulesMode8included8excluded16warningThreshold8reporter8ruleList15configuredRules16swiftlintVersion9cachePath11indentation06customO11IdentifiersACSgAC0oF0O_SaySSGARSiSgSSAA04RuleM0VSayAA0W0_pGSgSSSgAyC16IndentationStyleOARtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(rulesMode:included:excluded:warningThreshold:reporter:ruleList:configuredRules:swiftlintVersion:cachePath:indentation:customRulesIdentifiers:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework13ConfigurationV9rulesMode8included8excluded16warningThreshold8reporter8ruleList15configuredRules16swiftlintVersion9cachePath11indentation06customO11IdentifiersACSgAC0oF0O_SaySSGARSiSgSSAA04RuleM0VSayAA0W0_pGSgSSSgAyC16IndentationStyleOARtcfc">init(rulesMode:included:excluded:warningThreshold:reporter:ruleList:configuredRules:swiftlintVersion:cachePath:indentation:customRulesIdentifiers:)</a>
+                    <a name="/s:18SwiftLintFramework13ConfigurationV9rulesMode8included8excluded16warningThreshold8reporter8ruleList15configuredRules16swiftlintVersion9cachePath11indentation06customO11Identifiers22allowZeroLintableFilesACSgAC0oF0O_SaySSGASSiSgSSAA04RuleM0VSayAA4Rule_pGSgSSSgAzC16IndentationStyleOASSbtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(rulesMode:included:excluded:warningThreshold:reporter:ruleList:configuredRules:swiftlintVersion:cachePath:indentation:customRulesIdentifiers:allowZeroLintableFiles:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework13ConfigurationV9rulesMode8included8excluded16warningThreshold8reporter8ruleList15configuredRules16swiftlintVersion9cachePath11indentation06customO11Identifiers22allowZeroLintableFilesACSgAC0oF0O_SaySSGASSiSgSSAA04RuleM0VSayAA4Rule_pGSgSSSgAzC16IndentationStyleOASSbtcfc">init(rulesMode:included:excluded:warningThreshold:reporter:ruleList:configuredRules:swiftlintVersion:cachePath:indentation:customRulesIdentifiers:allowZeroLintableFiles:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -759,7 +789,8 @@
              <span class="nv">swiftlintVersion</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
              <span class="nv">cachePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
              <span class="nv">indentation</span><span class="p">:</span> <span class="kt"><a href="../Structs/Configuration/IndentationStyle.html">IndentationStyle</a></span> <span class="o">=</span> <span class="o">.</span><span class="k">default</span><span class="p">,</span>
-             <span class="nv">customRulesIdentifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span></code></pre>
+             <span class="nv">customRulesIdentifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+             <span class="nv">allowZeroLintableFiles</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -900,11 +931,23 @@
                                 </div>
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>allowZeroLintableFiles</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Allow SwiftLint to exit successfully when passed ignored or unlintable files</p>
+                                </div>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L84-L122">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L88-L128">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1028,7 +1071,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L168-L214">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L177-L223">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1070,7 +1113,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L218-L228">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L227-L238">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1435,7 +1478,7 @@ child configurations in the directory inheritance graph present until the level 
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Parsing.swift#L64-L110">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Parsing.swift#L66-L114">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

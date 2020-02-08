@@ -9,6 +9,10 @@
   [Paul Taykalo](https://github.com/PaulTaykalo)
   [JP Simard](https://github.com/jpsim)
 
+* SwiftLint now imports [SwiftSyntax](https://github.com/apple/swift-syntax)
+  and requires Xcode 11.0 to build.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Experimental
 
 * None.
@@ -25,6 +29,14 @@
   and which are not.  
   [ZevEisenberg](https://github.com/ZevEisenberg)
   [#3040](https://github.com/realm/SwiftLint/pull/3040)
+
+* Introduce a new `SyntaxRule` that enables writing rules using
+  [SwiftSyntax](https://github.com/apple/swift-syntax).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `return_value_from_void_function` opt-in rule to warn against using
+  `return <expression>` in a function that is `Void`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

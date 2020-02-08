@@ -88,7 +88,8 @@ extension ConfigurationTests {
         let mergedConfiguration = projectMockConfig0CustomRules.merge(with: projectMockConfig2CustomRules)
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rule are expected to be present")
+            XCTFail("Custom rule are expected to be present")
+            return
         }
         XCTAssertTrue(
             mergedCustomRules.configuration.customRuleConfigurations.contains(where: { $0.identifier == "no_abc" })
@@ -102,7 +103,8 @@ extension ConfigurationTests {
         let mergedConfiguration = projectMockConfig0CustomRules.merge(with: projectMockConfig2CustomRulesDisabled)
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rule are expected to be present")
+            XCTFail("Custom rule are expected to be present")
+            return
         }
         XCTAssertFalse(
             mergedCustomRules.configuration.customRuleConfigurations.contains(where: { $0.identifier == "no_abc" })

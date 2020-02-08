@@ -16,3 +16,6 @@
 [submodule "Carthage/Checkouts/Yams"]
 	path = Carthage/Checkouts/Yams
 	url = https://github.com/jpsim/Yams.git
+[submodule "SwiftSyntax"]
+	path = SwiftSyntax
+	url = https://github.com/apple/swift-syntax.git

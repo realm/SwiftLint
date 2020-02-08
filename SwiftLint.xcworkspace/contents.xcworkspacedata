@@ -17,6 +17,9 @@
       location = "group:Carthage/Checkouts/SwiftyTextTable/SwiftyTextTable.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:SwiftSyntax/SwiftSyntax.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Carthage/Checkouts/Yams/Yams.xcodeproj">
    </FileRef>
 </Workspace>

@@ -38,6 +38,11 @@
   `return <expression>` in a function that is `Void`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `void_function_in_ternary` opt-in rule to warn against using
+  a ternary operator to call `Void` functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2358](https://github.com/realm/SwiftLint/issues/2358)
+
 #### Bug Fixes
 
 * Fix `discarded_notification_center_observer` false positives when

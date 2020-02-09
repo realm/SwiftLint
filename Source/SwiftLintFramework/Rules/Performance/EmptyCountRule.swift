@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
-public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.error)
+public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
+    public var configuration = EmptyCountConfiguration()
 
     public init() {}
 
@@ -34,12 +34,19 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTes
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\bcount\\s*(==|!=|<|<=|>|>=)\\s*0(\\b|([box][0_]+\\b){1})"
+        let defaultPattern = #"\bcount\s*(==|!=|<|<=|>|>=)\s*0(\b|([box][0_]+\b){1})"#
+        let prefixPattern = configuration.onlyAfterDot ? #"\."# : ""
+        let pattern = prefixPattern + defaultPattern
+
+        // Offset the violation location in case `only_after_dot` is turned on,
+        // to compensate for the pattern matching the dot
+        let offset = configuration.onlyAfterDot ? 1 : 0
+
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, characterOffset: $0.location + offset))
         }
     }
 }

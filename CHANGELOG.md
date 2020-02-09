@@ -52,6 +52,7 @@
   a ternary operator to call `Void` functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2358](https://github.com/realm/SwiftLint/issues/2358)
+
 * Add `only_after_dot` configuration option to `empty_count` rule. With the
   option enabled, `empty_count` rule will ignore variables named `count`.
   By default, this option is disabled.  

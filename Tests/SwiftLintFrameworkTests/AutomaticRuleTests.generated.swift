@@ -510,6 +510,12 @@ class PatternMatchingKeywordsRuleTests: XCTestCase {
     }
 }
 
+class PhohibitedNaNComparisonRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PhohibitedNaNComparisonRule.description)
+    }
+}
+
 class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)

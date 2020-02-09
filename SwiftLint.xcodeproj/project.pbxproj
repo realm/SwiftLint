@@ -264,6 +264,7 @@
 		D40AD08A1E032F9700F48C30 /* UnusedClosureParameterRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */; };
 		D40E041C1F46E3B30043BC4E /* SuperfluousDisableCommandRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E041B1F46E3B30043BC4E /* SuperfluousDisableCommandRule.swift */; };
 		D40F83881DE9179200524C62 /* TrailingCommaConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */; };
+		D40F8B6723E6D60E00A5218E /* PhohibitedNaNComparisonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40F8B6623E6D60E00A5218E /* PhohibitedNaNComparisonRule.swift */; };
 		D40FE89D1F867BFF006433E2 /* OverrideInExtensionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */; };
 		D4130D971E16183F00242361 /* IdentifierNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */; };
 		D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */; };
@@ -798,6 +799,7 @@
 		D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedClosureParameterRule.swift; sourceTree = "<group>"; };
 		D40E041B1F46E3B30043BC4E /* SuperfluousDisableCommandRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperfluousDisableCommandRule.swift; sourceTree = "<group>"; };
 		D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaConfiguration.swift; sourceTree = "<group>"; };
+		D40F8B6623E6D60E00A5218E /* PhohibitedNaNComparisonRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhohibitedNaNComparisonRule.swift; sourceTree = "<group>"; };
 		D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideInExtensionRule.swift; sourceTree = "<group>"; };
 		D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierNameRuleExamples.swift; sourceTree = "<group>"; };
 		D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRuleExamples.swift; sourceTree = "<group>"; };
@@ -1210,6 +1212,7 @@
 				094385021D5D4F78009168CF /* PrivateOutletRule.swift */,
 				B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */,
 				D44037962132730000FDA77B /* ProhibitedInterfaceBuilderRule.swift */,
+				D40F8B6623E6D60E00A5218E /* PhohibitedNaNComparisonRule.swift */,
 				009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */,
 				623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */,
 				623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */,
@@ -2182,6 +2185,7 @@
 				E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */,
 				006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */,
 				82FE254120F604CB00295958 /* VerticalWhitespaceClosingBracesRule.swift in Sources */,
+				D40F8B6723E6D60E00A5218E /* PhohibitedNaNComparisonRule.swift in Sources */,
 				429644B61FB0A9B400D75128 /* SortedFirstLastRule.swift in Sources */,
 				C3EF547821B5A4000009262F /* LegacyHashingRule.swift in Sources */,
 				31F1B6CC1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift in Sources */,

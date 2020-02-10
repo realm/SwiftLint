@@ -52,7 +52,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
 
                 return contents.substringWithByteRange(attributeByteRange) == "unowned"
             }?.offset
-        }
+        }.unique
 
         return unownedVariableOffsets.map { offset in
             return StyleViolation(ruleDescription: type(of: self).description,

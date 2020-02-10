@@ -273,6 +273,10 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func isAttribute(_ name: String) -> Bool {
+        if name == "@escaping" {
+            return false
+        }
+
         // all attributes *should* start with @
         if name.hasPrefix("@") {
             return true

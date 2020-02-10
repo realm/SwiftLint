@@ -85,6 +85,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3057](https://github.com/realm/SwiftLint/issues/3057)
 
+* Fix false positive in `attributes` rule with `@escaping` parameters when
+  using Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3079](https://github.com/realm/SwiftLint/issues/3079)
+
 ## 0.38.2: Machine Repair Manual
 
 #### Breaking

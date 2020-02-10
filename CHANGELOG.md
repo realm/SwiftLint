@@ -95,6 +95,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3079](https://github.com/realm/SwiftLint/issues/3079)
 
+* Fix false positive in `empty_string` rule when using multiline string
+  literals.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3100](https://github.com/realm/SwiftLint/issues/3100)
+
 ## 0.38.2: Machine Repair Manual
 
 #### Breaking

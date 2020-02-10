@@ -16,10 +16,13 @@ opt_in_rules:
   - contains_over_filter_count
   - contains_over_filter_is_empty
   - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
   - discouraged_object_literal
+  - empty_collection_literal
   - empty_count
   - empty_string
   - empty_xctest_method
+  - enum_case_associated_values_count
   - explicit_init
   - extension_access_modifier
   - fallthrough
@@ -47,6 +50,7 @@ opt_in_rules:
   - private_action
   - private_outlet
   - prohibited_interface_builder
+  - prohibited_nan_comparison
   - prohibited_super_call
   - quick_discouraged_call
   - quick_discouraged_focused_test
@@ -61,6 +65,7 @@ opt_in_rules:
   - static_operator
   - strong_iboutlet
   - toggle_bool
+  - tuple_pattern
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
   - unowned_variable_capture
@@ -68,6 +73,7 @@ opt_in_rules:
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
+  - void_function_in_ternary
   - xct_specific_matcher
   - yoda_condition
 

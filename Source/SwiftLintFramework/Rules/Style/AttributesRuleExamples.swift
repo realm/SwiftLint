@@ -45,6 +45,10 @@ internal struct AttributesRuleExamples {
         @available (iOS 11.0, *)
         class DeleteMeTests: XCTestCase {
         }
+        """),
+        Example("""
+        @objc
+        internal func foo(identifier: String, completion: @escaping (() -> Void)) {}
         """)
     ]
 

@@ -400,6 +400,20 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">_bar</span> <span class="p">}</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">_bar</span> <span class="o">=</span> <span class="n">newValue</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">_bar</span> <span class="p">}</span>
+        <span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">)</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">_bar</span> <span class="o">=</span> <span class="n">newValue</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="nf">subscript</span><span class="p">(</span><span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
         <span class="k">return</span> <span class="mi">20</span>
@@ -454,6 +468,12 @@
         <span class="err">↓</span><span class="k">get</span> <span class="p">{</span>
             <span class="k">return</span> <span class="mi">20</span>
         <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="err">↓</span><span class="k">get</span> <span class="p">{</span> <span class="n">_bar</span> <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>

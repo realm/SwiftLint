@@ -185,7 +185,6 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()
         var foundEmptyLine = false
-        let contents = file.stringView
 
         while currentLine >= 0 {
             defer {

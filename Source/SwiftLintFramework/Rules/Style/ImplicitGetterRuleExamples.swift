@@ -84,6 +84,22 @@ struct ImplicitGetterRuleExamples {
                     return self.count
                 }
             }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    get { _bar }
+                    set { self._bar = newValue }
+                }
+            }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    get { _bar }
+                    set(newValue) { self._bar = newValue }
+                }
+            }
             """)
         ]
 
@@ -159,6 +175,13 @@ struct ImplicitGetterRuleExamples {
                     ↓get {
                         return 20
                     }
+                }
+            }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    ↓get { _bar }
                 }
             }
             """)

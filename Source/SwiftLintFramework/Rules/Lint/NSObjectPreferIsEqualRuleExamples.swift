@@ -33,14 +33,6 @@ internal struct NSObjectPreferIsEqualRuleExamples {
             }
         }
         """),
-        // NSObject subclass with non-static ==
-        Example("""
-        class AClass: NSObject {
-            func ==(lhs: AClass, rhs: AClass) -> Bool {
-                return true
-            }
-        }
-        """),
         // NSObject subclass implementing == with different signature
         Example("""
         class AClass: NSObject {

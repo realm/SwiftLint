@@ -213,14 +213,8 @@ class ConfigurationTests: XCTestCase, ProjectMock {
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",
-            "Level0.swift",
-            "Level1.swift",
-            "Level2.swift",
-            "Level3.swift",
-            "Valid1.swift",
-            "Valid2.swift",
-            "Main.swift",
-            "Sub.swift"
+            "Level0.swift", "Level1.swift", "Level2.swift", "Level3.swift",
+            "Valid1.swift", "Valid2.swift", "Main.swift", "Sub.swift"
         ]
 
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
@@ -315,7 +309,8 @@ class ConfigurationTests: XCTestCase, ProjectMock {
     }
 
     func testAllowZeroLintableFiles() {
-        let configuration = Configuration(dict: ["allow_zero_lintable_files": true])!
+        // swiftlint:disable:next force_try
+        let configuration = try! Configuration(dict: ["allow_zero_lintable_files": true])
         XCTAssertTrue(configuration.allowZeroLintableFiles)
     }
 }

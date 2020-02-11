@@ -36,11 +36,15 @@ public struct Configuration {
     /// The identifier for the `Reporter` to use to report style violations.
     public let reporter: String
 
-    /// The location of the persisted cache to use whith this configuration.
+    /// The location of the persisted cache to use with this configuration.
     public let cachePath: String?
 
-    /// Allow or disallow SwiftLint to exit successfully when passed only ignored or unlintable files
+    /// Allow or disallow SwiftLint to exit successfully when passed only ignored or unlintable files.
     public let allowZeroLintableFiles: Bool
+
+    // MARK: Public Computed
+    /// The rules mode used for this configuration.
+    public var rulesMode: RulesMode { return rulesWrapper.mode }
 
     // MARK: Internal Instance
     internal var computedCacheDescription: String?
@@ -181,7 +185,7 @@ public struct Configuration {
             rootDir = root
         } else if let rootDirComps = configurationFiles.first?.components(separatedBy: "/").dropLast(),
             !rootDirComps.isEmpty,
-            !configurationFiles.contains { $0.components(separatedBy: "/").dropLast() != rootDirComps } {
+            !(configurationFiles.contains { $0.components(separatedBy: "/").dropLast() != rootDirComps }) {
             rootDir = rootDirComps.joined(separator: "/")
             configurationFiles = configurationFiles.map { $0.components(separatedBy: "/").last ?? "" }
         } else {

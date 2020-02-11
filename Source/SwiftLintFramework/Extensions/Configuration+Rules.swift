@@ -6,7 +6,7 @@ internal extension Configuration {
         private static var isOptInRuleCache: [String: Bool] = [:]
 
         public let allRulesWrapped: [ConfigurationRuleWrapper]
-        private let mode: RulesMode
+        internal let mode: RulesMode
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []

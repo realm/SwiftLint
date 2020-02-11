@@ -249,10 +249,10 @@ private func testCorrection(_ correction: (Example, Example),
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
         case let .whitelisted(whitelistedRules) = configuration.rulesMode,
-        let firstWhitelistedRule = whitelistedRules.first,
-        case let configDict = ["whitelist_rules": whitelistedRules, firstWhitelistedRule: correctionConfiguration],
-        let typedConfiguration = Configuration(dict: configDict) {
-        config = configuration.merge(with: typedConfiguration)
+        let ruleToConfigure = (whitelistedRules.first { $0 != SuperfluousDisableCommandRule.description.identifier }),
+        case let configDict = ["whitelist_rules": whitelistedRules, ruleToConfigure: correctionConfiguration],
+        let typedConfiguration = try? Configuration(dict: configDict) {
+        config = configuration.merged(withChild: typedConfiguration)
     }
 
     config.assertCorrection(correction.0, expected: correction.1)

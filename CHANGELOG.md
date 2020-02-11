@@ -1,3 +1,23 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix unused_import rule reported locations and corrections when
+  multiple `@testable` imports are involved.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.39.0: A Visitor in the Laundromat
 
 #### Breaking

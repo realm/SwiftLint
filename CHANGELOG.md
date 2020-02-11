@@ -1,3 +1,21 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.39.1: The Laundromat has a Rotating Door
 
 #### Breaking

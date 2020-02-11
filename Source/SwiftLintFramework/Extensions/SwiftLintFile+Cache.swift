@@ -1,8 +1,5 @@
 import Foundation
 import SourceKittenFramework
-#if canImport(SwiftSyntax)
-import SwiftSyntax
-#endif
 
 private typealias FileCacheKey = Int
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
@@ -32,20 +29,6 @@ private var syntaxMapCache = Cache({ file in
 })
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
-
-#if canImport(SwiftSyntax)
-private var syntaxCache = Cache({ file -> SourceFileSyntax? in
-    do {
-        if let path = file.path {
-            return try SyntaxParser.parse(URL(fileURLWithPath: path))
-        }
-
-         return try SyntaxParser.parse(source: file.contents)
-    } catch {
-        return nil
-    }
-})
-#endif
 
 internal typealias AssertHandler = () -> Void
 
@@ -175,19 +158,6 @@ extension SwiftLintFile {
         return syntaxMap
     }
 
-    #if canImport(SwiftSyntax)
-    internal var syntax: SourceFileSyntax {
-        guard let syntax = syntaxCache.get(self) else {
-            if let handler = assertHandler {
-                handler()
-                return SourceFileSyntax({ _ in })
-            }
-            queuedFatalError("Never call this for file that sourcekitd fails.")
-        }
-        return syntax
-    }
-    #endif
-
     internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
@@ -219,9 +189,6 @@ extension SwiftLintFile {
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
-        #if canImport(SwiftSyntax)
-        syntaxCache.invalidate(self)
-        #endif
     }
 
     internal static func clearCaches() {
@@ -233,8 +200,5 @@ extension SwiftLintFile {
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
-        #if canImport(SwiftSyntax)
-        syntaxCache.clear()
-        #endif
     }
 }

@@ -29,10 +29,6 @@
   [Paul Taykalo](https://github.com/PaulTaykalo)
   [JP Simard](https://github.com/jpsim)
 
-* SwiftLint now imports [SwiftSyntax](https://github.com/apple/swift-syntax)
-  and requires Xcode 11.0 to build.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-
 #### Experimental
 
 * None.

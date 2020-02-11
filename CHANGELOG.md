@@ -2,7 +2,14 @@
 
 #### Breaking
 
-* None.
+* The new rules introduced in 0.39.0 that depend on SwiftSyntax have been
+  temporarily removed as we work out release packaging issues.
+    * `prohibited_nan_comparison`
+    * `return_value_from_void_function`
+    * `tuple_pattern`
+    * `void_function_in_ternary`  
+  [JP Simard](https://github.com/jpsim)
+  [#3105](https://github.com/realm/SwiftLint/issues/3105)
 
 #### Experimental
 

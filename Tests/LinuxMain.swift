@@ -1064,12 +1064,6 @@ extension PatternMatchingKeywordsRuleTests {
     ]
 }
 
-extension PhohibitedNaNComparisonRuleTests {
-    static var allTests: [(String, (PhohibitedNaNComparisonRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension PreferSelfTypeOverTypeOfSelfRuleTests {
     static var allTests: [(String, (PreferSelfTypeOverTypeOfSelfRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1268,12 +1262,6 @@ extension ReturnArrowWhitespaceRuleTests {
     ]
 }
 
-extension ReturnValueFromVoidFunctionRuleTests {
-    static var allTests: [(String, (ReturnValueFromVoidFunctionRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension RuleConfigurationTests {
     static var allTests: [(String, (RuleConfigurationTests) -> () throws -> Void)] = [
         ("testNameConfigurationSetsCorrectly", testNameConfigurationSetsCorrectly),
@@ -1457,12 +1445,6 @@ extension TrailingWhitespaceTests {
     ]
 }
 
-extension TuplePatternRuleTests {
-    static var allTests: [(String, (TuplePatternRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension TypeBodyLengthRuleTests {
     static var allTests: [(String, (TypeBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1608,12 +1590,6 @@ extension VerticalWhitespaceRuleTests {
         ("testAutoCorrectionWithMaxEmptyLines", testAutoCorrectionWithMaxEmptyLines),
         ("testViolationMessageWithMaxEmptyLines", testViolationMessageWithMaxEmptyLines),
         ("testViolationMessageWithDefaultConfiguration", testViolationMessageWithDefaultConfiguration)
-    ]
-}
-
-extension VoidFunctionInTernaryConditionRuleTests {
-    static var allTests: [(String, (VoidFunctionInTernaryConditionRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1814,7 +1790,6 @@ XCTMain([
     testCase(OverriddenSuperCallRuleTests.allTests),
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
-    testCase(PhohibitedNaNComparisonRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
     testCase(PrivateActionRuleTests.allTests),
@@ -1843,7 +1818,6 @@ XCTMain([
     testCase(RequiredDeinitRuleTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
-    testCase(ReturnValueFromVoidFunctionRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
@@ -1866,7 +1840,6 @@ XCTMain([
     testCase(TrailingCommaRuleTests.allTests),
     testCase(TrailingSemicolonRuleTests.allTests),
     testCase(TrailingWhitespaceTests.allTests),
-    testCase(TuplePatternRuleTests.allTests),
     testCase(TypeBodyLengthRuleTests.allTests),
     testCase(TypeContentsOrderRuleTests.allTests),
     testCase(TypeNameRuleTests.allTests),
@@ -1890,7 +1863,6 @@ XCTMain([
     testCase(VerticalWhitespaceClosingBracesRuleTests.allTests),
     testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
-    testCase(VoidFunctionInTernaryConditionRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),

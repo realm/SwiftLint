@@ -50,7 +50,6 @@ opt_in_rules:
   - private_action
   - private_outlet
   - prohibited_interface_builder
-  - prohibited_nan_comparison
   - prohibited_super_call
   - quick_discouraged_call
   - quick_discouraged_focused_test
@@ -58,14 +57,12 @@ opt_in_rules:
   - reduce_into
   - redundant_nil_coalescing
   - redundant_type_annotation
-  - return_value_from_void_function
   - single_test_class
   - sorted_first_last
   - sorted_imports
   - static_operator
   - strong_iboutlet
   - toggle_bool
-  - tuple_pattern
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
   - unowned_variable_capture
@@ -73,7 +70,6 @@ opt_in_rules:
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
-  - void_function_in_ternary
   - xct_specific_matcher
   - yoda_condition
 

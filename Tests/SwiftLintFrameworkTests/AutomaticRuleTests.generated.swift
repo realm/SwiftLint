@@ -510,6 +510,12 @@ class PatternMatchingKeywordsRuleTests: XCTestCase {
     }
 }
 
+class PhohibitedNaNComparisonRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PhohibitedNaNComparisonRule.description)
+    }
+}
+
 class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
@@ -642,6 +648,12 @@ class ReturnArrowWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class ReturnValueFromVoidFunctionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReturnValueFromVoidFunctionRule.description)
+    }
+}
+
 class ShorthandOperatorRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)
@@ -705,6 +717,12 @@ class ToggleBoolRuleTests: XCTestCase {
 class TrailingSemicolonRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingSemicolonRule.description)
+    }
+}
+
+class TuplePatternRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TuplePatternRule.description)
     }
 }
 
@@ -819,6 +837,12 @@ class VerticalWhitespaceClosingBracesRuleTests: XCTestCase {
 class VerticalWhitespaceOpeningBracesRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceOpeningBracesRule.description)
+    }
+}
+
+class VoidFunctionInTernaryConditionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(VoidFunctionInTernaryConditionRule.description)
     }
 }
 

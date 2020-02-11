@@ -708,12 +708,6 @@ class TrailingSemicolonRuleTests: XCTestCase {
     }
 }
 
-class TuplePatternRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(TuplePatternRule.description)
-    }
-}
-
 class TypeBodyLengthRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)

@@ -1593,12 +1593,6 @@ extension VerticalWhitespaceRuleTests {
     ]
 }
 
-extension VoidFunctionInTernaryConditionRuleTests {
-    static var allTests: [(String, (VoidFunctionInTernaryConditionRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension VoidReturnRuleTests {
     static var allTests: [(String, (VoidReturnRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1869,7 +1863,6 @@ XCTMain([
     testCase(VerticalWhitespaceClosingBracesRuleTests.allTests),
     testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
-    testCase(VoidFunctionInTernaryConditionRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),

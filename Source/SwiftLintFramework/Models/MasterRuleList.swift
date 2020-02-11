@@ -189,7 +189,6 @@ public let masterRuleList = RuleList(rules: [
     VerticalWhitespaceClosingBracesRule.self,
     VerticalWhitespaceOpeningBracesRule.self,
     VerticalWhitespaceRule.self,
-    VoidFunctionInTernaryConditionRule.self,
     VoidReturnRule.self,
     WeakDelegateRule.self,
     XCTFailMessageRule.self,

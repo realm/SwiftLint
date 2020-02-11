@@ -1064,12 +1064,6 @@ extension PatternMatchingKeywordsRuleTests {
     ]
 }
 
-extension PhohibitedNaNComparisonRuleTests {
-    static var allTests: [(String, (PhohibitedNaNComparisonRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension PreferSelfTypeOverTypeOfSelfRuleTests {
     static var allTests: [(String, (PreferSelfTypeOverTypeOfSelfRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1808,7 +1802,6 @@ XCTMain([
     testCase(OverriddenSuperCallRuleTests.allTests),
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
-    testCase(PhohibitedNaNComparisonRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
     testCase(PrivateActionRuleTests.allTests),

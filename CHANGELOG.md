@@ -2,7 +2,14 @@
 
 #### Breaking
 
-* None.
+* The new rules introduced in 0.39.0 that depend on SwiftSyntax have been
+  temporarily removed as we work out release packaging issues.
+    * `prohibited_nan_comparison`
+    * `return_value_from_void_function`
+    * `tuple_pattern`
+    * `void_function_in_ternary`  
+  [JP Simard](https://github.com/jpsim)
+  [#3105](https://github.com/realm/SwiftLint/issues/3105)
 
 #### Experimental
 
@@ -29,6 +36,10 @@
   [Paul Taykalo](https://github.com/PaulTaykalo)
   [JP Simard](https://github.com/jpsim)
 
+* SwiftLint now imports [SwiftSyntax](https://github.com/apple/swift-syntax)
+  and requires Xcode 11.0 to build.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Experimental
 
 * None.
@@ -54,6 +65,12 @@
   [SwiftSyntax](https://github.com/apple/swift-syntax).  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `tuple_pattern` opt-in rule to warn against using
+  assigning variables through a tuple pattern when the left side
+  of the assignment contains labels.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2203](https://github.com/realm/SwiftLint/issues/2203)
+
 * Add `return_value_from_void_function` opt-in rule to warn against using
   `return <expression>` in a function that is `Void`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -68,6 +85,11 @@
   By default, this option is disabled.  
   [Zsolt Kovács](https://github.com/lordzsolt)
   [#827](https://github.com/realm/SwiftLint/issues/827)
+
+* Add `prohibited_nan_comparison` opt-in rule to validate using `isNaN`
+  instead of comparing values to the `.nan` constant.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2086](https://github.com/realm/SwiftLint/issues/2086)
 
 #### Bug Fixes
 

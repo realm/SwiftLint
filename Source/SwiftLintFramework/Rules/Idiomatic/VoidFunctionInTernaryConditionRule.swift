@@ -3,8 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 #endif
 
-public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SyntaxRule, OptInRule,
-                                                  AutomaticTestableRule {
+public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SyntaxRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

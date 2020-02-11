@@ -3,8 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 #endif
 
-public struct TuplePatternRule: ConfigurationProviderRule, SyntaxRule, OptInRule,
-                                AutomaticTestableRule {
+public struct TuplePatternRule: ConfigurationProviderRule, SyntaxRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

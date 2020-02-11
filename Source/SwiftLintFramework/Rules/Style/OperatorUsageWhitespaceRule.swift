@@ -1,7 +1,10 @@
 import Foundation
 import SourceKittenFramework
+#if canImport(SwiftSyntax)
+import SwiftSyntax
+#endif
 
-public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule,
+public struct OperatorUsageWhitespaceRule: OptInRule, SyntaxRule, CorrectableRule, ConfigurationProviderRule,
                                            AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -32,7 +35,16 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let doubleValue = -9e-11\n"),
             Example("let foo = GenericType<(UIViewController) -> Void>()\n"),
             Example("let foo = Foo<Bar<T>, Baz>()\n"),
-            Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n")
+            Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"),
+            Example("""
+            let foo = Foo<A,
+                          B>(param: bar)
+            """),
+            Example("""
+            func success(for item: Item) {
+                item.successHandler??()
+            }
+            """)
         ],
         triggeringExamples: [
             Example("let foo = 1↓+2\n"),
@@ -44,111 +56,41 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let foo↓=bar\n"),
             Example("let range = 1↓ ..<  3\n"),
             Example("let foo = bar↓   ?? 0\n"),
-            Example("let foo = bar↓??0\n"),
             Example("let foo = bar↓ !=  0\n"),
             Example("let foo = bar↓ !==  bar2\n"),
             Example("let v8 = Int8(1)↓  << 6\n"),
             Example("let v8 = 1↓ <<  (6)\n"),
             Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n")
         ],
-        corrections: [
-            Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓   + 2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓   +    2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓ +    2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=1↓+2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=1 + 2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=bar\n"): Example("let foo = bar\n"),
-            Example("let range = 1↓ ..<  3\n"): Example("let range = 1..<3\n"),
-            Example("let foo = bar↓   ?? 0\n"): Example("let foo = bar ?? 0\n"),
-            Example("let foo = bar↓??0\n"): Example("let foo = bar ?? 0\n"),
-            Example("let foo = bar↓ !=  0\n"): Example("let foo = bar != 0\n"),
-            Example("let foo = bar↓ !==  bar2\n"): Example("let foo = bar !== bar2\n"),
-            Example("let v8 = Int8(1)↓  << 6\n"): Example("let v8 = Int8(1) << 6\n"),
-            Example("let v8 = 1↓ <<  (6)\n"): Example("let v8 = 1 << (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n")
-        ]
+        corrections: [:]
+//            Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
+//            Example("let foo = 1↓   + 2\n"): Example("let foo = 1 + 2\n"),
+//            Example("let foo = 1↓   +    2\n"): Example("let foo = 1 + 2\n"),
+//            Example("let foo = 1↓ +    2\n"): Example("let foo = 1 + 2\n"),
+//            Example("let foo↓=1↓+2\n"): Example("let foo = 1 + 2\n"),
+//            Example("let foo↓=1 + 2\n"): Example("let foo = 1 + 2\n"),
+//            Example("let foo↓=bar\n"): Example("let foo = bar\n"),
+//            Example("let range = 1↓ ..<  3\n"): Example("let range = 1..<3\n"),
+//            Example("let foo = bar↓   ?? 0\n"): Example("let foo = bar ?? 0\n"),
+//            Example("let foo = bar↓??0\n"): Example("let foo = bar ?? 0\n"),
+//            Example("let foo = bar↓ !=  0\n"): Example("let foo = bar != 0\n"),
+//            Example("let foo = bar↓ !==  bar2\n"): Example("let foo = bar !== bar2\n"),
+//            Example("let v8 = Int8(1)↓  << 6\n"): Example("let v8 = Int8(1) << 6\n"),
+//            Example("let v8 = 1↓ <<  (6)\n"): Example("let v8 = 1 << (6)\n"),
+//            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n")
+//        ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(file: file).map { range, _ in
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: range.location))
-        }
+        #if canImport(SwiftSyntax)
+        return validate(file: file, visitor: OperatorVisitor())
+        #else
+        return []
+        #endif
     }
 
     private func violationRanges(file: SwiftLintFile) -> [(NSRange, String)] {
-        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ "\\\($0)" }).joined()
-        let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
-        let notEqualsPattern = "\\!\\=\\=?" // != or !==
-        let coalescingPattern = "\\?{2}"
-
-        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern)|\(coalescingPattern)|" +
-            "\(notEqualsPattern))"
-
-        let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
-        let zeroSpaces = oneSpace + "{0}"
-        let manySpaces = oneSpace + "{2,}"
-        let leadingVariableOrNumber = "(?:\\b|\\))"
-        let trailingVariableOrNumber = "(?:\\b|\\()"
-
-        let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
-                      (manySpaces, oneSpace), (manySpaces, manySpaces)]
-        let patterns = spaces.map { first, second in
-            leadingVariableOrNumber + first + operators + second + trailingVariableOrNumber
-        }
-        let pattern = "(?:\(patterns.joined(separator: "|")))"
-
-        let genericPattern = "<(?:\(oneSpace)|\\S)*>" // not using dot to avoid matching new line
-        let validRangePattern = leadingVariableOrNumber + zeroSpaces + rangePattern +
-            zeroSpaces + trailingVariableOrNumber
-        let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
-
-        let excludingKinds = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
-
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
-                          excludingPattern: excludingPattern).compactMap { range in
-            // if it's only a number (i.e. -9e-11), it shouldn't trigger
-            guard kinds(in: range, file: file) != [.number] else {
-                return nil
-            }
-
-            let spacesPattern = oneSpace + "*"
-            let rangeRegex = regex(spacesPattern + rangePattern + spacesPattern)
-
-            // if it's a range operator, the correction shouldn't have spaces
-            if let matchRange = rangeRegex.firstMatch(in: file.contents, options: [], range: range)?.range {
-                let correction = operatorInRange(file: file, range: matchRange)
-                return (matchRange, correction)
-            }
-
-            let pattern = spacesPattern + operators + spacesPattern
-            let operatorsRegex = regex(pattern)
-
-            guard let matchRange = operatorsRegex.firstMatch(in: file.contents,
-                                                             options: [], range: range)?.range else {
-                return nil
-            }
-
-            let operatorContent = operatorInRange(file: file, range: matchRange)
-            let correction = " " + operatorContent + " "
-
-            return (matchRange, correction)
-        }
-    }
-
-    private func kinds(in range: NSRange, file: SwiftLintFile) -> [SyntaxKind] {
-        let contents = file.stringView
-        guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
-            return []
-        }
-
-        return file.syntaxMap.kinds(inByteRange: byteRange)
-    }
-
-    private func operatorInRange(file: SwiftLintFile, range: NSRange) -> String {
-        return file.stringView.substring(with: range).trimmingCharacters(in: .whitespaces)
+        return []
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
@@ -175,3 +117,46 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
     }
 }
+
+#if canImport(SwiftSyntax)
+private class OperatorVisitor: SyntaxRuleVisitor {
+    private var positions = [AbsolutePosition]()
+
+    func visit(_ node: BinaryOperatorExprSyntax) -> SyntaxVisitorContinueKind {
+        if let previousToken = node.operatorToken.previousToken,
+            previousToken.trailingTrivia != .spaces(1) ||
+            node.operatorToken.trailingTrivia != .spaces(1) {
+
+
+            let operatorText = node.operatorToken.withoutTrivia().text
+            let isRangeOperator = operatorText == "..." || operatorText == "..<"
+            let shouldIgnore = isRangeOperator && previousToken.trailingTrivia.isEmpty &&
+                node.operatorToken.trailingTrivia.isEmpty
+
+            if !shouldIgnore {
+                positions.append(previousToken.endPositionBeforeTrailingTrivia)
+            }
+        }
+
+        return .visitChildren
+    }
+
+    func visit(_ node: InitializerClauseSyntax) -> SyntaxVisitorContinueKind {
+        if let previousToken = node.equal.previousToken,
+            previousToken.trailingTrivia != .spaces(1) ||
+            node.equal.trailingTrivia != .spaces(1) {
+            positions.append(previousToken.endPositionBeforeTrailingTrivia)
+        }
+
+        return .visitChildren
+    }
+
+    func violations(for rule: OperatorUsageWhitespaceRule, in file: SwiftLintFile) -> [StyleViolation] {
+        return positions.map { position in
+            StyleViolation(ruleDescription: type(of: rule).description,
+                           severity: rule.configuration.severity,
+                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
+        }
+    }
+}
+#endif

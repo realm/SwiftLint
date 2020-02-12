@@ -177,6 +177,7 @@ extension SwiftLintFile {
 
     #if canImport(SwiftSyntax)
     internal var syntax: SourceFileSyntax {
+        initializeSwiftSyntax
         guard let syntax = syntaxCache.get(self) else {
             if let handler = assertHandler {
                 handler()

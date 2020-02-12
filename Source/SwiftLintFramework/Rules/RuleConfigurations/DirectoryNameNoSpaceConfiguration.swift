@@ -2,7 +2,7 @@ public struct DirectoryNameNoSpaceConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(severity) \(severity.consoleDescription), " +
             "excluded: \(excluded.sorted()), " +
-            "parentDirectory: \(parentDirectory)"
+            "parent_directory: \(parentDirectory)"
     }
 
     public private(set) var severity: SeverityConfiguration

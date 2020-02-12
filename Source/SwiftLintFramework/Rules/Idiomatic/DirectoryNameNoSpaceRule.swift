@@ -5,7 +5,7 @@ public struct DirectoryNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
     public var configuration = DirectoryNameNoSpaceConfiguration(
         severity: .warning,
         excluded: [],
-        parentDirectory: "SwiftLint"
+        parentDirectory: ""
     )
 
     public init() {}

@@ -20,6 +20,11 @@
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
 
+* Added 'directory_name_no_space' opt-in rule.
+  [timcmiller](https://github.com/timcmiller)
+  [#3012](https://github.com/realm/SwiftLint/issues/3012)
+
+
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  
@@ -305,10 +310,6 @@ This is the last release to support building with Swift 5.0.x.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3003](https://github.com/realm/SwiftLint/issues/3003)
 
-* Added 'directory_name_no_space' opt-in rule.
-  [timcmiller](https://github.com/timcmiller)
-  [#3012](https://github.com/realm/SwiftLint/issues/3012)
-  
 #### Bug Fixes
 
 * Fix crash in `unused_import` rule when unused imports have trailing

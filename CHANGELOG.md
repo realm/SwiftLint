@@ -21,6 +21,11 @@ This is the last release to support building with Swift 5.0.x.
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
+* Add `legacy_objc_type` opt-in rule to warn against using
+  bridged Objective-C reference types instead of Swift value types.  
+  [Blake](https://github.com/72A12F4E)
+  [#2758](https://github.com/realm/SwiftLint/issues/2758)
+
 #### Bug Fixes
 
 * Fix more false positives in `implicit_getter` rule in extensions when using

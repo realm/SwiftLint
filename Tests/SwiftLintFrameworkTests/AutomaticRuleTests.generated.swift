@@ -342,6 +342,12 @@ class LegacyNSGeometryFunctionsRuleTests: XCTestCase {
     }
 }
 
+class LegacyObjcTypeRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyObjcTypeRule.description)
+    }
+}
+
 class LegacyRandomRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyRandomRule.description)

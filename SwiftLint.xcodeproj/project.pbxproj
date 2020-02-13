@@ -38,6 +38,7 @@
 		22A36FE123578CC10037B47D /* ExpiringTodoConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A36FE023578CC10037B47D /* ExpiringTodoConfiguration.swift */; };
 		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* SwiftLintFile+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* SwiftLintFile+Cache.swift */; };
+		2529ECDD24383AAD0039E259 /* LegacyObjcTypeRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2529ECDB24383A770039E259 /* LegacyObjcTypeRule.swift */; };
 		260F66A0225C5B6D00407CF5 /* CollectingRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260F669F225C5B6D00407CF5 /* CollectingRuleTests.swift */; };
 		264E080F2248BA2800ADC4C5 /* RuleStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E080E2248BA2800ADC4C5 /* RuleStorage.swift */; };
 		26CE462D228532CD00264485 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CE462C228532CD00264485 /* Array+SwiftLint.swift */; };
@@ -548,6 +549,7 @@
 		22A36FE023578CC10037B47D /* ExpiringTodoConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpiringTodoConfiguration.swift; sourceTree = "<group>"; };
 		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* SwiftLintFile+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftLintFile+Cache.swift"; sourceTree = "<group>"; };
+		2529ECDB24383A770039E259 /* LegacyObjcTypeRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyObjcTypeRule.swift; sourceTree = "<group>"; };
 		260F669F225C5B6D00407CF5 /* CollectingRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectingRuleTests.swift; sourceTree = "<group>"; };
 		264E080E2248BA2800ADC4C5 /* RuleStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleStorage.swift; sourceTree = "<group>"; };
 		26CE462C228532CD00264485 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Array+SwiftLint.swift"; path = "../../SwiftLintFramework/Extensions/Array+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -1352,6 +1354,7 @@
 				C3EF547521B5A2190009262F /* LegacyHashingRule.swift */,
 				D4F10615229A331200FDE319 /* LegacyMultipleRule.swift */,
 				F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */,
+				2529ECDB24383A770039E259 /* LegacyObjcTypeRule.swift */,
 				A3184D55215BCEFF00621EA2 /* LegacyRandomRule.swift */,
 				D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */,
 				1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */,
@@ -2306,6 +2309,7 @@
 				6264015520155556005B9C4A /* DiscouragedOptionalBooleanRuleExamples.swift in Sources */,
 				5B3BEC3A23CCCC5D00DE5BEE /* Example.swift in Sources */,
 				8F8050821FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift in Sources */,
+				2529ECDD24383AAD0039E259 /* LegacyObjcTypeRule.swift in Sources */,
 				E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */,
 				62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */,
 				B89F3BCD1FD5EDFB00931E59 /* RequiredEnumCaseRule.swift in Sources */,

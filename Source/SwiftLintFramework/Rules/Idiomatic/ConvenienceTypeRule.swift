@@ -47,16 +47,6 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             }
             """),
             Example("""
-            class Foo { // non-final class could be inherited
-                class let foo = 1
-            }
-            """),
-            Example("""
-            class Foo { // non-final class with only final members could still be inherited
-                final class let foo = 1
-            }
-            """),
-            Example("""
             class Foo { // @objc class func can't exist on an enum
                @objc class func foo() {}
             }
@@ -92,6 +82,27 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             Example("""
             final ↓class Foo { // final class can't be inherited
                 class let foo = 1
+            }
+            """),
+
+            // Intentional false positives. Non-final classes could be
+            // subclassed, but we figure it is probably rare enough that it is
+            // more important to catch these cases, and manually disable the
+            // rule if needed.
+
+            Example("""
+            ↓class Foo {
+                class let foo = 1
+            }
+            """),
+            Example("""
+            ↓class Foo {
+                final class let foo = 1
+            }
+            """),
+            Example("""
+            ↓class SomeClass {
+                static func foo() {}
             }
             """)
         ]
@@ -135,24 +146,11 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             return []
         }
 
-        let makeViolation = {
-            return [
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))
-            ]
-        }
-
-        guard kind == .class else {
-            return makeViolation()
-        }
-
-        let isFinal = dictionary.swiftAttributes.contains { attributes in
-            attributes.attribute == SwiftDeclarationAttributeKind.final.rawValue
-        }
-
-        // Final classes can't be inherited from, so we want to turn it into an enum.
-        return isFinal ? makeViolation() : []
+        return [
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset))
+        ]
     }
 
     private func isFunctionUnavailable(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {

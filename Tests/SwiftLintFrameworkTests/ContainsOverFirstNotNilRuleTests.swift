@@ -31,6 +31,6 @@ class ContainsOverFirstNotNilRuleTests: XCTestCase {
             return []
         }
 
-        return violations(example, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

@@ -248,6 +248,7 @@ private extension SwiftLintFile {
         // TODO: Be smarter about where imports are added
         // TODO: Make a best effort to keep imports sorted
         // TODO: Move modulesAllowedToBeTransitivelyImported to UnusedImportConfiguration
+        // TODO: Don't add current module
         let modulesAllowedToBeTransitivelyImported = [
             "UIKit": [
                 "CoreFoundation",
@@ -260,7 +261,8 @@ private extension SwiftLintFile {
             ],
             "Foundation": [
                 "CoreFoundation",
-                "Darwin"
+                "Darwin",
+                "ObjectiveC"
             ]
         ]
 

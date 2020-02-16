@@ -247,7 +247,34 @@ private extension SwiftLintFile {
         // TODO: Only add missing imports when correcting
         // TODO: Be smarter about where imports are added
         // TODO: Make a best effort to keep imports sorted
-        let missingImports = usrFragments.subtracting(imports)
+        // TODO: Move modulesAllowedToBeTransitivelyImported to UnusedImportConfiguration
+        let modulesAllowedToBeTransitivelyImported = [
+            "UIKit": [
+                "CoreFoundation",
+                "CoreGraphics",
+                "CoreText",
+                "Darwin",
+                "Foundation",
+                "ObjectiveC",
+                "QuartzCore"
+            ],
+            "Foundation": [
+                "CoreFoundation",
+                "Darwin"
+            ]
+        ]
+
+        let missingImports = usrFragments
+            .subtracting(imports)
+            .filter { module in
+                let modulesAllowedToTransitivelyImportCurrentModule = modulesAllowedToBeTransitivelyImported
+                    .filter { $0.value.contains(module) }
+                    .keys
+
+                return modulesAllowedToTransitivelyImportCurrentModule.isEmpty ||
+                    imports.isDisjoint(with: modulesAllowedToTransitivelyImportCurrentModule)
+            }
+
         if !missingImports.isEmpty {
             let missingImportStatements = missingImports
                 .sorted()

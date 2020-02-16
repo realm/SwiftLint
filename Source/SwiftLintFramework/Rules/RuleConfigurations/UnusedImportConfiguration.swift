@@ -4,7 +4,7 @@ public struct TransitiveModuleConfiguration: Equatable {
 
     init(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
-            Array(configurationDict.keys) == ["module", "allowed_transitive_imports"],
+            Set(configurationDict.keys) == ["module", "allowed_transitive_imports"],
             let importedModule = configurationDict["module"] as? String,
             let transitivelyImportedModules = configurationDict["allowed_transitive_imports"] as? [String]
         else {

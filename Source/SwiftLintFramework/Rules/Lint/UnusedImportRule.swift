@@ -247,12 +247,13 @@ private extension SwiftLintFile {
 
         if configuration.requireExplicitImports {
             // TODO: Only add missing imports when correcting
-            // TODO: Be smarter about where imports are added
             // TODO: Make a best effort to keep imports sorted
 
+            let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
+                .map { compilerArguments[$0] }
+
             let missingImports = usrFragments
-                .subtracting(imports)
-                .subtracting(["CoreUI"]) // TODO: Don't add current module
+                .subtracting(imports + [currentModule].compactMap({ $0 }))
                 .filter { module in
                     let modulesAllowedToTransitivelyImportCurrentModule = configuration.allowedTransitiveImports
                         .filter { $0.transitivelyImportedModules.contains(module) }
@@ -263,11 +264,20 @@ private extension SwiftLintFile {
                 }
 
             if !missingImports.isEmpty {
+                var insertionLocation = 0
+                if let firstImportRange = match(pattern: "import\\s+\\w+", with: [.keyword, .identifier]).first {
+                    stringView.nsString.getLineStart(&insertionLocation, end: nil, contentsEnd: nil,
+                                                     for: firstImportRange)
+                }
+
+                let insertionRange = NSRange(location: insertionLocation, length: 0)
                 let missingImportStatements = missingImports
                     .sorted()
                     .map { "import \($0)" }
                     .joined(separator: "\n")
-                self.write(missingImportStatements + "\n" + self.contents)
+                let newContents = stringView.nsString.replacingCharacters(in: insertionRange,
+                                                                          with: missingImportStatements + "\n")
+                write(newContents)
             }
         }
 
@@ -277,7 +287,7 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                self.match(pattern: "^(@[\\w_]+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
+                match(pattern: "^(@[\\w_]+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }
@@ -370,7 +380,7 @@ private extension SwiftLintFile {
             }
         }
 
-        return containsAttributesRequiringFoundation(dict: self.structureDictionary)
+        return containsAttributesRequiringFoundation(dict: structureDictionary)
     }
 }
 

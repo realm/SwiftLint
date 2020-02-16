@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false)
 
     public init() {}
 
@@ -154,7 +154,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
     public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return violationRanges(in: file, compilerArguments: compilerArguments).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severity.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
@@ -244,6 +244,47 @@ private extension SwiftLintFile {
             )
         }
 
+        // TODO: Only add missing imports when correcting
+        // TODO: Be smarter about where imports are added
+        // TODO: Make a best effort to keep imports sorted
+        // TODO: Move modulesAllowedToBeTransitivelyImported to UnusedImportConfiguration
+        // TODO: Don't add current module
+        let modulesAllowedToBeTransitivelyImported = [
+            "UIKit": [
+                "CoreFoundation",
+                "CoreGraphics",
+                "CoreText",
+                "Darwin",
+                "Foundation",
+                "ObjectiveC",
+                "QuartzCore"
+            ],
+            "Foundation": [
+                "CoreFoundation",
+                "Darwin",
+                "ObjectiveC"
+            ]
+        ]
+
+        let missingImports = usrFragments
+            .subtracting(imports)
+            .filter { module in
+                let modulesAllowedToTransitivelyImportCurrentModule = modulesAllowedToBeTransitivelyImported
+                    .filter { $0.value.contains(module) }
+                    .keys
+
+                return modulesAllowedToTransitivelyImportCurrentModule.isEmpty ||
+                    imports.isDisjoint(with: modulesAllowedToTransitivelyImportCurrentModule)
+            }
+
+        if !missingImports.isEmpty {
+            let missingImportStatements = missingImports
+                .sorted()
+                .map { "import \($0)" }
+                .joined(separator: "\n")
+            self.write(missingImportStatements + "\n" + self.contents)
+        }
+
         return rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
     }
 
@@ -325,8 +366,8 @@ private extension SwiftLintFile {
     }
 
     func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
-        if let usr = cursorInfo.moduleName {
-            usrFragments.formUnion(usr.split(separator: ".").map(String.init))
+        if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
+            usrFragments.insert(rootModuleName)
         }
     }
 

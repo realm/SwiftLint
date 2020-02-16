@@ -2,7 +2,8 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
-    public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false)
+    public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
+                                                         allowedTransitiveImports: [])
 
     public init() {}
 
@@ -185,12 +186,12 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             return []
         }
 
-        return file.unusedImports(compilerArguments: compilerArguments).map { $0.1 }
+        return file.unusedImports(compilerArguments: compilerArguments, configuration: configuration).map { $0.1 }
     }
 }
 
 private extension SwiftLintFile {
-    func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
+    func unusedImports(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [(String, NSRange)] {
         let contentsNSString = contents.bridge()
         var imports = Set<String>()
         var usrFragments = Set<String>()
@@ -244,45 +245,30 @@ private extension SwiftLintFile {
             )
         }
 
-        // TODO: Only add missing imports when correcting
-        // TODO: Be smarter about where imports are added
-        // TODO: Make a best effort to keep imports sorted
-        // TODO: Move modulesAllowedToBeTransitivelyImported to UnusedImportConfiguration
-        // TODO: Don't add current module
-        let modulesAllowedToBeTransitivelyImported = [
-            "UIKit": [
-                "CoreFoundation",
-                "CoreGraphics",
-                "CoreText",
-                "Darwin",
-                "Foundation",
-                "ObjectiveC",
-                "QuartzCore"
-            ],
-            "Foundation": [
-                "CoreFoundation",
-                "Darwin",
-                "ObjectiveC"
-            ]
-        ]
+        if configuration.requireExplicitImports {
+            // TODO: Only add missing imports when correcting
+            // TODO: Be smarter about where imports are added
+            // TODO: Make a best effort to keep imports sorted
 
-        let missingImports = usrFragments
-            .subtracting(imports)
-            .filter { module in
-                let modulesAllowedToTransitivelyImportCurrentModule = modulesAllowedToBeTransitivelyImported
-                    .filter { $0.value.contains(module) }
-                    .keys
+            let missingImports = usrFragments
+                .subtracting(imports)
+                .subtracting(["CoreUI"]) // TODO: Don't add current module
+                .filter { module in
+                    let modulesAllowedToTransitivelyImportCurrentModule = configuration.allowedTransitiveImports
+                        .filter { $0.transitivelyImportedModules.contains(module) }
+                        .map { $0.importedModule }
 
-                return modulesAllowedToTransitivelyImportCurrentModule.isEmpty ||
-                    imports.isDisjoint(with: modulesAllowedToTransitivelyImportCurrentModule)
+                    return modulesAllowedToTransitivelyImportCurrentModule.isEmpty ||
+                        imports.isDisjoint(with: modulesAllowedToTransitivelyImportCurrentModule)
+                }
+
+            if !missingImports.isEmpty {
+                let missingImportStatements = missingImports
+                    .sorted()
+                    .map { "import \($0)" }
+                    .joined(separator: "\n")
+                self.write(missingImportStatements + "\n" + self.contents)
             }
-
-        if !missingImports.isEmpty {
-            let missingImportStatements = missingImports
-                .sorted()
-                .map { "import \($0)" }
-                .joined(separator: "\n")
-            self.write(missingImportStatements + "\n" + self.contents)
         }
 
         return rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)

@@ -153,31 +153,80 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
     )
 
     public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return violationRanges(in: file, compilerArguments: compilerArguments).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+        return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
+            let characterOffset: Int
+            let violationReason: String?
+            switch importUsage {
+            case .unused(_, let range):
+                characterOffset = range.location
+                violationReason = nil
+            case .missing(let module):
+                characterOffset = 0
+                violationReason = "Missing import for referenced module '\(module)'."
+            }
+            return StyleViolation(ruleDescription: type(of: self).description,
+                                  severity: configuration.severity.severity,
+                                  location: Location(file: file, characterOffset: characterOffset),
+                                  reason: violationReason)
         }
     }
 
     public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        let violations = violationRanges(in: file, compilerArguments: compilerArguments)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
+        let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
+        let matches = file.ruleEnabled(violatingRanges: importUsages.map({ $0.violationRange }), for: self)
         if matches.isEmpty { return [] }
 
-        var contents = file.contents.bridge()
+        var contents = file.stringView.nsString
         let description = type(of: self).description
         var corrections = [Correction]()
-        for range in matches.reversed() {
+        for range in matches.reversed() where range.length > 0 {
             contents = contents.replacingCharacters(in: range, with: "").bridge()
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents.bridge())
+
+        guard configuration.requireExplicitImports else {
+            return corrections
+        }
+
+        let missingImports = importUsages.compactMap { importUsage -> String? in
+            switch importUsage {
+            case .unused:
+                return nil
+            case .missing(let module):
+                return module
+            }
+        }
+
+        guard !missingImports.isEmpty else {
+            return corrections
+        }
+
+        let nsString = file.stringView.nsString
+        var insertionLocation = 0
+        if let firstImportRange = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier]).first {
+            nsString.getLineStart(&insertionLocation, end: nil, contentsEnd: nil, for: firstImportRange)
+        }
+
+        let insertionRange = NSRange(location: insertionLocation, length: 0)
+        let missingImportStatements = missingImports
+            .sorted()
+            .map { "import \($0)" }
+            .joined(separator: "\n")
+        let newContents = nsString.replacingCharacters(in: insertionRange, with: missingImportStatements + "\n")
+        file.write(newContents)
+        let location = Location(file: file, characterOffset: 0)
+        let missingImportCorrections = missingImports.map { _ in
+            Correction(ruleDescription: description, location: location)
+        }
+        corrections.append(contentsOf: missingImportCorrections)
+        // Attempt to sort imports
+        corrections.append(contentsOf: SortedImportsRule().correct(file: file))
         return corrections
     }
 
-    private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
+    private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
@@ -186,12 +235,26 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             return []
         }
 
-        return file.unusedImports(compilerArguments: compilerArguments, configuration: configuration).map { $0.1 }
+        return file.getImportUsage(compilerArguments: compilerArguments, configuration: configuration)
+    }
+}
+
+private enum ImportUsage {
+    case unused(module: String, range: NSRange)
+    case missing(module: String)
+
+    var violationRange: NSRange {
+        switch self {
+        case .unused(_, let range):
+            return range
+        case .missing:
+            return NSRange(location: 0, length: 0)
+        }
     }
 }
 
 private extension SwiftLintFile {
-    func unusedImports(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [(String, NSRange)] {
+    func getImportUsage(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [ImportUsage] {
         let contentsNSString = contents.bridge()
         var imports = Set<String>()
         var usrFragments = Set<String>()
@@ -245,43 +308,28 @@ private extension SwiftLintFile {
             )
         }
 
-        if configuration.requireExplicitImports {
-            // TODO: Only add missing imports when correcting
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
+            .map { ImportUsage.unused(module: $0, range: $1) }
 
-            let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
-                .map { compilerArguments[$0] }
-
-            let missingImports = usrFragments
-                .subtracting(imports + [currentModule].compactMap({ $0 }))
-                .filter { module in
-                    let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
-                        .filter { $0.transitivelyImportedModules.contains(module) }
-                        .map { $0.importedModule }
-
-                    return modulesAllowedToImportCurrentModule.isEmpty ||
-                        imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
-                }
-
-            if !missingImports.isEmpty {
-                var insertionLocation = 0
-                if let firstImportRange = match(pattern: "import\\s+\\w+", with: [.keyword, .identifier]).first {
-                    stringView.nsString.getLineStart(&insertionLocation, end: nil, contentsEnd: nil,
-                                                     for: firstImportRange)
-                }
-
-                let insertionRange = NSRange(location: insertionLocation, length: 0)
-                let missingImportStatements = missingImports
-                    .sorted()
-                    .map { "import \($0)" }
-                    .joined(separator: "\n")
-                let newContents = stringView.nsString.replacingCharacters(in: insertionRange,
-                                                                          with: missingImportStatements + "\n")
-                write(newContents)
-                _ = SortedImportsRule().correct(file: self) // Attempt to sort imports
-            }
+        guard configuration.requireExplicitImports else {
+            return unusedImportUsages
         }
 
-        return rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
+        let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
+            .map { compilerArguments[$0] }
+
+        let missingImports = usrFragments
+            .subtracting(imports + [currentModule].compactMap({ $0 }))
+            .filter { module in
+                let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
+                    .filter { $0.transitivelyImportedModules.contains(module) }
+                    .map { $0.importedModule }
+
+                return modulesAllowedToImportCurrentModule.isEmpty ||
+                    imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
+            }
+
+        return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {

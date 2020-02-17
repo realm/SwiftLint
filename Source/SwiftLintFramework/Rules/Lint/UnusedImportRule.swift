@@ -247,7 +247,6 @@ private extension SwiftLintFile {
 
         if configuration.requireExplicitImports {
             // TODO: Only add missing imports when correcting
-            // TODO: Make a best effort to keep imports sorted
 
             let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
                 .map { compilerArguments[$0] }
@@ -255,12 +254,12 @@ private extension SwiftLintFile {
             let missingImports = usrFragments
                 .subtracting(imports + [currentModule].compactMap({ $0 }))
                 .filter { module in
-                    let modulesAllowedToTransitivelyImportCurrentModule = configuration.allowedTransitiveImports
+                    let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
                         .filter { $0.transitivelyImportedModules.contains(module) }
                         .map { $0.importedModule }
 
-                    return modulesAllowedToTransitivelyImportCurrentModule.isEmpty ||
-                        imports.isDisjoint(with: modulesAllowedToTransitivelyImportCurrentModule)
+                    return modulesAllowedToImportCurrentModule.isEmpty ||
+                        imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
                 }
 
             if !missingImports.isEmpty {
@@ -278,6 +277,7 @@ private extension SwiftLintFile {
                 let newContents = stringView.nsString.replacingCharacters(in: insertionRange,
                                                                           with: missingImportStatements + "\n")
                 write(newContents)
+                _ = SortedImportsRule().correct(file: self) // Attempt to sort imports
             }
         }
 

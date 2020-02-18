@@ -29,6 +29,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3158](https://github.com/realm/SwiftLint/issues/3158)
 
+* Extend `empty_enum_arguments` rule to support `if case` and `guard case`.  
+  [Zsolt Kovács](https://github.com/lordzsolt)
+  [#3103](https://github.com/realm/SwiftLint/issues/3103)
+
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  

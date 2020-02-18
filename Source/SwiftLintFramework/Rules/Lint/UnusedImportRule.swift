@@ -154,20 +154,10 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
     public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
-            let characterOffset: Int
-            let violationReason: String?
-            switch importUsage {
-            case .unused(_, let range):
-                characterOffset = range.location
-                violationReason = nil
-            case .missing(let module):
-                characterOffset = 0
-                violationReason = "Missing import for referenced module '\(module)'."
-            }
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity.severity,
-                                  location: Location(file: file, characterOffset: characterOffset),
-                                  reason: violationReason)
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity.severity,
+                           location: Location(file: file, characterOffset: importUsage.violationRange.location),
+                           reason: importUsage.violationReason)
         }
     }
 
@@ -238,57 +228,9 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
     }
 }
 
-private enum ImportUsage {
-    case unused(module: String, range: NSRange)
-    case missing(module: String)
-
-    var violationRange: NSRange {
-        switch self {
-        case .unused(_, let range):
-            return range
-        case .missing:
-            return NSRange(location: 0, length: 0)
-        }
-    }
-}
-
 private extension SwiftLintFile {
     func getImportUsage(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [ImportUsage] {
-        let contentsNSString = contents.bridge()
-        var imports = Set<String>()
-        var usrFragments = Set<String>()
-        var nextIsModuleImport = false
-        let tokens = syntaxMap.tokens
-        for token in tokens {
-            guard let tokenKind = token.kind else {
-                continue
-            }
-            if tokenKind == .keyword, contents(for: token) == "import" {
-                nextIsModuleImport = true
-                continue
-            }
-            if syntaxKindsToSkip.contains(tokenKind) {
-                continue
-            }
-            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
-                                                       arguments: compilerArguments)
-            guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
-                queuedPrintError("Could not get cursor info")
-                continue
-            }
-            if nextIsModuleImport {
-                if let importedModule = cursorInfo.moduleName,
-                    cursorInfo.kind == "source.lang.swift.ref.module" {
-                    imports.insert(importedModule)
-                    nextIsModuleImport = false
-                    continue
-                } else {
-                    nextIsModuleImport = false
-                }
-            }
-
-            appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
-        }
+        var (imports, usrFragments) = getImportsAndUSRFragments(compilerArguments: compilerArguments)
 
         // Always disallow 'import Swift' because it's available without importing.
         usrFragments.remove("Swift")
@@ -302,11 +244,12 @@ private extension SwiftLintFile {
             unusedImports.subtract(
                 operatorImports(
                     arguments: compilerArguments,
-                    processedTokenOffsets: Set(tokens.map { $0.offset })
+                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
                 )
             )
         }
 
+        let contentsNSString = stringView.nsString
         let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
             .map { ImportUsage.unused(module: $0, range: $1) }
 
@@ -329,6 +272,44 @@ private extension SwiftLintFile {
             }
 
         return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+    }
+
+    func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {
+        var imports = Set<String>()
+        var usrFragments = Set<String>()
+        var nextIsModuleImport = false
+        for token in syntaxMap.tokens {
+            guard let tokenKind = token.kind else {
+                continue
+            }
+            if tokenKind == .keyword, contents(for: token) == "import" {
+                nextIsModuleImport = true
+                continue
+            }
+            if SyntaxKind.kindsWithoutModuleInfo.contains(tokenKind) {
+                continue
+            }
+            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
+                                                       arguments: compilerArguments)
+            guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
+                queuedPrintError("Could not get cursor info")
+                continue
+            }
+            if nextIsModuleImport {
+                if let importedModule = cursorInfo.moduleName,
+                    cursorInfo.kind == "source.lang.swift.ref.module" {
+                    imports.insert(importedModule)
+                    nextIsModuleImport = false
+                    continue
+                } else {
+                    nextIsModuleImport = false
+                }
+            }
+
+            appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+        }
+
+        return (imports: imports, usrFragments: usrFragments)
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
@@ -413,57 +394,4 @@ private extension SwiftLintFile {
             usrFragments.insert(rootModuleName)
         }
     }
-
-    func containsAttributesRequiringFoundation() -> Bool {
-        guard contents.contains("@objc") else {
-            return false
-        }
-
-        func containsAttributesRequiringFoundation(dict: SourceKittenDictionary) -> Bool {
-            if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
-                return true
-            } else {
-                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
-            }
-        }
-
-        return containsAttributesRequiringFoundation(dict: structureDictionary)
-    }
 }
-
-private extension SourceKittenDictionary {
-    /// Module name in @import expressions
-    var moduleName: String? {
-        return value["key.modulename"] as? String
-    }
-
-    var line: Int64? {
-        return value["key.line"] as? Int64
-    }
-
-    var column: Int64? {
-        return value["key.column"] as? Int64
-    }
-}
-
-private let syntaxKindsToSkip: Set<SyntaxKind> = [
-    .attributeBuiltin,
-    .keyword,
-    .number,
-    .docComment,
-    .string,
-    .stringInterpolationAnchor,
-    .attributeID,
-    .buildconfigKeyword,
-    .buildconfigID,
-    .commentURL,
-    .comment,
-    .docCommentField
-]
-
-private let attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> = [
-    .objc,
-    .objcName,
-    .objcMembers,
-    .objcNonLazyRealization
-]

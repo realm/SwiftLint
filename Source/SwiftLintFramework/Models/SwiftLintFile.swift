@@ -67,6 +67,24 @@ public final class SwiftLintFile {
     public var lines: [Line] {
         return file.lines
     }
+
+    /// Returns whether or not the file contains any attributes that require the Foundation module.
+    func containsAttributesRequiringFoundation() -> Bool {
+        guard contents.contains("@objc") else {
+            return false
+        }
+
+        func containsAttributesRequiringFoundation(dict: SourceKittenDictionary) -> Bool {
+            let attributesRequiringFoundation = SwiftDeclarationAttributeKind.attributesRequiringFoundation
+            if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
+                return true
+            } else {
+                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
+            }
+        }
+
+        return containsAttributesRequiringFoundation(dict: structureDictionary)
+    }
 }
 
 // MARK: - Hashable Conformance

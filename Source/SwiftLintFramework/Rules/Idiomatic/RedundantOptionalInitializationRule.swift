@@ -99,7 +99,7 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         return corrections
     }()
 
-    private let pattern = "\\s*=\\s*nil\\b"
+    private let pattern = #"\s*=\s*nil\b"#
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
@@ -162,7 +162,7 @@ extension SourceKittenDictionary {
         guard let byteRange = byteRange,
             case let contents = file.stringView,
             let range = contents.byteRangeToNSRange(byteRange),
-            !file.match(pattern: "\\Avar\\b", with: [.keyword], range: range).isEmpty else {
+            !file.match(pattern: #"\Avar\b"#, with: [.keyword], range: range).isEmpty else {
                 return false
         }
 

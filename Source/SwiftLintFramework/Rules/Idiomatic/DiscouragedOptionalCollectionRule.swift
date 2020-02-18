@@ -54,7 +54,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
             case let byteRange = ByteRange(location: start, length: end - start),
             case let contents = file.stringView,
             let range = file.stringView.byteRangeToNSRange(byteRange),
-            let match = file.match(pattern: "->\\s*(.*?)\\{", excludingSyntaxKinds: excludingKinds, range: range).first
+            let match = file.match(pattern: #"->\s*(.*?)\{"#, excludingSyntaxKinds: excludingKinds, range: range).first
             else { return [] }
 
         return contents.substring(with: match).optionalCollectionRanges().map { _ in nameOffset }

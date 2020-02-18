@@ -94,8 +94,8 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
         ]
     )
 
-    private let reduceExpression = regex("(?<!\\w)reduce$")
-    private let initExpression = regex("^(?:\\[.+:?.*\\]|(?:Array|Dictionary)<.+>)(?:\\.init\\(|\\().*\\)$")
+    private let reduceExpression = regex(#"(?<!\w)reduce$"#)
+    private let initExpression = regex(#"^(?:\[.+:?.*\]|(?:Array|Dictionary)<.+>)(?:\.init\(|\().*\)$"#)
 
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {

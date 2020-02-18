@@ -48,7 +48,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
         ]
     )
 
-    private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
+    private static let emptyParenthesesRegex = regex(#"^\s*\(\s*\)"#)
 
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {

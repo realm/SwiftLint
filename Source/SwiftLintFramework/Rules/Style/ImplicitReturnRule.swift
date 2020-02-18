@@ -29,7 +29,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
+        let pattern = #"(?:\bin|\{)\s+(return\s+)"#
         let contents = file.stringView
 
         return file.matchesAndSyntaxKinds(matching: pattern).compactMap { result, kinds in

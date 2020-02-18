@@ -128,7 +128,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
     private func isClosure(in file: SwiftLintFile) -> (Argument) -> Bool {
         return { argument in
             let contents = file.stringView
-            let closureMatcher = regex("^\\s*\\{")
+            let closureMatcher = regex(#"^\s*\{"#)
             guard let range = contents.byteRangeToNSRange(argument.bodyRange) else {
                 return false
             }

@@ -118,11 +118,11 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 // MARK: - Legacy Implementation
 
 extension GenericTypeNameRule {
-    private static let genericTypePattern = "<(\\s*\\w.*?)>"
+    private static let genericTypePattern = #"<(\s*\w.*?)>"#
     private static let genericTypeRegex = regex(genericTypePattern)
 
     private func validateGenericTypeAliases(in file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "typealias\\s+\\w+?\\s*" + type(of: self).genericTypePattern + "\\s*="
+        let pattern = #"typealias\s+\w+?\s*"# + type(of: self).genericTypePattern + #"\s*="#
         return file.match(pattern: pattern).flatMap { range, tokens -> [(String, ByteCount)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
@@ -231,7 +231,7 @@ private extension String {
     func trimmingWhitespaces() -> (String, NSRange) {
         let bridged = bridge()
         let range = NSRange(location: 0, length: bridged.length)
-        guard let match = regex("^\\s*(\\S*)\\s*$").firstMatch(in: self, options: [], range: range),
+        guard let match = regex(#"^\s*(\S*)\s*$"#).firstMatch(in: self, options: [], range: range),
             NSEqualRanges(range, match.range)
         else {
             return (self, range)

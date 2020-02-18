@@ -95,7 +95,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             return false
         }
 
-        let pattern = regex("\\A\\s*\\(?\\s*\\{")
+        let pattern = regex(#"\A\s*\(?\s*\{"#)
         return pattern.firstMatch(in: file.contents, options: .anchored, range: nsRange) != nil
     }
 

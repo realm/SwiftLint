@@ -140,7 +140,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
                               reason: reason)
     }
 
-    fileprivate static let notWhitespace = regex("[^\\s]")
+    fileprivate static let notWhitespace = regex(#"[^\s]"#)
 }
 
 extension LiteralExpressionEndIdentationRule: CorrectableRule {

@@ -121,7 +121,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
             let tokenContent = file.contents(for: firstToken),
             case let contents = file.stringView,
             let range = contents.byteRangeToNSRange(byteRange),
-            case let pattern = "(?:break|continue)\\s+\(tokenContent)\\b",
+            case let pattern = #"(?:break|continue)\s+\#(tokenContent)\b"#,
             file.match(pattern: pattern, with: [.keyword, .identifier], range: range).isEmpty,
             let violationRange = contents.byteRangeToNSRange(firstToken.range)
         else {

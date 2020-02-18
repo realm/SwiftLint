@@ -16,8 +16,8 @@ public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRu
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let booleanPattern = "Bool\\?"
-        let optionalPattern = "Optional\\.some\\(\\s*(true|false)\\s*\\)"
+        let booleanPattern = #"Bool\?"#
+        let optionalPattern = #"Optional\.some\(\s*(true|false)\s*\)"#
         let pattern = "(" + [booleanPattern, optionalPattern].joined(separator: "|") + ")"
         let excludingKinds = SyntaxKind.commentAndStringKinds
 

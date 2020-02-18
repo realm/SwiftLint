@@ -6,8 +6,8 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
 
     private var pattern: String {
         let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
-        let negativeLookBehind = "(?:(?<!\\.)|Swift\\.)"
-        return negativeLookBehind + "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
+        let negativeLookBehind = #"(?:(?<!\.)|Swift\.)"#
+        return negativeLookBehind + #"\b("# + types.joined(separator: "|") + #")\s*<.*?>"#
     }
 
     public init() {}
@@ -150,7 +150,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         // avoid triggering when referring to an associatedtype
         let start = range.location + range.length
         let restOfFileRange = NSRange(location: start, length: contents.nsString.length - start)
-        if regex("\\s*\\.").firstMatch(in: file.contents, options: [],
+        if regex(#"\s*\."#).firstMatch(in: file.contents, options: [],
                                        range: restOfFileRange)?.range.location == start {
             guard let byteOffset = contents.NSRangeToByteRange(start: range.location,
                                                                length: range.length)?.location else {
@@ -162,7 +162,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
                 return false
             }
 
-            if let (range, kinds) = file.match(pattern: "\\s*\\.(?:self|Type)", range: restOfFileRange).first,
+            if let (range, kinds) = file.match(pattern: #"\s*\.(?:self|Type)"#, range: restOfFileRange).first,
                 range.location == start, kinds == [.keyword] || kinds == [.identifier] {
                 return false
             }

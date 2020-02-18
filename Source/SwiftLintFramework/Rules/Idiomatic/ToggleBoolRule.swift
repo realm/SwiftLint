@@ -41,7 +41,7 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = "(?<![\\w.])([\\w.]+) = !\\1\\b"
+        let pattern = #"(?<![\w.])([\w.]+) = !\1\b"#
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds)
     }

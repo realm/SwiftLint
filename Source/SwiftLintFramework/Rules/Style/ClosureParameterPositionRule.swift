@@ -45,7 +45,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
         ]
     )
 
-    private static let openBraceRegex = regex("\\{")
+    private static let openBraceRegex = regex(#"\{"#)
 
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {

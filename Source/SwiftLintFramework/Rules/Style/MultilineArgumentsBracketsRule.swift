@@ -92,8 +92,8 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             return []
         }
 
-        let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
-        let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
+        let expectedBodyBeginRegex = regex(#"\A(?:[ \t]*\n|[^\n]*(?:in|\{)\n)"#)
+        let expectedBodyEndRegex = regex(#"\n[ \t]*\z"#)
 
         var violatingByteOffsets = [ByteCount]()
         if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {

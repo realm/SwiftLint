@@ -34,7 +34,7 @@ public struct ClosingBraceRule: SubstitutionCorrectableRule, ConfigurationProvid
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        return file.match(pattern: #"(\}[ \t]+\))"#, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {

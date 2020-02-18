@@ -37,7 +37,7 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
             Example("class Name {\n    run(5) { x in print(x) }\n}")
     ]
 
-    private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
+    private let pattern = #"((?:\n[ \t]*)+)(\n[ \t]*[)}\]])"#
 }
 
 extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule {

@@ -44,7 +44,7 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.(first|last)(?!Index)",
+                        pattern: #"[\}\)]\s*\.(first|last)(?!Index)"#,
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".sorted",
                         severity: configuration.severity) { dictionary in

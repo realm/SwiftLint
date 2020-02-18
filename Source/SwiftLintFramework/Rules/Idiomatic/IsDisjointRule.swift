@@ -23,7 +23,7 @@ public struct IsDisjointRule: ConfigurationProviderRule, AutomaticTestableRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\bintersection\\(\\S+\\)\\.isEmpty"
+        let pattern = #"\bintersection\(\S+\)\.isEmpty"#
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,

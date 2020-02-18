@@ -23,7 +23,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, AutomaticTe
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\b\\s*(==|!=)\\s*\"\""
+        let pattern = #"\b\s*(==|!=)\s*"""#
         return file.match(pattern: pattern, with: [.string]).compactMap { range in
             guard let byteRange = file.stringView.NSRangeToByteRange(NSRange(location: range.location, length: 1)),
                 case let kinds = file.syntaxMap.kinds(inByteRange: byteRange),

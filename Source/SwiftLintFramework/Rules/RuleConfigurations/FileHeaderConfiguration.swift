@@ -16,7 +16,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     private var _forbiddenRegex: NSRegularExpression?
     private var _requiredRegex: NSRegularExpression?
 
-    private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
+    private static let defaultRegex = regex(#"\bCopyright\b"#, options: [.caseInsensitive])
 
     public var consoleDescription: String {
         let requiredStringDescription = requiredString ?? "None"

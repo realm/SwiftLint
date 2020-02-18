@@ -20,7 +20,7 @@ public struct FlatMapOverMapReduceRule: CallPairRule, OptInRule, ConfigurationPr
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.reduce\\s*\\(\\[\\s*\\],\\s*\\+\\s*\\)"
+        let pattern = #"[\}\)]\s*\.reduce\s*\(\[\s*\],\s*\+\s*\)"#
         return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".map", severity: configuration.severity)
     }

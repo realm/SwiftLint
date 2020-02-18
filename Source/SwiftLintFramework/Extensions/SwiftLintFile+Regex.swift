@@ -60,7 +60,7 @@ extension SwiftLintFile {
         }
         let contents = stringView
         let range = range ?? stringView.range
-        let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
+        let pattern = #"swiftlint:(enable|disable)(:previous|:this|:next)?\ [^\n]+"#
         return match(pattern: pattern, range: range).filter { match in
             return Set(match.1).isSubset(of: [.comment, .commentURL])
         }.compactMap { match -> Command? in

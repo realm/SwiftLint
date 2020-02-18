@@ -73,7 +73,7 @@ private extension Array where Element == SourceKittenDictionary {
             return filter { argument in
                 guard let bodyByteRange = argument.bodyByteRange,
                     let range = file.stringView.byteRangeToNSRange(bodyByteRange),
-                    let match = regex("^\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                    let match = regex(#"^\s*\{"#).firstMatch(in: file.contents, options: [], range: range)?.range,
                     match.location == range.location
                 else {
                     return false

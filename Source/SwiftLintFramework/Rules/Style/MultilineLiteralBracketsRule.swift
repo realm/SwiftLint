@@ -113,8 +113,8 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             return []
         }
 
-        let expectedBodyBeginRegex = regex("\\A[ \\t]*\\n")
-        let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
+        let expectedBodyBeginRegex = regex(#"\A[ \t]*\n"#)
+        let expectedBodyEndRegex = regex(#"\n[ \t]*\z"#)
 
         var violatingByteOffsets = [ByteCount]()
         if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {

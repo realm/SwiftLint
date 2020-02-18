@@ -122,7 +122,7 @@ public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProvider
             return []
         }
 
-        let pattern = "((?:Swift\\s*\\.\\s*)?type\\(\\s*of\\:\\s*self\\s*\\))\\s*\\."
+        let pattern = #"((?:Swift\s*\.\s*)?type\(\s*of\:\s*self\s*\))\s*\."#
         return file.matchesAndSyntaxKinds(matching: pattern)
             .filter {
                 $0.1 == [.identifier, .identifier, .identifier, .keyword] ||

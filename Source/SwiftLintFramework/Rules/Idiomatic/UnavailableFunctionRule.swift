@@ -67,7 +67,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
             !isFunctionUnavailable(file: file, dictionary: dictionary),
             let bodyRange = dictionary.bodyByteRange,
             let range = file.stringView.byteRangeToNSRange(bodyRange),
-            file.match(pattern: "\\breturn\\b", with: [.keyword], range: range).isEmpty else {
+            file.match(pattern: #"\breturn\b"#, with: [.keyword], range: range).isEmpty else {
                 return []
         }
 

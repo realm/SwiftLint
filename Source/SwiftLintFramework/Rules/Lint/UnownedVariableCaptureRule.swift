@@ -32,7 +32,7 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         guard kind == .closure, let bodyRange = dictionary.bodyByteRange,
             case let contents = file.stringView,
             let closureRange = contents.byteRangeToNSRange(bodyRange),
-            let inTokenRange = file.match(pattern: "\\bin\\b", with: [.keyword], range: closureRange).first,
+            let inTokenRange = file.match(pattern: #"\bin\b"#, with: [.keyword], range: closureRange).first,
             let inTokenByteRange = contents.NSRangeToByteRange(start: inTokenRange.location,
                                                                length: inTokenRange.length)
         else {

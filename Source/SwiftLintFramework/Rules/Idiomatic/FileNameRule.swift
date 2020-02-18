@@ -19,7 +19,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],
         prefixPattern: "",
-        suffixPattern: "\\+.*",
+        suffixPattern: #"\+.*"#,
         nestedTypeSeparator: "."
     )
 

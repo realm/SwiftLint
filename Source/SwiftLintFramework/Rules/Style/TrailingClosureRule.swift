@@ -92,7 +92,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             case let length = totalLength + offset - start,
             case let byteRange = ByteRange(location: start, length: length),
             let range = file.stringView.byteRangeToNSRange(byteRange),
-            let match = regex("\\s*\\(\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+            let match = regex(#"\s*\(\s*\{"#).firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location {
             return shouldTrigger()
         }
@@ -105,7 +105,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         return arguments.filter { argument in
             guard let bodyByteRange = argument.bodyByteRange,
                 let range = file.stringView.byteRangeToNSRange(bodyByteRange),
-                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                let match = regex(#"\s*\{"#).firstMatch(in: file.contents, options: [], range: range)?.range,
                 match.location == range.location
             else {
                 return false
@@ -132,7 +132,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             return false
         }
 
-        let pattern = regex("\\)\\s*\\)\\z")
+        let pattern = regex(#"\)\s*\)\z"#)
         return pattern.numberOfMatches(in: file.contents, range: range) > 0
     }
 }

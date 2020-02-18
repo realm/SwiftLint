@@ -99,7 +99,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let setTokens = file.rangesAndTokens(matching: "\\bset\\b").keywordTokens()
+        let setTokens = file.rangesAndTokens(matching: #"\bset\b"#).keywordTokens()
 
         let violatingLocations = setTokens.compactMap { setToken -> ByteCount? in
             // the last element is the deepest structure
@@ -175,7 +175,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
     private func findGetToken(in range: NSRange, file: SwiftLintFile,
                               propertyStructure: SourceKittenDictionary) -> SwiftLintSyntaxToken? {
-        let getTokens = file.rangesAndTokens(matching: "\\bget\\b", range: range).keywordTokens()
+        let getTokens = file.rangesAndTokens(matching: #"\bget\b"#, range: range).keywordTokens()
         return getTokens.first(where: { token -> Bool in
             // the last element is the deepest structure
             guard let dict = declarations(forByteOffset: token.offset,

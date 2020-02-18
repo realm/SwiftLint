@@ -117,7 +117,7 @@ private extension SourceKittenDictionary {
         let contents = file.stringView
         let contentAfterName = contents.nsString.substring(from: afterNameRange.location)
         let initCallRegex =
-            regex("^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\(")
+            regex(#"^\s*=\s*(?:try[!?]?\s+)?\[?\p{Lu}[^\(\s<]*(?:<[^\>]*>)?(?::\s*[^\(\n]+)?\]?\("#)
 
         return initCallRegex.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }
@@ -134,7 +134,7 @@ private extension SourceKittenDictionary {
 
         let contents = file.stringView
         let contentAfterName = contents.nsString.substring(from: afterNameRange.location)
-        let typeAssignment = regex("^\\s*=\\s*(?:\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\.)*self")
+        let typeAssignment = regex(#"^\s*=\s*(?:\p{Lu}[^\(\s<]*(?:<[^\>]*>)?\.)*self"#)
 
         return typeAssignment.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }
@@ -167,7 +167,7 @@ private extension SourceKittenDictionary {
 
 private extension SwiftLintFile {
     var captureGroupByteRanges: [ByteRange] {
-        return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
+        return match(pattern: #"\{\s*\[(\s*\w+\s+\w+,*)+\]"#,
                      excludingSyntaxKinds: SyntaxKind.commentKinds)
                 .compactMap { stringView.NSRangeToByteRange(start: $0.location, length: $0.length) }
     }

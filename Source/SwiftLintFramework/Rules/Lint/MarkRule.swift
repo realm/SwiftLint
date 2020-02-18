@@ -85,8 +85,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private let missingColonPattern = "(?:// ?MARK[^:])"
     // The below patterns more specifically describe some of the above pattern's failure cases for correction.
     private let oneOrMoreSpacesBeforeColonPattern = "(?:// ?MARK +:)"
-    private let nonWhitespaceBeforeColonPattern = "(?:// ?MARK\\S+:)"
-    private let nonWhitespaceNorColonBeforeSpacesPattern = "(?:// ?MARK[^\\s:]* +)"
+    private let nonWhitespaceBeforeColonPattern = #"(?:// ?MARK\S+:)"#
+    private let nonWhitespaceNorColonBeforeSpacesPattern = #"(?:// ?MARK[^\s:]* +)"#
     private let threeSlashesInsteadOfTwo = "/// MARK:?"
 
     private var pattern: String {

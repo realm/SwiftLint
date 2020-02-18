@@ -144,7 +144,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
     }
 
     private func importGroups(in file: SwiftLintFile, filterEnabled: Bool) -> [[Line]] {
-        var importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
+        var importRanges = file.match(pattern: #"import\s+\w+"#, with: [.keyword, .identifier])
         if filterEnabled {
             importRanges = file.ruleEnabled(violatingRanges: importRanges, for: self)
         }

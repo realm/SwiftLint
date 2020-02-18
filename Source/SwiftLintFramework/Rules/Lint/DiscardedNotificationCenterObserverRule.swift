@@ -73,17 +73,17 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
                 return []
         }
 
-        if let lastMatch = regex("\\b[^\\(]+").matches(in: file.contents, options: [], range: range).last?.range,
+        if let lastMatch = regex(#"\b[^\(]+"#).matches(in: file.contents, options: [], range: range).last?.range,
             lastMatch.location == range.length - lastMatch.length - 1 {
             return []
         }
 
-        if let lastMatch = regex("\\s?=\\s*").matches(in: file.contents, options: [], range: range).last?.range,
+        if let lastMatch = regex(#"\s?=\s*"#).matches(in: file.contents, options: [], range: range).last?.range,
             lastMatch.location == range.length - lastMatch.length {
             return []
         }
 
-        if let lastMatch = file.match(pattern: "\\breturn\\s+", with: [.keyword], range: range).last,
+        if let lastMatch = file.match(pattern: #"\breturn\s+"#, with: [.keyword], range: range).last,
             lastMatch.location == range.length - lastMatch.length,
             let lastFunction = file.structureDictionary.functions(forByteOffset: offset).last,
             !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {

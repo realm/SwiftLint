@@ -100,7 +100,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
                 return []
             }
 
-            let emptyArgumentRegex = regex("\\.\\S+\\s*(\\([,\\s_]*\\))")
+            let emptyArgumentRegex = regex(#"\.\S+\s*(\([,\s_]*\))"#)
             return emptyArgumentRegex.matches(in: file.contents, options: [], range: caseRange).compactMap { match in
                 let parenthesesRange = match.range(at: 1)
 

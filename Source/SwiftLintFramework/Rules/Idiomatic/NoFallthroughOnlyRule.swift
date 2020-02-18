@@ -29,7 +29,7 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
 
         let caseBodyRange = NSRange(location: colonLocation,
                                     length: range.length + range.location - colonLocation)
-        let nonCommentCaseBody = file.match(pattern: "\\w+", range: caseBodyRange).filter { _, syntaxKinds in
+        let nonCommentCaseBody = file.match(pattern: #"\w+"#, range: caseBodyRange).filter { _, syntaxKinds in
             return !Set(syntaxKinds).subtracting(SyntaxKind.commentKinds).isEmpty
         }
 

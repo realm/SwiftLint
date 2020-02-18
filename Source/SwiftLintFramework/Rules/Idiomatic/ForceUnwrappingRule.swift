@@ -65,13 +65,13 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
 
     // capture previous of "!"
     // http://userguide.icu-project.org/strings/regexp
-    private static let pattern = "([^\\s\\p{Ps}])(!+)"
+    private static let pattern = #"([^\s\p{Ps}])(!+)"#
     // Match any variable declaration
     // Has a small bug in @IBOutlet due suffix "let"
     // But that does not compromise the filtering for var declarations
-    private static let varDeclarationPattern = "\\s?(?:let|var)\\s+[^=\\v{]*!"
+    private static let varDeclarationPattern = #"\s?(?:let|var)\s+[^=\v{]*!"#
 
-    private static let functionReturnPattern = "\\)\\s*->\\s*[^\\n\\{=]*!"
+    private static let functionReturnPattern = #"\)\s*->\s*[^\n\{=]*!"#
 
     private static let regularExpression = regex(pattern)
     private static let varDeclarationRegularExpression = regex(varDeclarationPattern)

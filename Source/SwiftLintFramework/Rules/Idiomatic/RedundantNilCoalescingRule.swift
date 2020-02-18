@@ -41,6 +41,6 @@ public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
+        return file.match(pattern: #"\s?\?{2}\s*nil\b"#, with: [.keyword])
     }
 }

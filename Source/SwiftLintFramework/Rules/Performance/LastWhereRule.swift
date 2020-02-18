@@ -31,7 +31,7 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.last",
+                        pattern: #"[\}\)]\s*\.last"#,
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter",
                         severity: configuration.severity) { dictionary in

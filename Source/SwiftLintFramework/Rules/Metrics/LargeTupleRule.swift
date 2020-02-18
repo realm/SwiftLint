@@ -194,7 +194,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
     }
 
     private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
-        let arrowRegex = regex("\\A(?:\\s*throws)?\\s*->")
+        let arrowRegex = regex(#"\A(?:\s*throws)?\s*->"#)
         let start = NSMaxRange(range)
         let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
 

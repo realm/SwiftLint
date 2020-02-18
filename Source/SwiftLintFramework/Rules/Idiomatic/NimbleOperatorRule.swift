@@ -101,7 +101,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 
     private func violationMatchesRanges(in file: SwiftLintFile) -> [NSRange] {
-        let operandPattern = "(.(?!expect\\())+?"
+        let operandPattern = #"(.(?!expect\())+?"#
 
         let operatorsPattern = "(" + predicatesMapping.map { name, predicateDescription in
             let argumentsPattern = predicateDescription.arity.hasArguments
@@ -176,7 +176,7 @@ private extension String {
     func replace(function name: NimbleOperatorRule.MatcherFunction,
                  with predicateDescription: NimbleOperatorRule.PredicateDescription,
                  in range: NSRange) -> String? {
-        let anything = "\\s*(.*?)\\s*"
+        let anything = #"\s*(.*?)\s*"#
 
         let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", predicateDescription.to)
         let toNotPattern = ("expect\\(\(anything)\\)\\.toNot\\(\(name)\\(\(anything)\\)\\)", predicateDescription.toNot)

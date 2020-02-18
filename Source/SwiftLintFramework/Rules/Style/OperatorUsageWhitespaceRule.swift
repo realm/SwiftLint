@@ -79,19 +79,19 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func violationRanges(file: SwiftLintFile) -> [(NSRange, String)] {
-        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ "\\\($0)" }).joined()
-        let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
-        let notEqualsPattern = "\\!\\=\\=?" // != or !==
-        let coalescingPattern = "\\?{2}"
+        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ #"\\#($0)"# }).joined()
+        let rangePattern = #"\.\.(?:\.|<)"# // ... or ..<
+        let notEqualsPattern = #"\!\=\=?"# // != or !==
+        let coalescingPattern = #"\?{2}"#
 
         let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern)|\(coalescingPattern)|" +
             "\(notEqualsPattern))"
 
-        let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
+        let oneSpace = #"[^\S\r\n]"# // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let leadingVariableOrNumber = "(?:\\b|\\))"
-        let trailingVariableOrNumber = "(?:\\b|\\()"
+        let leadingVariableOrNumber = #"(?:\b|\))"#
+        let trailingVariableOrNumber = #"(?:\b|\()"#
 
         let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
                       (manySpaces, oneSpace), (manySpaces, manySpaces)]
@@ -100,7 +100,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
         let pattern = "(?:\(patterns.joined(separator: "|")))"
 
-        let genericPattern = "<(?:\(oneSpace)|\\S)*>" // not using dot to avoid matching new line
+        let genericPattern = #"<(?:\#(oneSpace)|\S)*>"# // not using dot to avoid matching new line
         let validRangePattern = leadingVariableOrNumber + zeroSpaces + rangePattern +
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"

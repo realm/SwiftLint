@@ -42,7 +42,7 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTe
             inlineMatch.range.location != NSNotFound,
             case let attributeRange = NSRange(location: inlineMatch.range.location,
                                               length: funcOffset - inlineMatch.range.location),
-            case let alwaysInlinePattern = regex("@inline\\(\\s*__always\\s*\\)"),
+            case let alwaysInlinePattern = regex(#"@inline\(\s*__always\s*\)"#),
             alwaysInlinePattern.firstMatch(in: file.contents, options: [], range: attributeRange) != nil
         else {
             return []

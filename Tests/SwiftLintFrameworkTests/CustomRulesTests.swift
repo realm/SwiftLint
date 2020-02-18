@@ -91,7 +91,7 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testCustomRulesIncludedExcludesFile() {
-        var (regexConfig, customRules) = getCustomRules(["included": "\\.yml$"])
+        var (regexConfig, customRules) = getCustomRules(["included": #"\.yml$"#])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
@@ -102,7 +102,7 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testCustomRulesExcludedExcludesFile() {
-        var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
+        var (regexConfig, customRules) = getCustomRules(["excluded": #"\.txt$"#])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]

@@ -57,7 +57,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         ]
     )
 
-    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))(?![?!])"
+    private let pattern = #"\s*->\s*(?:Void\b|\(\s*\))(?![?!])"#
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
     private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
 

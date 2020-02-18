@@ -28,7 +28,7 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\breduce\\((true|false)"
+        let pattern = #"\breduce\((true|false)"#
         return file
             .match(pattern: pattern, with: [.identifier, .keyword])
             .map { range in

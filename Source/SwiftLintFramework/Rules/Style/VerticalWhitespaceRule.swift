@@ -57,7 +57,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     private typealias LineSection = (lastLine: Line, linesToRemove: Int)
 
     private func violatingLineSections(in file: SwiftLintFile) -> [LineSection] {
-        let nonSpaceRegex = regex("\\S", options: [])
+        let nonSpaceRegex = regex(#"\S"#, options: [])
         let filteredLines = file.lines.filter {
             nonSpaceRegex.firstMatch(in: file.contents, options: [], range: $0.range) == nil
         }

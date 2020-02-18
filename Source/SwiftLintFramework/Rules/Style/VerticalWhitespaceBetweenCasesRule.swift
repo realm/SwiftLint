@@ -113,7 +113,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
         """)
     ]
 
-    private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
+    private let pattern = #"([^\n{][ \t]*\n)([ \t]*(?:case[^\n]+|default):[ \t]*\n)"#
 
     private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         return file.violatingRanges(for: pattern).filter {

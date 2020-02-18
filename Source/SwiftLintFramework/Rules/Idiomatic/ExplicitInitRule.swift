@@ -61,7 +61,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
         }
     }
 
-    private let initializerWithType = regex("^[A-Z][^(]*\\.init$")
+    private let initializerWithType = regex(#"^[A-Z][^(]*\.init$"#)
 
     public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {

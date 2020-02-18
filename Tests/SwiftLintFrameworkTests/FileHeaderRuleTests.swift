@@ -52,7 +52,7 @@ class FileHeaderRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["required_pattern": "\\d{4} Realm"],
+        verifyRule(description, ruleConfiguration: ["required_pattern": #"\d{4} Realm"#],
                    stringDoesntViolate: false, skipCommentTests: true,
                    testMultiByteOffsets: false)
     }
@@ -110,7 +110,7 @@ class FileHeaderRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["forbidden_pattern": "\\s\\w+\\.swift"],
+        verifyRule(description, ruleConfiguration: ["forbidden_pattern": #"\s\w+\.swift"#],
                    skipCommentTests: true)
     }
 
@@ -156,9 +156,9 @@ class FileHeaderRuleTests: XCTestCase {
     }
 
     func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
-        let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
+        let configuration1 = ["required_pattern": #"/ SWIFTLINT_CURRENT_FILENAME\n.*\d{4}"#]
         let configuration2 = ["required_pattern":
-            "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
+            #"// Copyright © \d{4}\n// File: "SWIFTLINT_CURRENT_FILENAME""#]
 
         // Non triggering tests
         XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)
@@ -171,8 +171,8 @@ class FileHeaderRuleTests: XCTestCase {
     }
 
     func testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder() {
-        let configuration1 = ["forbidden_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
-        let configuration2 = ["forbidden_pattern": "//.*(\\s|\")SWIFTLINT_CURRENT_FILENAME(\\s|\").*"]
+        let configuration1 = ["forbidden_pattern": #"// SWIFTLINT_CURRENT_FILENAME\n.*\d{4}"#]
+        let configuration2 = ["forbidden_pattern": #"//.*(\s|\")SWIFTLINT_CURRENT_FILENAME(\s|").*"#]
 
         // Non triggering tests
         XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).isEmpty)

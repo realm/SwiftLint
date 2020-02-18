@@ -43,9 +43,9 @@ public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrec
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let voidPattern = "\\(Void\\)"
-        let pattern = voidPattern + "\\s*(throws\\s+)?->"
-        let excludingPattern = "->\\s*" + pattern // excludes curried functions
+        let voidPattern = #"\(Void\)"#
+        let pattern = voidPattern + #"\s*(throws\s+)?->"#
+        let excludingPattern = #"->\s*"# + pattern // excludes curried functions
 
         return file.match(pattern: pattern,
                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,

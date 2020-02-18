@@ -37,7 +37,7 @@ public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationP
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "(;+([^\\S\\n]?)*)+;?$",
+        return file.match(pattern: #"(;+([^\S\n]?)*)+;?$"#,
                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 

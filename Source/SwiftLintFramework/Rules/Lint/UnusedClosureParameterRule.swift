@@ -189,7 +189,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
     private func isClosure(dictionary: SourceKittenDictionary) -> Bool {
         return dictionary.name.flatMap { name -> Bool in
             let range = name.fullNSRange
-            return regex("\\A[\\s\\(]*?\\{").firstMatch(in: name, options: [], range: range) != nil
+            return regex(#"\A[\s\(]*?\{"#).firstMatch(in: name, options: [], range: range) != nil
         } ?? false
     }
 }

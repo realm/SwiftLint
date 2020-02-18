@@ -35,7 +35,7 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Sub
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "\\bset\\s*get\\b", with: [.keyword, .keyword])
+        return file.match(pattern: #"\bset\s*get\b"#, with: [.keyword, .keyword])
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {

@@ -88,7 +88,7 @@ private extension StatementPositionRule {
     // match literal '}'
     // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
     // followed by 'else' or 'catch' literals
-    static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
+    static let defaultPattern = #"\}(?:[\s\n\r]{2,}|[\n\t\r]+)?\b(else|catch)\b"#
 
     func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
         return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).compactMap { range in
@@ -137,7 +137,7 @@ private extension StatementPositionRule {
     // preceded by whitespace (or nothing)
     // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
     // followed by newline and the same amount of whitespace then 'else' or 'catch' literals
-    static let uncuddledPattern = "([ \t]*)\\}(\\n+)?([ \t]*)\\b(else|catch)\\b"
+    static let uncuddledPattern = #"([ \t]*)\}(\n+)?([ \t]*)\b(else|catch)\b"#
 
     static let uncuddledRegex = regex(uncuddledPattern, options: [])
 

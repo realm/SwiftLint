@@ -58,7 +58,7 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
         """)
     ]
 
-    private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
+    private let pattern = #"([{(\[][ \t]*(?:[^\n{]+ in[ \t]*$)?)((?:\n[ \t]*)+)(\n)"#
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule {

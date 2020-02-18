@@ -93,9 +93,9 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         let statementPatterns: [String] = statements.map { statement -> String in
             let isGuard = statement == "guard"
             let isSwitch = statement == "switch"
-            let elsePattern = isGuard ? "else\\s*" : ""
+            let elsePattern = isGuard ? #"else\s*"# : ""
             let clausePattern = isSwitch ? "[^,{]*" : "[^{]*"
-            return "\(statement)\\s*\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
+            return #"\#(statement)\s*\(\#(clausePattern)\)\s*\#(elsePattern)\{"#
         }
         return statementPatterns.flatMap { pattern -> [NSRange] in
             return file.match(pattern: pattern)

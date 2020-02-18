@@ -14,7 +14,7 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
     public private(set) var nestedTypeSeparator: String
 
     public init(severity: ViolationSeverity, excluded: [String] = [],
-                prefixPattern: String = "", suffixPattern: String = "\\+.*", nestedTypeSeparator: String = ".") {
+                prefixPattern: String = "", suffixPattern: String = #"\+.*"#, nestedTypeSeparator: String = ".") {
         self.severity = SeverityConfiguration(severity)
         self.excluded = Set(excluded)
         self.prefixPattern = prefixPattern

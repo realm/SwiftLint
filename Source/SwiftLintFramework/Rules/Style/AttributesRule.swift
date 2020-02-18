@@ -9,7 +9,7 @@ private enum AttributesRuleError: Error {
 public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
 
-    private static let parametersPattern = "^\\s*\\(.+\\)"
+    private static let parametersPattern = #"^\s*\(.+\)"#
     private static let regularExpression = regex(parametersPattern, options: [])
 
     public init() {}
@@ -52,7 +52,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func validateTestableImport(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "@testable[\n]+\\s*import"
+        let pattern = #"@testable[\n]+\s*import"#
         return file.match(pattern: pattern).compactMap { range, kinds -> StyleViolation? in
             guard kinds == [.attributeBuiltin, .keyword] else {
                 return nil

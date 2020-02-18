@@ -70,7 +70,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
 
     private func findComputedPropertyToken(keyword: String, file: SwiftLintFile,
                                            range: NSRange? = nil) -> [SwiftLintSyntaxToken] {
-        let pattern = "\\{[^\\{]*?\\s+\(keyword)\\b"
+        let pattern = #"\{[^\{]*?\s+\#(keyword)\b"#
         let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
         return file.rangesAndTokens(matching: pattern, range: range).compactMap { _, tokens in
             let kinds = tokens.kinds

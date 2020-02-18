@@ -5,9 +5,9 @@ private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlin
 
 private extension SwiftLintFile {
     func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
-        return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
+        return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").compactMap {
+                     excludingPattern: #"(?:if|guard|while)\n[^\{]+?[\s\t\n]\{"#).compactMap {
             if isAnonimousClosure(range: $0) {
                 return nil
             }

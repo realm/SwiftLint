@@ -132,7 +132,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         return noLeadingNewlineViolations.map { $0.dotOffset }
     }
 
-    private static let whitespaceDotRegex = regex("\\s*\\.")
+    private static let whitespaceDotRegex = regex(#"\s*\."#)
 
     private func callDotOffset(file: SwiftLintFile, callRange: ByteRange) -> Int? {
         guard
@@ -144,7 +144,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         return match.location + match.length - 1
     }
 
-    private static let newlineWhitespaceDotRegex = regex("\\n\\s*\\.")
+    private static let newlineWhitespaceDotRegex = regex(#"\n\s*\."#)
 
     private func callHasLeadingNewline(file: SwiftLintFile, callRange: ByteRange) -> Bool {
         guard

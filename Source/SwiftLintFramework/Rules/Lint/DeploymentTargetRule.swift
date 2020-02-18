@@ -48,7 +48,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     }
 
     private func validateConditions(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "#available\\s*\\([^\\(]+\\)"
+        let pattern = #"#available\s*\([^\(]+\)"#
 
         return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
             guard let availabilityToken = tokens.first,
@@ -98,7 +98,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
                           byteOffsetToReport: ByteCount) -> [StyleViolation] {
         let platformToConfiguredMinVersion = self.platformToConfiguredMinVersion
         let allPlatforms = "(?:" + platformToConfiguredMinVersion.keys.joined(separator: "|") + ")"
-        let pattern = "\(allPlatforms) [\\d\\.]+"
+        let pattern = #"\#(allPlatforms) [\d\.]+"#
 
         return file.rangesAndTokens(matching: pattern, range: range).compactMap { _, tokens -> StyleViolation? in
             guard tokens.count == 2,

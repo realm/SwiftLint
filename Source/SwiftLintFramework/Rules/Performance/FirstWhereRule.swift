@@ -33,7 +33,7 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validate(
             file: file,
-            pattern: "[\\}\\)]\\s*\\.first",
+            pattern: #"[\}\)]\s*\.first"#,
             patternSyntaxKinds: [.identifier],
             callNameSuffix: ".filter",
             severity: configuration.severity

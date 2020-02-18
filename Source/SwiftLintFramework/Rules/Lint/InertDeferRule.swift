@@ -52,7 +52,7 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let defers = file.match(pattern: "defer\\s*\\{", with: [.keyword])
+        let defers = file.match(pattern: #"defer\s*\{"#, with: [.keyword])
 
         return defers.compactMap { range -> StyleViolation? in
             let contents = file.stringView

@@ -16,7 +16,7 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
         corrections: ClosureEndIndentationRuleExamples.corrections
     )
 
-    fileprivate static let notWhitespace = regex("[^\\s]")
+    fileprivate static let notWhitespace = regex(#"[^\s]"#)
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file).map { violation in
@@ -261,7 +261,7 @@ extension ClosureEndIndentationRule {
             return nil
         }
 
-        let newLineRegex = regex("\n(\\s*\\}?\\.)")
+        let newLineRegex = regex(#"\n(\s*\}?\.)"#)
         let contents = file.stringView
         guard let range = contents.byteRangeToNSRange(nameByteRange),
             let match = newLineRegex.matches(in: file.contents, options: [], range: range).last?.range(at: 1),
@@ -318,7 +318,7 @@ extension ClosureEndIndentationRule {
         return arguments.filter { argument in
             guard let bodyByteRange = argument.bodyByteRange,
                 let range = file.stringView.byteRangeToNSRange(bodyByteRange),
-                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                let match = regex(#"\s*\{"#).firstMatch(in: file.contents, options: [], range: range)?.range,
                 match.location == range.location
             else {
                 return false
@@ -339,7 +339,7 @@ extension ClosureEndIndentationRule {
             case let length = firstArgumentOffset - offset,
             case let byteRange = ByteRange(location: offset, length: length),
             let range = file.stringView.byteRangeToNSRange(byteRange),
-            let match = regex("\\(\\s*\\n\\s*").firstMatch(in: file.contents, options: [], range: range)?.range,
+            let match = regex(#"\(\s*\n\s*"#).firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location
         else {
             return false

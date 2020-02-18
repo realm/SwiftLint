@@ -90,7 +90,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
                          "CGRectIntersection", "CGRectContainsRect", "CGRectContainsPoint",
                          "CGRectIntersectsRect"]
 
-        let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
+        let pattern = #"\b("# + functions.joined(separator: "|") + #")\b"#
 
         return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -104,26 +104,26 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
         let patterns: [String: String] = [
-            "CGRectGetWidth\\(\(varName)\\)": "$1.width",
-            "CGRectGetHeight\\(\(varName)\\)": "$1.height",
-            "CGRectGetMinX\\(\(varName)\\)": "$1.minX",
-            "CGRectGetMidX\\(\(varName)\\)": "$1.midX",
-            "CGRectGetMaxX\\(\(varName)\\)": "$1.maxX",
-            "CGRectGetMinY\\(\(varName)\\)": "$1.minY",
-            "CGRectGetMidY\\(\(varName)\\)": "$1.midY",
-            "CGRectGetMaxY\\(\(varName)\\)": "$1.maxY",
-            "CGRectIsNull\\(\(varName)\\)": "$1.isNull",
-            "CGRectIsEmpty\\(\(varName)\\)": "$1.isEmpty",
-            "CGRectIsInfinite\\(\(varName)\\)": "$1.isInfinite",
-            "CGRectStandardize\\(\(varName)\\)": "$1.standardized",
-            "CGRectIntegral\\(\(varName)\\)": "$1.integral",
-            "CGRectInset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
-            "CGRectOffset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
-            "CGRectUnion\\(\(twoVars)\\)": "$1.union($2)",
-            "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect($2)",
-            "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
+            #"CGRectGetWidth\(\#(varName)\)"#: "$1.width",
+            #"CGRectGetHeight\(\#(varName)\)"#: "$1.height",
+            #"CGRectGetMinX\(\#(varName)\)"#: "$1.minX",
+            #"CGRectGetMidX\(\#(varName)\)"#: "$1.midX",
+            #"CGRectGetMaxX\(\#(varName)\)"#: "$1.maxX",
+            #"CGRectGetMinY\(\#(varName)\)"#: "$1.minY",
+            #"CGRectGetMidY\(\#(varName)\)"#: "$1.midY",
+            #"CGRectGetMaxY\(\#(varName)\)"#: "$1.maxY",
+            #"CGRectIsNull\(\#(varName)\)"#: "$1.isNull",
+            #"CGRectIsEmpty\(\#(varName)\)"#: "$1.isEmpty",
+            #"CGRectIsInfinite\(\#(varName)\)"#: "$1.isInfinite",
+            #"CGRectStandardize\(\#(varName)\)"#: "$1.standardized",
+            #"CGRectIntegral\(\#(varName)\)"#: "$1.integral",
+            #"CGRectInset\(\#(varName),\#(twoVariableOrNumber)\)"#: "$1.insetBy(dx: $2, dy: $3)",
+            #"CGRectOffset\(\#(varName),\#(twoVariableOrNumber)\)"#: "$1.offsetBy(dx: $2, dy: $3)",
+            #"CGRectUnion\(\#(twoVars)\)"#: "$1.union($2)",
+            #"CGRectIntersection\(\#(twoVars)\)"#: "$1.intersect($2)",
+            #"CGRectContainsRect\(\#(twoVars)\)"#: "$1.contains($2)",
+            #"CGRectContainsPoint\(\#(twoVars)\)"#: "$1.contains($2)",
+            #"CGRectIntersectsRect\(\#(twoVars)\)"#: "$1.intersects($2)"
         ]
         return file.correct(legacyRule: self, patterns: patterns)
     }

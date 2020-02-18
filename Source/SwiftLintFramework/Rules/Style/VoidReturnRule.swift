@@ -51,9 +51,9 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds
-        let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
-        let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
-        let excludingPattern = "(\(pattern))\\s*(throws\\s+)?->"
+        let parensPattern = #"\(\s*(?:Void)?\s*\)"#
+        let pattern = #"->\s*\#(parensPattern)\s*(?!->)"#
+        let excludingPattern = #"(\#(pattern))\s*(throws\s+)?->"#
 
         return file.match(pattern: pattern, excludingSyntaxKinds: kinds, excludingPattern: excludingPattern,
                           exclusionMapping: { $0.range(at: 1) }).compactMap {

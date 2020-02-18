@@ -39,8 +39,8 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
-        let prefixRegex = regex("\\A(?:\(configuration.prefixPattern))")
-        let suffixRegex = regex("(?:\(configuration.suffixPattern))\\z")
+        let prefixRegex = regex(#"\A(?:\#(configuration.prefixPattern))"#)
+        let suffixRegex = regex(#"(?:\#(configuration.suffixPattern))\z"#)
 
         var typeInFileName = fileName.bridge().deletingPathExtension
 

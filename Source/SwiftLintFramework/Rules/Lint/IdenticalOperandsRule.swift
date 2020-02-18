@@ -69,7 +69,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let operators = type(of: self).operators.joined(separator: "|")
         return
-            file.matchesAndTokens(matching: "\\s(" + operators + ")\\s")
+            file.matchesAndTokens(matching: #"\s("# + operators + #")\s"#)
                 .filter { _, tokens in tokens.isEmpty }
                 .compactMap { matchResult, _ in violationRangeFrom(match: matchResult, in: file) }
                 .map { range in
@@ -201,6 +201,6 @@ private extension StringView {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
 
         let range = betweenTokens.fullNSRange
-        return !regex("^\\s*\(regexString)\\s*$").matches(in: betweenTokens, options: [], range: range).isEmpty
+        return !regex(#"^\s*\#(regexString)\s*$"#).matches(in: betweenTokens, options: [], range: range).isEmpty
     }
 }

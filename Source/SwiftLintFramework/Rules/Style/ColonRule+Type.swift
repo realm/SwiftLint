@@ -5,21 +5,21 @@ internal extension ColonRule {
     var pattern: String {
         // If flexible_right_spacing is true, match only 0 whitespaces.
         // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.
-        let spacingRegex = configuration.flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
+        let spacingRegex = configuration.flexibleRightSpacing ? #"(?:\s{0})"# : #"(?:\s{0}|\s{2,})"#
 
-        return "(\\w)" +                // Capture an identifier.
-            "(<[\\w\\s:\\.,]+>)?" +     // Capture a generic parameter clause (optional).
+        return #"(\w)"# +               // Capture an identifier.
+            #"(<[\w\s:\.,]+>)?"# +      // Capture a generic parameter clause (optional).
             "(?:" +                     // Start group
-            "\\s+" +                    // followed by whitespace
+            #"\s+"# +                   // followed by whitespace
             ":" +                       // to the left of a colon
-            "\\s*" +                    // followed by any amount of whitespace.
+            #"\s*"# +                   // followed by any amount of whitespace.
             "|" +                       // or
             ":" +                       // immediately followed by a colon
             spacingRegex +              // followed by right spacing regex
             ")" +                       // end group
             "(" +                       // Capture a type identifier
-            "[\\[|\\(]*" +              // which may begin with a series of nested parenthesis or brackets
-            "\\S)"                      // lazily to the first non-whitespace character.
+            #"[\[|\(]*"# +              // which may begin with a series of nested parenthesis or brackets
+            #"\S)"#                     // lazily to the first non-whitespace character.
     }
 
     func typeColonViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {

@@ -142,7 +142,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
             }
 
             let argumentName = argument?.name ?? "newValue"
-            guard file.match(pattern: "\\b\(argumentName)\\b", with: [.identifier], range: setterRange).isEmpty else {
+            guard file.match(pattern: #"\b\#(argumentName)\b"#, with: [.identifier], range: setterRange).isEmpty else {
                 return nil
             }
 

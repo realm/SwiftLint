@@ -89,7 +89,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
                          "NSOffsetRect", "NSUnionRect", "NSIntersectionRect",
                          "NSContainsRect", "NSPointInRect", "NSIntersectsRect"]
 
-        let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
+        let pattern = #"\b("# + functions.joined(separator: "|") + #")\b"#
 
         return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -103,27 +103,27 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
         let patterns: [String: String] = [
-            "NSWidth\\(\(varName)\\)": "$1.width",
-            "NSHeight\\(\(varName)\\)": "$1.height",
-            "NSMinX\\(\(varName)\\)": "$1.minX",
-            "NSMidX\\(\(varName)\\)": "$1.midX",
-            "NSMaxX\\(\(varName)\\)": "$1.maxX",
-            "NSMinY\\(\(varName)\\)": "$1.minY",
-            "NSMidY\\(\(varName)\\)": "$1.midY",
-            "NSMaxY\\(\(varName)\\)": "$1.maxY",
-            "NSEqualRects\\(\(twoVars)\\)": "$1 == $2",
-            "NSEqualSizes\\(\(twoVars)\\)": "$1 == $2",
-            "NSEqualPoints\\(\(twoVars)\\)": "$1 == $2",
-            "NSEdgeInsetsEqual\\(\(twoVars)\\)": "$1 == $2",
-            "NSIsEmptyRect\\(\(varName)\\)": "$1.isEmpty",
-            "NSIntegralRect\\(\(varName)\\)": "$1.integral",
-            "NSInsetRect\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
-            "NSOffsetRect\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
-            "NSUnionRect\\(\(twoVars)\\)": "$1.union($2)",
-            "NSIntersectionRect\\(\(twoVars)\\)": "$1.intersect($2)",
-            "NSContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
-            "NSPointInRect\\(\(twoVars)\\)": "$2.contains($1)", // note order of arguments
-            "NSIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
+            #"NSWidth\(\#(varName)\)"#: "$1.width",
+            #"NSHeight\(\#(varName)\)"#: "$1.height",
+            #"NSMinX\(\#(varName)\)"#: "$1.minX",
+            #"NSMidX\(\#(varName)\)"#: "$1.midX",
+            #"NSMaxX\(\#(varName)\)"#: "$1.maxX",
+            #"NSMinY\(\#(varName)\)"#: "$1.minY",
+            #"NSMidY\(\#(varName)\)"#: "$1.midY",
+            #"NSMaxY\(\#(varName)\)"#: "$1.maxY",
+            #"NSEqualRects\(\#(twoVars)\)"#: "$1 == $2",
+            #"NSEqualSizes\(\#(twoVars)\)"#: "$1 == $2",
+            #"NSEqualPoints\(\#(twoVars)\)"#: "$1 == $2",
+            #"NSEdgeInsetsEqual\(\#(twoVars)\)"#: "$1 == $2",
+            #"NSIsEmptyRect\(\#(varName)\)"#: "$1.isEmpty",
+            #"NSIntegralRect\(\#(varName)\)"#: "$1.integral",
+            #"NSInsetRect\(\#(varName),\#(twoVariableOrNumber)\)"#: "$1.insetBy(dx: $2, dy: $3)",
+            #"NSOffsetRect\(\#(varName),\#(twoVariableOrNumber)\)"#: "$1.offsetBy(dx: $2, dy: $3)",
+            #"NSUnionRect\(\#(twoVars)\)"#: "$1.union($2)",
+            #"NSIntersectionRect\(\#(twoVars)\)"#: "$1.intersect($2)",
+            #"NSContainsRect\(\#(twoVars)\)"#: "$1.contains($2)",
+            #"NSPointInRect\(\#(twoVars)\)"#: "$2.contains($1)", // note order of arguments
+            #"NSIntersectsRect\(\#(twoVars)\)"#: "$1.intersects($2)"
         ]
         return file.correct(legacyRule: self, patterns: patterns)
     }

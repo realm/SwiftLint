@@ -53,18 +53,18 @@ public struct CommaRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
 
     private static let mainPatternGroups =
         "(" +                  // start first capure
-        "\\s+" +               // followed by whitespace
+        #"\s+"# +              // followed by whitespace
         "," +                  // to the left of a comma
-        "[\\t\\p{Z}]*" +       // followed by any amount of tab or space.
+        #"[\t\p{Z}]*"# +       // followed by any amount of tab or space.
         "|" +                  // or
         "," +                  // immediately followed by a comma
-        "(?:[\\t\\p{Z}]{0}|" + // followed by 0
-        "[\\t\\p{Z}]{2,})" +   // or 2+ tab or space characters.
+        #"(?:[\t\p{Z}]{0}|"# + // followed by 0
+        #"[\t\p{Z}]{2,})"# +   // or 2+ tab or space characters.
         ")" +                  // end capture
-        "(\\S)"                // second capture is not whitespace.
+        #"(\S)"#               // second capture is not whitespace.
 
     private static let pattern =
-        "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
+        #"\S\#(mainPatternGroups)"# + // Regexp will match if expression not begin with comma
         "|" +                       // or
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 

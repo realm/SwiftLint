@@ -70,9 +70,9 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     private func violations(in range: NSRange, of file: SwiftLintFile, with kind: StatementKind) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds
 
-        let underscorePattern = "(_\\s*[=,)]\\s*(try\\?)?)"
-        let underscoreTuplePattern = "(\\((\\s*[_,]\\s*)+\\)\\s*=\\s*(try\\?)?)"
-        let letUnderscore = "let\\s+(\(underscorePattern)|\(underscoreTuplePattern))"
+        let underscorePattern = #"(_\s*[=,)]\s*(try\?)?)"#
+        let underscoreTuplePattern = #"(\((\s*[_,]\s*)+\)\s*=\s*(try\?)?)"#
+        let letUnderscore = #"let\s+(\#(underscorePattern)|\#(underscoreTuplePattern))"#
 
         let matches = file.matchesAndSyntaxKinds(matching: letUnderscore, range: range)
 

@@ -108,10 +108,10 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
                 ? operandPattern
                 : ""
 
-            return "\(name)\\(\(argumentsPattern)\\)"
+            return #"\#(name)\(\#(argumentsPattern)\)"#
         }.joined(separator: "|") + ")"
 
-        let pattern = "expect\\(\(operandPattern)\\)\\.to(Not)?\\(\(operatorsPattern)\\)"
+        let pattern = #"expect\(\#(operandPattern)\)\.to(Not)?\(\#(operatorsPattern)\)"#
 
         let excludingKinds = SyntaxKind.commentKinds
 
@@ -178,8 +178,8 @@ private extension String {
                  in range: NSRange) -> String? {
         let anything = #"\s*(.*?)\s*"#
 
-        let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", predicateDescription.to)
-        let toNotPattern = ("expect\\(\(anything)\\)\\.toNot\\(\(name)\\(\(anything)\\)\\)", predicateDescription.toNot)
+        let toPattern = (#"expect\(\#(anything)\)\.to\(\#(name)\(\#(anything)\)\)"#, predicateDescription.to)
+        let toNotPattern = (#"expect\(\#(anything)\)\.toNot\(\#(name)\(\#(anything)\)\)"#, predicateDescription.toNot)
 
         for case let (pattern, operatorString?) in [toPattern, toNotPattern] {
             let expression = regex(pattern)

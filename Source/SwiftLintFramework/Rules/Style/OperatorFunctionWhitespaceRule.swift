@@ -27,11 +27,11 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, Automat
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
-            .map({ "\\\($0)" }).joined()
+            .map({ #"\\#($0)"# }).joined()
         let operators = "\(escapedOperators)%<>&"
-        let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
+        let zeroOrManySpaces = #"(\s{0}|\s{2,})"#
+        let pattern1 = #"func\s+[\#(operators)]+\#(zeroOrManySpaces)(<[A-Z]+>)?\("#
+        let pattern2 = #"func\#(zeroOrManySpaces)[\#(operators)]+\s+(<[A-Z]+>)?\("#
         return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
             return syntaxKinds.first == .keyword
         }.map { range, _ in

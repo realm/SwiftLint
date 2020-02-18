@@ -7,27 +7,27 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
     public init() {}
 
     private static let regularExpression =
-        "catch" + // The catch keyword
-        "(?:"   + // Start of the first non-capturing group
-        "\\s*"  + // Zero or multiple whitespace character
-        "\\("   + // The `(` character
-        "?"     + // Zero or one occurrence of the previous character
-        "\\s*"  + // Zero or multiple whitespace character
-        "(?:"   + // Start of the alternative non-capturing group
-        "let"   + // `let` keyword
-        "|"     + // OR
-        "var"   + // `var` keyword
-        ")"     + // End of the alternative non-capturing group
-        "\\s+"  + // At least one any type of whitespace character
-        "\\w+"  + // At least one any type of word character
-        "\\s*"  + // Zero or multiple whitespace character
-        "\\)"   + // The `)` character
-        "?"     + // Zero or one occurrence of the previous character
-        ")"     + // End of the first non-capturing group
-        "(?:"   + // Start of the second non-capturing group
-        "\\s*"  + // Zero or unlimited any whitespace character
-        ")"     + // End of the second non-capturing group
-        "\\{"     // Start scope character
+        "catch" +   // The catch keyword
+        "(?:"   +   // Start of the first non-capturing group
+        #"\s*"#  +  // Zero or multiple whitespace character
+        #"\("#   +  // The `(` character
+        "?"     +   // Zero or one occurrence of the previous character
+        #"\s*"#  +  // Zero or multiple whitespace character
+        "(?:"   +   // Start of the alternative non-capturing group
+        "let"   +   // `let` keyword
+        "|"     +   // OR
+        "var"   +   // `var` keyword
+        ")"     +   // End of the alternative non-capturing group
+        #"\s+"#  +  // At least one any type of whitespace character
+        #"\w+"#  +  // At least one any type of word character
+        #"\s*"#  +  // Zero or multiple whitespace character
+        #"\)"#   +  // The `)` character
+        "?"     +   // Zero or one occurrence of the previous character
+        ")"     +   // End of the first non-capturing group
+        "(?:"   +   // Start of the second non-capturing group
+        #"\s*"#  +  // Zero or unlimited any whitespace character
+        ")"     +   // End of the second non-capturing group
+        #"\{"#      // Start scope character
 
     public static let description = RuleDescription(
         identifier: "untyped_error_in_catch",

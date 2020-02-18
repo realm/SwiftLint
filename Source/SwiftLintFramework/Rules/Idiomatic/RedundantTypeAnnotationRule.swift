@@ -69,8 +69,8 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = "(var|let)\\s?\\w+\(typeAnnotationPattern)\\s?=\\s?\\w+(\\(|.)"
         let typeAnnotationPattern = #":\s?\w+"#
+        let pattern = #"(var|let)\s?\w+\#(typeAnnotationPattern)\s?=\s?\w+(\(|.)"#
         let foundRanges = file.match(pattern: pattern, with: [.keyword, .identifier, .typeidentifier, .identifier])
         return foundRanges
             .filter { !isFalsePositive(in: file, range: $0) && !isIBInspectable(range: $0, file: file) }

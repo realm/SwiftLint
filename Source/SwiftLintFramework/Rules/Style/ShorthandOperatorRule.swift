@@ -46,18 +46,18 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestabl
 
     private static let pattern: String = {
         let escaped = { (operators: [String]) -> String in
-            return "[\(operators.map { "\\\($0)" }.joined())]"
+            return "[\(operators.map { #"\\#($0)"# }.joined())]"
         }
 
         let escapedAll = escaped(allOperators)
         let operatorsWithoutPrecedence = escaped(["-", "+"])
         let operatorsWithPrecedence = escaped(["/", "*"])
-        let operand = "[\\w\\d\\.]+?"
-        let spaces = "[^\\S\\r\\n]*?"
+        let operand = #"[\w\d\.]+?"#
+        let spaces = #"[^\S\r\n]*?"#
 
         let pattern1 = "\(operatorsWithoutPrecedence)"
-        let pattern2 = "\(operatorsWithPrecedence)\(spaces)\\S+$"
-        return "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)(\(pattern1)|\(pattern2))"
+        let pattern2 = #"\#(operatorsWithPrecedence)\#(spaces)\S+$"#
+        return #"^\#(spaces)(\#(operand))\#(spaces)=\#(spaces)(\1)\#(spaces)(\#(pattern1)|\#(pattern2))"#
     }()
 
     private static let violationRegex: NSRegularExpression = {

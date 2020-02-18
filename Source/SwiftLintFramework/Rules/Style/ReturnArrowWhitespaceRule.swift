@@ -87,21 +87,21 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     private let pattern: String = {
         // Just horizontal spacing so that "func abc()->\n" can pass validation
-        let space = "[ \\f\\r\\t]"
+        let space = #"[ \f\r\t]"#
 
         // Either 0 space characters or 2+
         let incorrectSpace = "(\(space){0}|\(space){2,})"
 
         // The possible combinations of whitespace around the arrow
         let patterns = [
-            "(\(incorrectSpace)\\->\(space)*)",
-            "(\(space)\\->\(incorrectSpace))",
-            "\\n\(space)*\\->\(incorrectSpace)",
-            "\(incorrectSpace)\\->\\n\(space)*"
+            #"(\#(incorrectSpace)\->\#(space)*)"#,
+            #"(\#(space)\->\#(incorrectSpace))"#,
+            #"\n\#(space)*\->\#(incorrectSpace)"#,
+            #"\#(incorrectSpace)\->\n\#(space)*"#
         ]
 
         // ex: `func abc()-> Int {` & `func abc() ->Int {`
-        return "\\)(\(patterns.joined(separator: "|")))\\S+"
+        return #"\)(\#(patterns.joined(separator: "|")))\S+"#
     }()
 
     private func violationRanges(in file: SwiftLintFile, skipParentheses: Bool) -> [NSRange] {

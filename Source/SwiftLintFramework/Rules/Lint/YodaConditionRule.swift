@@ -9,25 +9,25 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     private static let regularExpression = regex(
         "(?<!" +                      // Starting negative lookbehind
         "(" +                         // First capturing group
-        "\\+|-|\\*|\\/|%|\\?" +       // One of the operators
+        #"\+|-|\*|\/|%|\?"# +         // One of the operators
         ")" +                         // Ending negative lookbehind
         ")" +                         // End first capturing group
-        "\\s+" +                      // Starting with whitespace
+        #"\s+"# +                     // Starting with whitespace
         "(" +                         // Second capturing group
-        "(?:\\\"[\\\"\\w\\ ]+\")" +   // Multiple words between quotes
+        #"(?:\"[\"\w\ ]+")"# +        // Multiple words between quotes
         "|" +                         // OR
-        "(?:\\d+" +                   // Number of digits
-        "(?:\\.\\d*)?)" +             // Optionally followed by a dot and any number digits
+        #"(?:\d+"# +                  // Number of digits
+        #"(?:\.\d*)?)"# +             // Optionally followed by a dot and any number digits
         "|" +                         // OR
         "(nil)" +                     // `nil` value
         ")" +                         // End second capturing group
-        "\\s+" +                      // Followed by whitespace
+        #"\s+"# +                     // Followed by whitespace
         "(" +                         // Third capturing group
         "==|!=|>|<|>=|<=" +           // One of comparison operators
         ")" +                         // End third capturing group
-        "\\s+" +                      // Followed by whitespace
+        #"\s+"# +                     // Followed by whitespace
         "(" +                         // Fourth capturing group
-        "\\w+" +                      // Number of words
+        #"\w+"# +                     // Number of words
         ")"                           // End fourth capturing group
     )
     private let observedStatements: Set<StatementKind> = [.if, .guard, .repeatWhile, .while]

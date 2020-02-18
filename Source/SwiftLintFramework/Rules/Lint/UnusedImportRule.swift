@@ -203,10 +203,9 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             return corrections
         }
 
-        let nsString = file.stringView.nsString
         var insertionLocation = 0
         if let firstImportRange = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier]).first {
-            nsString.getLineStart(&insertionLocation, end: nil, contentsEnd: nil, for: firstImportRange)
+            contents.getLineStart(&insertionLocation, end: nil, contentsEnd: nil, for: firstImportRange)
         }
 
         let insertionRange = NSRange(location: insertionLocation, length: 0)
@@ -214,7 +213,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             .sorted()
             .map { "import \($0)" }
             .joined(separator: "\n")
-        let newContents = nsString.replacingCharacters(in: insertionRange, with: missingImportStatements + "\n")
+        let newContents = contents.replacingCharacters(in: insertionRange, with: missingImportStatements + "\n")
         file.write(newContents)
         let location = Location(file: file, characterOffset: 0)
         let missingImportCorrections = missingImports.map { _ in

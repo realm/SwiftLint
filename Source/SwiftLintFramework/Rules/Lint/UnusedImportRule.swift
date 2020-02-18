@@ -22,25 +22,27 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity.severity,
-                           location: Location(file: file, characterOffset: importUsage.violationRange.location),
+                           location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
                            reason: importUsage.violationReason)
         }
     }
 
     public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
-        let matches = file.ruleEnabled(violatingRanges: importUsages.map({ $0.violationRange }), for: self)
-        if matches.isEmpty { return [] }
+        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
 
         var contents = file.stringView.nsString
         let description = type(of: self).description
         var corrections = [Correction]()
-        for range in matches.reversed() where range.length > 0 {
+        for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "").bridge()
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-        file.write(contents.bridge())
+
+        if !corrections.isEmpty {
+            file.write(contents.bridge())
+        }
 
         guard configuration.requireExplicitImports else {
             return corrections

@@ -235,10 +235,19 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
 }
 
 private func testCorrection(_ correction: (Example, Example),
-                            configuration config: Configuration,
+                            configuration: Configuration,
                             testMultiByteOffsets: Bool) {
+    var config = configuration
+    if let correctionConfiguration = correction.0.configuration,
+        case let .whitelisted(whitelistedRules) = configuration.rulesMode,
+        let firstWhitelistedRule = whitelistedRules.first,
+        case let configDict = ["whitelist_rules": whitelistedRules, firstWhitelistedRule: correctionConfiguration],
+        let typedConfiguration = Configuration(dict: configDict) {
+        config = configuration.merge(with: typedConfiguration)
+    }
+
     config.assertCorrection(correction.0, expected: correction.1)
-    if testMultiByteOffsets {
+    if testMultiByteOffsets && correction.0.testMultiByteOffsets {
         config.assertCorrection(addEmoji(correction.0), expected: addEmoji(correction.1))
     }
 }

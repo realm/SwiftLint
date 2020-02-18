@@ -8,12 +8,12 @@ enum ImportUsage {
     case missing(module: String)
 
     /// The range where the violation for this import usage should be reported.
-    var violationRange: NSRange {
+    var violationRange: NSRange? {
         switch self {
         case .unused(_, let range):
             return range
         case .missing:
-            return NSRange(location: 0, length: 0)
+            return nil
         }
     }
 

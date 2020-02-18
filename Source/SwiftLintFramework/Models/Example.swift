@@ -3,6 +3,10 @@
 public struct Example {
     /// The contents of the example
     public private(set) var code: String
+    /// The untyped configuration to apply to the rule, if deviating from the default configuration
+    public private(set) var configuration: Any?
+    /// Whether the example should be tested by prepending multibyte grapheme clusters
+    public private(set) var testMultiByteOffsets: Bool
     /// The path to the file where the example was created
     public private(set) var file: StaticString
     /// The line in the file where the example was created
@@ -12,13 +16,19 @@ public struct Example {
 public extension Example {
     /// Create a new Example with the specified code, file, and line
     /// - Parameters:
-    ///   - code: The contents of the example
-    ///   - file: The path to the file where the example is located.
-    ///           Defaults to the file where this initializer is called.
-    ///   - line: The line in the file where the example is located.
-    ///           Defaults to the line where this initializer is called.
-    init(_ code: String, file: StaticString = #file, line: UInt = #line) {
+    ///   - code:                 The contents of the example
+    ///   - configuration:        The untyped configuration to apply to the rule, if deviating from the default
+    ///                           configuration
+    ///   - testMultibyteOffsets: Whether the example should be tested by prepending multibyte grapheme clusters
+    ///   - file:                 The path to the file where the example is located.
+    ///                           Defaults to the file where this initializer is called.
+    ///   - line:                 The line in the file where the example is located.
+    ///                           Defaults to the line where this initializer is called.
+    init(_ code: String, configuration: Any? = nil, testMultiByteOffsets: Bool = true,
+         file: StaticString = #file, line: UInt = #line) {
         self.code = code
+        self.configuration = configuration
+        self.testMultiByteOffsets = testMultiByteOffsets
         self.file = file
         self.line = line
     }

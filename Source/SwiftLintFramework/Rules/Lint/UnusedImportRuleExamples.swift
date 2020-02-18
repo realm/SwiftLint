@@ -55,7 +55,13 @@ struct UnusedImportRuleExamples {
         ↓import Foundation
         import UnknownModule
         func foo(error: Swift.Error) {}
-        """)
+        """),
+        Example("""
+        ↓import Foundation
+        typealias Foo = CFData
+        """, configuration: [
+            "require_explicit_imports": true
+        ])
     ]
 
     static let corrections = [
@@ -134,6 +140,51 @@ struct UnusedImportRuleExamples {
         """):
         Example("""
         @testable import Foundation
+        @objc
+        class A {}
+        """),
+        Example("""
+        ↓↓import Foundation
+        typealias Foo = CFData
+        """, configuration: [
+            "require_explicit_imports": true
+        ], testMultiByteOffsets: false):
+        Example("""
+        import CoreFoundation
+        typealias Foo = CFData
+        """),
+        Example("""
+        import Foundation
+        typealias Foo = CFData
+        @objc
+        class A {}
+        """, configuration: [
+            "require_explicit_imports": true,
+            "allowed_transitive_imports": [
+                [
+                    "module": "Foundation",
+                    "allowed_transitive_imports": ["CoreFoundation"]
+                ]
+            ]
+        ]):
+        Example("""
+        import Foundation
+        typealias Foo = CFData
+        @objc
+        class A {}
+        """),
+        Example("""
+        ↓import Foundation
+        typealias Bar = CFData
+        @objc
+        class A {}
+        """, configuration: [
+            "require_explicit_imports": true
+        ], testMultiByteOffsets: false):
+        Example("""
+        import CoreFoundation
+        import Foundation
+        typealias Bar = CFData
         @objc
         class A {}
         """)

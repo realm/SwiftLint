@@ -42,7 +42,10 @@
 
 #### Enhancements
 
-* None.
+* Update regex patters to use Raw Strings to improve readability
+  [Zsolt Kovács](https://github.com/lordzsolt)
+  [#3050](https://github.com/realm/SwiftLint/issues/3050)
+
 
 #### Bug Fixes
 

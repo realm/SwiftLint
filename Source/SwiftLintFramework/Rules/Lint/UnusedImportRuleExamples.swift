@@ -148,7 +148,7 @@ struct UnusedImportRuleExamples {
         typealias Foo = CFData
         """, configuration: [
             "require_explicit_imports": true
-        ], testMultiByteOffsets: false):
+        ], testMultiByteOffsets: false, testOnLinux: false):
         Example("""
         import CoreFoundation
         typealias Foo = CFData
@@ -180,7 +180,7 @@ struct UnusedImportRuleExamples {
         class A {}
         """, configuration: [
             "require_explicit_imports": true
-        ], testMultiByteOffsets: false):
+        ], testMultiByteOffsets: false, testOnLinux: false):
         Example("""
         import CoreFoundation
         import Foundation

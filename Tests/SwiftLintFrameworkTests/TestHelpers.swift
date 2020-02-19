@@ -237,6 +237,11 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
 private func testCorrection(_ correction: (Example, Example),
                             configuration: Configuration,
                             testMultiByteOffsets: Bool) {
+#if os(Linux)
+    guard correction.0.testOnLinux else {
+        return
+    }
+#endif
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
         case let .whitelisted(whitelistedRules) = configuration.rulesMode,

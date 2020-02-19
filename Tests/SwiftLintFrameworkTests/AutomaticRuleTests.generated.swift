@@ -528,6 +528,12 @@ class PrivateUnitTestRuleTests: XCTestCase {
     }
 }
 
+class ProhibitedInlineRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ProhibitedInlineRule.description)
+    }
+}
+
 class ProhibitedInterfaceBuilderRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedInterfaceBuilderRule.description)
@@ -537,6 +543,12 @@ class ProhibitedInterfaceBuilderRuleTests: XCTestCase {
 class ProhibitedSuperRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedSuperRule.description)
+    }
+}
+
+class ProhibitedTransparentRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ProhibitedTransparentRule.description)
     }
 }
 

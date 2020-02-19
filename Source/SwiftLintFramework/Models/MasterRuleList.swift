@@ -127,6 +127,8 @@ public let masterRuleList = RuleList(rules: [
     PrivateOutletRule.self,
     PrivateOverFilePrivateRule.self,
     PrivateUnitTestRule.self,
+    ProhibitedDynamicRule.self,
+    ProhibitedInlineRule.self,
     ProhibitedInterfaceBuilderRule.self,
     ProhibitedSuperRule.self,
     ProtocolPropertyAccessorsOrderRule.self,

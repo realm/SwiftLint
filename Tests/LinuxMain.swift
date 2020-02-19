@@ -1106,6 +1106,18 @@ extension PrivateUnitTestRuleTests {
     ]
 }
 
+extension ProhibitedDynamicRuleTests {
+    static var allTests: [(String, (ProhibitedDynamicRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ProhibitedInlineRuleTests {
+    static var allTests: [(String, (ProhibitedInlineRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ProhibitedInterfaceBuilderRuleTests {
     static var allTests: [(String, (ProhibitedInterfaceBuilderRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1798,6 +1810,8 @@ XCTMain([
     testCase(PrivateOutletRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),
     testCase(PrivateUnitTestRuleTests.allTests),
+    testCase(ProhibitedDynamicRuleTests.allTests),
+    testCase(ProhibitedInlineRuleTests.allTests),
     testCase(ProhibitedInterfaceBuilderRuleTests.allTests),
     testCase(ProhibitedSuperRuleTests.allTests),
     testCase(ProtocolPropertyAccessorsOrderRuleTests.allTests),

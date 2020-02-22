@@ -3,7 +3,16 @@
 public struct Example {
     /// The contents of the example
     public private(set) var code: String
-    /// The untyped configuration to apply to the rule, if deviating from the default configuration
+    /// The untyped configuration to apply to the rule, if deviating from the default configuration.
+    /// The structure should match what is expected as a configuration value for the rule being tested.
+    ///
+    /// For example, if the following YAML would be used to configure the rule:
+    ///
+    /// ```
+    /// severity: warning
+    /// ```
+    ///
+    /// Then the equivalent configuration value would be `["severity": "warning"]`.
     public private(set) var configuration: Any?
     /// Whether the example should be tested by prepending multibyte grapheme clusters
     public private(set) var testMultiByteOffsets: Bool

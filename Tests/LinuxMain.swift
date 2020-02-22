@@ -404,6 +404,8 @@ extension ExampleTests {
         ("testEquatableDoesNotLookAtFile", testEquatableDoesNotLookAtFile),
         ("testEquatableDoesNotLookAtLine", testEquatableDoesNotLookAtLine),
         ("testEquatableLooksAtCode", testEquatableLooksAtCode),
+        ("testTestMultiByteOffsets", testTestMultiByteOffsets),
+        ("testTestOnLinux", testTestOnLinux),
         ("testRemovingViolationMarkers", testRemovingViolationMarkers),
         ("testComparable", testComparable),
         ("testWithCode", testWithCode)

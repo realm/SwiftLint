@@ -13,7 +13,7 @@
 * Add configuration options to the `unused_import` rule to require
   explicit import statements for each module referenced in a source
   file (`require_explicit_imports`). When this setting is enabled,
-  a `allowed_transitive_imports` setting may also be specified to allow
+  an `allowed_transitive_imports` setting may also be specified to allow
   a mapping of modules to transitively imported modules. See PR for
   details: https://github.com/realm/SwiftLint/pull/3123  
   [JP Simard](https://github.com/jpsim)

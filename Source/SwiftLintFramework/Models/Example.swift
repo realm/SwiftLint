@@ -15,6 +15,8 @@ public struct Example {
     /// Then the equivalent configuration value would be `["severity": "warning"]`.
     public private(set) var configuration: Any?
     /// Whether the example should be tested by prepending multibyte grapheme clusters
+    ///
+    /// - SeeAlso: addEmoji(_:)
     public private(set) var testMultiByteOffsets: Bool
     /// Whether the example should be tested on Linux
     public private(set) var testOnLinux: Bool

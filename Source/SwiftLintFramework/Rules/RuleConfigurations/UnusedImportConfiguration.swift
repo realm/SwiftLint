@@ -1,5 +1,9 @@
+/// The configuration payload mapping an imported module to a set of modules that are allowed to be
+/// transitively imported.
 public struct TransitiveModuleConfiguration: Equatable {
+    /// The module imported in a source file.
     public let importedModule: String
+    /// The set of modules that can be transitively imported by `importedModule`.
     public let transitivelyImportedModules: [String]
 
     init(configuration: Any) throws {

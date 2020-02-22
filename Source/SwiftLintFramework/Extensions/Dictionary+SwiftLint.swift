@@ -118,7 +118,7 @@ public struct SourceKittenDictionary {
         return value["key.attribute"] as? String
     }
 
-    /// Module name in @import expressions.
+    /// Module name in `@import` expressions.
     var moduleName: String? {
         return value["key.modulename"] as? String
     }

@@ -118,6 +118,21 @@ public struct SourceKittenDictionary {
         return value["key.attribute"] as? String
     }
 
+    /// Module name in `@import` expressions.
+    var moduleName: String? {
+        return value["key.modulename"] as? String
+    }
+
+    /// The line number for this declaration.
+    var line: Int64? {
+        return value["key.line"] as? Int64
+    }
+
+    /// The column number for this declaration.
+    var column: Int64? {
+        return value["key.column"] as? Int64
+    }
+
     /// The `SwiftDeclarationAttributeKind` values associated with this dictionary.
     var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
         return swiftAttributes.compactMap { $0.attribute }

@@ -1,6 +1,15 @@
 import SourceKittenFramework
 
 extension SwiftDeclarationAttributeKind {
+    static var attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> {
+        return [
+            .objc,
+            .objcName,
+            .objcMembers,
+            .objcNonLazyRealization
+        ]
+    }
+
     enum ModifierGroup: String, CustomDebugStringConvertible {
         case `override`
         case acl

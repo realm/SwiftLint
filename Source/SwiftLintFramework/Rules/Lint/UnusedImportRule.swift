@@ -2,7 +2,8 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
+                                                         allowedTransitiveImports: [])
 
     public init() {}
 
@@ -11,160 +12,26 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         name: "Unused Import",
         description: "All imported modules should be required to make the file compile.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
-            import Dispatch // This is used
-            dispatchMain()
-            """),
-            Example("""
-            @testable import Dispatch
-            dispatchMain()
-            """),
-            Example("""
-            import Foundation
-            @objc
-            class A {}
-            """),
-            Example("""
-            import UnknownModule
-            func foo(error: Swift.Error) {}
-            """),
-            Example("""
-            import Foundation
-            import ObjectiveC
-            let 👨‍👩‍👧‍👦 = #selector(NSArray.contains(_:))
-            👨‍👩‍👧‍👦 == 👨‍👩‍👧‍👦
-            """)
-        ],
-        triggeringExamples: [
-            Example("""
-            ↓import Dispatch
-            struct A {
-              static func dispatchMain() {}
-            }
-            A.dispatchMain()
-            """),
-            Example("""
-            ↓import Foundation // This is unused
-            struct A {
-              static func dispatchMain() {}
-            }
-            A.dispatchMain()
-            ↓import Dispatch
-
-            """),
-            Example("""
-            ↓import Foundation
-            dispatchMain()
-            """),
-            Example("""
-            ↓import Foundation
-            // @objc
-            class A {}
-            """),
-            Example("""
-            ↓import Foundation
-            import UnknownModule
-            func foo(error: Swift.Error) {}
-            """)
-        ],
-        corrections: [
-            Example("""
-            ↓import Dispatch
-            struct A {
-              static func dispatchMain() {}
-            }
-            A.dispatchMain()
-            """): Example("""
-            struct A {
-              static func dispatchMain() {}
-            }
-            A.dispatchMain()
-            """),
-            Example("""
-            ↓import Foundation // This is unused
-            struct A {
-              static func dispatchMain() {}
-            }
-            A.dispatchMain()
-            ↓import Dispatch
-
-            """): Example("""
-            struct A {
-              static func dispatchMain() {}
-            }
-            A.dispatchMain()
-
-            """),
-            Example("""
-            ↓import Foundation
-            dispatchMain()
-            """): Example("""
-            dispatchMain()
-            """),
-            Example("""
-            ↓@testable import Foundation
-            import Dispatch
-            dispatchMain()
-            """): Example("""
-            import Dispatch
-            dispatchMain()
-            """),
-            Example("""
-            ↓@_exported import Foundation
-            import Dispatch
-            dispatchMain()
-            """): Example("""
-            import Dispatch
-            dispatchMain()
-            """),
-            Example("""
-            ↓import Foundation
-            // @objc
-            class A {}
-            """): Example("""
-            // @objc
-            class A {}
-            """),
-            Example("""
-            @testable import Foundation
-            ↓import Dispatch
-            @objc
-            class A {}
-            """): Example("""
-            @testable import Foundation
-            @objc
-            class A {}
-            """),
-            Example("""
-            @testable import Foundation
-            ↓@testable import Dispatch
-            @objc
-            class A {}
-            """):
-            Example("""
-            @testable import Foundation
-            @objc
-            class A {}
-            """)
-        ],
+        nonTriggeringExamples: UnusedImportRuleExamples.nonTriggeringExamples,
+        triggeringExamples: UnusedImportRuleExamples.triggeringExamples,
+        corrections: UnusedImportRuleExamples.corrections,
         requiresFileOnDisk: true
     )
 
     public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return violationRanges(in: file, compilerArguments: compilerArguments).map {
+        return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity.severity,
+                           location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
+                           reason: importUsage.violationReason)
         }
     }
 
     public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        let violations = violationRanges(in: file, compilerArguments: compilerArguments)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
+        let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
+        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
 
-        var contents = file.contents.bridge()
+        var contents = file.stringView.nsString
         let description = type(of: self).description
         var corrections = [Correction]()
         for range in matches.reversed() {
@@ -172,11 +39,51 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-        file.write(contents.bridge())
+
+        if !corrections.isEmpty {
+            file.write(contents.bridge())
+        }
+
+        guard configuration.requireExplicitImports else {
+            return corrections
+        }
+
+        let missingImports = importUsages.compactMap { importUsage -> String? in
+            switch importUsage {
+            case .unused:
+                return nil
+            case .missing(let module):
+                return module
+            }
+        }
+
+        guard !missingImports.isEmpty else {
+            return corrections
+        }
+
+        var insertionLocation = 0
+        if let firstImportRange = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier]).first {
+            contents.getLineStart(&insertionLocation, end: nil, contentsEnd: nil, for: firstImportRange)
+        }
+
+        let insertionRange = NSRange(location: insertionLocation, length: 0)
+        let missingImportStatements = missingImports
+            .sorted()
+            .map { "import \($0)" }
+            .joined(separator: "\n")
+        let newContents = contents.replacingCharacters(in: insertionRange, with: missingImportStatements + "\n")
+        file.write(newContents)
+        let location = Location(file: file, characterOffset: 0)
+        let missingImportCorrections = missingImports.map { _ in
+            Correction(ruleDescription: description, location: location)
+        }
+        corrections.append(contentsOf: missingImportCorrections)
+        // Attempt to sort imports
+        corrections.append(contentsOf: SortedImportsRule().correct(file: file))
         return corrections
     }
 
-    private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
+    private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
@@ -185,18 +92,61 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             return []
         }
 
-        return file.unusedImports(compilerArguments: compilerArguments).map { $0.1 }
+        return file.getImportUsage(compilerArguments: compilerArguments, configuration: configuration)
     }
 }
 
 private extension SwiftLintFile {
-    func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
-        let contentsNSString = contents.bridge()
+    func getImportUsage(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [ImportUsage] {
+        var (imports, usrFragments) = getImportsAndUSRFragments(compilerArguments: compilerArguments)
+
+        // Always disallow 'import Swift' because it's available without importing.
+        usrFragments.remove("Swift")
+        var unusedImports = imports.subtracting(usrFragments)
+        // Certain Swift attributes requires importing Foundation.
+        if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
+            unusedImports.remove("Foundation")
+        }
+
+        if !unusedImports.isEmpty {
+            unusedImports.subtract(
+                operatorImports(
+                    arguments: compilerArguments,
+                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
+                )
+            )
+        }
+
+        let contentsNSString = stringView.nsString
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
+            .map { ImportUsage.unused(module: $0, range: $1) }
+
+        guard configuration.requireExplicitImports else {
+            return unusedImportUsages
+        }
+
+        let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
+            .map { compilerArguments[$0] }
+
+        let missingImports = usrFragments
+            .subtracting(imports + [currentModule].compactMap({ $0 }))
+            .filter { module in
+                let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
+                    .filter { $0.transitivelyImportedModules.contains(module) }
+                    .map { $0.importedModule }
+
+                return modulesAllowedToImportCurrentModule.isEmpty ||
+                    imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
+            }
+
+        return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+    }
+
+    func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {
         var imports = Set<String>()
         var usrFragments = Set<String>()
         var nextIsModuleImport = false
-        let tokens = syntaxMap.tokens
-        for token in tokens {
+        for token in syntaxMap.tokens {
             guard let tokenKind = token.kind else {
                 continue
             }
@@ -204,7 +154,7 @@ private extension SwiftLintFile {
                 nextIsModuleImport = true
                 continue
             }
-            if syntaxKindsToSkip.contains(tokenKind) {
+            if SyntaxKind.kindsWithoutModuleInfo.contains(tokenKind) {
                 continue
             }
             let cursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
@@ -227,30 +177,13 @@ private extension SwiftLintFile {
             appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
         }
 
-        // Always disallow 'import Swift' because it's available without importing.
-        usrFragments.remove("Swift")
-        var unusedImports = imports.subtracting(usrFragments)
-        // Certain Swift attributes requires importing Foundation.
-        if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
-            unusedImports.remove("Foundation")
-        }
-
-        if !unusedImports.isEmpty {
-            unusedImports.subtract(
-                operatorImports(
-                    arguments: compilerArguments,
-                    processedTokenOffsets: Set(tokens.map { $0.offset })
-                )
-            )
-        }
-
-        return rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
+        return (imports: imports, usrFragments: usrFragments)
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                self.match(pattern: "^(@[\\w_]+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
+                match(pattern: "^(@[\\w_]+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }
@@ -325,61 +258,8 @@ private extension SwiftLintFile {
     }
 
     func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
-        if let usr = cursorInfo.moduleName {
-            usrFragments.formUnion(usr.split(separator: ".").map(String.init))
+        if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
+            usrFragments.insert(rootModuleName)
         }
-    }
-
-    func containsAttributesRequiringFoundation() -> Bool {
-        guard contents.contains("@objc") else {
-            return false
-        }
-
-        func containsAttributesRequiringFoundation(dict: SourceKittenDictionary) -> Bool {
-            if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
-                return true
-            } else {
-                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
-            }
-        }
-
-        return containsAttributesRequiringFoundation(dict: self.structureDictionary)
     }
 }
-
-private extension SourceKittenDictionary {
-    /// Module name in @import expressions
-    var moduleName: String? {
-        return value["key.modulename"] as? String
-    }
-
-    var line: Int64? {
-        return value["key.line"] as? Int64
-    }
-
-    var column: Int64? {
-        return value["key.column"] as? Int64
-    }
-}
-
-private let syntaxKindsToSkip: Set<SyntaxKind> = [
-    .attributeBuiltin,
-    .keyword,
-    .number,
-    .docComment,
-    .string,
-    .stringInterpolationAnchor,
-    .attributeID,
-    .buildconfigKeyword,
-    .buildconfigID,
-    .commentURL,
-    .comment,
-    .docCommentField
-]
-
-private let attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> = [
-    .objc,
-    .objcName,
-    .objcMembers,
-    .objcNonLazyRealization
-]

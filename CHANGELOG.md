@@ -24,7 +24,7 @@
 * None.
 
 * Add `prohibited_dynamic` and `prohibited_inline` opt-in rules to
-  discourage usage of dynamic dispatch and inline decorators, respectively.
+  discourage usage of dynamic dispatch and inline decorators, respectively.  
   [Ilias Karim](https://github.com/iliaskarim)
   
 #### Bug Fixes

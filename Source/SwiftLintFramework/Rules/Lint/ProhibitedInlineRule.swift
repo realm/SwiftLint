@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct ProhibitedInlineRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {

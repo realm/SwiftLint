@@ -8,7 +8,7 @@ public struct ProhibitedInlineRule: ASTRule, OptInRule, ConfigurationProviderRul
 
     public static let description = RuleDescription(
         identifier: "prohibited_inline",
-        name: "Prohibted Inline",
+        name: "Prohibited Inline",
         description: "Avoid using @inline.",
         kind: .lint,
         nonTriggeringExamples: [

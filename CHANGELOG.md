@@ -19,8 +19,8 @@
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
-* Add `prohibited_dynamic` and `prohibited_inline` opt-in rules to
-  discourage usage of dynamic dispatch and inline decorators, respectively.  
+* Add `prohibited_inline` and `prohibited_transparent` rules to discourage
+  usage of dynamic dispatch and transparent decorators, respectively.  
   [Ilias Karim](https://github.com/iliaskarim)
   
 #### Bug Fixes

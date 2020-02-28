@@ -1106,12 +1106,6 @@ extension PrivateUnitTestRuleTests {
     ]
 }
 
-extension ProhibitedDynamicRuleTests {
-    static var allTests: [(String, (ProhibitedDynamicRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension ProhibitedInlineRuleTests {
     static var allTests: [(String, (ProhibitedInlineRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1126,6 +1120,12 @@ extension ProhibitedInterfaceBuilderRuleTests {
 
 extension ProhibitedSuperRuleTests {
     static var allTests: [(String, (ProhibitedSuperRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ProhibitedTransparentRuleTests {
+    static var allTests: [(String, (ProhibitedTransparentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1810,10 +1810,10 @@ XCTMain([
     testCase(PrivateOutletRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),
     testCase(PrivateUnitTestRuleTests.allTests),
-    testCase(ProhibitedDynamicRuleTests.allTests),
     testCase(ProhibitedInlineRuleTests.allTests),
     testCase(ProhibitedInterfaceBuilderRuleTests.allTests),
     testCase(ProhibitedSuperRuleTests.allTests),
+    testCase(ProhibitedTransparentRuleTests.allTests),
     testCase(ProtocolPropertyAccessorsOrderRuleTests.allTests),
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),

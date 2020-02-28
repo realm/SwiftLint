@@ -1,14 +1,14 @@
 import SourceKittenFramework
 
-public struct ProhibitedDynamicRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ProhibitedTransparentRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "prohibited_dynamic",
-        name: "Prohibted Dynamic",
-        description: "Avoid using dynamic.",
+        identifier: "prohibited_transparent",
+        name: "Prohibted Transparent",
+        description: "Avoid using transparent. Apple engineers discourage its use.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("func f() {}"),
@@ -17,23 +17,14 @@ public struct ProhibitedDynamicRule: ASTRule, OptInRule, ConfigurationProviderRu
             Example("@objc func f() {}")
         ],
         triggeringExamples: [
-            Example("dynamic func f() {}"),
-            Example("@inline(never) dynamic func f() {}"),
-            Example("@objc dynamic func f() {}"),
-            Example("@inline(never) dynamic func f() {}"),
-            Example("dynamic\nfunc f() {}"),
-            Example("@inline(never)\ndynamic func f() {}"),
-            Example("@objc\ndynamic func f() {}"),
-            Example("@inline(never)\ndynamic func f() {}"),
-            Example("@objc\ndynamic\nfunc f() {}"),
-            Example("@inline(never)\ndynamic\nfunc f() {}")
+            Example("@_transparent func f() {}")
         ]
     )
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard functionKinds.contains(kind),
-            dictionary.enclosedSwiftAttributes.contains(.dynamic),
+            dictionary.enclosedSwiftAttributes.contains(.transparent),
             let funcOffset = dictionary.offset.flatMap(file.stringView.location) else {
                 return []
         }

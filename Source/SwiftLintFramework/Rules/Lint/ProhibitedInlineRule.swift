@@ -8,12 +8,13 @@ public struct ProhibitedInlineRule: ASTRule, ConfigurationProviderRule, Automati
     public static let description = RuleDescription(
         identifier: "prohibited_inline",
         name: "Prohibited Inline",
-        description: "Avoid using @inline.",
+        description: "Avoid using @inline. Apple engineers discourage its use.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("func f() {}"),
             Example("dynamic func f() {}"),
-            Example("@objc func f() {}")
+            Example("@objc func f() {}"),
+            Example("@_transparent func f()")
         ],
         triggeringExamples: [
             Example("@inline(__always) func f() {}"),

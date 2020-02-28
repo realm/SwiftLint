@@ -20,7 +20,7 @@
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
 * Add `prohibited_inline` and `prohibited_transparent` rules to discourage
-  usage of dynamic dispatch and transparent decorators, respectively.  
+  usage of inline and transparent decorators.  
   [Ilias Karim](https://github.com/iliaskarim)
   
 #### Bug Fixes

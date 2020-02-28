@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ProhibitedInlineRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ProhibitedInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}

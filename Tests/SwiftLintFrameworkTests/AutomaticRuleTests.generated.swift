@@ -6,6 +6,26 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
+class AccessControlLevelTests: XCTestCase {
+    let privateAccess: AccessControlLevel = .private
+    let fileprivateAccess: AccessControlLevel = .fileprivate
+    let internalAccess: AccessControlLevel = .internal
+    let publicAccess: AccessControlLevel = .public
+    let openAccess: AccessControlLevel = .open
+
+    func test_priority() {
+        XCTAssertEqual(privateAccess.description, "private")
+        XCTAssertEqual(fileprivateAccess.description, "fileprivate")
+        XCTAssertEqual(internalAccess.description, "internal")
+        XCTAssertEqual(publicAccess.description, "public")
+        XCTAssertEqual(openAccess.description, "open")
+        XCTAssertTrue(privateAccess < fileprivateAccess)
+        XCTAssertTrue(fileprivateAccess < internalAccess)
+        XCTAssertTrue(internalAccess < publicAccess)
+        XCTAssertTrue(publicAccess < openAccess)
+    }
+}
+
 class AnyObjectProtocolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnyObjectProtocolRule.description)

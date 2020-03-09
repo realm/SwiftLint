@@ -19,6 +19,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
+* Added 'implicit_self' opt-in rule.
+[msbm](https://github.com/msbm)
+[#59](https://github.com/realm/SwiftLint/issues/59)
+
 #### Bug Fixes
 
 * None.

@@ -685,6 +685,14 @@ extension ImplicitReturnRuleTests {
     ]
 }
 
+extension ImplicitSelfRuleTests {
+    static var allTests: [(String, (ImplicitSelfRuleTests) -> () throws -> Void)] = [
+        ("testInitSelfUsageNever", testInitSelfUsageNever),
+        ("testInitSelfUsageAlways", testInitSelfUsageAlways),
+        ("testInitSelfUsageBeforeInitCall", testInitSelfUsageBeforeInitCall)
+    ]
+}
+
 extension ImplicitlyUnwrappedOptionalConfigurationTests {
     static var allTests: [(String, (ImplicitlyUnwrappedOptionalConfigurationTests) -> () throws -> Void)] = [
         ("testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary", testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary),
@@ -1740,6 +1748,7 @@ XCTMain([
     testCase(ImplicitGetterRuleTests.allTests),
     testCase(ImplicitReturnConfigurationTests.allTests),
     testCase(ImplicitReturnRuleTests.allTests),
+    testCase(ImplicitSelfRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
     testCase(IndentationWidthRuleTests.allTests),

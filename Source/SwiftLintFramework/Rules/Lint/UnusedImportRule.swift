@@ -183,7 +183,7 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
         return unusedImports
             .compactMap { module in
-                match(pattern: "^(@[\\w_]+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
+                match(pattern: "^(@\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }

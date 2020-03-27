@@ -21,10 +21,14 @@
 
 #### Bug Fixes
 
-* Fix more false positive in `implicit_getter` rule in extensions when using
+* Fix more false positives in `implicit_getter` rule in extensions when using
   Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3149](https://github.com/realm/SwiftLint/issues/3074)
+
+* Fix false positives in `redundant_objc_attribute` rule in extensions when 
+  using Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.39.1: The Laundromat has a Rotating Door
 

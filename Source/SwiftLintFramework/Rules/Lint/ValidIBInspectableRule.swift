@@ -205,8 +205,7 @@ private extension SwiftLintFile {
         }
 
         if SwiftVersion.current >= .fiveDotTwo,
-            let range = dictionary.byteRange.map(stringView.byteRangeToNSRange)
-        {
+            let range = dictionary.byteRange.map(stringView.byteRangeToNSRange) {
             return hasSetToken(in: range)
         } else {
             return false

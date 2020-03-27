@@ -34,6 +34,10 @@
   Swift 5.2.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix false positives in `valid_ibinspectable` rule when defining inspectable
+  properties in class extensions with computed properties using Swift 5.2.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.39.1: The Laundromat has a Rotating Door
 
 #### Breaking

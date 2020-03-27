@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -10,28 +11,106 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
     public static let description = RuleDescription(
         identifier: "valid_ibinspectable",
         name: "Valid IBInspectable",
-        description: "@IBInspectable should be applied to variables only, have its type explicit " +
-            "and be of a supported type",
+        description: """
+            @IBInspectable should be applied to variables only, have its type explicit and be of a supported type
+            """,
         kind: .lint,
         nonTriggeringExamples: [
-            Example("class Foo {\n  @IBInspectable private var x: Int\n}\n"),
-            Example("class Foo {\n  @IBInspectable private var x: String?\n}\n"),
-            Example("class Foo {\n  @IBInspectable private var x: String!\n}\n"),
-            Example("class Foo {\n  @IBInspectable private var count: Int = 0\n}\n"),
-            Example("class Foo {\n  private var notInspectable = 0\n}\n"),
-            Example("class Foo {\n  private let notInspectable: Int\n}\n"),
-            Example("class Foo {\n  private let notInspectable: UInt8\n}\n")
+            Example("""
+            class Foo {
+              @IBInspectable private var x: Int
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private var x: String?
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private var x: String!
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private var count: Int = 0
+            }
+            """),
+            Example("""
+            class Foo {
+              private var notInspectable = 0
+            }
+            """),
+            Example("""
+            class Foo {
+              private let notInspectable: Int
+            }
+            """),
+            Example("""
+            class Foo {
+              private let notInspectable: UInt8
+            }
+            """),
+            Example("""
+            extension Foo {
+                @IBInspectable var color: UIColor {
+                    set {
+                        self.bar.textColor = newValue
+                    }
+
+                    get {
+                        return self.bar.textColor
+                    }
+                }
+            }
+            """)
         ],
         triggeringExamples: [
-            Example("class Foo {\n  @IBInspectable private ↓let count: Int\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var insets: UIEdgeInsets\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var count = 0\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var count: Int?\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var count: Int!\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<Int>\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var count: Optional<Int>\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var x: Optional<String>\n}\n"),
-            Example("class Foo {\n  @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<String>\n}\n")
+            Example("""
+            class Foo {
+              @IBInspectable private ↓let count: Int
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var insets: UIEdgeInsets
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var count = 0
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var count: Int?
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var count: Int!
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<Int>
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var count: Optional<Int>
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var x: Optional<String>
+            }
+            """),
+            Example("""
+            class Foo {
+              @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<String>
+            }
+            """)
         ]
     )
 
@@ -48,8 +127,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
         }
 
         let shouldMakeViolation: Bool
-        if dictionary.setterAccessibility == nil {
-            // if key.setter_accessibility is nil, it's a `let` declaration
+        if !file.isMutableProperty(dictionary) {
             shouldMakeViolation = true
         } else if let type = dictionary.typeName,
             ValidIBInspectableRule.supportedTypes.contains(type) {
@@ -117,5 +195,26 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
 
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
         return referenceTypes.flatMap(expandToIncludeOptionals) + types + intTypes
+    }
+}
+
+private extension SwiftLintFile {
+    func isMutableProperty(_ dictionary: SourceKittenDictionary) -> Bool {
+        if dictionary.setterAccessibility != nil {
+            return true
+        }
+
+        if SwiftVersion.current >= .fiveDotTwo,
+            let range = dictionary.byteRange.map(stringView.byteRangeToNSRange) {
+            return hasSetToken(in: range)
+        } else {
+            return false
+        }
+    }
+
+    private func hasSetToken(in range: NSRange?) -> Bool {
+        return rangesAndTokens(matching: "\\bset\\b", range: range).contains { _, tokens in
+            return tokens.count == 1 && tokens[0].kind == .keyword
+        }
     }
 }

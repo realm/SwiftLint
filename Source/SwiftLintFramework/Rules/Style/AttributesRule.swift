@@ -293,28 +293,29 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
         let blacklist: Set<SwiftDeclarationAttributeKind> = [
-            .mutating,
-            .nonmutating,
-            .lazy,
             .dynamic,
+            .fileprivate,
             .final,
             .infix,
+            .internal,
+            .lazy,
+            .mutating,
+            .nonmutating,
+            .open,
             .optional,
             .override,
             .postfix,
             .prefix,
-            .required,
-            .weak,
             .private,
-            .fileprivate,
-            .internal,
             .public,
-            .open,
-            .setterPrivate,
+            .required,
+            .rethrows,
             .setterFilePrivate,
             .setterInternal,
+            .setterOpen,
+            .setterPrivate,
             .setterPublic,
-            .setterOpen
+            .weak
         ]
         return attributes.filter { !blacklist.contains($0) }
     }

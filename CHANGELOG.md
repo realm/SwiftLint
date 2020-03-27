@@ -30,6 +30,10 @@
   using Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix false positives in `attributes` rule when using `rethrows` using
+  Swift 5.2.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.39.1: The Laundromat has a Rotating Door
 
 #### Breaking

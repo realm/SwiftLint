@@ -408,6 +408,39 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Float</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">clamped</span><span class="p">:</span> <span class="kt">Float</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="k">self</span> <span class="o">=</span> <span class="nf">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nf">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">newValue</span><span class="p">))</span>
+        <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="nf">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nf">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">self</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Reactive</span> <span class="k">where</span> <span class="kt">Base</span><span class="p">:</span> <span class="kt">UITapGestureRecognizer</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">tapped</span><span class="p">:</span> <span class="kt">CocoaAction</span><span class="o">&lt;</span><span class="kt">Base</span><span class="o">&gt;</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">associatedAction</span><span class="o">.</span><span class="n">withValue</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">action</span> <span class="p">}</span> <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">nonmutating</span> <span class="k">set</span> <span class="p">{</span>
+            <span class="nf">setAction</span><span class="p">(</span><span class="n">newValue</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Test</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="n">bar</span><span class="p">?</span><span class="o">.</span><span class="n">boolValue</span> <span class="p">??</span> <span class="kc">true</span> <span class="c1">// Comment mentioning word set which triggers violation</span>
+        <span class="p">}</span>
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="n">bar</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">newValue</span> <span class="k">as</span> <span class="kt">Bool</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="nf">subscript</span><span class="p">(</span><span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
         <span class="k">return</span> <span class="mi">20</span>

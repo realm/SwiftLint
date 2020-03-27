@@ -24,7 +24,7 @@
 * Fix more false positives in `implicit_getter` rule in extensions when using
   Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#3149](https://github.com/realm/SwiftLint/issues/3074)
+  [#3149](https://github.com/realm/SwiftLint/issues/3149)
 
 * Fix false positives in `redundant_objc_attribute` rule in extensions when 
   using Swift 5.2.  

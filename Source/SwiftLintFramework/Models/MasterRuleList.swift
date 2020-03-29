@@ -17,6 +17,7 @@ public let masterRuleList = RuleList(rules: [
     ColonRule.self,
     CommaRule.self,
     CompilerProtocolInitRule.self,
+    ComputedAccessorsOrderRule.self,
     ConditionalReturnsOnNewlineRule.self,
     ContainsOverFilterCountRule.self,
     ContainsOverFilterIsEmptyRule.self,

@@ -136,6 +136,17 @@ extension CompilerProtocolInitRuleTests {
     ]
 }
 
+extension ComputedAccessorsOrderRuleTests {
+    static var allTests: [(String, (ComputedAccessorsOrderRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testSetGetConfiguration", testSetGetConfiguration),
+        ("testGetSetPropertyReason", testGetSetPropertyReason),
+        ("testGetSetSubscriptReason", testGetSetSubscriptReason),
+        ("testSetGetPropertyReason", testSetGetPropertyReason),
+        ("testSetGetSubscriptReason", testSetGetSubscriptReason)
+    ]
+}
+
 extension ConditionalReturnsOnNewlineRuleTests {
     static var allTests: [(String, (ConditionalReturnsOnNewlineRuleTests) -> () throws -> Void)] = [
         ("testConditionalReturnsOnNewlineWithDefaultConfiguration", testConditionalReturnsOnNewlineWithDefaultConfiguration),
@@ -1291,7 +1302,8 @@ extension RuleConfigurationTests {
         ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary),
         ("testModifierOrderConfigurationFromDictionary", testModifierOrderConfigurationFromDictionary),
         ("testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup", testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup),
-        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup)
+        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup),
+        ("testComputedAccessorsOrderRuleConfiguration", testComputedAccessorsOrderRuleConfiguration)
     ]
 }
 
@@ -1681,6 +1693,7 @@ XCTMain([
     testCase(CommaRuleTests.allTests),
     testCase(CommandTests.allTests),
     testCase(CompilerProtocolInitRuleTests.allTests),
+    testCase(ComputedAccessorsOrderRuleTests.allTests),
     testCase(ConditionalReturnsOnNewlineRuleTests.allTests),
     testCase(ConfigurationAliasesTests.allTests),
     testCase(ConfigurationTests.allTests),

@@ -742,6 +742,12 @@ extension JoinedDefaultParameterRuleTests {
     ]
 }
 
+extension KeyPathExpressionAsFunctionRuleTests {
+    static var allTests: [(String, (KeyPathExpressionAsFunctionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension LargeTupleRuleTests {
     static var allTests: [(String, (LargeTupleRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1747,6 +1753,7 @@ XCTMain([
     testCase(IntegrationTests.allTests),
     testCase(IsDisjointRuleTests.allTests),
     testCase(JoinedDefaultParameterRuleTests.allTests),
+    testCase(KeyPathExpressionAsFunctionRuleTests.allTests),
     testCase(LargeTupleRuleTests.allTests),
     testCase(LastWhereRuleTests.allTests),
     testCase(LegacyCGGeometryFunctionsRuleTests.allTests),

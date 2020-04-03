@@ -12,7 +12,7 @@ jobs:
         containerImage: swift:5.0
       swift51:
         containerImage: swift:5.1
-      swift51:
+      swift52:
         containerImage: swift:5.2
   container: $[ variables['containerImage'] ]
   steps:

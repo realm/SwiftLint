@@ -1,5 +1,7 @@
 ## Master
 
+This is the last release to support building with Swift 5.0.x.
+
 #### Breaking
 
 * None.

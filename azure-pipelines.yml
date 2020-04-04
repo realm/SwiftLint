@@ -12,6 +12,9 @@ jobs:
         containerImage: swift:5.0
       swift51:
         containerImage: swift:5.1
+      # https://bugs.swift.org/browse/SR-12500
+      # swift52:
+      #   containerImage: swift:5.2
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel
@@ -19,16 +22,20 @@ jobs:
 
 - job: Xcode
   pool:
-    vmImage: 'macOS 10.14'
+    vmImage: 'macOS-10.15'
   strategy:
     maxParallel: 10
     matrix:
-      xcode102:
-        DEVELOPER_DIR: /Applications/Xcode_10.2.app
-      xcode103:
-        DEVELOPER_DIR: /Applications/Xcode_10.3.app
+      xcode110:
+        DEVELOPER_DIR: /Applications/Xcode_11.app
       xcode111:
         DEVELOPER_DIR: /Applications/Xcode_11.1.app
+      xcode112:
+        DEVELOPER_DIR: /Applications/Xcode_11.2.1.app
+      xcode113:
+        DEVELOPER_DIR: /Applications/Xcode_11.3.1.app
+      xcode114:
+        DEVELOPER_DIR: /Applications/Xcode_11.4.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -49,16 +56,20 @@ jobs:
 
 - job: SwiftPM
   pool:
-    vmImage: 'macOS 10.14'
+    vmImage: 'macOS-10.15'
   strategy:
     maxParallel: 10
     matrix:
-      xcode102:
-        DEVELOPER_DIR: /Applications/Xcode_10.2.app
-      xcode103:
-        DEVELOPER_DIR: /Applications/Xcode_10.3.app
+      xcode110:
+        DEVELOPER_DIR: /Applications/Xcode_11.app
       xcode111:
         DEVELOPER_DIR: /Applications/Xcode_11.1.app
+      xcode112:
+        DEVELOPER_DIR: /Applications/Xcode_11.2.1.app
+      xcode113:
+        DEVELOPER_DIR: /Applications/Xcode_11.3.1.app
+      xcode114:
+        DEVELOPER_DIR: /Applications/Xcode_11.4.app
   steps:
     - script: |
         sw_vers
@@ -71,9 +82,9 @@ jobs:
 
 - job: CocoaPods
   pool:
-    vmImage: 'macOS 10.14'
+    vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.1.app
+    DEVELOPER_DIR: /Applications/Xcode_11.4.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -84,18 +95,18 @@ jobs:
 
 - job: Analyze
   pool:
-    vmImage: 'macOS 10.14'
+    vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.1.app
+    DEVELOPER_DIR: /Applications/Xcode_11.4.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
 
 - job: TSan
   pool:
-    vmImage: 'macOS 10.14'
+    vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.1.app
+    DEVELOPER_DIR: /Applications/Xcode_11.4.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run
@@ -106,9 +117,9 @@ jobs:
 
 - job: jazzy
   pool:
-    vmImage: 'macOS 10.14'
+    vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.3.app
+    DEVELOPER_DIR: /Applications/Xcode_11.4.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

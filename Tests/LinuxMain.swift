@@ -664,6 +664,12 @@ extension GlobTests {
     ]
 }
 
+extension IBInspectableInExtensionRuleTests {
+    static var allTests: [(String, (IBInspectableInExtensionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension IdenticalOperandsRuleTests {
     static var allTests: [(String, (IdenticalOperandsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1761,6 +1767,7 @@ XCTMain([
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(GlobTests.allTests),
+    testCase(IBInspectableInExtensionRuleTests.allTests),
     testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),

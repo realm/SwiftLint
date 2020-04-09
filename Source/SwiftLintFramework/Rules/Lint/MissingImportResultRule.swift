@@ -13,7 +13,7 @@ public struct MissingImportResultRule: Rule, OptInRule, ConfigurationProviderRul
         kind: .lint,
         minSwiftVersion: .four,
         nonTriggeringExamples: [
-            """
+            Example("""
             @testable import Foo
             import Foundation
             import Result
@@ -23,10 +23,10 @@ public struct MissingImportResultRule: Rule, OptInRule, ConfigurationProviderRul
             }
             func Result() {
             }
-            """
+            """)
         ],
         triggeringExamples: [
-            """
+            Example("""
             @testable import Foo
             import Foundation
             func foo() -> ↓Result<String, Error> { }
@@ -35,49 +35,45 @@ public struct MissingImportResultRule: Rule, OptInRule, ConfigurationProviderRul
             }
             func Result() {
             }
-            """
+            """)
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.checkIfMissingImportResult().map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+                           location: Location(file: file, characterOffset: $0))
         }
     }
 }
 
-extension File {
-    func checkIfMissingImportResult() -> [NSRange] {
-        let kImport = "import"
-        let kResult = "Result"
+extension SwiftLintFile {
+    enum Keywords {
+        static let IMPORT = "import"
+        static let RESULT = "Result"
+    }
 
-        let contentsNSString = contents.bridge()
-        func getTextFrom(_ token: SyntaxToken) -> String? {
-            return contentsNSString.substringWithByteRange(start: token.offset, length: token.length)
-        }
-
+    func checkIfMissingImportResult() -> [Int] {
         var nextTokenIsModuleName = false
-        var resultTypeOffsets: [NSRange] = []
+        var resultTypeOffsets: [Int] = []
         let tokens = syntaxMap.tokens
+        let stringView = file.stringView
         for token in tokens {
-            guard let tokenKind = SyntaxKind(rawValue: token.type) else {
+            guard let tokenKind = token.kind else {
                 continue
             }
-            if tokenKind == .keyword, let tokenText = getTextFrom(token), tokenText == kImport {
+            if tokenKind == .keyword, let tokenText = contents(for: token), tokenText == Keywords.IMPORT {
                 nextTokenIsModuleName = true
                 continue
             }
             if nextTokenIsModuleName {
                 nextTokenIsModuleName = false
-                if tokenKind == .identifier, let tokenText = getTextFrom(token), tokenText == kResult {
+                if tokenKind == .identifier, let tokenText = contents(for: token), tokenText == Keywords.RESULT {
                     return []
                 }
-            } else if tokenKind == .typeidentifier, let tokenText = getTextFrom(token), tokenText == kResult {
-                if let range = contentsNSString.byteRangeToNSRange(start: token.offset, length: token.length) {
-                    resultTypeOffsets.append(range)
-                }
+            } else if tokenKind == .typeidentifier, let tokenText = contents(for: token), tokenText == Keywords.RESULT {
+                resultTypeOffsets.append(stringView.location(fromByteOffset: token.range.location))
             }
         }
 

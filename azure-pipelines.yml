@@ -8,8 +8,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift50:
-        containerImage: swift:5.0
       swift51:
         containerImage: swift:5.1
       # https://bugs.swift.org/browse/SR-12500

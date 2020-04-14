@@ -2,7 +2,8 @@
 
 #### Breaking
 
-* None.
+* SwiftLint now requires Swift 5.1 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Experimental
 
@@ -10,7 +11,8 @@
 
 #### Enhancements
 
-* JUnit reporter for GitLab artifact:report:junit with better representation of found issues.  
+* JUnit reporter for GitLab artifact:report:junit with better representation of
+  found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
 

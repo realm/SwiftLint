@@ -198,12 +198,6 @@ private extension SwiftLintFile {
             !declarationKindsToSkip.contains(kind),
             let acl = cursorInfo.accessibility,
             includePublicAndOpen || [.internal, .private, .fileprivate].contains(acl) {
-            // Skip declarations marked as @IBOutlet, @IBAction or @objc
-            // since those might not be referenced in code, but only dynamically (e.g. Interface Builder)
-            if let annotatedDecl = cursorInfo.annotatedDeclaration,
-                ["@IBOutlet", "@IBAction", "@objc", "@IBInspectable"].contains(where: annotatedDecl.contains) {
-                return nil
-            }
 
             // Classes marked as @UIApplicationMain are used by the operating system as the entry point into the app.
             if let annotatedDecl = cursorInfo.annotatedDeclaration,

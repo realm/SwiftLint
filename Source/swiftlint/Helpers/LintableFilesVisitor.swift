@@ -142,7 +142,7 @@ struct LintableFilesVisitor {
                 return .success(.compilationDatabase(compileCommands: compileCommands))
             case .failure(let error):
                 return .failure(
-                    .usageError(description: "Could not read compilation database at path: '\(path)' \(error)")
+                    .usageError(description: "Could not read compilation database at path: '\(path)' \(error.description)")
                 )
             }
         }

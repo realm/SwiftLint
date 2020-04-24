@@ -138,12 +138,6 @@ class EmptyCollectionLiteralRuleTests: XCTestCase {
     }
 }
 
-class EmptyCountRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyCountRule.description)
-    }
-}
-
 class EmptyEnumArgumentsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyEnumArgumentsRule.description)

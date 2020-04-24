@@ -36,6 +36,8 @@ public struct Configuration: Hashable {
     public private(set) var configurationPath: String?
     /// The location of the persisted cache to use whith this configuration.
     public let cachePath: String?
+    /// Allow or disallow SwiftLint to exit successfully when passed only ignored or unlintable files
+    public let allowZeroLintableFiles: Bool
 
     public func hash(into hasher: inout Hasher) {
         if let configurationPath = configurationPath {
@@ -48,6 +50,7 @@ public struct Configuration: Hashable {
             hasher.combine(included)
             hasher.combine(excluded)
             hasher.combine(reporter)
+            hasher.combine(allowZeroLintableFiles)
         }
     }
 
@@ -81,6 +84,7 @@ public struct Configuration: Hashable {
     /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
     /// - parameter indentation:            The style to use when indenting Swift source code.
     /// - parameter customRulesIdentifiers: All custom rule identifiers defined in the configuration.
+    /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
     public init?(rulesMode: RulesMode = .default(disabled: [], optIn: []),
                  included: [String] = [],
                  excluded: [String] = [],
@@ -91,7 +95,8 @@ public struct Configuration: Hashable {
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
                  indentation: IndentationStyle = .default,
-                 customRulesIdentifiers: [String] = []) {
+                 customRulesIdentifiers: [String] = [],
+                 allowZeroLintableFiles: Bool = false) {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
@@ -118,7 +123,8 @@ public struct Configuration: Hashable {
                   reporter: reporter,
                   rules: rules,
                   cachePath: cachePath,
-                  indentation: indentation)
+                  indentation: indentation,
+                  allowZeroLintableFiles: allowZeroLintableFiles)
     }
 
     internal init(rulesMode: RulesMode,
@@ -129,7 +135,8 @@ public struct Configuration: Hashable {
                   rules: [Rule],
                   cachePath: String?,
                   rootPath: String? = nil,
-                  indentation: IndentationStyle) {
+                  indentation: IndentationStyle,
+                  allowZeroLintableFiles: Bool) {
         self.rulesMode = rulesMode
         self.included = included
         self.excluded = excluded
@@ -141,6 +148,7 @@ public struct Configuration: Hashable {
 
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
+        self.allowZeroLintableFiles = allowZeroLintableFiles
     }
 
     private init(_ configuration: Configuration) {
@@ -153,6 +161,7 @@ public struct Configuration: Hashable {
         cachePath = configuration.cachePath
         rootPath = configuration.rootPath
         indentation = configuration.indentation
+        allowZeroLintableFiles = configuration.allowZeroLintableFiles
     }
 
     /// Creates a `Configuration` with convenience parameters.
@@ -224,7 +233,8 @@ public struct Configuration: Hashable {
             (lhs.included == rhs.included) &&
             (lhs.excluded == rhs.excluded) &&
             (lhs.rules == rhs.rules) &&
-            (lhs.indentation == rhs.indentation)
+            (lhs.indentation == rhs.indentation) &&
+            (lhs.allowZeroLintableFiles == rhs.allowZeroLintableFiles)
     }
 }
 

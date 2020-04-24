@@ -25,7 +25,7 @@ class CompilerProtocolInitRuleTests: XCTestCase {
 }
 
 // https://bugs.swift.org/browse/SR-11501
-#if compiler(<5.1) || (SWIFT_PACKAGE && os(macOS))
+#if SWIFT_PACKAGE && os(macOS) && compiler(<5.2)
 private enum UnwrapError: Error {
     case missingValue
 }

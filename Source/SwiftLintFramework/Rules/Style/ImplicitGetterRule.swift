@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRule {
@@ -15,18 +16,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\{[^\\{]*?\\s+get\\b"
-        let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
-        let getTokens: [SwiftLintSyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
-            let kinds = tokens.kinds
-            guard let token = tokens.last,
-                token.kind == .keyword,
-                attributesKinds.isDisjoint(with: kinds) else {
-                    return nil
-            }
-
-            return token
-        }
+        let getTokens = findGetTokens(file: file)
 
         let violatingLocations = getTokens.compactMap { token -> (ByteCount, SwiftDeclarationKind?)? in
             // the last element is the deepest structure
@@ -36,8 +26,29 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             }
 
             // If there's a setter, `get` is allowed
-            guard dict.setterAccessibility == nil else {
-                return nil
+            if SwiftVersion.current < .fiveDotTwo || dict.accessibility != nil {
+                guard dict.setterAccessibility == nil else {
+                    return nil
+                }
+            } else {
+                guard let range = dict.byteRange.map(file.stringView.byteRangeToNSRange) else {
+                    return nil
+                }
+
+                let setTokens = findSetTokens(file: file, range: range)
+                let hasSetToken = setTokens.contains { token in
+                    // the last element is the deepest structure
+                    guard let setDict = declarations(forByteOffset: token.offset,
+                                                     structureDictionary: file.structureDictionary).last else {
+                        return false
+                    }
+
+                    return setDict.offset == dict.offset
+                }
+
+                guard !hasSetToken else {
+                    return nil
+                }
             }
 
             let kind = dict.declarationKind
@@ -54,6 +65,34 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset),
                                   reason: reason)
+        }
+    }
+
+    private func findGetTokens(file: SwiftLintFile) -> [SwiftLintSyntaxToken] {
+        let pattern = "\\{[^\\{]*?\\s+get\\b"
+        let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
+        return file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
+            let kinds = tokens.kinds
+            guard let token = tokens.last,
+                token.kind == .keyword,
+                attributesKinds.isDisjoint(with: kinds) else {
+                    return nil
+            }
+
+            return token
+        }
+    }
+
+    private func findSetTokens(file: SwiftLintFile, range: NSRange?) -> [SwiftLintSyntaxToken] {
+        let pattern = "\\bset\\b"
+        return file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
+            guard tokens.count == 1,
+                let token = tokens.last,
+                token.kind == .keyword else {
+                    return nil
+            }
+
+            return token
         }
     }
 }

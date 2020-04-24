@@ -183,6 +183,7 @@ extension ConfigurationTests {
         ("testIndentationFallback", testIndentationFallback),
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
+        ("testAllowZeroLintableFiles", testAllowZeroLintableFiles),
         ("testMerge", testMerge),
         ("testLevel0", testLevel0),
         ("testLevel1", testLevel1),
@@ -357,7 +358,8 @@ extension EmptyCollectionLiteralRuleTests {
 
 extension EmptyCountRuleTests {
     static var allTests: [(String, (EmptyCountRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testEmptyCountWithDefaultConfiguration", testEmptyCountWithDefaultConfiguration),
+        ("testEmptyCountWithOnlyAfterDot", testEmptyCountWithOnlyAfterDot)
     ]
 }
 
@@ -402,6 +404,8 @@ extension ExampleTests {
         ("testEquatableDoesNotLookAtFile", testEquatableDoesNotLookAtFile),
         ("testEquatableDoesNotLookAtLine", testEquatableDoesNotLookAtLine),
         ("testEquatableLooksAtCode", testEquatableLooksAtCode),
+        ("testTestMultiByteOffsets", testTestMultiByteOffsets),
+        ("testTestOnLinux", testTestOnLinux),
         ("testRemovingViolationMarkers", testRemovingViolationMarkers),
         ("testComparable", testComparable),
         ("testWithCode", testWithCode)

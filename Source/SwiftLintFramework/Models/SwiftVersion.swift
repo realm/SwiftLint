@@ -29,6 +29,8 @@ public extension SwiftVersion {
     static let five = SwiftVersion(rawValue: "5.0.0")
     /// Swift 5.1.x - https://swift.org/download/#swift-51
     static let fiveDotOne = SwiftVersion(rawValue: "5.1.0")
+    /// Swift 5.2.x - https://swift.org/download/#swift-52
+    static let fiveDotTwo = SwiftVersion(rawValue: "5.2.0")
 
     /// The current detected Swift compiler version, based on the currently accessible SourceKit version.
     ///

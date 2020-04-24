@@ -16,10 +16,13 @@ opt_in_rules:
   - contains_over_filter_count
   - contains_over_filter_is_empty
   - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
   - discouraged_object_literal
+  - empty_collection_literal
   - empty_count
   - empty_string
   - empty_xctest_method
+  - enum_case_associated_values_count
   - explicit_init
   - extension_access_modifier
   - fallthrough

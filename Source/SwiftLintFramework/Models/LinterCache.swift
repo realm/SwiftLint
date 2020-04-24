@@ -18,15 +18,9 @@ private struct FileCache: Codable {
 
 /// A persisted cache for storing and retrieving linter results.
 public final class LinterCache {
-#if canImport(Darwin) || compiler(>=5.1.0)
     private typealias Encoder = PropertyListEncoder
     private typealias Decoder = PropertyListDecoder
     private static let fileExtension = "plist"
-#else
-    private typealias Encoder = JSONEncoder
-    private typealias Decoder = JSONDecoder
-    private static let fileExtension = "json"
-#endif
 
     private typealias Cache = [String: FileCache]
 

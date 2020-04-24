@@ -1,3 +1,4 @@
+// swiftlint:disable:next type_body_length
 struct ImplicitGetterRuleExamples {
     static var nonTriggeringExamples: [Example] {
         let commonExamples = [
@@ -84,6 +85,58 @@ struct ImplicitGetterRuleExamples {
                     return self.count
                 }
             }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    get { _bar }
+                    set { self._bar = newValue }
+                }
+            }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    get { _bar }
+                    set(newValue) { self._bar = newValue }
+                }
+            }
+            """),
+            Example("""
+            extension Float {
+                var clamped: Float {
+                    set {
+                        self = min(1, max(0, newValue))
+                    }
+                    get {
+                        min(1, max(0, self))
+                    }
+                }
+            }
+            """),
+            Example("""
+            extension Reactive where Base: UITapGestureRecognizer {
+                var tapped: CocoaAction<Base>? {
+                    get {
+                        return associatedAction.withValue { $0.flatMap { $0.action } }
+                    }
+                    nonmutating set {
+                        setAction(newValue)
+                    }
+                }
+            }
+            """),
+            Example("""
+            extension Test {
+                var foo: Bool {
+                    get {
+                        bar?.boolValue ?? true // Comment mentioning word set which triggers violation
+                    }
+                    set {
+                        bar = NSNumber(value: newValue as Bool)
+                    }
+                }
+            }
             """)
         ]
 
@@ -159,6 +212,13 @@ struct ImplicitGetterRuleExamples {
                     ↓get {
                         return 20
                     }
+                }
+            }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    ↓get { _bar }
                 }
             }
             """)

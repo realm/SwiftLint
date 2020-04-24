@@ -36,7 +36,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
     )
 
     private func hasImplicitlyUnwrappedOptional(_ typeName: String) -> Bool {
-        return typeName.range(of: "!") != nil || typeName.range(of: "ImplicitlyUnwrappedOptional<") != nil
+        return typeName.contains("!") || typeName.contains("ImplicitlyUnwrappedOptional<")
     }
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,

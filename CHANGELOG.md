@@ -2,11 +2,7 @@
 
 #### Breaking
 
-* Replace all uses of `Int`/`Int64`/`NSRange` representing byte offsets
-  to use newly introduced `ByteCount` and `ByteRange` values instead.
-  This will minimize the risk of accidentally using a byte-based offset
-  in character-based contexts.  
-  [Paul Taykalo](https://github.com/PaulTaykalo)
+* SwiftLint now requires Swift 5.1 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
 #### Experimental
@@ -14,6 +10,109 @@
 * None.
 
 #### Enhancements
+
+* JUnit reporter for GitLab artifact:report:junit with better representation of
+  found issues.  
+  [krin-san](https://github.com/krin-san)
+  [#3177](https://github.com/realm/SwiftLint/pull/3177)
+
+#### Bug Fixes
+
+* None.
+
+## 0.39.2: Stay Home
+
+This is the last release to support building with Swift 5.0.x.
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add configuration options to the `unused_import` rule to require
+  explicit import statements for each module referenced in a source
+  file (`require_explicit_imports`). When this setting is enabled,
+  an `allowed_transitive_imports` setting may also be specified to allow
+  a mapping of modules to transitively imported modules. See PR for
+  details: https://github.com/realm/SwiftLint/pull/3123  
+  [JP Simard](https://github.com/jpsim)
+  [#3116](https://github.com/realm/SwiftLint/issues/3116)
+
+#### Bug Fixes
+
+* Fix more false positives in `implicit_getter` rule in extensions when using
+  Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3149](https://github.com/realm/SwiftLint/issues/3149)
+
+* Fix false positives in `redundant_objc_attribute` rule in extensions when 
+  using Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix false positives in `attributes` rule when using `rethrows` using
+  Swift 5.2.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix false positives in `valid_ibinspectable` rule when defining inspectable
+  properties in class extensions with computed properties using Swift 5.2.  
+  [JP Simard](https://github.com/jpsim)
+
+## 0.39.1: The Laundromat has a Rotating Door
+
+#### Breaking
+
+* The new rules introduced in 0.39.0 that depend on SwiftSyntax have been
+  temporarily removed as we work out release packaging issues.
+    * `prohibited_nan_comparison`
+    * `return_value_from_void_function`
+    * `tuple_pattern`
+    * `void_function_in_ternary`  
+  [JP Simard](https://github.com/jpsim)
+  [#3105](https://github.com/realm/SwiftLint/issues/3105)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix unused_import rule reported locations and corrections when
+  multiple `@testable` imports are involved.  
+  [JP Simard](https://github.com/jpsim)
+
+## 0.39.0: A Visitor in the Laundromat
+
+#### Breaking
+
+* Replace all uses of `Int`/`Int64`/`NSRange` representing byte offsets
+  to use newly introduced `ByteCount` and `ByteRange` values instead.
+  This will minimize the risk of accidentally using a byte-based offset
+  in character-based contexts.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [JP Simard](https://github.com/jpsim)
+
+* SwiftLint now imports [SwiftSyntax](https://github.com/apple/swift-syntax)
+  and requires Xcode 11.0 to build.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add option to pass successfully if no files passed to SwiftLint are lintable.  
+  [thedavidharris](https://github.com/thedavidharris)
+  [#2608](https://github.com/realm/SwiftLint/issues/2608)i
 
 * Add `deinitializer` type content to `type_contents_order` rule instead of
   grouping it with initializers.  
@@ -25,6 +124,36 @@
   and which are not.  
   [ZevEisenberg](https://github.com/ZevEisenberg)
   [#3040](https://github.com/realm/SwiftLint/pull/3040)
+
+* Introduce a new `SyntaxRule` that enables writing rules using
+  [SwiftSyntax](https://github.com/apple/swift-syntax).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `tuple_pattern` opt-in rule to warn against using
+  assigning variables through a tuple pattern when the left side
+  of the assignment contains labels.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2203](https://github.com/realm/SwiftLint/issues/2203)
+
+* Add `return_value_from_void_function` opt-in rule to warn against using
+  `return <expression>` in a function that is `Void`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `void_function_in_ternary` opt-in rule to warn against using
+  a ternary operator to call `Void` functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2358](https://github.com/realm/SwiftLint/issues/2358)
+
+* Add `only_after_dot` configuration option to `empty_count` rule. With the
+  option enabled, `empty_count` rule will ignore variables named `count`.
+  By default, this option is disabled.  
+  [Zsolt Kovács](https://github.com/lordzsolt)
+  [#827](https://github.com/realm/SwiftLint/issues/827)
+
+* Add `prohibited_nan_comparison` opt-in rule to validate using `isNaN`
+  instead of comparing values to the `.nan` constant.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2086](https://github.com/realm/SwiftLint/issues/2086)
 
 * Add case `preview_provider` to the order list of `file_types_order` to fix
   an issue with false positives for `PreviewProvider` subclasses in SwiftUI.  
@@ -43,6 +172,29 @@
 * Fix false positives when line ends with carriage return + line feed.  
   [John Mueller](https://github.com/john-mueller)
   [#3060](https://github.com/realm/SwiftLint/issues/3060)
+  
+* Implicit_return description now reports current config correctly.
+  [John Buckley](https://github.com/nhojb)
+
+* Fix false positive in `implicit_getter` rule in extensions when using
+  Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3074](https://github.com/realm/SwiftLint/issues/3074)
+
+* Do not trigger `optional_enum_case_matching` rule on `_?` as the `?` might
+  be required in some situations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3057](https://github.com/realm/SwiftLint/issues/3057)
+
+* Fix false positive in `attributes` rule with `@escaping` parameters when
+  using Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3079](https://github.com/realm/SwiftLint/issues/3079)
+
+* Fix false positive in `empty_string` rule when using multiline string
+  literals.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3100](https://github.com/realm/SwiftLint/issues/3100)
 
 ## 0.38.2: Machine Repair Manual
 

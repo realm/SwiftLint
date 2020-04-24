@@ -19,4 +19,22 @@ extension SyntaxKind {
                                             .docComment, .docCommentField, .identifier, .keyword, .number,
                                             .objectLiteral, .parameter, .placeholder, .string,
                                             .stringInterpolationAnchor, .typeidentifier]
+
+    /// Syntax kinds that don't have associated module info when getting their cursor info.
+    static var kindsWithoutModuleInfo: Set<SyntaxKind> {
+        return [
+            .attributeBuiltin,
+            .keyword,
+            .number,
+            .docComment,
+            .string,
+            .stringInterpolationAnchor,
+            .attributeID,
+            .buildconfigKeyword,
+            .buildconfigID,
+            .commentURL,
+            .comment,
+            .docCommentField
+        ]
+    }
 }

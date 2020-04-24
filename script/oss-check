@@ -118,10 +118,14 @@ def make_directory_structure
 end
 
 def convert_to_link(repo, string)
-  string.sub!("#{Dir.pwd}/#{@working_dir}/#{repo.name}", '')
+  string = remove_base_path(repo, string)
   string.sub!('.swift:', '.swift#L')
   string = string.partition(': warning:').first.partition(': error:').first
   "#{repo.git_url}/blob/#{repo.commit_hash}#{string}"
+end
+
+def remove_base_path(repo, string)
+  string.sub("#{Dir.pwd}/#{@working_dir}/#{repo.name}", '')
 end
 
 def non_empty_lines(path)
@@ -238,11 +242,11 @@ def diff_and_report_changes_to_danger
     master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt")
 
     (master - branch).each do |fixed|
-      escaped_message = ERB::Util.html_escape fixed
+      escaped_message = ERB::Util.html_escape remove_base_path(repo, fixed)
       message "This PR fixed a violation in #{repo.name}: [#{escaped_message}](#{convert_to_link(repo, fixed)})"
     end
     (branch - master).each do |violation|
-      escaped_message = ERB::Util.html_escape violation
+      escaped_message = ERB::Util.html_escape remove_base_path(repo, violation)
       warn "This PR introduced a violation in #{repo.name}: [#{escaped_message}](#{convert_to_link(repo, violation)})"
     end
   end

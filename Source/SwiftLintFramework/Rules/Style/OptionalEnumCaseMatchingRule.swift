@@ -10,7 +10,7 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
     public static let description = RuleDescription(
         identifier: "optional_enum_case_matching",
         name: "Optional Enum Case Match",
-        description: "Matching an enum case against an optional enum without '?' is supported on Swift 5.1 and above. ",
+        description: "Matching an enum case against an optional enum without '?' is supported on Swift 5.1 and above.",
         kind: .style,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: [
@@ -27,6 +27,16 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
              case (.bar, _): break
              case (_, .baz): break
              default: break
+            }
+            """),
+            Example("""
+            switch (x, y) {
+            case (.c, _?):
+                break
+            case (.c, nil):
+                break
+            case (_, _):
+                break
             }
             """)
         ],
@@ -180,6 +190,9 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
                 }
 
                 return tokensToCheck.compactMap { tokenToCheck in
+                    guard !file.isTokenUnderscoreKeyword(tokenToCheck) else {
+                        return nil
+                    }
                     let questionMarkByteRange = ByteRange(location: tokenToCheck.range.upperBound, length: 1)
                     guard contents.substringWithByteRange(questionMarkByteRange) == "?" else {
                         return nil

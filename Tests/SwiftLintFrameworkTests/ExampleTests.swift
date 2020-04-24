@@ -22,6 +22,18 @@ class ExampleTests: XCTestCase {
         XCTAssertNotEqual(first, third)
     }
 
+    func testTestMultiByteOffsets() {
+        XCTAssertTrue(Example("").testMultiByteOffsets)
+        XCTAssertTrue(Example("", testMultiByteOffsets: true).testMultiByteOffsets)
+        XCTAssertFalse(Example("", testMultiByteOffsets: false).testMultiByteOffsets)
+    }
+
+    func testTestOnLinux() {
+        XCTAssertTrue(Example("").testOnLinux)
+        XCTAssertTrue(Example("", testOnLinux: true).testOnLinux)
+        XCTAssertFalse(Example("", testOnLinux: false).testOnLinux)
+    }
+
     func testRemovingViolationMarkers() {
         let example = Example("↓T↓E↓S↓T")
         XCTAssertEqual(example.removingViolationMarkers(), Example("TEST"))

@@ -390,6 +390,10 @@ extension XCTestCase {
                                 line callSiteLine: UInt = #line) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
+            #if os(Linux)
+            guard nonTrigger.testOnLinux else { continue }
+            #endif
+
             let unexpectedViolations = violations(nonTrigger, config: config,
                                                   requiresFileOnDisk: requiresFileOnDisk)
             if unexpectedViolations.isEmpty { continue }
@@ -402,6 +406,10 @@ extension XCTestCase {
 
         // Triggering examples violate
         for trigger in triggers {
+            #if os(Linux)
+            guard trigger.testOnLinux else { continue }
+            #endif
+
             let triggerViolations = violations(trigger, config: config,
                                                requiresFileOnDisk: requiresFileOnDisk)
 

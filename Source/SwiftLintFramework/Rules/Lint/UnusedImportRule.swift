@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
+public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
     public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
                                                          allowedTransitiveImports: [])
 
@@ -114,6 +114,17 @@ private extension SwiftLintFile {
                     arguments: compilerArguments,
                     processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
                 )
+            )
+        }
+
+        if !unusedImports.isEmpty {
+            unusedImports.subtract(
+                usrFragments
+                    .flatMap { module in
+                        return configuration.allowedTransitiveImports
+                            .filter { $0.transitivelyImportedModules.contains(module) }
+                            .map { $0.importedModule }
+                    }
             )
         }
 

@@ -10,7 +10,8 @@ extension RuleDescription {
                                nonTriggeringExamples: nonTriggeringExamples,
                                triggeringExamples: triggeringExamples,
                                corrections: corrections,
-                               deprecatedAliases: deprecatedAliases)
+                               deprecatedAliases: deprecatedAliases,
+                               requiresFileOnDisk: requiresFileOnDisk)
     }
 
     func with(nonTriggeringExamples: [Example]) -> RuleDescription {
@@ -31,6 +32,7 @@ extension RuleDescription {
                                nonTriggeringExamples: nonTriggeringExamples,
                                triggeringExamples: triggeringExamples,
                                corrections: corrections,
-                               deprecatedAliases: deprecatedAliases)
+                               deprecatedAliases: deprecatedAliases,
+                               requiresFileOnDisk: requiresFileOnDisk)
     }
 }

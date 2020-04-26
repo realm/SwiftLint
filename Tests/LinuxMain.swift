@@ -1225,6 +1225,7 @@ extension ReporterTests {
         ("testXcodeReporter", testXcodeReporter),
         ("testEmojiReporter", testEmojiReporter),
         ("testGitHubActionsLoggingReporter", testGitHubActionsLoggingReporter),
+        ("testGitLabJUnitReporter", testGitLabJUnitReporter),
         ("testJSONReporter", testJSONReporter),
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),
@@ -1532,7 +1533,8 @@ extension UnusedEnumeratedRuleTests {
 
 extension UnusedImportRuleTests {
     static var allTests: [(String, (UnusedImportRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithAllowedTransitiveImports", testWithAllowedTransitiveImports)
     ]
 }
 

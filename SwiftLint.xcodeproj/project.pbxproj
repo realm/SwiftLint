@@ -164,6 +164,7 @@
 		77DFF0E923442DE30041EEB4 /* RawValueForCamelCasedCodableEnumRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7723A4DE23442D7100F38590 /* RawValueForCamelCasedCodableEnumRule.swift */; };
 		787CDE39208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */; };
 		787CDE3B208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */; };
+		78B9051D24564AF600C81B0A /* PreferZeroOverExplicitInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B9051A245646CD00C81B0A /* PreferZeroOverExplicitInitRule.swift */; };
 		78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
 		78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */; };
 		7C0C2E7A1D2866CB0076435A /* ExplicitInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */; };
@@ -683,6 +684,7 @@
 		7723A4DE23442D7100F38590 /* RawValueForCamelCasedCodableEnumRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawValueForCamelCasedCodableEnumRule.swift; sourceTree = "<group>"; };
 		787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentConfiguration.swift; sourceTree = "<group>"; };
 		787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRuleTests.swift; sourceTree = "<group>"; };
+		78B9051A245646CD00C81B0A /* PreferZeroOverExplicitInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferZeroOverExplicitInitRule.swift; sourceTree = "<group>"; };
 		78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverriddenSuperCallRule.swift; sourceTree = "<group>"; };
 		78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverridenSuperCallConfiguration.swift; sourceTree = "<group>"; };
 		7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitInitRule.swift; sourceTree = "<group>"; };
@@ -1306,6 +1308,7 @@
 				D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */,
 				D43CDEDB23BDB8D30074F3EE /* OptionalEnumCaseMatchingRule.swift */,
 				D46C7C3D23BF2F6A007C517F /* PreferSelfTypeOverTypeOfSelfRule.swift */,
+				78B9051A245646CD00C81B0A /* PreferZeroOverExplicitInitRule.swift */,
 				62DADC471FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift */,
 				D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */,
 				D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */,
@@ -2356,6 +2359,7 @@
 				6C15818D237026AC00F582A2 /* GitHubActionsLoggingReporter.swift in Sources */,
 				62FE5D32200CABDD00F68793 /* DiscouragedOptionalCollectionExamples.swift in Sources */,
 				D41C09BD23C1B99D00F105C4 /* OrphanedDocCommentRule.swift in Sources */,
+				78B9051D24564AF600C81B0A /* PreferZeroOverExplicitInitRule.swift in Sources */,
 				D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */,
 				E4A6CF752363CBFB00DD5B18 /* RandomAccessCollection+Swiftlint.swift in Sources */,
 				29FFC37A1F15764D007E4825 /* FileLengthRuleConfiguration.swift in Sources */,

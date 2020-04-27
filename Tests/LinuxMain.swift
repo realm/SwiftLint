@@ -1094,6 +1094,12 @@ extension PreferSelfTypeOverTypeOfSelfRuleTests {
     ]
 }
 
+extension PreferZeroOverExplicitInitRuleTests {
+    static var allTests: [(String, (PreferZeroOverExplicitInitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension PrefixedTopLevelConstantRuleTests {
     static var allTests: [(String, (PrefixedTopLevelConstantRuleTests) -> () throws -> Void)] = [
         ("testDefaultConfiguration", testDefaultConfiguration),
@@ -1826,6 +1832,7 @@ XCTMain([
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
+    testCase(PreferZeroOverExplicitInitRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
     testCase(PrivateActionRuleTests.allTests),
     testCase(PrivateOutletRuleTests.allTests),

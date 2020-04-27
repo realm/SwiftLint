@@ -6,13 +6,11 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
     public var configuration = SeverityConfiguration(.warning)
     private var pattern: String {
         let zero = "\\s*:\\s*0(.0*)?\\s*"
-        let type = [CGPoint.self, CGSize.self, CGVector.self, CGRect.self]
-            .map(String.init(describing:))
-            .joined(separator: "|")
+        let type = "(\(["CGPoint", "CGSize", "CGVector", "CGRect"].joined(separator: "|")))"
         let firstArg = "(\(["x", "dx", "width"].joined(separator: "|")))"
         let secondArg = "(\(["y", "dy", "height"].joined(separator: "|")))"
         let thirdAndFourthArg = "(\\,\\s*width\(zero)\\,\\s*height\(zero))?"
-        return "(\(type))\\(\\s*\(firstArg)\(zero)\\,\\s*\(secondArg)\(zero)\(thirdAndFourthArg)\\)"
+        return "\(type)\\(\\s*\(firstArg)\(zero)\\,\\s*\(secondArg)\(zero)\(thirdAndFourthArg)\\)"
     }
 
     public static let description = RuleDescription(

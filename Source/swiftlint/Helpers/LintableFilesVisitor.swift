@@ -142,7 +142,9 @@ struct LintableFilesVisitor {
                 return .success(.compilationDatabase(compileCommands: compileCommands))
             case .failure(let error):
                 return .failure(
-                    .usageError(description: "Could not read compilation database at path: '\(path)' \(error.description)")
+                    .usageError(
+                        description: "Could not read compilation database at path: '\(path)' \(error.description)"
+                    )
                 )
             }
         }
@@ -165,7 +167,7 @@ struct LintableFilesVisitor {
 
     private static func loadCompileCommands(_ path: String) -> Result<[File: Arguments], CompileCommandsLoadError> {
         guard let jsonContents = FileManager.default.contents(atPath: path) else {
-            return .failure(.nonExistantFile(path))
+            return .failure(.nonExistentFile(path))
         }
 
         guard let object = try? JSONSerialization.jsonObject(with: jsonContents),
@@ -186,13 +188,13 @@ struct LintableFilesVisitor {
                 return .failure(.malformedArguments(path, index))
             }
 
+            guard arguments.contains(file) else {
+                return .failure(.missingFileInArguments(path, index, arguments))
+            }
+
             // Compilation databases include the compiler, but it's left out when sending to SourceKit.
             if arguments.first == "swiftc" {
                 arguments.removeFirst()
-            }
-
-            if !arguments.contains(file) {
-                return .failure(.missingFileInArguments(path, index, arguments))
             }
 
             commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
@@ -203,7 +205,7 @@ struct LintableFilesVisitor {
 }
 
 private enum CompileCommandsLoadError: Error {
-    case nonExistantFile(String)
+    case nonExistentFile(String)
     case malformedCommands(String)
     case malformedFile(String, Int)
     case malformedArguments(String, Int)
@@ -211,7 +213,7 @@ private enum CompileCommandsLoadError: Error {
 
     var description: String {
         switch self {
-        case let .nonExistantFile(path):
+        case let .nonExistentFile(path):
             return "Could not read compile commands file at '\(path)'"
         case let .malformedCommands(path):
             return "Compile commands file at '\(path)' isn't in the correct format"
@@ -220,7 +222,7 @@ private enum CompileCommandsLoadError: Error {
         case let .malformedArguments(path, index):
             return "Missing or invalid (must be an array of strings) 'arguments' key in \(path) at index \(index)"
         case let .missingFileInArguments(path, index, arguments):
-            return "Entry in \(path) at index \(index) has 'arugments' which do not contain the 'file': \(arguments)"
+            return "Entry in \(path) at index \(index) has 'arguments' which do not contain the 'file': \(arguments)"
         }
     }
 }

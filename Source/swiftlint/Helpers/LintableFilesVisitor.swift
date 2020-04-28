@@ -137,13 +137,16 @@ struct LintableFilesVisitor {
             return .success(.buildLog(compilerInvocations: compilerInvocations))
         } else if !options.compileCommands.isEmpty {
             let path = options.compileCommands
-            guard let compileCommands = self.loadCompileCommands(path) else {
+            switch self.loadCompileCommands(path) {
+            case .success(let compileCommands):
+                return .success(.compilationDatabase(compileCommands: compileCommands))
+            case .failure(let error):
                 return .failure(
-                    .usageError(description: "Could not read compilation database at path: '\(path)'")
+                    .usageError(
+                        description: "Could not read compilation database at path: '\(path)' \(error.description)"
+                    )
                 )
             }
-
-            return .success(.compilationDatabase(compileCommands: compileCommands))
         }
 
         return .failure(.usageError(description: "Could not read compiler invocations"))
@@ -162,25 +165,64 @@ struct LintableFilesVisitor {
         return nil
     }
 
-    private static func loadCompileCommands(_ path: String) -> [String: [String]]? {
-        guard let jsonContents = FileManager.default.contents(atPath: path),
-            let object = try? JSONSerialization.jsonObject(with: jsonContents),
+    private static func loadCompileCommands(_ path: String) -> Result<[File: Arguments], CompileCommandsLoadError> {
+        guard let jsonContents = FileManager.default.contents(atPath: path) else {
+            return .failure(.nonExistentFile(path))
+        }
+
+        guard let object = try? JSONSerialization.jsonObject(with: jsonContents),
             let compileDB = object as? [[String: Any]] else {
-            return nil
+            return .failure(.malformedCommands(path))
         }
 
         // Convert the compilation database to a dictionary, with source files as keys and compiler arguments as values.
         //
         // Compilation databases are an array of dictionaries. Each dict has "file" and "arguments" keys.
-        return compileDB.reduce(into: [:]) { (commands: inout [File: Arguments], entry: [String: Any]) in
-            if let file = entry["file"] as? String, var arguments = entry["arguments"] as? [String] {
-                // Compilation databases include the compiler, but it's left out when sending to SourceKit.
-                if arguments.first == "swiftc" {
-                    arguments.removeFirst()
-                }
-
-                commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
+        var commands = [File: Arguments]()
+        for (index, entry) in compileDB.enumerated() {
+            guard let file = entry["file"] as? String else {
+                return .failure(.malformedFile(path, index))
             }
+
+            guard var arguments = entry["arguments"] as? [String] else {
+                return .failure(.malformedArguments(path, index))
+            }
+
+            guard arguments.contains(file) else {
+                return .failure(.missingFileInArguments(path, index, arguments))
+            }
+
+            // Compilation databases include the compiler, but it's left out when sending to SourceKit.
+            if arguments.first == "swiftc" {
+                arguments.removeFirst()
+            }
+
+            commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
+        }
+
+        return .success(commands)
+    }
+}
+
+private enum CompileCommandsLoadError: Error {
+    case nonExistentFile(String)
+    case malformedCommands(String)
+    case malformedFile(String, Int)
+    case malformedArguments(String, Int)
+    case missingFileInArguments(String, Int, [String])
+
+    var description: String {
+        switch self {
+        case let .nonExistentFile(path):
+            return "Could not read compile commands file at '\(path)'"
+        case let .malformedCommands(path):
+            return "Compile commands file at '\(path)' isn't in the correct format"
+        case let .malformedFile(path, index):
+            return "Missing or invalid (must be a string) 'file' key in \(path) at index \(index)"
+        case let .malformedArguments(path, index):
+            return "Missing or invalid (must be an array of strings) 'arguments' key in \(path) at index \(index)"
+        case let .missingFileInArguments(path, index, arguments):
+            return "Entry in \(path) at index \(index) has 'arguments' which do not contain the 'file': \(arguments)"
         }
     }
 }

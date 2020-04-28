@@ -5,6 +5,10 @@
 * SwiftLint now requires Swift 5.1 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
+* Improve compile commands json file validation. If you previously
+  provided invalid files or arguments, the command will now abort.  
+  [Keith Smiley](https://github.com/keith)
+
 #### Experimental
 
 * None.

@@ -24,6 +24,8 @@
 
 * Fix UnusedImportRule breaking transitive imports.  
   [keith](https://github.com/keith)
+* Fix severity level configuration for `duplicate_imports`.
+  [Yusuke Goto](https://github.com/yusukegoto)
 
 ## 0.39.2: Stay Home
 

@@ -84,7 +84,9 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
                 }()
 
                 let location = Location(file: file, characterOffset: lineWithDuplicatedImport.range.location)
-                let violation = StyleViolation(ruleDescription: type(of: self).description, location: location)
+                let violation = StyleViolation(ruleDescription: type(of: self).description,
+                                               severity: configuration.severity,
+                                               location: location)
                 violations.append(violation)
             }
         }

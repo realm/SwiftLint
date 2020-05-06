@@ -20,7 +20,6 @@
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
 
-
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  

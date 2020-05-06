@@ -15,10 +15,13 @@
 
 #### Enhancements
 
+* Fix UnusedImportRule breaking transitive imports.  
+  [keith](https://github.com/keith)
 * JUnit reporter for GitLab artifact:report:junit with better representation of
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
+
 
 #### Bug Fixes
 

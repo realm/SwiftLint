@@ -15,8 +15,6 @@
 
 #### Enhancements
 
-* Fix UnusedImportRule breaking transitive imports.  
-  [keith](https://github.com/keith)
 * JUnit reporter for GitLab artifact:report:junit with better representation of
   found issues.  
   [krin-san](https://github.com/krin-san)
@@ -25,7 +23,8 @@
 
 #### Bug Fixes
 
-* None.
+* Fix UnusedImportRule breaking transitive imports.  
+  [keith](https://github.com/keith)
 
 ## 0.39.2: Stay Home
 

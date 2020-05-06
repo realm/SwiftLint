@@ -132,6 +132,7 @@ private extension SwiftLintFile {
             .subtracting(imports + [currentModule].compactMap({ $0 }))
             .filter { module in
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
+                    .filter { !unusedImports.contains($0.importedModule) }
                     .filter { $0.transitivelyImportedModules.contains(module) }
                     .map { $0.importedModule }
 

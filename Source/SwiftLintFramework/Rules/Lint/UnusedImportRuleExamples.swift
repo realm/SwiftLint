@@ -152,6 +152,22 @@ struct UnusedImportRuleExamples {
             """),
         Example("""
         ↓↓import Foundation
+        typealias Foo = CGPoint
+        """, configuration: [
+            "require_explicit_imports": true,
+            "allowed_transitive_imports": [
+                [
+                    "module": "Foundation",
+                    "allowed_transitive_imports": ["CoreGraphics"]
+                ]
+            ]
+        ], testMultiByteOffsets: false, testOnLinux: false):
+            Example("""
+            import CoreGraphics
+            typealias Foo = CGPoint
+            """),
+        Example("""
+        ↓↓import Foundation
         typealias Foo = CFData
         """, configuration: [
             "require_explicit_imports": true

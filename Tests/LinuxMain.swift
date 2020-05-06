@@ -850,8 +850,7 @@ extension LinterCacheTests {
         ("testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-        ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted),
-        ("testDetectSwiftVersion", testDetectSwiftVersion)
+        ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted)
     ]
 }
 
@@ -1225,6 +1224,7 @@ extension ReporterTests {
         ("testXcodeReporter", testXcodeReporter),
         ("testEmojiReporter", testEmojiReporter),
         ("testGitHubActionsLoggingReporter", testGitHubActionsLoggingReporter),
+        ("testGitLabJUnitReporter", testGitLabJUnitReporter),
         ("testJSONReporter", testJSONReporter),
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),
@@ -1375,6 +1375,12 @@ extension StrictFilePrivateRuleTests {
 extension StrongIBOutletRuleTests {
     static var allTests: [(String, (StrongIBOutletRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SwiftVersionTests {
+    static var allTests: [(String, (SwiftVersionTests) -> () throws -> Void)] = [
+        ("testDetectSwiftVersion", testDetectSwiftVersion)
     ]
 }
 
@@ -1832,6 +1838,7 @@ XCTMain([
     testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
     testCase(StrongIBOutletRuleTests.allTests),
+    testCase(SwiftVersionTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),

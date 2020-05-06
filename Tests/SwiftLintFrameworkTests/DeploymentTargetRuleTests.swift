@@ -9,7 +9,7 @@ class DeploymentTargetRuleTests: XCTestCase {
     // MARK: - Reasons
 
     func testMacOSAttributeReason() {
-        let example = Example("@availability(macOS 10.11, *)\nclass A {}")
+        let example = Example("@available(macOS 10.11, *)\nclass A {}")
         let violations = self.violations(example, config: ["macOS_deployment_target": "10.14.0"])
 
         let expectedMessage = "Availability attribute is using a version (10.11) that is satisfied by " +

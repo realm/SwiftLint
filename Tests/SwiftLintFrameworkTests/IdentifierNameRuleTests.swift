@@ -31,6 +31,7 @@ class IdentifierNameRuleTests: XCTestCase {
     func testIdentifierNameWithIgnoreStartWithLowercase() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
+            Example("↓func IsOperator(name: String) -> Bool"),
             Example("↓let MyLet = 0"),
             Example("enum Foo { case ↓MyEnum }")
         ]

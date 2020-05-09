@@ -42,6 +42,10 @@
   [cfiken](https://github.com/cfiken)
   [#3299](https://github.com/realm/SwiftLint/pull/3299)
 
+* Fix `validates_start_with_lowercase` not disabling for function names.  
+  [luis-](https://github.com/luis-)
+  [#2708](https://github.com/realm/SwiftLint/issues/2708)
+
 ## 0.40.0: Washable Mask
 
 #### Breaking

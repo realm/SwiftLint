@@ -12,7 +12,7 @@ public struct SonarQubeReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(["issues": violations.map(dictionary(for:))])
+         return toJSON(violations.map(dictionary(for:)))
     }
 
     // MARK: - Private

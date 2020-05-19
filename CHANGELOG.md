@@ -24,6 +24,10 @@
 
 * Fix UnusedImportRule breaking transitive imports.  
   [keith](https://github.com/keith)
+  
+* Fix JSON output of sonarqube reporter
+  [moerter](https://github.com/moerter)
+  
 
 ## 0.39.2: Stay Home
 

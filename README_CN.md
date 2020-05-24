@@ -77,7 +77,7 @@ fi
 
 #### 格式化保存 Xcode 插件
 
-在 XCode 中保存时执行 `swiftlint autocorrect`，需要从 Alcatraz 安装 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) 插件。
+在 Xcode 中保存时执行 `swiftlint autocorrect`，需要从 Alcatraz 安装 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) 插件。
 
 ⚠ ️如果没有禁用 SIP 的话，这个插件在 Xcode 8 或者更新版本的 Xcode 上将不会工作。不推荐此操作。
 

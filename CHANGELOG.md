@@ -167,6 +167,11 @@ This is the last release to support building with Swift 5.0.x.
 
 #### Bug Fixes
 
+* Fix false positive in `attributes` rule with `@autoclosure` parameters when
+  using Swift 5.2.  
+  [Mateusz Matrejek](https://github.com/matrejek)
+  [#3079](https://github.com/realm/SwiftLint/issues/3112)
+
 * Fix `discarded_notification_center_observer` false positives when
   capturing observers into an array.  
   [Petteri Huusko](https://github.com/PetteriHuusko)

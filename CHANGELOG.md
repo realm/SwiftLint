@@ -24,7 +24,7 @@
 
 * Fix UnusedImportRule breaking transitive imports.  
   [keith](https://github.com/keith)
-* #3167: Fixes false positives for multiline_parameters_brackets and multiline_arguments_brackets.  
+* Fixes false positives for multiline_parameters_brackets and multiline_arguments_brackets.  
   [Noah Gilmore](https://github.com/noahsark769)
   [#3167](https://github.com/realm/SwiftLint/issues/3167)
 

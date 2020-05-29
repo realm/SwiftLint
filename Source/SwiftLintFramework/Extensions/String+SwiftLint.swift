@@ -91,4 +91,13 @@ extension String {
         }
         return false
     }
+
+    /// Count the number of occurrences of the given character in `self`
+    /// - Parameter character: Character to count
+    /// - Returns: Number of times `character` occurs in `self`
+    public func countOccurrences(of character: Character) -> Int {
+        return self.reduce(0, {
+            $1 == character ? $0 + 1 : $0
+        })
+    }
 }

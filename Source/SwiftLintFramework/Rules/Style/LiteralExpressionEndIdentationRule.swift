@@ -119,6 +119,16 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
                3,
                4
             ]
+            """),
+            Example("""
+            let x = [
+               Test(keyA: valueA,
+                    keyB: valueB)]
+            """): Example("""
+                let x = [
+                Test(keyA: valueA,
+                keyB: valueB)
+                ]
             """)
         ]
     )
@@ -131,8 +141,8 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
 
     private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
         let reason = "\(LiteralExpressionEndIdentationRule.description.description) " +
-                     "Expected \(violation.indentationRanges.expected.length), " +
-                     "got \(violation.indentationRanges.actual.length)."
+            "Expected \(violation.indentationRanges.expected.length), " +
+        "got \(violation.indentationRanges.actual.length)."
 
         return StyleViolation(ruleDescription: type(of: self).description,
                               severity: configuration.severity,
@@ -244,8 +254,8 @@ extension LiteralExpressionEndIdentationRule {
             case let endOffset = offset + length - 1,
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
             lastParamLine != endLine
-        else {
-            return nil
+            else {
+                return nil
         }
 
         let range = file.lines[startLine - 1].range
@@ -254,8 +264,8 @@ extension LiteralExpressionEndIdentationRule {
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
             expected != actual
-        else {
-            return nil
+            else {
+                return nil
         }
 
         var expectedRange = range

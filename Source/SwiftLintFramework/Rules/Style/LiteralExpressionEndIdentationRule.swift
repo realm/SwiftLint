@@ -69,6 +69,11 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
             let x = [
                key: value
                ↓]
+            """),
+            Example("""
+            let x = [
+               Test(keyA: valueA,
+                    keyB: valueB)↓]
             """)
         ],
         corrections: [
@@ -123,12 +128,12 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
             Example("""
             let x = [
                Test(keyA: valueA,
-                    keyB: valueB)]
+                    keyB: valueB)↓]
             """): Example("""
-                let x = [
-                Test(keyA: valueA,
-                keyB: valueB)
-                ]
+            let x = [
+               Test(keyA: valueA,
+                    keyB: valueB)
+            ]
             """)
         ]
     )

@@ -203,8 +203,8 @@ internal extension Configuration.FileGraph.FilePath {
         // Create directory if needed
         let directory = "\(Configuration.FileGraph.FilePath.remoteCachePath)/"
             + "\(Configuration.FileGraph.FilePath.remoteCacheVersionNumber)/"
-            .bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
-        if !FileManager.default.fileExists(atPath: directory) {
+        let absoluteDirectory = directory.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+        if !FileManager.default.fileExists(atPath: absoluteDirectory) {
             try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
         }
 

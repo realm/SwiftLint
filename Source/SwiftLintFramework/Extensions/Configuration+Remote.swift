@@ -12,6 +12,11 @@ internal extension Configuration.FileGraph.FilePath {
     /// If the format of the caching is changed in the future, change this version number
     private static let remoteCacheVersionNumber: String = "v1"
 
+    /// Use this to get the path to the cache directory for the current cache format
+    private static var versionedRemoteCachePath: String {
+        "\(remoteCachePath)/\(remoteCacheVersionNumber)"
+    }
+
     // MARK: - Methods: Resolving
     mutating func resolve(
         remoteConfigTimeout: Double,
@@ -194,17 +199,15 @@ internal extension Configuration.FileGraph.FilePath {
 
     private func filePath(for urlString: String, rootDirectory: String) -> String {
         let adjustedUrlString = urlString.replacingOccurrences(of: "/", with: "_")
-        let path = "\(Configuration.FileGraph.FilePath.remoteCachePath)/"
-            + "\(Configuration.FileGraph.FilePath.remoteCacheVersionNumber)/\(adjustedUrlString).yml"
+        let path = "\(Configuration.FileGraph.FilePath.versionedRemoteCachePath)" + "/\(adjustedUrlString).yml"
         return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
     }
 
     private func maintainRemoteConfigCache(rootDirectory: String) throws {
         // Create directory if needed
-        let directory = "\(Configuration.FileGraph.FilePath.remoteCachePath)/"
-            + "\(Configuration.FileGraph.FilePath.remoteCacheVersionNumber)/"
-        let absoluteDirectory = directory.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
-        if !FileManager.default.fileExists(atPath: absoluteDirectory) {
+        let directory = Configuration.FileGraph.FilePath.versionedRemoteCachePath
+            .bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+        if !FileManager.default.fileExists(atPath: directory) {
             try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
         }
 

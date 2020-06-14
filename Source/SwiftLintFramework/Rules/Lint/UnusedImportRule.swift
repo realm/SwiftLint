@@ -175,7 +175,7 @@ private extension SwiftLintFile {
                 }
             }
 
-            appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+            appendUsedImports(moduleName: cursorInfo.moduleName, usrFragments: &usrFragments)
         }
 
         return (imports: imports, usrFragments: usrFragments)
@@ -218,7 +218,7 @@ private extension SwiftLintFile {
                     continue
                 }
 
-                appendUsedImports(cursorInfo: cursorInfo, usrFragments: &imports)
+                appendUsedImports(moduleName: cursorInfo.moduleName, usrFragments: &imports)
             }
         }
 
@@ -258,8 +258,8 @@ private extension SwiftLintFile {
         ].contains { kind.hasPrefix($0) }
     }
 
-    func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
-        if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
+    func appendUsedImports(moduleName: String?, usrFragments: inout Set<String>) {
+        if let rootModuleName = moduleName?.split(separator: ".").first.map(String.init) {
             usrFragments.insert(rootModuleName)
         }
     }

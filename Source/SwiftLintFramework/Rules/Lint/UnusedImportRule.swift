@@ -98,11 +98,11 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
 private extension SwiftLintFile {
     func getImportUsage(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [ImportUsage] {
-        var (imports, usrFragments) = getImportsAndUSRFragments(compilerArguments: compilerArguments)
+        var (imports, usedModules) = getImportsAndUsedModules(compilerArguments: compilerArguments)
 
         // Always disallow 'import Swift' because it's available without importing.
-        usrFragments.remove("Swift")
-        var unusedImports = imports.subtracting(usrFragments)
+        usedModules.remove("Swift")
+        var unusedImports = imports.subtracting(usedModules)
         // Certain Swift attributes requires importing Foundation.
         if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
             unusedImports.remove("Foundation")
@@ -128,7 +128,7 @@ private extension SwiftLintFile {
         let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
             .map { compilerArguments[$0] }
 
-        let missingImports = usrFragments
+        let missingImports = usedModules
             .subtracting(imports + [currentModule].compactMap({ $0 }))
             .filter { module in
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
@@ -143,9 +143,9 @@ private extension SwiftLintFile {
         return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
     }
 
-    func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {
+    func getImportsAndUsedModules(compilerArguments: [String]) -> (imports: Set<String>, usedModules: Set<String>) {
         var imports = Set<String>()
-        var usrFragments = Set<String>()
+        var usedModules = Set<String>()
         var nextIsModuleImport = false
         for token in syntaxMap.tokens {
             guard let tokenKind = token.kind else {
@@ -175,10 +175,10 @@ private extension SwiftLintFile {
                 }
             }
 
-            appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+            appendUsedImports(cursorInfo: cursorInfo, usedModules: &usedModules)
         }
 
-        return (imports: imports, usrFragments: usrFragments)
+        return (imports: imports, usedModules: usedModules)
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
@@ -218,7 +218,7 @@ private extension SwiftLintFile {
                     continue
                 }
 
-                appendUsedImports(cursorInfo: cursorInfo, usrFragments: &imports)
+                appendUsedImports(cursorInfo: cursorInfo, usedModules: &imports)
             }
         }
 
@@ -258,9 +258,9 @@ private extension SwiftLintFile {
         ].contains { kind.hasPrefix($0) }
     }
 
-    func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
+    func appendUsedImports(cursorInfo: SourceKittenDictionary, usedModules: inout Set<String>) {
         if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
-            usrFragments.insert(rootModuleName)
+            usedModules.insert(rootModuleName)
         }
     }
 }

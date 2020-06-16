@@ -309,6 +309,11 @@ This is the last release to support building with Swift 5.0.x.
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
+* Add `racist_declaration` opt-in rule to discourage the use of terms with
+  racist connotations.
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#3243](https://github.com/realm/SwiftLint/pull/3243)
+
 #### Bug Fixes
 
 * Fix more false positives in `implicit_getter` rule in extensions when using

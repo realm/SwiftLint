@@ -63,6 +63,7 @@ public struct RacistDeclarationRule: ASTRule, ConfigurationProviderRule, OptInRu
         let reason = "Declaration \(name) contains the term \"\(term)\" which has racist connotations."
         let violation = StyleViolation(
             ruleDescription: Swift.type(of: self).description,
+            severity: configuration.severity,
             location: Location(file: file, byteOffset: nameByteRange.location),
             reason: reason
         )

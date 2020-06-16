@@ -136,6 +136,7 @@ public let masterRuleList = RuleList(rules: [
     QuickDiscouragedCallRule.self,
     QuickDiscouragedFocusedTestRule.self,
     QuickDiscouragedPendingTestRule.self,
+    RacistDeclarationRule.self,
     RawValueForCamelCasedCodableEnumRule.self,
     ReduceBooleanRule.self,
     ReduceIntoRule.self,

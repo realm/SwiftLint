@@ -570,6 +570,12 @@ class QuickDiscouragedPendingTestRuleTests: XCTestCase {
     }
 }
 
+class RacistDeclarationRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RacistDeclarationRule.description)
+    }
+}
+
 class RawValueForCamelCasedCodableEnumRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)

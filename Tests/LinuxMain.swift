@@ -1193,6 +1193,12 @@ extension QuickDiscouragedPendingTestRuleTests {
     ]
 }
 
+extension RacistDeclarationRuleTests {
+    static var allTests: [(String, (RacistDeclarationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RawValueForCamelCasedCodableEnumRuleTests {
     static var allTests: [(String, (RawValueForCamelCasedCodableEnumRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1875,6 +1881,7 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
+    testCase(RacistDeclarationRuleTests.allTests),
     testCase(RawValueForCamelCasedCodableEnumRuleTests.allTests),
     testCase(ReduceBooleanRuleTests.allTests),
     testCase(ReduceIntoRuleTests.allTests),

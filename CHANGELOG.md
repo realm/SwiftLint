@@ -20,6 +20,10 @@
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
 
+* Add `prohibited_inline` and `prohibited_transparent` rules to discourage
+  usage of inline and transparent decorators, respectively.  
+  [Ilias Karim](https://github.com/iliaskarim)
+
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  

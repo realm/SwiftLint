@@ -114,6 +114,7 @@ public let primaryRuleList = RuleList(rules: [
     NoFallthroughOnlyRule.self,
     NoGroupingExtensionRule.self,
     NoSpaceInMethodCallRule.self,
+    NonPrivateXCTestMembersRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,

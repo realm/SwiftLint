@@ -68,6 +68,8 @@
   format. Could be used for GitLab Code Quality MR Widget.  
   [jkroepke](https://github.com/jkroepke)
   [#3424](https://github.com/realm/SwiftLint/issues/3424)
+* Add `non_private_xctest_member` rule.  
+  [Keith Smiley](https://github.com/keith)
 
 #### Bug Fixes
 

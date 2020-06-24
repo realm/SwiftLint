@@ -54,20 +54,20 @@ public struct SignificantDeclarationWhitespaceRule: ConfigurationProviderRule, O
                 var a = 0
                 var a = 0
             }
-            """),
+            """)
         ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
-        
+
         let commentLines = commentsAndAttributes(file: file)
 
         let varLines = violationsLineNumbers(file: file, commentLines: commentLines, structure: dict.substructure)
 
         var violations = [StyleViolation]()
 
-        for (index, _) in file.lines.enumerated() {
+        for index in file.lines.indices {
             guard varLines.contains(index) else {
                 continue
             }
@@ -99,14 +99,14 @@ public struct SignificantDeclarationWhitespaceRule: ConfigurationProviderRule, O
 
         return (startLine, endLine)
     }
-    
+
     // Collects all the line numbers containing significant declarations that aren't preceded by blank line
     private func violationsLineNumbers(file: SwiftLintFile,
                                        commentLines: Set<Int>,
                                        structure: [SourceKittenDictionary]) -> [Int] {
         var result = [Int]()
         var previous: ClosedRange<Int>?
-        
+
         for statement in structure {
             guard let kind = statement.declarationKind,
                   let (startLine, endLine) = lineOffsets(file: file, statement: statement) else {
@@ -117,7 +117,7 @@ public struct SignificantDeclarationWhitespaceRule: ConfigurationProviderRule, O
             while commentLines.contains(startLineIncludingLeading - 1) {
                 startLineIncludingLeading -= 1
             }
-            
+
             if SwiftDeclarationKind.allDeclarations.contains(kind),
                let previous = previous,
                let previousEnd = previous.last,
@@ -125,11 +125,11 @@ public struct SignificantDeclarationWhitespaceRule: ConfigurationProviderRule, O
                (endLine - startLineIncludingLeading) >= configuration.warning {
                 result.append(startLineIncludingLeading)
             }
-            
+
             previous = (startLineIncludingLeading...((endLine < 0) ? file.lines.count : endLine))
-            
+
             let substructure = statement.substructure
-            
+
             if SwiftDeclarationKind.bigDeclarations.contains(kind) && !substructure.isEmpty {
                 let subResult = violationsLineNumbers(file: file,
                                                       commentLines: commentLines,
@@ -137,7 +137,7 @@ public struct SignificantDeclarationWhitespaceRule: ConfigurationProviderRule, O
                 result.append(contentsOf: subResult)
             }
         }
-        
+
         return result
     }
 
@@ -171,7 +171,8 @@ private extension SwiftDeclarationKind {
     // The various kinds of let/var declarations
     static let varKinds: [SwiftDeclarationKind] = [.varClass, .varStatic, .varInstance]
     // The various kinds of func/init declarations
-    static let funcKinds: [SwiftDeclarationKind] = [.functionMethodClass, .functionMethodStatic, .functionMethodInstance,
+    static let funcKinds: [SwiftDeclarationKind] = [.functionMethodClass, .functionMethodStatic,
+                                                    .functionMethodInstance,
                                                     .functionConstructor, .functionDestructor]
 
     static let bigDeclarations = Set(SwiftDeclarationKind.typeKinds + [.extension])

@@ -485,6 +485,12 @@ extension ExtendedNSStringTests {
     ]
 }
 
+extension ExtendedStringTests {
+    static var allTests: [(String, (ExtendedStringTests) -> () throws -> Void)] = [
+        ("testCountOccurrences", testCountOccurrences)
+    ]
+}
+
 extension ExtensionAccessModifierRuleTests {
     static var allTests: [(String, (ExtensionAccessModifierRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1327,6 +1333,12 @@ extension ShorthandOperatorRuleTests {
     ]
 }
 
+extension SignificantDeclarationWhitespaceRuleTests {
+    static var allTests: [(String, (SignificantDeclarationWhitespaceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension SingleTestClassRuleTests {
     static var allTests: [(String, (SingleTestClassRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1722,6 +1734,7 @@ XCTMain([
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
     testCase(ExplicitTypeInterfaceRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
+    testCase(ExtendedStringTests.allTests),
     testCase(ExtensionAccessModifierRuleTests.allTests),
     testCase(FallthroughRuleTests.allTests),
     testCase(FatalErrorMessageRuleTests.allTests),
@@ -1830,6 +1843,7 @@ XCTMain([
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),
+    testCase(SignificantDeclarationWhitespaceRuleTests.allTests),
     testCase(SingleTestClassRuleTests.allTests),
     testCase(SortedFirstLastRuleTests.allTests),
     testCase(SortedImportsRuleTests.allTests),

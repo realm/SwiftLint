@@ -148,6 +148,7 @@ public let masterRuleList = RuleList(rules: [
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
+    SignificantDeclarationWhitespaceRule.self,
     SingleTestClassRule.self,
     SortedFirstLastRule.self,
     SortedImportsRule.self,

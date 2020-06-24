@@ -648,6 +648,12 @@ class ShorthandOperatorRuleTests: XCTestCase {
     }
 }
 
+class SignificantDeclarationWhitespaceRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SignificantDeclarationWhitespaceRule.description)
+    }
+}
+
 class SingleTestClassRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SingleTestClassRule.description)

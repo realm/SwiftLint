@@ -197,7 +197,7 @@ private extension SwiftLintFile {
             return []
         }
 
-        let operatorEntities = flatEntities(entity: index).filter { mightBeOperator(kind: $0.kind) }
+        let operatorEntities = flatEntities(entity: index) //.filter { mightBeOperator(kind: $0.kind) }
         let offsetPerLine = self.offsetPerLine()
         var imports = Set<String>()
 
@@ -209,7 +209,7 @@ private extension SwiftLintFile {
                 let offset = lineOffset + column - 1
 
                 // Filter already processed tokens such as static methods that are not operators
-                guard !processedTokenOffsets.contains(ByteCount(offset)) else { continue }
+                // guard !processedTokenOffsets.contains(ByteCount(offset)) else { continue }
 
                 let cursorInfoRequest = Request.cursorInfo(file: path!, offset: ByteCount(offset), arguments: arguments)
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())

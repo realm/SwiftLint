@@ -24,19 +24,24 @@ public struct UnusedImportConfiguration: RuleConfiguration, Equatable {
         return [
             "severity: \(severity.consoleDescription)",
             "require_explicit_imports: \(requireExplicitImports)",
-            "allowed_transitive_imports: \(allowedTransitiveImports)"
+            "allowed_transitive_imports: \(allowedTransitiveImports)",
+            "always_keep_imports: \(alwaysKeepImports)"
         ].joined(separator: ", ")
     }
 
     public private(set) var severity: SeverityConfiguration
     public private(set) var requireExplicitImports: Bool
     public private(set) var allowedTransitiveImports: [TransitiveModuleConfiguration]
+    /// A set of modules to never remove the imports of.
+    public private(set) var alwaysKeepImports: [String]
 
     public init(severity: ViolationSeverity, requireExplicitImports: Bool,
-                allowedTransitiveImports: [TransitiveModuleConfiguration]) {
+                allowedTransitiveImports: [TransitiveModuleConfiguration],
+                alwaysKeepImports: [String]) {
         self.severity = SeverityConfiguration(severity)
         self.requireExplicitImports = requireExplicitImports
         self.allowedTransitiveImports = allowedTransitiveImports
+        self.alwaysKeepImports = alwaysKeepImports
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -52,6 +57,9 @@ public struct UnusedImportConfiguration: RuleConfiguration, Equatable {
         }
         if let allowedTransitiveImports = configurationDict["allowed_transitive_imports"] as? [Any] {
             self.allowedTransitiveImports = try allowedTransitiveImports.map(TransitiveModuleConfiguration.init)
+        }
+        if let alwaysKeepImports = configurationDict["always_keep_imports"] as? [String] {
+            self.alwaysKeepImports = alwaysKeepImports
         }
     }
 }

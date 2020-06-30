@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
     public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
-                                                         allowedTransitiveImports: [])
+                                                         allowedTransitiveImports: [], alwaysKeepImports: [])
 
     public init() {}
 
@@ -102,7 +102,7 @@ private extension SwiftLintFile {
 
         // Always disallow 'import Swift' because it's available without importing.
         usrFragments.remove("Swift")
-        var unusedImports = imports.subtracting(usrFragments)
+        var unusedImports = imports.subtracting(usrFragments).subtracting(configuration.alwaysKeepImports)
         // Certain Swift attributes requires importing Foundation.
         if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
             unusedImports.remove("Foundation")

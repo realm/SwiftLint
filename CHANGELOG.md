@@ -19,6 +19,8 @@
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
+* Add 'always_keep_imports' UnusedImportRule exception.  
+  [Keith Smiley](https://github.com/keith)
 
 #### Bug Fixes
 

@@ -1,3 +1,4 @@
+// swiftlint:disable type_body_length
 struct UnusedImportRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -220,6 +221,6 @@ struct UnusedImportRuleExamples {
             Example("""
             import Foundation
             func bar() {}
-            """),
+            """)
     ]
 }

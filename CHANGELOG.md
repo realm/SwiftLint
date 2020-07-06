@@ -27,6 +27,10 @@
 * Fixes false positives for multiline_parameters_brackets and multiline_arguments_brackets.  
   [Noah Gilmore](https://github.com/noahsark769)
   [#3167](https://github.com/realm/SwiftLint/issues/3167)
+* Fix conflict of 'opening_brace' with 'implicit_return' for functions
+  implicitly returning a closure.
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3034](https://github.com/realm/SwiftLint/issues/3034)
 
 ## 0.39.2: Stay Home
 

@@ -37,8 +37,13 @@ public struct InclusiveLanguageConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        let configAllowList = (configuration[ConfigurationKey.allow.rawValue] as? [String]) ?? []
-        let configDenyList = (configuration[ConfigurationKey.deny.rawValue] as? [String]) ?? []
+        let configAllowList = lowercasedList(for: .allow, from: configuration)
+        let configDenyList = lowercasedList(for: .deny, from: configuration)
         self.denyList = defaultDenyList.union(configDenyList).subtracting(configAllowList)
+    }
+
+    private func lowercasedList(for key: ConfigurationKey, from config: [String: Any]) -> [String] {
+        let list = config[key.rawValue] as? [String] ?? []
+        return list.map { $0.lowercased() }
     }
 }

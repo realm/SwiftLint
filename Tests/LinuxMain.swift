@@ -740,7 +740,9 @@ extension ImplicitlyUnwrappedOptionalRuleTests {
 
 extension InclusiveLanguageRuleTests {
     static var allTests: [(String, (InclusiveLanguageRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testNonTriggeringExamplesWithNonDefaultConfig", testNonTriggeringExamplesWithNonDefaultConfig),
+        ("testTriggeringExamplesWithNonDefaultConfig", testTriggeringExamplesWithNonDefaultConfig)
     ]
 }
 

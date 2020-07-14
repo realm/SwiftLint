@@ -282,12 +282,6 @@ class ImplicitGetterRuleTests: XCTestCase {
     }
 }
 
-class InclusiveLanguageRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(InclusiveLanguageRule.description)
-    }
-}
-
 class InertDeferRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InertDeferRule.description)

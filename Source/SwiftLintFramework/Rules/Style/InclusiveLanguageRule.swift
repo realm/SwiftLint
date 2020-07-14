@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = InclusiveLanguageConfiguration()
 
     public init() {}
@@ -11,36 +11,8 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule, OptInRu
         description: "Identifiers should use inclusive language that avoids"
             + " discrimination against groups of people based on race, gender, or socioeconomic status",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let foo = \"abc\""),
-            Example("""
-            enum AllowList {
-                case foo, bar
-            }
-            """),
-            Example("func updateAllowList(add: String) {}")
-        ],
-        triggeringExamples: [
-            Example("let ↓slave = \"abc\""),
-            Example("""
-            enum ↓BlackList {
-                case foo, bar
-            }
-            """),
-            Example("func ↓updateWhiteList(add: String) {}"),
-            Example("""
-            enum ListType {
-                case ↓whitelist
-                case ↓blacklist
-            }
-            """),
-            Example("↓init(master: String, slave: String) {}"),
-            Example("""
-            final class FooBar {
-                func register<↓Master, ↓Slave>(one: Master, two: Slave) {}
-            }
-            """)
-        ]
+        nonTriggeringExamples: InclusiveLanguageRuleExamples.nonTriggeringExamples,
+        triggeringExamples: InclusiveLanguageRuleExamples.triggeringExamples
     )
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,

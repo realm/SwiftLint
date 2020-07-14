@@ -15,6 +15,10 @@
 
 #### Enhancements
 
+* Add multiline closure anonymous arguments rule to require named arguments for all multiline closures
+  [namolnad](https://github.com/namolnad)
+  [#3263](https://github.com/realm/SwiftLint/pull/3263)
+
 * JUnit reporter for GitLab artifact:report:junit with better representation of
   found issues.  
   [krin-san](https://github.com/krin-san)

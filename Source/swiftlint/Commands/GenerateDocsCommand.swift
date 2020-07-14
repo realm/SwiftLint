@@ -7,7 +7,7 @@ struct GenerateDocsCommand: CommandProtocol {
     let function = "Generates markdown documentation for all rules"
 
     func run(_ options: GenerateDocsOptions) -> Result<(), CommandantError<()>> {
-        let docs = RuleListDocumentation(masterRuleList)
+        let docs = RuleListDocumentation(primaryRuleList)
         do {
             try docs.write(to: URL(fileURLWithPath: options.path))
         } catch {

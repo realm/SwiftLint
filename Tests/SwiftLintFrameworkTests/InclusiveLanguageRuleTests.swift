@@ -7,7 +7,7 @@ class InclusiveLanguageRuleTests: XCTestCase {
     }
 
     func testNonTriggeringExamplesWithNonDefaultConfig() {
-        InclusiveLanguageRuleExamples.nonTriggeringExamplesWithNonDefaultConfig.forEach { example in
+        InclusiveLanguageRuleExamples.nonTriggeringExamplesWithConfig.forEach { example in
             let description = InclusiveLanguageRule.description
                 .with(nonTriggeringExamples: [example])
                 .with(triggeringExamples: [])
@@ -16,7 +16,7 @@ class InclusiveLanguageRuleTests: XCTestCase {
     }
 
     func testTriggeringExamplesWithNonDefaultConfig() {
-        InclusiveLanguageRuleExamples.triggeringExamplesWithNonDefaultConfig.forEach { example in
+        InclusiveLanguageRuleExamples.triggeringExamplesWithConfig.forEach { example in
             let description = InclusiveLanguageRule.description
                 .with(nonTriggeringExamples: [])
                 .with(triggeringExamples: [example])

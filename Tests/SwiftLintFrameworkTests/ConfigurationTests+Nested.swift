@@ -49,7 +49,7 @@ extension ConfigurationTests {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             return Configuration(warningThreshold: warningThreshold,
                                  reporter: XcodeReporter.identifier,
-                                 ruleList: masterRuleList)!
+                                 ruleList: primaryRuleList)!
         }
         XCTAssertEqual(configuration(forWarningThreshold: 3)
             .merge(with: configuration(forWarningThreshold: 2)).warningThreshold,
@@ -64,21 +64,21 @@ extension ConfigurationTests {
             .merge(with: configuration(forWarningThreshold: nil)).warningThreshold)
     }
 
-    func testNestedWhitelistedRules() {
+    func testNestedAllowlistedRules() {
         let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
                                                                   optIn: [ForceTryRule.description.identifier,
                                                                           ForceCastRule.description.identifier]))!
-        let whitelistedConfiguration = Configuration(rulesMode: .whitelisted([TodoRule.description.identifier]))!
+        let allowlistedConfiguration = Configuration(rulesMode: .allowlisted([TodoRule.description.identifier]))!
         XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
-        XCTAssertEqual(whitelistedConfiguration.rules.count, 1)
-        XCTAssertTrue(whitelistedConfiguration.rules[0] is TodoRule)
-        let mergedConfiguration1 = baseConfiguration.merge(with: whitelistedConfiguration)
+        XCTAssertEqual(allowlistedConfiguration.rules.count, 1)
+        XCTAssertTrue(allowlistedConfiguration.rules[0] is TodoRule)
+        let mergedConfiguration1 = baseConfiguration.merge(with: allowlistedConfiguration)
         XCTAssertEqual(mergedConfiguration1.rules.count, 1)
         XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
 
         // Also test the other way around
-        let mergedConfiguration2 = whitelistedConfiguration.merge(with: baseConfiguration)
-        XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the whitelisted rules
+        let mergedConfiguration2 = allowlistedConfiguration.merge(with: baseConfiguration)
+        XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the allowlisted rules
         XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))

@@ -3,12 +3,12 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
+private let optInRules = primaryRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 private extension Configuration {
     var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
-        let defaultRuleIDs = Set(masterRuleList.list.values.filter({
+        let defaultRuleIDs = Set(primaryRuleList.list.values.filter({
             !($0.init() is OptInRule)
         }).map({ $0.description.identifier }))
         return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
@@ -71,17 +71,17 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testEnableAllRulesConfiguration() {
-        let configuration = Configuration(dict: [:], ruleList: masterRuleList, enableAllRules: true, cachePath: nil)!
-        XCTAssertEqual(configuration.rules.count, masterRuleList.list.count)
+        let configuration = Configuration(dict: [:], ruleList: primaryRuleList, enableAllRules: true, cachePath: nil)!
+        XCTAssertEqual(configuration.rules.count, primaryRuleList.list.count)
     }
 
-    func testWhitelistRules() {
-        let whitelist = ["nesting", "todo"]
-        let config = Configuration(dict: ["whitelist_rules": whitelist])!
+    func testAllowlistRules() {
+        let allowlist = ["nesting", "todo"]
+        let config = Configuration(dict: ["allowlist_rules": allowlist])!
         let configuredIdentifiers = config.rules.map {
             type(of: $0).description.identifier
         }.sorted()
-        XCTAssertEqual(whitelist, configuredIdentifiers)
+        XCTAssertEqual(allowlist, configuredIdentifiers)
     }
 
     func testWarningThreshold_value() {
@@ -94,15 +94,15 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNil(config.warningThreshold)
     }
 
-    func testOtherRuleConfigurationsAlongsideWhitelistRules() {
-        let whitelist = ["nesting", "todo"]
+    func testOtherRuleConfigurationsAlongsideAllowlistRules() {
+        let allowlist = ["nesting", "todo"]
         let enabledRulesConfigDict = [
             "opt_in_rules": ["line_length"],
-            "whitelist_rules": whitelist
+            "allowlist_rules": allowlist
         ]
         let disabledRulesConfigDict = [
             "disabled_rules": ["identifier_name"],
-            "whitelist_rules": whitelist
+            "allowlist_rules": allowlist
         ]
         let combinedRulesConfigDict = enabledRulesConfigDict.reduce(into: disabledRulesConfigDict) { $0[$1.0] = $1.1 }
         var configuration = Configuration(dict: enabledRulesConfigDict)
@@ -118,7 +118,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Set(masterRuleList.list.keys
+        let expectedIdentifiers = Set(primaryRuleList.list.keys
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
         let configuredIdentifiers = Set(disabledConfig.rules.map {
             type(of: $0).description.identifier
@@ -134,7 +134,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Set(masterRuleList.list.keys
+        let expectedIdentifiers = Set(primaryRuleList.list.keys
             .filter({ !([validRule] + optInRules).contains($0) }))
         let configuredIdentifiers = Set(configuration.rules.map {
             type(of: $0).description.identifier
@@ -143,7 +143,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDuplicatedRules() {
-        let duplicateConfig1 = Configuration(dict: ["whitelist_rules": ["todo", "todo"]])
+        let duplicateConfig1 = Configuration(dict: ["allowlist_rules": ["todo", "todo"]])
         XCTAssertNil(duplicateConfig1, "initializing Configuration with duplicate rules in " +
             "Dictionary should fail")
 

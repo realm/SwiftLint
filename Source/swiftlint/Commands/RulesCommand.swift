@@ -31,7 +31,7 @@ struct RulesCommand: CommandProtocol {
 
     func run(_ options: RulesOptions) -> Result<(), CommandantError<()>> {
         if let ruleID = options.ruleID {
-            guard let rule = masterRuleList.list[ruleID] else {
+            guard let rule = primaryRuleList.list[ruleID] else {
                 return .failure(.usageError(description: "No rule with identifier: \(ruleID)"))
             }
 
@@ -52,10 +52,10 @@ struct RulesCommand: CommandProtocol {
 
     private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
         guard options.onlyEnabledRules || options.onlyDisabledRules || options.onlyCorrectableRules else {
-            return masterRuleList
+            return primaryRuleList
         }
 
-        let filtered: [Rule.Type] = masterRuleList.list.compactMap { ruleID, ruleType in
+        let filtered: [Rule.Type] = primaryRuleList.list.compactMap { ruleID, ruleType in
             let configuredRule = configuration.rules.first { rule in
                 return type(of: rule).description.identifier == ruleID
             }

@@ -1,5 +1,4 @@
 internal struct InclusiveLanguageRuleExamples {
-
     // MARK: - Default config
 
     static let nonTriggeringExamples: [Example] = [
@@ -36,7 +35,7 @@ internal struct InclusiveLanguageRuleExamples {
 
     // MARK: - Non-default config
 
-    static let nonTriggeringExamplesWithNonDefaultConfig: [Example] = [
+    static let nonTriggeringExamplesWithConfig: [Example] = [
         Example("""
         public let blackList = [
             "foo", "bar"
@@ -52,7 +51,7 @@ internal struct InclusiveLanguageRuleExamples {
         ])
     ]
 
-    static let triggeringExamplesWithNonDefaultConfig: [Example] = [
+    static let triggeringExamplesWithConfig: [Example] = [
         Example("""
         enum Things {
             case foo, ↓fizzBuzz

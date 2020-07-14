@@ -124,20 +124,20 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 return true
             }
 
-            // ignore whitelisted attributes
-            let attributesAfterWhitelist: Set<String>
+            // ignore allowlisted attributes
+            let attributesAfterAllowlist: Set<String>
             let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
             let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
 
             if attributeShouldBeOnSameLine {
-                attributesAfterWhitelist = attributesTokens
+                attributesAfterAllowlist = attributesTokens
                     .union(newLineExceptions).union(sameLineExceptions)
             } else {
-                attributesAfterWhitelist = attributesTokens
+                attributesAfterAllowlist = attributesTokens
                     .subtracting(newLineExceptions).subtracting(sameLineExceptions)
             }
 
-            return attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
+            return attributesAfterAllowlist.isEmpty == attributeShouldBeOnSameLine
         } catch {
             return true
         }
@@ -158,7 +158,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
-            // 2. it's a whitelisted attribute, according to the current configuration
+            // 2. it's a allowlisted attribute, according to the current configuration
             let isParameterized = hasParameter || token.bridge().contains("(")
             if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token

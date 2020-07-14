@@ -915,6 +915,12 @@ extension MultilineArgumentsRuleTests {
     ]
 }
 
+extension MultilineClosureAnonymousArgsRuleTests {
+    static var allTests: [(String, (MultilineClosureAnonymousArgsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension MultilineFunctionChainsRuleTests {
     static var allTests: [(String, (MultilineFunctionChainsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1774,6 +1780,7 @@ XCTMain([
     testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsBracketsRuleTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
+    testCase(MultilineClosureAnonymousArgsRuleTests.allTests),
     testCase(MultilineFunctionChainsRuleTests.allTests),
     testCase(MultilineLiteralBracketsRuleTests.allTests),
     testCase(MultilineParametersBracketsRuleTests.allTests),

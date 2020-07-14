@@ -96,6 +96,7 @@ public let masterRuleList = RuleList(rules: [
     ModifierOrderRule.self,
     MultilineArgumentsBracketsRule.self,
     MultilineArgumentsRule.self,
+    MultilineClosureAnonymousArgsRule.self,
     MultilineFunctionChainsRule.self,
     MultilineLiteralBracketsRule.self,
     MultilineParametersBracketsRule.self,

@@ -738,6 +738,12 @@ extension ImplicitlyUnwrappedOptionalRuleTests {
     ]
 }
 
+extension InclusiveLanguageRuleTests {
+    static var allTests: [(String, (InclusiveLanguageRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension IndentationWidthRuleTests {
     static var allTests: [(String, (IndentationWidthRuleTests) -> () throws -> Void)] = [
         ("testFirstLineIndentation", testFirstLineIndentation),
@@ -1189,12 +1195,6 @@ extension QuickDiscouragedFocusedTestRuleTests {
 
 extension QuickDiscouragedPendingTestRuleTests {
     static var allTests: [(String, (QuickDiscouragedPendingTestRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
-extension RacistDeclarationRuleTests {
-    static var allTests: [(String, (RacistDeclarationRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1817,6 +1817,7 @@ XCTMain([
     testCase(ImplicitReturnRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
+    testCase(InclusiveLanguageRuleTests.allTests),
     testCase(IndentationWidthRuleTests.allTests),
     testCase(InertDeferRuleTests.allTests),
     testCase(IntegrationTests.allTests),
@@ -1881,7 +1882,6 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
-    testCase(RacistDeclarationRuleTests.allTests),
     testCase(RawValueForCamelCasedCodableEnumRuleTests.allTests),
     testCase(ReduceBooleanRuleTests.allTests),
     testCase(ReduceIntoRuleTests.allTests),

@@ -1,14 +1,15 @@
 import SourceKittenFramework
 
-public struct RacistDeclarationRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+    public var configuration = InclusiveLanguageConfiguration()
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "racist_declaration",
-        name: "Racist Declaration",
-        description: "Terms that have racist connotations should not be used in declarations.",
+        identifier: "inclusive_language",
+        name: "Inclusive Language",
+        description: "Identifiers should use inclusive language that avoids"
+            + " discrimination against groups of people based on race, gender, or socioeconomic status",
         kind: .style,
         nonTriggeringExamples: [
             Example("let foo = \"abc\""),
@@ -42,13 +43,6 @@ public struct RacistDeclarationRule: ASTRule, ConfigurationProviderRule, OptInRu
         ]
     )
 
-    private let racistTerms: Set<String> = [
-        "whitelist",
-        "blacklist",
-        "master",
-        "slave"
-    ]
-
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind != .varParameter, // Will be caught by function declaration
@@ -57,10 +51,10 @@ public struct RacistDeclarationRule: ASTRule, ConfigurationProviderRule, OptInRu
             else { return [] }
 
         let lowercased = name.lowercased()
-        guard let term = racistTerms.first(where: { lowercased.contains($0) })
+        guard let term = configuration.denyList.first(where: { lowercased.contains($0) })
             else { return [] }
 
-        let reason = "Declaration \(name) contains the term \"\(term)\" which has racist connotations."
+        let reason = "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."
         let violation = StyleViolation(
             ruleDescription: Swift.type(of: self).description,
             severity: configuration.severity,

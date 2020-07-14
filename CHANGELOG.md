@@ -309,8 +309,8 @@ This is the last release to support building with Swift 5.0.x.
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
-* Add `racist_declaration` opt-in rule to discourage the use of terms with
-  racist connotations.
+* Add `inclusive_language` rule to encourage the use of inclusive language that
+  avoids discrimination against groups of people.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3243](https://github.com/realm/SwiftLint/pull/3243)
 

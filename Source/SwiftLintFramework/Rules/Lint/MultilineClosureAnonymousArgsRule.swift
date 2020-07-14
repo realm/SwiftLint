@@ -25,7 +25,10 @@ public struct MultilineClosureAnonymousArgsRule: ConfigurationProviderRule, OptI
     public init() {}
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: "^[^{\\n]*(\\$0)", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds).compactMap { range in
+        return file.match(
+            pattern: "^[^{\\n]*(\\$0)",
+            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds
+        ).compactMap { range in
             return StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severity,

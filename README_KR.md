@@ -95,7 +95,7 @@ fastlane 과정에서 SwiftLint를 사용하려면 [공식적인 fastlane 액션
 ```ruby
 swiftlint(
   mode: :lint,                            # SwiftLint 모드: :lint (디폴트) 아니면 :autocorrect
-  executable: "Pods/SwiftLint/swiftlint", # SwiftLint 바이너리 경로 (선택 가능). CocoaPods를 사용해서 설치한 경우는 이 옾션이 중요합니다
+  executable: "Pods/SwiftLint/swiftlint", # SwiftLint 바이너리 경로 (선택 가능). CocoaPods를 사용해서 설치한 경우는 이 옵션이 중요합니다
   output_file: "swiftlint.result.json",   # 결과 파일의 경로 (선택 가능)
   reporter: "json",                       # 보고 유형 (선택 가능)
   config_file: ".swiftlint-ci.yml",       # 설정 파일의 경로 (선택 가능)
@@ -125,7 +125,7 @@ Available commands:
 
 ### 스위프트 여러 버전에 대한 대응
 
-SwiftLint는 SourceKit에 연결되어 있으므로 스위프트 언어가 변화하더라도 이상없이 동작할 수 있습니다.
+SwiftLint는 SourceKit에 연결되어 있으므로 스위프트 언어가 변화하더라도 이상 없이 동작할 수 있습니다.
 
 이는 전체 스위프트 컴파일러가 포함되지 않아도 되므로 SwiftLint가 간결하게 유지될 수 있습니다. SwiftLint는 데스크탑에 이미 설치되어 있는 공식 스위프트 컴파일러와 통신하기만 하면 됩니다.
 
@@ -169,11 +169,11 @@ SwiftLint에는 75개가 넘는 룰들이 있고, 스위프트 커뮤니티(바�
 
 ### 코드에서 룰 비활성화하기
 
-소스 파일에서 아래 형식의 주석을 사용하면 룰을 비활성화 할 수 있습니다.
+소스 파일에서 아래 형식의 주석을 사용하면 룰을 비활성화할 수 있습니다.
 
 `// swiftlint:disable <룰1> [<룰2> <룰3>...]`
 
-비활성화 된 룰은 해당 파일의 마지막까지 적용되거나, 활성화 주석이 나타날 때까지 적용됩니다.
+비활성화된 룰은 해당 파일의 마지막까지 적용되거나, 활성화 주석이 나타날 때까지 적용됩니다.
 
 `// swiftlint:enable <룰1> [<룰2> <룰3>...]`
 
@@ -285,7 +285,7 @@ custom_rules:
 
 ![](assets/custom-rule.png)
 
-하나 이상의 `match_kinds`를 사용해서 매칭된 결과를 필터링 할 수 있습니다. 이 목록에 들어있지 않은 구문 유형이 포함된 결과는 매칭에서 제외됩니다. 사용 가능한 모든 구문 유형은 다음과 같습니다.
+하나 이상의 `match_kinds`를 사용해서 매칭된 결과를 필터링할 수 있습니다. 이 목록에 들어있지 않은 구문 유형이 포함된 결과는 매칭에서 제외됩니다. 사용 가능한 모든 구문 유형은 다음과 같습니다.
 
 * argument
 * attribute.builtin
@@ -317,7 +317,7 @@ SwiftLint는 설정 파일을 중첩되게 구성해서 린트 과정을 더욱 
 
 ### 자동 수정
 
-SwiftLint는 일부 위반 사항들을 자동으로 수정할 수 있습니다. 디스크상의 파일들은 수정된 버전으로 덮어 쓰여지게 됩니다.
+SwiftLint는 일부 위반 사항들을 자동으로 수정할 수 있습니다. 디스크 상의 파일들은 수정된 버전으로 덮어 쓰여지게 됩니다.
 
 `swiftlint autocorrect`를 실행하기 전에 파일들을 백업해주세요. 그렇지 않으면 중요한 데이터가 유실될 수도 있습니다.
 

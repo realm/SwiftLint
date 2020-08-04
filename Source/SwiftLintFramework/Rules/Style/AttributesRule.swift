@@ -273,7 +273,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func isAttribute(_ name: String) -> Bool {
-        if name == "@escaping" {
+        if name == "@escaping" || name == "@autoclosure" {
             return false
         }
 

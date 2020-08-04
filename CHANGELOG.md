@@ -24,8 +24,11 @@
 
 * Fix UnusedImportRule breaking transitive imports.  
   [keith](https://github.com/keith)
-* Fix severity level configuration for `duplicate_imports`.
+* Fix severity level configuration for `duplicate_imports`.  
   [Yusuke Goto](https://github.com/yusukegoto)
+* Fixes false positives for multiline_parameters_brackets and multiline_arguments_brackets.  
+  [Noah Gilmore](https://github.com/noahsark769)
+  [#3167](https://github.com/realm/SwiftLint/issues/3167)
 
 ## 0.39.2: Stay Home
 
@@ -168,6 +171,11 @@ This is the last release to support building with Swift 5.0.x.
   [#2860](https://github.com/realm/SwiftLint/issues/2860)
 
 #### Bug Fixes
+
+* Fix false positive in `attributes` rule with `@autoclosure` parameters when
+  using Swift 5.2.  
+  [Mateusz Matrejek](https://github.com/matrejek)
+  [#3079](https://github.com/realm/SwiftLint/issues/3112)
 
 * Fix `discarded_notification_center_observer` false positives when
   capturing observers into an array.  

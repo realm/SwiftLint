@@ -50,6 +50,11 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
             """),
             Example("""
             func foo<T>(param1: T, param2: String, param3: String) -> T { /* some code */ }
+            """),
+            Example("""
+                func foo(a: [Int] = [
+                    1
+                ])
             """)
         ],
         triggeringExamples: [
@@ -106,9 +111,14 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
                 return []
             }
 
-            let isMultiline = functionName.contains("\n")
-
             let parameters = substructure.substructure.filter { $0.declarationKind == .varParameter }
+            let parameterBodies = parameters.compactMap { $0.content(in: file) }
+            let parametersNewlineCount = parameterBodies.map { body in
+                return body.countOccurrences(of: "\n")
+            }.reduce(0, +)
+            let declarationNewlineCount = functionName.countOccurrences(of: "\n")
+            let isMultiline = declarationNewlineCount > parametersNewlineCount
+
             if isMultiline && !parameters.isEmpty {
                 if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
                     violations.append(openingBracketViolation)

@@ -292,7 +292,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let blacklist: Set<SwiftDeclarationAttributeKind> = [
+        let ignoredAttributes: Set<SwiftDeclarationAttributeKind> = [
             .dynamic,
             .fileprivate,
             .final,
@@ -317,6 +317,6 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             .setterPublic,
             .weak
         ]
-        return attributes.filter { !blacklist.contains($0) }
+        return attributes.filter { !ignoredAttributes.contains($0) }
     }
 }

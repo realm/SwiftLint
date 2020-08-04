@@ -17,7 +17,7 @@ public struct JUnitReporter: Reporter {
                 let message = severity + "Line:" + String(violation.location.line ?? 0) + " "
                 let reason = violation.reason.escapedForXML()
                 return [
-                    "\t<testcase classname='Swift Lint' name='\(fileName)\'>\n",
+                    "\t<testcase classname='SwiftLint' name='\(fileName)\'>\n",
                     "\t\t<failure message='\(reason)\'>" + message + "</failure>\n",
                     "\t</testcase>\n"
                 ].joined()

@@ -19,7 +19,7 @@
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
-* Add `ibinspectable_in_extension` rule to lint against `@IBInspectable`
+* Add opt-in `ibinspectable_in_extension` rule to lint against `@IBInspectable`
   properties in `extensions`  
   [Keith Smiley](https://github.com/keith)
 

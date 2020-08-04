@@ -37,6 +37,7 @@
   statements when using Swift 5.3.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3253](https://github.com/realm/SwiftLint/issues/3253)
+
 * Fix false positive uppercase enum case in `raw_value_for_camel_cased_codable_enum` rule
   [Teameh](https://github.com/teameh)
 

@@ -46,6 +46,11 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             extension Foo {
                 internal func bar() {}
             }
+            """),
+            Example("""
+            internal enum Foo {
+                case bar
+            }
             """)
         ],
         triggeringExamples: [
@@ -124,8 +129,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         return firstPartition.last
     }
 
-    private func internalTypeElements(in element: SourceKittenElement) -> [SourceKittenElement] {
-        return element.substructure.flatMap { element -> [SourceKittenElement] in
+    private func internalTypeElements(in parent: SourceKittenElement) -> [SourceKittenElement] {
+        return parent.substructure.flatMap { element -> [SourceKittenElement] in
             guard let elementKind = element.declarationKind else {
                 return []
             }
@@ -139,7 +144,16 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            if element.accessibility == .internal || element.accessibility == nil {
+            let isInExtension: Bool
+            if let kind = parent.declarationKind {
+                let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
+                                                                 .extensionClass, .extensionStruct, .extensionProtocol]
+                isInExtension = extensionKinds.contains(kind)
+            } else {
+                isInExtension = false
+            }
+
+            if element.accessibility == .internal || (element.accessibility == nil && isInExtension) {
                 return internalTypeElementsInSubstructure + [element]
             }
 

@@ -51,6 +51,14 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             internal enum Foo {
                 case bar
             }
+            """),
+            Example("""
+            extension Foo {
+                public var isValid: Bool {
+                    let result = true
+                    return result
+                }
+            }
             """)
         ],
         triggeringExamples: [
@@ -131,7 +139,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     private func internalTypeElements(in parent: SourceKittenElement) -> [SourceKittenElement] {
         return parent.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = element.declarationKind else {
+            guard let elementKind = element.declarationKind, elementKind != .varLocal else {
                 return []
             }
 

@@ -283,7 +283,7 @@ identifier_name:
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # 报告类型 (xcode, json, csv, checkstyle, junit, html, emoji)
+reporter: "xcode" # 报告类型 (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging)
 ```
 
 #### 定义自定义规则

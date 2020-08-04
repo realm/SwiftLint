@@ -33,6 +33,8 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_11.3.1.app
       xcode114:
         DEVELOPER_DIR: /Applications/Xcode_11.4.app
+      xcode12:
+        DEVELOPER_DIR: /Applications/Xcode_12_beta.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -67,6 +69,8 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_11.3.1.app
       xcode114:
         DEVELOPER_DIR: /Applications/Xcode_11.4.app
+      xcode12:
+        DEVELOPER_DIR: /Applications/Xcode_12_beta.app
   steps:
     - script: |
         sw_vers

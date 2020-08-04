@@ -41,15 +41,25 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             """),
             Example("internal class A { deinit {} }"),
             Example("extension A: Equatable {}"),
-            Example("extension A {}")
+            Example("extension A {}"),
+            Example("""
+            extension Foo {
+                internal func bar() {}
+            }
+            """)
         ],
         triggeringExamples: [
-            Example("enum A {}\n"),
-            Example("final class B {}\n"),
-            Example("internal struct C { let d = 5 }\n"),
-            Example("public struct C { let d = 5 }\n"),
+            Example("↓enum A {}\n"),
+            Example("final ↓class B {}\n"),
+            Example("internal struct C { ↓let d = 5 }\n"),
+            Example("public struct C { ↓let d = 5 }\n"),
             Example("func a() {}\n"),
-            Example("internal let a = 0\nfunc b() {}\n")
+            Example("internal let a = 0\n↓func b() {}\n"),
+            Example("""
+            extension Foo {
+                ↓func bar() {}
+            }
+            """)
         ]
     )
 
@@ -91,7 +101,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary )
+        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary)
 
         guard !implicitAndExplicitInternalElements.isEmpty else {
             return []
@@ -129,7 +139,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            if element.accessibility == .internal {
+            if element.accessibility == .internal || element.accessibility == nil {
                 return internalTypeElementsInSubstructure + [element]
             }
 

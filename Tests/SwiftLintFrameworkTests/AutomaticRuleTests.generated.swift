@@ -264,6 +264,12 @@ class FunctionDefaultParameterAtEndRuleTests: XCTestCase {
     }
 }
 
+class IBInspectableInExtensionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IBInspectableInExtensionRule.description)
+    }
+}
+
 class IdenticalOperandsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)

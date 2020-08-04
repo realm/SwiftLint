@@ -136,6 +136,17 @@ extension CompilerProtocolInitRuleTests {
     ]
 }
 
+extension ComputedAccessorsOrderRuleTests {
+    static var allTests: [(String, (ComputedAccessorsOrderRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testSetGetConfiguration", testSetGetConfiguration),
+        ("testGetSetPropertyReason", testGetSetPropertyReason),
+        ("testGetSetSubscriptReason", testGetSetSubscriptReason),
+        ("testSetGetPropertyReason", testSetGetPropertyReason),
+        ("testSetGetSubscriptReason", testSetGetSubscriptReason)
+    ]
+}
+
 extension ConditionalReturnsOnNewlineRuleTests {
     static var allTests: [(String, (ConditionalReturnsOnNewlineRuleTests) -> () throws -> Void)] = [
         ("testConditionalReturnsOnNewlineWithDefaultConfiguration", testConditionalReturnsOnNewlineWithDefaultConfiguration),
@@ -485,6 +496,12 @@ extension ExtendedNSStringTests {
     ]
 }
 
+extension ExtendedStringTests {
+    static var allTests: [(String, (ExtendedStringTests) -> () throws -> Void)] = [
+        ("testCountOccurrences", testCountOccurrences)
+    ]
+}
+
 extension ExtensionAccessModifierRuleTests {
     static var allTests: [(String, (ExtensionAccessModifierRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -644,6 +661,12 @@ extension GlobTests {
         ("testMatchesMultipleFiles", testMatchesMultipleFiles),
         ("testMatchesNestedDirectory", testMatchesNestedDirectory),
         ("testNoGlobstarSupport", testNoGlobstarSupport)
+    ]
+}
+
+extension IBInspectableInExtensionRuleTests {
+    static var allTests: [(String, (IBInspectableInExtensionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -850,8 +873,7 @@ extension LinterCacheTests {
         ("testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-        ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted),
-        ("testDetectSwiftVersion", testDetectSwiftVersion)
+        ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted)
     ]
 }
 
@@ -1225,6 +1247,7 @@ extension ReporterTests {
         ("testXcodeReporter", testXcodeReporter),
         ("testEmojiReporter", testEmojiReporter),
         ("testGitHubActionsLoggingReporter", testGitHubActionsLoggingReporter),
+        ("testGitLabJUnitReporter", testGitLabJUnitReporter),
         ("testJSONReporter", testJSONReporter),
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),
@@ -1291,7 +1314,8 @@ extension RuleConfigurationTests {
         ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary),
         ("testModifierOrderConfigurationFromDictionary", testModifierOrderConfigurationFromDictionary),
         ("testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup", testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup),
-        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup)
+        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup),
+        ("testComputedAccessorsOrderRuleConfiguration", testComputedAccessorsOrderRuleConfiguration)
     ]
 }
 
@@ -1375,6 +1399,12 @@ extension StrictFilePrivateRuleTests {
 extension StrongIBOutletRuleTests {
     static var allTests: [(String, (StrongIBOutletRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SwiftVersionTests {
+    static var allTests: [(String, (SwiftVersionTests) -> () throws -> Void)] = [
+        ("testDetectSwiftVersion", testDetectSwiftVersion)
     ]
 }
 
@@ -1675,6 +1705,7 @@ XCTMain([
     testCase(CommaRuleTests.allTests),
     testCase(CommandTests.allTests),
     testCase(CompilerProtocolInitRuleTests.allTests),
+    testCase(ComputedAccessorsOrderRuleTests.allTests),
     testCase(ConditionalReturnsOnNewlineRuleTests.allTests),
     testCase(ConfigurationAliasesTests.allTests),
     testCase(ConfigurationTests.allTests),
@@ -1716,6 +1747,7 @@ XCTMain([
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
     testCase(ExplicitTypeInterfaceRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
+    testCase(ExtendedStringTests.allTests),
     testCase(ExtensionAccessModifierRuleTests.allTests),
     testCase(FallthroughRuleTests.allTests),
     testCase(FatalErrorMessageRuleTests.allTests),
@@ -1735,6 +1767,7 @@ XCTMain([
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(GlobTests.allTests),
+    testCase(IBInspectableInExtensionRuleTests.allTests),
     testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),
@@ -1832,6 +1865,7 @@ XCTMain([
     testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
     testCase(StrongIBOutletRuleTests.allTests),
+    testCase(SwiftVersionTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),

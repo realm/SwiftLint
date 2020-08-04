@@ -2,6 +2,59 @@
 
 #### Breaking
 
+* SwiftLint now requires Swift 5.1 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
+* Improve compile commands json file validation. If you previously
+  provided invalid files or arguments, the command will now abort.  
+  [Keith Smiley](https://github.com/keith)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* JUnit reporter for GitLab artifact:report:junit with better representation of
+  found issues.  
+  [krin-san](https://github.com/krin-san)
+  [#3177](https://github.com/realm/SwiftLint/pull/3177)
+* Add opt-in `ibinspectable_in_extension` rule to lint against `@IBInspectable`
+  properties in `extensions`  
+  [Keith Smiley](https://github.com/keith)
+
+* Add `computed_accessors_order` rule to validate the order of `get` and `set`
+  accessors in computed properties and subscripts.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3158](https://github.com/realm/SwiftLint/issues/3158)
+
+#### Bug Fixes
+
+* Fix UnusedImportRule breaking transitive imports.  
+  [keith](https://github.com/keith)
+
+* Fix severity level configuration for `duplicate_imports`.  
+  [Yusuke Goto](https://github.com/yusukegoto)
+
+* Fixes false positives for `multiline_parameters_brackets` and
+  `multiline_arguments_brackets`.  
+  [Noah Gilmore](https://github.com/noahsark769)
+  [#3167](https://github.com/realm/SwiftLint/issues/3167)
+
+* Fix false positive on `switch_case_on_newline` rule with `do/catch`
+  statements when using Swift 5.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3253](https://github.com/realm/SwiftLint/issues/3253)
+
+* Fix false positive uppercase enum case in `raw_value_for_camel_cased_codable_enum` rule
+  [Teameh](https://github.com/teameh)
+
+## 0.39.2: Stay Home
+
+This is the last release to support building with Swift 5.0.x.
+
+#### Breaking
+
 * None.
 
 #### Experimental
@@ -21,7 +74,22 @@
 
 #### Bug Fixes
 
-* None.
+* Fix more false positives in `implicit_getter` rule in extensions when using
+  Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3149](https://github.com/realm/SwiftLint/issues/3149)
+
+* Fix false positives in `redundant_objc_attribute` rule in extensions when 
+  using Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix false positives in `attributes` rule when using `rethrows` using
+  Swift 5.2.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix false positives in `valid_ibinspectable` rule when defining inspectable
+  properties in class extensions with computed properties using Swift 5.2.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.39.1: The Laundromat has a Rotating Door
 
@@ -116,7 +184,17 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2086](https://github.com/realm/SwiftLint/issues/2086)
 
+* Add case `preview_provider` to the order list of `file_types_order` to fix
+  an issue with false positives for `PreviewProvider` subclasses in SwiftUI.  
+  [Cihat Gündüz](https://github.com/Jeehut)
+  [#2860](https://github.com/realm/SwiftLint/issues/2860)
+
 #### Bug Fixes
+
+* Fix false positive in `attributes` rule with `@autoclosure` parameters when
+  using Swift 5.2.  
+  [Mateusz Matrejek](https://github.com/matrejek)
+  [#3079](https://github.com/realm/SwiftLint/issues/3112)
 
 * Fix `discarded_notification_center_observer` false positives when
   capturing observers into an array.  
@@ -184,7 +262,7 @@
   to any declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2989](https://github.com/realm/SwiftLint/issues/2989)
-  
+
 * Add new indentation opt-in rule (`indentation_width`) checking for
   super-basic additive indentation pattern.  
   [Frederick Pietschmann](https://github.com/fredpi)
@@ -403,7 +481,7 @@
   using `flatMap` over `map { ... }.reduce([], +)`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2883](https://github.com/realm/SwiftLint/issues/2883)
-  
+
 * Add autocorrection to `syntactic_sugar`.  
   [Ivan Vavilov](https://github.com/vani2)
 
@@ -417,7 +495,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2874](https://github.com/realm/SwiftLint/issues/2874)
 
-* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values 
+* Add `raw_value_for_camel_cased_codable_enum` opt-in rule to enforce raw values
   for camel cased Codable String enum cases.  
   [Marko Pejovic](https://github.com/00FA9A)
   [#2888](https://github.com/realm/SwiftLint/issues/2888)

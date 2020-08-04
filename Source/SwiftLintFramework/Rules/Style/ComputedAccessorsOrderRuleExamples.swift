@@ -1,7 +1,7 @@
 // swiftlint:disable:next type_body_length
-struct ImplicitGetterRuleExamples {
+struct ComputedAccessorsOrderRuleExamples {
     static var nonTriggeringExamples: [Example] {
-        let commonExamples = [
+        return [
             Example("""
             class Foo {
                 var foo: Int {
@@ -60,6 +60,10 @@ struct ImplicitGetterRuleExamples {
                 var foo: Int { get set }
             """),
             Example("""
+            protocol Foo {
+                var foo: Int { set get }
+            """),
+            Example("""
             class Foo {
                 var foo: Int {
                     struct Bar {
@@ -76,6 +80,7 @@ struct ImplicitGetterRuleExamples {
             Example("""
             var _objCTaggedPointerBits: UInt {
                 @inline(__always) get { return 0 }
+                set { print(newValue) }
             }
             """),
             Example("""
@@ -83,6 +88,9 @@ struct ImplicitGetterRuleExamples {
                 mutating get {
                     defer { self.count += 1 }
                     return self.count
+                }
+                set {
+                    self.count = newValue
                 }
             }
             """),
@@ -99,18 +107,6 @@ struct ImplicitGetterRuleExamples {
                 var bar: Bool {
                     get { _bar }
                     set(newValue) { self._bar = newValue }
-                }
-            }
-            """),
-            Example("""
-            extension Float {
-                var clamped: Float {
-                    set {
-                        self = min(1, max(0, newValue))
-                    }
-                    get {
-                        min(1, max(0, self))
-                    }
                 }
             }
             """),
@@ -137,14 +133,7 @@ struct ImplicitGetterRuleExamples {
                     }
                 }
             }
-            """)
-        ]
-
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
-
-        return commonExamples + [
+            """),
             Example("""
             class Foo {
                 subscript(i: Int) -> Int {
@@ -169,16 +158,24 @@ struct ImplicitGetterRuleExamples {
             protocol Foo {
                 subscript(i: Int) -> Int { get set }
             }
+            """),
+            Example("""
+            protocol Foo {
+                subscript(i: Int) -> Int { set get }
+            }
             """)
         ]
     }
 
     static var triggeringExamples: [Example] {
-        let commonExamples = [
+        return [
             Example("""
             class Foo {
                 var foo: Int {
-                    ↓get {
+                    ↓set {
+                        print(newValue)
+                    }
+                    get {
                         return 20
                     }
                 }
@@ -186,15 +183,11 @@ struct ImplicitGetterRuleExamples {
             """),
             Example("""
             class Foo {
-                var foo: Int {
-                    ↓get{ return 20 }
-                }
-            }
-            """),
-            Example("""
-            class Foo {
                 static var foo: Int {
-                    ↓get {
+                    ↓set {
+                        print(newValue)
+                    }
+                    get {
                         return 20
                     }
                 }
@@ -202,37 +195,37 @@ struct ImplicitGetterRuleExamples {
             """),
             Example("""
             var foo: Int {
-                ↓get { return 20 }
+                ↓set { print(newValue) }
+                get { return 20 }
+            }
+            """),
+            Example("""
+            extension Foo {
+                var bar: Bool {
+                    ↓set { print(bar) }
+                    get { _bar }
+                }
             }
             """),
             Example("""
             class Foo {
-                @objc func bar() {}
                 var foo: Int {
-                    ↓get {
+                    ↓set {
+                        print(newValue)
+                    }
+                    mutating get {
                         return 20
                     }
                 }
             }
             """),
             Example("""
-            extension Foo {
-                var bar: Bool {
-                    ↓get { _bar }
-                }
-            }
-            """)
-        ]
-
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
-
-        return commonExamples + [
-            Example("""
             class Foo {
                 subscript(i: Int) -> Int {
-                    ↓get {
+                    ↓set {
+                        print(i)
+                    }
+                    get {
                         return 20
                     }
                 }

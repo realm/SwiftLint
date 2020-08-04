@@ -122,7 +122,7 @@ archive:
 release: package archive portable_zip
 
 docker_test:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:51 swift test --parallel
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:5.2.4 swift test --parallel
 
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset

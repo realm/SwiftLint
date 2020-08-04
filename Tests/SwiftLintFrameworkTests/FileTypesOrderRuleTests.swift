@@ -49,6 +49,17 @@ class FileTypesOrderRuleTests: XCTestCase {
             protocol TestViewControllerDelegate {
                 func didPressTrackedButton()
             }
+            """),
+            Example("""
+            ↓struct ContentView: View {
+               var body: some View {
+                   Text("Hello, World!")
+               }
+            }
+
+            struct ContentView_Previews: PreviewProvider {
+               static var previews: some View { ContentView() }
+            }
             """)
         ]
 
@@ -59,7 +70,7 @@ class FileTypesOrderRuleTests: XCTestCase {
         verifyRule(
             reversedOrderDescription,
             ruleConfiguration: [
-                "order": ["extension", "main_type", "supporting_type"]
+                "order": ["preview_provider", "extension", "main_type", "supporting_type"]
             ]
         )
     }
@@ -125,7 +136,7 @@ class FileTypesOrderRuleTests: XCTestCase {
         verifyRule(
             groupedOrderDescription,
             ruleConfiguration: [
-                "order": ["main_type", ["extension", "supporting_type"]]
+                "order": ["main_type", ["extension", "supporting_type"], "preview_provider"]
             ]
         )
     }

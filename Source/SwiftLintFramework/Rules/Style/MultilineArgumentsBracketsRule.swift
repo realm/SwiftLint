@@ -44,6 +44,29 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             AlertViewModel.AlertAction(title: "some title", style: .default) {
                 AlertManager.shared.presentNextDebugAlert()
             }
+            """),
+            Example("""
+            public final class Logger {
+                public static let shared = Logger(outputs: [
+                    OSLoggerOutput(),
+                    ErrorLoggerOutput()
+                ])
+            }
+            """),
+            Example("""
+            let errors = try self.download([
+                (description: description, priority: priority),
+            ])
+            """),
+            Example("""
+            return SignalProducer({ observer, _ in
+                observer.sendCompleted()
+            }).onMainQueue()
+            """),
+            Example("""
+            SomeType(a: [
+                1, 2, 3
+            ], b: [1, 2])
             """)
         ],
         triggeringExamples: [
@@ -71,6 +94,12 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                     x: 5,
                     y: 7
             )↓)
+            """),
+            Example("""
+            SomeOtherType(↓a: [
+                    1, 2, 3
+                ],
+                b: "two"↓)
             """)
         ]
     )
@@ -86,8 +115,19 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             return []
         }
 
-        let body = file.contents.substring(from: range.location, length: range.length)
-        let isMultiline = body.contains("\n")
+        let callBody = file.contents.substring(from: range.location, length: range.length)
+
+        let parameters = dictionary.substructure.filter {
+            // Argument expression types that can contain newlines
+            [.argument, .array, .dictionary, .closure].contains($0.expressionKind)
+        }
+        let parameterBodies = parameters.compactMap { $0.content(in: file) }
+        let parametersNewlineCount = parameterBodies.map { body in
+            return body.countOccurrences(of: "\n")
+        }.reduce(0, +)
+        let callNewlineCount = callBody.countOccurrences(of: "\n")
+        let isMultiline = callNewlineCount > parametersNewlineCount
+
         guard isMultiline else {
             return []
         }
@@ -96,11 +136,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
 
         var violatingByteOffsets = [ByteCount]()
-        if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
+        if expectedBodyBeginRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
             violatingByteOffsets.append(bodyRange.location)
         }
 
-        if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
+        if expectedBodyEndRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
             violatingByteOffsets.append(bodyRange.upperBound)
         }
 

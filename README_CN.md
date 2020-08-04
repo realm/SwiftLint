@@ -77,7 +77,7 @@ fi
 
 #### 格式化保存 Xcode 插件
 
-在 XCode 中保存时执行 `swiftlint autocorrect`，需要从 Alcatraz 安装 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) 插件。
+在 Xcode 中保存时执行 `swiftlint autocorrect`，需要从 Alcatraz 安装 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) 插件。
 
 ⚠ ️如果没有禁用 SIP 的话，这个插件在 Xcode 8 或者更新版本的 Xcode 上将不会工作。不推荐此操作。
 
@@ -283,7 +283,7 @@ identifier_name:
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # 报告类型 (xcode, json, csv, checkstyle, junit, html, emoji)
+reporter: "xcode" # 报告类型 (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging)
 ```
 
 #### 定义自定义规则

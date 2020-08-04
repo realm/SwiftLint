@@ -372,4 +372,15 @@ class RuleConfigurationTests: XCTestCase {
             try configuration.apply(configuration: config)
         }
     }
+
+    func testComputedAccessorsOrderRuleConfiguration() throws {
+        var configuration = ComputedAccessorsOrderRuleConfiguration()
+        let config = ["severity": "error", "order": "set_get"]
+        try configuration.apply(configuration: config)
+
+        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.order, .setGet)
+
+        XCTAssertEqual(configuration.consoleDescription, "error, order: set_get")
+    }
 }

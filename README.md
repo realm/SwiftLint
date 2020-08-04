@@ -325,14 +325,19 @@ Rule inclusion:
   only configurable rule list (there is no disabled/whitelist equivalent).
 
 ```yaml
-disabled_rules: # rule identifiers to exclude from running
+# By default, SwiftLint uses a set of sensible default rules you can adjust:
+disabled_rules: # rule identifiers turned on by default to exclude from running
   - colon
   - comma
   - control_statement
-opt_in_rules: # some rules are only opt-in
-  - empty_count
-  # Find all the available rules by running:
-  # swiftlint rules
+opt_in_rules: # some rules are turned off by default, so you need to opt-in
+  - empty_count # Find all the available rules by running: `swiftlint rules`
+
+# Alternatively, specify all rules explicitly by uncommenting this option:
+# whitelist_rules: # delete `disabled_rules` & `opt_in_rules` if using this
+#   - empty_parameters
+#   - vertical_whitespace
+
 included: # paths to include during linting. `--path` is ignored if present.
   - Source
 excluded: # paths to ignore during linting. Takes precedence over `included`.
@@ -376,7 +381,7 @@ identifier_name:
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown)
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging)
 ```
 
 You can also use environment variables in your configuration file,

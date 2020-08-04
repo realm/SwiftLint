@@ -175,7 +175,7 @@ class IndentationWidthRuleTests: XCTestCase {
         if let includeComments = includeComments { configDict["include_comments"] = includeComments }
 
         guard let config = makeConfig(configDict, IndentationWidthRule.description.identifier) else {
-            XCTFail("Unable to create rule configuration.", file: file, line: line)
+            XCTFail("Unable to create rule configuration.", file: (file), line: line)
             return 0
         }
 
@@ -192,14 +192,14 @@ class IndentationWidthRuleTests: XCTestCase {
     ) {
         XCTAssertEqual(
             countViolations(
-                in: Example(string, file: file, line: line),
+                in: Example(string, file: (file), line: line),
                 indentationWidth: indentationWidth,
                 includeComments: includeComments,
                 file: file,
                 line: line
             ),
             expectedCount,
-            file: file,
+            file: (file),
             line: line
         )
     }

@@ -20,6 +20,11 @@
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
 
+* Add `computed_accessors_order` rule to validate the order of `get` and `set`
+  accessors in computed properties and subscripts.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3158](https://github.com/realm/SwiftLint/issues/3158)
+
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  

@@ -33,6 +33,12 @@
   [Zsolt Kovács](https://github.com/lordzsolt)
   [#3103](https://github.com/realm/SwiftLint/issues/3103)
 
+* Add `prefer_zero_over_explicit_init` opt-in rule to enforce using
+  `.zero` instead of calling constructor with zero arguments
+  (e.g. `CGPoint(x: 0, y: 0)`) when using CoreGraphics types.  
+  [Anton Nazarov](https://github.com/MortyMerr)
+  [#3190](https://github.com/realm/SwiftLint/issues/3190)  
+
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  

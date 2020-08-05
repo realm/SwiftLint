@@ -522,6 +522,12 @@ class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     }
 }
 
+class PreferZeroOverExplicitInitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferZeroOverExplicitInitRule.description)
+    }
+}
+
 class PrivateActionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)

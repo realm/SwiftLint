@@ -19,8 +19,9 @@
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
+
 * Add opt-in `ibinspectable_in_extension` rule to lint against `@IBInspectable`
-  properties in `extensions`  
+  properties in `extensions`.  
   [Keith Smiley](https://github.com/keith)
 
 * Add `computed_accessors_order` rule to validate the order of `get` and `set`
@@ -40,8 +41,9 @@
   `multiline_arguments_brackets`.  
   [Noah Gilmore](https://github.com/noahsark769)
   [#3167](https://github.com/realm/SwiftLint/issues/3167)
+
 * Fix conflict of 'opening_brace' with 'implicit_return' for functions
-  implicitly returning a closure.
+  implicitly returning a closure.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3034](https://github.com/realm/SwiftLint/issues/3034)
 
@@ -50,10 +52,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3253](https://github.com/realm/SwiftLint/issues/3253)
 
-* Fix false positive uppercase enum case in `raw_value_for_camel_cased_codable_enum` rule
+* Fix false positive uppercase enum case in
+  `raw_value_for_camel_cased_codable_enum` rule.  
   [Teameh](https://github.com/teameh)
 
-* Fix false positive in `no_space_in_method_call` rule with multiple trailing 
+* Fix false positive in `no_space_in_method_call` rule with multiple trailing
   closures (Swift 5.3).  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3259](https://github.com/realm/SwiftLint/issues/3259)

@@ -78,7 +78,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
                 let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1)) ? "An" : "A"
 
                 let styleViolation = StyleViolation(
-                    ruleDescription: type(of: self).description,
+                    ruleDescription: Self.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: fileTypeOffset.offset),
                     reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'."

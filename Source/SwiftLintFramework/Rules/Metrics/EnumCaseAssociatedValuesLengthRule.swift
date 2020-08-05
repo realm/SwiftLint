@@ -69,7 +69,7 @@ public struct EnumCaseAssociatedValuesLengthRule: ASTRule, OptInRule, Configurat
                 + "currently contains \(enumCaseAssociatedValueCount)"
             violations.append(
                 StyleViolation(
-                    ruleDescription: type(of: self).description,
+                    ruleDescription: Self.description,
                     severity: violationSeverity,
                     location: Location(file: file, byteOffset: keyOffset),
                     reason: reason

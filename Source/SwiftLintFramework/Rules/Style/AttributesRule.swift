@@ -63,7 +63,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             let idx = match.lastIndex(of: "import") ?? 0
             let location = idx + range.location
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: location))
         }
@@ -172,7 +172,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: location)
         ]

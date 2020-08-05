@@ -34,7 +34,7 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Auto
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return validateACL(isHigherThan: .open, in: file.structureDictionary).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }

@@ -82,7 +82,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
             !dictionary.extractCallsToSuper(methodName: name).isEmpty
             else { return [] }
 
-        return [StyleViolation(ruleDescription: type(of: self).description,
+        return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Method '\(name)' should not call to super function")]

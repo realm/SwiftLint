@@ -133,7 +133,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
@@ -153,7 +153,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
         guard kind == .call,
             let name = dictionary.name,
             dictionary.offset != nil,
-            let expectedArguments = type(of: self).constructorsToArguments[name],
+            let expectedArguments = Self.constructorsToArguments[name],
             dictionary.enclosedArguments.count == expectedArguments.count else {
                 return false
         }
@@ -184,10 +184,10 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
             guard let byteRange = dictionary.byteRange,
                 let range = file.stringView.byteRangeToNSRange(byteRange),
                 let name = dictionary.name,
-                let correctedName = type(of: self).constructorsToCorrectedNames[name],
+                let correctedName = Self.constructorsToCorrectedNames[name],
                 file.ruleEnabled(violatingRanges: [range], for: self) == [range],
                 case let arguments = argumentsContents(file: file, arguments: dictionary.enclosedArguments),
-                let expectedArguments = type(of: self).constructorsToArguments[name],
+                let expectedArguments = Self.constructorsToArguments[name],
                 arguments.count == expectedArguments.count else {
                     continue
             }
@@ -201,7 +201,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
         }
 
         let corrections = adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
+            Correction(ruleDescription: Self.description,
                        location: Location(file: file, characterOffset: $0))
         }
 

@@ -66,7 +66,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
-        return [StyleViolation(ruleDescription: type(of: self).description,
+        return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity.severity,
                                location: Location(file: filePath, line: 1))]
     }

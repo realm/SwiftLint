@@ -32,7 +32,7 @@ public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTe
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "fallthrough", with: [.keyword]).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }

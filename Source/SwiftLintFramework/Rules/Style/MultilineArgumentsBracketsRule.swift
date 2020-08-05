@@ -146,7 +146,7 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
 
         return violatingByteOffsets.map { byteOffset in
             StyleViolation(
-                ruleDescription: type(of: self).description, severity: configuration.severity,
+                ruleDescription: Self.description, severity: configuration.severity,
                 location: Location(file: file, byteOffset: byteOffset)
             )
         }

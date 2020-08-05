@@ -46,7 +46,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
         return linesSections.map { eachLastLine, eachSectionCount in
             return StyleViolation(
-                ruleDescription: type(of: self).description,
+                ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLastLine.index),
                 reason: configuredDescriptionReason + " Currently \(eachSectionCount + 1)."
@@ -131,7 +131,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
             // removes lines by skipping them from correctedLines
             if Set(indexOfLinesToDelete).contains(currentLine.index) {
-                let description = type(of: self).description
+                let description = Self.description
                 let location = Location(file: file, characterOffset: currentLine.range.location)
 
                 //reports every line that is being deleted

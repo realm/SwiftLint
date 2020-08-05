@@ -102,7 +102,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file, matching: pattern).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -168,7 +168,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         if matches.isEmpty { return [] }
 
         var nsstring = file.contents.bridge()
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
         for var range in matches.reversed() {
             if keepLastChar {

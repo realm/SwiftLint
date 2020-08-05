@@ -72,7 +72,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
@@ -170,7 +170,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
+            Correction(ruleDescription: Self.description,
                        location: Location(file: file, characterOffset: $0))
         }
     }

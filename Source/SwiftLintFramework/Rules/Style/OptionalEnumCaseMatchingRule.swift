@@ -152,7 +152,7 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
                          kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -167,7 +167,7 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
     public func violationRanges(in file: SwiftLintFile,
                                 kind: StatementKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard SwiftVersion.current >= type(of: self).description.minSwiftVersion, kind == .case else {
+        guard SwiftVersion.current >= Self.description.minSwiftVersion, kind == .case else {
             return []
         }
 

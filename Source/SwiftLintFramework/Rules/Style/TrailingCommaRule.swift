@@ -133,7 +133,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     private func violations(file: SwiftLintFile, byteOffset: ByteCount, reason: String) -> [StyleViolation] {
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: byteOffset),
                            reason: reason)

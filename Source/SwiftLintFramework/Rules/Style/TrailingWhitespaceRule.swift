@@ -42,7 +42,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         }
 
         return filteredLines.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file.path, line: $0.index))
         }
@@ -80,7 +80,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             }
 
             if line.content != correctedLine {
-                let description = type(of: self).description
+                let description = Self.description
                 let location = Location(file: file.path, line: line.index)
                 corrections.append(Correction(ruleDescription: description, location: location))
             }

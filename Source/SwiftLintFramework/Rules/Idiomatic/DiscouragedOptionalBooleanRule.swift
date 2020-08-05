@@ -22,7 +22,7 @@ public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRu
         let excludingKinds = SyntaxKind.commentAndStringKinds
 
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }

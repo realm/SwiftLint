@@ -55,7 +55,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticT
                     if exceeds {
                         let reason = "Type body should span \(configuration.warning) lines or less " +
                             "excluding comments and whitespace: currently spans \(lineCount) lines"
-                        return [StyleViolation(ruleDescription: type(of: self).description,
+                        return [StyleViolation(ruleDescription: Self.description,
                                                severity: parameter.severity,
                                                location: Location(file: file, byteOffset: offset),
                                                reason: reason)]

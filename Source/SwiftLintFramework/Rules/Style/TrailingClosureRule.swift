@@ -33,7 +33,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         return violationOffsets(for: dict, file: file).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: $0))
         }

@@ -71,7 +71,7 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule {
                 return "Computed \(kindString) should declare first the \(orderString)."
             }
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, byteOffset: offset),
                                   reason: reason)

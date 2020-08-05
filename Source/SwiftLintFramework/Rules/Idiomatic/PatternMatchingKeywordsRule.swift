@@ -61,7 +61,7 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
             }
 
             return (letMatches + varMatches).map {
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location))
             }

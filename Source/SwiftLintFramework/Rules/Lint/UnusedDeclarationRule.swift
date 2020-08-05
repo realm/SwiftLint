@@ -93,7 +93,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(type(of: self).description.identifier) rule without any compiler arguments.
+                \(Self.description.identifier) rule without any compiler arguments.
                 """)
             return FileUSRs(referenced: [], declared: [], testCaseUSRs: [])
         }
@@ -114,7 +114,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
                                 allReferencedUSRs: allReferencedUSRs,
                                 allTestCaseUSRs: allTestCaseUSRs)
             .map {
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: $0))
             }

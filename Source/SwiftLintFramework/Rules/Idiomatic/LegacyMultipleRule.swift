@@ -45,7 +45,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
         let pattern = "(?!\\b\\s*)%\(RegexHelpers.variableOrNumber)[=!]=\\s*0\\b"
         return file.match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
             .map {
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location))
             }

@@ -18,7 +18,7 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "as!", with: [.keyword]).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }

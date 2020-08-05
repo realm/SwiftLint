@@ -40,6 +40,10 @@
   `multiline_arguments_brackets`.  
   [Noah Gilmore](https://github.com/noahsark769)
   [#3167](https://github.com/realm/SwiftLint/issues/3167)
+* Fix conflict of 'opening_brace' with 'implicit_return' for functions
+  implicitly returning a closure.
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3034](https://github.com/realm/SwiftLint/issues/3034)
 
 * Fix false positive on `switch_case_on_newline` rule with `do/catch`
   statements when using Swift 5.3.  

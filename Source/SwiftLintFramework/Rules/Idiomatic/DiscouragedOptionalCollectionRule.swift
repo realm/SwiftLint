@@ -21,7 +21,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
             functionViolations(file: file, kind: kind, dictionary: dictionary)
 
         return offsets.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }

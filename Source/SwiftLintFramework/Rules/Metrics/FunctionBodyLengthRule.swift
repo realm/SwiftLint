@@ -29,7 +29,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
                 startLine, endLine, parameter.value
             )
             guard exceeds else { continue }
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: parameter.severity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Function body should span \(configuration.warning) lines or less " +

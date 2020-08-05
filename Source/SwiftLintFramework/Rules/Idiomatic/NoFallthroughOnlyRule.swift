@@ -40,7 +40,7 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
         let nsRange = nonCommentCaseBody[0].0
         if contents.substring(with: nsRange) == "fallthrough" && nonCommentCaseBody[0].1 == [.keyword] &&
             !isNextTokenUnknownAttribute(afterOffset: byteRange.upperBound, file: file) {
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: configuration.severity,
                                    location: Location(file: file, characterOffset: nsRange.location))]
         }

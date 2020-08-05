@@ -92,7 +92,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
     public func validate(file: SwiftLintFile, kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return self.violationRanges(in: file, kind: kind, dictionary: dictionary).map { range in
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
@@ -113,7 +113,7 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
 
     public func violationRanges(in file: SwiftLintFile, kind: StatementKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard type(of: self).kinds.contains(kind),
+        guard Self.kinds.contains(kind),
             let byteRange = dictionary.byteRange,
             case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
             let firstToken = tokens.first,

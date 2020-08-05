@@ -25,7 +25,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let violations = typeColonViolationRanges(in: file, matching: pattern).compactMap { range in
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
@@ -48,7 +48,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
         guard !matches.isEmpty else { return [] }
         let regularExpression = regex(pattern)
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
         var contents = file.contents
         for (range, kind) in matches.reversed() {
@@ -106,7 +106,7 @@ extension ColonRule: ASTRule {
             functionCallColonViolationRanges(in: file, kind: kind, dictionary: dictionary)
 
         return ranges.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: $0.location))
         }

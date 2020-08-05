@@ -84,7 +84,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
 
         let violations = violatingOffsetsForEnum(dictionary: dictionary, file: file)
         return violations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }

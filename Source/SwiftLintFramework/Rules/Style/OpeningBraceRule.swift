@@ -157,7 +157,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -178,7 +178,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
+            Correction(ruleDescription: Self.description,
                        location: $0)
         }
     }

@@ -98,7 +98,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: offset))
         }
@@ -137,7 +137,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     private func callDotOffset(file: SwiftLintFile, callRange: ByteRange) -> Int? {
         guard
             let range = file.stringView.byteRangeToNSRange(callRange),
-            case let regex = type(of: self).whitespaceDotRegex,
+            case let regex = Self.whitespaceDotRegex,
             let match = regex.matches(in: file.contents, options: [], range: range).last?.range else {
                 return nil
         }
@@ -149,7 +149,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
     private func callHasLeadingNewline(file: SwiftLintFile, callRange: ByteRange) -> Bool {
         guard
             let range = file.stringView.byteRangeToNSRange(callRange),
-            case let regex = type(of: self).newlineWhitespaceDotRegex,
+            case let regex = Self.newlineWhitespaceDotRegex,
             regex.firstMatch(in: file.contents, options: [], range: range) != nil else {
                 return false
         }

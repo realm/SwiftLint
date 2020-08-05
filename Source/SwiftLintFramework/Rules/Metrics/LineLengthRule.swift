@@ -78,7 +78,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
             for param in configuration.params where length > param.value {
                 let reason = "Line should be \(configuration.length.warning) characters or less: " +
                              "currently \(length) characters"
-                return StyleViolation(ruleDescription: type(of: self).description,
+                return StyleViolation(ruleDescription: Self.description,
                                       severity: param.severity,
                                       location: Location(file: file.path, line: line.index),
                                       reason: reason)

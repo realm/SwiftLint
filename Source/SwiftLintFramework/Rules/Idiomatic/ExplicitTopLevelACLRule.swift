@@ -79,7 +79,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
         }
 
         return violationOffsets.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }

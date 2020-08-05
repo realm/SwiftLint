@@ -94,7 +94,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let matches = violationMatchesRanges(in: file)
         return matches.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -139,7 +139,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
         guard !matches.isEmpty else { return [] }
 
-        let description = type(of: self).description
+        let description = Self.description
         var corrections: [Correction] = []
         var contents = file.contents
 

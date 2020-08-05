@@ -88,12 +88,12 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         let callsToSuper = dictionary.extractCallsToSuper(methodName: name)
 
         if callsToSuper.isEmpty {
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: configuration.severity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Method '\(name)' should call to super function")]
         } else if callsToSuper.count > 1 {
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: configuration.severity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Method '\(name)' should call to super only once")]

@@ -45,7 +45,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
             }
 
         return violationLocations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: $0)
         }
@@ -63,7 +63,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         var values: [SourceKittenDictionary] = []
         dictionary.elements.enumerated().forEach { index, element in
             // in a dictionary, the even elements are keys, and the odd elements are values
-            if index % 2 == 0 {
+            if index.isMultiple(of: 2) {
                 keys.append(element)
             } else {
                 values.append(element)

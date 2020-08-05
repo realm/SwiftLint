@@ -57,7 +57,7 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
-                ruleDescription: type(of: self).description,
+                ruleDescription: Self.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location)
             )

@@ -38,7 +38,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
                 return nil
             }
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: element.offset))
         }

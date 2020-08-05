@@ -35,7 +35,7 @@ public struct TodoRule: ConfigurationProviderRule {
     )
 
     private func customMessage(file: SwiftLintFile, range: NSRange) -> String {
-        var reason = type(of: self).description.description
+        var reason = Self.description.description
         let offset = NSMaxRange(range)
 
         guard let (lineNumber, _) = file.stringView.lineAndCharacter(forCharacterOffset: offset) else {
@@ -78,7 +78,7 @@ public struct TodoRule: ConfigurationProviderRule {
             }
             let reason = customMessage(file: file, range: range)
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location),
                                   reason: reason)

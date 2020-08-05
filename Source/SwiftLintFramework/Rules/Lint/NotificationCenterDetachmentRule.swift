@@ -21,7 +21,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         }
 
         return violationOffsets(file: file, dictionary: dictionary).map { offset in
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         }

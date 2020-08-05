@@ -137,7 +137,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         let groups = importGroups(in: file, filterEnabled: false)
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: location)
         }
@@ -180,7 +180,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
 
         let corrections = violatingOffsets(inGroups: groups).map { characterOffset -> Correction in
             let location = Location(file: file, characterOffset: characterOffset)
-            return Correction(ruleDescription: type(of: self).description, location: location)
+            return Correction(ruleDescription: Self.description, location: location)
         }
 
         guard !corrections.isEmpty else {

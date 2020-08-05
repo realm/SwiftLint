@@ -102,7 +102,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, dictionary: dictionary, kind: kind).map { range, name in
             let reason = "Unused parameter \"\(name)\" in a closure should be replaced with _."
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location),
                                   reason: reason)

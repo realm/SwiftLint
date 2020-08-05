@@ -39,7 +39,7 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
 
         let location = Location(file: file, byteOffset: offset)
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: location)
         ]

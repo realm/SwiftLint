@@ -65,7 +65,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule 
             let characterOffset = violationRange.location + violatingSubrange.location + 1
 
             return StyleViolation(
-                ruleDescription: type(of: self).description,
+                ruleDescription: Self.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: characterOffset)
             )
@@ -80,7 +80,7 @@ extension VerticalWhitespaceClosingBracesRule: CorrectableRule {
 
         let patternRegex: NSRegularExpression = regex(pattern)
         let replacementTemplate = "$2"
-        let description = type(of: self).description
+        let description = Self.description
 
         var corrections = [Correction]()
         var fileContents = file.contents

@@ -67,13 +67,13 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, Autom
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let operators = type(of: self).operators.joined(separator: "|")
+        let operators = Self.operators.joined(separator: "|")
         return
             file.matchesAndTokens(matching: "\\s(" + operators + ")\\s")
                 .filter { _, tokens in tokens.isEmpty }
                 .compactMap { matchResult, _ in violationRangeFrom(match: matchResult, in: file) }
                 .map { range in
-                    return StyleViolation(ruleDescription: type(of: self).description,
+                    return StyleViolation(ruleDescription: Self.description,
                                           severity: configuration.severity,
                                           location: Location(file: file, characterOffset: range.location))
                 }

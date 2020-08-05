@@ -117,7 +117,7 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule, Aut
             characterOffset: match.range.location
         )
         let violation = StyleViolation(
-            ruleDescription: type(of: self).description,
+            ruleDescription: Self.description,
             severity: configuration.severity,
             location: location
         )

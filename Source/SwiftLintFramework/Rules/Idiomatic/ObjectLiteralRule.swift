@@ -43,7 +43,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]

@@ -35,7 +35,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, Automat
         return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
             return syntaxKinds.first == .keyword
         }.map { range, _ in
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }

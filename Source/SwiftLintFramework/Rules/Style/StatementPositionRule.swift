@@ -91,8 +91,8 @@ private extension StatementPositionRule {
     static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
     func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
-        return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).compactMap { range in
-            StyleViolation(ruleDescription: type(of: self).description,
+        return defaultViolationRanges(in: file, matching: Self.defaultPattern).compactMap { range in
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
@@ -105,11 +105,11 @@ private extension StatementPositionRule {
     }
 
     func defaultCorrect(file: SwiftLintFile) -> [Correction] {
-        let violations = defaultViolationRanges(in: file, matching: type(of: self).defaultPattern)
+        let violations = defaultViolationRanges(in: file, matching: Self.defaultPattern)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
-        let regularExpression = regex(type(of: self).defaultPattern)
-        let description = type(of: self).description
+        let regularExpression = regex(Self.defaultPattern)
+        let description = Self.description
         var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reversed() {
@@ -127,7 +127,7 @@ private extension StatementPositionRule {
 private extension StatementPositionRule {
     func uncuddledValidate(file: SwiftLintFile) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).compactMap { range in
-            StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
+            StyleViolation(ruleDescription: Self.uncuddledDescription,
                            severity: configuration.severity.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
@@ -177,8 +177,8 @@ private extension StatementPositionRule {
         let contents = file.stringView
         let syntaxMap = file.syntaxMap
         let matches = StatementPositionRule.uncuddledRegex.matches(in: file)
-        let validator = type(of: self).uncuddledMatchValidator(contents: contents)
-        let filterMatches = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
+        let validator = Self.uncuddledMatchValidator(contents: contents)
+        let filterMatches = Self.uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
         let validMatches = matches.compactMap(validator).filter(filterMatches).map({ $0.range })
 
@@ -189,13 +189,13 @@ private extension StatementPositionRule {
         var contents = file.contents
         let syntaxMap = file.syntaxMap
         let matches = StatementPositionRule.uncuddledRegex.matches(in: file)
-        let validator = type(of: self).uncuddledMatchValidator(contents: file.stringView)
-        let filterRanges = type(of: self).uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
+        let validator = Self.uncuddledMatchValidator(contents: file.stringView)
+        let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
 
         let validMatches = matches.compactMap(validator).filter(filterRanges)
                   .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }
         if validMatches.isEmpty { return [] }
-        let description = type(of: self).uncuddledDescription
+        let description = Self.uncuddledDescription
         var corrections = [Correction]()
 
         for match in validMatches.reversed() {

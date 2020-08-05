@@ -86,7 +86,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
 
     public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return violationRanges(in: file, compilerArguments: compilerArguments).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -98,7 +98,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         if matches.isEmpty { return [] }
 
         var contents = file.contents.bridge()
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
         for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "self.").bridge()
@@ -113,7 +113,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(type(of: self).description.identifier) rule without any compiler arguments.
+                \(Self.description.identifier) rule without any compiler arguments.
                 """)
             return []
         }

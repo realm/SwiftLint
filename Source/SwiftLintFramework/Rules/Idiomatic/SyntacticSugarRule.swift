@@ -72,7 +72,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
         let contents = file.stringView
         return violationResults(in: file).map {
             let typeString = contents.substring(with: $0.range(at: 1))
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: $0.range.location),
                                   reason: message(for: typeString))
@@ -189,7 +189,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
             typeString = "Dictionary<String, Int>"
             sugaredType = "[String: Int]"
         default:
-            return type(of: self).description.description
+            return Self.description.description
         }
 
         return "Shorthand syntactic sugar should be used, i.e. \(sugaredType) instead of \(typeString)."

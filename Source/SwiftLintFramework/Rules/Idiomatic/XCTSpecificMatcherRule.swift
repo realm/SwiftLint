@@ -73,7 +73,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             else { return [] }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset),
                            reason: "Prefer the specific matcher '\(suggestedMatcher)' instead.")

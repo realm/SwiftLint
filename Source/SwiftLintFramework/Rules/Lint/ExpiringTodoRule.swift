@@ -58,7 +58,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
             }
 
             return StyleViolation(
-                ruleDescription: type(of: self).description,
+                ruleDescription: Self.description,
                 severity: severity,
                 location: Location(file: file, characterOffset: range.location),
                 reason: violationLevel.reason

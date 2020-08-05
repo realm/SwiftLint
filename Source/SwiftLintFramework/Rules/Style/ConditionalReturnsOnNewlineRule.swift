@@ -42,7 +42,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
             return searchTokens.contains(file.contents(for: firstToken) ?? "") &&
                 file.contents(for: lastToken) == "return"
         }.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.0.location))
         }

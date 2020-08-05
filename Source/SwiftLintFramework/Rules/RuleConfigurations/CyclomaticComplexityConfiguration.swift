@@ -42,7 +42,7 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
 
     public init(warning: Int, error: Int?, ignoresCaseStatements: Bool = false) {
         self.length = SeverityLevelsConfiguration(warning: warning, error: error)
-        self.complexityStatements = type(of: self).defaultComplexityStatements
+        self.complexityStatements = Self.defaultComplexityStatements
         self.ignoresCaseStatements = ignoresCaseStatements
     }
 

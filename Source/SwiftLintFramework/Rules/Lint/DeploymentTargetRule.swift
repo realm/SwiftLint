@@ -118,7 +118,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
             Availability \(violationType) is using a version (\(versionString)) that is \
             satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platform).
             """
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, byteOffset: byteOffsetToReport),
                                   reason: reason)

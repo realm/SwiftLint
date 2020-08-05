@@ -82,7 +82,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { match -> StyleViolation in
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: match.location))
         }

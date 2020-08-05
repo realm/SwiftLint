@@ -94,7 +94,7 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
 
         let violations = violatingOffsetsForEnum(dictionary: dictionary)
         return violations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }

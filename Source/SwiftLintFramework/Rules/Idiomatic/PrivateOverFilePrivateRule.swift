@@ -57,7 +57,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, Substitutio
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }

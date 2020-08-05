@@ -70,7 +70,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             let offset = dictionary.offset ?? 0
             let reason = "Function should have \(configuration.severityConfiguration.warning) parameters or less: " +
                          "it currently has \(parameterCount)"
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: parameter.severity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: reason)]

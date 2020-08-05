@@ -90,7 +90,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
             return nil
         }
 
-        return StyleViolation(ruleDescription: type(of: self).description,
+        return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severity,
                               location: Location(file: file, byteOffset: offset))
     }

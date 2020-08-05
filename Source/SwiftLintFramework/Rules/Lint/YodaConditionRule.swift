@@ -72,7 +72,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         }
 
         return matches.map { _ -> StyleViolation in
-            return StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
+            return StyleViolation(ruleDescription: Self.description, severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset))
         }
     }

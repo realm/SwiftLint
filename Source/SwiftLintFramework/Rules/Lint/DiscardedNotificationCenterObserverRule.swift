@@ -53,7 +53,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationOffsets(in: file, dictionary: dictionary, kind: kind).map { location in
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: location))
         }

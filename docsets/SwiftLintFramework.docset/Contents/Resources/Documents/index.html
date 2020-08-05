@@ -625,14 +625,19 @@ will be enabled. Can not be specified alongside <code>disabled_rules</code> or
 run by the <code>analyze</code> command. All analyzer rules are opt-in, so this is the
 only configurable rule list (there is no disabled/whitelist equivalent).</li>
 </ul>
-<pre class="highlight yaml"><code><span class="na">disabled_rules</span><span class="pi">:</span> <span class="c1"># rule identifiers to exclude from running</span>
+<pre class="highlight yaml"><code><span class="c1"># By default, SwiftLint uses a set of sensible default rules you can adjust:</span>
+<span class="na">disabled_rules</span><span class="pi">:</span> <span class="c1"># rule identifiers turned on by default to exclude from running</span>
   <span class="pi">-</span> <span class="s">colon</span>
   <span class="pi">-</span> <span class="s">comma</span>
   <span class="pi">-</span> <span class="s">control_statement</span>
-<span class="na">opt_in_rules</span><span class="pi">:</span> <span class="c1"># some rules are only opt-in</span>
-  <span class="pi">-</span> <span class="s">empty_count</span>
-  <span class="c1"># Find all the available rules by running:</span>
-  <span class="c1"># swiftlint rules</span>
+<span class="na">opt_in_rules</span><span class="pi">:</span> <span class="c1"># some rules are turned off by default, so you need to opt-in</span>
+  <span class="pi">-</span> <span class="s">empty_count</span> <span class="c1"># Find all the available rules by running: `swiftlint rules`</span>
+
+<span class="c1"># Alternatively, specify all rules explicitly by uncommenting this option:</span>
+<span class="c1"># whitelist_rules: # delete `disabled_rules` &amp; `opt_in_rules` if using this</span>
+<span class="c1">#   - empty_parameters</span>
+<span class="c1">#   - vertical_whitespace</span>
+
 <span class="na">included</span><span class="pi">:</span> <span class="c1"># paths to include during linting. `--path` is ignored if present.</span>
   <span class="pi">-</span> <span class="s">Source</span>
 <span class="na">excluded</span><span class="pi">:</span> <span class="c1"># paths to ignore during linting. Takes precedence over `included`.</span>
@@ -676,7 +681,7 @@ only configurable rule list (there is no disabled/whitelist equivalent).</li>
     <span class="pi">-</span> <span class="s">id</span>
     <span class="pi">-</span> <span class="s">URL</span>
     <span class="pi">-</span> <span class="s">GlobalAPIKey</span>
-<span class="na">reporter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">xcode"</span> <span class="c1"># reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown)</span>
+<span class="na">reporter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">xcode"</span> <span class="c1"># reporter type (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging)</span>
 </code></pre>
 
 <p>You can also use environment variables in your configuration file,

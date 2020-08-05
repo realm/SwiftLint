@@ -395,6 +395,11 @@
 
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">loadedToken</span> <span class="o">=</span> <span class="k">try</span> <span class="n">tokenManager</span><span class="o">.</span><span class="nf">decodeToken</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">response</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">loadedToken</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span> <span class="k">throw</span> <span class="n">error</span> <span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
     <span class="err">↓</span><span class="k">case</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="kc">true</span>

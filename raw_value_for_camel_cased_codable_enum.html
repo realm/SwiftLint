@@ -345,6 +345,15 @@
   <span class="k">case</span> <span class="n">two</span> <span class="o">=</span> <span class="s">"two"</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Status</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Codable</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="kt">OK</span><span class="p">,</span> <span class="kt">ACCEPTABLE</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Status</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Codable</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">ok</span>
+    <span class="k">case</span> <span class="n">maybeAcceptable</span> <span class="o">=</span> <span class="s">"maybe_acceptable"</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Status</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
     <span class="k">case</span> <span class="n">ok</span>
     <span class="k">case</span> <span class="n">notAcceptable</span>

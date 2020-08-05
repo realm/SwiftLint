@@ -30,7 +30,17 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             Example("[].map ({ $0.description })"),
             Example("[].filter { $0.contains(location) }"),
             Example("extension UITableViewCell: ReusableView { }"),
-            Example("extension UITableViewCell: ReusableView {}")
+            Example("extension UITableViewCell: ReusableView {}"),
+            Example("""
+            protocol SomeProtocol {
+               var field: Int {get}
+            }
+            """),
+            Example("""
+            func something(field: Int) {
+               guard field != 0 else {return}
+            }
+            """)
         ],
         triggeringExamples: [
             Example("[].filter(↓{$0.contains(location)})"),
@@ -130,6 +140,15 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
                 }
                 let cleaned = content.trimmingCharacters(in: .whitespaces)
                 return content != " " + cleaned + " "
+            }
+            .filter { range in
+                guard SwiftVersion.current > .fourDotTwo else {
+                    return true
+                }
+
+                let byteOffset = file.stringView.byteOffset(fromLocation: range.location)
+                let structures = file.structureDictionary.structures(forByteOffset: byteOffset)
+                return structures.last?.kind.flatMap(SwiftExpressionKind.init) == .closure
             }
             .sorted {
                 $0.location < $1.location

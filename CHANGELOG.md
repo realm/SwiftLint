@@ -54,6 +54,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3186](https://github.com/realm/SwiftLint/issues/3186)
 
+* Fix false positives in `closure_spacing` rule reported in 
+  non-closures expressions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3270](https://github.com/realm/SwiftLint/issues/3270)
+
 ## 0.39.2: Stay Home
 
 This is the last release to support building with Swift 5.0.x.

@@ -71,6 +71,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3225](https://github.com/realm/SwiftLint/issues/3225)
 
+* Fix some cases where the output would be incomplete when running 
+  SwiftLint on Linux.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3214](https://github.com/realm/SwiftLint/issues/3214)
+
 ## 0.39.2: Stay Home
 
 This is the last release to support building with Swift 5.0.x.

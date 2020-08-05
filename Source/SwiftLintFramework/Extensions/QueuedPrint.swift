@@ -8,14 +8,18 @@ private let outputQueue: DispatchQueue = {
         target: .global(qos: .userInteractive)
     )
 
-    #if !os(Linux)
-    atexit_b {
-        queue.sync(flags: .barrier) {}
+    defer {
+        setupAtExitHandler()
     }
-    #endif
 
     return queue
 }()
+
+private func setupAtExitHandler() {
+    atexit {
+        outputQueue.sync(flags: .barrier) {}
+    }
+}
 
 /**
  A thread-safe version of Swift's standard `print()`.

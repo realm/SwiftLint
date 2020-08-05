@@ -75,6 +75,10 @@
   SwiftLint on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3214](https://github.com/realm/SwiftLint/issues/3214)
+  
+* `compiler_protocol_init` now triggers on `IndexSet(arrayLiteral:`.  
+  [Janak Shah](https://github.com/janakshah)
+  [#3284](https://github.com/realm/SwiftLint/pull/3284)
 
 ## 0.39.2: Stay Home
 

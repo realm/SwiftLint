@@ -59,6 +59,18 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                     return result
                 }
             }
+            """),
+            Example("""
+            extension Foo {
+                private var isValid: Bool {
+                    get {
+                        return true
+                    }
+                    set(newValue) {
+                        print(newValue)
+                    }
+                }
+            }
             """)
         ],
         triggeringExamples: [
@@ -139,7 +151,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     private func internalTypeElements(in parent: SourceKittenElement) -> [SourceKittenElement] {
         return parent.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = element.declarationKind, elementKind != .varLocal else {
+            guard let elementKind = element.declarationKind,
+                  elementKind != .varLocal, elementKind != .varParameter else {
                 return []
             }
 

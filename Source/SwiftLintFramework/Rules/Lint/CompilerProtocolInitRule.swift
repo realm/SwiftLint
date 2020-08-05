@@ -99,7 +99,8 @@ private struct ExpressibleByCompiler {
             "NSOrderedSet",
             "NSSet",
             "SBElementArray",
-            "Set"
+            "Set",
+            "IndexSet"
         ]
         return ExpressibleByCompiler(protocolName: "ExpressibleByArrayLiteral",
                                      types: types, arguments: [["arrayLiteral"]])

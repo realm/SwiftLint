@@ -49,6 +49,11 @@
 * Fix false positive uppercase enum case in `raw_value_for_camel_cased_codable_enum` rule
   [Teameh](https://github.com/teameh)
 
+* Fix false negative in `explicit_acl` rule when using `extension` with 
+  Swift 5.2+.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3186](https://github.com/realm/SwiftLint/issues/3186)
+
 ## 0.39.2: Stay Home
 
 This is the last release to support building with Swift 5.0.x.

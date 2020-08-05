@@ -16,9 +16,8 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
     public static let description = RuleDescription(
         identifier: "prefer_zero_over_explicit_init",
         name: "Prefer Zero Over Explicit Init",
-        description: "Prefer `.zero` over excplicit init with zero parameters (e.g. `CGPoint(x: 0, y: 0)`)",
-        kind: .style,
-        minSwiftVersion: .fiveDotOne,
+        description: "Prefer `.zero` over explicit init with zero parameters (e.g. `CGPoint(x: 0, y: 0)`)",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             Example("CGRect(x: 0, y: 0, width: 0, height: 1)"),
             Example("CGPoint(x: 0, y: -1"),
@@ -54,10 +53,6 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
-            return []
-        }
-
         return file.matchesAndSyntaxKinds(matching: pattern)
             .filter {
                 $0.1 == [.identifier, .identifier, .number, .identifier, .number] ||

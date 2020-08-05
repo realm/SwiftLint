@@ -66,6 +66,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3186](https://github.com/realm/SwiftLint/issues/3186)
 
+* `closure_parameter_position` now triggers in closures that are not inside a
+  function call and also validates captured variables.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3225](https://github.com/realm/SwiftLint/issues/3225)
+
 ## 0.39.2: Stay Home
 
 This is the last release to support building with Swift 5.0.x.

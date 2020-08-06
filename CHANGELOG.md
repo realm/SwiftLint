@@ -93,6 +93,11 @@
   [Janak Shah](https://github.com/janakshah)
   [#3284](https://github.com/realm/SwiftLint/pull/3284)
 
+* Fix false positives in `extension_access_modifier` rule when using
+  Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3150](https://github.com/realm/SwiftLint/issues/3150)
+
 ## 0.39.2: Stay Home
 
 This is the last release to support building with Swift 5.0.x.

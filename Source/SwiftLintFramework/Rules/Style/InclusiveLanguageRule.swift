@@ -28,7 +28,7 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
 
         let reason = "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."
         let violation = StyleViolation(
-            ruleDescription: Swift.type(of: self).description,
+            ruleDescription: Self.description,
             severity: configuration.severity,
             location: Location(file: file, byteOffset: nameByteRange.location),
             reason: reason

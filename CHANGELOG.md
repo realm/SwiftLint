@@ -39,6 +39,9 @@
   [Anton Nazarov](https://github.com/MortyMerr)
   [#3190](https://github.com/realm/SwiftLint/issues/3190)  
 
+* Add `swiftlint docs` command to easily open online documentation.  
+  [417-72KI](https://github.com/417-72KI)
+
 #### Bug Fixes
 
 * Fix UnusedImportRule breaking transitive imports.  

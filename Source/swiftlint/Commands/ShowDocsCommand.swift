@@ -2,7 +2,7 @@ import Commandant
 import Foundation
 
 struct ShowDocsCommand: CommandProtocol {
-    let verb = "show-docs"
+    let verb = "docs"
     let function = "Open SwiftLint Docs on web browser"
 
     func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {

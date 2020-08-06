@@ -229,6 +229,12 @@
   after iOS 9/macOS 10.11.  
   [Amzd](https://github.com/Amzd)
   [#2755](https://github.com/realm/SwiftLint/issues/2755)  
+* Add `inclusive_language` rule to encourage the use of inclusive language that
+  avoids discrimination against groups of people. The new key `allowlist_rules`
+  has been added to the configuration and `whitelist_rules` has been
+  deprecated.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#3243](https://github.com/realm/SwiftLint/pull/3243)
 
 #### Bug Fixes
 
@@ -308,11 +314,6 @@ This is the last release to support building with Swift 5.0.x.
   details: https://github.com/realm/SwiftLint/pull/3123  
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
-
-* Add `inclusive_language` rule to encourage the use of inclusive language that
-  avoids discrimination against groups of people.  
-  [Dalton Claybrook](https://github.com/daltonclaybrook)
-  [#3243](https://github.com/realm/SwiftLint/pull/3243)
 
 #### Bug Fixes
 

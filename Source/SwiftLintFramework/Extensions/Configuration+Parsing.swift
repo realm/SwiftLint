@@ -1,3 +1,5 @@
+// swiftlint:disable inclusive_language
+
 extension Configuration {
     private enum Key: String {
         case cachePath = "cache_path"
@@ -11,6 +13,7 @@ extension Configuration {
         case useNestedConfigs = "use_nested_configs" // deprecated
         case warningThreshold = "warning_threshold"
         case allowlistRules = "allowlist_rules"
+        case whitelistRules = "whitelist_rules"
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles  = "allow_zero_lintable_files"
@@ -29,6 +32,7 @@ extension Configuration {
             .useNestedConfigs,
             .warningThreshold,
             .allowlistRules,
+            .whitelistRules,
             .indentation,
             .analyzerRules,
             .allowZeroLintableFiles
@@ -71,7 +75,8 @@ extension Configuration {
         Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
 
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
-        let allowlistRules = defaultStringArray(dict[Key.allowlistRules.rawValue])
+        // Use either the new 'allowlist_rules' or fallback to the deprecated 'whitelist_rules'
+        let allowlistRules = defaultStringArray(dict[Key.allowlistRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
@@ -179,6 +184,13 @@ extension Configuration {
             queuedPrintError("Support for '\(Key.useNestedConfigs.rawValue)' has " +
                 "been deprecated and its value is now ignored. Nested configuration files are " +
                 "now always considered.")
+        }
+
+        // Deprecation warning for "whitelist_rules"
+        if dict[Key.whitelistRules.rawValue] != nil {
+            queuedPrintError("'\(Key.whitelistRules.rawValue)' has been renamed to " +
+                "'\(Key.allowlistRules.rawValue)' and will be completely removed in a " +
+                "future release.")
         }
 
         // Deprecation warning for rules

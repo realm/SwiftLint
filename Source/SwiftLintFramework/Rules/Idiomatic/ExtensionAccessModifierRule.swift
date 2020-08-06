@@ -78,6 +78,16 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
                public ↓func bar() {}
                public ↓func baz() {}
             }
+            """),
+            Example("""
+            ↓extension Foo {
+               public var bar: Int {
+                  let value = 1
+                  return value
+               }
+
+               public var baz: Int { return 1 }
+            }
             """)
         ]
     )
@@ -92,9 +102,9 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
 
         let declarations = dictionary.substructure
             .compactMap { entry -> (acl: AccessControlLevel, offset: ByteCount)? in
-                guard entry.declarationKind != nil,
-                    let offset = entry.offset
-                else {
+                guard let kind = entry.declarationKind,
+                      kind != .varLocal, kind != .varParameter,
+                      let offset = entry.offset else {
                     return nil
                 }
 

@@ -74,7 +74,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3259](https://github.com/realm/SwiftLint/issues/3259)
 
-* Fix false negative in `explicit_acl` rule when using `extension` with 
+* Fix false negative in `explicit_acl` rule when using `extension` with
   Swift 5.2+.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3186](https://github.com/realm/SwiftLint/issues/3186)
@@ -89,7 +89,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3214](https://github.com/realm/SwiftLint/issues/3214)
   
-* `compiler_protocol_init` now triggers on `IndexSet(arrayLiteral:`.  
+* `compiler_protocol_init` now triggers on `IndexSet(arrayLiteral:)`.  
   [Janak Shah](https://github.com/janakshah)
   [#3284](https://github.com/realm/SwiftLint/pull/3284)
 

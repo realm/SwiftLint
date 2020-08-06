@@ -6,6 +6,13 @@ import XCTest
 
 // swiftlint:disable line_length file_length
 
+extension AccessControlLevelTests {
+    static var allTests: [(String, (AccessControlLevelTests) -> () throws -> Void)] = [
+        ("testDescription", testDescription),
+        ("testPriority", testPriority)
+    ]
+}
+
 extension AnyObjectProtocolRuleTests {
     static var allTests: [(String, (AnyObjectProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1695,6 +1702,7 @@ extension YodaConditionRuleTests {
 }
 
 XCTMain([
+    testCase(AccessControlLevelTests.allTests),
     testCase(AnyObjectProtocolRuleTests.allTests),
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),

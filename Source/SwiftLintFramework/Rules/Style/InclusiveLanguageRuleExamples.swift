@@ -41,13 +41,13 @@ internal struct InclusiveLanguageRuleExamples {
             "foo", "bar"
         ]
         """, configuration: [
-            "allow": ["blacklist"]
+            "override_terms": ["abc123"]
         ]),
         Example("""
         private func doThisThing() {}
         """, configuration: [
-            "deny": ["thing"],
-            "allow": ["thing"]
+            "override_terms": ["abc123"],
+            "additional_terms": ["xyz789"]
         ])
     ]
 
@@ -57,17 +57,17 @@ internal struct InclusiveLanguageRuleExamples {
             case foo, ↓fizzBuzz
         }
         """, configuration: [
-            "deny": ["fizzbuzz"]
+            "additional_terms": ["fizzbuzz"]
         ]),
         Example("""
         private func ↓thisIsASwiftyFunction() {}
         """, configuration: [
-            "deny": ["swift"]
+            "additional_terms": ["swift"]
         ]),
         Example("""
         private var ↓fooBar = "abc"
         """, configuration: [
-            "deny": ["FoObAr"]
+            "additional_terms": ["FoObAr"]
         ])
     ]
 }

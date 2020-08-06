@@ -23,7 +23,7 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
             else { return [] }
 
         let lowercased = name.lowercased()
-        guard let term = configuration.denyList.first(where: { lowercased.contains($0) })
+        guard let term = configuration.allTerms.first(where: { lowercased.contains($0) })
             else { return [] }
 
         let reason = "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."

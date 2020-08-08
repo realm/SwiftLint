@@ -19,6 +19,9 @@
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
+* Improve documentation for running SwiftLint as Xcode build phase 
+  [Christian Mitteldorf](https://github.com/christiankm)
+  [#3169](https://github.com/realm/SwiftLint/issues/3169)
 
 #### Bug Fixes
 

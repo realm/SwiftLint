@@ -86,8 +86,12 @@ we encourage you to watch this presentation or read the transcript:
 
 ### Xcode
 
-Integrate SwiftLint into an Xcode scheme to get warnings and errors displayed
-in the IDE. Just add a new "Run Script Phase" with:
+Integrate SwiftLint into your Xcode project to get warnings and errors displayed
+in the issue navigator.
+
+To do this click the Project in the file navigator, then click the primary app
+target, and go to Build Phases. Click the + and select "New Run Script Phase".
+Insert the following as the script:
 
 ```bash
 if which swiftlint >/dev/null; then
@@ -99,7 +103,18 @@ fi
 
 ![](assets/runscript.png)
 
-Alternatively, if you've installed SwiftLint via CocoaPods the script should look like this:
+You might want to move your SwiftLint phase directly before 'Compile Sources'
+step, to detect errors quickly before compiling. However, SwiftLint is designed
+to run on valid Swift code that cleanly completes the compiler's parsing stage.
+So running SwiftLint before 'Compile Sources' might yield some incorrect
+results.
+
+If you wish to autocorrect violations as well, your script could run
+`swiftlint autocorrect && swiftlint` instead of just `swiftlint`. This will mean
+that all correctable violations are fixed, while ensuring warnings show up in
+your project for remaining violations.
+
+If you've installed SwiftLint via CocoaPods the script should look like this:
 
 ```bash
 "${PODS_ROOT}/SwiftLint/swiftlint"

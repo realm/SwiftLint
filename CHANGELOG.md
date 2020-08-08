@@ -65,6 +65,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1082](https://github.com/realm/SwiftLint/issues/1082)
 
+* Improve documentation for running SwiftLint as Xcode build phase.  
+  [Christian Mitteldorf](https://github.com/christiankm)
+  [#3169](https://github.com/realm/SwiftLint/issues/3169)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

@@ -1525,6 +1525,12 @@ extension UnneededBreakInSwitchRuleTests {
     ]
 }
 
+extension UnneededNotificationCenterRemovalRuleTests {
+    static var allTests: [(String, (UnneededNotificationCenterRemovalRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnneededParenthesesInClosureArgumentRuleTests {
     static var allTests: [(String, (UnneededParenthesesInClosureArgumentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1896,6 +1902,7 @@ XCTMain([
     testCase(TypeNameRuleTests.allTests),
     testCase(UnavailableFunctionRuleTests.allTests),
     testCase(UnneededBreakInSwitchRuleTests.allTests),
+    testCase(UnneededNotificationCenterRemovalRuleTests.allTests),
     testCase(UnneededParenthesesInClosureArgumentRuleTests.allTests),
     testCase(UnownedVariableCaptureRuleTests.allTests),
     testCase(UntypedErrorInCatchRuleTests.allTests),

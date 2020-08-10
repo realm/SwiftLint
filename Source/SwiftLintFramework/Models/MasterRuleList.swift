@@ -174,6 +174,7 @@ public let masterRuleList = RuleList(rules: [
     TypeNameRule.self,
     UnavailableFunctionRule.self,
     UnneededBreakInSwitchRule.self,
+    UnneededNotificationCenterRemovalRule.self,
     UnneededParenthesesInClosureArgumentRule.self,
     UnownedVariableCaptureRule.self,
     UntypedErrorInCatchRule.self,

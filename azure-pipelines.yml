@@ -47,6 +47,8 @@ jobs:
         xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint test |
         xcpretty -r junit -o build/reports/xcodebuild.xml
       displayName: xcodebuild test
+    - script: bash <(curl -s https://codecov.io/bash)
+      displayName: Export code coverage
     - task: PublishTestResults@2
       inputs:
         testRunner: JUnit

@@ -45,7 +45,7 @@
 * Add `unneeded_notification_center_removal` rule to warn against using
   `NotificationCenter.removeObserver(self)` in `deinit` since it's not required
   after iOS 9/macOS 10.11.  
-  [Amzed](https://github.com/Amzd)
+  [Amzd](https://github.com/Amzd)
   [#2755](https://github.com/realm/SwiftLint/issues/2755)  
 
 #### Bug Fixes

@@ -1,3 +1,27 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix .swift-version to use Swift 5.1.  
+  [cfiken](https://github.com/cfiken)
+  [#3297](https://github.com/realm/SwiftLint/issues/3297)
+
+* Fix test `testDetectSwiftVersion` for Swift 5.2.5.  
+  [cfiken](https://github.com/cfiken)
+  [#3299](https://github.com/realm/SwiftLint/pull/3299)
+
 ## 0.40.0: Washable Mask
 
 #### Breaking
@@ -103,10 +127,6 @@
   Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3150](https://github.com/realm/SwiftLint/issues/3150)
-
-* Fix test `testDetectSwiftVersion` for Swift 5.2.5
-  [cfiken](https://github.com/cfiken)
-  [#3299](https://github.com/realm/SwiftLint/pull/3299)
 
 ## 0.39.2: Stay Home
 

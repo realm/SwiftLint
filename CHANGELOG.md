@@ -104,6 +104,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3150](https://github.com/realm/SwiftLint/issues/3150)
 
+* Fix .swift-version to use Swift 5.1
+  [cfiken](https://github.com/cfiken)
+  [#3297](https://github.com/realm/SwiftLint/issues/3297)
+
 ## 0.39.2: Stay Home
 
 This is the last release to support building with Swift 5.0.x.

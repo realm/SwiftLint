@@ -112,7 +112,7 @@ the `CHANGELOG.md` file.
 We follow the same syntax as CocoaPods' CHANGELOG.md:
 
 1. One Markdown unnumbered list item describing the change.
-2. 2 trailing spaces on the last line describing the change (to force Markdown to render each change [on its own line](https://daringfireball.net/projects/markdown/syntax#p)).
+2. 2 trailing spaces on the last line describing the change (so that Markdown renders each change [on its own line](https://daringfireball.net/projects/markdown/syntax#p)).
 3. A list of Markdown hyperlinks to the contributors to the change. One entry
    per line. Usually just one.
 4. A list of Markdown hyperlinks to the issues the change addresses. One entry

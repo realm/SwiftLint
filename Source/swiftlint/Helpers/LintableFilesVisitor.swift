@@ -28,6 +28,16 @@ enum LintOrAnalyzeModeWithCompilerArguments {
     case analyze(allCompilerInvocations: CompilerInvocations)
 }
 
+private func resolveParamsFiles(args: [String]) -> [String] {
+    return args.reduce(into: []) { allArgs, arg in
+        if arg.hasPrefix("@"), let contents = try? String(contentsOfFile: String(arg.dropFirst())) {
+            allArgs += resolveParamsFiles(args: contents.split(separator: "\n").map(String.init))
+        } else if !arg.isEmpty {
+            allArgs.append(arg)
+        }
+    }
+}
+
 struct LintableFilesVisitor {
     let paths: [String]
     let action: String
@@ -44,7 +54,7 @@ struct LintableFilesVisitor {
     init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool,
          cache: LinterCache?, parallel: Bool,
          allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
-        self.paths = paths
+        self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
         self.quiet = quiet
@@ -61,7 +71,7 @@ struct LintableFilesVisitor {
                  useScriptInputFiles: Bool, forceExclude: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
                  allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
-        self.paths = paths
+        self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
         self.quiet = quiet

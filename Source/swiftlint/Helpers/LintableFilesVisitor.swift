@@ -32,7 +32,7 @@ private func resolveParamsFiles(args: [String]) -> [String] {
     return args.reduce(into: []) { allArgs, arg in
         if arg.hasPrefix("@"), let contents = try? String(contentsOfFile: String(arg.dropFirst())) {
             allArgs += resolveParamsFiles(args: contents.split(separator: "\n").map(String.init))
-        } else if !arg.isEmpty {
+        } else {
             allArgs.append(arg)
         }
     }

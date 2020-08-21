@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Add support for params files for file paths.  
+  [keith](https://github.com/keith)
 
 #### Bug Fixes
 

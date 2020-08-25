@@ -15,15 +15,16 @@ struct ShowDocsCommand: CommandProtocol {
 private extension ShowDocsCommand {
     func open(_ url: URL) {
         let process = Process()
-        process.launchPath = "/usr/bin/env"
-        let command: String = {
-            #if os(Linux)
-            return "xdg-open"
-            #else
-            return "open"
-            #endif
-        }()
-        process.arguments = [command, url.absoluteString]
+        let envPath = "/usr/bin/env"
+
+#if os(macOS)
+        process.launchPath = envPath
+        process.arguments = ["open", url.absoluteString]
         process.launch()
+#else
+        process.executableURL = URL(fileURLWithPath: envPath)
+        process.arguments = ["xdg-open", url.absoluteString]
+        process.run()
+#endif
     }
 }

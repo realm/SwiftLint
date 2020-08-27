@@ -1,4 +1,4 @@
-## Master
+## 0.40.1: A Baffling Response
 
 #### Breaking
 

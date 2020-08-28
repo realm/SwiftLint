@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Speed up excluding paths process.  
+  [JohnReeze](https://github.com/JohnReeze)
+  [#3304](https://github.com/realm/SwiftLint/issues/3304)
 
 #### Bug Fixes
 

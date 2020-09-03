@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Improves description for  `empty_enum_arguments` 
+  [Lukas Schmidt](https://github.com/lightsprint09)
 
 #### Bug Fixes
 

@@ -107,6 +107,13 @@ portable_zip: installables
 	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
+zip_linux:
+	$(eval TMP_FOLDER := $(shell mktemp -d))
+	docker run -v `pwd`:`pwd` -w `pwd` --rm swift:latest swift build -c release
+	mv .build/release/swiftlint "$(TMP_FOLDER)"
+	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
+
 package: installables
 	pkgbuild \
 		--identifier "io.realm.swiftlint" \
@@ -119,7 +126,7 @@ archive:
 	carthage build --no-skip-current --platform mac
 	carthage archive SwiftLintFramework
 
-release: package archive portable_zip
+release: package archive portable_zip zip_linux
 
 docker_test:
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:5.2.4 swift test --parallel

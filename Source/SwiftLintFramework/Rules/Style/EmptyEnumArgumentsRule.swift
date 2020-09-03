@@ -32,7 +32,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
     public static let description = RuleDescription(
         identifier: "empty_enum_arguments",
         name: "Empty Enum Arguments",
-        description: "Arguments can be omitted when matching enums with associated types if they are not used.",
+        description: "Arguments can be omitted when matching enums with associated values if they are not used.",
         kind: .style,
         nonTriggeringExamples: [
             wrapInSwitch("case .bar"),

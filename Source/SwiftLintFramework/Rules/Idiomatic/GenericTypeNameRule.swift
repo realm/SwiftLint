@@ -88,7 +88,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
         if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
             return [
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: .error,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Generic type name should only contain alphanumeric characters: '\(name)'")
@@ -96,14 +96,14 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         } else if configuration.validatesStartWithLowercase &&
             !String(name[name.startIndex]).isUppercase() {
             return [
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: .error,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Generic type name should start with an uppercase character: '\(name)'")
             ]
         } else if let severity = severity(forLength: name.count) {
             return [
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: severity,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Generic type name should be between \(configuration.minLengthThreshold) and " +
@@ -122,12 +122,12 @@ extension GenericTypeNameRule {
     private static let genericTypeRegex = regex(genericTypePattern)
 
     private func validateGenericTypeAliases(in file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "typealias\\s+\\w+?\\s*" + type(of: self).genericTypePattern + "\\s*="
+        let pattern = "typealias\\s+\\w+?\\s*" + Self.genericTypePattern + "\\s*="
         return file.match(pattern: pattern).flatMap { range, tokens -> [(String, ByteCount)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
-                let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
-                                                                       range: range)?.range(at: 1) else {
+                let match = Self.genericTypeRegex.firstMatch(in: file.contents, options: [],
+                                                             range: range)?.range(at: 1) else {
                     return []
             }
 
@@ -147,8 +147,8 @@ extension GenericTypeNameRule {
             case let length = bodyOffset - start,
             case let byteRange = ByteRange(location: start, length: length),
             let range = file.stringView.byteRangeToNSRange(byteRange),
-            let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
-                                                                   range: range)?.range(at: 1) else {
+            let match = Self.genericTypeRegex.firstMatch(in: file.contents, options: [],
+                                                         range: range)?.range(at: 1) else {
                 return []
         }
 
@@ -164,8 +164,8 @@ extension GenericTypeNameRule {
             case let contents = file.stringView,
             case let byteRange = ByteRange(location: offset, length: length),
             let range = contents.byteRangeToNSRange(byteRange),
-            let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents,
-                                                                   options: [], range: range)?.range(at: 1),
+            let match = Self.genericTypeRegex.firstMatch(in: file.contents,
+                                                         options: [], range: range)?.range(at: 1),
             match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file)
         else {
             return []

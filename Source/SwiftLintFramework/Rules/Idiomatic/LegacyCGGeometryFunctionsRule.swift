@@ -93,7 +93,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
 
         return file.match(pattern: pattern, with: [.identifier]).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }

@@ -104,7 +104,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: $0.location),
                                   reason: configuration.consoleDescription)
@@ -112,7 +112,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Aut
     }
 
     fileprivate func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: type(of: self).regularExpression,
+        return file.match(pattern: Self.regularExpression,
                           with: [.keyword, .keyword, .identifier])
     }
 }
@@ -124,7 +124,7 @@ extension UntypedErrorInCatchRule: CorrectableRule {
         if matches.isEmpty { return [] }
 
         var contents = file.contents.bridge()
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
 
         for range in matches.reversed() where contents.substring(with: range).contains("let error") {

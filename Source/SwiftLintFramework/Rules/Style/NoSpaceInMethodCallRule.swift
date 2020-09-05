@@ -13,22 +13,15 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         description: "Don't add a space between the method name and the parentheses.",
         kind: .style,
         minSwiftVersion: .fourDotTwo,
-        nonTriggeringExamples: [
-            Example("foo()"),
-            Example("object.foo()"),
-            Example("object.foo(1)"),
-            Example("object.foo(value: 1)"),
-            Example("object.foo { print($0 }"),
-            Example("list.sorted { $0.0 < $1.0 }.map { $0.value }"),
-            Example("self.init(rgb: (Int) (colorInt))")
-        ],
+        nonTriggeringExamples: nonTriggeringExamples,
         triggeringExamples: [
             Example("foo↓ ()"),
             Example("object.foo↓ ()"),
             Example("object.foo↓ (1)"),
             Example("object.foo↓ (value: 1)"),
             Example("object.foo↓ () {}"),
-            Example("object.foo↓     ()")
+            Example("object.foo↓     ()"),
+            Example("object.foo↓     (value: 1) { x in print(x) }")
         ],
         corrections: [
             Example("foo↓ ()"): Example("foo()"),
@@ -40,13 +33,41 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         ]
     )
 
+    private static var nonTriggeringExamples: [Example] {
+        let commonExamples = [
+            Example("foo()"),
+            Example("object.foo()"),
+            Example("object.foo(1)"),
+            Example("object.foo(value: 1)"),
+            Example("object.foo { print($0 }"),
+            Example("list.sorted { $0.0 < $1.0 }.map { $0.value }"),
+            Example("self.init(rgb: (Int) (colorInt))")
+        ]
+
+        guard SwiftVersion.current >= .fiveDotThree else {
+            return commonExamples
+        }
+
+        let swiftFiveDot3Examples = [
+            Example("""
+            Button {
+                print("Button tapped")
+            } label: {
+                Text("Button")
+            }
+            """)
+        ]
+
+        return commonExamples + swiftFiveDot3Examples
+    }
+
     // MARK: - ASTRule
 
     public func validate(file: SwiftLintFile,
                          kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -76,9 +97,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         }
 
         // Don't trigger if it's a single parameter trailing closure without parens
-        if let subDict = dictionary.substructure.last,
-            subDict.expressionKind == .closure,
-            let closureBodyOffset = subDict.bodyOffset,
+        if let closureBodyOffset = dictionary.substructure.lazy.compactMap({ $0.closureBodyOffset }).first,
             closureBodyOffset == bodyOffset {
             return []
         }
@@ -89,5 +108,19 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         }
 
         return [range]
+    }
+}
+
+private extension SourceKittenDictionary {
+    var closureBodyOffset: ByteCount? {
+        if expressionKind == .closure {
+            return bodyOffset
+        }
+
+        if expressionKind == .argument, substructure.last?.expressionKind == .closure {
+            return substructure.last?.bodyOffset
+        }
+
+        return nil
     }
 }

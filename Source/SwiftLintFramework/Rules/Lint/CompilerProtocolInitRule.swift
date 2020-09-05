@@ -34,10 +34,10 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             let (violation, range) = $0
             return StyleViolation(
-                ruleDescription: type(of: self).description,
+                ruleDescription: Self.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location),
-                reason: type(of: self).violationReason(protocolName: violation.protocolName, isPlural: false)
+                reason: Self.violationReason(protocolName: violation.protocolName, isPlural: false)
             )
         }
     }
@@ -99,7 +99,8 @@ private struct ExpressibleByCompiler {
             "NSOrderedSet",
             "NSSet",
             "SBElementArray",
-            "Set"
+            "Set",
+            "IndexSet"
         ]
         return ExpressibleByCompiler(protocolName: "ExpressibleByArrayLiteral",
                                      types: types, arguments: [["arrayLiteral"]])

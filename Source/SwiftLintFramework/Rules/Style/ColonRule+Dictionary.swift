@@ -39,7 +39,7 @@ extension ColonRule {
 
     private func dictionaryColonRanges(dictionary: SourceKittenDictionary) -> [ByteRange]? {
         let elements = dictionary.elements
-        guard elements.count % 2 == 0 else {
+        guard elements.count.isMultiple(of: 2) else {
             return nil
         }
 
@@ -52,8 +52,8 @@ extension ColonRule {
             return subDict.byteRange
         }
 
-        let even = ranges.enumerated().compactMap { $0 % 2 == 0 ? $1 : nil }
-        let odd = ranges.enumerated().compactMap { $0 % 2 != 0 ? $1 : nil }
+        let even = ranges.enumerated().compactMap { $0.isMultiple(of: 2) ? $1 : nil }
+        let odd = ranges.enumerated().compactMap { $0.isMultiple(of: 2) ? nil : $1 }
 
         return zip(even, odd).map { evenRange, oddRange -> ByteRange in
             let location = evenRange.upperBound

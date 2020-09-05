@@ -29,7 +29,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule, Au
             .filter { Set($0.1).isSubset(of: [.identifier]) }
             .map { $0.0 }
             .map {
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location))
             }

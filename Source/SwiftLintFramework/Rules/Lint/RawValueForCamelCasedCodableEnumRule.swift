@@ -37,6 +37,17 @@ public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, Configur
             }
             """),
             Example("""
+            enum Status: String, Codable {
+                case OK, ACCEPTABLE
+            }
+            """),
+            Example("""
+            enum Status: String, Codable {
+                case ok
+                case maybeAcceptable = "maybe_acceptable"
+            }
+            """),
+            Example("""
             enum Status: String {
                 case ok
                 case notAcceptable
@@ -98,7 +109,7 @@ public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, Configur
 
         let violations = violatingOffsetsForEnum(dictionary: dictionary)
         return violations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }
@@ -120,7 +131,7 @@ public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, Configur
         _ enumElements: [SourceKittenDictionary]) -> [SourceKittenDictionary] {
         return enumElements
             .filter { substructure in
-                guard let name = substructure.name, !name.isLowercase() else { return false }
+                guard let name = substructure.name, !name.isLowercase(), !name.isUppercase() else { return false }
                 return !substructure.elements.contains { $0.kind == "source.lang.swift.structure.elem.init_expr" }
             }
     }

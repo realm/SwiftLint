@@ -62,7 +62,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         return offsets.compactMap { location, size in
             for parameter in configuration.params where size > parameter.value {
                 let reason = "Tuples should have at most \(configuration.warning) members."
-                return StyleViolation(ruleDescription: type(of: self).description,
+                return StyleViolation(ruleDescription: Self.description,
                                       severity: parameter.severity,
                                       location: Location(file: file, byteOffset: location),
                                       reason: reason)

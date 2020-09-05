@@ -45,7 +45,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
             let reason = "\(preferredModifier.keyword) modifier should be before \(declaredModifier.keyword)."
             return [
                 StyleViolation(
-                    ruleDescription: type(of: self).description,
+                    ruleDescription: Self.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: reason
@@ -100,7 +100,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
 
             corrections = [
                 Correction(
-                    ruleDescription: type(of: self).description,
+                    ruleDescription: Self.description,
                     location: Location(
                         file: file,
                         byteOffset: offset

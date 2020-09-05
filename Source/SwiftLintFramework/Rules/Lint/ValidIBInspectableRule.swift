@@ -150,7 +150,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: location)
         ]

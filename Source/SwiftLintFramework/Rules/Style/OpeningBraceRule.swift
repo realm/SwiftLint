@@ -7,7 +7,7 @@ private extension SwiftLintFile {
     func violatingOpeningBraceRanges() -> [(range: NSRange, location: Int)] {
         return match(pattern: "(?:[^( ]|[\\s(][\\s]+)\\{",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{").compactMap {
+                     excludingPattern: "(?:(?:if|guard|while)\\n[^\\{]+?\\s|\\{\\s*)\\{").compactMap {
             if isAnonimousClosure(range: $0) {
                 return nil
             }
@@ -79,13 +79,26 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
             Example("struct Rule {}\n"),
             Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
             Example("""
-            func f(rect: CGRect) {
-               {
-                  let centre = CGPoint(x: rect.midX, y: rect.midY)
-                  print(centre)
-               }()
-            }
-            """)
+                    func f(rect: CGRect) {
+                        {
+                            let centre = CGPoint(x: rect.midX, y: rect.midY)
+                            print(centre)
+                        }()
+                    }
+                    """),
+            Example("""
+                    func f(rect: CGRect) -> () -> Void {
+                        {
+                            let centre = CGPoint(x: rect.midX, y: rect.midY)
+                            print(centre)
+                        }
+                    }
+                    """),
+            Example("""
+                    func f() -> () -> Void {
+                        {}
+                    }
+                    """)
         ],
         triggeringExamples: [
             Example("func abc()↓{\n}"),
@@ -144,7 +157,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -165,7 +178,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, Auto
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description,
+            Correction(ruleDescription: Self.description,
                        location: $0)
         }
     }

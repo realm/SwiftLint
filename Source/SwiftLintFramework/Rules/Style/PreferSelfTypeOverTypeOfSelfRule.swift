@@ -111,14 +111,14 @@ public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProvider
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        guard SwiftVersion.current >= type(of: self).description.minSwiftVersion else {
+        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
             return []
         }
 

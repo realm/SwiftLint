@@ -99,10 +99,10 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func makeViolation(at location: Location) -> StyleViolation {
-        return StyleViolation(ruleDescription: type(of: self).description,
+        return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severityConfiguration.severity,
                               location: location,
-                              reason: type(of: self).reason)
+                              reason: Self.reason)
     }
 }
 

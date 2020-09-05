@@ -34,22 +34,81 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             """)
         ],
         triggeringExamples: [
-            Example("[1, 2].map {\n ↓number in\n number + 1 \n}\n"),
-            Example("[1, 2].map {\n ↓number -> Int in\n number + 1 \n}\n"),
-            Example("[1, 2].map {\n (↓number: Int) -> Int in\n number + 1 \n}\n"),
-            Example("[1, 2].map {\n [weak self] ↓number in\n number + 1 \n}\n"),
-            Example("[1, 2].map { [weak self]\n ↓number in\n number + 1 \n}\n"),
-            Example("[1, 2].map({\n ↓number in\n number + 1 \n})\n"),
-            Example("[1, 2].something(closure: {\n ↓number in\n number + 1 \n})\n"),
-            Example("[1, 2].reduce(0) {\n ↓sum, ↓number in\n number + sum \n}\n")
+            Example("""
+            [1, 2].map {
+                ↓number in
+                number + 1
+            }
+            """),
+            Example("""
+            [1, 2].map {
+                ↓number -> Int in
+                number + 1
+            }
+            """),
+            Example("""
+            [1, 2].map {
+                (↓number: Int) -> Int in
+                number + 1
+            }
+            """),
+            Example("""
+            [1, 2].map {
+                [weak ↓self] ↓number in
+                number + 1
+            }
+            """),
+            Example("""
+            [1, 2].map { [weak self]
+                ↓number in
+                number + 1
+            }
+            """),
+            Example("""
+            [1, 2].map({
+                ↓number in
+                number + 1
+            })
+            """),
+            Example("""
+            [1, 2].something(closure: {
+                ↓number in
+                number + 1
+            })
+            """),
+            Example("""
+            [1, 2].reduce(0) {
+                ↓sum, ↓number in
+                number + sum
+            })
+            """),
+            Example("""
+            f.completionHandler = {
+                ↓thing in
+                doStuff()
+            }
+            """),
+            Example("""
+            foo {
+                [weak ↓self] in
+                self?.bar()
+            }
+            """)
         ]
     )
 
     private static let openBraceRegex = regex("\\{")
 
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return file.structureDictionary.traverseDepthFirst { subDict in
+            guard let kind = self.kind(from: subDict) else { return nil }
+            return validate(file: file, kind: kind, dictionary: subDict)
+        }.unique.sorted(by: { $0.location < $1.location })
+    }
+
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call else {
+        guard kind == .closure || kind == .call else {
             return []
         }
 
@@ -61,7 +120,8 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             return []
         }
 
-        let parameters = dictionary.enclosedVarParameters
+        let parameters = dictionary.enclosedVarParameters +
+            dictionary.substructure.filter { $0.declarationKind == .varLocal } // capture lists
         let rangeStart = nameOffset + nameLength
         let regex = ClosureParameterPositionRule.openBraceRegex
 
@@ -87,7 +147,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
                 return nil
             }
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: paramOffset))
         }

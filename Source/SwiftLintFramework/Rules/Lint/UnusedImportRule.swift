@@ -20,7 +20,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
     public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity.severity,
                            location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
                            reason: importUsage.violationReason)
@@ -32,7 +32,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
 
         var contents = file.stringView.nsString
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
         for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "").bridge()
@@ -87,7 +87,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         guard !compilerArguments.isEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
-                \(type(of: self).description.identifier) rule without any compiler arguments.
+                \(Self.description.identifier) rule without any compiler arguments.
                 """)
             return []
         }

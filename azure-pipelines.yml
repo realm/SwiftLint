@@ -33,6 +33,12 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_11.3.1.app
       xcode114:
         DEVELOPER_DIR: /Applications/Xcode_11.4.app
+      xcode115:
+        DEVELOPER_DIR: /Applications/Xcode_11.5.app
+      xcode116:
+        DEVELOPER_DIR: /Applications/Xcode_11.6.app
+      xcode12:
+        DEVELOPER_DIR: /Applications/Xcode_12_beta.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -45,6 +51,8 @@ jobs:
         xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint test |
         xcpretty -r junit -o build/reports/xcodebuild.xml
       displayName: xcodebuild test
+    - script: bash <(curl -s https://codecov.io/bash)
+      displayName: Export code coverage
     - task: PublishTestResults@2
       inputs:
         testRunner: JUnit
@@ -67,6 +75,12 @@ jobs:
         DEVELOPER_DIR: /Applications/Xcode_11.3.1.app
       xcode114:
         DEVELOPER_DIR: /Applications/Xcode_11.4.app
+      xcode115:
+        DEVELOPER_DIR: /Applications/Xcode_11.5.app
+      xcode116:
+        DEVELOPER_DIR: /Applications/Xcode_11.6.app
+      xcode12:
+        DEVELOPER_DIR: /Applications/Xcode_12_beta.app
   steps:
     - script: |
         sw_vers
@@ -81,7 +95,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.4.app
+    DEVELOPER_DIR: /Applications/Xcode_11.6.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -94,7 +108,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.4.app
+    DEVELOPER_DIR: /Applications/Xcode_11.6.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
@@ -103,7 +117,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.4.app
+    DEVELOPER_DIR: /Applications/Xcode_11.6.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run
@@ -116,7 +130,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.4.app
+    DEVELOPER_DIR: /Applications/Xcode_11.6.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

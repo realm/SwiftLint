@@ -33,7 +33,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
             }
 
         // Make sure that each #if has corresponding #endif
-        guard ranges.count % 2 == 0 else { return [] }
+        guard ranges.count.isMultiple(of: 2) else { return [] }
 
         return stride(from: 0, to: ranges.count, by: 2).reduce(into: []) { result, rangeIndex in
             result.append(ranges[rangeIndex].union(with: ranges[rangeIndex + 1]))
@@ -84,7 +84,9 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
                 }()
 
                 let location = Location(file: file, characterOffset: lineWithDuplicatedImport.range.location)
-                let violation = StyleViolation(ruleDescription: type(of: self).description, location: location)
+                let violation = StyleViolation(ruleDescription: Self.description,
+                                               severity: configuration.severity,
+                                               location: location)
                 violations.append(violation)
             }
         }

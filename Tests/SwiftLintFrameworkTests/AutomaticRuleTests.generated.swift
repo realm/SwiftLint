@@ -264,6 +264,12 @@ class FunctionDefaultParameterAtEndRuleTests: XCTestCase {
     }
 }
 
+class IBInspectableInExtensionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IBInspectableInExtensionRule.description)
+    }
+}
+
 class IdenticalOperandsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)
@@ -516,6 +522,12 @@ class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     }
 }
 
+class PreferZeroOverExplicitInitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferZeroOverExplicitInitRule.description)
+    }
+}
+
 class PrivateActionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)
@@ -723,6 +735,12 @@ class UnavailableFunctionRuleTests: XCTestCase {
 class UnneededBreakInSwitchRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)
+    }
+}
+
+class UnneededNotificationCenterRemovalRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededNotificationCenterRemovalRule.description)
     }
 }
 

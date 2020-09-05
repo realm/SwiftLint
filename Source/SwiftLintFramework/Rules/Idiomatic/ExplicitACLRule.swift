@@ -41,15 +41,50 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             """),
             Example("internal class A { deinit {} }"),
             Example("extension A: Equatable {}"),
-            Example("extension A {}")
+            Example("extension A {}"),
+            Example("""
+            extension Foo {
+                internal func bar() {}
+            }
+            """),
+            Example("""
+            internal enum Foo {
+                case bar
+            }
+            """),
+            Example("""
+            extension Foo {
+                public var isValid: Bool {
+                    let result = true
+                    return result
+                }
+            }
+            """),
+            Example("""
+            extension Foo {
+                private var isValid: Bool {
+                    get {
+                        return true
+                    }
+                    set(newValue) {
+                        print(newValue)
+                    }
+                }
+            }
+            """)
         ],
         triggeringExamples: [
-            Example("enum A {}\n"),
-            Example("final class B {}\n"),
-            Example("internal struct C { let d = 5 }\n"),
-            Example("public struct C { let d = 5 }\n"),
+            Example("↓enum A {}\n"),
+            Example("final ↓class B {}\n"),
+            Example("internal struct C { ↓let d = 5 }\n"),
+            Example("public struct C { ↓let d = 5 }\n"),
             Example("func a() {}\n"),
-            Example("internal let a = 0\nfunc b() {}\n")
+            Example("internal let a = 0\n↓func b() {}\n"),
+            Example("""
+            extension Foo {
+                ↓func bar() {}
+            }
+            """)
         ]
     )
 
@@ -91,7 +126,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary )
+        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary)
 
         guard !implicitAndExplicitInternalElements.isEmpty else {
             return []
@@ -103,7 +138,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
                                           thatAreNotInRanges: explicitInternalRanges)
 
         return violations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }
@@ -114,9 +149,10 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
         return firstPartition.last
     }
 
-    private func internalTypeElements(in element: SourceKittenElement) -> [SourceKittenElement] {
-        return element.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = element.declarationKind else {
+    private func internalTypeElements(in parent: SourceKittenElement) -> [SourceKittenElement] {
+        return parent.substructure.flatMap { element -> [SourceKittenElement] in
+            guard let elementKind = element.declarationKind,
+                  elementKind != .varLocal, elementKind != .varParameter else {
                 return []
             }
 
@@ -129,7 +165,16 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            if element.accessibility == .internal {
+            let isInExtension: Bool
+            if let kind = parent.declarationKind {
+                let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
+                                                                 .extensionClass, .extensionStruct, .extensionProtocol]
+                isInExtension = extensionKinds.contains(kind)
+            } else {
+                isInExtension = false
+            }
+
+            if element.accessibility == .internal || (element.accessibility == nil && isInExtension) {
                 return internalTypeElementsInSubstructure + [element]
             }
 

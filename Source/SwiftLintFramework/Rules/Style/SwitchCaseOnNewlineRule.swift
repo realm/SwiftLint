@@ -41,7 +41,13 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
              where lhsErrorCode > 10:
             return false
             """),
-            wrapInSwitch("case #selector(aFunction(_:)):\n return false\n")
+            wrapInSwitch("case #selector(aFunction(_:)):\n return false\n"),
+            Example("""
+            do {
+              let loadedToken = try tokenManager.decodeToken(from: response)
+              return loadedToken
+            } catch { throw error }
+            """)
         ],
         triggeringExamples: [
             wrapInSwitch("↓case 1: return true"),
@@ -58,27 +64,35 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
 
     public func validate(file: SwiftLintFile, kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .case,
-            let offset = dictionary.offset,
-            let length = dictionary.length,
-            let lastElement = dictionary.elements.last,
-            let lastElementOffset = lastElement.offset,
-            let lastElementLength = lastElement.length,
-            case let start = lastElementOffset + lastElementLength,
-            case let rangeLength = offset + length - start,
-            case let byteRange = ByteRange(location: start, length: rangeLength),
-            let firstToken = firstNonCommentToken(inByteRange: byteRange, file: file),
-            let (tokenLine, _) = file.stringView.lineAndCharacter(forByteOffset: firstToken.offset),
-            let (caseEndLine, _) = file.stringView.lineAndCharacter(forByteOffset: start),
-            tokenLine == caseEndLine else {
-                return []
+        guard kind == .switch else {
+            return []
         }
 
-        return [
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        return dictionary.substructure.compactMap { dictionary in
+            validateCase(file: file, dictionary: dictionary)
+        }
+    }
+
+    private func validateCase(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> StyleViolation? {
+        guard dictionary.kind.flatMap(StatementKind.init) == .case,
+              let offset = dictionary.offset,
+              let length = dictionary.length,
+              let lastElement = dictionary.elements.last,
+              let lastElementOffset = lastElement.offset,
+              let lastElementLength = lastElement.length,
+              case let start = lastElementOffset + lastElementLength,
+              case let rangeLength = offset + length - start,
+              case let byteRange = ByteRange(location: start, length: rangeLength),
+              let firstToken = firstNonCommentToken(inByteRange: byteRange, file: file),
+              let (tokenLine, _) = file.stringView.lineAndCharacter(forByteOffset: firstToken.offset),
+              let (caseEndLine, _) = file.stringView.lineAndCharacter(forByteOffset: start),
+              tokenLine == caseEndLine else {
+            return nil
+        }
+
+        return StyleViolation(ruleDescription: Self.description,
+                              severity: configuration.severity,
+                              location: Location(file: file, byteOffset: offset))
     }
 
     private func firstNonCommentToken(inByteRange byteRange: ByteRange, file: SwiftLintFile) -> SwiftLintSyntaxToken? {

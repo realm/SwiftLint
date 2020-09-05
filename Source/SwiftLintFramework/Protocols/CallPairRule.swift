@@ -56,7 +56,7 @@ extension CallPairRule {
         }
 
         return violatingLocations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: severity,
                            location: Location(file: file, byteOffset: $0),
                            reason: reason)

@@ -211,7 +211,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
                         for protocolName: String,
                         missing requiredCase: RequiredCase) -> StyleViolation {
         return StyleViolation(
-            ruleDescription: type(of: self).description,
+            ruleDescription: Self.description,
             severity: requiredCase.severity,
             location: parsed.location,
             reason: "Enums conforming to \"\(protocolName)\" must have a \"\(requiredCase.name)\" case")

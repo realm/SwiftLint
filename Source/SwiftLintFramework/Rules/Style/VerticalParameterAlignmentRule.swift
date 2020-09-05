@@ -66,7 +66,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         }
 
         return violationLocations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: $0)
         }

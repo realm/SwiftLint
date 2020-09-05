@@ -40,7 +40,7 @@ public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, Automa
                 isDoubleEqualsMethod(subDictionary, onType: typeName),
                 let offset = subDictionary.offset
             else { return nil }
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset))
         }

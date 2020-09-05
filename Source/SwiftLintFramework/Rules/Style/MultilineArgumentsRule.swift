@@ -43,7 +43,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
         }
 
         return violatingArguments.map {
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: self.configuration.severityConfiguration.severity,
                                   location: Location(file: file, byteOffset: $0.offset))
         }

@@ -71,18 +71,18 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             .nameStrippingTrailingSwiftUIPreviewProvider(dictionary)
         let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
         if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: .error,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Type name should only contain alphanumeric characters: '\(name)'")]
         } else if configuration.validatesStartWithLowercase &&
             !String(name[name.startIndex]).isUppercase() {
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: .error,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Type name should start with an uppercase character: '\(name)'")]
         } else if let severity = severity(forLength: name.count) {
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(ruleDescription: Self.description,
                                    severity: severity,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Type name should be between \(configuration.minLengthThreshold) and " +

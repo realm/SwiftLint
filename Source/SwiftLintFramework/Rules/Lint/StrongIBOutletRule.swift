@@ -33,7 +33,7 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]

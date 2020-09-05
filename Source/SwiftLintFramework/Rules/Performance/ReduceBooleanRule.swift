@@ -40,7 +40,7 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
                 }
 
                 return StyleViolation(
-                    ruleDescription: type(of: self).description,
+                    ruleDescription: Self.description,
                     severity: configuration.severity,
                     location: Location(file: file, characterOffset: range.location),
                     reason: reason

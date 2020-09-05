@@ -57,7 +57,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
 
                 let styleViolation = StyleViolation(
-                    ruleDescription: type(of: self).description,
+                    ruleDescription: Self.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: typeContentOffset.offset),
                     reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'."

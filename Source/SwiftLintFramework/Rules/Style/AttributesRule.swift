@@ -63,7 +63,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             let idx = match.lastIndex(of: "import") ?? 0
             let location = idx + range.location
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: location))
         }
@@ -172,7 +172,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: location)
         ]
@@ -273,7 +273,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func isAttribute(_ name: String) -> Bool {
-        if name == "@escaping" {
+        if name == "@escaping" || name == "@autoclosure" {
             return false
         }
 
@@ -292,7 +292,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let blacklist: Set<SwiftDeclarationAttributeKind> = [
+        let ignoredAttributes: Set<SwiftDeclarationAttributeKind> = [
             .dynamic,
             .fileprivate,
             .final,
@@ -317,6 +317,6 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             .setterPublic,
             .weak
         ]
-        return attributes.filter { !blacklist.contains($0) }
+        return attributes.filter { !ignoredAttributes.contains($0) }
     }
 }

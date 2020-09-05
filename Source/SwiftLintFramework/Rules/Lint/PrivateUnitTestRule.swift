@@ -172,7 +172,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
             !dictionary.enclosedSwiftAttributes.contains(.objc)
             else { return [] }
         let offset = dictionary.offset ?? 0
-        return [StyleViolation(ruleDescription: type(of: self).description,
+        return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, byteOffset: offset),
                                reason: configuration.message)]

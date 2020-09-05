@@ -6,6 +6,13 @@ import XCTest
 
 // swiftlint:disable line_length file_length
 
+extension AccessControlLevelTests {
+    static var allTests: [(String, (AccessControlLevelTests) -> () throws -> Void)] = [
+        ("testDescription", testDescription),
+        ("testPriority", testPriority)
+    ]
+}
+
 extension AnyObjectProtocolRuleTests {
     static var allTests: [(String, (AnyObjectProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -133,6 +140,17 @@ extension CompilerProtocolInitRuleTests {
     static var allTests: [(String, (CompilerProtocolInitRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
         ("testViolationMessageForExpressibleByIntegerLiteral", testViolationMessageForExpressibleByIntegerLiteral)
+    ]
+}
+
+extension ComputedAccessorsOrderRuleTests {
+    static var allTests: [(String, (ComputedAccessorsOrderRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testSetGetConfiguration", testSetGetConfiguration),
+        ("testGetSetPropertyReason", testGetSetPropertyReason),
+        ("testGetSetSubscriptReason", testGetSetSubscriptReason),
+        ("testSetGetPropertyReason", testSetGetPropertyReason),
+        ("testSetGetSubscriptReason", testSetGetSubscriptReason)
     ]
 }
 
@@ -485,6 +503,12 @@ extension ExtendedNSStringTests {
     ]
 }
 
+extension ExtendedStringTests {
+    static var allTests: [(String, (ExtendedStringTests) -> () throws -> Void)] = [
+        ("testCountOccurrences", testCountOccurrences)
+    ]
+}
+
 extension ExtensionAccessModifierRuleTests {
     static var allTests: [(String, (ExtensionAccessModifierRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -644,6 +668,12 @@ extension GlobTests {
         ("testMatchesMultipleFiles", testMatchesMultipleFiles),
         ("testMatchesNestedDirectory", testMatchesNestedDirectory),
         ("testNoGlobstarSupport", testNoGlobstarSupport)
+    ]
+}
+
+extension IBInspectableInExtensionRuleTests {
+    static var allTests: [(String, (IBInspectableInExtensionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1071,6 +1101,12 @@ extension PreferSelfTypeOverTypeOfSelfRuleTests {
     ]
 }
 
+extension PreferZeroOverExplicitInitRuleTests {
+    static var allTests: [(String, (PreferZeroOverExplicitInitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension PrefixedTopLevelConstantRuleTests {
     static var allTests: [(String, (PrefixedTopLevelConstantRuleTests) -> () throws -> Void)] = [
         ("testDefaultConfiguration", testDefaultConfiguration),
@@ -1291,7 +1327,8 @@ extension RuleConfigurationTests {
         ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary),
         ("testModifierOrderConfigurationFromDictionary", testModifierOrderConfigurationFromDictionary),
         ("testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup", testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup),
-        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup)
+        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup),
+        ("testComputedAccessorsOrderRuleConfiguration", testComputedAccessorsOrderRuleConfiguration)
     ]
 }
 
@@ -1488,6 +1525,12 @@ extension UnneededBreakInSwitchRuleTests {
     ]
 }
 
+extension UnneededNotificationCenterRemovalRuleTests {
+    static var allTests: [(String, (UnneededNotificationCenterRemovalRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnneededParenthesesInClosureArgumentRuleTests {
     static var allTests: [(String, (UnneededParenthesesInClosureArgumentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1665,6 +1708,7 @@ extension YodaConditionRuleTests {
 }
 
 XCTMain([
+    testCase(AccessControlLevelTests.allTests),
     testCase(AnyObjectProtocolRuleTests.allTests),
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
@@ -1681,6 +1725,7 @@ XCTMain([
     testCase(CommaRuleTests.allTests),
     testCase(CommandTests.allTests),
     testCase(CompilerProtocolInitRuleTests.allTests),
+    testCase(ComputedAccessorsOrderRuleTests.allTests),
     testCase(ConditionalReturnsOnNewlineRuleTests.allTests),
     testCase(ConfigurationAliasesTests.allTests),
     testCase(ConfigurationTests.allTests),
@@ -1722,6 +1767,7 @@ XCTMain([
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
     testCase(ExplicitTypeInterfaceRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
+    testCase(ExtendedStringTests.allTests),
     testCase(ExtensionAccessModifierRuleTests.allTests),
     testCase(FallthroughRuleTests.allTests),
     testCase(FatalErrorMessageRuleTests.allTests),
@@ -1741,6 +1787,7 @@ XCTMain([
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(GlobTests.allTests),
+    testCase(IBInspectableInExtensionRuleTests.allTests),
     testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),
@@ -1799,6 +1846,7 @@ XCTMain([
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
+    testCase(PreferZeroOverExplicitInitRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
     testCase(PrivateActionRuleTests.allTests),
     testCase(PrivateOutletRuleTests.allTests),
@@ -1854,6 +1902,7 @@ XCTMain([
     testCase(TypeNameRuleTests.allTests),
     testCase(UnavailableFunctionRuleTests.allTests),
     testCase(UnneededBreakInSwitchRuleTests.allTests),
+    testCase(UnneededNotificationCenterRemovalRuleTests.allTests),
     testCase(UnneededParenthesesInClosureArgumentRuleTests.allTests),
     testCase(UnownedVariableCaptureRuleTests.allTests),
     testCase(UntypedErrorInCatchRuleTests.allTests),

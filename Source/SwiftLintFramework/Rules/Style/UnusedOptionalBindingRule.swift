@@ -60,7 +60,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             }
 
             return violations(in: range, of: file, with: kind).map {
-                StyleViolation(ruleDescription: type(of: self).description,
+                StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, characterOffset: $0.location))
             }

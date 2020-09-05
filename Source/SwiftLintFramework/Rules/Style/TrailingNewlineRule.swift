@@ -46,7 +46,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
-        return [StyleViolation(ruleDescription: type(of: self).description,
+        return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
@@ -68,6 +68,6 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
             file.write(file.contents[..<index])
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: type(of: self).description, location: location)]
+        return [Correction(ruleDescription: Self.description, location: location)]
     }
 }

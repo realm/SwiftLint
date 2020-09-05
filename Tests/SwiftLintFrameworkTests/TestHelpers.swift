@@ -285,7 +285,7 @@ extension XCTestCase {
             ruleConfiguration,
             ruleDescription.identifier,
             skipDisableCommandTests: skipDisableCommandTests) else {
-                XCTFail("Failed to create configuration", file: file, line: line)
+                XCTFail("Failed to create configuration", file: (file), line: line)
                 return
         }
 
@@ -342,7 +342,7 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }).count,
                 commentDoesntViolate ? 0 : triggers.count,
-                file: file, line: line
+                file: (file), line: line
             )
         }
 
@@ -351,14 +351,14 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
                 stringDoesntViolate ? 0 : triggers.count,
-                file: file, line: line
+                file: (file), line: line
             )
         }
 
         // "disable" commands doesn't violate
         for command in disableCommands {
             XCTAssert(triggers.flatMap({ makeViolations($0.with(code: command + $0.code)) }).isEmpty,
-                      file: file, line: line)
+                      file: (file), line: line)
         }
     }
 
@@ -460,13 +460,13 @@ extension XCTestCase {
         closure: () throws -> Void) {
         do {
             try closure()
-            XCTFail("No error caught", file: file, line: line)
+            XCTFail("No error caught", file: (file), line: line)
         } catch let rError as T {
             if error != rError {
-                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)", file: file, line: line)
+                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)", file: (file), line: line)
             }
         } catch {
-            XCTFail("Wrong error caught", file: file, line: line)
+            XCTFail("Wrong error caught", file: (file), line: line)
         }
     }
 }

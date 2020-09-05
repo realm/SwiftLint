@@ -138,7 +138,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return findViolations(file: file).compactMap {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -199,7 +199,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         file.write(fixedSections.joined())
 
         return matches.map {
-            Correction(ruleDescription: type(of: self).description,
+            Correction(ruleDescription: Self.description,
                        location: Location(file: file, characterOffset: $0.location))
         }
     }

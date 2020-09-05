@@ -10,6 +10,7 @@ DispatchQueue.global().async {
     registry.register(VersionCommand())
     registry.register(RulesCommand())
     registry.register(GenerateDocsCommand())
+    registry.register(ShowDocsCommand())
     registry.register(HelpCommand(registry: registry))
 
     registry.main(defaultVerb: LintCommand().verb) { error in

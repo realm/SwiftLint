@@ -78,7 +78,7 @@ class LinterCacheTests: XCTestCase {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
         XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
-                       violations, file: file, line: line)
+                       violations, file: (file), line: line)
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
@@ -97,11 +97,11 @@ class LinterCacheTests: XCTestCase {
         let newConfig = Configuration(dict: dict)!
         let (file1, file2) = ("file1.swift", "file2.swift")
 
-        XCTAssertNil(cache.violations(forFile: file1, configuration: newConfig), file: file, line: line)
-        XCTAssertNil(cache.violations(forFile: file2, configuration: newConfig), file: file, line: line)
+        XCTAssertNil(cache.violations(forFile: file1, configuration: newConfig), file: (file), line: line)
+        XCTAssertNil(cache.violations(forFile: file2, configuration: newConfig), file: (file), line: line)
 
-        XCTAssertEqual(cache.violations(forFile: file1, configuration: initialConfig)!, [], file: file, line: line)
-        XCTAssertEqual(cache.violations(forFile: file2, configuration: initialConfig)!, [], file: file, line: line)
+        XCTAssertEqual(cache.violations(forFile: file1, configuration: initialConfig)!, [], file: (file), line: line)
+        XCTAssertEqual(cache.violations(forFile: file2, configuration: initialConfig)!, [], file: (file), line: line)
     }
 
     // MARK: Cache Reuse

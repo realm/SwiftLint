@@ -150,7 +150,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             let offset = captureListRange.location + location
             let reason = "Unused reference \(reference) in a capture list should be removed."
             return StyleViolation(
-                ruleDescription: type(of: self).description,
+                ruleDescription: Self.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: offset),
                 reason: reason

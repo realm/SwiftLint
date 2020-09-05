@@ -44,7 +44,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file, skipParentheses: true).map {
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
@@ -55,7 +55,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         let matches = file.ruleEnabled(violatingRanges: violationsRanges, for: self)
         if matches.isEmpty { return [] }
         let regularExpression = regex(pattern)
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
         var contents = file.contents
 

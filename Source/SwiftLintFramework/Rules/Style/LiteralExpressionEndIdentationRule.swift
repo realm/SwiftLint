@@ -134,7 +134,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
                      "Expected \(violation.indentationRanges.expected.length), " +
                      "got \(violation.indentationRanges.actual.length)."
 
-        return StyleViolation(ruleDescription: type(of: self).description,
+        return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severity,
                               location: Location(file: file, byteOffset: violation.endOffset),
                               reason: reason)
@@ -171,7 +171,7 @@ extension LiteralExpressionEndIdentationRule: CorrectableRule {
         }
 
         var corrections = correctedLocations.map {
-            return Correction(ruleDescription: type(of: self).description,
+            return Correction(ruleDescription: Self.description,
                               location: Location(file: file, characterOffset: $0))
         }
 

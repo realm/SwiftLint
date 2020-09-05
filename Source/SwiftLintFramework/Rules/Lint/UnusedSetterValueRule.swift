@@ -150,7 +150,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
         }
 
         return violatingLocations.map { offset in
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset))
         }

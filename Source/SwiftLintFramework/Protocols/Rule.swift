@@ -74,7 +74,7 @@ extension Rule {
     }
 
     public func isEqualTo(_ rule: Rule) -> Bool {
-        return type(of: self).description == type(of: rule).description
+        return Self.description == type(of: rule).description
     }
 
     public func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
@@ -164,7 +164,7 @@ public extension SubstitutionCorrectableRule {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         guard !violatingRanges.isEmpty else { return [] }
 
-        let description = type(of: self).description
+        let description = Self.description
         var corrections = [Correction]()
         var contents = file.contents
         for range in violatingRanges.sorted(by: { $0.location > $1.location }) {

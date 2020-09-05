@@ -56,7 +56,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, A
         return classes.compactMap { dictionary in
             guard let offset = dictionary.offset else { return nil }
 
-            return StyleViolation(ruleDescription: type(of: self).description,
+            return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset),
                                   reason: "\(classes.count) test classes found in this file.")

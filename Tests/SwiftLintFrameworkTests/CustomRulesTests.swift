@@ -65,7 +65,7 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
-    func testCustomRuleConfigurationMatchKindUniqueness() {
+    func testCustomRuleConfigurationMatchKindAmbiguity() {
         let configDict = [
             "name": "MyCustomRule",
             "message": "Message",

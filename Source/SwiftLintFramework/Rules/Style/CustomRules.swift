@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 private extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
@@ -89,7 +88,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         return configurations.flatMap { configuration -> [StyleViolation] in
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
-            let excludingKinds = SyntaxKind.allKinds.subtracting(configuration.matchKinds)
+            let excludingKinds = configuration.excludedMatchKinds
             return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup).map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,

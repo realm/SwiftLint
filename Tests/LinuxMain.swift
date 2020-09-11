@@ -255,8 +255,10 @@ extension ConvenienceTypeRuleTests {
 
 extension CustomRulesTests {
     static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] = [
-        ("testCustomRuleConfigurationSetsCorrectly", testCustomRuleConfigurationSetsCorrectly),
+        ("testCustomRuleConfigurationSetsCorrectlyWithMatchKinds", testCustomRuleConfigurationSetsCorrectlyWithMatchKinds),
+        ("testCustomRuleConfigurationSetsCorrectlyWithExcludedMatchKinds", testCustomRuleConfigurationSetsCorrectlyWithExcludedMatchKinds),
         ("testCustomRuleConfigurationThrows", testCustomRuleConfigurationThrows),
+        ("testCustomRuleConfigurationMatchKindAmbiguity", testCustomRuleConfigurationMatchKindAmbiguity),
         ("testCustomRuleConfigurationIgnoreInvalidRules", testCustomRuleConfigurationIgnoreInvalidRules),
         ("testCustomRules", testCustomRules),
         ("testLocalDisableCustomRule", testLocalDisableCustomRule),

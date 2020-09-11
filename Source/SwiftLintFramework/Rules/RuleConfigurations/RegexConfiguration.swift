@@ -8,7 +8,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
-    public var matchKinds = SyntaxKind.allKinds
+    public var excludedMatchKinds = Set<SyntaxKind>()
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var captureGroup: Int = 0
 
@@ -28,7 +28,8 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             regex.pattern,
             included?.pattern ?? "",
             excluded?.pattern ?? "",
-            matchKinds.map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
+            SyntaxKind.allKinds.subtracting(excludedMatchKinds)
+                .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
             severityConfiguration.consoleDescription
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
@@ -69,9 +70,6 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
-            self.matchKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
-        }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
@@ -81,9 +79,28 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             }
             self.captureGroup = captureGroup
         }
+
+        self.excludedMatchKinds = try self.excludedMatchKinds(from: configurationDict)
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+
+    private func excludedMatchKinds(from configurationDict: [String: Any]) throws -> Set<SyntaxKind> {
+        let matchKinds = [String].array(of: configurationDict["match_kinds"])
+        let excludedMatchKinds = [String].array(of: configurationDict["excluded_match_kinds"])
+
+        switch (matchKinds, excludedMatchKinds) {
+        case (.some(let matchKinds), nil):
+            let includedKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
+            return SyntaxKind.allKinds.subtracting(includedKinds)
+        case (nil, .some(let excludedMatchKinds)):
+            return Set(try excludedMatchKinds.map({ try SyntaxKind(shortName: $0) }))
+        case (nil, nil):
+            return .init()
+        case (.some, .some):
+            throw ConfigurationError.ambiguousMatchKindParameters
+        }
     }
 }

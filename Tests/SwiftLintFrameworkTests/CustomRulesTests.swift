@@ -3,7 +3,7 @@ import SourceKittenFramework
 import XCTest
 
 class CustomRulesTests: XCTestCase {
-    func testCustomRuleConfigurationSetsCorrectly() {
+    func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [
                 "name": "MyCustomRule",
@@ -18,7 +18,34 @@ class CustomRulesTests: XCTestCase {
         comp.message = "Message"
         comp.regex = regex("regex")
         comp.severityConfiguration = SeverityConfiguration(.error)
-        comp.matchKinds = Set([SyntaxKind.comment])
+        comp.excludedMatchKinds = SyntaxKind.allKinds.subtracting([.comment])
+        var compRules = CustomRulesConfiguration()
+        compRules.customRuleConfigurations = [comp]
+        do {
+            var configuration = CustomRulesConfiguration()
+            try configuration.apply(configuration: configDict)
+            XCTAssertEqual(configuration, compRules)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+    }
+
+    func testCustomRuleConfigurationSetsCorrectlyWithExcludedMatchKinds() {
+        let configDict = [
+            "my_custom_rule": [
+                "name": "MyCustomRule",
+                "message": "Message",
+                "regex": "regex",
+                "excluded_match_kinds": "comment",
+                "severity": "error"
+            ]
+        ]
+        var comp = RegexConfiguration(identifier: "my_custom_rule")
+        comp.name = "MyCustomRule"
+        comp.message = "Message"
+        comp.regex = regex("regex")
+        comp.severityConfiguration = SeverityConfiguration(.error)
+        comp.excludedMatchKinds = Set<SyntaxKind>([.comment])
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {
@@ -35,6 +62,22 @@ class CustomRulesTests: XCTestCase {
         var customRulesConfig = CustomRulesConfiguration()
         checkError(ConfigurationError.unknownConfiguration) {
             try customRulesConfig.apply(configuration: config)
+        }
+    }
+
+    func testCustomRuleConfigurationMatchKindAmbiguity() {
+        let configDict = [
+            "name": "MyCustomRule",
+            "message": "Message",
+            "regex": "regex",
+            "match_kinds": "comment",
+            "excluded_match_kinds": "argument",
+            "severity": "error"
+        ]
+
+        var configuration = RegexConfiguration(identifier: "my_custom_rule")
+        checkError(ConfigurationError.ambiguousMatchKindParameters) {
+            try configuration.apply(configuration: configDict)
         }
     }
 

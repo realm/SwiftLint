@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 private extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {

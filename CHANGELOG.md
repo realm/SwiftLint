@@ -10,7 +10,7 @@
 
 #### Enhancements
 
-* Improves description for  `empty_enum_arguments` 
+* Improve description for `empty_enum_arguments`.  
   [Lukas Schmidt](https://github.com/lightsprint09)
 
 * Add support for `excluded_match_kinds` custom rule config parameter.  

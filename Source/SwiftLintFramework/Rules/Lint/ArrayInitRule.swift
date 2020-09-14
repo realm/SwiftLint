@@ -208,9 +208,3 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
         }
     }
 }
-
-private extension Array where Element == SyntaxKind {
-    static func ~= (array: [SyntaxKind], value: [SyntaxKind]) -> Bool {
-        return array == value
-    }
-}

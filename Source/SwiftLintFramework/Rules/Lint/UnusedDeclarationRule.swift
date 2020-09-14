@@ -3,15 +3,15 @@ import SourceKittenFramework
 
 public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProviderRule, AnalyzerRule, CollectingRule {
     public struct FileUSRs: Hashable {
-        struct DeclaredUSR: Hashable {
-            let usr: String
-            let nameOffset: ByteCount
-        }
-
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
         fileprivate static var empty: FileUSRs { FileUSRs(referenced: [], declared: []) }
+    }
+
+    struct DeclaredUSR: Hashable {
+        let usr: String
+        let nameOffset: ByteCount
     }
 
     public typealias FileInfo = FileUSRs
@@ -145,8 +145,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             }
     }
 
-    private func violationOffsets(declaredUSRs: Set<FileUSRs.DeclaredUSR>,
-                                  allReferencedUSRs: Set<String>) -> [ByteCount] {
+    private func violationOffsets(declaredUSRs: Set<DeclaredUSR>, allReferencedUSRs: Set<String>) -> [ByteCount] {
         // Unused declarations are:
         // 1. all declarations
         // 2. minus all references
@@ -173,8 +172,7 @@ private extension SwiftLintFile {
         return Set(index.traverseEntities { entity -> String? in
             if let usr = entity.usr,
                 let kind = entity.kind,
-                kind.starts(with: "source.lang.swift.ref")
-            {
+                kind.starts(with: "source.lang.swift.ref") {
                 return usr
             }
 
@@ -183,94 +181,82 @@ private extension SwiftLintFile {
     }
 
     func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                     compilerArguments: [String], includePublicAndOpen: Bool)
-        -> Set<UnusedDeclarationRule.FileUSRs.DeclaredUSR>
-    {
-        return Set(index.traverseEntities { entity -> UnusedDeclarationRule.FileUSRs.DeclaredUSR? in
-            guard let stringKind = entity.kind,
-                  stringKind.starts(with: "source.lang.swift.decl."),
-                  !stringKind.contains(".accessor."),
-                  let usr = entity.value["key.usr"] as? String,
-                  let line = entity.line.map(Int.init),
-                  let column = entity.column.map(Int.init),
-                  let kind = entity.declarationKind,
-                  !declarationKindsToSkip.contains(kind)
-            else {
-                return nil
-            }
-
-            let swiftAttributesToSkip: [SwiftDeclarationAttributeKind] = [
-                .ibaction,
-                .ibinspectable,
-                .iboutlet,
-                .override
-            ]
-
-            let enclosedSwiftAttributes = entity.enclosedSwiftAttributes
-            if enclosedSwiftAttributes.contains(where: swiftAttributesToSkip.contains) {
-                return nil
-            }
-
-            if entity.value["key.is_implicit"] as? Bool == true {
-                return nil
-            }
-
-            if entity.value["key.is_test_candidate"] as? Bool == true {
-                return nil
-            }
-
-            let nameOffset = stringView.byteOffset(forLine: line, column: column)
-
-            if !includePublicAndOpen,
-                [.public, .open].contains(editorOpen.aclAtOffset(nameOffset))
-            {
-                return nil
-            }
-
-            // Skip CodingKeys as they are used for Codable generation
-            if kind == .enum,
-                entity.name == "CodingKeys",
-                case let allRelatedUSRs = entity.traverseEntities(traverseBlock: { $0.usr }),
-                allRelatedUSRs.contains("s:s9CodingKeyP")
-            {
-                return nil
-            }
-
-            // Skip `static var allTests` members since those are used for Linux test discovery.
-            if kind == .varStatic, entity.name == "allTests" {
-                let allTestCandidates = entity.traverseEntities { subEntity -> Bool in
-                    subEntity.value["key.is_test_candidate"] as? Bool == true
-                }
-
-                if allTestCandidates.contains(true) {
-                    return nil
-                }
-            }
-
-            let cursorInfo = self.cursorInfo(at: nameOffset, compilerArguments: compilerArguments)
-
-            if let annotatedDecl = cursorInfo?.annotatedDeclaration,
-                ["@IBOutlet", "@IBAction", "@objc", "@IBInspectable"].contains(where: annotatedDecl.contains)
-            {
-                return nil
-            }
-
-            // This works for both subclass overrides & protocol extension overrides.
-            if cursorInfo?.value["key.overrides"] != nil {
-                return nil
-            }
-
-            // Sometimes default protocol implementations don't have `key.overrides` set but they do have
-            // `key.related_decls`. The apparent exception is that related declarations also includes declarations
-            // with "related names", which appears to be similarly named declarations (i.e. overloads) that are
-            // programmatically unrelated to the current cursor-info declaration. Those similarly named declarations
-            // aren't in `key.related` so confirm that that one is also populated.
-            if cursorInfo?.value["key.related_decls"] != nil && entity.value["key.related"] != nil {
-                return nil
-            }
-
-            return .init(usr: usr, nameOffset: nameOffset)
+                      compilerArguments: [String], includePublicAndOpen: Bool)
+        -> Set<UnusedDeclarationRule.DeclaredUSR> {
+        return Set(index.traverseEntities { indexEntity in
+            self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
+                             includePublicAndOpen: includePublicAndOpen)
         })
+    }
+
+    func declaredUSR(indexEntity: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
+                     compilerArguments: [String], includePublicAndOpen: Bool) -> UnusedDeclarationRule.DeclaredUSR? {
+        guard let stringKind = indexEntity.kind,
+              stringKind.starts(with: "source.lang.swift.decl."),
+              !stringKind.contains(".accessor."),
+              let usr = indexEntity.usr,
+              let line = indexEntity.line.map(Int.init),
+              let column = indexEntity.column.map(Int.init),
+              let kind = indexEntity.declarationKind,
+              !declarationKindsToSkip.contains(kind)
+        else {
+            return nil
+        }
+
+        if indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
+            indexEntity.value["key.is_implicit"] as? Bool == true ||
+            indexEntity.value["key.is_test_candidate"] as? Bool == true {
+            return nil
+        }
+
+        let nameOffset = stringView.byteOffset(forLine: line, column: column)
+
+        if !includePublicAndOpen,
+            [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
+            return nil
+        }
+
+        // Skip CodingKeys as they are used for Codable generation
+        if kind == .enum,
+            indexEntity.name == "CodingKeys",
+            case let allRelatedUSRs = indexEntity.traverseEntities(traverseBlock: { $0.usr }),
+            allRelatedUSRs.contains("s:s9CodingKeyP") {
+            return nil
+        }
+
+        // Skip `static var allTests` members since those are used for Linux test discovery.
+        if kind == .varStatic, indexEntity.name == "allTests" {
+            let allTestCandidates = indexEntity.traverseEntities { subEntity -> Bool in
+                subEntity.value["key.is_test_candidate"] as? Bool == true
+            }
+
+            if allTestCandidates.contains(true) {
+                return nil
+            }
+        }
+
+        let cursorInfo = self.cursorInfo(at: nameOffset, compilerArguments: compilerArguments)
+
+        if let annotatedDecl = cursorInfo?.annotatedDeclaration,
+            ["@IBOutlet", "@IBAction", "@objc", "@IBInspectable"].contains(where: annotatedDecl.contains) {
+            return nil
+        }
+
+        // This works for both subclass overrides & protocol extension overrides.
+        if cursorInfo?.value["key.overrides"] != nil {
+            return nil
+        }
+
+        // Sometimes default protocol implementations don't have `key.overrides` set but they do have
+        // `key.related_decls`. The apparent exception is that related declarations also includes declarations
+        // with "related names", which appears to be similarly named declarations (i.e. overloads) that are
+        // programmatically unrelated to the current cursor-info declaration. Those similarly named declarations
+        // aren't in `key.related` so confirm that that one is also populated.
+        if cursorInfo?.value["key.related_decls"] != nil && indexEntity.value["key.related"] != nil {
+            return nil
+        }
+
+        return .init(usr: usr, nameOffset: nameOffset)
     }
 
     func cursorInfo(at byteOffset: ByteCount, compilerArguments: [String]) -> SourceKittenDictionary? {
@@ -317,6 +303,13 @@ private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
     .genericTypeParam
 ]
 
+private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+    .ibaction,
+    .ibinspectable,
+    .iboutlet,
+    .override
+]
+
 private extension SourceKittenDictionary {
     func traverseEntities<T>(traverseBlock: (SourceKittenDictionary) -> T?) -> [T] {
         var result: [T] = []
@@ -325,7 +318,7 @@ private extension SourceKittenDictionary {
     }
 
     private func traverseEntitiesDepthFirst<T>(collectingValuesInto array: inout [T],
-                                       traverseBlock: (SourceKittenDictionary) -> T?) {
+                                               traverseBlock: (SourceKittenDictionary) -> T?) {
         entities.forEach { subDict in
             subDict.traverseEntitiesDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
 

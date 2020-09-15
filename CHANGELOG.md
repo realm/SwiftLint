@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Make the `unused_declaration` rule run 3-5 times faster, and
+  enable it to detect more occurrences of unused declarations.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes
 

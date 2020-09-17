@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-private typealias FileCacheKey = Int
+private typealias FileCacheKey = UUID
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file.file).sendIfNotDisabled()

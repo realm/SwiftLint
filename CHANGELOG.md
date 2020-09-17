@@ -14,6 +14,10 @@
   enable it to detect more occurrences of unused declarations.  
   [JP Simard](https://github.com/jpsim)
 
+* Remove unneeded internal locking overhead, leading to increased
+  performance in multithreaded operations.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * None.

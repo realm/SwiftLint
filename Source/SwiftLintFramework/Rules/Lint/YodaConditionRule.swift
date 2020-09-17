@@ -44,9 +44,9 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
             Example("guard foo != \"str str\" else { return }"),
             Example("while foo < 10 { }\n"),
             Example("while foo > 1 { }\n"),
-            Example("while foo + 1 == 2"),
-            Example("if optionalValue?.property ?? 0 == 2"),
-            Example("if foo == nil")
+            Example("while foo + 1 == 2 {}"),
+            Example("if optionalValue?.property ?? 0 == 2 {}"),
+            Example("if foo == nil {}")
         ],
         triggeringExamples: [
             Example("↓if 42 == foo {}\n"),
@@ -55,7 +55,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
             Example("↓guard \"str str\" != foo else { return }"),
             Example("↓while 10 > foo { }"),
             Example("↓while 1 < foo { }"),
-            Example("↓if nil == foo")
+            Example("↓if nil == foo {}")
         ])
 
     public func validate(file: SwiftLintFile,

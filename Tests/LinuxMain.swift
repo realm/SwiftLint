@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -1091,6 +1091,13 @@ extension OverrideInExtensionRuleTests {
     ]
 }
 
+extension ParserDiagnosticsTests {
+    static var allTests: [(String, (ParserDiagnosticsTests) -> () throws -> Void)] = [
+        ("testFileWithParserDiagnostics", testFileWithParserDiagnostics),
+        ("testFileWithoutParserDiagnostics", testFileWithoutParserDiagnostics)
+    ]
+}
+
 extension PatternMatchingKeywordsRuleTests {
     static var allTests: [(String, (PatternMatchingKeywordsRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1846,6 +1853,7 @@ XCTMain([
     testCase(OptionalEnumCaseMatchingRuleTests.allTests),
     testCase(OverriddenSuperCallRuleTests.allTests),
     testCase(OverrideInExtensionRuleTests.allTests),
+    testCase(ParserDiagnosticsTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PreferZeroOverExplicitInitRuleTests.allTests),

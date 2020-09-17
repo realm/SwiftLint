@@ -58,6 +58,7 @@ struct ImplicitGetterRuleExamples {
             Example("""
             protocol Foo {
                 var foo: Int { get set }
+            }
             """),
             Example("""
             class Foo {

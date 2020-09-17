@@ -11,20 +11,17 @@ public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationP
         name: "Trailing Semicolon",
         description: "Lines should not have trailing semicolons.",
         kind: .idiomatic,
-        nonTriggeringExamples: [ Example("let a = 0\n") ],
+        nonTriggeringExamples: [
+            Example("let a = 0\n"),
+            Example("let a = 0; let b = 0")
+        ],
         triggeringExamples: [
             Example("let a = 0↓;\n"),
-            Example("let a = 0↓;\nlet b = 1\n"),
-            Example("let a = 0↓;;\n"),
-            Example("let a = 0↓;    ;;\n"),
-            Example("let a = 0↓; ; ;\n")
+            Example("let a = 0↓;\nlet b = 1\n")
         ],
         corrections: [
             Example("let a = 0↓;\n"): Example("let a = 0\n"),
-            Example("let a = 0↓;\nlet b = 1\n"): Example("let a = 0\nlet b = 1\n"),
-            Example("let a = 0↓;;\n"): Example("let a = 0\n"),
-            Example("let a = 0↓;    ;;\n"): Example("let a = 0\n"),
-            Example("let a = 0↓; ; ;\n"): Example("let a = 0\n")
+            Example("let a = 0↓;\nlet b = 1\n"): Example("let a = 0\nlet b = 1\n")
         ]
     )
 

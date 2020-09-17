@@ -15,10 +15,10 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
             Example("let abc: () -> Void = {}\n"),
             Example("let abc: () -> (VoidVoid) = {}\n"),
             Example("func foo(completion: () -> Void)\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> Void)\n"),
-            Example("let foo: (ConfigurationTests) ->   () throws -> Void)\n"),
-            Example("let foo: (ConfigurationTests) ->() throws -> Void)\n"),
-            Example("let foo: (ConfigurationTests) -> () -> Void)\n")
+            Example("let foo: (ConfigurationTests) -> () throws -> Void\n"),
+            Example("let foo: (ConfigurationTests) ->   () throws -> Void\n"),
+            Example("let foo: (ConfigurationTests) ->() throws -> Void\n"),
+            Example("let foo: (ConfigurationTests) -> () -> Void\n")
         ],
         triggeringExamples: [
             Example("let abc: () -> ↓() = {}\n"),
@@ -27,7 +27,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
             Example("func foo(completion: () -> ↓())\n"),
             Example("func foo(completion: () -> ↓(   ))\n"),
             Example("func foo(completion: () -> ↓(Void))\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> ↓())\n")
+            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n")
         ],
         corrections: [
             Example("let abc: () -> ↓() = {}\n"): Example("let abc: () -> Void = {}\n"),
@@ -36,8 +36,8 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
             Example("func foo(completion: () -> ↓())\n"): Example("func foo(completion: () -> Void)\n"),
             Example("func foo(completion: () -> ↓(   ))\n"): Example("func foo(completion: () -> Void)\n"),
             Example("func foo(completion: () -> ↓(Void))\n"): Example("func foo(completion: () -> Void)\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> ↓())\n"):
-                Example("let foo: (ConfigurationTests) -> () throws -> Void)\n")
+            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n"):
+                Example("let foo: (ConfigurationTests) -> () throws -> Void\n")
         ]
     )
 

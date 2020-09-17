@@ -200,6 +200,7 @@
 		8F6AA75D21190830009BA28A /* CompilerArgumentsExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6AA75C21190830009BA28A /* CompilerArgumentsExtractor.swift */; };
 		8F715B83213B528B00427BD9 /* UnusedImportRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F715B82213B528B00427BD9 /* UnusedImportRule.swift */; };
 		8F8050821FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */; };
+		8FAD90AA2513FA5B004653BA /* ParserDiagnosticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAD90A92513FA5B004653BA /* ParserDiagnosticsTests.swift */; };
 		8FBE99D024635B8500ABF078 /* SwiftVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE99CF24635B8500ABF078 /* SwiftVersionTests.swift */; };
 		8FC1DFAC23FC7C9700F49E2C /* ImportUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC1DFAB23FC7C9700F49E2C /* ImportUsage.swift */; };
 		8FC1DFAE23FC7D0400F49E2C /* UnusedImportConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC1DFAD23FC7D0400F49E2C /* UnusedImportConfiguration.swift */; };
@@ -723,6 +724,7 @@
 		8F6AA75C21190830009BA28A /* CompilerArgumentsExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerArgumentsExtractor.swift; sourceTree = "<group>"; };
 		8F715B82213B528B00427BD9 /* UnusedImportRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedImportRule.swift; sourceTree = "<group>"; };
 		8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+IndentationStyle.swift"; sourceTree = "<group>"; };
+		8FAD90A92513FA5B004653BA /* ParserDiagnosticsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserDiagnosticsTests.swift; sourceTree = "<group>"; };
 		8FBE99CF24635B8500ABF078 /* SwiftVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftVersionTests.swift; sourceTree = "<group>"; };
 		8FC1DFAB23FC7C9700F49E2C /* ImportUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportUsage.swift; sourceTree = "<group>"; };
 		8FC1DFAD23FC7D0400F49E2C /* UnusedImportConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedImportConfiguration.swift; sourceTree = "<group>"; };
@@ -1620,6 +1622,7 @@
 				B25DCD0F1F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift */,
 				D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */,
 				825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */,
+				8FAD90A92513FA5B004653BA /* ParserDiagnosticsTests.swift */,
 				C25EBBDD210787B200E27603 /* PrefixedTopLevelConstantRuleTests.swift */,
 				D4F5851820E99B5A0085C6D8 /* PrivateOutletRuleTests.swift */,
 				D4246D6E1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift */,
@@ -2500,6 +2503,7 @@
 				260F66A0225C5B6D00407CF5 /* CollectingRuleTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
+				8FAD90AA2513FA5B004653BA /* ParserDiagnosticsTests.swift in Sources */,
 				8F2CC1CD20A6A189006ED34F /* FileNameRuleTests.swift in Sources */,
 				4100D7A323BEAB69009464E0 /* FileNameNoSpaceRuleTests.swift in Sources */,
 			);

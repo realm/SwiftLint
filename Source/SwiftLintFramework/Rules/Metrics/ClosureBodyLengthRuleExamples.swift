@@ -41,7 +41,7 @@ private func trailingClosure(_ violationSymbol: String = "",
                              line: UInt = #line) -> Example {
     return Example("""
         foo.bar \(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         \(repeatElement("\t// toto\n", count: commentLinesCount).joined())\
         \(repeatElement("\t\n", count: emptyLinesCount).joined())\
         }
@@ -54,7 +54,7 @@ private func argumentClosure(_ violationSymbol: String = "",
                              line: UInt = #line) -> Example {
     return Example("""
         foo.bar(\(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
         """, file: file, line: line)
 }
@@ -65,7 +65,7 @@ private func labeledArgumentClosure(_ violationSymbol: String = "",
                                     line: UInt = #line) -> Example {
     return Example("""
         foo.bar(label: \(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
         """, file: file, line: line)
 }
@@ -76,9 +76,9 @@ private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
                                           line: UInt = #line) -> Example {
     return Example("""
         foo.bar(label: \(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         }, anotherLabel: \(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
         """, file: file, line: line)
 }
@@ -89,9 +89,9 @@ private func labeledAndTrailingClosures(_ violationSymbol: String = "",
                                         line: UInt = #line) -> Example {
     return Example("""
         foo.bar(label: \(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         }) \(violationSymbol){ toto in
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         }
         """, file: file, line: line)
 }
@@ -103,7 +103,7 @@ private func lazyInitialization(_ violationSymbol: String = "",
     return Example("""
         let foo: Bar = \(violationSymbol){ toto in
         \tlet bar = Bar()
-        \(repeatElement("\tlet a = 0\n", count: codeLinesCount).joined())\
+        \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         \treturn bar
         }()
         """, file: file, line: line)

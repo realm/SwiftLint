@@ -29,8 +29,6 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule,
                 Example("protocol SomeClassOnlyProtocol: AnyObject {}\n"),
             Example("protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"):
                 Example("protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n"),
-            Example("protocol SomeClassOnlyProtocol: SomeInheritedProtocol, ↓class {}\n"):
-                Example("protocol SomeClassOnlyProtocol: SomeInheritedProtocol, AnyObject {}\n"),
             Example("@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}\n"):
                 Example("@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}\n")
         ]

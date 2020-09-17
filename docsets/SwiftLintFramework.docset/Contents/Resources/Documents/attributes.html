@@ -354,23 +354,23 @@
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
  <span class="kd">func</span> <span class="nf">animate</span><span class="p">(</span><span class="nv">view</span><span class="p">:</span> <span class="kt">UIStackView</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">"A message"</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">deprecated</span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="s">"A message"</span><span class="p">)</span>
  <span class="kd">func</span> <span class="nf">animate</span><span class="p">(</span><span class="nv">view</span><span class="p">:</span> <span class="kt">UIStackView</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@nonobjc</span>
- <span class="kd">final</span> <span class="kd">class</span> <span class="kt">X</span>
+ <span class="kd">final</span> <span class="kd">class</span> <span class="kt">X</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
- <span class="kd">class</span> <span class="kt">UIStackView</span>
+ <span class="kd">class</span> <span class="kt">UIStackView</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@NSApplicationMain</span>
- <span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">NSApplicationDelegate</span>
+ <span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">NSApplicationDelegate</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@UIApplicationMain</span>
- <span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">UIApplicationDelegate</span>
+ <span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">UIApplicationDelegate</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@IBDesignable</span>
- <span class="kd">class</span> <span class="kt">MyCustomView</span><span class="p">:</span> <span class="kt">UIView</span>
+ <span class="kd">class</span> <span class="kt">MyCustomView</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@testable</span> <span class="kd">import</span> <span class="kt">SourceKittenFramework</span>
 </code></pre>
@@ -386,7 +386,7 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@objc</span><span class="p">(</span><span class="kt">ABCThing</span><span class="p">)</span>
  <span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
- <span class="kd">class</span> <span class="kt">Thing</span>
+ <span class="kd">class</span> <span class="kt">Thing</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
  <span class="k">override</span> <span class="k">var</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">return</span> <span class="s">""</span> <span class="p">}</span>
@@ -487,23 +487,23 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">animate</span><span class="p">(</span><span class="nv">view</span><span class="p">:</span> <span class="kt">UIStackView</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@nonobjc</span> <span class="kd">final</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">X</span>
+<pre class="highlight swift"><code><span class="kd">@nonobjc</span> <span class="kd">final</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">X</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span>
+<pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
- <span class="kd">@objc</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span>
+ <span class="kd">@objc</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="kd">@objc</span>
- <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span>
+ <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
 
- <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span>
+ <span class="err">↓</span><span class="kd">class</span> <span class="kt">UIStackView</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@UIApplicationMain</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">UIApplicationDelegate</span>
+<pre class="highlight swift"><code><span class="kd">@UIApplicationMain</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">UIApplicationDelegate</span> <span class="p">{}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@IBDesignable</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">MyCustomView</span><span class="p">:</span> <span class="kt">UIView</span>
+<pre class="highlight swift"><code><span class="kd">@IBDesignable</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">MyCustomView</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@testable</span>
 <span class="err">↓</span><span class="kd">import</span> <span class="kt">SourceKittenFramework</span>
@@ -526,7 +526,7 @@
  <span class="err">↓</span><span class="kd">func</span> <span class="nf">addSomeObject</span><span class="p">(</span><span class="nv">book</span><span class="p">:</span> <span class="kt">SomeObject</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">9.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
- <span class="kd">@objc</span><span class="p">(</span><span class="kt">ABCThing</span><span class="p">)</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">Thing</span>
+ <span class="kd">@objc</span><span class="p">(</span><span class="kt">ABCThing</span><span class="p">)</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">Thing</span> <span class="p">{}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@GKInspectable</span>
  <span class="err">↓</span><span class="k">var</span> <span class="nv">maxSpeed</span><span class="p">:</span> <span class="kt">Float</span>

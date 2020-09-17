@@ -267,6 +267,14 @@ public struct CollectedLinter {
             return []
         }
 
+        if let parserDiagnostics = file.parserDiagnostics {
+            queuedPrintError(
+                "Skipping correcting file because it produced Swift parser diagnostics: \(file.path ?? "<nopath>")"
+            )
+            queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
+            return []
+        }
+
         var corrections = [Correction]()
         for rule in rules.compactMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)

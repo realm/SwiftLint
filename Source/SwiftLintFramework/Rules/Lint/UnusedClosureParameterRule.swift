@@ -75,12 +75,10 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                 Example("[1, 2].map { _ in\n return numberWithSuffix\n}\n"),
             Example("[1, 2].map { ↓number in\n return 3 // number\n}\n"):
                 Example("[1, 2].map { _ in\n return 3 // number\n}\n"),
-            Example("[1, 2].map { ↓number in\n return 3 \"number\"\n}\n"):
-                Example("[1, 2].map { _ in\n return 3 \"number\"\n}\n"),
             Example("[1, 2].something { number, ↓idx in\n return number\n}\n"):
                 Example("[1, 2].something { number, _ in\n return number\n}\n"),
-            Example("genericsFunc(closure: { (↓int: Int) -> Void in // do something\n}\n"):
-                Example("genericsFunc(closure: { (_: Int) -> Void in // do something\n}\n"),
+            Example("genericsFunc(closure: { (↓int: Int) -> Void in // do something\n})\n"):
+                Example("genericsFunc(closure: { (_: Int) -> Void in // do something\n})\n"),
             Example("genericsFunc { (↓a, ↓b: Type) -> Void in\n}\n"):
                 Example("genericsFunc { (_, _: Type) -> Void in\n}\n"),
             Example("genericsFunc { (↓a: Type, ↓b: Type) -> Void in\n}\n"):
@@ -91,8 +89,20 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                 Example("genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n"),
             Example("hoge(arg: num) { ↓num in\n}\n"):
                 Example("hoge(arg: num) { _ in\n}\n"),
-            Example("func foo () {\n bar { ↓number in\n return 3\n}\n"):
-                Example("func foo () {\n bar { _ in\n return 3\n}\n"),
+            Example("""
+            func foo () {
+              bar { ↓number in
+                return 3
+              }
+            }
+            """):
+                Example("""
+                func foo () {
+                  bar { _ in
+                    return 3
+                  }
+                }
+                """),
             Example("class C {\n #if true\n func f() {\n [1, 2].map { ↓number in\n return 3\n }\n }\n #endif\n}"):
                 Example("class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}")
         ]

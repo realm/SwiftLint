@@ -364,6 +364,8 @@ extension XCTestCase {
 
     func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
                            disableCommands: [String], testMultiByteOffsets: Bool) {
+        parserDiagnosticsDisabledForTests = true
+
         // corrections
         ruleDescription.corrections.forEach {
             testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)

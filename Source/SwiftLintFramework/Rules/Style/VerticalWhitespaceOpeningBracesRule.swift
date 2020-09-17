@@ -14,8 +14,8 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
 
     private static let nonTriggeringExamples = [
         Example("[1, 2].map { $0 }.foo()"),
-        Example("[1, 2].map { $0 }.filter { num in"),
-        Example("// [1, 2].map { $0 }.filter { num in"),
+        Example("[1, 2].map { $0 }.filter { num in true }"),
+        Example("// [1, 2].map { $0 }.filter { num in true }"),
         Example("""
         /*
             class X {
@@ -28,34 +28,115 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
-        Example("if x == 5 {\n↓\n    print(\"x is 5\")"): Example("if x == 5 {\n    print(\"x is 5\")"),
-        Example("if x == 5 {\n↓\n\n    print(\"x is 5\")"): Example("if x == 5 {\n    print(\"x is 5\")"),
-        Example("if x == 5 {\n↓\n  print(\"x is 5\")"): Example("if x == 5 {\n  print(\"x is 5\")"),
-        Example("if x == 5 {\n↓\n\tprint(\"x is 5\")"): Example("if x == 5 {\n\tprint(\"x is 5\")"),
-        Example("struct MyStruct {\n↓\n    let x = 5"): Example("struct MyStruct {\n    let x = 5"),
-        Example("struct MyStruct {\n↓\n  let x = 5"): Example("struct MyStruct {\n  let x = 5"),
-        Example("struct MyStruct {\n↓\n\tlet x = 5"): Example("struct MyStruct {\n\tlet x = 5"),
-        Example("class X {\n    struct Y {\n↓\n    class Z {\n"): Example("class X {\n    struct Y {\n    class Z {\n"),
-        Example("[\n↓\n1,\n2,\n3\n]"): Example("[\n1,\n2,\n3\n]"),
-        Example("foo(\n↓\nx: 5,\ny:6\n)"): Example("foo(\nx: 5,\ny:6\n)"),
-        Example("class Name {\n↓\n    run(5) { x in print(x) }\n}"):
-            Example("class Name {\n    run(5) { x in print(x) }\n}"),
+        Example("""
+        if x == 5 {
+        ↓
+          print("x is 5")
+        }
+        """): Example("""
+            if x == 5 {
+              print("x is 5")
+            }
+            """),
+        Example("""
+        if x == 5 {
+        ↓
+
+          print("x is 5")
+        }
+        """): Example("""
+            if x == 5 {
+              print("x is 5")
+            }
+            """),
+        Example("""
+        struct MyStruct {
+        ↓
+          let x = 5
+        }
+        """): Example("""
+            struct MyStruct {
+              let x = 5
+            }
+            """),
+        Example("""
+        class X {
+          struct Y {
+        ↓
+            class Z {
+            }
+          }
+        }
+        """): Example("""
+            class X {
+              struct Y {
+                class Z {
+                }
+              }
+            }
+            """),
+        Example("""
+        [
+        ↓
+        1,
+        2,
+        3
+        ]
+        """): Example("""
+            [
+            1,
+            2,
+            3
+            ]
+            """),
+        Example("""
+        foo(
+        ↓
+          x: 5,
+          y:6
+        )
+        """): Example("""
+            foo(
+              x: 5,
+              y:6
+            )
+            """),
+        Example("""
+        func foo() {
+        ↓
+          run(5) { x in
+            print(x)
+          }
+        }
+        """): Example("""
+            func foo() {
+              run(5) { x in
+                print(x)
+              }
+            }
+            """),
         Example("""
         KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
         ↓
             guard let img = image else { return }
+        }
         """): Example("""
-        KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
-            guard let img = image else { return }
-        """),
+            KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+                guard let img = image else { return }
+            }
+            """),
         Example("""
-        }) { _ in
+        foo({ }) { _ in
         ↓
-            self.dismiss(animated: false, completion: {
+          self.dismiss(animated: false, completion: {
+          })
+        }
         """): Example("""
-        }) { _ in
-            self.dismiss(animated: false, completion: {
-        """)
+            foo({ }) { _ in
+              self.dismiss(animated: false, completion: {
+              })
+            }
+            """)
     ]
 
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"

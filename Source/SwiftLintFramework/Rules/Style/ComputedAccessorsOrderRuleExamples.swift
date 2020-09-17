@@ -58,6 +58,7 @@ struct ComputedAccessorsOrderRuleExamples {
             Example("""
             protocol Foo {
                 var foo: Int { get set }
+            }
             """),
             Example("""
             protocol Foo {

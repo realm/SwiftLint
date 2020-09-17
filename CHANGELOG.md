@@ -18,6 +18,10 @@
   performance in multithreaded operations.  
   [JP Simard](https://github.com/jpsim)
 
+* Skip correcting file if the swift parser reports a warning or an
+  error.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * None.

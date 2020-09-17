@@ -13,8 +13,8 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
     public init() {}
 
     private static let nonTriggeringExamples: [Example] = [
-        Example("[1, 2].map { $0 }.filter {"),
-        Example("[1, 2].map { $0 }.filter { num in"),
+        Example("[1, 2].map { $0 }.filter { true }"),
+        Example("[1, 2].map { $0 }.filter { num in true }"),
         Example("""
         /*
             class X {
@@ -27,14 +27,81 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
-        Example("    print(\"x is 5\")\n↓\n}"): Example("    print(\"x is 5\")\n}"),
-        Example("    print(\"x is 5\")\n↓\n\n}"): Example("    print(\"x is 5\")\n}"),
-        Example("    print(\"x is 5\")\n↓    \n}"): Example("    print(\"x is 5\")\n}"),
-        Example("        )\n}\n↓\n    }\n}"): Example("        )\n}\n    }\n}"),
-        Example("[\n1,\n2,\n3\n↓\n]"): Example("[\n1,\n2,\n3\n]"),
-        Example("foo(\nx: 5,\ny:6\n↓\n)"): Example("foo(\nx: 5,\ny:6\n)"),
-        Example("class Name {\n    run(5) { x in print(x) }\n↓\n}"):
-            Example("class Name {\n    run(5) { x in print(x) }\n}")
+        Example("""
+        do {
+          print("x is 5")
+        ↓
+        }
+        """):
+            Example("""
+            do {
+              print("x is 5")
+            }
+            """),
+        Example("""
+        do {
+          print("x is 5")
+        ↓
+
+        }
+        """):
+            Example("""
+            do {
+              print("x is 5")
+            }
+            """),
+        Example("""
+        do {
+          print("x is 5")
+        ↓\n  \n}
+        """):
+            Example("""
+            do {
+              print("x is 5")
+            }
+            """),
+        Example("""
+        [
+        1,
+        2,
+        3
+        ↓
+        ]
+        """):
+            Example("""
+            [
+            1,
+            2,
+            3
+            ]
+            """),
+        Example("""
+        foo(
+            x: 5,
+            y:6
+        ↓
+        )
+        """):
+            Example("""
+            foo(
+                x: 5,
+                y:6
+            )
+            """),
+        Example("""
+        func foo() {
+          run(5) { x in
+            print(x)
+          }
+        ↓
+        }
+        """): Example("""
+            func foo() {
+              run(5) { x in
+                print(x)
+              }
+            }
+            """)
     ]
 
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"

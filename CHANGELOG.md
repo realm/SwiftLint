@@ -29,6 +29,11 @@
   [hank121314](https://github.com/hank121314)
   [#2367](https://github.com/realm/SwiftLint/issues/3267)
 
+* Rule `multiple_closures_with_trailing_closure` no longer triggers when Swift
+  5.3's 'multiple trailing closures' feature is used.
+  [Jumhyn](https://github.com/jumhyn)
+  [#3295](https://github.com/realm/SwiftLint/issues/3295)
+
 ## 0.40.2: Demo Unit
 
 #### Breaking

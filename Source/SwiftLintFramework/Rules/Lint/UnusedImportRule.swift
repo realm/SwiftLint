@@ -159,6 +159,7 @@ private extension SwiftLintFile {
                 entity.kind != "source.lang.swift.ref.module"
         }
 
+        // swiftlint:disable:next nesting - We really shouldn't trigger when these nested types are in functions
         struct Reference {
             let line, column: Int
             let usr: String

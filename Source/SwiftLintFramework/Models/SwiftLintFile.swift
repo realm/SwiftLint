@@ -75,6 +75,20 @@ public final class SwiftLintFile {
 
         return containsAttributesRequiringFoundation(dict: structureDictionary)
     }
+
+    /// Returns the SourceKit index for the current file, obtained with the specified compiler arguments.
+    ///
+    /// - parameter compilerArguments: The swiftc arguments needed to compile the file.
+    ///
+    /// - returns: A `SourceKittenDictionary` with the index response.
+    func index(compilerArguments: [String]) -> SourceKittenDictionary? {
+        return path
+            .flatMap { path in
+                try? Request.index(file: path, arguments: compilerArguments)
+                            .sendIfNotDisabled()
+            }
+            .map(SourceKittenDictionary.init)
+    }
 }
 
 // MARK: - Hashable Conformance

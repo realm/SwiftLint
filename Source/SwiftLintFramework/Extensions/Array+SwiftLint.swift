@@ -31,6 +31,19 @@ extension Array where Element: Hashable {
 }
 
 extension Array {
+    func unique<T: Hashable>(by: ((Element) -> (T)))  -> [Element] {
+        var set = Set<T>()
+        var result = [Element]()
+        for value in self where !set.contains(by(value)) {
+            set.insert(by(value))
+            result.append(value)
+        }
+
+        return result
+    }
+}
+
+extension Array {
     static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array

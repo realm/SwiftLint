@@ -118,3 +118,16 @@ extension String {
         }
     }
 }
+
+extension StringView {
+    /// Converts a line and column pair to a ByteCount offset into the string.
+    ///
+    /// - parameter line:   The 1-indexed line number into the string.
+    /// - parameter column: The 1-indexed column number into the string.
+    ///
+    /// - returns: The `ByteCount` offset in bytes into the string.
+    func byteOffset(forLine line: Int, column: Int) -> ByteCount {
+        guard line > 0 else { return ByteCount(column - 1) }
+        return lines[line - 1].byteRange.location + ByteCount(column - 1)
+    }
+}

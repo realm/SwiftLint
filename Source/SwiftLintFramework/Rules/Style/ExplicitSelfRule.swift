@@ -261,11 +261,6 @@ private extension SwiftLintFile {
 }
 
 private extension StringView {
-    func byteOffset(forLine line: Int, column: Int) -> ByteCount {
-        guard line > 0 else { return ByteCount(column - 1) }
-        return lines[line - 1].byteRange.location + ByteCount(column - 1)
-    }
-
     func recursiveByteOffsets(_ dict: [String: Any]) -> [ByteCount] {
         let cur: [ByteCount]
         if let line = dict["key.line"] as? Int64,

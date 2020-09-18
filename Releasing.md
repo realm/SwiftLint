@@ -15,7 +15,7 @@ For SwiftLint contributors, follow these steps to cut a release:
     * Specify the tag you just pushed from the dropdown.
     * Set the release title to the new version number & release name.
     * Add the changelog section to the release description text box.
-    * Upload the pkg installer, framework zip, and portable zip you just built
+    * Upload the pkg installer, framework zip, portable zip, and Linux zip you just built
       to the GitHub release binaries.
     * Click "Publish release".
 6. Publish to Homebrew and CocoaPods trunk: `make publish`

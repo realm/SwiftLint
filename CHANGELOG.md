@@ -14,6 +14,9 @@
   enable it to detect more occurrences of unused declarations.  
   [JP Simard](https://github.com/jpsim)
 
+* Make the `unused_import` rule run about 2 times faster.  
+  [JP Simard](https://github.com/jpsim)
+
 * Remove unneeded internal locking overhead, leading to increased
   performance in multithreaded operations.  
   [JP Simard](https://github.com/jpsim)

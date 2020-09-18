@@ -133,6 +133,22 @@ public struct SourceKittenDictionary {
         return value["key.column"] as? Int64
     }
 
+    /// The USR for this declaration.
+    var usr: String? {
+        return value["key.usr"] as? String
+    }
+
+    /// The annotated declaration.
+    var annotatedDeclaration: String? {
+        return value["key.annotated_decl"] as? String
+    }
+
+    // The dependencies returned in an index response.
+    var dependencies: [SourceKittenDictionary]? {
+        return (value["key.dependencies"] as? [[String: SourceKitRepresentable]])?
+            .map(SourceKittenDictionary.init)
+    }
+
     /// The `SwiftDeclarationAttributeKind` values associated with this dictionary.
     var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
         return swiftAttributes.compactMap { $0.attribute }

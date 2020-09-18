@@ -196,15 +196,6 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
 // MARK: - File Extensions
 
 private extension SwiftLintFile {
-    func index(compilerArguments: [String]) -> SourceKittenDictionary? {
-        return path
-            .flatMap { path in
-                try? Request.index(file: path, arguments: compilerArguments)
-                            .send()
-            }
-            .map(SourceKittenDictionary.init)
-    }
-
     func referencedUSRs(index: SourceKittenDictionary) -> Set<String> {
         return Set(index.traverseEntities { entity -> String? in
             if let usr = entity.usr,
@@ -303,14 +294,6 @@ private extension SwiftLintFile {
 }
 
 private extension SourceKittenDictionary {
-    var usr: String? {
-        return value["key.usr"] as? String
-    }
-
-    var annotatedDeclaration: String? {
-        return value["key.annotated_decl"] as? String
-    }
-
     func aclAtOffset(_ offset: ByteCount) -> AccessControlLevel? {
         if let nameOffset = nameOffset,
             nameOffset == offset,
@@ -365,12 +348,5 @@ private extension SourceKittenDictionary {
                 array.append(collectedValue)
             }
         }
-    }
-}
-
-private extension StringView {
-    func byteOffset(forLine line: Int, column: Int) -> ByteCount {
-        guard line > 0 else { return ByteCount(column - 1) }
-        return lines[line - 1].byteRange.location + ByteCount(column - 1)
     }
 }

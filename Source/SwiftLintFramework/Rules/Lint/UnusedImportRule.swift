@@ -98,7 +98,12 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
 private extension SwiftLintFile {
     func getImportUsage(compilerArguments: [String], configuration: UnusedImportConfiguration) -> [ImportUsage] {
-        var (imports, usrFragments) = getImportsAndUSRFragments(compilerArguments: compilerArguments)
+        guard let index = index(compilerArguments: compilerArguments) else {
+            queuedPrintError("Could not get index")
+            return []
+        }
+
+        var (imports, usrFragments) = getImportsAndUSRFragments(index: index, compilerArguments: compilerArguments)
 
         // Always disallow 'import Swift' because it's available without importing.
         usrFragments.remove("Swift")
@@ -106,15 +111,6 @@ private extension SwiftLintFile {
         // Certain Swift attributes requires importing Foundation.
         if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
             unusedImports.remove("Foundation")
-        }
-
-        if !unusedImports.isEmpty {
-            unusedImports.subtract(
-                operatorImports(
-                    arguments: compilerArguments,
-                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
-                )
-            )
         }
 
         let contentsNSString = stringView.nsString
@@ -143,42 +139,57 @@ private extension SwiftLintFile {
         return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
     }
 
-    func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {
-        var imports = Set<String>()
+    func getImportsAndUSRFragments(index: SourceKittenDictionary, compilerArguments: [String])
+        -> (imports: Set<String>, usrFragments: Set<String>) {
         var usrFragments = Set<String>()
-        var nextIsModuleImport = false
-        for token in syntaxMap.tokens {
-            guard let tokenKind = token.kind else {
-                continue
+
+        let allEntities = flatEntities(entity: index)
+
+        let referenceEntities = allEntities.filter { entity in
+            entity.kind?.starts(with: "source.lang.swift.ref") == true &&
+                entity.kind != "source.lang.swift.ref.module"
+        }
+
+        struct Reference {
+            let line, column: Int
+            let usr: String
+        }
+
+        let dedupedLineAndColumns = referenceEntities
+            .compactMap { entity in
+                entity.line.flatMap { line in
+                    entity.column.flatMap { column in
+                        entity.usr.map { usr in
+                            Reference(line: Int(line), column: Int(column), usr: usr)
+                        }
+                    }
+                }
             }
-            if tokenKind == .keyword, contents(for: token) == "import" {
-                nextIsModuleImport = true
-                continue
-            }
-            if SyntaxKind.kindsWithoutModuleInfo.contains(tokenKind) {
-                continue
-            }
-            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
-                                                       arguments: compilerArguments)
+            // don't cursor-info the same USR at different locations
+            .unique(by: { $0.usr })
+            // don't cursor-info different USRs at the same location
+            .unique(by: { [$0.line, $0.column] })
+            .map { ($0.line, $0.column) }
+
+        for (line, column) in dedupedLineAndColumns {
+            let nameOffset = stringView.byteOffset(forLine: line, column: column)
+            let cursorInfoRequest = Request.cursorInfo(file: path!, offset: nameOffset, arguments: compilerArguments)
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
                 queuedPrintError("Could not get cursor info")
                 continue
             }
-            if nextIsModuleImport {
-                if let importedModule = cursorInfo.moduleName,
-                    cursorInfo.kind == "source.lang.swift.ref.module" {
-                    imports.insert(importedModule)
-                    nextIsModuleImport = false
-                    continue
-                } else {
-                    nextIsModuleImport = false
-                }
-            }
 
-            appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+            if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
+                usrFragments.insert(rootModuleName)
+            }
         }
 
-        return (imports: imports, usrFragments: usrFragments)
+        let imports = index.dependencies?
+            .filter { $0.kind?.starts(with: "source.lang.swift.import.module") == true }
+            .compactMap { $0.name }
+            .filter { $0 != "Swift" }
+
+        return (imports: Set(imports ?? []), usrFragments: usrFragments)
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String], contents: NSString) -> [(String, NSRange)] {
@@ -189,78 +200,12 @@ private extension SwiftLintFile {
             .sorted(by: { $0.1.location < $1.1.location })
     }
 
-    // Operators are omitted in the editor.open request and thus have to be looked up by the indexsource request
-    func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
-        guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
-            .map(SourceKittenDictionary.init) else {
-            queuedPrintError("Could not get index")
-            return []
-        }
-
-        let operatorEntities = flatEntities(entity: index).filter { mightBeOperator(kind: $0.kind) }
-        let offsetPerLine = self.offsetPerLine()
-        var imports = Set<String>()
-
-        for entity in operatorEntities {
-            if
-                let line = entity.line,
-                let column = entity.column,
-                let lineOffset = offsetPerLine[Int(line) - 1] {
-                let offset = lineOffset + column - 1
-
-                // Filter already processed tokens such as static methods that are not operators
-                guard !processedTokenOffsets.contains(ByteCount(offset)) else { continue }
-
-                let cursorInfoRequest = Request.cursorInfo(file: path!, offset: ByteCount(offset), arguments: arguments)
-                guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
-                    .map(SourceKittenDictionary.init) else {
-                    queuedPrintError("Could not get cursor info")
-                    continue
-                }
-
-                appendUsedImports(cursorInfo: cursorInfo, usrFragments: &imports)
-            }
-        }
-
-        return imports
-    }
-
     func flatEntities(entity: SourceKittenDictionary) -> [SourceKittenDictionary] {
         let entities = entity.entities
         if entities.isEmpty {
             return [entity]
         } else {
             return [entity] + entities.flatMap { flatEntities(entity: $0) }
-        }
-    }
-
-    func offsetPerLine() -> [Int: Int64] {
-        return Dictionary(
-            uniqueKeysWithValues: contents.bridge()
-                .components(separatedBy: "\n")
-                .map { Int64($0.bridge().lengthOfBytes(using: .utf8)) }
-                .reduce(into: [0]) { result, length in
-                    let newLineCharacterLength = Int64(1)
-                    let lineLength = length + newLineCharacterLength
-                    result.append(contentsOf: [(result.last ?? 0) + lineLength])
-                }
-                .enumerated()
-                .map { ($0.offset, $0.element) }
-        )
-    }
-
-    // Operators that are a part of some body are reported as method.static
-    func mightBeOperator(kind: String?) -> Bool {
-        guard let kind = kind else { return false }
-        return [
-            "source.lang.swift.ref.function.operator",
-            "source.lang.swift.ref.function.method.static"
-        ].contains { kind.hasPrefix($0) }
-    }
-
-    func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
-        if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
-            usrFragments.insert(rootModuleName)
         }
     }
 }

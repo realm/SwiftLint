@@ -47,6 +47,15 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             [1, 2].map { [self, unowned delegate = self.delegate!] num in
                 delegate.handle(num)
             }
+            """),
+            Example("""
+            [1, 2].map {
+                [ weak
+                  delegate,
+                  self
+                ] num in
+                delegate.handle(num)
+            }
             """)
         ],
         triggeringExamples: [
@@ -134,7 +143,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         var locationOffset = 0
         return captureList.components(separatedBy: ",")
             .reduce(into: [(String, Int)]()) { referencesAndLocations, item in
-                guard item != selfKeyword else { return }
+                let word = item.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard word != selfKeyword else { return }
                 let item = item.bridge()
                 let range = item.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines.inverted)
                 guard range.location != NSNotFound else { return }

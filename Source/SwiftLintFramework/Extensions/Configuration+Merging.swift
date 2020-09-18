@@ -51,23 +51,6 @@ extension Configuration {
         return self
     }
 
-    private var rootDirectory: String? {
-        guard let rootPath = rootPath else {
-            return nil
-        }
-
-        var isDirectoryObjC: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectoryObjC) else {
-            return nil
-        }
-
-        if isDirectoryObjC.boolValue {
-            return rootPath
-        } else {
-            return rootPath.bridge().deletingLastPathComponent
-        }
-    }
-
     private struct HashableRule: Hashable {
         fileprivate let rule: Rule
 

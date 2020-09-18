@@ -37,7 +37,26 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             }
             """),
             Example("{ [foo] _ in foo.bar() }()"),
-            Example("sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []")
+            Example("sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []"),
+            Example("""
+            [1, 2].map { [self] num in
+                handle(num)
+            }
+            """),
+            Example("""
+            [1, 2].map { [self, unowned delegate = self.delegate!] num in
+                delegate.handle(num)
+            }
+            """),
+            Example("""
+            [1, 2].map {
+                [ weak
+                  delegate,
+                  self
+                ] num in
+                delegate.handle(num)
+            }
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -62,6 +81,12 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             })
             """),
             Example("""
+            numbers.forEach({
+                [self, weak handler] in
+                print($0)
+            })
+            """),
+            Example("""
             withEnvironment(apiService: MockService(fetchProjectResponse: project)) { [↓foo] in
                 [Device.phone4_7inch, Device.phone5_8inch, Device.pad].forEach { device in
                     device.handle()
@@ -73,6 +98,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
     )
 
     private let captureListRegex = regex("^\\{\\s*\\[([^\\]]+)\\]")
+
+    private let selfKeyword = "self"
 
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
@@ -116,6 +143,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         var locationOffset = 0
         return captureList.components(separatedBy: ",")
             .reduce(into: [(String, Int)]()) { referencesAndLocations, item in
+                let word = item.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard word != selfKeyword else { return }
                 let item = item.bridge()
                 let range = item.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines.inverted)
                 guard range.location != NSNotFound else { return }

@@ -18,12 +18,15 @@ extension Array where Element: Equatable {
 }
 
 extension Array {
-    func unique<T: Hashable>(by: ((Element) -> (T)))  -> [Element] {
+    func unique<T: Hashable>(by transform: ((Element) -> T)) -> [Element] {
         var set = Set<T>()
         var result = [Element]()
-        for value in self where !set.contains(by(value)) {
-            set.insert(by(value))
-            result.append(value)
+        for value in self {
+            let transformed = transform(value)
+            if !set.contains(transformed) {
+                set.insert(transformed)
+                result.append(value)
+            }
         }
 
         return result

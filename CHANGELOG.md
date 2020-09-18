@@ -25,7 +25,9 @@
 
 #### Bug Fixes
 
-* None.
+* Rule `unused_capture_list` should not be triggered by self keyword.  
+  [hank121314](https://github.com/hank121314)
+  [#2367](https://github.com/realm/SwiftLint/issues/3267)
 
 ## 0.40.2: Demo Unit
 

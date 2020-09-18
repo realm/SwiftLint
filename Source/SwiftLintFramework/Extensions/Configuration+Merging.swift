@@ -16,7 +16,9 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
-        if path == rootDirectory {
+        let rootConfigurationDirectory = configurationPath?.bridge().deletingLastPathComponent
+        // We're linting a file in the same directory as the root configuration we've already loaded
+        if path == rootConfigurationDirectory {
             return self
         }
 

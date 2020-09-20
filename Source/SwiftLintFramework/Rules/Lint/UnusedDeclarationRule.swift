@@ -73,7 +73,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             Example("""
             public func foo() {}
             """)
-        ],
+        ] + platformSpecificNonTriggeringExamples,
         triggeringExamples: [
             Example("""
             let ↓kConstant = 0
@@ -94,9 +94,46 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
                 }
             }
             """)
-        ],
+        ] + platformSpecificTriggeringExamples,
         requiresFileOnDisk: true
     )
+
+#if os(macOS)
+    private static let platformSpecificNonTriggeringExamples = [
+        Example("""
+        import Cocoa
+
+        @NSApplicationMain
+        final class AppDelegate: NSObject, NSApplicationDelegate {
+            func applicationWillFinishLaunching(_ notification: Notification) {}
+            func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """)
+    ]
+
+    private static let platformSpecificTriggeringExamples = [
+        Example("""
+        import Cocoa
+
+        @NSApplicationMain
+        final class AppDelegate: NSObject, NSApplicationDelegate {
+            func ↓appWillFinishLaunching(_ notification: Notification) {}
+            func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """),
+        Example("""
+        import Cocoa
+
+        final class ↓AppDelegate: NSObject, NSApplicationDelegate {
+            func applicationWillFinishLaunching(_ notification: Notification) {}
+            func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """)
+    ]
+#else
+    private static let platformSpecificNonTriggeringExamples = [Example]()
+    private static let platformSpecificTriggeringExamples = [Example]()
+#endif
 
     public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
         guard !compilerArguments.isEmpty else {
@@ -107,7 +144,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             return .empty
         }
 
-        guard let index = file.index(compilerArguments: compilerArguments) else {
+        guard let index = file.index(compilerArguments: compilerArguments), !index.value.isEmpty else {
             queuedPrintError("""
                 Could not index file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule.
@@ -307,7 +344,9 @@ private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
     .ibaction,
     .ibinspectable,
     .iboutlet,
-    .override
+    .nsApplicationMain,
+    .override,
+    .uiApplicationMain
 ]
 
 private extension SourceKittenDictionary {

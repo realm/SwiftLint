@@ -72,6 +72,15 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             """),
             Example("""
             public func foo() {}
+            """),
+            Example("""
+            import Cocoa
+
+            @NSApplicationMain
+            final class AppDelegate: NSObject, NSApplicationDelegate {
+                func applicationWillFinishLaunching(_ notification: Notification) {}
+                func applicationWillBecomeActive(_ notification: Notification) {}
+            }
             """)
         ],
         triggeringExamples: [
@@ -93,6 +102,23 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
                 func ↓foo() {
                 }
             }
+            """),
+            Example("""
+            import Cocoa
+
+            @NSApplicationMain
+            final class AppDelegate: NSObject, NSApplicationDelegate {
+                func ↓appWillFinishLaunching(_ notification: Notification) {}
+                func applicationWillBecomeActive(_ notification: Notification) {}
+            }
+            """),
+            Example("""
+            import Cocoa
+
+            final class ↓AppDelegate: NSObject, NSApplicationDelegate {
+                func applicationWillFinishLaunching(_ notification: Notification) {}
+                func applicationWillBecomeActive(_ notification: Notification) {}
+            }
             """)
         ],
         requiresFileOnDisk: true
@@ -107,7 +133,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             return .empty
         }
 
-        guard let index = file.index(compilerArguments: compilerArguments) else {
+        guard let index = file.index(compilerArguments: compilerArguments), !index.value.isEmpty else {
             queuedPrintError("""
                 Could not index file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule.
@@ -307,7 +333,9 @@ private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
     .ibaction,
     .ibinspectable,
     .iboutlet,
-    .override
+    .nsApplicationMain,
+    .override,
+    .uiApplicationMain
 ]
 
 private extension SourceKittenDictionary {

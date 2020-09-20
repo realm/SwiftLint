@@ -12,6 +12,8 @@ jobs:
         containerImage: swift:5.1
       swift52:
         containerImage: swift:5.2
+      swift53:
+        containerImage: swift:5.3
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel
@@ -38,7 +40,7 @@ jobs:
       xcode116:
         DEVELOPER_DIR: /Applications/Xcode_11.6.app
       xcode12:
-        DEVELOPER_DIR: /Applications/Xcode_12_beta.app
+        DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
     - script: git submodule update --init --recursive
       displayName: Update git submodules
@@ -80,7 +82,7 @@ jobs:
       xcode116:
         DEVELOPER_DIR: /Applications/Xcode_11.6.app
       xcode12:
-        DEVELOPER_DIR: /Applications/Xcode_12_beta.app
+        DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
     - script: |
         sw_vers
@@ -95,7 +97,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.6.app
+    DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -108,7 +110,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.6.app
+    DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
@@ -117,7 +119,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.6.app
+    DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run
@@ -130,7 +132,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_11.6.app
+    DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

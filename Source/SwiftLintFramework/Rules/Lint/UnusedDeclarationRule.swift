@@ -72,17 +72,8 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             """),
             Example("""
             public func foo() {}
-            """),
-            Example("""
-            import Cocoa
-
-            @NSApplicationMain
-            final class AppDelegate: NSObject, NSApplicationDelegate {
-                func applicationWillFinishLaunching(_ notification: Notification) {}
-                func applicationWillBecomeActive(_ notification: Notification) {}
-            }
             """)
-        ],
+        ] + platformSpecificNonTriggeringExamples,
         triggeringExamples: [
             Example("""
             let ↓kConstant = 0
@@ -102,27 +93,47 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
                 func ↓foo() {
                 }
             }
-            """),
-            Example("""
-            import Cocoa
-
-            @NSApplicationMain
-            final class AppDelegate: NSObject, NSApplicationDelegate {
-                func ↓appWillFinishLaunching(_ notification: Notification) {}
-                func applicationWillBecomeActive(_ notification: Notification) {}
-            }
-            """),
-            Example("""
-            import Cocoa
-
-            final class ↓AppDelegate: NSObject, NSApplicationDelegate {
-                func applicationWillFinishLaunching(_ notification: Notification) {}
-                func applicationWillBecomeActive(_ notification: Notification) {}
-            }
             """)
-        ],
+        ] + platformSpecificTriggeringExamples,
         requiresFileOnDisk: true
     )
+
+#if os(macOS)
+    private static let platformSpecificNonTriggeringExamples = [
+        Example("""
+        import Cocoa
+
+        @NSApplicationMain
+        final class AppDelegate: NSObject, NSApplicationDelegate {
+            func applicationWillFinishLaunching(_ notification: Notification) {}
+            func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """)
+    ]
+
+    private static let platformSpecificTriggeringExamples = [
+        Example("""
+        import Cocoa
+
+        @NSApplicationMain
+        final class AppDelegate: NSObject, NSApplicationDelegate {
+            func ↓appWillFinishLaunching(_ notification: Notification) {}
+            func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """),
+        Example("""
+        import Cocoa
+
+        final class ↓AppDelegate: NSObject, NSApplicationDelegate {
+            func applicationWillFinishLaunching(_ notification: Notification) {}
+            func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """)
+    ]
+#else
+    private static let platformSpecificNonTriggeringExamples = [Example]()
+    private static let platformSpecificTriggeringExamples = [Example]()
+#endif
 
     public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
         guard !compilerArguments.isEmpty else {

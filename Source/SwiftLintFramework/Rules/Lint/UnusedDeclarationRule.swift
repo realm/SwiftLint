@@ -25,115 +25,10 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         name: "Unused Declaration",
         description: "Declarations should be referenced at least once within all files linted.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
-            let kConstant = 0
-            _ = kConstant
-            """),
-            Example("""
-            enum Change<T> {
-              case insert(T)
-              case delete(T)
-            }
-
-            extension Sequence {
-              func deletes<T>() -> [T] where Element == Change<T> {
-                return compactMap { operation in
-                  if case .delete(let value) = operation {
-                    return value
-                  } else {
-                    return nil
-                  }
-                }
-              }
-            }
-
-            let changes = [Change.insert(0), .delete(0)]
-            changes.deletes()
-            """),
-            Example("""
-            struct Item {}
-            struct ResponseModel: Codable {
-                let items: [Item]
-
-                enum CodingKeys: String, CodingKey {
-                    case items = "ResponseItems"
-                }
-            }
-
-            _ = ResponseModel(items: [Item()]).items
-            """),
-            Example("""
-            class ResponseModel {
-                @objc func foo() {
-                }
-            }
-            _ = ResponseModel()
-            """),
-            Example("""
-            public func foo() {}
-            """)
-        ] + platformSpecificNonTriggeringExamples,
-        triggeringExamples: [
-            Example("""
-            let ↓kConstant = 0
-            """),
-            Example("""
-            struct Item {}
-            struct ↓ResponseModel: Codable {
-                let ↓items: [Item]
-
-                enum ↓CodingKeys: String {
-                    case items = "ResponseItems"
-                }
-            }
-            """),
-            Example("""
-            class ↓ResponseModel {
-                func ↓foo() {
-                }
-            }
-            """)
-        ] + platformSpecificTriggeringExamples,
+        nonTriggeringExamples: UnusedDeclarationRuleExamples.nonTriggeringExamples,
+        triggeringExamples: UnusedDeclarationRuleExamples.triggeringExamples,
         requiresFileOnDisk: true
     )
-
-#if os(macOS)
-    private static let platformSpecificNonTriggeringExamples = [
-        Example("""
-        import Cocoa
-
-        @NSApplicationMain
-        final class AppDelegate: NSObject, NSApplicationDelegate {
-            func applicationWillFinishLaunching(_ notification: Notification) {}
-            func applicationWillBecomeActive(_ notification: Notification) {}
-        }
-        """)
-    ]
-
-    private static let platformSpecificTriggeringExamples = [
-        Example("""
-        import Cocoa
-
-        @NSApplicationMain
-        final class AppDelegate: NSObject, NSApplicationDelegate {
-            func ↓appWillFinishLaunching(_ notification: Notification) {}
-            func applicationWillBecomeActive(_ notification: Notification) {}
-        }
-        """),
-        Example("""
-        import Cocoa
-
-        final class ↓AppDelegate: NSObject, NSApplicationDelegate {
-            func applicationWillFinishLaunching(_ notification: Notification) {}
-            func applicationWillBecomeActive(_ notification: Notification) {}
-        }
-        """)
-    ]
-#else
-    private static let platformSpecificNonTriggeringExamples = [Example]()
-    private static let platformSpecificTriggeringExamples = [Example]()
-#endif
 
     public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
         guard !compilerArguments.isEmpty else {
@@ -279,17 +174,11 @@ private extension SwiftLintFile {
             return nil
         }
 
-        // This works for both subclass overrides & protocol extension overrides.
-        if cursorInfo?.value["key.overrides"] != nil {
-            return nil
-        }
+        let isOverrideOrRelatedDeclaration = cursorInfo?.isCursorInfoOverrideOrRelatedDeclaration(
+            nameOffset: nameOffset, indexEntity: indexEntity, editorOpen: editorOpen
+        )
 
-        // Sometimes default protocol implementations don't have `key.overrides` set but they do have
-        // `key.related_decls`. The apparent exception is that related declarations also includes declarations
-        // with "related names", which appears to be similarly named declarations (i.e. overloads) that are
-        // programmatically unrelated to the current cursor-info declaration. Those similarly named declarations
-        // aren't in `key.related` so confirm that that one is also populated.
-        if cursorInfo?.value["key.related_decls"] != nil && indexEntity.value["key.related"] != nil {
+        if isOverrideOrRelatedDeclaration == true {
             return nil
         }
 
@@ -323,6 +212,45 @@ private extension SourceKittenDictionary {
             }
         }
         return nil
+    }
+
+    func parent(forNameOffset offset: ByteCount) -> SourceKittenDictionary? {
+        return traverseWithParentDepthFirst(traverseBlock: { parent, subDict in
+            return subDict.nameOffset == offset ? [parent] : []
+        }).first
+    }
+
+    func isCursorInfoOverrideOrRelatedDeclaration(nameOffset: ByteCount,
+                                                  indexEntity: SourceKittenDictionary,
+                                                  editorOpen: SourceKittenDictionary) -> Bool {
+        // This works for both subclass overrides & protocol extension overrides.
+        if value["key.overrides"] != nil {
+            return true
+        }
+
+        // Sometimes default protocol implementations don't have `key.overrides` set but they do have
+        // `key.related_decls`.
+        if value["key.related_decls"] != nil {
+            // The apparent exception is that related declarations also includes declarations with "related names",
+            // which appears to be similarly named declarations (i.e. overloads) that are programmatically unrelated to
+            // the current cursor-info declaration. Those similarly named declarations aren't in `key.related` so
+            // confirm that that one is also populated.
+            if indexEntity.value["key.related"] != nil {
+                return true
+            }
+
+            // Protocol definitions with default implementations don't have a value for their index entity's
+            // 'key.related' key, but these are often used in practice as "documentation" for the protocol's interface,
+            // even if it's not used as an "extension point". i.e. only a default implementation in the protocol's
+            // extension is ever used.
+            //
+            // Unfortunately this means that protocol requirements that are entirely unused will not be reported.
+            if editorOpen.parent(forNameOffset: nameOffset)?.declarationKind == .protocol {
+                return true
+            }
+        }
+
+        return false
     }
 }
 

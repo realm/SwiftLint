@@ -156,7 +156,7 @@ private extension SwiftLintFile {
             let usr: String
         }
 
-        let dedupedLineAndColumns = referenceEntities
+        let dedupedReferences = referenceEntities
             .compactMap { entity in
                 entity.line.flatMap { line in
                     entity.column.flatMap { column in
@@ -168,20 +168,50 @@ private extension SwiftLintFile {
             }
             // don't cursor-info the same USR at different locations
             .unique(by: { $0.usr })
-            // don't cursor-info different USRs at the same location
-            .unique(by: { [$0.line, $0.column] })
-            .map { ($0.line, $0.column) }
 
-        for (line, column) in dedupedLineAndColumns {
-            let nameOffset = stringView.byteOffset(forLine: line, column: column)
+        var seenUSRs = Set<String>()
+        for reference in dedupedReferences {
+            let nameOffset = stringView.byteOffset(forLine: reference.line, column: reference.column)
+            let usr = reference.usr
+
             let cursorInfoRequest = Request.cursorInfo(file: path!, offset: nameOffset, arguments: compilerArguments)
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
                 queuedPrintError("Could not get cursor info")
                 continue
             }
 
-            if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
-                usrFragments.insert(rootModuleName)
+            if cursorInfo.usr == usr {
+                seenUSRs.insert(usr)
+                if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
+                    usrFragments.insert(rootModuleName)
+                }
+            } else {
+                let tokens = syntaxMap.tokens
+                guard let firstTokenIndexAfterNameOffset = tokens.firstIndex(where: { $0.offset > nameOffset }) else {
+                    queuedPrintError("Could not get tokens")
+                    continue
+                }
+
+                var extraTokensToCheck = 3
+                let tokensAfterNameOffset = tokens.suffix(from: firstTokenIndexAfterNameOffset)
+                for token in tokensAfterNameOffset {
+                    extraTokensToCheck -= 1
+                    if extraTokensToCheck == 0 {
+                        break
+                    }
+
+                    let tokenCursorInfoRequest = Request.cursorInfo(file: path!, offset: token.offset,
+                                                                    arguments: compilerArguments)
+                    let tokenCursorInfo = (try? tokenCursorInfoRequest.sendIfNotDisabled())
+                        .map(SourceKittenDictionary.init)
+                    if tokenCursorInfo?.usr == usr {
+                        seenUSRs.insert(usr)
+                        if let rootModuleName = tokenCursorInfo?.moduleName?.split(separator: ".").first.map(String.init) {
+                            usrFragments.insert(rootModuleName)
+                            break
+                        }
+                    }
+                }
             }
         }
 

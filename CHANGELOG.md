@@ -29,9 +29,6 @@
   [hank121314](https://github.com/hank121314)
   [#2367](https://github.com/realm/SwiftLint/issues/3267)
 
-* Fix finding a nested config when a single file path is passed.  
-  [Seth Friedman](https://github.com/sethfri)
-
 ## 0.40.2: Demo Unit
 
 #### Breaking

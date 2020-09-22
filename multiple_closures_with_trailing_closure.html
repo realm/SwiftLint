@@ -343,6 +343,10 @@
     <span class="n">someView</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="n">method</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">}</span> <span class="nv">arg2</span><span class="p">:</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="nf">methodWithParenArgs</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nv">arg2</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span> <span class="nv">arg4</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="nf">something</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">})</span> <span class="err">↓</span><span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span>
 </code></pre>
@@ -351,6 +355,10 @@
 <span class="p">})</span> <span class="err">↓</span><span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
     <span class="n">someView</span><span class="o">.</span><span class="nf">removeFromSuperview</span><span class="p">()</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="nf">multipleTrailing</span><span class="p">(</span><span class="nv">arg1</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">})</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span> <span class="nv">arg3</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="nf">methodWithParenArgs</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">},</span> <span class="nv">param2</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
 </code></pre>
 
           </div>

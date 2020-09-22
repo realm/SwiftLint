@@ -135,6 +135,11 @@ private extension SwiftLintFile {
             return nil
         }
 
+        // Work around https://bugs.swift.org/browse/SR-11985
+        if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() {
+            return nil
+        }
+
         if indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
             indexEntity.value["key.is_implicit"] as? Bool == true ||
             indexEntity.value["key.is_test_candidate"] as? Bool == true {
@@ -218,6 +223,30 @@ private extension SourceKittenDictionary {
             }
         }
         return nil
+    }
+
+    func shouldSkipIndexEntityToWorkAroundSR11985() -> Bool {
+        guard enclosedSwiftAttributes.contains(.objcName), let name = self.name else {
+            return false
+        }
+
+        // Not a comprehensive list. Add as needed.
+        let functionsToSkipForSR11985 = [
+            "navigationBar(_:didPop:)",
+            "scrollViewDidEndDecelerating(_:)",
+            "scrollViewDidEndDragging(_:willDecelerate:)",
+            "scrollViewDidScroll(_:)",
+            "scrollViewDidScrollToTop(_:)",
+            "scrollViewWillBeginDragging(_:)",
+            "scrollViewWillEndDragging(_:withVelocity:targetContentOffset:)",
+            "tableView(_:canEditRowAt:)",
+            "tableView(_:commit:forRowAt:)",
+            "tableView(_:editingStyleForRowAt:)",
+            "tableView(_:willDisplayHeaderView:forSection:)",
+            "tableView(_:willSelectRowAt:)"
+        ]
+
+        return functionsToSkipForSR11985.contains(name)
     }
 }
 

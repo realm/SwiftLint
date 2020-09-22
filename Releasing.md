@@ -7,16 +7,17 @@ For SwiftLint contributors, follow these steps to cut a release:
     * FabricSoftenerRule
     * Top Loading
     * Fresh Out Of The Dryer
-2. Push new version: `make push_version "0.2.0: Tumble Dry"`
-3. Make sure you have the latest stable Xcode version installed and
+1. Push new version: `make push_version "0.2.0: Tumble Dry"`
+1. Make sure you have the latest stable Xcode version installed and
   `xcode-select`ed.
-4. Create the pkg installer, framework zip, and portable zip: `make release`
-5. Create a GitHub release: https://github.com/realm/SwiftLint/releases/new
+1. Create the pkg installer, framework zip, portable zip, and Linux zip:
+   `make release`
+1. Create a GitHub release: https://github.com/realm/SwiftLint/releases/new
     * Specify the tag you just pushed from the dropdown.
     * Set the release title to the new version number & release name.
     * Add the changelog section to the release description text box.
-    * Upload the pkg installer, framework zip, and portable zip you just built
+    * Upload the pkg installer, framework zip, portable zip, and Linux zip you just built
       to the GitHub release binaries.
     * Click "Publish release".
-6. Publish to Homebrew and CocoaPods trunk: `make publish`
-7. Celebrate. :tada:
+1. Publish to Homebrew and CocoaPods trunk: `make publish`
+1. Celebrate. :tada:

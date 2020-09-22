@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -208,7 +208,6 @@ extension ConfigurationTests {
         ("testLevel2", testLevel2),
         ("testLevel3", testLevel3),
         ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
-        ("testNestedConfigurationForOnePathPassedIn", testNestedConfigurationForOnePathPassedIn),
         ("testMergedWarningThreshold", testMergedWarningThreshold),
         ("testNestedWhitelistedRules", testNestedWhitelistedRules),
         ("testNestedConfigurationsWithCustomRulesMerge", testNestedConfigurationsWithCustomRulesMerge),

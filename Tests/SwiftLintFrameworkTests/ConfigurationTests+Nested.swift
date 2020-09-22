@@ -45,6 +45,14 @@ extension ConfigurationTests {
         XCTAssertEqual(projectMockConfig0.merge(with: projectMockConfig3).rootPath, projectMockConfig3.rootPath)
     }
 
+    func testNestedConfigurationForOnePathPassedIn() {
+        let config = Configuration(path: projectMockYAML0, rootPath: projectMockSwift3)
+        XCTAssertEqual(
+            config.configuration(for: SwiftLintFile(path: projectMockSwift3)!),
+            config.merge(with: projectMockConfig3)
+        )
+    }
+
     func testMergedWarningThreshold() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             return Configuration(warningThreshold: warningThreshold,

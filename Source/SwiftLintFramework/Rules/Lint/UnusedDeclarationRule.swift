@@ -242,6 +242,7 @@ private extension SourceKittenDictionary {
             "tableView(_:canEditRowAt:)",
             "tableView(_:commit:forRowAt:)",
             "tableView(_:editingStyleForRowAt:)",
+            "tableView(_:willDisplayHeaderView:forSection:)",
             "tableView(_:willSelectRowAt:)"
         ]
 

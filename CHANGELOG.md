@@ -12,6 +12,16 @@
 
 * None.
 
+#### Bug Fixes
+
+* Fix parsing of Xcode 12 compiler logs for analyzer rules.  
+  [JP Simard](https://github.com/jpsim)
+  [#3365](https://github.com/realm/SwiftLint/issues/3365)
+
+* Fix some SwiftUI unused declaration rule false positives.  
+  [JP Simard](https://github.com/jpsim)
+  [#3365](https://github.com/realm/SwiftLint/issues/3365)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

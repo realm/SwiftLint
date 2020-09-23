@@ -35,6 +35,8 @@ struct CompilerArgumentsExtractor {
      */
     static func filterCompilerArguments(_ args: [String]) -> [String] {
         var args = args
+        // https://github.com/realm/SwiftLint/issues/3365
+        args = args.map { $0.replacingOccurrences(of: "\\=", with: "=") }
         args.append(contentsOf: ["-D", "DEBUG"])
         var shouldContinueToFilterArguments = true
         while shouldContinueToFilterArguments {

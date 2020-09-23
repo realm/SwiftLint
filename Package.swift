@@ -15,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Carthage/Commandant.git", .upToNextMinor(from: "0.17.0")),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.30.0")),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.30.1")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.0"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.0.0"))] : []),

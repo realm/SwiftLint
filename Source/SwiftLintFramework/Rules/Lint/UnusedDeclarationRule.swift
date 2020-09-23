@@ -135,12 +135,9 @@ private extension SwiftLintFile {
             return nil
         }
 
-        // Work around https://bugs.swift.org/browse/SR-11985
-        if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() {
-            return nil
-        }
-
-        if indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
+        if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
+            indexEntity.isIndexEntityUsedForSwiftUI() ||
+            indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
             indexEntity.value["key.is_implicit"] as? Bool == true ||
             indexEntity.value["key.is_test_candidate"] as? Bool == true {
             return nil
@@ -148,8 +145,7 @@ private extension SwiftLintFile {
 
         let nameOffset = stringView.byteOffset(forLine: line, column: column)
 
-        if !includePublicAndOpen,
-            [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
+        if !includePublicAndOpen, [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
             return nil
         }
 
@@ -223,6 +219,18 @@ private extension SourceKittenDictionary {
             }
         }
         return nil
+    }
+
+    func isIndexEntityUsedForSwiftUI() -> Bool {
+        return isIndexEntitySwiftUIProvider() ||
+            // Move to `declarationAttributesToSkip` when we can use https://github.com/jpsim/SourceKitten/pull/670
+            swiftAttributes.contains(where: { $0.attribute == "source.decl.attribute.main" })
+    }
+
+    func isIndexEntitySwiftUIProvider() -> Bool {
+        return (value["key.related"] as? [[String: SourceKitRepresentable]])?
+            .map(SourceKittenDictionary.init)
+            .contains(where: { $0.usr == "s:7SwiftUI15PreviewProviderP" }) == true
     }
 
     func shouldSkipIndexEntityToWorkAroundSR11985() -> Bool {

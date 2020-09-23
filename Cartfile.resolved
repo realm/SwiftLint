@@ -1,6 +1,6 @@
 github "Carthage/Commandant" "0.17.0"
 github "drmohundro/SWXMLHash" "5.0.1"
-github "jpsim/SourceKitten" "0.30.0"
+github "jpsim/SourceKitten" "0.30.1"
 github "jpsim/Yams" "4.0.0"
 github "jspahrsummers/xcconfigs" "0.12"
 github "scottrhoyt/SwiftyTextTable" "0.9.0"

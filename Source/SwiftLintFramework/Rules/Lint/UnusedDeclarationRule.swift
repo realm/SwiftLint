@@ -136,7 +136,7 @@ private extension SwiftLintFile {
         }
 
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
-            indexEntity.isIndexEntityUsedForSwiftUI() ||
+            indexEntity.isIndexEntitySwiftUIProvider() ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
             indexEntity.value["key.is_implicit"] as? Bool == true ||
             indexEntity.value["key.is_test_candidate"] as? Bool == true {
@@ -221,12 +221,6 @@ private extension SourceKittenDictionary {
         return nil
     }
 
-    func isIndexEntityUsedForSwiftUI() -> Bool {
-        return isIndexEntitySwiftUIProvider() ||
-            // Move to `declarationAttributesToSkip` when we can use https://github.com/jpsim/SourceKitten/pull/670
-            swiftAttributes.contains(where: { $0.attribute == "source.decl.attribute.main" })
-    }
-
     func isIndexEntitySwiftUIProvider() -> Bool {
         return (value["key.related"] as? [[String: SourceKitRepresentable]])?
             .map(SourceKittenDictionary.init)
@@ -276,6 +270,7 @@ private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
     .ibaction,
     .ibinspectable,
     .iboutlet,
+    .main,
     .nsApplicationMain,
     .override,
     .uiApplicationMain

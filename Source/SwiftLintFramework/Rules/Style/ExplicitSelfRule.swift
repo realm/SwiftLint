@@ -27,6 +27,25 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
                     _ = self.p1
                 }
             }
+            """),
+            Example("""
+            @propertyWrapper
+            struct Wrapper<Value> {
+                let wrappedValue: Value
+                var projectedValue: [Value] {
+                    [self.wrappedValue]
+                }
+            }
+            struct A {
+                @Wrapper var p1: Int
+                func f1() {
+                    self.$p1
+                    self._p1
+                }
+            }
+            func f1() {
+                A(p1: 10).$p1
+            }
             """)
         ],
         triggeringExamples: [
@@ -44,6 +63,25 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
                 func f1() {
                     _ = ↓p1
                 }
+            }
+            """),
+            Example("""
+            @propertyWrapper
+            struct Wrapper<Value> {
+                let wrappedValue: Value
+                var projectedValue: [Value] {
+                    [self.wrappedValue]
+                }
+            }
+            struct A {
+                @Wrapper var p1: Int
+                func f1() {
+                    ↓$p1
+                    ↓_p1
+                }
+            }
+            func f1() {
+                A(p1: 10).$p1
             }
             """)
         ],
@@ -78,6 +116,43 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
                 func f1() {
                     _ = self.p1
                 }
+            }
+            """),
+            Example("""
+            @propertyWrapper
+            struct Wrapper<Value> {
+                let wrappedValue: Value
+                var projectedValue: [Value] {
+                    [self.wrappedValue]
+                }
+            }
+            struct A {
+                @Wrapper var p1: Int
+                func f1() {
+                    ↓$p1
+                    ↓_p1
+                }
+            }
+            func f1() {
+                A(p1: 10).$p1
+            }
+            """): Example("""
+            @propertyWrapper
+            struct Wrapper<Value> {
+                let wrappedValue: Value
+                var projectedValue: [Value] {
+                    [self.wrappedValue]
+                }
+            }
+            struct A {
+                @Wrapper var p1: Int
+                func f1() {
+                    self.$p1
+                    self._p1
+                }
+            }
+            func f1() {
+                A(p1: 10).$p1
             }
             """)
         ],
@@ -159,12 +234,29 @@ private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [ByteCount]) throws
         -> [[String: SourceKitRepresentable]] {
         return try byteOffsets.compactMap { offset in
-            if stringView.substringWithByteRange(ByteRange(location: offset - 1, length: 1))! == "." { return nil }
+            if isExplicitAccess(at: offset) { return nil }
             var cursorInfo = try Request.cursorInfo(file: self.path!, offset: offset,
                                                     arguments: compilerArguments).sendIfNotDisabled()
-            cursorInfo["swiftlint.offset"] = Int64(offset.value)
+
+            // Accessing a `projectedValue` of a property wrapper (e.g. `self.$foo`) or the property wrapper itself
+            // (e.g. `self._foo`) results in an incorrect `key.length` (it does not account for the identifier
+            // prefixes `$` and `_`), while `key.name` contains the prefix. Hence we need to check for explicit access
+            // at a corrected offset as well.
+            var prefixLength: Int64 = 0
+            if let name = cursorInfo["key.name"] as? String, let length = cursorInfo["key.length"] as? Int64 {
+                prefixLength = Int64(name.count) - length
+                if prefixLength > 0, isExplicitAccess(at: offset - ByteCount(prefixLength)) {
+                    return nil
+                }
+            }
+
+            cursorInfo["swiftlint.offset"] = Int64(offset.value) - prefixLength
             return cursorInfo
         }
+    }
+
+    private func isExplicitAccess(at location: ByteCount) -> Bool {
+        stringView.substringWithByteRange(ByteRange(location: location - 1, length: 1))! == "."
     }
 }
 

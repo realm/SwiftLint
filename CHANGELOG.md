@@ -22,6 +22,9 @@
   [JP Simard](https://github.com/jpsim)
   [#3365](https://github.com/realm/SwiftLint/issues/3365)
 
+* Fix some false positives in rule `explicit_self`.  
+  [Sven Münnich](https://github.com/svenmuennich)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

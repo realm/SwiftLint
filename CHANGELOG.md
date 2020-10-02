@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Add new option `warnings-as-errors` to lint & analyze.  
+  [Jeehut](https://github.com/Jeehut)
+  [#3312](https://github.com/realm/SwiftLint/issues/3312)
 
 #### Bug Fixes
 

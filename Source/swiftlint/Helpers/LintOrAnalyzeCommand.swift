@@ -109,15 +109,30 @@ struct LintOrAnalyzeCommand {
     }
 
     private static func applyLeniency(options: LintOrAnalyzeOptions, violations: [StyleViolation]) -> [StyleViolation] {
-        if !options.lenient {
+        switch (options.lenient, options.warningsAsErrors) {
+        case (false, false):
             return violations
-        }
-        return violations.map {
-            if $0.severity == .error {
-                return $0.with(severity: .warning)
-            } else {
-                return $0
+
+        case (true, false):
+            return violations.map {
+                if $0.severity == .error {
+                    return $0.with(severity: .warning)
+                } else {
+                    return $0
+                }
             }
+
+        case (false, true):
+            return violations.map {
+                if $0.severity == .warning {
+                    return $0.with(severity: .error)
+                } else {
+                    return $0
+                }
+            }
+
+        case (true, true):
+            queuedFatalError("Invalid command line options: 'lenient' and 'warnings-as-errors' are mutually exclusive.")
         }
     }
 }
@@ -140,6 +155,7 @@ struct LintOrAnalyzeOptions {
     let autocorrect: Bool
     let compilerLogPath: String
     let compileCommands: String
+    let warningsAsErrors: Bool
 
     init(_ options: LintOptions) {
         mode = .lint
@@ -159,6 +175,7 @@ struct LintOrAnalyzeOptions {
         autocorrect = false
         compilerLogPath = ""
         compileCommands = ""
+        warningsAsErrors = options.warningsAsErrors
     }
 
     init(_ options: AnalyzeOptions) {
@@ -179,6 +196,7 @@ struct LintOrAnalyzeOptions {
         autocorrect = options.autocorrect
         compilerLogPath = options.compilerLogPath
         compileCommands = options.compileCommands
+        warningsAsErrors = options.warningsAsErrors
     }
 
     var verb: String {

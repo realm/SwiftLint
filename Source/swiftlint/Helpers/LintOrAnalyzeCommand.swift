@@ -62,19 +62,9 @@ struct LintOrAnalyzeCommand {
                 ruleBenchmark.save()
             }
             try? cache?.save()
-            return successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
-                                 strictWithViolations: options.strict && !violations.isEmpty)
+            guard numberOfSeriousViolations == 0 else { exit(2) }
+            return .success(())
         }
-    }
-
-    private static func successOrExit(numberOfSeriousViolations: Int,
-                                      strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
-        if numberOfSeriousViolations > 0 {
-            exit(2)
-        } else if strictWithViolations {
-            exit(3)
-        }
-        return .success(())
     }
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
@@ -109,7 +99,7 @@ struct LintOrAnalyzeCommand {
     }
 
     private static func applyLeniency(options: LintOrAnalyzeOptions, violations: [StyleViolation]) -> [StyleViolation] {
-        switch (options.lenient, options.warningsAsErrors) {
+        switch (options.lenient, options.strict) {
         case (false, false):
             return violations
 
@@ -132,7 +122,7 @@ struct LintOrAnalyzeCommand {
             }
 
         case (true, true):
-            queuedFatalError("Invalid command line options: 'lenient' and 'warnings-as-errors' are mutually exclusive.")
+            queuedFatalError("Invalid command line options: 'lenient' and 'strict' are mutually exclusive.")
         }
     }
 }
@@ -155,7 +145,6 @@ struct LintOrAnalyzeOptions {
     let autocorrect: Bool
     let compilerLogPath: String
     let compileCommands: String
-    let warningsAsErrors: Bool
 
     init(_ options: LintOptions) {
         mode = .lint
@@ -175,7 +164,6 @@ struct LintOrAnalyzeOptions {
         autocorrect = false
         compilerLogPath = ""
         compileCommands = ""
-        warningsAsErrors = options.warningsAsErrors
     }
 
     init(_ options: AnalyzeOptions) {
@@ -196,7 +184,6 @@ struct LintOrAnalyzeOptions {
         autocorrect = options.autocorrect
         compilerLogPath = options.compilerLogPath
         compileCommands = options.compileCommands
-        warningsAsErrors = options.warningsAsErrors
     }
 
     var verb: String {

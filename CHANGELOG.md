@@ -73,6 +73,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3316](https://github.com/realm/SwiftLint/issues/3316)
 
+* Fix some missed cases in rule `unavailable_function`.  
+  [Quinn Taylor](https://github.com/quinntaylor)
+  [#3374](https://github.com/realm/SwiftLint/issues/3374)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

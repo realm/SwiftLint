@@ -29,7 +29,9 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         "viewWillDisappear(_:)",
         //XCTestCase
         "setUp()",
-        "tearDown()"
+        "setUpWithError()",
+        "tearDown()",
+        "tearDownWithError()"
     ]
 
     var severityConfiguration = SeverityConfiguration(.warning)

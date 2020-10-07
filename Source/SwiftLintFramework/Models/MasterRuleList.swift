@@ -162,6 +162,7 @@ public let masterRuleList = RuleList(rules: [
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
+    TestCaseAccessibilityRule.self,
     TodoRule.self,
     ToggleBoolRule.self,
     TrailingClosureRule.self,

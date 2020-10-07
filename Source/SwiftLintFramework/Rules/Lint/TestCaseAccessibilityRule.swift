@@ -1,17 +1,17 @@
 import SourceKittenFramework
 
-public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+    public var configuration = TestCaseAccessibilityConfiguration()
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "empty_xctest_method",
-        name: "Empty XCTest Method",
-        description: "Empty XCTest method should be avoided.",
+        identifier: "test_case_accessibility",
+        name: "Test case accessibility",
+        description: "Test cases should only contain private non-test members.",
         kind: .lint,
-        nonTriggeringExamples: EmptyXCTestMethodRuleExamples.nonTriggeringExamples,
-        triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
+        nonTriggeringExamples: TestCaseAccessibilityRuleExamples.nonTriggeringExamples,
+        triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -33,15 +33,20 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard
                 let kind = subDictionary.declarationKind,
+                kind != .varLocal,
                 let name = subDictionary.name,
-                XCTestHelpers.isXCTestMember(kind: kind, name: name),
+                !isXCTestMember(kind: kind, name: name),
                 let offset = subDictionary.offset,
-                subDictionary.enclosedVarParameters.isEmpty,
-                subDictionary.substructure.isEmpty else { return nil }
+                subDictionary.accessibility?.isPrivate != true else { return nil }
 
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset))
         }
+    }
+
+    private func isXCTestMember(kind: SwiftDeclarationKind, name: String) -> Bool {
+        return XCTestHelpers.isXCTestMember(kind: kind, name: name)
+            || configuration.methodPrefixes.contains { name.hasPrefix($0) }
     }
 }

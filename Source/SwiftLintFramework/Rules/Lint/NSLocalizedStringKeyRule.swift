@@ -12,13 +12,22 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
             " in NSLocalizedString in order for genstrings to work.",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("NSLocalizedString(\"key\", comment: nil)"),
-            Example("NSLocalizedString(\"key\" + \"2\", comment: nil)"),
-            Example("NSLocalizedString(\"key\", comment: \"comment\")")
+            Example("NSLocalizedString(\"key\", comment: \"\")"),
+            Example("NSLocalizedString(\"key\" + \"2\", comment: \"\")"),
+            Example("NSLocalizedString(\"key\", comment: \"comment\")"),
+            Example("""
+            NSLocalizedString("This is a multi-" +
+                "line string", comment: "")
+            """),
+            Example("""
+            let format = NSLocalizedString("%@, %@.", comment: "Accessibility label for a post in the post list." +
+            " The parameters are the title, and date respectively." +
+            " For example, \"Let it Go, 1 hour ago.\"")
+            """)
         ],
         triggeringExamples: [
-            Example("NSLocalizedString(↓method(), comment: nil)"),
-            Example("NSLocalizedString(↓\"key_\\(param)\", comment: nil)"),
+            Example("NSLocalizedString(↓method(), comment: \"\")"),
+            Example("NSLocalizedString(↓\"key_\\(param)\", comment: \"\")"),
             Example("NSLocalizedString(\"key\", comment: ↓\"comment with \\(param)\")"),
             Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())")
         ]
@@ -45,11 +54,9 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
         else { return nil }
 
         let kinds = file.syntaxMap.kinds(inByteRange: byteRange)
-        if kinds.contains(where: { $0 != .string }) {
-            return makeViolation(file: file, byteRange: byteRange)
-        } else {
-            return nil
-        }
+        guard !kinds.allSatisfy({ $0 == .string }) else { return nil }
+
+        return makeViolation(file: file, byteRange: byteRange)
     }
 
     private func getViolationForComment(file: SwiftLintFile,
@@ -60,19 +67,10 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
         else { return nil }
 
         let tokens = file.syntaxMap.tokens(inByteRange: bodyByteRange)
-        guard tokens.count == 1 else {
-            return makeViolation(file: file, byteRange: bodyByteRange)
-        }
+        guard !tokens.isEmpty else { return nil }
 
-        let commentToken = tokens[0]
-        if commentToken.kind == .string {
-            // No violation if static string is used
-            return nil
-        }
-
-        let commentValue = file.stringView.substringWithByteRange(bodyByteRange) ?? ""
-        if commentToken.kind == .keyword && commentValue == "nil" {
-            // No violation is nil is used
+        if tokens.allSatisfy({ $0.kind == .string }) {
+            // All tokens are string literals
             return nil
         }
 

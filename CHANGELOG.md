@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Add `test_case_accessibility` rule.  
+  [Keith Smiley](https://github.com/keith)
+  [#3376](https://github.com/realm/SwiftLint/issues/3376)
 
 #### Bug Fixes
 

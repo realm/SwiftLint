@@ -23,8 +23,8 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
-            guard dictionary.declarationKind == .class else { return false }
-            return dictionary.inheritedTypes.contains("XCTestCase")
+            dictionary.declarationKind == .class &&
+                dictionary.inheritedTypes.contains("XCTestCase")
         }
     }
 

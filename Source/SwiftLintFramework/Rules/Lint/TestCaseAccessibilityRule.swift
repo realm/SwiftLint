@@ -47,6 +47,6 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
 
     private func isXCTestMember(kind: SwiftDeclarationKind, name: String) -> Bool {
         return XCTestHelpers.isXCTestMember(kind: kind, name: name)
-            || configuration.methodPrefixes.contains { name.hasPrefix($0) }
+            || configuration.methodPrefixes.contains(where: name.hasPrefix)
     }
 }

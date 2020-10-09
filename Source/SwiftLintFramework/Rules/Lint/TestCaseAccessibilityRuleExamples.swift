@@ -6,6 +6,8 @@ internal struct TestCaseAccessibilityRuleExamples {
         let foo: String?
 
         class FooTests: XCTestCase {
+            static let allTests: [String] = []
+
             private let foo: String {
                 let nestedMember = "hi"
                 return nestedMember
@@ -33,6 +35,10 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             override func tearDownWithError() {
                 try super.tearDownWithError()
+            }
+
+            override func someFutureXCTestFunction() {
+                super.someFutureXCTestFunction()
             }
 
             func testFoo() {
@@ -69,6 +75,10 @@ internal struct TestCaseAccessibilityRuleExamples {
             ↓func not_testBar() {}
 
             ↓enum Nested {}
+
+            ↓static func testFoo() {}
+
+            ↓static func allTests() {}
         }
 
         final class BarTests: XCTestCase {

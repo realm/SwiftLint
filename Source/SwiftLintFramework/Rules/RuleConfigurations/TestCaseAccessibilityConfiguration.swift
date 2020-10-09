@@ -1,10 +1,10 @@
 public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var methodPrefixes: Set<String> = []
+    public private(set) var allowedPrefixes: Set<String> = []
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-        	", method_prefixes: [\(methodPrefixes)]"
+            ", allowed_prefixes: [\(allowedPrefixes)]"
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -16,8 +16,8 @@ public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let methodPrefixes = configuration["method_prefixes"] as? [String] {
-            self.methodPrefixes = Set(methodPrefixes)
+        if let allowedPrefixes = configuration["allowed_prefixes"] as? [String] {
+            self.allowedPrefixes = Set(allowedPrefixes)
         }
     }
 

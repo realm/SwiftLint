@@ -34,7 +34,8 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule,
             guard
                 let kind = subDictionary.declarationKind,
                 let name = subDictionary.name,
-                XCTestHelpers.isXCTestMember(kind: kind, name: name),
+                XCTestHelpers.isXCTestMember(kind: kind, name: name,
+                                             attributes: subDictionary.enclosedSwiftAttributes),
                 let offset = subDictionary.offset,
                 subDictionary.enclosedVarParameters.isEmpty,
                 subDictionary.substructure.isEmpty else { return nil }

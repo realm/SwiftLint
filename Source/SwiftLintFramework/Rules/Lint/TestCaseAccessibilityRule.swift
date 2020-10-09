@@ -23,8 +23,7 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         let dict = file.structureDictionary
         return dict.substructure.filter { dictionary in
-            dictionary.declarationKind == .class &&
-                dictionary.inheritedTypes.contains("XCTestCase")
+            dictionary.declarationKind == .class && dictionary.inheritedTypes.contains("XCTestCase")
         }
     }
 
@@ -35,7 +34,7 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
                 let kind = subDictionary.declarationKind,
                 kind != .varLocal,
                 let name = subDictionary.name,
-                !isXCTestMember(kind: kind, name: name),
+                !isXCTestMember(kind: kind, name: name, attributes: subDictionary.enclosedSwiftAttributes),
                 let offset = subDictionary.offset,
                 subDictionary.accessibility?.isPrivate != true else { return nil }
 
@@ -45,8 +44,9 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
         }
     }
 
-    private func isXCTestMember(kind: SwiftDeclarationKind, name: String) -> Bool {
-        return XCTestHelpers.isXCTestMember(kind: kind, name: name)
-            || configuration.methodPrefixes.contains(where: name.hasPrefix)
+    private func isXCTestMember(kind: SwiftDeclarationKind, name: String,
+                                attributes: [SwiftDeclarationAttributeKind]) -> Bool {
+        return XCTestHelpers.isXCTestMember(kind: kind, name: name, attributes: attributes)
+            || configuration.allowedPrefixes.contains(where: name.hasPrefix)
     }
 }

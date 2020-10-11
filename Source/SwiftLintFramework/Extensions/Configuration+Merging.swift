@@ -16,7 +16,9 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
-        if path == rootDirectory {
+        let rootConfigurationDirectory = configurationPath?.bridge().deletingLastPathComponent
+        // We're linting a file in the same directory as the root configuration we've already loaded
+        if path == rootConfigurationDirectory {
             return self
         }
 
@@ -47,23 +49,6 @@ extension Configuration {
 
         // If nothing else, return self
         return self
-    }
-
-    private var rootDirectory: String? {
-        guard let rootPath = rootPath else {
-            return nil
-        }
-
-        var isDirectoryObjC: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectoryObjC) else {
-            return nil
-        }
-
-        if isDirectoryObjC.boolValue {
-            return rootPath
-        } else {
-            return rootPath.bridge().deletingLastPathComponent
-        }
     }
 
     private struct HashableRule: Hashable {

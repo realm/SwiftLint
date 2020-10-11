@@ -67,9 +67,11 @@ extension Configuration {
 
         var groupedFiles = [Configuration: [SwiftLintFile]]()
         for file in files {
-            // Files whose configuration specifies they should be excluded will be skipped
-            let fileConfiguration = configuration(for: file)
+            // If config was specified as a command line argument, always use it as an override. Otherwise, look for
+            // configs as normal, merging as necessary
+            let fileConfiguration = configurationSpecified() ? self : configuration(for: file)
             let fileConfigurationRootPath = (fileConfiguration.rootPath ?? "").bridge()
+            // Files whose configuration specifies they should be excluded will be skipped
             let shouldSkip = fileConfiguration.excluded.contains { excludedRelativePath in
                 let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
                 let filePathComponents = file.path?.bridge().pathComponents ?? []
@@ -267,6 +269,10 @@ extension Configuration {
 
 private func isConfigOptional() -> Bool {
     return !CommandLine.arguments.contains("--config")
+}
+
+private func configurationSpecified() -> Bool {
+    return CommandLine.arguments.contains("--config")
 }
 
 private struct DuplicateCollector {

@@ -1450,6 +1450,12 @@ extension SyntacticSugarRuleTests {
     ]
 }
 
+extension TestCaseAccessibilityRuleTests {
+    static var allTests: [(String, (TestCaseAccessibilityRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension TodoRuleTests {
     static var allTests: [(String, (TodoRuleTests) -> () throws -> Void)] = [
         ("testTodo", testTodo),
@@ -1900,6 +1906,7 @@ XCTMain([
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),
+    testCase(TestCaseAccessibilityRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
     testCase(ToggleBoolRuleTests.allTests),
     testCase(TrailingClosureConfigurationTests.allTests),

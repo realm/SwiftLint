@@ -708,6 +708,12 @@ class SyntacticSugarRuleTests: XCTestCase {
     }
 }
 
+class TestCaseAccessibilityRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TestCaseAccessibilityRule.description)
+    }
+}
+
 class ToggleBoolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ToggleBoolRule.description)

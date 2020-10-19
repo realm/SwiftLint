@@ -28,11 +28,11 @@ struct RuleDocumentation {
     var fileContents: String {
         let description = ruleType.description
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
-        if !description.nonTriggeringExamples.isEmpty {
+        if description.nonTriggeringExamples.isNotEmpty {
             content += [h2("Non Triggering Examples")]
             content += description.nonTriggeringExamples.map(formattedCode)
         }
-        if !description.triggeringExamples.isEmpty {
+        if description.triggeringExamples.isNotEmpty {
             content += [h2("Triggering Examples")]
             content += description.triggeringExamples.map(formattedCode)
         }

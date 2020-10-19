@@ -119,7 +119,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
             let declarationNewlineCount = functionName.countOccurrences(of: "\n")
             let isMultiline = declarationNewlineCount > parametersNewlineCount
 
-            if isMultiline && !parameters.isEmpty {
+            if isMultiline && parameters.isNotEmpty {
                 if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
                     violations.append(openingBracketViolation)
                 }

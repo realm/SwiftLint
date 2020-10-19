@@ -40,7 +40,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             corrections.append(Correction(ruleDescription: description, location: location))
         }
 
-        if !corrections.isEmpty {
+        if corrections.isNotEmpty {
             file.write(contents.bridge())
         }
 
@@ -57,7 +57,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             }
         }
 
-        guard !missingImports.isEmpty else {
+        guard missingImports.isNotEmpty else {
             return corrections
         }
 
@@ -84,7 +84,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
     }
 
     private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
-        guard !compilerArguments.isEmpty else {
+        guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule without any compiler arguments.
@@ -108,7 +108,7 @@ private extension SwiftLintFile {
             unusedImports.remove("Foundation")
         }
 
-        if !unusedImports.isEmpty {
+        if unusedImports.isNotEmpty {
             unusedImports.subtract(
                 operatorImports(
                     arguments: compilerArguments,

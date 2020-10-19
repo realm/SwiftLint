@@ -79,7 +79,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
             kind == .functionMethodInstance,
             configuration.resolvedMethodNames.contains(name),
             dictionary.enclosedSwiftAttributes.contains(.override),
-            !dictionary.extractCallsToSuper(methodName: name).isEmpty
+            dictionary.extractCallsToSuper(methodName: name).isNotEmpty
             else { return [] }
 
         return [StyleViolation(ruleDescription: Self.description,

@@ -43,10 +43,10 @@ extension ClosureEndIndentationRule: CorrectableRule {
                 return false
             }
 
-            return !file.ruleEnabled(violatingRanges: [nsRange], for: self).isEmpty
+            return file.ruleEnabled(violatingRanges: [nsRange], for: self).isNotEmpty
         }
 
-        guard !allViolations.isEmpty else {
+        guard allViolations.isNotEmpty else {
             return []
         }
 
@@ -201,7 +201,7 @@ extension ClosureEndIndentationRule {
 
         var closureArguments = filterClosureArguments(dictionary.enclosedArguments, file: file)
 
-        if hasTrailingClosure(in: file, dictionary: dictionary), !closureArguments.isEmpty {
+        if hasTrailingClosure(in: file, dictionary: dictionary), closureArguments.isNotEmpty {
             closureArguments.removeLast()
         }
 

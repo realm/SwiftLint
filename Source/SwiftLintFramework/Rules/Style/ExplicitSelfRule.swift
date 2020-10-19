@@ -185,7 +185,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
     }
 
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
-        guard !compilerArguments.isEmpty else {
+        guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule without any compiler arguments.
@@ -208,7 +208,7 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
             return kindsToFind.contains(kindString)
         }
 
-        guard !cursorsMissingExplicitSelf.isEmpty else {
+        guard cursorsMissingExplicitSelf.isNotEmpty else {
             return []
         }
 

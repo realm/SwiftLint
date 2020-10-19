@@ -18,7 +18,7 @@ public struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
     }
 
     public mutating func apply(configuration: Any) throws {
-        guard let configDict = configuration as? [String: Any], !configDict.isEmpty else {
+        guard let configDict = configuration as? [String: Any], configDict.isNotEmpty else {
             throw ConfigurationError.unknownConfiguration
         }
 

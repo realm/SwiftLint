@@ -28,11 +28,11 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     }
 
     public mutating func apply(configuration: Any) throws {
-        if let configurationArray = [Int].array(of: configuration), !configurationArray.isEmpty {
+        if let configurationArray = [Int].array(of: configuration), configurationArray.isNotEmpty {
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
         } else if let configDict = configuration as? [String: Int?],
-            !configDict.isEmpty, Set(configDict.keys).isSubset(of: ["warning", "error"]) {
+            configDict.isNotEmpty, Set(configDict.keys).isSubset(of: ["warning", "error"]) {
             warning = (configDict["warning"] as? Int) ?? warning
             error = configDict["error"] as? Int
         } else {

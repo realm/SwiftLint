@@ -153,7 +153,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
     public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = violationRanges(file: file).filter { range, _ in
-            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
+            return file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
         }
 
         var correctedContents = file.contents

@@ -153,9 +153,9 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
 
     public func correct(file: SwiftLintFile) -> [Correction] {
         var matches = removeNested(findViolations(file: file)).filter {
-            !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty
+            file.ruleEnabled(violatingRanges: [$0], for: self).isNotEmpty
         }
-        guard !matches.isEmpty else { return [] }
+        guard matches.isNotEmpty else { return [] }
 
         // `matches` should be sorted by location from `findViolations`.
         let start = NSRange(location: 0, length: 0)
@@ -174,7 +174,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             let next = nextMatch.location
             let length = next - current
             let nonViolationContent = file.contents.substring(from: current, length: length)
-            if !nonViolationContent.isEmpty {
+            if nonViolationContent.isNotEmpty {
                 fixedSections.append(nonViolationContent)
             }
             // selects violation ranges and fixes them before adding back in

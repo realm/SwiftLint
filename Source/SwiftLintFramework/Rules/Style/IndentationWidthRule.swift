@@ -58,7 +58,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             if !configuration.includeComments {
                 // Skip line if it's part of a comment
                 let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
-                if !syntaxKindsInLine.isEmpty && SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
+                if syntaxKindsInLine.isNotEmpty &&
+                    SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
             }
 
             // Get space and tab count in prefix
@@ -89,7 +90,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             }
 
             // Catch indented first line
-            guard !previousLineIndentations.isEmpty else {
+            guard previousLineIndentations.isNotEmpty else {
                 previousLineIndentations = [indentation]
 
                 if indentation != .spaces(0) {

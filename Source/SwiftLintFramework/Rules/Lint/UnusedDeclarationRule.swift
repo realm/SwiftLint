@@ -31,7 +31,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
     )
 
     public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
-        guard !compilerArguments.isEmpty else {
+        guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule without any compiler arguments.
@@ -39,7 +39,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             return .empty
         }
 
-        guard let index = file.index(compilerArguments: compilerArguments), !index.value.isEmpty else {
+        guard let index = file.index(compilerArguments: compilerArguments), index.value.isNotEmpty else {
             queuedPrintError("""
                 Could not index file at path '\(file.path ?? "...")' with the \
                 \(Self.description.identifier) rule.

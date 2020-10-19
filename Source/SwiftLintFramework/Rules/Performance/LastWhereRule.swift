@@ -35,7 +35,7 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter",
                         severity: configuration.severity) { dictionary in
-            if !dictionary.substructure.isEmpty {
+            if dictionary.substructure.isNotEmpty {
                 return true // has a substructure, like a closure
             }
 

@@ -183,7 +183,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
             return Correction(ruleDescription: Self.description, location: location)
         }
 
-        guard !corrections.isEmpty else {
+        guard corrections.isNotEmpty else {
             return []
         }
 

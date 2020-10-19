@@ -193,7 +193,7 @@ private extension StringView {
                                    _ endToken: SwiftLintSyntaxToken) -> Bool {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
         let range = betweenTokens.fullNSRange
-        return !regex(#"^[\s\(,]*$"#).matches(in: betweenTokens, options: [], range: range).isEmpty
+        return regex(#"^[\s\(,]*$"#).matches(in: betweenTokens, options: [], range: range).isNotEmpty
     }
 
     func isRegexBetweenTokens(_ startToken: SwiftLintSyntaxToken, _ regexString: String,
@@ -201,6 +201,6 @@ private extension StringView {
         guard let betweenTokens = subStringBetweenTokens(startToken, endToken) else { return false }
 
         let range = betweenTokens.fullNSRange
-        return !regex("^\\s*\(regexString)\\s*$").matches(in: betweenTokens, options: [], range: range).isEmpty
+        return regex("^\\s*\(regexString)\\s*$").matches(in: betweenTokens, options: [], range: range).isNotEmpty
     }
 }

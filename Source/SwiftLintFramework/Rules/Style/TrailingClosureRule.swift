@@ -75,7 +75,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         let arguments = dictionary.enclosedArguments
 
         // check if last parameter should be trailing closure
-        if !configuration.onlySingleMutedParameter, !arguments.isEmpty,
+        if !configuration.onlySingleMutedParameter, arguments.isNotEmpty,
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
             closureArguments.last?.offset == arguments.last?.offset {

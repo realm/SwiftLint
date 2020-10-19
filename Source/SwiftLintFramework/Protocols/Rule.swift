@@ -162,7 +162,7 @@ public protocol SubstitutionCorrectableRule: CorrectableRule {
 public extension SubstitutionCorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard !violatingRanges.isEmpty else { return [] }
+        guard violatingRanges.isNotEmpty else { return [] }
 
         let description = Self.description
         var corrections = [Correction]()

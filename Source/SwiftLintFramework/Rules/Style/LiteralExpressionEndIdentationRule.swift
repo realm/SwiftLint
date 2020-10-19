@@ -150,10 +150,10 @@ extension LiteralExpressionEndIdentationRule: CorrectableRule {
                 return false
             }
 
-            return !file.ruleEnabled(violatingRanges: [nsRange], for: self).isEmpty
+            return file.ruleEnabled(violatingRanges: [nsRange], for: self).isNotEmpty
         }
 
-        guard !allViolations.isEmpty else {
+        guard allViolations.isNotEmpty else {
             return []
         }
 
@@ -232,7 +232,7 @@ extension LiteralExpressionEndIdentationRule {
         let elements = dictionary.elements.filter { $0.kind == "source.lang.swift.structure.elem.expr" }
 
         let contents = file.stringView
-        guard !elements.isEmpty,
+        guard elements.isNotEmpty,
             let offset = dictionary.offset,
             let length = dictionary.length,
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),

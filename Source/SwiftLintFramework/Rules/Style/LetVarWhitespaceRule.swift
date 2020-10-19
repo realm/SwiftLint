@@ -63,7 +63,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             }
 
             let trimmed = line.content.trimmingCharacters(in: .whitespaces)
-            guard !trimmed.isEmpty else {
+            guard trimmed.isNotEmpty else {
                 continue
             }
 
@@ -178,7 +178,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
 
             let substructure = statement.substructure
 
-            if !substructure.isEmpty {
+            if substructure.isNotEmpty {
                 varLetLineNumbers(file: file,
                                   structure: substructure,
                                   attributeLines: &attributeLines,

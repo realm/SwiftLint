@@ -306,7 +306,7 @@ extension SwiftLintFile {
             }.map { ($0.0, pattern, template) }
         }).sorted { $0.0.location > $1.0.location } // reversed
 
-        guard !matches.isEmpty else { return [] }
+        guard matches.isNotEmpty else { return [] }
 
         let description = type(of: legacyRule).description
         var corrections = [Correction]()

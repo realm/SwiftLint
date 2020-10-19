@@ -152,7 +152,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
                 .trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
                 .trimmingCharacters(in: .whitespacesAndNewlines)
 
-            if !processedSubstring.isEmpty {
+            if processedSubstring.isNotEmpty {
                 stop.pointee = true
                 containsContent = true
             }

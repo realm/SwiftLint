@@ -77,7 +77,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         let attributes = dictionary.swiftAttributes.filter {
             $0.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .available
         }
-        guard !attributes.isEmpty else {
+        guard attributes.isNotEmpty else {
             return []
         }
 

@@ -59,7 +59,7 @@ public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
             }
         }
 
-        if !customOrder.isEmpty {
+        if customOrder.isNotEmpty {
             self.order = customOrder
         }
     }

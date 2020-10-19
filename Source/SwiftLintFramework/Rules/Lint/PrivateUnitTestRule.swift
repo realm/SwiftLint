@@ -152,7 +152,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
             return false
         }
         let range = superclass.fullNSRange
-        return !regex.matches(in: superclass, options: [], range: range).isEmpty
+        return regex.matches(in: superclass, options: [], range: range).isNotEmpty
     }
 
     private func validateFunction(file: SwiftLintFile,

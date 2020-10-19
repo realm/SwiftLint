@@ -44,7 +44,7 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
             case let arguments = dictionary.enclosedArguments,
             case let closureArguments = arguments.filterClosures(file: file),
             // Any violations must have at least one closure argument.
-            closureArguments.isEmpty == false,
+            closureArguments.isNotEmpty,
             // If there is no closing paren (e.g. `foo { ... }`), there is no violation.
             let closingParenOffset = dictionary.closingParenLocation(file: file),
             // Find all trailing closures.
@@ -52,7 +52,7 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
                 isTrailingClosure(argument: $0, closingParenOffset: closingParenOffset)
             }),
             // If there are no trailing closures, there is no violation.
-            trailingClosureArguments.isEmpty == false,
+            trailingClosureArguments.isNotEmpty,
             // If all closure arguments are trailing closures, there is no violation
             trailingClosureArguments.count != closureArguments.count,
             let firstTrailingClosureOffset = trailingClosureArguments.first?.offset else {
@@ -81,7 +81,7 @@ private extension SourceKittenDictionary {
     func closingParenLocation(file: SwiftLintFile) -> ByteCount? {
         guard self.expressionKind == .call,
               case let arguments = self.enclosedArguments,
-              arguments.isEmpty == false else {
+              arguments.isNotEmpty else {
             return nil
         }
 

@@ -40,7 +40,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
-        guard !linesSections.isEmpty else {
+        guard linesSections.isNotEmpty else {
             return []
         }
 
@@ -62,7 +62,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             nonSpaceRegex.firstMatch(in: file.contents, options: [], range: $0.range) == nil
         }
 
-        guard !filteredLines.isEmpty else {
+        guard filteredLines.isNotEmpty else {
             return []
         }
 
@@ -95,13 +95,13 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             let previousLine: Line = lines[previousIndex]
             if previousLine.index + 1 == line.index {
                 lineSection.append(line)
-            } else if !lineSection.isEmpty {
+            } else if lineSection.isNotEmpty {
                 blankLinesSections.append(lineSection)
                 lineSection.removeAll()
             }
             previousIndex = index
         }
-        if !lineSection.isEmpty {
+        if lineSection.isNotEmpty {
             blankLinesSections.append(lineSection)
         }
 
@@ -143,7 +143,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             correctedLines.append(currentLine.content)
         }
         // converts lines back to file and adds trailing line
-        if !corrections.isEmpty {
+        if corrections.isNotEmpty {
             file.write(correctedLines.joined(separator: "\n") + "\n")
             return corrections
         }

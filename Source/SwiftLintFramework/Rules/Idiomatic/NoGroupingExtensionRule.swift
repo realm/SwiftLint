@@ -56,6 +56,6 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, Aut
             return false
         }
 
-        return !file.match(pattern: "\\bwhere\\b", with: [.keyword], range: range).isEmpty
+        return file.match(pattern: "\\bwhere\\b", with: [.keyword], range: range).isNotEmpty
     }
 }

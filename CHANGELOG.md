@@ -27,6 +27,9 @@
 * Fix some false positives in rule `explicit_self`.  
   [Sven Münnich](https://github.com/svenmuennich)
 
+* Fix incorrect autocorrection in `prefer_zero_over_explicit_init` rule.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

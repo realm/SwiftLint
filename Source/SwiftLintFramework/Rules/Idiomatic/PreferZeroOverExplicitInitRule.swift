@@ -5,7 +5,7 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
                                               AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
     private var pattern: String {
-        let zero = "\\s*:\\s*0(.0*)?\\s*"
+        let zero = "\\s*:\\s*0(\\.0*)?\\s*"
         let type = "(\(["CGPoint", "CGSize", "CGVector", "CGRect"].joined(separator: "|")))"
         let firstArg = "(\(["x", "dx", "width"].joined(separator: "|")))"
         let secondArg = "(\(["y", "dy", "height"].joined(separator: "|")))"
@@ -34,6 +34,7 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
         ],
         corrections: [
             Example("↓CGPoint(x: 0, y: 0)"): Example("CGPoint.zero"),
+            Example("(↓CGPoint(x: 0, y: 0))"): Example("(CGPoint.zero)"),
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"): Example("CGRect.zero"),
             Example("↓CGSize(width: 0, height: 0.000)"): Example("CGSize.zero"),
             Example("↓CGVector(dx: 0, dy: 0)"): Example("CGVector.zero")

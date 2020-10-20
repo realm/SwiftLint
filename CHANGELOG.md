@@ -100,6 +100,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3333](https://github.com/realm/SwiftLint/issues/3333)
 
+* Fix inconsistency in `operator_usage_whitespace` rule.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [#3321](https://github.com/realm/SwiftLint/issues/3321)
+
 * Fix false positives in `convenience_type` rule for types that cannot
   be converted to enums.  
   [ZevEisenberg](https://github.com/ZevEisenberg)

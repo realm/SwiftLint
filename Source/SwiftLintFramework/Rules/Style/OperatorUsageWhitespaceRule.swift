@@ -49,7 +49,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let foo = bar↓ !==  bar2\n"),
             Example("let v8 = Int8(1)↓  << 6\n"),
             Example("let v8 = 1↓ <<  (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n")
+            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"),
+            Example("let foo↓  = [1]\n")
         ],
         corrections: [
             Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
@@ -79,19 +80,18 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func violationRanges(file: SwiftLintFile) -> [(NSRange, String)] {
-        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ "\\\($0)" }).joined()
         let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
         let notEqualsPattern = "\\!\\=\\=?" // != or !==
         let coalescingPattern = "\\?{2}"
 
-        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern)|\(coalescingPattern)|" +
+        let operators = "(?:[%<>&=*+|^/~-]+|\(rangePattern)|\(coalescingPattern)|" +
             "\(notEqualsPattern))"
 
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let leadingVariableOrNumber = "(?:\\b|\\))"
-        let trailingVariableOrNumber = "(?:\\b|\\()"
+        let leadingVariableOrNumber = "(?:\\b|\\)|\\])"
+        let trailingVariableOrNumber = "(?:\\b|\\(|\\[)"
 
         let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
                       (manySpaces, oneSpace), (manySpaces, manySpaces)]

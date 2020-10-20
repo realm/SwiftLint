@@ -69,6 +69,12 @@
   [Christian Mitteldorf](https://github.com/christiankm)
   [#3169](https://github.com/realm/SwiftLint/issues/3169)
 
+* Add `skip_aligned_constants` (defaults to `true`) and
+  `lines_look_around` (defaults to `2`) configuration parameters to the
+  `operator_usage_whitespace` rule.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [#3388](https://github.com/realm/SwiftLint/issues/3388)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

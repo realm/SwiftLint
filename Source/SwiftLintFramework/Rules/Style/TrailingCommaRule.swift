@@ -13,7 +13,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     public init() {}
 
-    private static let triggeringExamples: [Example] =  [
+    private static let triggeringExamples: [Example] = [
         Example("let foo = [1, 2, 3↓,]\n"),
         Example("let foo = [1, 2, 3↓, ]\n"),
         Example("let foo = [1, 2, 3   ↓,]\n"),

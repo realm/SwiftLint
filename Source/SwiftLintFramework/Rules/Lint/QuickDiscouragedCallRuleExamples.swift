@@ -144,7 +144,7 @@ internal struct QuickDiscouragedCallRuleExamples {
         """)
     ]
 
-    static let triggeringExamples: [Example]  = [
+    static let triggeringExamples: [Example] = [
         Example("""
         class TotoTests {
            override func spec() {

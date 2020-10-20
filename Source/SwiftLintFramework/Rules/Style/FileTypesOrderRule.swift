@@ -53,7 +53,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let allOffsets = mainTypeOffset + extensionOffsets + supportingTypeOffsets + previewProviderOffsets
         let orderedFileTypeOffsets = allOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
 
-        var violations =  [StyleViolation]()
+        var violations = [StyleViolation]()
 
         var lastMatchingIndex = -1
         for expectedTypes in configuration.order {

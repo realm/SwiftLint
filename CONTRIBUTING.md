@@ -18,7 +18,7 @@ immediately, but this should be the exception, not the norm._
 1. Select the "swiftlint" scheme
 1. `cmd-opt-r` open the scheme options
 1. Set the "Arguments Passed On Launch" you want in the "Arguments" tab
-1. Set the "Working Directory" you want in the "Options" tab
+1. Set the "Working Directory" in the "Options" tab to the path where you like to execute SwiftLint. A folder that contains swift source files.
 1. Hit "Run"
 
 |Arguments|Options|

@@ -14,6 +14,16 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("""
+            [1, 2].map {
+                [ weak
+                  delegate,
+                  unowned
+                  self
+                ] num in
+                delegate.handle(num)
+            }
+            """),
+            Example("""
             [1, 2].map { [weak self] num in
                 self?.handle(num)
             }
@@ -44,7 +54,17 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             }
             """),
             Example("""
+            [1, 2].map { [unowned self] num in
+                handle(num)
+            }
+            """),
+            Example("""
             [1, 2].map { [self, unowned delegate = self.delegate!] num in
+                delegate.handle(num)
+            }
+            """),
+            Example("""
+            [1, 2].map { [unowned self, unowned delegate = self.delegate!] num in
                 delegate.handle(num)
             }
             """),
@@ -56,6 +76,11 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                 ] num in
                 delegate.handle(num)
             }
+            """),
+            Example("""
+            rx.onViewDidAppear.subscribe(onNext: { [unowned self] in
+                  doSomething()
+            }).disposed(by: disposeBag)
             """)
         ],
         triggeringExamples: [
@@ -101,6 +126,8 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
 
     private let selfKeyword = "self"
 
+    private let unownedKeyword = "unowned"
+
     public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let contents = file.stringView
@@ -143,8 +170,11 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         var locationOffset = 0
         return captureList.components(separatedBy: ",")
             .reduce(into: [(String, Int)]()) { referencesAndLocations, item in
-                let word = item.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard word != selfKeyword else { return }
+                let words = item
+                  .trimmingCharacters(in: .whitespacesAndNewlines)
+                  .components(separatedBy: .whitespacesAndNewlines)
+                guard words.first != selfKeyword
+                        && (words.first != unownedKeyword || words.last != selfKeyword) else { return }
                 let item = item.bridge()
                 let range = item.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines.inverted)
                 guard range.location != NSNotFound else { return }

@@ -270,14 +270,14 @@ custom_rules:
   pirates_beat_ninjas: # 룰 식별자
     included: ".*.swift" # 린트 실행시 포함할 경로를 정의하는 정규표현식. 선택 가능.
     name: "Pirates Beat Ninjas" # 룰 이름. 선택 가능.
-    regex: "([n,N]inja)" # 패턴 매칭
+    regex: "([nN]inja)" # 패턴 매칭
     match_kinds: # 매칭할 SyntaxKinds. 선택 가능.
       - comment
       - identifier
     message: "Pirates are better than ninjas." # 위반 메시지. 선택 가능.
     severity: error # 위반 수준. 선택 가능.
   no_hiding_in_strings:
-    regex: "([n,N]inja)"
+    regex: "([nN]inja)"
     match_kinds: string
 ```
 

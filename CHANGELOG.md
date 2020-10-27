@@ -14,6 +14,10 @@
   [Keith Smiley](https://github.com/keith)
   [#3376](https://github.com/realm/SwiftLint/issues/3376)
 
+* Add more details to CONTRIBUTING.md  
+  [mknabbe](https://github.com/mknabbe)
+  [#1280](https://github.com/realm/SwiftLint/issues/1280)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

@@ -17,8 +17,10 @@ immediately, but this should be the exception, not the norm._
 1. `xed .`
 1. Select the "swiftlint" scheme
 1. `cmd-opt-r` open the scheme options
-1. Set the "Arguments Passed On Launch" you want in the "Arguments" tab
-1. Set the "Working Directory" you want in the "Options" tab
+1. Set the "Arguments Passed On Launch" you want in the "Arguments" tab. See
+available arguments [in the README](https://github.com/realm/SwiftLint#command-line).
+1. Set the "Working Directory" in the "Options" tab to the path where you would like
+to execute SwiftLint. A folder that contains swift source files.
 1. Hit "Run"
 
 |Arguments|Options|
@@ -38,9 +40,11 @@ Then you can use the full power of Xcode/LLDB/Instruments to develop and debug y
 ### Submodules
 
 This SwiftLint repository uses submodules for its dependencies.
-This means that if you decide to fork this repository to contribute to SwiftLint,
-don't forget to checkout the submodules as well when cloning, by running
-`git submodule update --init --recursive` after cloning.
+The git submodules are used when using the Xcode project and workspace
+(e.g. `xed SwiftLint.xcworkspace`) and building SwiftLint by executing
+the `Makefile`. This means that if you decide to fork this repository to
+contribute to SwiftLint, don't forget to checkout the submodules as well when
+cloning, by running `git submodule update --init --recursive` after cloning.
 
 See more info [in the README](https://github.com/realm/SwiftLint#installation).
 

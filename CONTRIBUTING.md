@@ -19,7 +19,7 @@ immediately, but this should be the exception, not the norm._
 1. `cmd-opt-r` open the scheme options
 1. Set the "Arguments Passed On Launch" you want in the "Arguments" tab. See
 available arguments [in the README](https://github.com/realm/SwiftLint#command-line).
-1. Set the "Working Directory" in the "Options" tab to the path where you like
+1. Set the "Working Directory" in the "Options" tab to the path where you would like
 to execute SwiftLint. A folder that contains swift source files.
 1. Hit "Run"
 

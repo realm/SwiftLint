@@ -38,9 +38,11 @@ Then you can use the full power of Xcode/LLDB/Instruments to develop and debug y
 ### Submodules
 
 This SwiftLint repository uses submodules for its dependencies.
-This means that if you decide to fork this repository to contribute to SwiftLint,
-don't forget to checkout the submodules as well when cloning, by running
-`git submodule update --init --recursive` after cloning.
+The git submodules are used when using the Xcode project and workspace
+(e.g. `xed SwiftLint.xcworkspace`) and building SwiftLint by executing
+the `Makefile`. This means that if you decide to fork this repository to
+contribute to SwiftLint, don't forget to checkout the submodules as well when
+cloning, by running `git submodule update --init --recursive` after cloning.
 
 See more info [in the README](https://github.com/realm/SwiftLint#installation).
 

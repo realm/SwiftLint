@@ -20,7 +20,7 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("CGRect(x: 0, y: 0, width: 0, height: 1)"),
-            Example("CGPoint(x: 0, y: -1"),
+            Example("CGPoint(x: 0, y: -1)"),
             Example("CGSize(width: 2, height: 4)"),
             Example("CGVector(dx: -5, dy: 0)")
         ],

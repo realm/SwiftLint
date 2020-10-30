@@ -38,8 +38,8 @@
   [hank121314](https://github.com/hank121314)
   [#3389](https://github.com/realm/SwiftLint/issues/3389)
   
-* Fix severity configuration for `indentation_width`.
-  [Samasaur1](https://github.com/Samasaur1)
+* Fix severity configuration for `indentation_width`.  
+  [Samasaur1](https://github.com/Samasaur1), issue 
   [#3346](https://github.com/realm/SwiftLint/issues/3389)
 
 ## 0.40.3: Greased Up Drum Bearings

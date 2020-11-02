@@ -171,7 +171,7 @@ private extension SwiftLintFile {
         let cursorInfo = self.cursorInfo(at: nameOffset, compilerArguments: compilerArguments)
 
         if let annotatedDecl = cursorInfo?.annotatedDeclaration,
-            ["@IBOutlet", "@IBAction", "@objc", "@IBInspectable"].contains(where: annotatedDecl.contains) {
+            ["@IBAction", "@objc"].contains(where: annotatedDecl.contains) {
             return nil
         }
 

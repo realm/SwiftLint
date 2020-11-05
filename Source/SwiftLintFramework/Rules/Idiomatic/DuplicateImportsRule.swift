@@ -49,9 +49,9 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
 
         // Grammar of import declaration
         // attributes(optional) import import-kind(optional) import-path
-        let regex = "^(\\w\\s)?import(\\s(\(importKinds)))?\\s+[a-zA-Z0-9._]+$"
+        let regex = "^([a-zA-Z@_]+\\s)?import(\\s(\(importKinds)))?\\s+[a-zA-Z0-9._]+$"
         let importRanges = file.match(pattern: regex)
-            .filter { $0.1.allSatisfy { [.keyword, .identifier].contains($0) } }
+            .filter { $0.1.allSatisfy { [.keyword, .identifier, .attributeBuiltin].contains($0) } }
             .compactMap { contents.NSRangeToByteRange(start: $0.0.location, length: $0.0.length) }
             .filter { importRange -> Bool in
                 return !importRange.intersects(ignoredRanges)

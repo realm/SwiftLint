@@ -18,6 +18,10 @@
   [mknabbe](https://github.com/mknabbe)
   [#1280](https://github.com/realm/SwiftLint/issues/1280)
 
+* Remove `@IBOutlet` and `@IBInspectable` from UnusedDeclarationRule  
+  [Keith Smiley](https://github.com/keith)
+  [#3184](https://github.com/realm/SwiftLint/issues/3184)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

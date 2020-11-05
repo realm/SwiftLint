@@ -42,7 +42,7 @@
   [Samasaur1](https://github.com/Samasaur1), issue 
   [#3346](https://github.com/realm/SwiftLint/issues/3389)
 
-* Add `test_case_accessibility` rule.  
+* Fix DuplicateImportsRule's support for import attributes.  
   [Keith Smiley](https://github.com/keith)
   [#3402](https://github.com/realm/SwiftLint/issues/3402)
 

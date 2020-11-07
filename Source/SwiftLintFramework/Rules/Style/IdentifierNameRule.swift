@@ -64,7 +64,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             }
 
             let firstCharacterIsAllowed = configuration.allowedSymbols
-                .isSuperset(of: CharacterSet(firstCharacter.unicodeScalars))
+                .isSuperset(of: CharacterSet(charactersIn: String(firstCharacter)))
             guard !firstCharacterIsAllowed else {
                 return []
             }

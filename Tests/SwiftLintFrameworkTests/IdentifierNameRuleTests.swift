@@ -12,7 +12,7 @@ class IdentifierNameRuleTests: XCTestCase {
             Example("let myLet$ = 0"),
             Example("let myLet% = 0"),
             Example("let myLet$% = 0"),
-            Example("let _myLet = 0"),
+            Example("let _myLet = 0")
         ]
         let triggeringExamples = baseDescription.triggeringExamples.filter { !$0.code.contains("_") }
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,

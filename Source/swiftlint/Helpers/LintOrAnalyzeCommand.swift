@@ -62,19 +62,9 @@ struct LintOrAnalyzeCommand {
                 ruleBenchmark.save()
             }
             try? cache?.save()
-            return successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
-                                 strictWithViolations: options.strict && !violations.isEmpty)
+            guard numberOfSeriousViolations == 0 else { exit(2) }
+            return .success(())
         }
-    }
-
-    private static func successOrExit(numberOfSeriousViolations: Int,
-                                      strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
-        if numberOfSeriousViolations > 0 {
-            exit(2)
-        } else if strictWithViolations {
-            exit(3)
-        }
-        return .success(())
     }
 
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
@@ -109,15 +99,30 @@ struct LintOrAnalyzeCommand {
     }
 
     private static func applyLeniency(options: LintOrAnalyzeOptions, violations: [StyleViolation]) -> [StyleViolation] {
-        if !options.lenient {
+        switch (options.lenient, options.strict) {
+        case (false, false):
             return violations
-        }
-        return violations.map {
-            if $0.severity == .error {
-                return $0.with(severity: .warning)
-            } else {
-                return $0
+
+        case (true, false):
+            return violations.map {
+                if $0.severity == .error {
+                    return $0.with(severity: .warning)
+                } else {
+                    return $0
+                }
             }
+
+        case (false, true):
+            return violations.map {
+                if $0.severity == .warning {
+                    return $0.with(severity: .error)
+                } else {
+                    return $0
+                }
+            }
+
+        case (true, true):
+            queuedFatalError("Invalid command line options: 'lenient' and 'strict' are mutually exclusive.")
         }
     }
 }

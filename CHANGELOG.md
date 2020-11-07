@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* Changed behavior of `strict` option on `lint` and `analyze` to treat
+  all warnings as errors instead of only changing the exit code.  
+  [Jeehut](https://github.com/Jeehut)
+  [#3312](https://github.com/realm/SwiftLint/issues/3312)
 
 #### Experimental
 
@@ -235,11 +238,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3225](https://github.com/realm/SwiftLint/issues/3225)
 
-* Fix some cases where the output would be incomplete when running 
+* Fix some cases where the output would be incomplete when running
   SwiftLint on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3214](https://github.com/realm/SwiftLint/issues/3214)
-  
+
 * `compiler_protocol_init` now triggers on `IndexSet(arrayLiteral:)`.  
   [Janak Shah](https://github.com/janakshah)
   [#3284](https://github.com/realm/SwiftLint/pull/3284)
@@ -279,7 +282,7 @@ This is the last release to support building with Swift 5.0.x.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3149](https://github.com/realm/SwiftLint/issues/3149)
 
-* Fix false positives in `redundant_objc_attribute` rule in extensions when 
+* Fix false positives in `redundant_objc_attribute` rule in extensions when
   using Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -406,7 +409,7 @@ This is the last release to support building with Swift 5.0.x.
 * Fix false positives when line ends with carriage return + line feed.  
   [John Mueller](https://github.com/john-mueller)
   [#3060](https://github.com/realm/SwiftLint/issues/3060)
-  
+
 * Implicit_return description now reports current config correctly.
   [John Buckley](https://github.com/nhojb)
 

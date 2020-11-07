@@ -46,7 +46,7 @@ struct LintOptions: OptionsProtocol {
                                usage: "lint standard input")
             <*> mode <| configOption
             <*> mode <| Option(key: "strict", defaultValue: false,
-                               usage: "fail on warnings")
+                               usage: "upgrades warnings to serious violations (errors)")
             <*> mode <| Option(key: "lenient", defaultValue: false,
                                usage: "downgrades serious violations to warnings, warning threshold is disabled")
             <*> mode <| Option(key: "force-exclude", defaultValue: false,

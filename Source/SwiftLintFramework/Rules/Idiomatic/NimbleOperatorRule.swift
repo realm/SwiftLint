@@ -101,6 +101,22 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 
     private func violationMatchesRanges(in file: SwiftLintFile) -> [NSRange] {
+        let contents = file.stringView
+        return rawRegexResults(in: file).filter { range in
+            guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
+                return false
+            }
+
+            let containsCall = file.structureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
+                .contains(where: { dict -> Bool in
+                    return dict.expressionKind == .call && (dict.name ?? "").starts(with: "expect")
+                })
+
+            return containsCall
+        }
+    }
+
+    private func rawRegexResults(in file: SwiftLintFile) -> [NSRange] {
         let operandPattern = "(.(?!expect\\())+?"
 
         let operatorsPattern = "(" + predicatesMapping.map { name, predicateDescription in
@@ -112,26 +128,13 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         }.joined(separator: "|") + ")"
 
         let pattern = "expect\\(\(operandPattern)\\)\\.to(Not)?\\(\(operatorsPattern)\\)"
-
         let excludingKinds = SyntaxKind.commentKinds
 
         return file.match(pattern: pattern)
             .filter { _, kinds in
                 excludingKinds.isDisjoint(with: kinds) && kinds.first == .identifier
-            }.map { $0.0 }
-            .filter { range in
-                let contents = file.stringView
-                guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
-                    return false
-                }
-
-                let containsCall = file.structureDictionary.structures(forByteOffset: byteRange.upperBound - 1)
-                    .contains(where: { dict -> Bool in
-                        return dict.expressionKind == .call && (dict.name ?? "").starts(with: "expect")
-                    })
-
-                return containsCall
             }
+            .map { $0.0 }
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {

@@ -31,6 +31,12 @@
   [Keith Smiley](https://github.com/keith)
   [#3184](https://github.com/realm/SwiftLint/issues/3184)
 
+* Add `allow_multiline_func` configuration option to `opening_brace`
+  rule, to allow placing `{` on new line in case of multiline function.
+  Defaults to `false`.  
+  [Zsolt Kovács](https://github.com/lordzsolt)
+  [#1921](https://github.com/realm/SwiftLint/issues/1921)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

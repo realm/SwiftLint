@@ -30,7 +30,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.excluded.contains(name) else {
+            guard !configuration.excluded.contains(name), let firstCharacter = name.first else {
                 return []
             }
 
@@ -63,6 +63,11 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 }
             }
 
+            let firstCharacterIsAllowed = configuration.allowedSymbols
+                .isSuperset(of: CharacterSet(charactersIn: String(firstCharacter)))
+            guard !firstCharacterIsAllowed else {
+                return []
+            }
             let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
             if requiresCaseCheck &&
                 kind != .varStatic && name.isViolatingCase && !name.isOperator {

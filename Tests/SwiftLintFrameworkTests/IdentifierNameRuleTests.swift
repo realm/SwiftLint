@@ -11,11 +11,13 @@ class IdentifierNameRuleTests: XCTestCase {
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("let myLet$ = 0"),
             Example("let myLet% = 0"),
-            Example("let myLet$% = 0")
+            Example("let myLet$% = 0"),
+            Example("let _myLet = 0")
         ]
-
-        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        let triggeringExamples = baseDescription.triggeringExamples.filter { !$0.code.contains("_") }
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
+                                               triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%", "_"]])
     }
 
     func testIdentifierNameWithAllowedSymbolsAndViolation() {

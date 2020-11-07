@@ -313,7 +313,7 @@
             
             <h1 id='nslocalizedstring-key' class='heading'>NSLocalizedString Key</h1>
 
-<p>Static strings should be used as key in NSLocalizedString in order to genstrings work.</p>
+<p>Static strings should be used as key/comment in NSLocalizedString in order for genstrings to work.</p>
 
 <ul>
 <li><strong>Identifier:</strong> nslocalizedstring_key</li>
@@ -325,14 +325,27 @@
 <li><strong>Default configuration:</strong> warning</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"key"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"key"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"key"</span> <span class="o">+</span> <span class="s">"2"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"key"</span> <span class="o">+</span> <span class="s">"2"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"key"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">"comment"</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"This is a multi-"</span> <span class="o">+</span>
+    <span class="s">"line string"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">format</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"%@, %@."</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">"Accessibility label for a post in the post list."</span> <span class="o">+</span>
+<span class="s">" The parameters are the title, and date respectively."</span> <span class="o">+</span>
+<span class="s">" For example, "</span><span class="kt">Let</span> <span class="n">it</span> <span class="kt">Go</span><span class="p">,</span> <span class="mi">1</span> <span class="n">hour</span> <span class="n">ago</span><span class="o">.</span><span class="s">""</span><span class="p">)</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="err">↓</span><span class="nf">method</span><span class="p">(),</span> <span class="nv">comment</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="err">↓</span><span class="nf">method</span><span class="p">(),</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="err">↓</span><span class="s">"key_</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="err">↓</span><span class="s">"key_</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"key"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="err">↓</span><span class="s">"comment with </span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">NSLocalizedString</span><span class="p">(</span><span class="err">↓</span><span class="s">"key_</span><span class="se">\(</span><span class="n">param</span><span class="se">)</span><span class="s">"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="err">↓</span><span class="nf">method</span><span class="p">())</span>
 </code></pre>
 
           </div>

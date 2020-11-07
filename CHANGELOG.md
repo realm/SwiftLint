@@ -77,6 +77,10 @@
   [Quinn Taylor](https://github.com/quinntaylor)
   [#3374](https://github.com/realm/SwiftLint/issues/3374)
 
+* Fix incorrect violation message for line length violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#3333](https://github.com/realm/SwiftLint/issues/3333)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

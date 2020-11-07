@@ -141,9 +141,9 @@
 		67EB4DFA1E4CC111004E9ACD /* CyclomaticComplexityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */; };
 		67EB4DFC1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
+		6A14DB9323E7296700C17847 /* OpeningBraceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A14DB9123E7292000C17847 /* OpeningBraceConfiguration.swift */; };
 		6A804EF323D8F6CF00976471 /* EmptyCountConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A804EF023D8F6A200976471 /* EmptyCountConfiguration.swift */; };
 		6A804EF623D8FB0D00976471 /* EmptyCountRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A804EF423D8FA7900976471 /* EmptyCountRuleTests.swift */; };
-		6A14DB9323E7296700C17847 /* OpeningBraceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A14DB9123E7292000C17847 /* OpeningBraceConfiguration.swift */; };
 		6A84A3ED23E79420004ECB7F /* OpeningBraceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A14DB9423E75ACF00C17847 /* OpeningBraceRuleTests.swift */; };
 		6BE79EB12204EC0700B5A2FE /* RequiredDeinitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE79EB02204EC0700B5A2FE /* RequiredDeinitRule.swift */; };
 		6C15818D237026AC00F582A2 /* GitHubActionsLoggingReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C15818C237026AC00F582A2 /* GitHubActionsLoggingReporter.swift */; };
@@ -334,7 +334,6 @@
 		D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */; };
 		D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */; };
 		D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
-		D47421F424E14760009AE788 /* UnneededNotificationCenterRemovalRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47421F324E14760009AE788 /* UnneededNotificationCenterRemovalRule.swift */; };
 		D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
 		D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
 		D47EF4801F69E3100012C4CA /* ColonRule+FunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */; };
@@ -676,10 +675,10 @@
 		692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpeningBraceRule.swift; sourceTree = "<group>"; };
 		692B60AB1BD8F2E700C7AA22 /* StatementPositionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementPositionRule.swift; sourceTree = "<group>"; };
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
-		6A804EF023D8F6A200976471 /* EmptyCountConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCountConfiguration.swift; sourceTree = "<group>"; };
-		6A804EF423D8FA7900976471 /* EmptyCountRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCountRuleTests.swift; sourceTree = "<group>"; };
 		6A14DB9123E7292000C17847 /* OpeningBraceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningBraceConfiguration.swift; sourceTree = "<group>"; };
 		6A14DB9423E75ACF00C17847 /* OpeningBraceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningBraceRuleTests.swift; sourceTree = "<group>"; };
+		6A804EF023D8F6A200976471 /* EmptyCountConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCountConfiguration.swift; sourceTree = "<group>"; };
+		6A804EF423D8FA7900976471 /* EmptyCountRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCountRuleTests.swift; sourceTree = "<group>"; };
 		6BE79EB02204EC0700B5A2FE /* RequiredDeinitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredDeinitRule.swift; sourceTree = "<group>"; };
 		6C15818C237026AC00F582A2 /* GitHubActionsLoggingReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubActionsLoggingReporter.swift; sourceTree = "<group>"; };
 		6C15818E23702DCE00F582A2 /* CannedGitHubActionsLoggingReporterOutput.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedGitHubActionsLoggingReporterOutput.txt; sourceTree = "<group>"; };
@@ -884,7 +883,6 @@
 		D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExpressionKind.swift; sourceTree = "<group>"; };
 		D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParametersRule.swift; sourceTree = "<group>"; };
 		D47079AE1DFE520000027086 /* VoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidReturnRule.swift; sourceTree = "<group>"; };
-		D47421F324E14760009AE788 /* UnneededNotificationCenterRemovalRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnneededNotificationCenterRemovalRule.swift; sourceTree = "<group>"; };
 		D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseOnNewlineRule.swift; sourceTree = "<group>"; };
 		D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRule.swift; sourceTree = "<group>"; };
 		D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColonRule+FunctionCall.swift"; sourceTree = "<group>"; };
@@ -1261,7 +1259,6 @@
 				C225E844252E8B1B00EDE3E7 /* TestCaseAccessibilityRule.swift */,
 				C225E845252E8B1E00EDE3E7 /* TestCaseAccessibilityRuleExamples.swift */,
 				E88DEA811B0990A700A66CB0 /* TodoRule.swift */,
-				D47421F324E14760009AE788 /* UnneededNotificationCenterRemovalRule.swift */,
 				7565E5F02262BA0900B0597C /* UnusedCaptureListRule.swift */,
 				D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */,
 				D4D7320C21E15ED4001C07D9 /* UnusedControlFlowLabelRule.swift */,
@@ -2223,7 +2220,6 @@
 				D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */,
 				2E336D1B1DF08BFB00CCFE77 /* EmojiReporter.swift in Sources */,
 				E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */,
-				D47421F424E14760009AE788 /* UnneededNotificationCenterRemovalRule.swift in Sources */,
 				006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */,
 				82FE254120F604CB00295958 /* VerticalWhitespaceClosingBracesRule.swift in Sources */,
 				429644B61FB0A9B400D75128 /* SortedFirstLastRule.swift in Sources */,

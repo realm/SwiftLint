@@ -738,12 +738,6 @@ class UnneededBreakInSwitchRuleTests: XCTestCase {
     }
 }
 
-class UnneededNotificationCenterRemovalRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnneededNotificationCenterRemovalRule.description)
-    }
-}
-
 class UnneededParenthesesInClosureArgumentRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)

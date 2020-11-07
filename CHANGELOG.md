@@ -7,6 +7,11 @@
   [Jeehut](https://github.com/Jeehut)
   [#3312](https://github.com/realm/SwiftLint/issues/3312)
 
+* Removed the `unneeded_notification_center_removal` rule because it was
+  based on an incorrect premise.  
+  [JP Simard](https://github.com/jpsim)
+  [#3338](https://github.com/realm/SwiftLint/issues/3338)
+
 #### Experimental
 
 * None.

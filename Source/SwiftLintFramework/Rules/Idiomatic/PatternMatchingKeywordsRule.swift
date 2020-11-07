@@ -52,7 +52,7 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
             let letMatches = file.match(pattern: "\\blet\\b", with: [.keyword], range: caseRange)
             let varMatches = file.match(pattern: "\\bvar\\b", with: [.keyword], range: caseRange)
 
-            if !letMatches.isEmpty && !varMatches.isEmpty {
+            if letMatches.isNotEmpty && varMatches.isNotEmpty {
                 return []
             }
 

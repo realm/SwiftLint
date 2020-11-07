@@ -88,6 +88,6 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         }
 
         let matches = file.match(pattern: "try?", with: [.keyword], range: range)
-        return !matches.isEmpty
+        return matches.isNotEmpty
     }
 }

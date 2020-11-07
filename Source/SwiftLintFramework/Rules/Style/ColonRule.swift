@@ -43,10 +43,10 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public func correct(file: SwiftLintFile) -> [Correction] {
         let violations = correctionRanges(in: file)
         let matches = violations.filter {
-            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
+            file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty
         }
 
-        guard !matches.isEmpty else { return [] }
+        guard matches.isNotEmpty else { return [] }
         let regularExpression = regex(pattern)
         let description = Self.description
         var corrections = [Correction]()

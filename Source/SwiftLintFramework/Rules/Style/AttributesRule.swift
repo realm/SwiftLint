@@ -74,7 +74,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                               dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let attributes = parseAttributes(dictionary: dictionary)
 
-        guard !attributes.isEmpty,
+        guard attributes.isNotEmpty,
             let offset = dictionary.offset,
             let (line, _) = file.stringView.lineAndCharacter(forByteOffset: offset) else {
             return []

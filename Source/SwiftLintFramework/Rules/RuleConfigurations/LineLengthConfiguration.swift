@@ -66,7 +66,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     /// - returns: True if the configuration was successfuly applied.
     private mutating func applyArray(configuration: Any) -> Bool {
         guard let configurationArray = [Int].array(of: configuration),
-            !configurationArray.isEmpty else {
+            configurationArray.isNotEmpty else {
             return false
         }
 
@@ -84,7 +84,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     private mutating func applyDictionary(configuration: Any) throws {
         let error = ConfigurationError.unknownConfiguration
         guard let configDict = configuration as? [String: Any],
-            !configDict.isEmpty else {
+            configDict.isNotEmpty else {
             throw error
         }
 

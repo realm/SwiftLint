@@ -66,7 +66,7 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
 
         // if the declaration is inside a protocol
         if let offset = dictionary.offset,
-            !protocolDeclarations(forByteOffset: offset, structureDictionary: file.structureDictionary).isEmpty {
+            protocolDeclarations(forByteOffset: offset, structureDictionary: file.structureDictionary).isNotEmpty {
             return []
         }
 

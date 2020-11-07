@@ -20,11 +20,11 @@ public struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable 
 
     public mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),
-            !configurationArray.isEmpty {
+            configurationArray.isNotEmpty {
             let warning = configurationArray[0]
             let error = (configurationArray.count > 1) ? configurationArray[1] : nil
             severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
-        } else if let configDict = configuration as? [String: Any], !configDict.isEmpty {
+        } else if let configDict = configuration as? [String: Any], configDict.isNotEmpty {
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
                     throw ConfigurationError.unknownConfiguration

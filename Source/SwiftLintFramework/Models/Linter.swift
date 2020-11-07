@@ -11,7 +11,7 @@ private extension Rule {
     static func superfluousDisableCommandViolations(regions: [Region],
                                                     superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                                     allViolations: [StyleViolation]) -> [StyleViolation] {
-        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+        guard regions.isNotEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
 
@@ -279,7 +279,7 @@ public struct CollectedLinter {
         for rule in rules.compactMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
-            if !newCorrections.isEmpty {
+            if newCorrections.isNotEmpty {
                 file.invalidateCache()
             }
         }
@@ -303,7 +303,7 @@ public struct CollectedLinter {
                                                        configuration: Configuration,
                                                        superfluousDisableCommandRule: SuperfluousDisableCommandRule?
         ) -> [StyleViolation] {
-        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+        guard regions.isNotEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
         let allCustomIdentifiers = configuration.customRuleIdentifiers.map { RuleIdentifier($0) }

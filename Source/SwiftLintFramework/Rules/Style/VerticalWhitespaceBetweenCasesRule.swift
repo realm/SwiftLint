@@ -172,7 +172,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
 extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
     public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard !violatingRanges.isEmpty else { return [] }
+        guard violatingRanges.isNotEmpty else { return [] }
 
         let patternRegex = regex(pattern)
         let replacementTemplate = "$1\n$2"

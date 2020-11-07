@@ -56,3 +56,9 @@ extension Array {
         }
     }
 }
+
+extension Collection {
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
+}

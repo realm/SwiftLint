@@ -62,7 +62,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
-        guard !configurations.isEmpty else {
+        guard configurations.isNotEmpty else {
             return []
         }
 
@@ -71,7 +71,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
             configurations = configurations.filter { config in
                 let included: Bool
                 if let includedRegex = config.included {
-                    included = !includedRegex.matches(in: path, options: [], range: pathRange).isEmpty
+                    included = includedRegex.matches(in: path, options: [], range: pathRange).isNotEmpty
                 } else {
                     included = true
                 }

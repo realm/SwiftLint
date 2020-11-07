@@ -62,7 +62,7 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         guard let offset = dictionary.offset,
             [.class, .struct].contains(kind),
             dictionary.inheritedTypes.isEmpty,
-            !dictionary.substructure.isEmpty else {
+            dictionary.substructure.isNotEmpty else {
                 return []
         }
 

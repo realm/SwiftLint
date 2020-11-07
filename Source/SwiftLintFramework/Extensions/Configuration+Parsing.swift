@@ -133,8 +133,8 @@ extension Configuration {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
-        } else if !whitelistRules.isEmpty {
-            if !disabledRules.isEmpty || !optInRules.isEmpty {
+        } else if whitelistRules.isNotEmpty {
+            if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                 queuedPrintError("'\(Key.disabledRules.rawValue)' or " +
                     "'\(Key.optInRules.rawValue)' cannot be used in combination " +
                     "with '\(Key.whitelistRules.rawValue)'")
@@ -200,7 +200,7 @@ extension Configuration {
     private static func warnAboutInvalidKeys(configurationDictionary dict: [String: Any], ruleList: RuleList) {
         // Log an error when supplying invalid keys in the configuration dictionary
         let invalidKeys = Set(dict.keys).subtracting(self.validKeys(ruleList: ruleList))
-        if !invalidKeys.isEmpty {
+        if invalidKeys.isNotEmpty {
             queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
         }
     }

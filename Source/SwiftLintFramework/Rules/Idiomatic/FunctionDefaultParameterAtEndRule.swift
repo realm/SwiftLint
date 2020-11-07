@@ -64,13 +64,13 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
                 return paramOffset < bodyOffset
             }
 
-        guard !params.isEmpty else {
+        guard params.isNotEmpty else {
             return []
         }
 
         let containsDefaultValue = { self.isDefaultParameter(file: file, dictionary: $0) }
         let defaultParams = params.filter(containsDefaultValue)
-        guard !defaultParams.isEmpty else {
+        guard defaultParams.isNotEmpty else {
             return []
         }
 

@@ -39,7 +39,7 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             severity: configuration.severity
         ) { dictionary in
             if
-                !dictionary.substructure.isEmpty &&
+                dictionary.substructure.isNotEmpty &&
                 dictionary.substructure.last?.expressionKind != .argument &&
                 dictionary.substructure.last?.name != "NSPredicate"
             {

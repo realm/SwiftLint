@@ -179,7 +179,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
     public func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
-        guard !violatingRanges.isEmpty else { return [] }
+        guard violatingRanges.isNotEmpty else { return [] }
 
         let patternRegex: NSRegularExpression = regex(pattern)
         let replacementTemplate = "$1$3"

@@ -243,7 +243,7 @@ public struct Configuration: Hashable {
 private func validateRuleIdentifiers(ruleIdentifiers: [String], validRuleIdentifiers: [String]) -> [String] {
     // Validate that all rule identifiers map to a defined rule
     let invalidRuleIdentifiers = ruleIdentifiers.filter { !validRuleIdentifiers.contains($0) }
-    if !invalidRuleIdentifiers.isEmpty {
+    if invalidRuleIdentifiers.isNotEmpty {
         for invalidRuleIdentifier in invalidRuleIdentifiers {
             queuedPrintError("configuration error: '\(invalidRuleIdentifier)' is not a valid rule identifier")
         }

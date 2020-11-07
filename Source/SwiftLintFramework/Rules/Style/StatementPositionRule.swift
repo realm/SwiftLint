@@ -193,7 +193,7 @@ private extension StatementPositionRule {
         let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
 
         let validMatches = matches.compactMap(validator).filter(filterRanges)
-                  .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }
+                  .filter { file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty }
         if validMatches.isEmpty { return [] }
         let description = Self.uncuddledDescription
         var corrections = [Correction]()

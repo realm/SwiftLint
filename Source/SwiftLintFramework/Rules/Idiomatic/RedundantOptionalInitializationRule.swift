@@ -162,7 +162,7 @@ extension SourceKittenDictionary {
         guard let byteRange = byteRange,
             case let contents = file.stringView,
             let range = contents.byteRangeToNSRange(byteRange),
-            !file.match(pattern: "\\Avar\\b", with: [.keyword], range: range).isEmpty else {
+            file.match(pattern: "\\Avar\\b", with: [.keyword], range: range).isNotEmpty else {
                 return false
         }
 

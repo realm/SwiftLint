@@ -62,7 +62,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
             $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
         }
 
-        guard !allDeclaredTypeNames.isEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
+        guard allDeclaredTypeNames.isNotEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
             return []
         }
 

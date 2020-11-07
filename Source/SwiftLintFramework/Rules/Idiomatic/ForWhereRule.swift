@@ -154,12 +154,12 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
                 return false
             }
 
-            let containsKeyword = !file.match(pattern: "\\blet|var|case\\b", with: [.keyword], range: range).isEmpty
+            let containsKeyword = file.match(pattern: "\\blet|var|case\\b", with: [.keyword], range: range).isNotEmpty
             if containsKeyword {
                 return true
             }
 
-            return !file.match(pattern: "\\|\\||&&", with: [], range: range).isEmpty
+            return file.match(pattern: "\\|\\||&&", with: [], range: range).isNotEmpty
         }
     }
 }

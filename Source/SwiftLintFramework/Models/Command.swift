@@ -126,7 +126,7 @@ public struct Command: Equatable {
         }
         let ruleTexts = rawRuleTexts.components(separatedBy: .whitespacesAndNewlines).filter {
             let component = $0.trimmingCharacters(in: .whitespaces)
-            return !component.isEmpty && component != "*/"
+            return component.isNotEmpty && component != "*/"
         }
 
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))

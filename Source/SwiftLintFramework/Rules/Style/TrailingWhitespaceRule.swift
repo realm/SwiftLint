@@ -38,7 +38,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
             return !configuration.ignoresEmptyLines ||
                     // If configured, ignore lines that contain nothing but whitespace (empty lines)
-                    !$0.content.trimmingCharacters(in: .whitespaces).isEmpty
+                    $0.content.trimmingCharacters(in: .whitespaces).isNotEmpty
         }
 
         return filteredLines.map {
@@ -86,7 +86,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             }
             correctedLines.append(correctedLine)
         }
-        if !corrections.isEmpty {
+        if corrections.isNotEmpty {
             // join and re-add trailing newline
             file.write(correctedLines.joined(separator: "\n") + "\n")
             return corrections

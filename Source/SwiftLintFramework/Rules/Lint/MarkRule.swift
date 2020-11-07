@@ -187,7 +187,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             guard let syntaxKind = syntaxTokens.first?.kind else {
                 return false
             }
-            return !syntaxTokens.isEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
+            return syntaxTokens.isNotEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
         }.compactMap { range, syntaxTokens in
             let byteRange = ByteRange(location: syntaxTokens[0].offset, length: 0)
             let identifierRange = file.stringView.byteRangeToNSRange(byteRange)

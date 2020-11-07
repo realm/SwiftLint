@@ -4,7 +4,7 @@ private extension SwiftLintFile {
     func missingDocOffsets(in dictionary: SourceKittenDictionary,
                            acls: [AccessControlLevel]) -> [(ByteCount, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
-            !dictionary.inheritedTypes.isEmpty {
+            dictionary.inheritedTypes.isNotEmpty {
             return []
         }
         let substructureOffsets = dictionary.substructure.flatMap {

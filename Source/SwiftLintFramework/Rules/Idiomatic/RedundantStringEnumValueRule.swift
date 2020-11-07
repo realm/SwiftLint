@@ -108,7 +108,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, 
 
     private func enumElementsCount(dictionary: SourceKittenDictionary) -> Int {
         return children(of: dictionary, matching: .enumelement).filter({ element in
-            return !filterEnumInits(dictionary: element).isEmpty
+            return filterEnumInits(dictionary: element).isNotEmpty
         }).count
     }
 

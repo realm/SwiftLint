@@ -96,7 +96,7 @@ public final class LinterCache {
         defer {
             writeCacheLock.unlock()
         }
-        guard !writeCache.isEmpty else {
+        guard writeCache.isNotEmpty else {
             return
         }
 
@@ -105,7 +105,7 @@ public final class LinterCache {
         readCacheLock.unlock()
 
         let encoder = Encoder()
-        for (description, writeFileCache) in writeCache where !writeFileCache.entries.isEmpty {
+        for (description, writeFileCache) in writeCache where writeFileCache.entries.isNotEmpty {
             let fileCacheEntries = readCache[description]?.entries.merging(writeFileCache.entries) { _, write in write }
             let fileCache = fileCacheEntries.map(FileCache.init) ?? writeFileCache
             let data = try encoder.encode(fileCache)

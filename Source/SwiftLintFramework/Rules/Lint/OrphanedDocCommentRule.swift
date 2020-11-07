@@ -70,7 +70,7 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
                         return false
                 }
 
-                return !contents.trimmingCharacters(in: Self.characterSet).isEmpty
+                return contents.trimmingCharacters(in: Self.characterSet).isNotEmpty
             }.map { token in
                 return StyleViolation(ruleDescription: Self.description,
                                       severity: configuration.severity,

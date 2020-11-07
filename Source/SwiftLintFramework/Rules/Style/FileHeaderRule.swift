@@ -95,7 +95,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             return false
         }
 
-        return !file.commands(in: range).isEmpty
+        return file.commands(in: range).isNotEmpty
     }
 
     private func makeViolation(at location: Location) -> StyleViolation {

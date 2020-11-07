@@ -80,7 +80,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
     }
 
     private func isClassProtocol(file: SwiftLintFile, range: NSRange) -> Bool {
-        return !file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isEmpty
+        return file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isNotEmpty
     }
 
     private func isDelegateProtocol(_ name: String) -> Bool {

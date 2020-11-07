@@ -51,7 +51,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
             return nil
         }
 
-        guard !internalTypesOffsets.isEmpty else {
+        guard internalTypesOffsets.isNotEmpty else {
             return []
         }
 

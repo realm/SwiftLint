@@ -37,6 +37,11 @@
   [Zsolt Kovács](https://github.com/lordzsolt)
   [#1921](https://github.com/realm/SwiftLint/issues/1921)
 
+* Update the `nslocalizedstring_key` rule to validate the `comment`
+  argument in addition to the `key` argument.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#3334](https://github.com/realm/SwiftLint/issues/3334)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

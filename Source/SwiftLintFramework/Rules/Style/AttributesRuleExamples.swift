@@ -85,7 +85,6 @@ internal struct AttributesRuleExamples {
         Example("@IBDesignable ↓class MyCustomView: UIView {}"),
         Example("@testable\n↓import SourceKittenFramework"),
         Example("@testable\n\n\n↓import SourceKittenFramework"),
-        Example("@objc(foo_x) ↓var x: String"),
         Example("@available(iOS 9.0, *) @objc(abc_stackView)\n ↓let stackView: UIStackView"),
         Example("@objc(abc_addSomeObject:) @NSManaged\n ↓func addSomeObject(book: SomeObject)"),
         Example("@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)"),

@@ -3,10 +3,11 @@ import Foundation
 extension Configuration {
     /// Returns the files that can be linted by SwiftLint in the specified parent path.
     ///
-    /// - parameter path:         The parent path in which to search for lintable files. Can be a directory or a file.
-    /// - parameter forceExclude: Whether or not excludes defined in this configuration should be applied even if `path`
-    ///                           is an exact match.
-    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorightm
+    /// - parameter path:            The parent path in which to search for lintable files. Can be a directory or a
+    ///                              file.
+    /// - parameter forceExclude:    Whether or not excludes defined in this configuration should be applied even if
+    ///                              `path` is an exact match.
+    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
     ///
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String, forceExclude: Bool,
@@ -17,10 +18,11 @@ extension Configuration {
 
     /// Returns the paths for files that can be linted by SwiftLint in the specified parent path.
     ///
-    /// - parameter path:         The parent path in which to search for lintable files. Can be a directory or a file.
-    /// - parameter forceExclude: Whether or not excludes defined in this configuration should be applied even if `path`
-    ///                            is an exact match.
-    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorightm
+    /// - parameter path:            The parent path in which to search for lintable files. Can be a directory or a
+    ///                              file.
+    /// - parameter forceExclude:    Whether or not excludes defined in this configuration should be applied even if
+    ///                              `path` is an exact match.
+    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
     /// - parameter fileManager:     The lintable file manager to use to search for lintable files.
     ///
     /// - returns: Paths for files to lint.

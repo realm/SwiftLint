@@ -45,13 +45,15 @@ struct LintableFilesVisitor {
     let quiet: Bool
     let useScriptInputFiles: Bool
     let forceExclude: Bool
+    let useExcludingByPrefix: Bool
     let cache: LinterCache?
     let parallel: Bool
     let allowZeroLintableFiles: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) -> Void
 
-    init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool,
+    init(paths: [String], action: String, useSTDIN: Bool,
+         quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
          cache: LinterCache?, parallel: Bool,
          allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
         self.paths = resolveParamsFiles(args: paths)
@@ -60,6 +62,7 @@ struct LintableFilesVisitor {
         self.quiet = quiet
         self.useScriptInputFiles = useScriptInputFiles
         self.forceExclude = forceExclude
+        self.useExcludingByPrefix = useExcludingByPrefix
         self.cache = cache
         self.parallel = parallel
         self.mode = .lint
@@ -68,7 +71,7 @@ struct LintableFilesVisitor {
     }
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool,
-                 useScriptInputFiles: Bool, forceExclude: Bool,
+                 useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
                  allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
         self.paths = resolveParamsFiles(args: paths)
@@ -77,6 +80,7 @@ struct LintableFilesVisitor {
         self.quiet = quiet
         self.useScriptInputFiles = useScriptInputFiles
         self.forceExclude = forceExclude
+        self.useExcludingByPrefix = useExcludingByPrefix
         self.cache = cache
         self.parallel = true
         if let compilerInvocations = compilerInvocations {
@@ -108,7 +112,9 @@ struct LintableFilesVisitor {
         let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
                                            useSTDIN: options.useSTDIN, quiet: options.quiet,
                                            useScriptInputFiles: options.useScriptInputFiles,
-                                           forceExclude: options.forceExclude, cache: cache,
+                                           forceExclude: options.forceExclude,
+                                           useExcludingByPrefix: options.useExcludingByPrefix,
+                                           cache: cache,
                                            compilerInvocations: compilerInvocations,
                                            allowZeroLintableFiles: allowZeroLintableFiles, block: block)
         return .success(visitor)

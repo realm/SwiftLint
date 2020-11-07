@@ -21,6 +21,11 @@ let useScriptInputFilesOption = Option(key: "use-script-input-files",
                                        usage: "read SCRIPT_INPUT_FILE* environment variables " +
                                             "as files")
 
+let useAlternativeExcludingOption = Option(key: "use-alternative-excluding",
+                                           defaultValue: false,
+                                           usage: "alternative exclude paths algorithm for `excluded`." +
+                                                  "may speed up excluding for some cases")
+
 func quietOption(action: String) -> Option<Bool> {
     return Option(key: "quiet",
                   defaultValue: false,

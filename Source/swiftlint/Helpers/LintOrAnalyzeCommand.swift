@@ -130,6 +130,7 @@ struct LintOrAnalyzeOptions {
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
+    let useExcludingByPrefix: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String
@@ -149,6 +150,7 @@ struct LintOrAnalyzeOptions {
         strict = options.strict
         lenient = options.lenient
         forceExclude = options.forceExclude
+        useExcludingByPrefix = options.excludeByPrefix
         useScriptInputFiles = options.useScriptInputFiles
         benchmark = options.benchmark
         reporter = options.reporter
@@ -169,6 +171,7 @@ struct LintOrAnalyzeOptions {
         strict = options.strict
         lenient = options.lenient
         forceExclude = options.forceExclude
+        useExcludingByPrefix = options.excludeByPrefix
         useScriptInputFiles = options.useScriptInputFiles
         benchmark = options.benchmark
         reporter = options.reporter

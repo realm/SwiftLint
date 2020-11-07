@@ -10,6 +10,12 @@
 
 #### Enhancements
 
+* Add `use-alternative-excluding` option to speed up linting in cases
+  described in [#3325](https://github.com/realm/SwiftLint/pull/3325).
+  This option yields different exclusion behavior.  
+  [JohnReeze](https://github.com/JohnReeze)
+  [#3304](https://github.com/realm/SwiftLint/issues/3304)
+
 * Add `test_case_accessibility` rule.  
   [Keith Smiley](https://github.com/keith)
   [#3376](https://github.com/realm/SwiftLint/issues/3376)

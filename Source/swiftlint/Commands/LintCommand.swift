@@ -16,6 +16,7 @@ struct LintOptions: OptionsProtocol {
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
+    let excludeByPrefix: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String
@@ -25,17 +26,17 @@ struct LintOptions: OptionsProtocol {
     let enableAllRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> (_ paths: [String]) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in { paths in
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ excludeByPrefix: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> (_ paths: [String]) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { excludeByPrefix in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
+            return self.init(paths: allPaths, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
             // swiftlint:enable line_length
-        }}}}}}}}}}}}}
+        }}}}}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -50,6 +51,7 @@ struct LintOptions: OptionsProtocol {
                                usage: "downgrades serious violations to warnings, warning threshold is disabled")
             <*> mode <| Option(key: "force-exclude", defaultValue: false,
                                usage: "exclude files in config `excluded` even if their paths are explicitly specified")
+            <*> mode <| useAlternativeExcludingOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark", defaultValue: false,
                                usage: "save benchmarks to benchmark_files.txt " +

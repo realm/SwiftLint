@@ -18,6 +18,9 @@ class AttributesRuleTests: XCTestCase {
                 @objc private var object: RLMWeakObjectHandle?
                 @objc private var property: RLMProperty?
             }
+            """),
+            Example("""
+            @objc(XYZFoo) class Foo: NSObject {}
             """)
         ]
         let triggeringExamples = [

@@ -96,7 +96,13 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
         let attributesTokensWithRanges = tokens.compactMap { attributeName(token: $0, file: file) }
 
-        let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
+        let attributesTokens = Set(
+            attributesTokensWithRanges.map { tokenString, _ in
+                // Some attributes are parameterized, such as `@objc(name)`, so discard anything from an opening
+                // parenthesis onward.
+                String(tokenString.prefix(while: { $0 != "(" }))
+            }
+        )
 
         do {
             let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber: lineNumber - 1,

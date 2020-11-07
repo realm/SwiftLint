@@ -37,10 +37,9 @@ extension Configuration {
             fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
         }
 
-        let filesToLint = excludeByPrefix
+        return excludeByPrefix
             ? filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)
             : filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
-        return filesToLint
     }
 
     /// Returns an array of file paths after removing the excluded paths as defined by this configuration.
@@ -64,15 +63,16 @@ extension Configuration {
         return result.map { $0 as! String }
     }
 
-    /// Returns the file paths that are excluded by this configuration using filtering by absolute path prefix
-    /// For cases when excluded directories contain many lintable files (e. g. Pods)
-    /// it works faster than default algorithm `filterExcludedPaths`
+    /// Returns the file paths that are excluded by this configuration using filtering by absolute path prefix.
+    ///
+    /// For cases when excluded directories contain many lintable files (e. g. Pods) it works faster than default
+    /// algorithm `filterExcludedPaths`.
     ///
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
-        let allPaths = paths.parallelFlatMap { $0 }
+        let allPaths = paths.flatMap { $0 }
         let excludedPaths = excluded.parallelFlatMap(transform: Glob.resolveGlob)
-                                    .parallelMap { $0.absolutePathStandardized() }
+                                    .map { $0.absolutePathStandardized() }
         return allPaths.filter { path in
             !excludedPaths.contains { path.hasPrefix($0) }
         }

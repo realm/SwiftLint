@@ -50,6 +50,10 @@
   [Keith Smiley](https://github.com/keith)
   [#3402](https://github.com/realm/SwiftLint/issues/3402)
 
+* Allow "allowed symbols" as first character in `identifier_name`.  
+  [JP Simard](https://github.com/jpsim)
+  [#3306](https://github.com/realm/SwiftLint/issues/3306)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

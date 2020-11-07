@@ -328,7 +328,7 @@
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
   <span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">unavailable</span><span class="p">)</span>
   <span class="kd">public</span> <span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nf">fatalError</span><span class="p">(</span><span class="s">"init(coder:) has not been implemented"</span><span class="p">)</span>
+    <span class="nf">preconditionFailure</span><span class="p">(</span><span class="s">"init(coder:) has not been implemented"</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
@@ -354,6 +354,12 @@
   <span class="kd">public</span> <span class="kd">required</span> <span class="err">↓</span><span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">reason</span> <span class="o">=</span> <span class="s">"init(coder:) has not been implemented"</span>
     <span class="nf">fatalError</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+  <span class="kd">public</span> <span class="kd">required</span> <span class="err">↓</span><span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">preconditionFailure</span><span class="p">(</span><span class="s">"init(coder:) has not been implemented"</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>

@@ -1197,9 +1197,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:18SwiftLintFramework13ConfigurationV13lintableFiles6inPath12forceExcludeSayAA0aB4FileCGSS_SbtF"></a>
-                    <a name="//apple_ref/swift/Method/lintableFiles(inPath:forceExclude:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework13ConfigurationV13lintableFiles6inPath12forceExcludeSayAA0aB4FileCGSS_SbtF">lintableFiles(inPath:<wbr>forceExclude:<wbr>)</a>
+                    <a name="/s:18SwiftLintFramework13ConfigurationV13lintableFiles6inPath12forceExclude15excludeByPrefixSayAA0aB4FileCGSS_S2btF"></a>
+                    <a name="//apple_ref/swift/Method/lintableFiles(inPath:forceExclude:excludeByPrefix:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework13ConfigurationV13lintableFiles6inPath12forceExclude15excludeByPrefixSayAA0aB4FileCGSS_S2btF">lintableFiles(inPath:<wbr>forceExclude:<wbr>excludeByPrefix:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1214,7 +1214,8 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">lintableFiles</span><span class="p">(</span><span class="n">inPath</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">forceExclude</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/SwiftLintFile.html">SwiftLintFile</a></span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">lintableFiles</span><span class="p">(</span><span class="n">inPath</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">forceExclude</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span>
+                          <span class="nv">excludeByPrefix</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/SwiftLintFile.html">SwiftLintFile</a></span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -1230,7 +1231,8 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>The parent path in which to search for lintable files. Can be a directory or a file.</p>
+                                  <p>The parent path in which to search for lintable files. Can be a directory or a
+                         file.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1242,8 +1244,20 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>Whether or not excludes defined in this configuration should be applied even if <code>path</code>
-                      is an exact match.</p>
+                                  <p>Whether or not excludes defined in this configuration should be applied even if
+                         <code>path</code> is an exact match.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>excludeByPrefix</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Whether or not uses excluding by prefix algorithm.</p>
                                 </div>
                               </td>
                             </tr>
@@ -1255,7 +1269,7 @@
                         <p>Files to lint.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+LintableFiles.swift#L11-L14">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+LintableFiles.swift#L13-L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1321,7 +1335,44 @@
                         <p>The input paths after removing the excluded paths.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+LintableFiles.swift#L43-L56">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+LintableFiles.swift#L51-L64">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework13ConfigurationV27filterExcludedPathsByPrefix2inSaySSGAFd_tF"></a>
+                    <a name="//apple_ref/swift/Method/filterExcludedPathsByPrefix(in:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework13ConfigurationV27filterExcludedPathsByPrefix2inSaySSGAFd_tF">filterExcludedPathsByPrefix(in:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the file paths that are excluded by this configuration using filtering by absolute path prefix.</p>
+
+<p>For cases when excluded directories contain many lintable files (e. g. Pods) it works faster than default
+algorithm <code>filterExcludedPaths</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">filterExcludedPathsByPrefix</span><span class="p">(</span><span class="k">in</span> <span class="nv">paths</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The input paths after removing the excluded paths.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+LintableFiles.swift#L72-L79">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

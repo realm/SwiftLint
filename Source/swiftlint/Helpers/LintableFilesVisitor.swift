@@ -29,9 +29,9 @@ enum LintOrAnalyzeModeWithCompilerArguments {
 }
 
 private func resolveParamsFiles(args: [String]) -> [String] {
-    return args.reduce(into: []) { allArgs, arg in
+    return args.reduce(into: []) { (allArgs: inout [String], arg: String) -> Void in
         if arg.hasPrefix("@"), let contents = try? String(contentsOfFile: String(arg.dropFirst())) {
-            allArgs += resolveParamsFiles(args: contents.split(separator: "\n").map(String.init))
+            allArgs.append(contentsOf: resolveParamsFiles(args: contents.split(separator: "\n").map(String.init)))
         } else {
             allArgs.append(arg)
         }

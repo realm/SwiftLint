@@ -52,27 +52,31 @@ public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let defers = file.match(pattern: "defer\\s*\\{", with: [.keyword])
-
-        return defers.compactMap { range -> StyleViolation? in
-            let contents = file.stringView
-            guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                case let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.upperBound),
-                let brace = kinds.enumerated().lazy.reversed().first(where: isBrace),
-                brace.offset > kinds.startIndex,
-                case let outerKindIndex = kinds.index(before: brace.offset),
-                case let outerKind = kinds[outerKindIndex],
-                case let braceEnd = brace.element.byteRange.upperBound,
-                case let tokensRange = ByteRange(location: braceEnd, length: outerKind.byteRange.upperBound - braceEnd),
-                case let tokens = file.syntaxMap.tokens(inByteRange: tokensRange),
-                !tokens.contains(where: isNotComment) else {
-                    return nil
+        return file
+            .match(pattern: "defer\\s*\\{", with: [.keyword])
+            .filter(file.shouldReportViolation(for:))
+            .map { range in
+                StyleViolation(ruleDescription: Self.description, severity: configuration.severity,
+                               location: Location(file: file, characterOffset: range.location))
             }
+    }
+}
 
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+private extension SwiftLintFile {
+    func shouldReportViolation(for range: NSRange) -> Bool {
+        guard let byteRange = stringView.NSRangeToByteRange(start: range.location, length: range.length),
+            case let kinds = structureDictionary.kinds(forByteOffset: byteRange.upperBound),
+            let brace = kinds.enumerated().lazy.reversed().first(where: isBrace),
+            brace.offset > kinds.startIndex else {
+            return false
         }
+
+        let outerKindIndex = kinds.index(before: brace.offset)
+        let outerKind = kinds[outerKindIndex]
+        let braceEnd = brace.element.byteRange.upperBound
+        let tokensRange = ByteRange(location: braceEnd, length: outerKind.byteRange.upperBound - braceEnd)
+        let tokens = syntaxMap.tokens(inByteRange: tokensRange)
+        return !tokens.contains(where: isNotComment)
     }
 }
 

@@ -14,6 +14,37 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        guard let input = RuleInput(file: file, kind: kind, dictionary: dictionary) else {
+            return []
+        }
+
+        for parameter in configuration.params {
+            let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
+                input.startLine, input.endLine, parameter.value
+            )
+            guard exceeds else { continue }
+            return [
+                StyleViolation(
+                    ruleDescription: Self.description, severity: parameter.severity,
+                    location: Location(file: file, byteOffset: input.offset),
+                    reason: """
+                        Function body should span \(configuration.warning) lines or less excluding comments and \
+                        whitespace: currently spans \(lineCount) lines
+                        """
+                )
+            ]
+        }
+
+        return []
+    }
+}
+
+private struct RuleInput {
+    let offset: ByteCount
+    let startLine: Int
+    let endLine: Int
+
+    init?(file: SwiftLintFile, kind: SwiftDeclarationKind, dictionary: SourceKittenDictionary) {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
@@ -22,20 +53,11 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
             let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)?.line,
             let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
         else {
-            return []
+            return nil
         }
-        for parameter in configuration.params {
-            let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                startLine, endLine, parameter.value
-            )
-            guard exceeds else { continue }
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: parameter.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Function body should span \(configuration.warning) lines or less " +
-                                           "excluding comments and whitespace: currently spans \(lineCount) " +
-                                           "lines")]
-        }
-        return []
+
+        self.offset = offset
+        self.startLine = startLine
+        self.endLine = endLine
     }
 }

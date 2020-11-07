@@ -147,7 +147,11 @@ private func render(violations: [StyleViolation], in contents: String) -> String
             contents.insert(message, at: line)
         }
     }
-    return (["```"] + contents + ["```"]).joined(separator: "\n")
+    return """
+        ```
+        \(contents)
+        ```
+        """
 }
 
 private func render(locations: [Location], in contents: String) -> String {
@@ -158,7 +162,11 @@ private func render(locations: [Location], in contents: String) -> String {
         content.insert("↓", at: character - 1)
         contents[line - 1] = content.bridge()
     }
-    return (["```"] + contents + ["```"]).joined(separator: "\n")
+    return """
+        ```
+        \(contents)
+        ```
+        """
 }
 
 private extension Configuration {

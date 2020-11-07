@@ -17,7 +17,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
             class ViewController: UIViewController {
               @available(*, unavailable)
               public required init?(coder aDecoder: NSCoder) {
-                fatalError("init(coder:) has not been implemented")
+                preconditionFailure("init(coder:) has not been implemented")
               }
             }
             """),
@@ -49,9 +49,22 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
                 fatalError(reason)
               }
             }
+            """),
+            Example("""
+            class ViewController: UIViewController {
+              public required ↓init?(coder aDecoder: NSCoder) {
+                preconditionFailure("init(coder:) has not been implemented")
+              }
+            }
             """)
         ]
     )
+
+    private static let terminatingFunctions = Set([
+        "abort",
+        "fatalError",
+        "preconditionFailure"
+    ])
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
@@ -59,11 +72,14 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
             return []
         }
 
-        let containsFatalError = dictionary.substructure.contains { dict -> Bool in
-            return dict.expressionKind == .call && dict.name == "fatalError"
+        let containsTerminatingCall = dictionary.substructure.contains { dict -> Bool in
+            return dict.expressionKind == .call && (dict.name.map { name in
+                UnavailableFunctionRule.terminatingFunctions.contains(name)
+            } ?? false)
         }
 
-        guard let offset = dictionary.offset, containsFatalError,
+        guard let offset = dictionary.offset,
+            containsTerminatingCall,
             !isFunctionUnavailable(file: file, dictionary: dictionary),
             let bodyRange = dictionary.bodyByteRange,
             let range = file.stringView.byteRangeToNSRange(bodyRange),

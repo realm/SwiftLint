@@ -69,6 +69,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3306](https://github.com/realm/SwiftLint/issues/3306)
 
+* Fix false positives with parameterized attributes in `attributes`.  
+  [JP Simard](https://github.com/jpsim)
+  [#3316](https://github.com/realm/SwiftLint/issues/3316)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

@@ -203,8 +203,10 @@ extension Configuration {
                     }
 
                     let scriptInputPaths = files.compactMap { $0.path }
-                    return filterExcludedPaths(in: scriptInputPaths)
-                            .map(SwiftLintFile.init(pathDeferringReading:))
+                    let filesToLint = visitor.useExcludingByPrefix
+                                      ? filterExcludedPathsByPrefix(in: scriptInputPaths)
+                                      : filterExcludedPaths(in: scriptInputPaths)
+                    return filesToLint.map(SwiftLintFile.init(pathDeferringReading:))
                 }
         }
         if !visitor.quiet {
@@ -218,7 +220,8 @@ extension Configuration {
             queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
         }
         return .success(visitor.paths.flatMap {
-            self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude)
+            self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude,
+                               excludeByPrefix: visitor.useExcludingByPrefix)
         })
     }
 

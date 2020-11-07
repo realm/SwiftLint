@@ -27,22 +27,25 @@ struct AutoCorrectOptions: OptionsProtocol {
     let useScriptInputFiles: Bool
     let quiet: Bool
     let forceExclude: Bool
+    let excludeByPrefix: Bool
     let format: Bool
     let cachePath: String
     let ignoreCache: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { paths in
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) ->
+    (_ excludeByPrefix: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
+    return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { excludeByPrefix in { format in { cachePath in { ignoreCache in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache)
+            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude,
+                             excludeByPrefix: excludeByPrefix, format: format, cachePath: cachePath, ignoreCache: ignoreCache)
             // swiftlint:enable line_length
-            }}}}}}}}
+            }}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
@@ -53,6 +56,7 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| quietOption(action: "correcting")
             <*> mode <| Option(key: "force-exclude", defaultValue: false,
                                usage: "exclude files in config `excluded` even if their paths are explicitly specified")
+            <*> mode <| useAlternativeExcludingOption
             <*> mode <| Option(key: "format", defaultValue: false,
                                usage: "should reformat the Swift files")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
@@ -66,8 +70,8 @@ struct AutoCorrectOptions: OptionsProtocol {
     fileprivate func visitor(with configuration: Configuration, storage: RuleStorage) -> LintableFilesVisitor {
         let cache = ignoreCache ? nil : LinterCache(configuration: configuration)
         return LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
-                                    useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude, cache: cache,
-                                    parallel: true,
+                                    useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude,
+                                    useExcludingByPrefix: excludeByPrefix, cache: cache, parallel: true,
                                     allowZeroLintableFiles: configuration.allowZeroLintableFiles) { linter in
             if self.format {
                 switch configuration.indentation {

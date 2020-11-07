@@ -6,10 +6,12 @@ extension Configuration {
     /// - parameter path:         The parent path in which to search for lintable files. Can be a directory or a file.
     /// - parameter forceExclude: Whether or not excludes defined in this configuration should be applied even if `path`
     ///                           is an exact match.
+    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorightm
     ///
     /// - returns: Files to lint.
-    public func lintableFiles(inPath path: String, forceExclude: Bool) -> [SwiftLintFile] {
-        return lintablePaths(inPath: path, forceExclude: forceExclude)
+    public func lintableFiles(inPath path: String, forceExclude: Bool,
+                              excludeByPrefix: Bool = false) -> [SwiftLintFile] {
+        return lintablePaths(inPath: path, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix)
             .compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
@@ -17,11 +19,12 @@ extension Configuration {
     ///
     /// - parameter path:         The parent path in which to search for lintable files. Can be a directory or a file.
     /// - parameter forceExclude: Whether or not excludes defined in this configuration should be applied even if `path`
-    ///                           is an exact match.
-    /// - parameter fileManager:  The lintable file manager to use to search for lintable files.
+    ///                            is an exact match.
+    /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorightm
+    /// - parameter fileManager:     The lintable file manager to use to search for lintable files.
     ///
     /// - returns: Paths for files to lint.
-    internal func lintablePaths(inPath path: String, forceExclude: Bool,
+    internal func lintablePaths(inPath path: String, forceExclude: Bool, excludeByPrefix: Bool = false,
                                 fileManager: LintableFileManager = FileManager.default) -> [String] {
         // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
         if path.isFile && !forceExclude {
@@ -31,7 +34,11 @@ extension Configuration {
         let includedPaths = included.parallelFlatMap {
             fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
         }
-        return filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
+
+        let filesToLint = excludeByPrefix
+            ? filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)
+            : filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
+        return filesToLint
     }
 
     /// Returns an array of file paths after removing the excluded paths as defined by this configuration.
@@ -53,6 +60,20 @@ extension Configuration {
         result.minusSet(Set(excludedPaths))
         // swiftlint:disable:next force_cast
         return result.map { $0 as! String }
+    }
+
+    /// Returns the file paths that are excluded by this configuration using filtering by absolute path prefix
+    /// For cases when excluded directories contain many lintable files (e. g. Pods)
+    /// it works faster than default algorithm `filterExcludedPaths`
+    ///
+    /// - returns: The input paths after removing the excluded paths.
+    public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
+        let allPaths = paths.parallelFlatMap { $0 }
+        let excludedPaths = excluded.parallelFlatMap(transform: Glob.resolveGlob)
+                                    .parallelMap { $0.absolutePathStandardized() }
+        return allPaths.filter { path in
+            !excludedPaths.contains { path.hasPrefix($0) }
+        }
     }
 
     /// Returns the file paths that are excluded by this configuration after expanding them using the specified file

@@ -9,6 +9,9 @@
 * None.
 
 #### Enhancements
+* Add `use-alternative-excluding` option to speed up cases described [here](https://github.com/realm/SwiftLint/pull/3325).<br/>
+  [JohnReeze](https://github.com/JohnReeze)
+  [#3304](https://github.com/realm/SwiftLint/issues/3304)
 
 * Add `test_case_accessibility` rule.  
   [Keith Smiley](https://github.com/keith)

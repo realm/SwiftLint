@@ -387,8 +387,12 @@ we encourage you to watch this presentation or read the transcript:</p>
 <p><a href="https://academy.realm.io/posts/slug-jp-simard-swiftlint/"><img src="assets/presentation.svg" alt="Presentation"></a></p>
 <h3 id='xcode' class='heading'>Xcode</h3>
 
-<p>Integrate SwiftLint into an Xcode scheme to get warnings and errors displayed
-in the IDE. Just add a new &ldquo;Run Script Phase&rdquo; with:</p>
+<p>Integrate SwiftLint into your Xcode project to get warnings and errors displayed
+in the issue navigator.</p>
+
+<p>To do this click the Project in the file navigator, then click the primary app
+target, and go to Build Phases. Click the + and select &ldquo;New Run Script Phase&rdquo;.
+Insert the following as the script:</p>
 <pre class="highlight shell"><code><span class="k">if </span>which swiftlint <span class="o">&gt;</span>/dev/null<span class="p">;</span> <span class="k">then
   </span>swiftlint
 <span class="k">else
@@ -398,7 +402,18 @@ in the IDE. Just add a new &ldquo;Run Script Phase&rdquo; with:</p>
 
 <p><img src="assets/runscript.png" alt=""></p>
 
-<p>Alternatively, if you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
+<p>You might want to move your SwiftLint phase directly before &lsquo;Compile Sources&rsquo;
+step, to detect errors quickly before compiling. However, SwiftLint is designed
+to run on valid Swift code that cleanly completes the compiler&rsquo;s parsing stage.
+So running SwiftLint before &lsquo;Compile Sources&rsquo; might yield some incorrect
+results.</p>
+
+<p>If you wish to autocorrect violations as well, your script could run
+<code>swiftlint autocorrect &amp;&amp; swiftlint</code> instead of just <code>swiftlint</code>. This will mean
+that all correctable violations are fixed, while ensuring warnings show up in
+your project for remaining violations.</p>
+
+<p>If you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
 <pre class="highlight shell"><code><span class="s2">"</span><span class="k">${</span><span class="nv">PODS_ROOT</span><span class="k">}</span><span class="s2">/SwiftLint/swiftlint"</span>
 </code></pre>
 <h4 id='format-on-save-xcode-plugin' class='heading'>Format on Save Xcode Plugin</h4>

@@ -32,11 +32,11 @@
   [Keith Smiley](https://github.com/keith)
   [#3376](https://github.com/realm/SwiftLint/issues/3376)
 
-* Add more details to CONTRIBUTING.md  
+* Add more details to `CONTRIBUTING.md`.  
   [mknabbe](https://github.com/mknabbe)
   [#1280](https://github.com/realm/SwiftLint/issues/1280)
 
-* Remove `@IBOutlet` and `@IBInspectable` from UnusedDeclarationRule  
+* Remove `@IBOutlet` and `@IBInspectable` from UnusedDeclarationRule.  
   [Keith Smiley](https://github.com/keith)
   [#3184](https://github.com/realm/SwiftLint/issues/3184)
 
@@ -97,7 +97,7 @@
   [#3389](https://github.com/realm/SwiftLint/issues/3389)
 
 * Fix severity configuration for `indentation_width`.  
-  [Samasaur1](https://github.com/Samasaur1), issue 
+  [Samasaur1](https://github.com/Samasaur1)
   [#3346](https://github.com/realm/SwiftLint/issues/3389)
 
 * Fix DuplicateImportsRule's support for import attributes.  

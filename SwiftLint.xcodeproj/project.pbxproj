@@ -156,6 +156,7 @@
 		6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7250948A1D0859260039B353 /* StatementModeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725094881D0855760039B353 /* StatementModeConfiguration.swift */; };
 		72EA17B61FD31F10009D5CE6 /* ExplicitACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */; };
+		739AC74925423681009CF533 /* OperatorUsageWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739AC74825423681009CF533 /* OperatorUsageWhitespaceConfiguration.swift */; };
 		740DF1B1203F62BB0081F694 /* EmptyStringRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */; };
 		750BBD0B214180AF007EC437 /* CollectionAlignmentRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7578C915214173BE0080FEC9 /* CollectionAlignmentRuleTests.swift */; };
 		75161FDF213B9D73009DE767 /* CollectionAlignmentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75161FDD213B9D67009DE767 /* CollectionAlignmentConfiguration.swift */; };
@@ -691,6 +692,7 @@
 		6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceKitCrashTests.swift; sourceTree = "<group>"; };
 		725094881D0855760039B353 /* StatementModeConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementModeConfiguration.swift; sourceTree = "<group>"; };
 		72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitACLRule.swift; sourceTree = "<group>"; };
+		739AC74825423681009CF533 /* OperatorUsageWhitespaceConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorUsageWhitespaceConfiguration.swift; sourceTree = "<group>"; };
 		740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyStringRule.swift; sourceTree = "<group>"; };
 		75161FDD213B9D67009DE767 /* CollectionAlignmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionAlignmentConfiguration.swift; sourceTree = "<group>"; };
 		7551DF6C21382C9A00AA1F4D /* ToggleBoolRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleBoolRule.swift; sourceTree = "<group>"; };
@@ -1138,6 +1140,7 @@
 				D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */,
 				A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */,
 				6A14DB9123E7292000C17847 /* OpeningBraceConfiguration.swift */,
+				739AC74825423681009CF533 /* OperatorUsageWhitespaceConfiguration.swift */,
 				78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */,
 				C28B2B3B2106DF210009A0FE /* PrefixedConstantRuleConfiguration.swift */,
 				DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */,
@@ -2306,6 +2309,7 @@
 				D4C27BFE1E12D53F00DF713E /* Version.swift in Sources */,
 				B2902A0E1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift in Sources */,
 				D4DE9133207B4750000FFAA8 /* UnavailableFunctionRule.swift in Sources */,
+				739AC74925423681009CF533 /* OperatorUsageWhitespaceConfiguration.swift in Sources */,
 				D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */,
 				D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */,
 				D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */,

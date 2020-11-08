@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule,
                                            AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = OperatorUsageWhitespaceConfiguration()
 
     public init() {}
 
@@ -33,7 +33,13 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let foo = GenericType<(UIViewController) -> Void>()\n"),
             Example("let foo = Foo<Bar<T>, Baz>()\n"),
             Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"),
-            Example("\"let foo =  1\"")
+            Example("\"let foo =  1\""),
+            Example("""
+              enum Enum {
+              case hello   = 1
+              case hello2  = 1
+              }
+            """)
         ],
         triggeringExamples: [
             Example("let foo = 1↓+2\n"),
@@ -53,7 +59,25 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"),
             Example("let foo↓  = [1]\n"),
             Example("let foo↓  = \"1\"\n"),
-            Example("let foo↓ =  \"1\"\n")
+            Example("let foo↓ =  \"1\"\n"),
+            Example("""
+              enum Enum {
+              case one↓  =  1
+              case two  = 1
+              }
+            """),
+            Example("""
+              enum Enum {
+              case one  = 1
+              case two↓  =  1
+              }
+            """),
+            Example("""
+              enum Enum {
+              case one↓   = 1
+              case two↓  = 1
+              }
+            """)
         ],
         corrections: [
             Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
@@ -79,7 +103,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }
@@ -94,19 +118,18 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let leadingVariableOrNumber = "(?:\\b|\\)|\\]|\")"
-        let trailingVariableOrNumber = "(?:\\b|\\(|\\[|\")"
+        let leadingExpression = "(?:\\b|\\)|\\]|\")"
+        let trailingExpression = "(?:\\b|\\(|\\[|\")"
 
         let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
                       (manySpaces, oneSpace), (manySpaces, manySpaces)]
         let patterns = spaces.map { first, second in
-            leadingVariableOrNumber + first + operators + second + trailingVariableOrNumber
+            leadingExpression + first + operators + second + trailingExpression
         }
         let pattern = "(?:\(patterns.joined(separator: "|")))"
 
         let genericPattern = "<(?:\(oneSpace)|\\S)*>" // not using dot to avoid matching new line
-        let validRangePattern = leadingVariableOrNumber + zeroSpaces + rangePattern +
-            zeroSpaces + trailingVariableOrNumber
+        let validRangePattern = leadingExpression + zeroSpaces + rangePattern + zeroSpaces + trailingExpression
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
         let excludingKinds = SyntaxKind.commentKinds.union([.objectLiteral])
@@ -131,8 +154,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
                 return (matchRange, correction)
             }
 
-            let pattern = spacesPattern + operators + spacesPattern
-            let operatorsRegex = regex(pattern)
+            let operatorsRegex = regex(spacesPattern + operators + spacesPattern)
 
             guard let matchRange = operatorsRegex.firstMatch(in: file.contents,
                                                              options: [], range: range)?.range else {
@@ -146,6 +168,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
             let operatorContent = operatorInRange(file: file, range: matchRange)
             let correction = " " + operatorContent + " "
+
+            if configuration.skipAlignedConstants && isAlignedConstant(in: matchRange, file: file) {
+                return nil
+            }
 
             return (matchRange, correction)
         }
@@ -162,6 +188,55 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
     private func operatorInRange(file: SwiftLintFile, range: NSRange) -> String {
         return file.stringView.substring(with: range).trimmingCharacters(in: .whitespaces)
+    }
+
+    private func isAlignedConstant(in range: NSRange, file: SwiftLintFile) -> Bool {
+        /// Make sure we have match with assignment operator and with spaces before it
+        let matchedString = file.stringView.substring(with: range)
+        let equalityOperatorRegex = regex("\\s+=\\s")
+
+        let fullRange = NSRange(location: 0, length: range.length)
+        guard let match = equalityOperatorRegex.firstMatch(
+                in: matchedString,
+                options: [],
+                range: fullRange),
+              match.range == fullRange
+        else {
+            return false
+        }
+
+        guard let (lineNumber, _) = file.stringView.lineAndCharacter(forCharacterOffset: NSMaxRange(range)),
+              case let lineIndex = lineNumber - 1, lineIndex >= 0 else {
+            return false
+        }
+
+        // Find lines above and below with the same location of =
+        let currentLine = file.stringView.lines[lineIndex].content
+        let index = currentLine.firstIndex(of: "=")
+        guard let offset = index.map({ currentLine.distance(from: currentLine.startIndex, to: $0) }) else {
+            return false
+        }
+
+        // Look around for assignment operator in lines around
+        let lineIndexesAround = (1...configuration.linesLookAround)
+            .flatMap { [lineIndex + $0, lineIndex - $0] }
+
+        func isValidIndex(_ idx: Int) -> Bool {
+            return idx != lineIndex && idx >= 0 && idx < file.stringView.lines.count
+        }
+
+        for lineIndex in lineIndexesAround where isValidIndex(lineIndex) {
+            let line = file.stringView.lines[lineIndex].content
+            guard !line.isEmpty else { continue }
+            let index = line.index(line.startIndex,
+                                   offsetBy: offset,
+                                   limitedBy: line.index(line.endIndex, offsetBy: -1))
+            if index.map({ line[$0] }) == "=" {
+                return true
+            }
+        }
+
+        return false
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {

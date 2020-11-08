@@ -17,7 +17,8 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
             Example("view.clipsToBounds.toggle()\n"),
             Example("func foo() { abc.toggle() }"),
             Example("view.clipsToBounds = !clipsToBounds\n"),
-            Example("disconnected = !connected\n")
+            Example("disconnected = !connected\n"),
+            Example("result = !result.toggle()")
         ],
         triggeringExamples: [
             Example("↓isHidden = !isHidden\n"),
@@ -41,7 +42,7 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = "(?<![\\w.])([\\w.]+) = !\\1\\b"
+        let pattern = #"(?<![\w.])([\w.]+) = !\1\b(?!\.)"#
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds)
     }

@@ -32,15 +32,13 @@ jobs:
       xcode12:
         DEVELOPER_DIR: /Applications/Xcode_12.app
   steps:
-    - script: git submodule update --init --recursive
-      displayName: Update git submodules
     - script: |
         sw_vers
         xcodebuild -version
       displayName: Version Informations
     - script: >
         set -o pipefail &&
-        xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint test |
+        xcodebuild -scheme swiftlint test |
         xcpretty -r junit -o build/reports/xcodebuild.xml
       displayName: xcodebuild test
     - script: bash <(curl -s https://codecov.io/bash)

@@ -772,8 +772,7 @@ extension IntegrationTests {
     static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] = [
         ("testSwiftLintLints", testSwiftLintLints),
         ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects),
-        ("testSimulateHomebrewTest", testSimulateHomebrewTest),
-        ("testSimulateHomebrewTestWithDisableSourceKit", testSimulateHomebrewTestWithDisableSourceKit)
+        ("testSimulateHomebrewTest", testSimulateHomebrewTest)
     ]
 }
 

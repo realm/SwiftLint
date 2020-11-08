@@ -5,6 +5,18 @@
 * SwiftLint now requires Swift 5.2 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
+* SwiftLintFramework can no longer be integrated as a Carthage
+  depdendency.  
+  [JP Simard](https://github.com/jpsim)
+  [#3412](https://github.com/realm/SwiftLint/issues/3412)
+
+* `SwiftLint.xcworkspace` and `SwiftLint.xcproject` have been completely
+  removed. You can still use Xcode to develop SwiftLint by opening it as
+  a Swift Package by typing `xed .` or `xed Package.swift` from your
+  shell.  
+  [JP Simard](https://github.com/jpsim)
+  [#3412](https://github.com/realm/SwiftLint/issues/3412)
+
 #### Experimental
 
 * None.

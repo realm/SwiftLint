@@ -12,6 +12,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         name: "Unused Closure Parameter",
         description: "Unused parameter in a closure should be replaced with _.",
         kind: .lint,
+        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("[1, 2].map { $0 + 1 }\n"),
             Example("[1, 2].map({ $0 + 1 })\n"),
@@ -49,6 +50,11 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             viewModel?.profileImage.didSet(weak: self) { (self, profileImage) in
                 self.profileImageView.image = profileImage
             }
+            """),
+            Example("""
+            let failure: Failure = { task, error in
+                observer.sendFailed(error, task)
+            }
             """)
         ],
         triggeringExamples: [
@@ -65,6 +71,11 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             Example("""
             viewModel?.profileImage.didSet(weak: self) { (↓self, profileImage) in
                 profileImageView.image = profileImage
+            }
+            """),
+            Example("""
+            let failure: Failure = { ↓task, error in
+                observer.sendFailed(error)
             }
             """)
         ],
@@ -104,7 +115,17 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
                 }
                 """),
             Example("class C {\n #if true\n func f() {\n [1, 2].map { ↓number in\n return 3\n }\n }\n #endif\n}"):
-                Example("class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}")
+                Example("class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}"),
+            Example("""
+            let failure: Failure = { ↓task, error in
+                observer.sendFailed(error)
+            }
+            """):
+                Example("""
+                let failure: Failure = { _, error in
+                    observer.sendFailed(error)
+                }
+                """)
         ]
     )
 
@@ -130,21 +151,15 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
 
     private func violationRanges(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
                                  kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
-        guard kind == .call,
-            !isClosure(dictionary: dictionary),
-            let offset = dictionary.offset,
-            let length = dictionary.length,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let bodyLength = dictionary.bodyLength,
-            bodyLength > 0
+        guard kind == .closure,
+            let offset = dictionary.bodyOffset,
+            let length = dictionary.bodyLength,
+            length > 0
         else {
             return []
         }
 
-        let rangeStart = nameOffset + nameLength
-        let rangeLength = (offset + length) - (nameOffset + nameLength)
-        let byteRange = ByteRange(location: rangeStart, length: rangeLength)
+        let byteRange = ByteRange(location: offset, length: length)
         let parameters = dictionary.enclosedVarParameters
         let contents = file.stringView
 
@@ -194,12 +209,5 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         return contents.byteRangeToNSRange(violationByteRange).map { range in
             return (range, name)
         }
-    }
-
-    private func isClosure(dictionary: SourceKittenDictionary) -> Bool {
-        return dictionary.name.flatMap { name -> Bool in
-            let range = name.fullNSRange
-            return regex("\\A[\\s\\(]*?\\{").firstMatch(in: name, options: [], range: range) != nil
-        } ?? false
     }
 }

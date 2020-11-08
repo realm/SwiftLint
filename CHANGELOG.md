@@ -60,6 +60,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3293](https://github.com/realm/SwiftLint/issues/3293)
 
+* `unused_closure_parameter` rule now validates closures outside of
+  function calls.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1082](https://github.com/realm/SwiftLint/issues/1082)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

@@ -70,12 +70,10 @@ public struct KeyPathExpressionAsFunctionRule: ASTRule, OptInRule, Configuration
         }
 
         return closures.compactMap { dictionary -> ByteCount? in
-            guard let offset = dictionary.offset,
-                  let bodyOffset = dictionary.bodyOffset,
-                  let bodyLength = dictionary.bodyLength,
-                  bodyLength > 0,
-                  case let byteRange = ByteRange(location: bodyOffset, length: bodyLength),
-                  let range = file.stringView.byteRangeToNSRange(byteRange) else {
+            guard dictionary.enclosedVarParameters.isEmpty,
+                  let bodyRange = dictionary.bodyByteRange,
+                  bodyRange.length > 0,
+                  let range = file.stringView.byteRangeToNSRange(bodyRange) else {
                 return nil
             }
 
@@ -85,7 +83,7 @@ public struct KeyPathExpressionAsFunctionRule: ASTRule, OptInRule, Configuration
                 return nil
             }
 
-            return offset
+            return dictionary.offset
         }
     }
 }

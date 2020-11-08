@@ -12,6 +12,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3338](https://github.com/realm/SwiftLint/issues/3338)
 
+* The `whitelist_rules` configuration key has been renamed to
+  `only_rules`.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+
 #### Experimental
 
 * None.
@@ -46,6 +50,10 @@
   argument in addition to the `key` argument.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3334](https://github.com/realm/SwiftLint/issues/3334)
+
+* Add `inclusive_language` rule to encourage the use of inclusive
+  language that avoids discrimination against groups of people.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
 
 #### Bug Fixes
 

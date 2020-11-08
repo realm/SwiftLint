@@ -209,7 +209,7 @@ SwiftLint가 실행될 디렉토리에 `.swiftlint.yml` 파일을 추가해서 S
 
 * `disabled_rules`: 기본 활성화된 룰 중에 비활성화할 룰들을 지정합니다.
 * `opt_in_rules`: 기본 룰이 아닌 룰들을 활성화합니다.
-* `whitelist_rules`: 지정한 룰들만 활성화되도록 화이트리스트로 지정합니다. `disabled_rules` 및 `opt_in_rules`과는 같이 사용할 수 없습니다.
+* `only_rules`: 지정한 룰들만 활성화되도록 화이트리스트로 지정합니다. `disabled_rules` 및 `opt_in_rules`과는 같이 사용할 수 없습니다.
 
 ```yaml
 disabled_rules: # 실행에서 제외할 룰 식별자들

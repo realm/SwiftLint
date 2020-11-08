@@ -124,20 +124,22 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 return true
             }
 
-            // ignore whitelisted attributes
-            let attributesAfterWhitelist: Set<String>
+            // ignore attributes that are explicitly allowed
+            let attributesAfterAllowed: Set<String>
             let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
             let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
 
             if attributeShouldBeOnSameLine {
-                attributesAfterWhitelist = attributesTokens
-                    .union(newLineExceptions).union(sameLineExceptions)
+                attributesAfterAllowed = attributesTokens
+                    .union(newLineExceptions)
+                    .union(sameLineExceptions)
             } else {
-                attributesAfterWhitelist = attributesTokens
-                    .subtracting(newLineExceptions).subtracting(sameLineExceptions)
+                attributesAfterAllowed = attributesTokens
+                    .subtracting(newLineExceptions)
+                    .subtracting(sameLineExceptions)
             }
 
-            return attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
+            return attributesAfterAllowed.isEmpty == attributeShouldBeOnSameLine
         } catch {
             return true
         }
@@ -158,7 +160,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
-            // 2. it's a whitelisted attribute, according to the current configuration
+            // 2. it's an allowed attribute, according to the current configuration
             let isParameterized = hasParameter || token.bridge().contains("(")
             if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token
@@ -298,31 +300,32 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let ignoredAttributes: Set<SwiftDeclarationAttributeKind> = [
-            .dynamic,
-            .fileprivate,
-            .final,
-            .infix,
-            .internal,
-            .lazy,
-            .mutating,
-            .nonmutating,
-            .open,
-            .optional,
-            .override,
-            .postfix,
-            .prefix,
-            .private,
-            .public,
-            .required,
-            .rethrows,
-            .setterFilePrivate,
-            .setterInternal,
-            .setterOpen,
-            .setterPrivate,
-            .setterPublic,
-            .weak
-        ]
-        return attributes.filter { !ignoredAttributes.contains($0) }
+        return attributes.filter { !kIgnoredAttributes.contains($0) }
     }
 }
+
+private let kIgnoredAttributes: Set<SwiftDeclarationAttributeKind> = [
+    .dynamic,
+    .fileprivate,
+    .final,
+    .infix,
+    .internal,
+    .lazy,
+    .mutating,
+    .nonmutating,
+    .open,
+    .optional,
+    .override,
+    .postfix,
+    .prefix,
+    .private,
+    .public,
+    .required,
+    .rethrows,
+    .setterFilePrivate,
+    .setterInternal,
+    .setterOpen,
+    .setterPrivate,
+    .setterPublic,
+    .weak
+]

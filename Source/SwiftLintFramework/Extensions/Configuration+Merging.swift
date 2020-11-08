@@ -90,8 +90,8 @@ extension Configuration {
         switch configuration.rulesMode {
         case .allEnabled:
             customRulesFilter = { _ in true }
-        case let .whitelisted(whitelistedRules):
-            customRulesFilter = { whitelistedRules.contains($0.identifier) }
+        case let .only(onlyRules):
+            customRulesFilter = { onlyRules.contains($0.identifier) }
         case let .default(disabledRules, _):
             customRulesFilter = { !disabledRules.contains($0.identifier) }
         }
@@ -113,14 +113,14 @@ extension Configuration {
             // Technically not possible yet as it's not configurable in a .swiftlint.yml file,
             // but implemented for completeness
             regularMergedRules = configuration.rules
-        case .whitelisted(let whitelistedRules):
+        case .only(let onlyRules):
             // Use an intermediate set to filter out duplicate rules when merging configurations
             // (always use the nested rule first if it exists)
             regularMergedRules = Set(configuration.rules.map(HashableRule.init))
                 .union(rules.map(HashableRule.init))
                 .map { $0.rule }
                 .filter { rule in
-                    return whitelistedRules.contains(type(of: rule).description.identifier)
+                    return onlyRules.contains(type(of: rule).description.identifier)
                 }
         case let .default(disabled, optIn):
             // Same here

@@ -23,8 +23,8 @@ final class ConfigurationAliasesTests: XCTestCase {
         XCTAssertNotNil(configuration)
     }
 
-    func testWhitelistRulesFromDeprecatedAlias() {
-        let configuration = Configuration(dict: ["whitelist_rules": ["mock"]], ruleList: testRuleList)!
+    func testOnlyRulesFromDeprecatedAlias() {
+        let configuration = Configuration(dict: ["only_rules": ["mock"]], ruleList: testRuleList)!
         let configuredIdentifiers = configuration.rules.map {
             type(of: $0).description.identifier
         }

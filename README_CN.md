@@ -232,7 +232,7 @@ let noWarning3 = NSNumber() as! Int
 
 * `disabled_rules`: 关闭某些默认开启的规则。
 * `opt_in_rules`: 一些规则是可选的。
-* `whitelist_rules`: 不可以和 `disabled_rules` 或者 `opt_in_rules` 并列。类似一个白名单，只有在这个列表中的规则才是开启的。
+* `only_rules`: 不可以和 `disabled_rules` 或者 `opt_in_rules` 并列。类似一个白名单，只有在这个列表中的规则才是开启的。
 
 ```yaml
 disabled_rules: # 执行时排除掉的规则

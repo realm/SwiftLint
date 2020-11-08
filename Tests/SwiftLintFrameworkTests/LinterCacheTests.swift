@@ -108,7 +108,7 @@ class LinterCacheTests: XCTestCase {
 
     // Two subsequent lints with no changes reuses cache
     func testUnchangedFilesReusesCache() {
-        let helper = makeCacheTestHelper(dict: ["whitelist_rules": ["mock"]])
+        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"]])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
@@ -119,38 +119,38 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testConfigFileReorderedReusesCache() {
-        let helper = makeCacheTestHelper(dict: ["whitelist_rules": ["mock"], "disabled_rules": []])
+        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "disabled_rules": []])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
-        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [], "whitelist_rules": ["mock"]])
+        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [], "only_rules": ["mock"]])
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
     }
 
     func testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache() throws {
-        let helper = makeCacheTestHelper(dict: try YamlParser.parse("whitelist_rules:\n  - mock"))
+        let helper = makeCacheTestHelper(dict: try YamlParser.parse("only_rules:\n  - mock"))
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
-        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [], "whitelist_rules": ["mock"]])
+        let configuration2 = helper.makeConfig(dict: ["disabled_rules": [], "only_rules": ["mock"]])
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
-        let configYamlWithComment = try YamlParser.parse("# comment1\nwhitelist_rules:\n  - mock # comment2")
+        let configYamlWithComment = try YamlParser.parse("# comment1\nonly_rules:\n  - mock # comment2")
         let configuration3 = helper.makeConfig(dict: configYamlWithComment)
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration3)!, violations)
         XCTAssertEqual(cache.violations(forFile: file, configuration: helper.configuration)!, violations)
     }
 
     func testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache() {
-        let helper = makeCacheTestHelper(dict: ["whitelist_rules": ["mock"], "reporter": "json"])
+        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
-        let configuration2 = helper.makeConfig(dict: ["whitelist_rules": ["mock"], "reporter": "xcode"])
+        let configuration2 = helper.makeConfig(dict: ["only_rules": ["mock"], "reporter": "xcode"])
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
-        let configuration3 = helper.makeConfig(dict: ["whitelist_rules": ["mock"]])
+        let configuration3 = helper.makeConfig(dict: ["only_rules": ["mock"]])
         XCTAssertEqual(cache.violations(forFile: file, configuration: configuration3)!, violations)
     }
 
@@ -159,7 +159,7 @@ class LinterCacheTests: XCTestCase {
     // Two subsequent lints with a file touch in between causes just that one
     // file to be re-linted, with the cache used for all other files
     func testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers() {
-        let helper = makeCacheTestHelper(dict: ["whitelist_rules": ["mock"], "reporter": "json"])
+        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
         let (file1, file2) = ("file1.swift", "file2.swift")
         let violations1 = helper.makeViolations(file: file1)
         let violations2 = helper.makeViolations(file: file2)
@@ -172,7 +172,7 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted() {
-        let helper = makeCacheTestHelper(dict: ["whitelist_rules": ["mock"], "reporter": "json"])
+        let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
         let (file1, file2) = ("file1.swift", "file2.swift")
         let violations1 = helper.makeViolations(file: file1)
         let violations2 = helper.makeViolations(file: file2)
@@ -190,7 +190,7 @@ class LinterCacheTests: XCTestCase {
     func testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
         let initialConfig = Configuration(
             dict: [
-                "whitelist_rules": ["custom_rules", "rule1"],
+                "only_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]inja)"]]
             ],
             ruleList: RuleList(rules: CustomRules.self)
@@ -200,7 +200,7 @@ class LinterCacheTests: XCTestCase {
         // Change
         validateNewConfigDoesntHitCache(
             dict: [
-                "whitelist_rules": ["custom_rules", "rule1"],
+                "only_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]injas)"]]
             ],
             initialConfig: initialConfig
@@ -209,14 +209,14 @@ class LinterCacheTests: XCTestCase {
         // Addition
         validateNewConfigDoesntHitCache(
             dict: [
-                "whitelist_rules": ["custom_rules", "rule1"],
+                "only_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]]
             ],
             initialConfig: initialConfig
         )
 
         // Removal
-        validateNewConfigDoesntHitCache(dict: ["whitelist_rules": ["custom_rules"]], initialConfig: initialConfig)
+        validateNewConfigDoesntHitCache(dict: ["only_rules": ["custom_rules"]], initialConfig: initialConfig)
     }
 
     func testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
@@ -257,16 +257,16 @@ class LinterCacheTests: XCTestCase {
         validateNewConfigDoesntHitCache(dict: ["enabled_rules": []], initialConfig: initialConfig)
     }
 
-    func testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
-        let initialConfig = Configuration(dict: ["whitelist_rules": ["nesting"]])!
+    func testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
+        let initialConfig = Configuration(dict: ["only_rules": ["nesting"]])!
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
         // Change
-        validateNewConfigDoesntHitCache(dict: ["whitelist_rules": ["todo"]], initialConfig: initialConfig)
+        validateNewConfigDoesntHitCache(dict: ["only_rules": ["todo"]], initialConfig: initialConfig)
         // Addition
-        validateNewConfigDoesntHitCache(dict: ["whitelist_rules": ["nesting", "todo"]], initialConfig: initialConfig)
+        validateNewConfigDoesntHitCache(dict: ["only_rules": ["nesting", "todo"]], initialConfig: initialConfig)
         // Removal
-        validateNewConfigDoesntHitCache(dict: ["whitelist_rules": []], initialConfig: initialConfig)
+        validateNewConfigDoesntHitCache(dict: ["only_rules": []], initialConfig: initialConfig)
     }
 
     func testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {

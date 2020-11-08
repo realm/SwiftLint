@@ -64,7 +64,7 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "no-cache", defaultValue: false,
                                usage: "ignore cache when linting")
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,
-                               usage: "run all rules, even opt-in and disabled ones, ignoring `whitelist_rules`")
+                               usage: "run all rules, even opt-in and disabled ones, ignoring `only_rules`")
             // This should go last to avoid eating other args
             <*> mode <| pathsArgument(action: "lint")
     }

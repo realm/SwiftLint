@@ -146,7 +146,7 @@ def setup_repos
     end
     if @only_rules_changed && @rules_changed
       File.open(swiftlint_config, 'w') do |file|
-        file.puts('whitelist_rules:')
+        file.puts('only_rules:')
         file.puts(@rules_changed.map { |rule| "  - #{rule}" })
       end
     end

@@ -1,3 +1,5 @@
+// swiftlint:disable inclusive_language - To ease a migration from the previous `whitelist_rules`
+
 extension Configuration {
     private enum Key: String {
         case cachePath = "cache_path"
@@ -8,9 +10,10 @@ extension Configuration {
         case optInRules = "opt_in_rules"
         case reporter = "reporter"
         case swiftlintVersion = "swiftlint_version"
-        case useNestedConfigs = "use_nested_configs" // deprecated
+        case useNestedConfigs = "use_nested_configs" // deprecated, always enabled
         case warningThreshold = "warning_threshold"
-        case whitelistRules = "whitelist_rules"
+        case onlyRules = "only_rules"
+        case whitelistRules = "whitelist_rules" // deprecated in favor of onlyRules
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles  = "allow_zero_lintable_files"
@@ -28,6 +31,7 @@ extension Configuration {
             .swiftlintVersion,
             .useNestedConfigs,
             .warningThreshold,
+            .onlyRules,
             .whitelistRules,
             .indentation,
             .analyzerRules,
@@ -63,7 +67,7 @@ extension Configuration {
     ///                                     settings in `dict`.
     /// - parameter cachePath:              The location of the persisted cache on disk.
     /// - parameter customRulesIdentifiers: All custom rule identifiers defined in the configuration.
-    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
+    public init?(dict: [String: Any], ruleList: RuleList = primaryRuleList, enableAllRules: Bool = false,
                  cachePath: String? = nil, customRulesIdentifiers: [String] = []) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(dict[Key.optInRules.rawValue] ?? dict[Key.enabledRules.rawValue])
@@ -71,7 +75,8 @@ extension Configuration {
         Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
 
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
-        let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
+        // Use either the new 'only_rules' or fallback to the deprecated 'whitelist_rules'
+        let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
@@ -79,7 +84,7 @@ extension Configuration {
         let allowZeroLintableFiles = dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
-                                            optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
+                                            optInRules: optInRules, onlyRules: onlyRules, ruleList: ruleList)
 
         let configuredRules: [Rule]
         do {
@@ -97,7 +102,7 @@ extension Configuration {
         self.init(disabledRules: disabledRules,
                   optInRules: optInRules,
                   enableAllRules: enableAllRules,
-                  whitelistRules: whitelistRules,
+                  onlyRules: onlyRules,
                   analyzerRules: analyzerRules,
                   included: included,
                   excluded: excluded,
@@ -116,13 +121,13 @@ extension Configuration {
     private init?(disabledRules: [String],
                   optInRules: [String],
                   enableAllRules: Bool,
-                  whitelistRules: [String],
+                  onlyRules: [String],
                   analyzerRules: [String],
                   included: [String],
                   excluded: [String],
                   warningThreshold: Int?,
                   reporter: String = XcodeReporter.identifier,
-                  ruleList: RuleList = masterRuleList,
+                  ruleList: RuleList = primaryRuleList,
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
                   cachePath: String?,
@@ -133,14 +138,14 @@ extension Configuration {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
-        } else if whitelistRules.isNotEmpty {
+        } else if onlyRules.isNotEmpty {
             if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                 queuedPrintError("'\(Key.disabledRules.rawValue)' or " +
                     "'\(Key.optInRules.rawValue)' cannot be used in combination " +
-                    "with '\(Key.whitelistRules.rawValue)'")
+                    "with '\(Key.onlyRules.rawValue)'")
                 return nil
             }
-            rulesMode = .whitelisted(whitelistRules + analyzerRules)
+            rulesMode = .only(onlyRules + analyzerRules)
         } else {
             rulesMode = .default(disabled: disabledRules, optIn: optInRules + analyzerRules)
         }
@@ -165,7 +170,7 @@ extension Configuration {
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],
                                               disabledRules: [String] = [],
                                               optInRules: [String] = [],
-                                              whitelistRules: [String] = [],
+                                              onlyRules: [String] = [],
                                               ruleList: RuleList) {
         // Deprecation warning for "enabled_rules"
         if dict[Key.enabledRules.rawValue] != nil {
@@ -181,12 +186,19 @@ extension Configuration {
                 "now always considered.")
         }
 
+        // Deprecation warning for "whitelist_rules"
+        if dict[Key.whitelistRules.rawValue] != nil {
+            queuedPrintError("'\(Key.whitelistRules.rawValue)' has been renamed to " +
+                "'\(Key.onlyRules.rawValue)' and will be completely removed in a " +
+                "future release.")
+        }
+
         // Deprecation warning for rules
         let deprecatedRulesIdentifiers = ruleList.list.flatMap { identifier, rule -> [(String, String)] in
             return rule.description.deprecatedAliases.map { ($0, identifier) }
         }
 
-        let userProvidedRuleIDs = Set(disabledRules + optInRules + whitelistRules)
+        let userProvidedRuleIDs = Set(disabledRules + optInRules + onlyRules)
         let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
             return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
         }
@@ -219,10 +231,10 @@ extension Configuration {
             switch rulesMode {
             case .allEnabled:
                 return
-            case .whitelisted(let whitelist):
-                if Set(whitelist).isDisjoint(with: rule.description.allIdentifiers) {
+            case .only(let onlyRules):
+                if Set(onlyRules).isDisjoint(with: rule.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not present on " +
-                        "'\(Key.whitelistRules.rawValue)'.")
+                        "'\(Key.onlyRules.rawValue)'.")
                 }
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {

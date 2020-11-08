@@ -251,7 +251,7 @@ private func sandboxProfile() -> String {
             (regex #"^/dev/fd/[0-9]+$")
             (regex #"^/dev/ttys?[0-9]*$")
             )
-        (deny file-write*) ; deny non-whitelist file write operations
+        (deny file-write*) ; deny all other file write operations
         (allow process-exec
             (literal "/bin/ps")
             (with no-sandbox)

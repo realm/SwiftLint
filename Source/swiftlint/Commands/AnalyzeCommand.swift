@@ -84,7 +84,7 @@ struct AnalyzeOptions: OptionsProtocol {
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,
-                               usage: "run all rules, even opt-in and disabled ones, ignoring `whitelist_rules`")
+                               usage: "run all rules, even opt-in and disabled ones, ignoring `only_rules`")
             <*> mode <| Option(key: "autocorrect", defaultValue: false,
                                usage: "correct violations whenever possible")
             <*> mode <| Option(key: "compiler-log-path", defaultValue: "",

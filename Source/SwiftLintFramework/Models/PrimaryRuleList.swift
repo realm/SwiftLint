@@ -2,7 +2,7 @@
 // DO NOT EDIT
 
 /// The rule list containing all available rules built into SwiftLint.
-public let masterRuleList = RuleList(rules: [
+public let primaryRuleList = RuleList(rules: [
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,
     AttributesRule.self,
@@ -75,6 +75,7 @@ public let masterRuleList = RuleList(rules: [
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
+    InclusiveLanguageRule.self,
     IndentationWidthRule.self,
     InertDeferRule.self,
     IsDisjointRule.self,

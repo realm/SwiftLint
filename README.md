@@ -317,12 +317,12 @@ Rule inclusion:
 
 * `disabled_rules`: Disable rules from the default enabled set.
 * `opt_in_rules`: Enable rules not from the default set.
-* `whitelist_rules`: Acts as a whitelist, only the rules specified in this list
-  will be enabled. Can not be specified alongside `disabled_rules` or
-  `opt_in_rules`.
+* `only_rules`: Only the rules specified in this list will be enabled.
+   Cannot be specified alongside `disabled_rules` or `opt_in_rules`.
 * `analyzer_rules`: This is an entirely separate list of rules that are only
   run by the `analyze` command. All analyzer rules are opt-in, so this is the
-  only configurable rule list (there is no disabled/whitelist equivalent).
+  only configurable rule list, there are no equivalents for `disabled_rules`
+  `only_rules`.
 
 ```yaml
 # By default, SwiftLint uses a set of sensible default rules you can adjust:
@@ -334,7 +334,7 @@ opt_in_rules: # some rules are turned off by default, so you need to opt-in
   - empty_count # Find all the available rules by running: `swiftlint rules`
 
 # Alternatively, specify all rules explicitly by uncommenting this option:
-# whitelist_rules: # delete `disabled_rules` & `opt_in_rules` if using this
+# only_rules: # delete `disabled_rules` & `opt_in_rules` if using this
 #   - empty_parameters
 #   - vertical_whitespace
 
@@ -438,7 +438,8 @@ are all the possible syntax kinds:
 * string_interpolation_anchor
 * typeidentifier
 
-If using custom rules alongside a whitelist, make sure to add `custom_rules` as an item under `whitelist_rules`.
+If using custom rules in combination with `only_rules`, make sure to add
+`custom_rules` as an item under `only_rules`.
 
 #### Nested Configurations
 

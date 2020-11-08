@@ -166,7 +166,7 @@ extension ConfigurationAliasesTests {
         ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
         ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
         ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
-        ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
+        ("testOnlyRulesFromDeprecatedAlias", testOnlyRulesFromDeprecatedAlias),
         ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
     ]
 }
@@ -177,10 +177,10 @@ extension ConfigurationTests {
         ("testEmptyConfiguration", testEmptyConfiguration),
         ("testInitWithRelativePathAndRootPath", testInitWithRelativePathAndRootPath),
         ("testEnableAllRulesConfiguration", testEnableAllRulesConfiguration),
-        ("testWhitelistRules", testWhitelistRules),
+        ("testOnlyRules", testOnlyRules),
         ("testWarningThreshold_value", testWarningThreshold_value),
         ("testWarningThreshold_nil", testWarningThreshold_nil),
-        ("testOtherRuleConfigurationsAlongsideWhitelistRules", testOtherRuleConfigurationsAlongsideWhitelistRules),
+        ("testOtherRuleConfigurationsAlongsideOnlyRules", testOtherRuleConfigurationsAlongsideOnlyRules),
         ("testDisabledRules", testDisabledRules),
         ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
         ("testDuplicatedRules", testDuplicatedRules),
@@ -215,7 +215,7 @@ extension ConfigurationTests {
         ("testLevel3", testLevel3),
         ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
         ("testMergedWarningThreshold", testMergedWarningThreshold),
-        ("testNestedWhitelistedRules", testNestedWhitelistedRules),
+        ("testNestedOnlyRules", testNestedOnlyRules),
         ("testNestedConfigurationsWithCustomRulesMerge", testNestedConfigurationsWithCustomRulesMerge),
         ("testNestedConfigurationAllowsDisablingParentsCustomRules", testNestedConfigurationAllowsDisablingParentsCustomRules)
     ]
@@ -738,6 +738,14 @@ extension ImplicitlyUnwrappedOptionalRuleTests {
     ]
 }
 
+extension InclusiveLanguageRuleTests {
+    static var allTests: [(String, (InclusiveLanguageRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testNonTriggeringExamplesWithNonDefaultConfig", testNonTriggeringExamplesWithNonDefaultConfig),
+        ("testTriggeringExamplesWithNonDefaultConfig", testTriggeringExamplesWithNonDefaultConfig)
+    ]
+}
+
 extension IndentationWidthRuleTests {
     static var allTests: [(String, (IndentationWidthRuleTests) -> () throws -> Void)] = [
         ("testFirstLineIndentation", testFirstLineIndentation),
@@ -886,7 +894,7 @@ extension LinterCacheTests {
         ("testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-        ("testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
+        ("testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted)
     ]
@@ -1811,6 +1819,7 @@ XCTMain([
     testCase(ImplicitReturnRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
+    testCase(InclusiveLanguageRuleTests.allTests),
     testCase(IndentationWidthRuleTests.allTests),
     testCase(InertDeferRuleTests.allTests),
     testCase(IntegrationTests.allTests),

@@ -10,7 +10,7 @@ public struct Configuration: Hashable {
         /// `optIn`.
         case `default`(disabled: [String], optIn: [String])
         /// Only enable the rules explicitly listed.
-        case whitelisted([String])
+        case only([String])
         /// Enable all available rules.
         case allEnabled
     }
@@ -63,7 +63,7 @@ public struct Configuration: Hashable {
 
     // MARK: Rules Properties
 
-    /// All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
+    /// All rules enabled in this configuration, derived from disabled, opt-in and `only_rules` rules.
     public let rules: [Rule]
 
     internal let rulesMode: RulesMode
@@ -90,7 +90,7 @@ public struct Configuration: Hashable {
                  excluded: [String] = [],
                  warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
-                 ruleList: RuleList = masterRuleList,
+                 ruleList: RuleList = primaryRuleList,
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
@@ -281,16 +281,16 @@ private func enabledRules(from configuredRules: [Rule],
     switch mode {
     case .allEnabled:
         return configuredRules
-    case .whitelisted(let whitelistedRuleIdentifiers):
-        let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
-            ruleIdentifiers: whitelistedRuleIdentifiers.map(aliasResolver),
+    case .only(let onlyRuleIdentifiers):
+        let validOnlyRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: onlyRuleIdentifiers.map(aliasResolver),
             validRuleIdentifiers: validRuleIdentifiers)
         // Validate that rule identifiers aren't listed multiple times
-        if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
+        if containsDuplicateIdentifiers(validOnlyRuleIdentifiers) {
             return nil
         }
         return configuredRules.filter { rule in
-            return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
+            return validOnlyRuleIdentifiers.contains(type(of: rule).description.identifier)
         }
     case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
         let validDisabledRuleIdentifiers = validateRuleIdentifiers(

@@ -27,7 +27,7 @@ extension String {
     }
 }
 
-let allRuleIdentifiers = Array(masterRuleList.list.keys)
+let allRuleIdentifiers = Array(primaryRuleList.list.keys)
 
 func violations(_ example: Example, config: Configuration = Configuration()!,
                 requiresFileOnDisk: Bool = false) -> [StyleViolation] {
@@ -232,14 +232,14 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
     let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
     let identifiers = skipDisableCommandTests ? [identifier] : [identifier, superfluousDisableCommandRuleIdentifier]
 
-    if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
+    if let ruleConfiguration = ruleConfiguration, let ruleType = primaryRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
             let rules = skipDisableCommandTests ? [configuredRule] : [configuredRule, SuperfluousDisableCommandRule()]
-            return Configuration(rulesMode: .whitelisted(identifiers), configuredRules: rules)
+            return Configuration(rulesMode: .only(identifiers), configuredRules: rules)
         }
     }
-    return Configuration(rulesMode: .whitelisted(identifiers))
+    return Configuration(rulesMode: .only(identifiers))
 }
 
 private func testCorrection(_ correction: (Example, Example),
@@ -252,9 +252,9 @@ private func testCorrection(_ correction: (Example, Example),
 #endif
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
-        case let .whitelisted(whitelistedRules) = configuration.rulesMode,
-        let firstWhitelistedRule = whitelistedRules.first,
-        case let configDict = ["whitelist_rules": whitelistedRules, firstWhitelistedRule: correctionConfiguration],
+        case let .only(onlyRules) = configuration.rulesMode,
+        let firstRule = onlyRules.first,
+        case let configDict = ["only_rules": onlyRules, firstRule: correctionConfiguration],
         let typedConfiguration = Configuration(dict: configDict) {
         config = configuration.merge(with: typedConfiguration)
     }

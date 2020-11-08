@@ -38,15 +38,15 @@ VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionSt
 
 all: build
 
-sourcery: Source/SwiftLintFramework/Models/MasterRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift Tests/LinuxMain.swift
+sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift Tests/LinuxMain.swift
 
 Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
 	sourcery --sources Tests --exclude-sources Tests/SwiftLintFrameworkTests/Resources --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated
 	mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
 
-Source/SwiftLintFramework/Models/MasterRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/MasterRuleList.stencil
-	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
-	mv .sourcery/MasterRuleList.generated.swift Source/SwiftLintFramework/Models/MasterRuleList.swift
+Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/PrimaryRuleList.stencil
+	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
+	mv .sourcery/PrimaryRuleList.generated.swift Source/SwiftLintFramework/Models/PrimaryRuleList.swift
 
 Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/AutomaticRuleTests.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/AutomaticRuleTests.stencil --output .sourcery

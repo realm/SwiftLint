@@ -110,7 +110,7 @@
             <a class="nav-group-name-link" href="Global%20Variables.html">Global Variables</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework14masterRuleListAA0eF0Vvp">masterRuleList</a>
+                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a>
               </li>
             </ul>
           </li>
@@ -618,12 +618,12 @@ run SwiftLint from. The following parameters can be configured:</p>
 <ul>
 <li><code>disabled_rules</code>: Disable rules from the default enabled set.</li>
 <li><code>opt_in_rules</code>: Enable rules not from the default set.</li>
-<li><code>whitelist_rules</code>: Acts as a whitelist, only the rules specified in this list
-will be enabled. Can not be specified alongside <code>disabled_rules</code> or
-<code>opt_in_rules</code>.</li>
+<li><code>only_rules</code>: Only the rules specified in this list will be enabled.
+Cannot be specified alongside <code>disabled_rules</code> or <code>opt_in_rules</code>.</li>
 <li><code>analyzer_rules</code>: This is an entirely separate list of rules that are only
 run by the <code>analyze</code> command. All analyzer rules are opt-in, so this is the
-only configurable rule list (there is no disabled/whitelist equivalent).</li>
+only configurable rule list, there are no equivalents for <code>disabled_rules</code>
+<code>only_rules</code>.</li>
 </ul>
 <pre class="highlight yaml"><code><span class="c1"># By default, SwiftLint uses a set of sensible default rules you can adjust:</span>
 <span class="na">disabled_rules</span><span class="pi">:</span> <span class="c1"># rule identifiers turned on by default to exclude from running</span>
@@ -634,7 +634,7 @@ only configurable rule list (there is no disabled/whitelist equivalent).</li>
   <span class="pi">-</span> <span class="s">empty_count</span> <span class="c1"># Find all the available rules by running: `swiftlint rules`</span>
 
 <span class="c1"># Alternatively, specify all rules explicitly by uncommenting this option:</span>
-<span class="c1"># whitelist_rules: # delete `disabled_rules` &amp; `opt_in_rules` if using this</span>
+<span class="c1"># only_rules: # delete `disabled_rules` &amp; `opt_in_rules` if using this</span>
 <span class="c1">#   - empty_parameters</span>
 <span class="c1">#   - vertical_whitespace</span>
 
@@ -740,7 +740,8 @@ are all the possible syntax kinds:</p>
 <li>typeidentifier</li>
 </ul>
 
-<p>If using custom rules alongside a whitelist, make sure to add <code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>whitelist_rules</code>.</p>
+<p>If using custom rules in combination with <code>only_rules</code>, make sure to add
+<code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>only_rules</code>.</p>
 <h4 id='nested-configurations' class='heading'>Nested Configurations</h4>
 
 <p>SwiftLint supports nesting configuration files for more granular control over

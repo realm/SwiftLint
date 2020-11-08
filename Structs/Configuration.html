@@ -111,7 +111,7 @@
             <a class="nav-group-name-link" href="../Global%20Variables.html">Global Variables</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Global%20Variables.html#/s:18SwiftLintFramework14masterRuleListAA0eF0Vvp">masterRuleList</a>
+                <a class="nav-group-task-link" href="../Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a>
               </li>
             </ul>
           </li>
@@ -726,7 +726,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules</p>
+                        <p>All rules enabled in this configuration, derived from disabled, opt-in and <code>only_rules</code> rules.</p>
 
                       </div>
                       <div class="declaration">
@@ -781,7 +781,7 @@
              <span class="nv">excluded</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
              <span class="nv">warningThreshold</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
              <span class="nv">reporter</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kt"><a href="../Structs/XcodeReporter.html">XcodeReporter</a></span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-             <span class="nv">ruleList</span><span class="p">:</span> <span class="kt"><a href="../Structs/RuleList.html">RuleList</a></span> <span class="o">=</span> <span class="n"><a href="../Global%20Variables.html#/s:18SwiftLintFramework14masterRuleListAA0eF0Vvp">masterRuleList</a></span><span class="p">,</span>
+             <span class="nv">ruleList</span><span class="p">:</span> <span class="kt"><a href="../Structs/RuleList.html">RuleList</a></span> <span class="o">=</span> <span class="n"><a href="../Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a></span><span class="p">,</span>
              <span class="nv">configuredRules</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Protocols/Rule.html">Rule</a></span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
              <span class="nv">swiftlintVersion</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
              <span class="nv">cachePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
@@ -1451,7 +1451,7 @@ child configurations in the directory inheritance graph present until the level 
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="nv">dict</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">],</span> <span class="nv">ruleList</span><span class="p">:</span> <span class="kt"><a href="../Structs/RuleList.html">RuleList</a></span> <span class="o">=</span> <span class="n"><a href="../Global%20Variables.html#/s:18SwiftLintFramework14masterRuleListAA0eF0Vvp">masterRuleList</a></span><span class="p">,</span> <span class="nv">enableAllRules</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="nv">dict</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">],</span> <span class="nv">ruleList</span><span class="p">:</span> <span class="kt"><a href="../Structs/RuleList.html">RuleList</a></span> <span class="o">=</span> <span class="n"><a href="../Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a></span><span class="p">,</span> <span class="nv">enableAllRules</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
              <span class="nv">cachePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">customRulesIdentifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span></code></pre>
 
                         </div>
@@ -1526,7 +1526,7 @@ child configurations in the directory inheritance graph present until the level 
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Parsing.swift#L66-L114">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Extensions/Configuration+Parsing.swift#L70-L119">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

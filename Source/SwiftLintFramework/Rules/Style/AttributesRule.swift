@@ -300,31 +300,32 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let ignoredAttributes: Set<SwiftDeclarationAttributeKind> = [
-            .dynamic,
-            .fileprivate,
-            .final,
-            .infix,
-            .internal,
-            .lazy,
-            .mutating,
-            .nonmutating,
-            .open,
-            .optional,
-            .override,
-            .postfix,
-            .prefix,
-            .private,
-            .public,
-            .required,
-            .rethrows,
-            .setterFilePrivate,
-            .setterInternal,
-            .setterOpen,
-            .setterPrivate,
-            .setterPublic,
-            .weak
-        ]
-        return attributes.filter { !ignoredAttributes.contains($0) }
+        return attributes.filter { !kIgnoredAttributes.contains($0) }
     }
 }
+
+private let kIgnoredAttributes: Set<SwiftDeclarationAttributeKind> = [
+    .dynamic,
+    .fileprivate,
+    .final,
+    .infix,
+    .internal,
+    .lazy,
+    .mutating,
+    .nonmutating,
+    .open,
+    .optional,
+    .override,
+    .postfix,
+    .prefix,
+    .private,
+    .public,
+    .required,
+    .rethrows,
+    .setterFilePrivate,
+    .setterInternal,
+    .setterOpen,
+    .setterPrivate,
+    .setterPublic,
+    .weak
+]

@@ -68,17 +68,17 @@ extension ConfigurationTests {
         let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
                                                                   optIn: [ForceTryRule.description.identifier,
                                                                           ForceCastRule.description.identifier]))!
-        let allowlistedConfiguration = Configuration(rulesMode: .allowlisted([TodoRule.description.identifier]))!
+        let onlyConfiguration = Configuration(rulesMode: .only([TodoRule.description.identifier]))!
         XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
-        XCTAssertEqual(allowlistedConfiguration.rules.count, 1)
-        XCTAssertTrue(allowlistedConfiguration.rules[0] is TodoRule)
-        let mergedConfiguration1 = baseConfiguration.merge(with: allowlistedConfiguration)
+        XCTAssertEqual(onlyConfiguration.rules.count, 1)
+        XCTAssertTrue(onlyConfiguration.rules[0] is TodoRule)
+        let mergedConfiguration1 = baseConfiguration.merge(with: onlyConfiguration)
         XCTAssertEqual(mergedConfiguration1.rules.count, 1)
         XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
 
         // Also test the other way around
-        let mergedConfiguration2 = allowlistedConfiguration.merge(with: baseConfiguration)
-        XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the allowlisted rules
+        let mergedConfiguration2 = onlyConfiguration.merge(with: baseConfiguration)
+        XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the only rules
         XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))

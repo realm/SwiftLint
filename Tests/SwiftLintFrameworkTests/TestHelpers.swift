@@ -236,10 +236,10 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
             let rules = skipDisableCommandTests ? [configuredRule] : [configuredRule, SuperfluousDisableCommandRule()]
-            return Configuration(rulesMode: .allowlisted(identifiers), configuredRules: rules)
+            return Configuration(rulesMode: .only(identifiers), configuredRules: rules)
         }
     }
-    return Configuration(rulesMode: .allowlisted(identifiers))
+    return Configuration(rulesMode: .only(identifiers))
 }
 
 private func testCorrection(_ correction: (Example, Example),
@@ -252,9 +252,9 @@ private func testCorrection(_ correction: (Example, Example),
 #endif
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
-        case let .allowlisted(allowlistedRules) = configuration.rulesMode,
-        let firstAllowlistedRule = allowlistedRules.first,
-        case let configDict = ["allowlist_rules": allowlistedRules, firstAllowlistedRule: correctionConfiguration],
+        case let .only(onlyRules) = configuration.rulesMode,
+        let firstAllowlistedRule = onlyRules.first,
+        case let configDict = ["only_rules": onlyRules, firstAllowlistedRule: correctionConfiguration],
         let typedConfiguration = Configuration(dict: configDict) {
         config = configuration.merge(with: typedConfiguration)
     }

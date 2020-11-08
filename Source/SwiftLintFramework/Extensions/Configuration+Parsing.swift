@@ -12,7 +12,7 @@ extension Configuration {
         case swiftlintVersion = "swiftlint_version"
         case useNestedConfigs = "use_nested_configs" // deprecated
         case warningThreshold = "warning_threshold"
-        case allowlistRules = "allowlist_rules"
+        case onlyRules = "only_rules"
         case whitelistRules = "whitelist_rules"
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
@@ -31,7 +31,7 @@ extension Configuration {
             .swiftlintVersion,
             .useNestedConfigs,
             .warningThreshold,
-            .allowlistRules,
+            .onlyRules,
             .whitelistRules,
             .indentation,
             .analyzerRules,
@@ -75,8 +75,8 @@ extension Configuration {
         Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
 
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
-        // Use either the new 'allowlist_rules' or fallback to the deprecated 'whitelist_rules'
-        let allowlistRules = defaultStringArray(dict[Key.allowlistRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
+        // Use either the new 'only_rules' or fallback to the deprecated 'whitelist_rules'
+        let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
@@ -84,7 +84,7 @@ extension Configuration {
         let allowZeroLintableFiles = dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
-                                            optInRules: optInRules, allowlistRules: allowlistRules, ruleList: ruleList)
+                                            optInRules: optInRules, onlyRules: onlyRules, ruleList: ruleList)
 
         let configuredRules: [Rule]
         do {
@@ -102,7 +102,7 @@ extension Configuration {
         self.init(disabledRules: disabledRules,
                   optInRules: optInRules,
                   enableAllRules: enableAllRules,
-                  allowlistRules: allowlistRules,
+                  onlyRules: onlyRules,
                   analyzerRules: analyzerRules,
                   included: included,
                   excluded: excluded,
@@ -121,7 +121,7 @@ extension Configuration {
     private init?(disabledRules: [String],
                   optInRules: [String],
                   enableAllRules: Bool,
-                  allowlistRules: [String],
+                  onlyRules: [String],
                   analyzerRules: [String],
                   included: [String],
                   excluded: [String],
@@ -138,14 +138,14 @@ extension Configuration {
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
-        } else if allowlistRules.isNotEmpty {
+        } else if onlyRules.isNotEmpty {
             if disabledRules.isNotEmpty || optInRules.isNotEmpty {
                 queuedPrintError("'\(Key.disabledRules.rawValue)' or " +
                     "'\(Key.optInRules.rawValue)' cannot be used in combination " +
-                    "with '\(Key.allowlistRules.rawValue)'")
+                    "with '\(Key.onlyRules.rawValue)'")
                 return nil
             }
-            rulesMode = .allowlisted(allowlistRules + analyzerRules)
+            rulesMode = .only(onlyRules + analyzerRules)
         } else {
             rulesMode = .default(disabled: disabledRules, optIn: optInRules + analyzerRules)
         }
@@ -170,7 +170,7 @@ extension Configuration {
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],
                                               disabledRules: [String] = [],
                                               optInRules: [String] = [],
-                                              allowlistRules: [String] = [],
+                                              onlyRules: [String] = [],
                                               ruleList: RuleList) {
         // Deprecation warning for "enabled_rules"
         if dict[Key.enabledRules.rawValue] != nil {
@@ -189,7 +189,7 @@ extension Configuration {
         // Deprecation warning for "whitelist_rules"
         if dict[Key.whitelistRules.rawValue] != nil {
             queuedPrintError("'\(Key.whitelistRules.rawValue)' has been renamed to " +
-                "'\(Key.allowlistRules.rawValue)' and will be completely removed in a " +
+                "'\(Key.onlyRules.rawValue)' and will be completely removed in a " +
                 "future release.")
         }
 
@@ -198,7 +198,7 @@ extension Configuration {
             return rule.description.deprecatedAliases.map { ($0, identifier) }
         }
 
-        let userProvidedRuleIDs = Set(disabledRules + optInRules + allowlistRules)
+        let userProvidedRuleIDs = Set(disabledRules + optInRules + onlyRules)
         let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
             return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
         }
@@ -231,10 +231,10 @@ extension Configuration {
             switch rulesMode {
             case .allEnabled:
                 return
-            case .allowlisted(let allowlist):
-                if Set(allowlist).isDisjoint(with: rule.description.allIdentifiers) {
+            case .only(let only):
+                if Set(only).isDisjoint(with: rule.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not present on " +
-                        "'\(Key.allowlistRules.rawValue)'.")
+                        "'\(Key.onlyRules.rawValue)'.")
                 }
             case let .default(disabled: disabledRules, optIn: optInRules):
                 if rule is OptInRule.Type, Set(optInRules).isDisjoint(with: rule.description.allIdentifiers) {

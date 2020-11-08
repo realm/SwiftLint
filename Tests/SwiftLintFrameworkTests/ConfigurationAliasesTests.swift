@@ -24,7 +24,7 @@ final class ConfigurationAliasesTests: XCTestCase {
     }
 
     func testAllowlistRulesFromDeprecatedAlias() {
-        let configuration = Configuration(dict: ["allowlist_rules": ["mock"]], ruleList: testRuleList)!
+        let configuration = Configuration(dict: ["only_rules": ["mock"]], ruleList: testRuleList)!
         let configuredIdentifiers = configuration.rules.map {
             type(of: $0).description.identifier
         }

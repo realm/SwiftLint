@@ -76,12 +76,12 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testAllowlistRules() {
-        let allowlist = ["nesting", "todo"]
-        let config = Configuration(dict: ["allowlist_rules": allowlist])!
+        let only = ["nesting", "todo"]
+        let config = Configuration(dict: ["only_rules": only])!
         let configuredIdentifiers = config.rules.map {
             type(of: $0).description.identifier
         }.sorted()
-        XCTAssertEqual(allowlist, configuredIdentifiers)
+        XCTAssertEqual(only, configuredIdentifiers)
     }
 
     func testWarningThreshold_value() {
@@ -95,14 +95,14 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testOtherRuleConfigurationsAlongsideAllowlistRules() {
-        let allowlist = ["nesting", "todo"]
+        let only = ["nesting", "todo"]
         let enabledRulesConfigDict = [
             "opt_in_rules": ["line_length"],
-            "allowlist_rules": allowlist
+            "only_rules": only
         ]
         let disabledRulesConfigDict = [
             "disabled_rules": ["identifier_name"],
-            "allowlist_rules": allowlist
+            "only_rules": only
         ]
         let combinedRulesConfigDict = enabledRulesConfigDict.reduce(into: disabledRulesConfigDict) { $0[$1.0] = $1.1 }
         var configuration = Configuration(dict: enabledRulesConfigDict)
@@ -143,7 +143,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDuplicatedRules() {
-        let duplicateConfig1 = Configuration(dict: ["allowlist_rules": ["todo", "todo"]])
+        let duplicateConfig1 = Configuration(dict: ["only_rules": ["todo", "todo"]])
         XCTAssertNil(duplicateConfig1, "initializing Configuration with duplicate rules in " +
             "Dictionary should fail")
 

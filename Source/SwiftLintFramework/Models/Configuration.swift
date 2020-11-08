@@ -63,7 +63,7 @@ public struct Configuration: Hashable {
 
     // MARK: Rules Properties
 
-    /// All rules enabled in this configuration, derived from disabled, opt-in and only rules
+    /// All rules enabled in this configuration, derived from disabled, opt-in and `only_rules` rules.
     public let rules: [Rule]
 
     internal let rulesMode: RulesMode
@@ -282,15 +282,15 @@ private func enabledRules(from configuredRules: [Rule],
     case .allEnabled:
         return configuredRules
     case .only(let onlyRuleIdentifiers):
-        let validAllowlistedRuleIdentifiers = validateRuleIdentifiers(
+        let validOnlyRuleIdentifiers = validateRuleIdentifiers(
             ruleIdentifiers: onlyRuleIdentifiers.map(aliasResolver),
             validRuleIdentifiers: validRuleIdentifiers)
         // Validate that rule identifiers aren't listed multiple times
-        if containsDuplicateIdentifiers(validAllowlistedRuleIdentifiers) {
+        if containsDuplicateIdentifiers(validOnlyRuleIdentifiers) {
             return nil
         }
         return configuredRules.filter { rule in
-            return validAllowlistedRuleIdentifiers.contains(type(of: rule).description.identifier)
+            return validOnlyRuleIdentifiers.contains(type(of: rule).description.identifier)
         }
     case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
         let validDisabledRuleIdentifiers = validateRuleIdentifiers(

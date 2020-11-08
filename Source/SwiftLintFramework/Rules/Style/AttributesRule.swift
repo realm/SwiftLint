@@ -124,20 +124,22 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 return true
             }
 
-            // ignore only attributes
-            let attributesAfterAllowlist: Set<String>
+            // ignore attributes that are explicitly allowed
+            let attributesAfterAllowed: Set<String>
             let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
             let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
 
             if attributeShouldBeOnSameLine {
-                attributesAfterAllowlist = attributesTokens
-                    .union(newLineExceptions).union(sameLineExceptions)
+                attributesAfterAllowed = attributesTokens
+                    .union(newLineExceptions)
+                    .union(sameLineExceptions)
             } else {
-                attributesAfterAllowlist = attributesTokens
-                    .subtracting(newLineExceptions).subtracting(sameLineExceptions)
+                attributesAfterAllowed = attributesTokens
+                    .subtracting(newLineExceptions)
+                    .subtracting(sameLineExceptions)
             }
 
-            return attributesAfterAllowlist.isEmpty == attributeShouldBeOnSameLine
+            return attributesAfterAllowed.isEmpty == attributeShouldBeOnSameLine
         } catch {
             return true
         }

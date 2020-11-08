@@ -75,7 +75,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.rules.count, primaryRuleList.list.count)
     }
 
-    func testAllowlistRules() {
+    func testOnlyRules() {
         let only = ["nesting", "todo"]
         let config = Configuration(dict: ["only_rules": only])!
         let configuredIdentifiers = config.rules.map {
@@ -94,7 +94,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNil(config.warningThreshold)
     }
 
-    func testOtherRuleConfigurationsAlongsideAllowlistRules() {
+    func testOtherRuleConfigurationsAlongsideOnlyRules() {
         let only = ["nesting", "todo"]
         let enabledRulesConfigDict = [
             "opt_in_rules": ["line_length"],

@@ -1,4 +1,4 @@
-// swiftlint:disable inclusive_language
+// swiftlint:disable inclusive_language - To ease a migration from the previous `whitelist_rules`
 
 extension Configuration {
     private enum Key: String {
@@ -10,10 +10,10 @@ extension Configuration {
         case optInRules = "opt_in_rules"
         case reporter = "reporter"
         case swiftlintVersion = "swiftlint_version"
-        case useNestedConfigs = "use_nested_configs" // deprecated
+        case useNestedConfigs = "use_nested_configs" // deprecated, always enabled
         case warningThreshold = "warning_threshold"
         case onlyRules = "only_rules"
-        case whitelistRules = "whitelist_rules"
+        case whitelistRules = "whitelist_rules" // deprecated in favor of onlyRules
         case indentation = "indentation"
         case analyzerRules = "analyzer_rules"
         case allowZeroLintableFiles  = "allow_zero_lintable_files"
@@ -231,8 +231,8 @@ extension Configuration {
             switch rulesMode {
             case .allEnabled:
                 return
-            case .only(let only):
-                if Set(only).isDisjoint(with: rule.description.allIdentifiers) {
+            case .only(let onlyRules):
+                if Set(onlyRules).isDisjoint(with: rule.description.allIdentifiers) {
                     queuedPrintError("\(message), but it is not present on " +
                         "'\(Key.onlyRules.rawValue)'.")
                 }

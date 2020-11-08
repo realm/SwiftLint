@@ -257,7 +257,7 @@ class LinterCacheTests: XCTestCase {
         validateNewConfigDoesntHitCache(dict: ["enabled_rules": []], initialConfig: initialConfig)
     }
 
-    func testAllowlistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
+    func testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() {
         let initialConfig = Configuration(dict: ["only_rules": ["nesting"]])!
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 

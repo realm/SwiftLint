@@ -166,7 +166,7 @@ extension ConfigurationAliasesTests {
         ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
         ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
         ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
-        ("testAllowlistRulesFromDeprecatedAlias", testAllowlistRulesFromDeprecatedAlias),
+        ("testOnlyRulesFromDeprecatedAlias", testOnlyRulesFromDeprecatedAlias),
         ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
     ]
 }
@@ -177,10 +177,10 @@ extension ConfigurationTests {
         ("testEmptyConfiguration", testEmptyConfiguration),
         ("testInitWithRelativePathAndRootPath", testInitWithRelativePathAndRootPath),
         ("testEnableAllRulesConfiguration", testEnableAllRulesConfiguration),
-        ("testAllowlistRules", testAllowlistRules),
+        ("testOnlyRules", testOnlyRules),
         ("testWarningThreshold_value", testWarningThreshold_value),
         ("testWarningThreshold_nil", testWarningThreshold_nil),
-        ("testOtherRuleConfigurationsAlongsideAllowlistRules", testOtherRuleConfigurationsAlongsideAllowlistRules),
+        ("testOtherRuleConfigurationsAlongsideOnlyRules", testOtherRuleConfigurationsAlongsideOnlyRules),
         ("testDisabledRules", testDisabledRules),
         ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
         ("testDuplicatedRules", testDuplicatedRules),
@@ -215,7 +215,7 @@ extension ConfigurationTests {
         ("testLevel3", testLevel3),
         ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
         ("testMergedWarningThreshold", testMergedWarningThreshold),
-        ("testNestedAllowlistedRules", testNestedAllowlistedRules),
+        ("testNestedOnlyRules", testNestedOnlyRules),
         ("testNestedConfigurationsWithCustomRulesMerge", testNestedConfigurationsWithCustomRulesMerge),
         ("testNestedConfigurationAllowsDisablingParentsCustomRules", testNestedConfigurationAllowsDisablingParentsCustomRules)
     ]
@@ -894,7 +894,7 @@ extension LinterCacheTests {
         ("testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-        ("testAllowlistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testAllowlistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
+        ("testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted", testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
         ("testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted", testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted)
     ]

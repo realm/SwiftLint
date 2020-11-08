@@ -253,8 +253,8 @@ private func testCorrection(_ correction: (Example, Example),
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
         case let .only(onlyRules) = configuration.rulesMode,
-        let firstAllowlistedRule = onlyRules.first,
-        case let configDict = ["only_rules": onlyRules, firstAllowlistedRule: correctionConfiguration],
+        let firstRule = onlyRules.first,
+        case let configDict = ["only_rules": onlyRules, firstRule: correctionConfiguration],
         let typedConfiguration = Configuration(dict: configDict) {
         config = configuration.merge(with: typedConfiguration)
     }

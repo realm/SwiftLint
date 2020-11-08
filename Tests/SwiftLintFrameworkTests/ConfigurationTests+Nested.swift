@@ -64,7 +64,7 @@ extension ConfigurationTests {
             .merge(with: configuration(forWarningThreshold: nil)).warningThreshold)
     }
 
-    func testNestedAllowlistedRules() {
+    func testNestedOnlyRules() {
         let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
                                                                   optIn: [ForceTryRule.description.identifier,
                                                                           ForceCastRule.description.identifier]))!

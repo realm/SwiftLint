@@ -8,8 +8,10 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "inclusive_language",
         name: "Inclusive Language",
-        description: "Identifiers should use inclusive language that avoids"
-            + " discrimination against groups of people based on race, gender, or socioeconomic status",
+        description: """
+            Identifiers should use inclusive language that avoids discrimination against groups of people based on \
+            race, gender, or socioeconomic status
+        """,
         kind: .style,
         nonTriggeringExamples: InclusiveLanguageRuleExamples.nonTriggeringExamples,
         triggeringExamples: InclusiveLanguageRuleExamples.triggeringExamples
@@ -23,16 +25,17 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
             else { return [] }
 
         let lowercased = name.lowercased()
-        guard let term = configuration.allTerms.first(where: { lowercased.contains($0) })
-            else { return [] }
+        guard let term = configuration.allTerms.first(where: lowercased.contains) else {
+            return []
+        }
 
-        let reason = "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."
-        let violation = StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, byteOffset: nameByteRange.location),
-            reason: reason
-        )
-        return [violation]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: file, byteOffset: nameByteRange.location),
+                reason: "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."
+            )
+        ]
     }
 }

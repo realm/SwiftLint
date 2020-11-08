@@ -55,6 +55,11 @@
   language that avoids discrimination against groups of people.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
 
+* Add `prefer_nimble` opt-in rule to encourage using Nimble matchers
+  over the XCTest ones.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3293](https://github.com/realm/SwiftLint/issues/3293)
+
 #### Bug Fixes
 
 * Fix parsing of Xcode 12 compiler logs for analyzer rules.  

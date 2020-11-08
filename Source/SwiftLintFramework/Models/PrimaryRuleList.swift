@@ -124,6 +124,7 @@ public let primaryRuleList = RuleList(rules: [
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
+    PreferNimbleRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
     PreferZeroOverExplicitInitRule.self,
     PrefixedTopLevelConstantRule.self,

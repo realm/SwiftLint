@@ -366,6 +366,7 @@
 		D4B31ADC22A0581B000300F1 /* DuplicateEnumCasesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B31ADB22A0581B000300F1 /* DuplicateEnumCasesRule.swift */; };
 		D4B3409D21F16B110038C79A /* UnusedSetterValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */; };
 		D4B472411F66486300BD6EF1 /* FallthroughRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B472401F66486300BD6EF1 /* FallthroughRule.swift */; };
+		D4B86FC82557BE9000908280 /* PreferNimbleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B86FC72557BE9000908280 /* PreferNimbleRule.swift */; };
 		D4BED5F82278AECC00D86BCE /* UnownedVariableCaptureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BED5F72278AECC00D86BCE /* UnownedVariableCaptureRule.swift */; };
 		D4C0E46F1E3D973600C560F2 /* ForWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */; };
 		D4C27BFE1E12D53F00DF713E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C27BFD1E12D53F00DF713E /* Version.swift */; };
@@ -919,6 +920,7 @@
 		D4B31ADB22A0581B000300F1 /* DuplicateEnumCasesRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicateEnumCasesRule.swift; sourceTree = "<group>"; };
 		D4B3409C21F16B110038C79A /* UnusedSetterValueRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnusedSetterValueRule.swift; sourceTree = "<group>"; };
 		D4B472401F66486300BD6EF1 /* FallthroughRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FallthroughRule.swift; sourceTree = "<group>"; };
+		D4B86FC72557BE9000908280 /* PreferNimbleRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferNimbleRule.swift; sourceTree = "<group>"; };
 		D4BED5F72278AECC00D86BCE /* UnownedVariableCaptureRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnownedVariableCaptureRule.swift; sourceTree = "<group>"; };
 		D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForWhereRule.swift; sourceTree = "<group>"; };
 		D4C27BFD1E12D53F00DF713E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
@@ -1420,6 +1422,7 @@
 				827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */,
 				D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */,
 				D403A4A21F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift */,
+				D4B86FC72557BE9000908280 /* PreferNimbleRule.swift */,
 				78B9051A245646CD00C81B0A /* PreferZeroOverExplicitInitRule.swift */,
 				1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
@@ -2177,6 +2180,7 @@
 				3A915E5B20A1543700519F3A /* ClosureEndIndentationRuleExamples.swift in Sources */,
 				629ADD062006302D0009E362 /* DiscouragedOptionalCollectionRule.swift in Sources */,
 				29FC197921382C07006D208C /* DuplicateImportsRule.swift in Sources */,
+				D4B86FC82557BE9000908280 /* PreferNimbleRule.swift in Sources */,
 				E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */,
 				8F2CC1CB20A6A070006ED34F /* FileNameConfiguration.swift in Sources */,
 				D4CFC5D2209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift in Sources */,

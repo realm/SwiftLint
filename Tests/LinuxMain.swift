@@ -136,6 +136,12 @@ extension CommandTests {
     ]
 }
 
+extension CommentSpacingRuleTests {
+    static var allTests: [(String, (CommentSpacingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension CompilerProtocolInitRuleTests {
     static var allTests: [(String, (CompilerProtocolInitRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
@@ -1756,6 +1762,7 @@ XCTMain([
     testCase(ColonRuleTests.allTests),
     testCase(CommaRuleTests.allTests),
     testCase(CommandTests.allTests),
+    testCase(CommentSpacingRuleTests.allTests),
     testCase(CompilerProtocolInitRuleTests.allTests),
     testCase(ComputedAccessorsOrderRuleTests.allTests),
     testCase(ConditionalReturnsOnNewlineRuleTests.allTests),

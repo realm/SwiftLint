@@ -122,6 +122,10 @@
   [Seth Friedman](https://github.com/sethfri)
   [#3383](https://github.com/realm/SwiftLint/issues/3383)
 
+* Fix rare false positive in `toggle_bool` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3398](https://github.com/realm/SwiftLint/issues/3398)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

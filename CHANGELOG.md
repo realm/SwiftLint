@@ -1,4 +1,4 @@
-## Master
+## 0.41.0: World’s Cleanest Voting Booth
 
 #### Breaking
 

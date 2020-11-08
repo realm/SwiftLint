@@ -294,14 +294,14 @@ reporter: "xcode" # 报告类型 (xcode, json, csv, checkstyle, junit, html, emo
 custom_rules:
   pirates_beat_ninjas: # 规则标识符
     name: "Pirates Beat Ninjas" # 规则名称，可选
-    regex: "([n,N]inja)" # 匹配的模式
+    regex: "([nN]inja)" # 匹配的模式
     match_kinds: # 需要匹配的语法类型，可选
       - comment
       - identifier
     message: "Pirates are better than ninjas." # 提示信息，可选
     severity: error # 提示的级别，可选
   no_hiding_in_strings:
-    regex: "([n,N]inja)"
+    regex: "([nN]inja)"
     match_kinds: string
 ```
 

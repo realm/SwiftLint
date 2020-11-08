@@ -398,7 +398,7 @@ custom_rules:
     included: ".*\\.swift" # regex that defines paths to include during linting. optional.
     excluded: ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
-    regex: "([n,N]inja)" # matching pattern
+    regex: "([nN]inja)" # matching pattern
     capture_group: 0 # number of regex capture group to highlight the rule violation at. optional.
     match_kinds: # SyntaxKinds to match. optional.
       - comment
@@ -406,7 +406,7 @@ custom_rules:
     message: "Pirates are better than ninjas." # violation message. optional.
     severity: error # violation severity. optional.
   no_hiding_in_strings:
-    regex: "([n,N]inja)"
+    regex: "([nN]inja)"
     match_kinds: string
 ```
 

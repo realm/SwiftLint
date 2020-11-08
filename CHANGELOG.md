@@ -1,3 +1,21 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.41.0: World’s Cleanest Voting Booth
 
 #### Breaking

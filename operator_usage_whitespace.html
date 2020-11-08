@@ -385,6 +385,8 @@
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="kt">SignalProducer</span><span class="o">&lt;</span><span class="kt">Signal</span><span class="o">&lt;</span><span class="kt">Value</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">([</span> <span class="k">self</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="n">next</span> <span class="p">])</span><span class="o">.</span><span class="nf">flatten</span><span class="p">(</span><span class="o">.</span><span class="n">concat</span><span class="p">)</span>
 
 </code></pre>
+<pre class="highlight swift"><code><span class="s">"let foo =  1"</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="mi">1</span><span class="err">↓</span><span class="o">+</span><span class="mi">2</span>
 
@@ -430,6 +432,15 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">v8</span> <span class="o">=</span> <span class="mi">1</span><span class="err">↓</span> <span class="o">&lt;&lt;</span>  <span class="p">(</span><span class="mi">6</span><span class="p">)</span>
  <span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="mi">2</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="err">↓</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="err">↓</span>  <span class="o">=</span> <span class="s">"1"</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="err">↓</span> <span class="o">=</span>  <span class="s">"1"</span>
 
 </code></pre>
 

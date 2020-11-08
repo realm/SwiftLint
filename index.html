@@ -695,7 +695,7 @@ following syntax:</p>
     <span class="na">included</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.*</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to include during linting. optional.</span>
     <span class="na">excluded</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.*Test</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to exclude during linting. optional</span>
     <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">Beat</span><span class="nv"> </span><span class="s">Ninjas"</span> <span class="c1"># rule name. optional.</span>
-    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([n,N]inja)"</span> <span class="c1"># matching pattern</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span> <span class="c1"># matching pattern</span>
     <span class="na">capture_group</span><span class="pi">:</span> <span class="m">0</span> <span class="c1"># number of regex capture group to highlight the rule violation at. optional.</span>
     <span class="na">match_kinds</span><span class="pi">:</span> <span class="c1"># SyntaxKinds to match. optional.</span>
       <span class="pi">-</span> <span class="s">comment</span>
@@ -703,7 +703,7 @@ following syntax:</p>
     <span class="na">message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">better</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">ninjas."</span> <span class="c1"># violation message. optional.</span>
     <span class="na">severity</span><span class="pi">:</span> <span class="s">error</span> <span class="c1"># violation severity. optional.</span>
   <span class="na">no_hiding_in_strings</span><span class="pi">:</span>
-    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([n,N]inja)"</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span>
     <span class="na">match_kinds</span><span class="pi">:</span> <span class="s">string</span>
 </code></pre>
 

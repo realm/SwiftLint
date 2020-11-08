@@ -160,7 +160,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
-            // 2. it's a only attribute, according to the current configuration
+            // 2. it's an allowed attribute, according to the current configuration
             let isParameterized = hasParameter || token.bridge().contains("(")
             if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token

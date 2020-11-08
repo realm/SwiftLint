@@ -105,6 +105,9 @@
   [ZevEisenberg](https://github.com/ZevEisenberg)
   [#3033](https://github.com/realm/SwiftLint/issues/3033)
 
+* Fix finding a nested config when a single file path is passed.  
+  [Seth Friedman](https://github.com/sethfri)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

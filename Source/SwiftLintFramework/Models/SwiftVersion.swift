@@ -51,6 +51,7 @@ public extension SwiftVersion {
         }
 
         if !Request.disableSourceKit {
+            // This request was added in Swift 5.1
             let params: SourceKitObject = ["key.request": UID("source.request.compiler_version")]
             if let result = try? Request.customRequest(request: params).send(),
                 let major = result.versionMajor, let minor = result.versionMinor, let patch = result.versionPatch {

@@ -32,7 +32,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let doubleValue = -9e-11\n"),
             Example("let foo = GenericType<(UIViewController) -> Void>()\n"),
             Example("let foo = Foo<Bar<T>, Baz>()\n"),
-            Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n")
+            Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"),
+            Example("\"let foo =  1\"")
         ],
         triggeringExamples: [
             Example("let foo = 1↓+2\n"),
@@ -49,7 +50,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let foo = bar↓ !==  bar2\n"),
             Example("let v8 = Int8(1)↓  << 6\n"),
             Example("let v8 = 1↓ <<  (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n")
+            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"),
+            Example("let foo↓  = [1]\n"),
+            Example("let foo↓  = \"1\"\n"),
+            Example("let foo↓ =  \"1\"\n")
         ],
         corrections: [
             Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
@@ -66,7 +70,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             Example("let foo = bar↓ !==  bar2\n"): Example("let foo = bar !== bar2\n"),
             Example("let v8 = Int8(1)↓  << 6\n"): Example("let v8 = Int8(1) << 6\n"),
             Example("let v8 = 1↓ <<  (6)\n"): Example("let v8 = 1 << (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n")
+            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n"),
+            Example("let foo↓  = \"1\"\n"): Example("let foo = \"1\"\n"),
+            Example("let foo↓ =  \"1\"\n"): Example("let foo = \"1\"\n")
         ]
     )
 
@@ -79,19 +85,17 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func violationRanges(file: SwiftLintFile) -> [(NSRange, String)] {
-        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ "\\\($0)" }).joined()
         let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
         let notEqualsPattern = "\\!\\=\\=?" // != or !==
         let coalescingPattern = "\\?{2}"
 
-        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern)|\(coalescingPattern)|" +
-            "\(notEqualsPattern))"
+        let operators = "(?:[%<>&=*+|^/~-]+|\(rangePattern)|\(coalescingPattern)|" + "\(notEqualsPattern))"
 
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let leadingVariableOrNumber = "(?:\\b|\\))"
-        let trailingVariableOrNumber = "(?:\\b|\\()"
+        let leadingVariableOrNumber = "(?:\\b|\\)|\\]|\")"
+        let trailingVariableOrNumber = "(?:\\b|\\(|\\[|\")"
 
         let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
                       (manySpaces, oneSpace), (manySpaces, manySpaces)]
@@ -105,7 +109,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
-        let excludingKinds = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
+        let excludingKinds = SyntaxKind.commentKinds.union([.objectLiteral])
 
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
                           excludingPattern: excludingPattern).compactMap { range in
@@ -120,6 +124,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             // if it's a range operator, the correction shouldn't have spaces
             if let matchRange = rangeRegex.firstMatch(in: file.contents, options: [], range: range)?.range {
                 let correction = operatorInRange(file: file, range: matchRange)
+                // Make sure that the match is not within the string i.e `let a = "12...123"`
+                guard kinds(in: matchRange, file: file) != [.string] else {
+                    return nil
+                }
                 return (matchRange, correction)
             }
 
@@ -128,6 +136,11 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
             guard let matchRange = operatorsRegex.firstMatch(in: file.contents,
                                                              options: [], range: range)?.range else {
+                return nil
+            }
+
+            // Make sure that the match is not within the string i.e `let a = "12 == 123"`
+            guard kinds(in: matchRange, file: file) != [.string] else {
                 return nil
             }
 

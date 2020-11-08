@@ -1120,6 +1120,12 @@ extension PatternMatchingKeywordsRuleTests {
     ]
 }
 
+extension PreferNimbleRuleTests {
+    static var allTests: [(String, (PreferNimbleRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension PreferSelfTypeOverTypeOfSelfRuleTests {
     static var allTests: [(String, (PreferSelfTypeOverTypeOfSelfRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1872,6 +1878,7 @@ XCTMain([
     testCase(OverrideInExtensionRuleTests.allTests),
     testCase(ParserDiagnosticsTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
+    testCase(PreferNimbleRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PreferZeroOverExplicitInitRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),

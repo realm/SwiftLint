@@ -510,6 +510,12 @@ class PatternMatchingKeywordsRuleTests: XCTestCase {
     }
 }
 
+class PreferNimbleRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferNimbleRule.description)
+    }
+}
+
 class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)

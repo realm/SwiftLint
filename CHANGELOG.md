@@ -63,7 +63,8 @@
 * Fix incorrect autocorrection in `prefer_zero_over_explicit_init` rule.  
   [Paul Taykalo](https://github.com/PaulTaykalo)
 
-* Rule `unused_capture_list` should not be triggered by unowned self keyword.  
+* Rule `unused_capture_list` should not be triggered by unowned self
+  keyword.  
   [hank121314](https://github.com/hank121314)
   [#3389](https://github.com/realm/SwiftLint/issues/3389)
 
@@ -90,6 +91,11 @@
 * Fix incorrect violation message for line length violations.  
   [JP Simard](https://github.com/jpsim)
   [#3333](https://github.com/realm/SwiftLint/issues/3333)
+
+* Fix false positives in `convenience_type` rule for types that cannot
+  be converted to enums.  
+  [ZevEisenberg](https://github.com/ZevEisenberg)
+  [#3033](https://github.com/realm/SwiftLint/issues/3033)
 
 ## 0.40.3: Greased Up Drum Bearings
 
@@ -460,11 +466,6 @@ This is the last release to support building with Swift 5.0.x.
   literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3100](https://github.com/realm/SwiftLint/issues/3100)
-
-* Fix false positives in `convenience_type` rule for types that cannot be
-  converted to enums.  
-  [ZevEisenberg](https://github.com/ZevEisenberg)
-  [#3033](https://github.com/realm/SwiftLint/issues/3033)
 
 ## 0.38.2: Machine Repair Manual
 

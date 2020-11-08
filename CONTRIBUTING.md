@@ -37,17 +37,6 @@ Then you can use the full power of Xcode/LLDB/Instruments to develop and debug y
 1. Use the produced `swiftlint` binary from the command line, either by running `swift run [-c release] [swiftlint] [arguments]` or by invoking the binary directly at `.build/[release|debug]/swiftlint`
 1. [Optional] Attach LLDB: `lldb -- .build/[release|debug]/swiftlint [arguments]`
 
-### Submodules
-
-This SwiftLint repository uses submodules for its dependencies.
-The git submodules are used when using the Xcode project and workspace
-(e.g. `xed SwiftLint.xcworkspace`) and building SwiftLint by executing
-the `Makefile`. This means that if you decide to fork this repository to
-contribute to SwiftLint, don't forget to checkout the submodules as well when
-cloning, by running `git submodule update --init --recursive` after cloning.
-
-See more info [in the README](https://github.com/realm/SwiftLint#installation).
-
 ### Code Generation
 
 If XCTest cases or functions are added/removed/renamed, or if rules are
@@ -62,7 +51,7 @@ with Swift Package Manager on Linux. When contributing code changes, please
 ensure that all three supported build methods continue to work and pass tests.
 
 ```shell
-$ script/cibuild
+$ xcodebuild -scheme swiftlint test
 $ swift test
 $ make docker_test
 ```

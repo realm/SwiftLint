@@ -58,10 +58,10 @@ You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 [latest GitHub release](https://github.com/realm/SwiftLint/releases/latest) and
 running it.
 
-### Compiling from source:
+### Installing from source:
 
-You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 10.2 or later).
+You can also build and install from source by cloning this project and running
+`make install` (Xcode 11.4 or later).
 
 ### Known Installation Issues On MacOS Before 10.14.4
 
@@ -72,8 +72,8 @@ you'll need to install the [Swift 5 Runtime Support for Command Line Tools](http
 Alternatively, you can:
 
 * Update to macOS 10.14.4 or later
-* Install Xcode 10.2 or later at `/Applications/Xcode.app`
-* Rebuild SwiftLint from source using Xcode 10.2 or later
+* Install Xcode 11.4 or later at `/Applications/Xcode.app`
+* Rebuild SwiftLint from source using Xcode 11.4 or later
 
 ## Usage
 

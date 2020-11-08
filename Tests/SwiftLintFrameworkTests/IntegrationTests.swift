@@ -98,42 +98,6 @@ class IntegrationTests: XCTestCase {
         }
 #endif
     }
-
-    func testSimulateHomebrewTestWithDisableSourceKit() {
-        // Since this test uses the `swiftlint` binary built while building `SwiftLintPackageTests`,
-        // we run it only on macOS using SwiftPM.
-#if os(macOS) && SWIFT_PACKAGE
-        guard let swiftlintURL = swiftlintBuiltBySwiftPM(),
-            let (testSwiftURL, seatbeltURL) = prepareSandbox() else {
-                return
-        }
-
-        defer {
-            try? FileManager.default.removeItem(at: testSwiftURL.deletingLastPathComponent())
-            try? FileManager.default.removeItem(at: seatbeltURL)
-        }
-
-        let swiftlintInSandboxArgs = [
-            "sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
-            "SWIFTLINT_SWIFT_VERSION=3 SWIFTLINT_DISABLE_SOURCEKIT=1 \(swiftlintURL.path) --no-cache"
-        ]
-        let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
-        XCTAssertEqual(swiftlintResult.status, 0)
-        XCTAssertEqual(swiftlintResult.stdout, """
-            \(testSwiftURL.path):1:1: \
-            warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
-
-            """)
-        XCTAssertEqual(swiftlintResult.stderr, """
-            Linting Swift files at paths \n\
-            Linting 'Test.swift' (1/1)
-            SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.
-            Most rules will be skipped because sourcekitd has failed.
-            Done linting! Found 1 violation, 0 serious in 1 file.
-
-            """)
-#endif
-    }
 }
 
 private struct StaticStringImitator {

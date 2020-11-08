@@ -2,8 +2,7 @@ TEMPORARY_FOLDER?=/tmp/SwiftLint.dst
 PREFIX?=/usr/local
 BUILD_TOOL?=xcodebuild
 
-XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
-	-scheme 'swiftlint' \
+XCODEFLAGS=-scheme 'swiftlint' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
@@ -34,7 +33,7 @@ SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
 
 VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
-.PHONY: all bootstrap clean build install package test uninstall docs
+.PHONY: all clean build install package test uninstall docs
 
 all: build
 
@@ -52,18 +51,15 @@ Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift: Source/SwiftLi
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/AutomaticRuleTests.stencil --output .sourcery
 	mv .sourcery/AutomaticRuleTests.generated.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
 
-bootstrap:
-	script/bootstrap
-
-test: clean_xcode bootstrap
+test: clean_xcode
 	$(BUILD_TOOL) $(XCODEFLAGS) test
 
 test_tsan:
 	swift build --build-tests $(TSAN_SWIFT_BUILD_FLAGS)
 	DYLD_INSERT_LIBRARIES=$(TSAN_LIB) $(TSAN_XCTEST) $(TSAN_TEST_BUNDLE)
 
-write_xcodebuild_log: bootstrap
-	xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint clean build-for-testing > xcodebuild.log
+write_xcodebuild_log:
+	xcodebuild -scheme swiftlint clean build-for-testing > xcodebuild.log
 
 analyze: write_xcodebuild_log
 	swift run -c release swiftlint analyze --strict --compiler-log-path xcodebuild.log
@@ -122,11 +118,7 @@ package: installables
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
-archive:
-	carthage build --no-skip-current --platform mac
-	carthage archive SwiftLintFramework
-
-release: package archive portable_zip zip_linux
+release: package portable_zip zip_linux
 
 docker_test:
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.3 swift test --parallel

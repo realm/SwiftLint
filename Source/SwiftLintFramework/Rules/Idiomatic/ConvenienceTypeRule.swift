@@ -35,7 +35,37 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
               public let randomNumber = 2
             }
             """),
-            Example("class DummyClass {}")
+            Example("class DummyClass {}"),
+            Example("""
+            class Foo: NSObject { // class with Obj-C class property
+                class @objc let foo = 1
+            }
+            """),
+            Example("""
+            class Foo: NSObject { // class with Obj-C static property
+                static @objc let foo = 1
+            }
+            """),
+            Example("""
+            class Foo { // @objc class func can't exist on an enum
+               @objc class func foo() {}
+            }
+            """),
+            Example("""
+            class Foo { // @objc static func can't exist on an enum
+               @objc static func foo() {}
+            }
+            """),
+            Example("""
+            final class Foo { // final class, but @objc class func can't exist on an enum
+               @objc class func foo() {}
+            }
+            """),
+            Example("""
+            final class Foo { // final class, but @objc static func can't exist on an enum
+               @objc static func foo() {}
+            }
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -44,14 +74,35 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             }
             """),
             Example("""
-            ↓class Math {
-              public static let pi = 3.14
-            }
-            """),
-            Example("""
             ↓struct Math {
               public static let pi = 3.14
               @available(*, unavailable) init() {}
+            }
+            """),
+            Example("""
+            final ↓class Foo { // final class can't be inherited
+                class let foo = 1
+            }
+            """),
+
+            // Intentional false positives. Non-final classes could be
+            // subclassed, but we figure it is probably rare enough that it is
+            // more important to catch these cases, and manually disable the
+            // rule if needed.
+
+            Example("""
+            ↓class Foo {
+                class let foo = 1
+            }
+            """),
+            Example("""
+            ↓class Foo {
+                final class let foo = 1
+            }
+            """),
+            Example("""
+            ↓class SomeClass {
+                static func foo() {}
             }
             """)
         ]
@@ -84,6 +135,14 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         }
 
         guard !containsInstanceDeclarations else {
+            return []
+        }
+
+        let hasObjcMembers = dictionary.substructure.contains { dict in
+            return dict.enclosedSwiftAttributes.contains(.objc)
+        }
+
+        guard !hasObjcMembers else {
             return []
         }
 

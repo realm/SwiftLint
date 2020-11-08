@@ -461,6 +461,11 @@ This is the last release to support building with Swift 5.0.x.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3100](https://github.com/realm/SwiftLint/issues/3100)
 
+* Fix false positives in `convenience_type` rule for types that cannot be
+  converted to enums.  
+  [ZevEisenberg](https://github.com/ZevEisenberg)
+  [#3033](https://github.com/realm/SwiftLint/issues/3033)
+
 ## 0.38.2: Machine Repair Manual
 
 #### Breaking

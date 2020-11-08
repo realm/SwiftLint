@@ -112,6 +112,11 @@
 * Fix finding a nested config when a single file path is passed.  
   [Seth Friedman](https://github.com/sethfri)
 
+* Fix incorrect calculation of the root path when a directory in the
+  tree is passed in as a path argument.  
+  [Seth Friedman](https://github.com/sethfri)
+  [#3383](https://github.com/realm/SwiftLint/issues/3383)
+
 ## 0.40.3: Greased Up Drum Bearings
 
 #### Breaking

@@ -227,16 +227,12 @@ extension Configuration {
         })
     }
 
-    private static func rootPath(from paths: [String]) -> String? {
-        // We don't know the root when more than one path is passed (i.e. not useful if the root of 2 paths is ~)
-        return paths.count == 1 ? paths.first?.absolutePathStandardized() : nil
-    }
-
     // MARK: LintOrAnalyze Command
 
     init(options: LintOrAnalyzeOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile, rootPath: Self.rootPath(from: options.paths),
+        self.init(path: options.configurationFile,
+                  rootPath: FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized(),
                   optional: isConfigOptional(), quiet: options.quiet, enableAllRules: options.enableAllRules,
                   cachePath: cachePath)
     }
@@ -256,7 +252,8 @@ extension Configuration {
 
     init(options: AutoCorrectOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile, rootPath: Self.rootPath(from: options.paths),
+        self.init(path: options.configurationFile,
+                  rootPath: FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized(),
                   optional: isConfigOptional(), quiet: options.quiet, cachePath: cachePath)
     }
 

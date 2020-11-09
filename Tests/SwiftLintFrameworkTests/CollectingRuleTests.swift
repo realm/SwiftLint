@@ -1,8 +1,6 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable nesting
-
 class CollectingRuleTests: XCTestCase {
     func testCollectsIntoStorage() {
         struct Spec: MockCollectingRule {

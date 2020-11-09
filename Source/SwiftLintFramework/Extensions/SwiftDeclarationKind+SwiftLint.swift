@@ -34,4 +34,12 @@ extension SwiftDeclarationKind {
         .associatedtype,
         .enum
     ]
+
+    internal static let extensionKinds: Set<SwiftDeclarationKind> = [
+        .extension,
+        .extensionClass,
+        .extensionEnum,
+        .extensionProtocol,
+        .extensionStruct
+    ]
 }

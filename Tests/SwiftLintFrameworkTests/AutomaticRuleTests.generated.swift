@@ -432,12 +432,6 @@ class NSObjectPreferIsEqualRuleTests: XCTestCase {
     }
 }
 
-class NestingRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NestingRule.description)
-    }
-}
-
 class NimbleOperatorRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)

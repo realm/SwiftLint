@@ -32,6 +32,13 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
                }
                fatalError()
             }
+            """),
+            Example("""
+            func resetOnboardingStateAndCrash() -> Never {
+                resetUserDefaults()
+                // Crash the app to re-start the onboarding flow.
+                fatalError("Onboarding re-start crash.")
+            }
             """)
         ],
         triggeringExamples: [
@@ -56,6 +63,13 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
                 preconditionFailure("init(coder:) has not been implemented")
               }
             }
+            """),
+            Example("""
+            func resetOnboardingStateAndCrash() {
+                resetUserDefaults()
+                // Crash the app to re-start the onboarding flow.
+                fatalError("Onboarding re-start crash.")
+            }
             """)
         ]
     )
@@ -78,13 +92,18 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
             } ?? false)
         }
 
-        guard let offset = dictionary.offset,
+        let hasReturnTypeNever = dictionary.typeName == "Never"
+
+        guard
             containsTerminatingCall,
+            !hasReturnTypeNever,
             !isFunctionUnavailable(file: file, dictionary: dictionary),
+            let offset = dictionary.offset,
             let bodyRange = dictionary.bodyByteRange,
             let range = file.stringView.byteRangeToNSRange(bodyRange),
-            file.match(pattern: "\\breturn\\b", with: [.keyword], range: range).isEmpty else {
-                return []
+            file.match(pattern: "\\breturn\\b", with: [.keyword], range: range).isEmpty
+        else {
+            return []
         }
 
         return [

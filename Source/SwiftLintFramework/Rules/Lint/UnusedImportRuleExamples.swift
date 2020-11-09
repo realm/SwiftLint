@@ -1,3 +1,4 @@
+// swiftlint:disable type_body_length
 struct UnusedImportRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -210,6 +211,16 @@ struct UnusedImportRuleExamples {
             typealias Bar = CFData
             @objc
             class A {}
+            """),
+        Example("""
+        import Foundation
+        func bar() {}
+        """, configuration: [
+            "always_keep_imports": ["Foundation"]
+        ]):
+            Example("""
+            import Foundation
+            func bar() {}
             """)
     ]
 }

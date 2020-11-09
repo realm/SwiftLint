@@ -49,7 +49,6 @@ public func queuedPrintError(_ string: String) {
  the source path from the compiled binary.
  */
 public func queuedFatalError(_ string: String, file: StaticString = #file, line: UInt = #line) -> Never {
-    // swiftlint:disable:previous unavailable_function
     outputQueue.sync {
         fflush(stdout)
         let file = "\(file)".bridge().lastPathComponent

@@ -105,7 +105,7 @@ public struct CommentSpacingRule: OptInRule, ConfigurationProviderRule, Substitu
             }
             // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
             // character (this is a violation)
-            return regex("^(\\/){2,3}[^\\s\\/]").matches(in: commentBody, options: .anchored)
+            return regex(#"^(\/){2,3}[^\s\/]"#).matches(in: commentBody, options: .anchored)
                 .compactMap { result in
                     // Set the location to be directly before the first non-slash,
                     // non-whitespace character which was matched

@@ -97,11 +97,14 @@ public struct CommentSpacingRule: OptInRule, ConfigurationProviderRule, Substitu
     )
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        // Find all comment tokens in the file and regex search them for violations
         let commentTokens = file.syntaxMap.tokens.filter { [.comment, .docComment].contains($0.kind) }
         return commentTokens.compactMap { (token: SwiftLintSyntaxToken) -> [NSRange]? in
             guard let commentBody = file.stringView.substringWithByteRange(token.range).map(StringView.init) else {
                 return nil
             }
+            // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
+            // character (this is a violation)
             return regex("^(\\/){2,3}[^\\s\\/]").matches(in: commentBody, options: .anchored)
                 .compactMap { result in
                     // Set the location to be directly before the first non-slash,
@@ -133,6 +136,8 @@ public struct CommentSpacingRule: OptInRule, ConfigurationProviderRule, Substitu
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         let violationCharacters = file.stringView.substring(with: violationRange)
+        // Since the violation range is just the first character after the slashes, all we have to
+        // do is prepend a single space
         return (violationRange, " \(violationCharacters)")
     }
 }

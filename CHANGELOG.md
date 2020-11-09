@@ -23,8 +23,8 @@
 
 #### Enhancements
 
-* Rule Modification: Don't trigger `unavailable_function`for a function
-  that returns `Never`.
+* Don't report `unavailable_function` violations for functions returning
+  `Never`.  
   [Artem Garmash](https://github.com/agarmash)
   [#3286](https://github.com/realm/SwiftLint/issues/3286)
 

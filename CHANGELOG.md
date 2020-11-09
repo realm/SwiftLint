@@ -44,7 +44,7 @@
   `Never`.  
   [Artem Garmash](https://github.com/agarmash)
   [#3286](https://github.com/realm/SwiftLint/issues/3286)
-* Added `always_allow_one_type_in_functions` option in `nesting` rule configuration. Defaults to `false`. This allows to nest one type within a function even if breaking the maximum `type_level`.  
+
 * Added `always_allow_one_type_in_functions` option in `nesting` rule
   configuration. Defaults to `false`. This allows to nest one type
   within a function even if breaking the maximum `type_level`.  

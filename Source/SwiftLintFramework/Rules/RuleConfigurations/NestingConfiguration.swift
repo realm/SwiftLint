@@ -33,6 +33,14 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
         }
         if let functionLevelConfiguration = configurationDict["function_level"] {
             try functionLevel.apply(configuration: functionLevelConfiguration)
+        } else if let statementLevelConfiguration = configurationDict["statement_level"] {
+            queuedPrintError(
+                """
+                'statement_level' has been renamed to 'function_level' and will be completely removed in a future \
+                release.
+                """
+            )
+            try functionLevel.apply(configuration: statementLevelConfiguration)
         }
         checkNestingInClosuresAndStatements =
             configurationDict["check_nesting_in_closures_and_statements"] as? Bool ?? true

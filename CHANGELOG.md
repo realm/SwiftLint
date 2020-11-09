@@ -17,17 +17,21 @@
   [JP Simard](https://github.com/jpsim)
   [#3412](https://github.com/realm/SwiftLint/issues/3412)
 
-* Renamed `statement_level` to `function_level` in `nesting` rule configuration.  
+* Renamed `statement_level` to `function_level` in `nesting` rule
+  configuration.  
   [Skoti](https://github.com/Skoti)
 
-* Separated `type_level` and `function_level` counting in `nesting` rule.  
+* Separated `type_level` and `function_level` counting in `nesting`
+  rule.  
   [Skoti](https://github.com/Skoti)
   [#1151](https://github.com/realm/SwiftLint/issues/1151)
 
 * `function_level` in `nesting` rule defaults to 2 levels.  
   [Skoti](https://github.com/Skoti)
 
-* Added `check_nesting_in_closures_and_statements` in `nesting` rule to search for nested types and functions within closures and statements. Defaults to `true`.  
+* Added `check_nesting_in_closures_and_statements` in `nesting` rule to
+  search for nested types and functions within closures and statements.
+  Defaults to `true`.  
   [Skoti](https://github.com/Skoti)
 
 #### Experimental
@@ -41,6 +45,9 @@
   [Artem Garmash](https://github.com/agarmash)
   [#3286](https://github.com/realm/SwiftLint/issues/3286)
 * Added `always_allow_one_type_in_functions` option in `nesting` rule configuration. Defaults to `false`. This allows to nest one type within a function even if breaking the maximum `type_level`.  
+* Added `always_allow_one_type_in_functions` option in `nesting` rule
+  configuration. Defaults to `false`. This allows to nest one type
+  within a function even if breaking the maximum `type_level`.  
   [Skoti](https://github.com/Skoti)
   [#1151](https://github.com/realm/SwiftLint/issues/1151)
 

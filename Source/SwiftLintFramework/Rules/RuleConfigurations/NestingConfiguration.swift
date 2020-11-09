@@ -34,9 +34,10 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
         if let functionLevelConfiguration = configurationDict["function_level"] {
             try functionLevel.apply(configuration: functionLevelConfiguration)
         }
-        // swiftlint:disable:next line_length
-        checkNestingInClosuresAndStatements = configurationDict["check_nesting_in_closures_and_statements"] as? Bool ?? true
-        alwaysAllowOneTypeInFunctions = configurationDict["always_allow_one_type_in_functions"] as? Bool ?? false
+        checkNestingInClosuresAndStatements =
+            configurationDict["check_nesting_in_closures_and_statements"] as? Bool ?? true
+        alwaysAllowOneTypeInFunctions =
+            configurationDict["always_allow_one_type_in_functions"] as? Bool ?? false
     }
 
     func severity(with config: SeverityLevelsConfiguration, for level: Int) -> ViolationSeverity? {

@@ -11,16 +11,16 @@ public struct NestingRule: ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "nesting",
         name: "Nesting",
-        description: "Types should be nested at most 1 level deep, " +
-        "and functions should be nested at most 2 levels deep.",
+        description:
+            "Types should be nested at most 1 level deep, and functions should be nested at most 2 levels deep.",
 		kind: .metrics,
 		nonTriggeringExamples: NestingRuleExamples.nonTriggeringExamples,
 		triggeringExamples: NestingRuleExamples.triggeringExamples
     )
 
-    private let omittedStructureKinds: [SwiftStructureKind] =
-        [.declaration(.enumcase), .declaration(.enumelement)]
-        + SwiftDeclarationKind.variableKinds.map { .declaration($0) }
+    private let omittedStructureKinds = SwiftDeclarationKind.variableKinds
+        .union([.enumcase, .enumelement])
+        .map(SwiftStructureKind.declaration)
 
     private struct ValidationArgs {
         var typeLevel: Int = -1
@@ -144,19 +144,6 @@ private enum SwiftStructureKind: Equatable {
             self = .statement(statementKind)
         } else {
             return nil
-        }
-    }
-
-    static func == (lhs: SwiftStructureKind, rhs: SwiftStructureKind) -> Bool {
-        switch (lhs, rhs) {
-        case let (.declaration(lhsKind), .declaration(rhsKind)):
-            return lhsKind == rhsKind
-        case let (.expression(lhsKind), .expression(rhsKind)):
-            return lhsKind == rhsKind
-        case let (.statement(lhsKind), .statement(rhsKind)):
-            return lhsKind == rhsKind
-        default:
-            return false
         }
     }
 }

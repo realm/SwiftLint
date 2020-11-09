@@ -51,6 +51,10 @@
   [Skoti](https://github.com/Skoti)
   [#1151](https://github.com/realm/SwiftLint/issues/1151)
 
+* Add an `always_keep_imports` configuration option for the
+  `unused_import` rule.  
+  [Keith Smiley](https://github.com/keith)
+
 #### Bug Fixes
 
 * None.
@@ -302,8 +306,6 @@
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
-* Add 'always_keep_imports' UnusedImportRule exception.  
-  [Keith Smiley](https://github.com/keith)
 
 * Add opt-in `ibinspectable_in_extension` rule to lint against `@IBInspectable`
   properties in `extensions`.  

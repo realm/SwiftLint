@@ -8,17 +8,25 @@ internal struct InclusiveLanguageRuleExamples {
             case foo, bar
         }
         """),
-        Example("func updateAllowList(add: String) {}")
+        Example("func updateAllowList(add: String) {}"),
+        Example("""
+        enum WalletItemType {
+            case visa
+            case mastercard
+        }
+        """),
+        Example("func chargeMastercard(_ card: Card) {}")
     ]
 
     static let triggeringExamples: [Example] = [
         Example("let ↓slave = \"abc\""),
         Example("""
-        enum ↓BlackList {
+        enum ↓Blacklist {
             case foo, bar
         }
         """),
-        Example("func ↓updateWhiteList(add: String) {}"),
+        Example("func ↓updateWhitelist(add: String) {}"),
+        Example("let ↓the_master_list = 123"),
         Example("""
         enum ListType {
             case ↓whitelist
@@ -54,18 +62,18 @@ internal struct InclusiveLanguageRuleExamples {
     static let triggeringExamplesWithConfig: [Example] = [
         Example("""
         enum Things {
-            case foo, ↓fizzBuzz
+            case foo, ↓fizzbuzzTest
         }
         """, configuration: [
             "additional_terms": ["fizzbuzz"]
         ]),
         Example("""
-        private func ↓thisIsASwiftyFunction() {}
+        private func ↓thisIsASwiftFunction() {}
         """, configuration: [
             "additional_terms": ["swift"]
         ]),
         Example("""
-        private var ↓fooBar = "abc"
+        private var ↓testFoobar = "abc"
         """, configuration: [
             "additional_terms": ["FoObAr"]
         ])

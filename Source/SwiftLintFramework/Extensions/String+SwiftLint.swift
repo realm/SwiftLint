@@ -100,4 +100,29 @@ extension String {
             $1 == character ? $0 + 1 : $0
         })
     }
+
+    /// Return an array of strings by splitting the receiver into
+    /// its camel-case components.
+    public var componentsSeparatedByCamelCase: [String] {
+        var components: [String] = []
+        var nextComponent = ""
+        zip(indices, self).forEach { currentIndex, character in
+            guard currentIndex > startIndex && currentIndex < index(before: endIndex) else {
+                return nextComponent.append(character)
+            }
+            if character.isLowercase {
+                nextComponent.append(character)
+            } else if self[index(before: currentIndex)].isUppercase && self[index(after: currentIndex)].isUppercase {
+                // Index before and after are uppercase, so this character is part of an acronym
+                nextComponent.append(character)
+            } else {
+                components.append(nextComponent)
+                nextComponent = String(character)
+            }
+        }
+        if !nextComponent.isEmpty {
+            components.append(nextComponent)
+        }
+        return components
+    }
 }

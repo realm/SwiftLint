@@ -1,7 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CommentSpacingRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule, AutomaticTestableRule {
+public struct CommentSpacingRule: OptInRule,
+                                  ConfigurationProviderRule,
+                                  SubstitutionCorrectableRule,
+                                  AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -98,28 +101,32 @@ public struct CommentSpacingRule: OptInRule, ConfigurationProviderRule, Substitu
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
-        let commentTokens = file.syntaxMap.tokens.filter { SyntaxKind.commentKinds.contains($0.kind) }
+        let commentTokens = file.syntaxMap.tokens.filter {
+            guard let kind = $0.kind else { return false }
+            return SyntaxKind.commentKinds.contains(kind)
+        }
         return commentTokens.compactMap { (token: SwiftLintSyntaxToken) -> [NSRange]? in
-            guard let commentBody = file.stringView.substringWithByteRange(token.range).map(StringView.init) else {
-                return nil
-            }
-            // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
-            // character (this is a violation)
-            return regex(#"^(\/){2,3}[^\s\/]"#).matches(in: commentBody, options: .anchored)
-                .compactMap { result in
-                    // Set the location to be directly before the first non-slash,
-                    // non-whitespace character which was matched
-                    guard let characterRange = file.stringView.byteRangeToNSRange(
-                        ByteRange(
-                            location: ByteCount(
-                                token.range.lowerBound.value + result.range.upperBound - 1
-                            ),
-                            length: ByteCount(1)
-                        )
-                    ) else {
-                        return nil
-                    }
-                    return characterRange
+            return file.stringView
+                .substringWithByteRange(token.range)
+                .map(StringView.init).map { commentBody in
+                    // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
+                    // character (this is a violation)
+                    return regex(#"^(\/){2,3}[^\s\/]"#).matches(in: commentBody, options: .anchored)
+                        .compactMap { result in
+                            // Set the location to be directly before the first non-slash,
+                            // non-whitespace character which was matched
+                            guard let characterRange = file.stringView.byteRangeToNSRange(
+                                ByteRange(
+                                    location: ByteCount(
+                                        token.range.lowerBound.value + result.range.upperBound - 1
+                                    ),
+                                    length: ByteCount(1)
+                                )
+                            ) else {
+                                return nil
+                            }
+                            return characterRange
+                        }
                 }
         }.flatMap { $0 }
     }

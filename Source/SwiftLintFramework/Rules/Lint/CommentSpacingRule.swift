@@ -101,34 +101,33 @@ public struct CommentSpacingRule: OptInRule,
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
-        let commentTokens = file.syntaxMap.tokens.filter {
-            guard let kind = $0.kind else { return false }
+        let commentTokens = file.syntaxMap.tokens.filter { token in
+            guard let kind = token.kind else { return false }
             return SyntaxKind.commentKinds.contains(kind)
         }
-        return commentTokens.compactMap { (token: SwiftLintSyntaxToken) -> [NSRange]? in
-            return file.stringView
-                .substringWithByteRange(token.range)
-                .map(StringView.init).map { commentBody in
-                    // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
-                    // character (this is a violation)
-                    return regex(#"^(\/){2,3}[^\s\/]"#).matches(in: commentBody, options: .anchored)
-                        .compactMap { result in
+        return commentTokens
+            .compactMap { (token: SwiftLintSyntaxToken) -> [NSRange]? in
+                return file.stringView
+                    .substringWithByteRange(token.range)
+                    .map(StringView.init)
+                    .map { commentBody in
+                        // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
+                        // character (this is a violation)
+                        regex(#"^(\/){2,3}[^\s\/]"#).matches(in: commentBody, options: .anchored).compactMap { result in
                             // Set the location to be directly before the first non-slash,
                             // non-whitespace character which was matched
-                            guard let characterRange = file.stringView.byteRangeToNSRange(
+                            return file.stringView.byteRangeToNSRange(
                                 ByteRange(
-                                    location: ByteCount(
-                                        token.range.lowerBound.value + result.range.upperBound - 1
-                                    ),
-                                    length: ByteCount(1)
+                                    // Safe to mix NSRange offsets with byte offsets here because the regex can't
+                                    // contain multi-byte characters
+                                    location: ByteCount(token.range.lowerBound.value + result.range.upperBound - 1),
+                                    length: 0
                                 )
-                            ) else {
-                                return nil
-                            }
-                            return characterRange
+                            )
                         }
-                }
-        }.flatMap { $0 }
+                    }
+            }
+            .flatMap { $0 }
     }
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -142,9 +141,6 @@ public struct CommentSpacingRule: OptInRule,
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        let violationCharacters = file.stringView.substring(with: violationRange)
-        // Since the violation range is just the first character after the slashes, all we have to
-        // do is prepend a single space
-        return (violationRange, " \(violationCharacters)")
+        return (violationRange, " ")
     }
 }

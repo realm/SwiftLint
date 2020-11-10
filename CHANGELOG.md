@@ -55,6 +55,10 @@
   `unused_import` rule.  
   [Keith Smiley](https://github.com/keith)
 
+* Add `comment_spacing` rule.
+  [Noah Gilmore](https://github.com/noahsark769)
+  [#3233](https://github.com/realm/SwiftLint/issues/3233)
+
 #### Bug Fixes
 
 * None.
@@ -452,9 +456,7 @@ This is the last release to support building with Swift 5.0.x.
 
 #### Enhancements
 
-* Add `comment_spacing` rule.  
-  [Noah Gilmore](https://github.com/noahsark769)
-  [#3233](https://github.com/realm/SwiftLint/issues/3233)
+* None.
 
 #### Bug Fixes
 

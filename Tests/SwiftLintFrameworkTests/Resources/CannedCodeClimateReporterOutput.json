@@ -1,0 +1,62 @@
+[
+  {
+    "check_name" : "Line Length",
+    "description" : "Violation Reason.",
+    "engine_name" : "SwiftLint",
+    "fingerprint" : "091a80392f7aebde05dab908162c3629",
+    "location" : {
+      "lines" : {
+        "begin" : 1,
+        "end" : 1
+      },
+      "path" : "filename"
+    },
+    "severity" : "MINOR",
+    "type" : "issue"
+  },
+  {
+    "check_name" : "Line Length",
+    "description" : "Violation Reason.",
+    "engine_name" : "SwiftLint",
+    "fingerprint" : "091a80392f7aebde05dab908162c3629",
+    "location" : {
+      "lines" : {
+        "begin" : 1,
+        "end" : 1
+      },
+      "path" : "filename"
+    },
+    "severity" : "MAJOR",
+    "type" : "issue"
+  },
+  {
+    "check_name" : "Syntactic Sugar",
+    "description" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
+    "engine_name" : "SwiftLint",
+    "fingerprint" : "624a4e77e797c9e6a42c82b6428e9c45",
+    "location" : {
+      "lines" : {
+        "begin" : 1,
+        "end" : 1
+      },
+      "path" : "filename"
+    },
+    "severity" : "MAJOR",
+    "type" : "issue"
+  },
+  {
+    "check_name" : "Colon",
+    "description" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
+    "engine_name" : "SwiftLint",
+    "fingerprint" : "1f9389145aa6d7e89a582fce5ae54659",
+    "location" : {
+      "lines" : {
+        "begin" : null,
+        "end" : null
+      },
+      "path" : null
+    },
+    "severity" : "MAJOR",
+    "type" : "issue"
+  }
+]

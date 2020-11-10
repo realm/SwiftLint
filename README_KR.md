@@ -258,7 +258,7 @@ identifier_name:
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # 보고 유형 (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging)
+reporter: "xcode" # 보고 유형 (xcode, json, csv, codeclimate, checkstyle, junit, html, emoji, sonarqube, markdown, github-actions-logging)
 ```
 
 #### 커스텀 룰 정의

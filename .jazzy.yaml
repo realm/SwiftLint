@@ -22,6 +22,7 @@ custom_categories:
     children:
       - CSVReporter
       - CheckstyleReporter
+      - CodeclimateReporter
       - EmojiReporter
       - GitHubActionsLoggingReporter
       - HTMLReporter

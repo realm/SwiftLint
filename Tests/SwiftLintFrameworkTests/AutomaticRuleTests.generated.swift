@@ -306,6 +306,12 @@ class JoinedDefaultParameterRuleTests: XCTestCase {
     }
 }
 
+class KeyPathExpressionAsFunctionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(KeyPathExpressionAsFunctionRule.description)
+    }
+}
+
 class LargeTupleRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LargeTupleRule.description)

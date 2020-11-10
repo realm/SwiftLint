@@ -1,6 +1,8 @@
+import Foundation
 import SourceKittenFramework
 
-public struct NonPrivateXCTestMembersRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NonPrivateXCTestMembersRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule,
+                                           SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -11,11 +13,26 @@ public struct NonPrivateXCTestMembersRule: Rule, OptInRule, ConfigurationProvide
         description: "All non-test XCTest members should be private.",
         kind: .lint,
         nonTriggeringExamples: NonPrivateXCTestMembersRuleExamples.nonTriggeringExamples,
-        triggeringExamples: NonPrivateXCTestMembersRuleExamples.triggeringExamples
+        triggeringExamples: NonPrivateXCTestMembersRuleExamples.triggeringExamples,
+        corrections: NonPrivateXCTestMembersRuleExamples.corrections
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return testClasses(in: file).flatMap { violations(in: file, for: $0) }
+        return violationRanges(in: file).map { range in
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: range.location))
+        }
+    }
+
+    // MARK: - SubstitutionCorrectableRule
+
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        return testClasses(in: file).flatMap { violationRanges(in: file, for: $0) }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        return (violationRange, "private ")
     }
 
     // MARK: - Private
@@ -28,21 +45,25 @@ public struct NonPrivateXCTestMembersRule: Rule, OptInRule, ConfigurationProvide
         }
     }
 
-    private func violations(in file: SwiftLintFile,
-                            for dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
+    private func violationRanges(in file: SwiftLintFile,
+                                 for dictionary: SourceKittenDictionary) -> [NSRange] {
+        return dictionary.substructure.compactMap { subDictionary in
             guard
                 let name = subDictionary.name, !isXCTestMethod(name),
                 let acl = subDictionary.accessibility, acl != .fileprivate && acl != .private,
                 let offset = subDictionary.offset else { return nil }
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
+            return file.stringView.byteRangeToNSRange(ByteRange(location: offset, length: 0))
         }
     }
 
     private func isXCTestMethod(_ method: String) -> Bool {
-        return method.hasPrefix("test") || method == "setUp()" || method == "tearDown()"
+        let lifecycleMethods = [
+            "setUp()",
+            "setUpWithError()",
+            "tearDown()",
+            "tearDownWithError()"
+        ]
+
+        return method.hasPrefix("test") || lifecycleMethods.contains(method)
     }
 }

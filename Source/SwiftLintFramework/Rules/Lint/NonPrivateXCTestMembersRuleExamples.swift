@@ -56,4 +56,41 @@ internal struct NonPrivateXCTestMembersRuleExamples {
         }
         """)
     ]
+
+    static let corrections = [
+        Example("""
+        class TotoTests: XCTestCase {
+            ↓var foo: Bar?
+
+            ↓struct Baz {}
+
+            override func setUp() {}
+
+            override func tearDown() {}
+
+            func testFoo() {}
+
+            func testBar() {}
+
+            ↓func helperFunction() {}
+        }
+        """):
+        Example("""
+        class TotoTests: XCTestCase {
+            private var foo: Bar?
+
+            private struct Baz {}
+
+            override func setUp() {}
+
+            override func tearDown() {}
+
+            func testFoo() {}
+
+            func testBar() {}
+
+            private func helperFunction() {}
+        }
+        """)
+    ]
 }

@@ -144,7 +144,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
         // skip commas in comments
         return TrailingCommaRule.commaRegex
             .matches(in: contents, options: [], range: contents.fullNSRange)
-            .map { $0.range }
+            .map(\.range)
             .last { nsRange in
                 let offsetCharacter = file.stringView.location(fromByteOffset: offset)
                 let offsetNSRange = NSRange(location: nsRange.location + offsetCharacter, length: nsRange.length)

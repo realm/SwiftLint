@@ -33,6 +33,7 @@ opt_in_rules:
   - flatmap_over_map_reduce
   - identical_operands
   - joined_default_parameter
+  - key_path_expression_as_function
   - legacy_random
   - let_var_whitespace
   - last_where

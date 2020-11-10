@@ -118,7 +118,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
             return (dotLine: line, dotOffset: offset, range: range)
         }
 
-        let uniqueLines = calls.map { $0.dotLine }.unique
+        let uniqueLines = calls.map(\.dotLine).unique
 
         if uniqueLines.count == 1 { return [] }
 
@@ -129,7 +129,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                 !callHasLeadingNewline(file: file, callRange: line.range)
             }
 
-        return noLeadingNewlineViolations.map { $0.dotOffset }
+        return noLeadingNewlineViolations.map(\.dotOffset)
     }
 
     private static let whitespaceDotRegex = regex("\\s*\\.")

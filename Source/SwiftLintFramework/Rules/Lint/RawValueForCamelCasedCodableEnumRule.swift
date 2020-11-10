@@ -119,7 +119,7 @@ public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, Configur
         return substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(camelCasedEnumCasesMissingRawValue)
-            .compactMap { $0.offset }
+            .compactMap(\.offset)
     }
 
     private func substructureElements(of dict: SourceKittenDictionary,

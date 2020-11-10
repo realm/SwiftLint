@@ -131,7 +131,7 @@ private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, 
 }
 
 private func render(violations: [StyleViolation], in contents: String) -> String {
-    var contents = StringView(contents).lines.map { $0.content }
+    var contents = StringView(contents).lines.map(\.content)
     for violation in violations.sorted(by: { $0.location > $1.location }) {
         guard let line = violation.location.line,
             let character = violation.location.character else { continue }
@@ -155,7 +155,7 @@ private func render(violations: [StyleViolation], in contents: String) -> String
 }
 
 private func render(locations: [Location], in contents: String) -> String {
-    var contents = StringView(contents).lines.map { $0.content }
+    var contents = StringView(contents).lines.map(\.content)
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
         let content = NSMutableString(string: contents[line - 1])
@@ -441,7 +441,7 @@ extension XCTestCase {
             }
 
             // Assert locations missing violation
-            let violatedLocations = triggerViolations.map { $0.location }
+            let violatedLocations = triggerViolations.map(\.location)
             let locationsWithoutViolation = expectedLocations
                 .filter { !violatedLocations.contains($0) }
             if !locationsWithoutViolation.isEmpty {

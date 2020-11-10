@@ -29,7 +29,7 @@ public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, Confi
         return validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
                         callNameSuffix: ".range", severity: configuration.severity,
                         reason: "Prefer `contains` over range(of:) comparison to nil") { expression in
-                            return expression.enclosedArguments.map { $0.name } == ["of"]
+            return expression.enclosedArguments.map(\.name) == ["of"]
         }
     }
 }

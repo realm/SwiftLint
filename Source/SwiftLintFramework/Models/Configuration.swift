@@ -58,7 +58,7 @@ public struct Configuration: Hashable {
 
     internal var customRuleIdentifiers: [String] {
         let customRule = rules.first(where: { $0 is CustomRules }) as? CustomRules
-        return customRule?.configuration.customRuleConfigurations.map { $0.identifier } ?? []
+        return customRule?.configuration.customRuleConfigurations.map(\.identifier) ?? []
     }
 
     // MARK: Rules Properties
@@ -275,7 +275,7 @@ private func enabledRules(from configuredRules: [Rule],
                           customRulesIdentifiers: [String]) -> [Rule]? {
     let regularRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
     let configurationCustomRulesIdentifiers = (configuredRules.first(where: { $0 is CustomRules }) as? CustomRules)?
-        .configuration.customRuleConfigurations.map { $0.identifier } ?? []
+        .configuration.customRuleConfigurations.map(\.identifier) ?? []
     let validRuleIdentifiers = regularRuleIdentifiers + configurationCustomRulesIdentifiers + customRulesIdentifiers
 
     switch mode {

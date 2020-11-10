@@ -49,7 +49,7 @@ public struct Region: Equatable {
         }
 
         let identifiersToCheck = type(of: rule).description.allIdentifiers
-        let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
+        let regionIdentifiers = Set(disabledRuleIdentifiers.map(\.stringRepresentation))
         return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
     }
 
@@ -61,6 +61,6 @@ public struct Region: Equatable {
     /// - returns: Deprecated rule aliases.
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
-        return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
+        return Set(disabledRuleIdentifiers.map(\.stringRepresentation)).intersection(identifiers)
     }
 }

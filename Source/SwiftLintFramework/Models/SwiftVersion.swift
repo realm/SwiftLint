@@ -61,7 +61,7 @@ public extension SwiftVersion {
 
         if !Request.disableSourceKit,
             case let dynamicCallableFile = SwiftLintFile(contents: "@dynamicCallable"),
-            dynamicCallableFile.syntaxMap.tokens.compactMap({ $0.kind }) == [.attributeID] {
+            dynamicCallableFile.syntaxMap.tokens.compactMap(\.kind) == [.attributeID] {
             return .five
         }
 

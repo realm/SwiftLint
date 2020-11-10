@@ -80,7 +80,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return violationResults(in: file).map { $0.range }
+        return violationResults(in: file).map(\.range)
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
@@ -157,7 +157,7 @@ public struct SyntacticSugarRule: SubstitutionCorrectableRule, ConfigurationProv
                 return false
             }
 
-            let kinds = file.structureDictionary.structures(forByteOffset: byteOffset).compactMap { $0.expressionKind }
+            let kinds = file.structureDictionary.structures(forByteOffset: byteOffset).compactMap(\.expressionKind)
             guard kinds.contains(.call) else {
                 return false
             }

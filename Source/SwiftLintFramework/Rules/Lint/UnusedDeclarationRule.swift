@@ -83,7 +83,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         // 2. minus all references
         return declaredUSRs
             .filter { !allReferencedUSRs.contains($0.usr) }
-            .map { $0.nameOffset }
+            .map(\.nameOffset)
             .sorted()
     }
 }
@@ -152,7 +152,7 @@ private extension SwiftLintFile {
         // Skip CodingKeys as they are used for Codable generation
         if kind == .enum,
             indexEntity.name == "CodingKeys",
-            case let allRelatedUSRs = indexEntity.traverseEntities(traverseBlock: { $0.usr }),
+            case let allRelatedUSRs = indexEntity.traverseEntities(traverseBlock: \.usr),
             allRelatedUSRs.contains("s:s9CodingKeyP") {
             return nil
         }

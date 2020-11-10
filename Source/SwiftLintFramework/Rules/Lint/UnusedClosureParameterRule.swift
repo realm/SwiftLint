@@ -142,7 +142,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
 
     public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        return violationRanges(in: file, dictionary: dictionary, kind: kind).map { $0.range }
+        return violationRanges(in: file, dictionary: dictionary, kind: kind).map(\.range)
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {

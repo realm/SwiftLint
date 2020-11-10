@@ -83,7 +83,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             }
 
             let braces = bracePattern.matches(in: file.contents, options: [],
-                                              range: nsrange).map { $0.range }
+                                              range: nsrange).map(\.range)
             // filter out braces in comments and strings
             let tokens = linesTokens[eachLine.index].filter {
                 guard let tokenKind = $0.kind else { return false }

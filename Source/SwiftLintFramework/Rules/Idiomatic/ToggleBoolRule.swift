@@ -49,7 +49,7 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         let violationString = file.stringView.substring(with: violationRange)
-        let identifier = violationString.components(separatedBy: .whitespaces).first { $0.isNotEmpty }
+        let identifier = violationString.components(separatedBy: .whitespaces).first(where: \.isNotEmpty)
         return (violationRange, identifier! + ".toggle()")
     }
 }

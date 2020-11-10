@@ -13,7 +13,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
     internal var cacheDescription: String {
         return customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }
-            .map { $0.cacheDescription }
+            .map(\.cacheDescription)
             .joined(separator: "\n")
     }
     public var customRuleConfigurations = [RegexConfiguration]()

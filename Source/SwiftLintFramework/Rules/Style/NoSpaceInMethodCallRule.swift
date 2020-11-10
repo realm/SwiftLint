@@ -97,7 +97,7 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         }
 
         // Don't trigger if it's a single parameter trailing closure without parens
-        if let closureBodyOffset = dictionary.substructure.lazy.compactMap({ $0.closureBodyOffset }).first,
+        if let closureBodyOffset = dictionary.substructure.lazy.compactMap(\.closureBodyOffset).first,
             closureBodyOffset == bodyOffset {
             return []
         }

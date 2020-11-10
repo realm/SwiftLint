@@ -27,7 +27,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
 
         let ranges = file.syntaxMap.tokens
             .filter { $0.kind == .buildconfigKeyword }
-            .map { $0.range }
+            .map(\.range)
             .filter { range in
                 return ["#if", "#endif"].contains(contents.substringWithByteRange(range))
             }

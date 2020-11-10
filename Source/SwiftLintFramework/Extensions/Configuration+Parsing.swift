@@ -36,7 +36,7 @@ extension Configuration {
             .indentation,
             .analyzerRules,
             .allowZeroLintableFiles
-        ].map({ $0.rawValue }))
+        ].map(\.rawValue))
     }()
 
     private static func validKeys(ruleList: RuleList) -> Set<String> {

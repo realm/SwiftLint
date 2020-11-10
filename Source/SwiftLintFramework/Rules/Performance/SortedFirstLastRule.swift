@@ -48,7 +48,7 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".sorted",
                         severity: configuration.severity) { dictionary in
-            let arguments = dictionary.enclosedArguments.compactMap { $0.name }
+            let arguments = dictionary.enclosedArguments.compactMap(\.name)
             return arguments.isEmpty || arguments == ["by"]
         }
     }

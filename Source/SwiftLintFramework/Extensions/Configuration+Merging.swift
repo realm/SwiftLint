@@ -30,7 +30,7 @@ extension Configuration {
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             let fullPath = pathNSString.absolutePathRepresentation()
             let customRuleIdentifiers = (rules.first(where: { $0 is CustomRules }) as? CustomRules)?
-                .configuration.customRuleConfigurations.map { $0.identifier }
+                .configuration.customRuleConfigurations.map(\.identifier)
             let config = Configuration.getCached(atPath: fullPath) ??
                 Configuration(
                     path: configurationSearchPath,
@@ -103,7 +103,7 @@ extension Configuration {
             // (always use the nested rule first if it exists)
             regularMergedRules = Set(configuration.rules.map(HashableRule.init))
                 .union(rules.map(HashableRule.init))
-                .map { $0.rule }
+                .map(\.rule)
                 .filter { rule in
                     return onlyRules.contains(type(of: rule).description.identifier)
                 }
@@ -123,7 +123,7 @@ extension Configuration {
                         return !disabled.contains(type(of: rule).description.identifier)
                     }.map(HashableRule.init)
                 )
-                .map { $0.rule }
+                .map(\.rule)
         }
         return mergeCustomRules(mergedRules: regularMergedRules, configuration: configuration)
     }

@@ -161,7 +161,7 @@ private extension SourceKittenDictionary {
 
         return elements
             .filter { elementKind == $0.kind }
-            .compactMap { $0.byteRange }
+            .compactMap(\.byteRange)
     }
 }
 

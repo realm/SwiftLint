@@ -83,7 +83,7 @@ struct AutoCorrectOptions: OptionsProtocol {
             }
             let corrections = linter.correct(using: storage)
             if !corrections.isEmpty && !self.quiet {
-                let correctionLogs = corrections.map({ $0.consoleDescription })
+                let correctionLogs = corrections.map(\.consoleDescription)
                 queuedPrint(correctionLogs.joined(separator: "\n"))
             }
         }

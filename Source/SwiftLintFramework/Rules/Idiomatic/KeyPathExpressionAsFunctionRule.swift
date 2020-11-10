@@ -96,6 +96,6 @@ private extension SourceKittenDictionary {
     var isClosureArgument: Bool {
         return kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .argument &&
             substructure.count == 1 &&
-            substructure.allSatisfy { $0.isClosure }
+            substructure.allSatisfy(\.isClosure)
     }
 }

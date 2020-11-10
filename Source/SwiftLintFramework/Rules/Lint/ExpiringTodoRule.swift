@@ -48,7 +48,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
 
         return file.matchesAndSyntaxKinds(matching: regex).compactMap { checkingResult, syntaxKinds in
             guard
-                syntaxKinds.allSatisfy({ $0.isCommentLike }),
+                syntaxKinds.allSatisfy(\.isCommentLike),
                 checkingResult.numberOfRanges > 1,
                 case let range = checkingResult.range(at: 1),
                 let date = expiryDate(file: file, range: range),

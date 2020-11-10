@@ -53,7 +53,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let minThreshold = configuration.severityConfiguration.params.map({ $0.value }).min(by: <)
+        let minThreshold = configuration.severityConfiguration.params.map(\.value).min(by: <)
 
         let allParameterCount = allFunctionParameterCount(structure: dictionary.substructure, range: nameRange)
         if allParameterCount < minThreshold! {

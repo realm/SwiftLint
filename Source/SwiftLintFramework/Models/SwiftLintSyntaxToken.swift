@@ -34,6 +34,6 @@ public struct SwiftLintSyntaxToken {
 
 extension Array where Element == SwiftLintSyntaxToken {
     var kinds: [SyntaxKind] {
-        return compactMap { $0.kind }
+        return compactMap(\.kind)
     }
 }

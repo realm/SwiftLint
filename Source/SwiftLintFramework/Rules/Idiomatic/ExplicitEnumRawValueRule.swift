@@ -104,7 +104,7 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(enumElementsMissingInitExpr)
-            .compactMap { $0.offset }
+            .compactMap(\.offset)
 
         return locs
     }

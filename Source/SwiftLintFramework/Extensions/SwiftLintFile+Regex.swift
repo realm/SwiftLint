@@ -188,7 +188,7 @@ extension SwiftLintFile {
             return nil
         }
 
-        return tokens.map { $0.kinds }
+        return tokens.map(\.kinds)
     }
 
     /**

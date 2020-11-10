@@ -60,7 +60,7 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, Automa
         }
 
         return elementsByName.filter { $0.value.count > 1 }
-            .flatMap { $0.value }
+            .flatMap(\.value)
             .map {
                 StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,

@@ -3,7 +3,7 @@ import Foundation
 
 extension Array where Element: NSTextCheckingResult {
     func ranges() -> [NSRange] {
-        return map { $0.range }
+        return map(\.range)
     }
 }
 

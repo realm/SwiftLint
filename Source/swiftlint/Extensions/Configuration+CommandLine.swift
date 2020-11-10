@@ -125,7 +125,7 @@ extension Configuration {
                          storage: RuleStorage,
                          duplicateFileNames: Set<String>) -> ([CollectedLinter], Set<String>) {
         var collected = 0
-        let total = linters.filter({ $0.isCollecting }).count
+        let total = linters.filter(\.isCollecting).count
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
             if !visitor.quiet, linter.isCollecting, let filePath = linter.file.path {
@@ -204,7 +204,7 @@ extension Configuration {
                         return files
                     }
 
-                    let scriptInputPaths = files.compactMap { $0.path }
+                    let scriptInputPaths = files.compactMap(\.path)
                     let filesToLint = visitor.useExcludingByPrefix
                                       ? filterExcludedPathsByPrefix(in: scriptInputPaths)
                                       : filterExcludedPaths(in: scriptInputPaths)

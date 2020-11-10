@@ -99,9 +99,9 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         static func cases(from dictionary: SourceKittenDictionary) -> [String] {
             let caseSubstructures = dictionary.substructure.filter { dict in
                 return dict.declarationKind == .enumcase
-            }.flatMap { $0.substructure }
+            }.flatMap(\.substructure)
 
-            return caseSubstructures.compactMap { $0.name }.map { name in
+            return caseSubstructures.compactMap(\.name).map { name in
                 if SwiftVersion.current > .fourDotOne,
                     let parenIndex = name.firstIndex(of: "("),
                     parenIndex > name.startIndex {

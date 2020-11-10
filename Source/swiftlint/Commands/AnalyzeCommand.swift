@@ -20,7 +20,7 @@ struct AnalyzeCommand: CommandProtocol {
         return configuration.visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
             let corrections = linter.correct(using: storage)
             if !corrections.isEmpty && !options.quiet {
-                let correctionLogs = corrections.map({ $0.consoleDescription })
+                let correctionLogs = corrections.map(\.consoleDescription)
                 queuedPrint(correctionLogs.joined(separator: "\n"))
             }
         }.flatMap { files in

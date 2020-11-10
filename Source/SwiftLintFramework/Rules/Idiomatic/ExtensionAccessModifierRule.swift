@@ -111,7 +111,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
                 return (acl: entry.accessibility ?? .internal, offset: offset)
             }
 
-        let declarationsACLs = declarations.map { $0.acl }.unique
+        let declarationsACLs = declarations.map(\.acl).unique
         let allowedACLs: Set<AccessControlLevel> = [.internal, .private, .open]
         guard declarationsACLs.count == 1, !allowedACLs.contains(declarationsACLs[0]) else {
             return []
@@ -121,7 +121,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         let parts = syntaxTokens.partitioned { offset <= $0.offset }
         if let aclToken = parts.first.last, file.isACL(token: aclToken) {
             return declarationsViolations(file: file, acl: declarationsACLs[0],
-                                          declarationOffsets: declarations.map { $0.offset },
+                                          declarationOffsets: declarations.map(\.offset),
                                           dictionary: dictionary)
         }
 

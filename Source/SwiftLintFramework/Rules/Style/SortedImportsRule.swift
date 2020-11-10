@@ -192,7 +192,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
             guard let first = group.first?.contentRange else {
                 continue
             }
-            let result = group.map { $0.content }.joined(separator: "\n")
+            let result = group.map(\.content).joined(separator: "\n")
             let union = group.dropFirst().reduce(first) { result, line in
                 return NSUnionRange(result, line.contentRange)
             }

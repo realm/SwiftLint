@@ -29,7 +29,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             included?.pattern ?? "",
             excluded?.pattern ?? "",
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
-                .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
+                .map(\.rawValue).sorted(by: <).joined(separator: ","),
             severityConfiguration.consoleDescription
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),

@@ -37,7 +37,7 @@ private extension SwiftLintFile {
             return false
         }
 
-        //First non-whitespace character should be "(" - otherwise it is not an anonymous closure
+        // First non-whitespace character should be "(" - otherwise it is not an anonymous closure
         let afterBracketCode = closureCode.substring(from: closingBracketPosition + 1)
                                             .trimmingCharacters(in: .whitespaces)
         return afterBracketCode.first == "("

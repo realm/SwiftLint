@@ -1362,7 +1362,7 @@ extension RuleConfigurationTests {
         ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments", testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments),
         ("testTrailingWhitespaceConfigurationCompares", testTrailingWhitespaceConfigurationCompares),
         ("testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration", testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration),
-        ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary),
+        ("testOverriddenSuperCallConfigurationFromDictionary", testOverriddenSuperCallConfigurationFromDictionary),
         ("testModifierOrderConfigurationFromDictionary", testModifierOrderConfigurationFromDictionary),
         ("testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup", testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup),
         ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup),

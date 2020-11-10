@@ -1,4 +1,4 @@
-public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
+public struct OverriddenSuperCallConfiguration: RuleConfiguration, Equatable {
     private let defaultIncluded = [
         // NSObject
         "awakeFromNib()",

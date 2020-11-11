@@ -274,8 +274,8 @@ class RuleConfigurationTests: XCTestCase {
         }
     }
 
-    func testOverridenSuperCallConfigurationFromDictionary() {
-        var configuration = OverridenSuperCallConfiguration()
+    func testOverriddenSuperCallConfigurationFromDictionary() {
+        var configuration = OverriddenSuperCallConfiguration()
         XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
 
         let conf1 = ["severity": "error", "excluded": "viewWillAppear(_:)"]

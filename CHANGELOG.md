@@ -34,6 +34,11 @@
   Defaults to `true`.  
   [Skoti](https://github.com/Skoti)
 
+* Renamed `OverridenSuperCallConfiguration` to
+  `OverriddenSuperCallConfiguration`.  
+  [Bryan Ricker](https://github.com/bricker)
+  [#3426](https://github.com/realm/SwiftLint/pull/3426)
+
 #### Experimental
 
 * None.

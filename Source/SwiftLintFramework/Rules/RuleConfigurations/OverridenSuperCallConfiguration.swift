@@ -1,16 +1,16 @@
 public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
     private let defaultIncluded = [
-        //NSObject
+        // NSObject
         "awakeFromNib()",
         "prepareForInterfaceBuilder()",
-        //UICollectionViewLayout
+        // UICollectionViewLayout
         "invalidateLayout()",
         "invalidateLayout(with:)",
         "invalidateLayoutWithContext(_:)",
-        //UIView
+        // UIView
         "prepareForReuse()",
         "updateConstraints()",
-        //UIViewController
+        // UIViewController
         "addChildViewController(_:)",
         "decodeRestorableState(with:)",
         "decodeRestorableStateWithCoder(_:)",
@@ -27,7 +27,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         "viewDidLoad()",
         "viewWillAppear(_:)",
         "viewWillDisappear(_:)",
-        //XCTestCase
+        // XCTestCase
         "setUp()",
         "setUpWithError()",
         "tearDown()",

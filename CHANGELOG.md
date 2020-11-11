@@ -55,6 +55,10 @@
   `unused_import` rule.  
   [Keith Smiley](https://github.com/keith)
 
+* Add `comment_spacing` rule.  
+  [Noah Gilmore](https://github.com/noahsark769)
+  [#3233](https://github.com/realm/SwiftLint/issues/3233)
+
 #### Bug Fixes
 
 * None.

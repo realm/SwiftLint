@@ -66,6 +66,12 @@ class CommaRuleTests: XCTestCase {
     }
 }
 
+class CommentSpacingRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CommentSpacingRule.description)
+    }
+}
+
 class ContainsOverFilterCountRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFilterCountRule.description)

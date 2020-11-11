@@ -191,7 +191,6 @@ extension SwiftLintFile {
         return tokens.map { $0.kinds }
     }
 
-    //Added by S2dent
     /**
      This function returns only matches that are not contained in a syntax kind
      specified.

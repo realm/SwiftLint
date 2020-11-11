@@ -134,7 +134,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 let description = Self.description
                 let location = Location(file: file, characterOffset: currentLine.range.location)
 
-                //reports every line that is being deleted
+                // reports every line that is being deleted
                 corrections.append(Correction(ruleDescription: description, location: location))
                 continue // skips line
             }

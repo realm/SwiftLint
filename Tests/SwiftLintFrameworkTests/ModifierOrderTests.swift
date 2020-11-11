@@ -78,7 +78,7 @@ class ModifierOrderTests: XCTestCase {
                                                                     "override"]])
     }
 
-    //swiftlint:disable function_body_length
+    // swiftlint:disable function_body_length
     func testAtPrefixedGroup() {
         let descriptionOverride = RuleDescription(
             identifier: "modifier_order",

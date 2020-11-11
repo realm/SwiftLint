@@ -350,6 +350,7 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }).count,
                 commentDoesntViolate ? 0 : triggers.count,
+                "Violation(s) still triggered when code was nested inside comment",
                 file: (file), line: line
             )
         }
@@ -433,7 +434,7 @@ extension XCTestCase {
             let violationsAtUnexpectedLocation = triggerViolations
                 .filter { !expectedLocations.contains($0.location) }
             if !violationsAtUnexpectedLocation.isEmpty {
-                XCTFail("triggeringExample violate at unexpected location: \n" +
+                XCTFail("triggeringExample violated at unexpected location: \n" +
                     "\(render(violations: violationsAtUnexpectedLocation, in: trigger.code))",
                     file: trigger.file,
                     line: trigger.line)

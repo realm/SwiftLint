@@ -149,7 +149,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         verifyRule(description)
     }
 
-    //swiftlint:disable function_body_length
+    // swiftlint:disable function_body_length
     func testSwitchCaseDeclarations() {
         guard SwiftVersion.current >= .fourDotOne else {
             return

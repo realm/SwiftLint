@@ -58,6 +58,7 @@
 * Add `comment_spacing` rule.  
   [Noah Gilmore](https://github.com/noahsark769)
   [#3233](https://github.com/realm/SwiftLint/issues/3233)
+
 * Add `key_path_expression_as_function` opt-in rule to validate that key paths
   are used instead of closures in function calls whenever possible when using
   Swift 5.2+. Take a look at [SE-0249](https://git.io/JkfBZ) for more details.  

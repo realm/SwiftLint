@@ -10,6 +10,7 @@ class ReporterTests: XCTestCase {
             JSONReporter.self,
             CSVReporter.self,
             CheckstyleReporter.self,
+            CodeClimateReporter.self,
             JUnitReporter.self,
             HTMLReporter.self,
             EmojiReporter.self,
@@ -99,6 +100,12 @@ class ReporterTests: XCTestCase {
     func testCheckstyleReporter() {
         let expectedOutput = stringFromFile("CannedCheckstyleReporterOutput.xml")
         let result = CheckstyleReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
+    }
+
+    func testCodeClimateReporter() {
+        let expectedOutput = stringFromFile("CannedCodeClimateReporterOutput.json")
+        let result = CodeClimateReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 

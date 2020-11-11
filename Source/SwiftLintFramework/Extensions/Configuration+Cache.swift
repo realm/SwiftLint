@@ -1,3 +1,6 @@
+#if canImport(CryptoSwift)
+import CryptoSwift
+#endif
 import Foundation
 
 extension Configuration {

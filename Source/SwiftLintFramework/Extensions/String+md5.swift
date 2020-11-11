@@ -1,11 +1,6 @@
 #if canImport(CommonCrypto)
 import CommonCrypto
-#else
-import CryptoSwift
-#endif
-import Foundation
 
-#if canImport(CommonCrypto)
 extension String {
     internal func md5() -> String {
         let context = UnsafeMutablePointer<CC_MD5_CTX>.allocate(capacity: 1)

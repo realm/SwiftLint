@@ -58,8 +58,7 @@
 * Add `comment_spacing` rule.  
   [Noah Gilmore](https://github.com/noahsark769)
   [#3233](https://github.com/realm/SwiftLint/issues/3233)
-* Add `codeclimate` reporter to generate JSON reports in codeclimate 
-  format. Could be used for Gitlab Code Quality MR Widget.
+
 * Add `codeclimate` reporter to generate JSON reports in codeclimate
   format. Could be used for GitLab Code Quality MR Widget.  
   [jkroepke](https://github.com/jkroepke)

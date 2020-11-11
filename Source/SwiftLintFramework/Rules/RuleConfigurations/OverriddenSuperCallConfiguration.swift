@@ -46,8 +46,8 @@ public struct OverriddenSuperCallConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            ", excluded: [\(excluded)]" +
-            ", included: [\(included)]"
+            ", excluded: \(excluded)" +
+            ", included: \(included)"
     }
 
     public mutating func apply(configuration: Any) throws {

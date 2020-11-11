@@ -142,6 +142,7 @@ public let primaryRuleList = RuleList(rules: [
     RawValueForCamelCasedCodableEnumRule.self,
     ReduceBooleanRule.self,
     ReduceIntoRule.self,
+    RedundantBoolComparisonRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantObjcAttributeRule.self,

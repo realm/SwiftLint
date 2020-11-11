@@ -1233,6 +1233,12 @@ extension ReduceIntoRuleTests {
     ]
 }
 
+extension RedundantBoolComparisonRuleTests {
+    static var allTests: [(String, (RedundantBoolComparisonRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RedundantDiscardableLetRuleTests {
     static var allTests: [(String, (RedundantDiscardableLetRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1903,6 +1909,7 @@ XCTMain([
     testCase(RawValueForCamelCasedCodableEnumRuleTests.allTests),
     testCase(ReduceBooleanRuleTests.allTests),
     testCase(ReduceIntoRuleTests.allTests),
+    testCase(RedundantBoolComparisonRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),
     testCase(RedundantNilCoalescingRuleTests.allTests),
     testCase(RedundantObjcAttributeRuleTests.allTests),

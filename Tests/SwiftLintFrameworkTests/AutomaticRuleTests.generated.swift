@@ -594,6 +594,12 @@ class ReduceIntoRuleTests: XCTestCase {
     }
 }
 
+class RedundantBoolComparisonRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantBoolComparisonRule.description)
+    }
+}
+
 class RedundantDiscardableLetRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)

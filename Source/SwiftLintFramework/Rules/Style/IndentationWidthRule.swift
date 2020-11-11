@@ -132,7 +132,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 )
             }
 
-            if linesValidationResult.first == true {
+            if let isFirstLineValid = linesValidationResult.first, isFirstLineValid {
                 // Reset previousLineIndentations to this line only
                 // if this line's indentation matches the last valid line's indentation (first in the array)
                 previousLineIndentations = [indentation]

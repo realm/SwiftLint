@@ -138,8 +138,8 @@ private extension SwiftLintFile {
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
             indexEntity.isIndexEntitySwiftUIProvider() ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
-            indexEntity.value["key.is_implicit"] as? Bool == true ||
-            indexEntity.value["key.is_test_candidate"] as? Bool == true {
+            indexEntity.value["key.is_implicit"] as? Bool ?? false ||
+            indexEntity.value["key.is_test_candidate"] as? Bool ?? false {
             return nil
         }
 

@@ -59,6 +59,10 @@
   [Noah Gilmore](https://github.com/noahsark769)
   [#3233](https://github.com/realm/SwiftLint/issues/3233)
 
+* Add `redundant_bool_comparison` rule.  
+  [Artem Garmash](https://github.com/agarmash)
+  [#3420](https://github.com/realm/SwiftLint/issues/3420)
+
 #### Bug Fixes
 
 * None.

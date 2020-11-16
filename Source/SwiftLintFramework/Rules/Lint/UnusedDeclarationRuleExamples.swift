@@ -93,6 +93,9 @@ struct UnusedDeclarationRuleExamples {
         }
         """),
         Example("""
+        public func ↓foo() {}
+        """, configuration: ["include_public_and_open": true]),
+        Example("""
         protocol Foo {
             func ↓bar1()
         }

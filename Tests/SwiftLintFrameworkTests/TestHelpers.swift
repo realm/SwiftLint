@@ -41,9 +41,21 @@ extension String {
 
 let allRuleIdentifiers = Array(primaryRuleList.list.keys)
 
-func violations(_ example: Example, config: Configuration = Configuration()!,
+extension Configuration {
+    func applyingConfiguration(from example: Example) -> Configuration {
+        guard let exampleConfiguration = example.configuration,
+           case let .only(onlyRules) = self.rulesMode,
+           let firstRule = onlyRules.first,
+           case let configDict = ["only_rules": onlyRules, firstRule: exampleConfiguration],
+           let typedConfiguration = Configuration(dict: configDict) else { return self }
+        return merge(with: typedConfiguration)
+    }
+}
+
+func violations(_ example: Example, config inputConfig: Configuration = Configuration()!,
                 requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
+    let config = inputConfig.applyingConfiguration(from: example)
     let stringStrippingMarkers = example.removingViolationMarkers()
     guard requiresFileOnDisk else {
         let file = SwiftLintFile(contents: stringStrippingMarkers.code)

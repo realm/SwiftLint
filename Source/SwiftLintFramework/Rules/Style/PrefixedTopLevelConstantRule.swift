@@ -17,6 +17,7 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
             Example("public let kFoo = false"),
             Example("internal let kFoo = \"Foo\""),
             Example("let kFoo = true"),
+            Example("let Foo = true", configuration: ["only_private": true]),
             Example("struct Foo {\n" +
             "   let bar = 20.0\n" +
             "}"),

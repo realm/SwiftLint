@@ -110,7 +110,7 @@ struct UnusedDeclarationRuleExamples {
         class ↓MyTests: NSObject {
             func ↓testExample() {}
         }
-        """),
+        """)
     ] + platformSpecificTriggeringExamples
 
 #if os(macOS)

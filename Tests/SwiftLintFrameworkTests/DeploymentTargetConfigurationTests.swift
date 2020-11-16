@@ -2,7 +2,7 @@
 import XCTest
 
 class DeploymentTargetConfigurationTests: XCTestCase {
-    typealias Version = DeploymentTargetConfiguration.Version
+    private typealias Version = DeploymentTargetConfiguration.Version
 
     func testAppliesConfigurationFromDictionary() throws {
         var configuration = DeploymentTargetConfiguration()

@@ -2,17 +2,17 @@
 import XCTest
 
 class RequiredEnumCaseRuleTestCase: XCTestCase {
-    typealias RuleConfiguration = RequiredEnumCaseRuleConfiguration
-    typealias RequiredCase = RuleConfiguration.RequiredCase
+    private typealias RuleConfiguration = RequiredEnumCaseRuleConfiguration
+    private typealias RequiredCase = RuleConfiguration.RequiredCase
 
-    let protocol1 = "RequiredProtocol"
-    let protocol2 = "NetworkResults"
-    let protocol3 = "RequiredProtocolWithSeverity"
-    let rule1 = RuleConfiguration.RequiredCase(name: "success", severity: .warning)
-    let rule2 = RuleConfiguration.RequiredCase(name: "error", severity: .warning)
-    let rule3 = RuleConfiguration.RequiredCase(name: "success", severity: .error)
+    private let protocol1 = "RequiredProtocol"
+    private let protocol2 = "NetworkResults"
+    private let protocol3 = "RequiredProtocolWithSeverity"
+    private let rule1 = RuleConfiguration.RequiredCase(name: "success", severity: .warning)
+    private let rule2 = RuleConfiguration.RequiredCase(name: "error", severity: .warning)
+    private let rule3 = RuleConfiguration.RequiredCase(name: "success", severity: .error)
 
-    var config: RuleConfiguration!
+    private var config: RuleConfiguration!
 
     override func setUp() {
         super.setUp()
@@ -66,7 +66,7 @@ class RequiredEnumCaseRuleTestCase: XCTestCase {
         XCTAssertEqual(config.consoleDescription, expected)
     }
 
-    func validateRulesExistForProtocol1() {
+    private func validateRulesExistForProtocol1() {
         XCTAssertTrue(self.config.protocols[protocol1]?.contains(self.rule1) ?? false)
         XCTAssertTrue(self.config.protocols[protocol1]?.contains(self.rule2) ?? false)
     }
@@ -76,7 +76,7 @@ class RequiredEnumCaseRuleTestCase: XCTestCase {
         validateRulesExistForProtocol3()
     }
 
-    func validateRulesExistForProtocol3() {
+    private func validateRulesExistForProtocol3() {
         XCTAssertTrue(self.config.protocols[protocol3]?.contains(self.rule3) ?? false)
         XCTAssertTrue(self.config.protocols[protocol3]?.contains(self.rule2) ?? false)
     }

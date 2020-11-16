@@ -468,6 +468,12 @@ class NoSpaceInMethodCallRuleTests: XCTestCase {
     }
 }
 
+class NonPrivateXCTestMembersRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NonPrivateXCTestMembersRule.description)
+    }
+}
+
 class NotificationCenterDetachmentRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)

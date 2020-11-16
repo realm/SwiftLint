@@ -33,14 +33,15 @@ opt_in_rules:
   - flatmap_over_map_reduce
   - identical_operands
   - joined_default_parameter
-  - legacy_random
-  - let_var_whitespace
   - last_where
   - legacy_multiple
+  - legacy_random
+  - let_var_whitespace
   - literal_expression_end_indentation
   - lower_acl_than_parent
   - modifier_order
   - nimble_operator
+  - non_private_xctest_member
   - nslocalizedstring_key
   - number_separator
   - object_literal

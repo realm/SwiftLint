@@ -56,6 +56,19 @@ struct UnusedDeclarationRuleExamples {
 
         struct MyStruct: Foo {}
         MyStruct().bar()
+        """),
+        Example("""
+        import XCTest
+        class MyTests: XCTestCase {
+            func testExample() {}
+        }
+        """),
+        Example("""
+        import XCTest
+        open class BestTestCase: XCTestCase {}
+        class MyTests: BestTestCase {
+            func testExample() {}
+        }
         """)
     ] + platformSpecificNonTriggeringExamples
 
@@ -91,7 +104,13 @@ struct UnusedDeclarationRuleExamples {
 
         struct MyStruct: Foo {}
         _ = MyStruct()
-        """)
+        """),
+        Example("""
+        import XCTest
+        class ↓MyTests: NSObject {
+            func ↓testExample() {}
+        }
+        """),
     ] + platformSpecificTriggeringExamples
 
 #if os(macOS)

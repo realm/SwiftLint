@@ -17,7 +17,19 @@ private extension SwiftLintFile {
     }
 
     func makeCompilerArguments() -> [String] {
-        return ["-sdk", sdkPath(), "-j4", path!]
+        let sdk = sdkPath()
+        let frameworks = URL(fileURLWithPath: sdk)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Library")
+            .appendingPathComponent("Frameworks")
+            .path
+        return [
+            "-F",
+            frameworks,
+            "-sdk", sdk,
+            "-j4", path!
+        ]
     }
 }
 

@@ -105,7 +105,7 @@ portable_zip: installables
 
 zip_linux:
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run -v `pwd`:`pwd` -w `pwd` --rm swift:latest swift build -c release
+	docker run -v `pwd`:`pwd` -w `pwd` --rm swift:latest sh -c 'apt-get update && apt-get install -y libxml2-dev && swift build -c release -Xswiftc -static-stdlib'
 	mv .build/release/swiftlint "$(TMP_FOLDER)"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"

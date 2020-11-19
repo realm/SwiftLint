@@ -5,7 +5,7 @@ private enum ConfigurationKey: String {
 
 public struct OpeningBraceConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var allowMultilineFunc: Bool = false
+    private(set) var allowMultilineFunc = false
 
     public var consoleDescription: String {
         return [severityConfiguration.consoleDescription,

@@ -5,7 +5,7 @@ private enum ConfigurationKey: String {
 
 public struct EmptyCountConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.error)
-    private(set) var onlyAfterDot: Bool = false
+    private(set) var onlyAfterDot = false
 
     public var consoleDescription: String {
         return [severityConfiguration.consoleDescription,

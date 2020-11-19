@@ -13,7 +13,12 @@ USE_SWIFT_STATIC_STDLIB:=$(shell test -d $$(dirname $$(xcrun --find swift))/../l
 ifeq ($(USE_SWIFT_STATIC_STDLIB), yes)
 SWIFT_BUILD_FLAGS+= -Xswiftc -static-stdlib
 endif
-endif
+# SwiftPM 5.3 uses the `XCBuild.framework` to generate a universal binary when it receives multiple `--arch` options.
+SWIFT_BUILD_ARCHS:= arm64 x86_64
+# If SwiftPM supports `--arch $(1)` and `swiftc` succeeds in building with `-target $(1)-apple-macos10.9`, then produce `--arch $(1)`.
+ARCH_OPTION=$(shell swift build --show-bin-path --arch $(1) &>/dev/null && echo ''|swiftc -target $(1)-apple-macos10.9 - -o /dev/null &>/dev/null && echo "--arch" $(1))
+SWIFT_BUILD_FLAGS+=$(foreach arch,$(SWIFT_BUILD_ARCHS),$(call ARCH_OPTION,$(arch)))
+endif # Darwin
 
 SWIFTLINT_EXECUTABLE=$(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/swiftlint
 

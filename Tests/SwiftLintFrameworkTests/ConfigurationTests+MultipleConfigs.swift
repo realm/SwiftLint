@@ -160,8 +160,8 @@ extension ConfigurationTests {
             FileManager.default.changeCurrentDirectoryPath(path)
 
             assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["child_config_main.yml"]),
-                Configuration(configurationFiles: ["child_config_expected.yml"])
+                Configuration(configurationFiles: ["main.yml"]),
+                Configuration(configurationFiles: ["expected.yml"])
             )
         }
     }
@@ -171,8 +171,8 @@ extension ConfigurationTests {
             FileManager.default.changeCurrentDirectoryPath(path)
 
             assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["parent_config_main.yml"]),
-                Configuration(configurationFiles: ["parent_config_expected.yml"])
+                Configuration(configurationFiles: ["main.yml"]),
+                Configuration(configurationFiles: ["expected.yml"])
             )
         }
     }
@@ -183,9 +183,9 @@ extension ConfigurationTests {
 
             assertEqualExceptForFileGraph(
                 Configuration(
-                    configurationFiles: ["child_config_main.yml", "child_config_child1.yml", "child_config_child2.yml"]
+                    configurationFiles: ["main.yml", "child1.yml", "child2.yml"]
                 ),
-                Configuration(configurationFiles: ["child_config_expected.yml"])
+                Configuration(configurationFiles: ["expected.yml"])
             )
         }
     }
@@ -215,7 +215,7 @@ extension ConfigurationTests {
         // If the cycle is properly detected, the config should equal the default config.
         assertEqualExceptForFileGraph(
             Configuration(
-                configurationFiles: ["child_config_main.yml", "child_config_child1.yml"],
+                configurationFiles: ["main.yml", "child.yml"],
                 useDefaultConfigOnFailure: true
             ),
             Configuration()
@@ -228,7 +228,7 @@ extension ConfigurationTests {
 
         assertEqualExceptForFileGraph(
             Configuration(
-                configurationFiles: ["child_config_main.yml"],
+                configurationFiles: ["main.yml"],
                 mockedNetworkResults: [
                     "https://www.mock.com":
                     """
@@ -238,7 +238,7 @@ extension ConfigurationTests {
                     """
                 ]
             ),
-            Configuration(configurationFiles: ["child_config_expected.yml"])
+            Configuration(configurationFiles: ["expected.yml"])
         )
     }
 
@@ -247,7 +247,7 @@ extension ConfigurationTests {
 
         assertEqualExceptForFileGraph(
             Configuration(
-                configurationFiles: ["parent_config_main.yml"],
+                configurationFiles: ["main.yml"],
                 mockedNetworkResults: [
                     "https://www.mock.com":
                     """
@@ -263,7 +263,7 @@ extension ConfigurationTests {
                     """
                 ]
             ),
-            Configuration(configurationFiles: ["parent_config_expected.yml"])
+            Configuration(configurationFiles: ["expected.yml"])
         )
     }
 
@@ -279,7 +279,7 @@ extension ConfigurationTests {
                     """
                     line_length: 60
 
-                    child_config: child_config_child2.yml
+                    child_config: child2.yml
                     """
                 ]
             ),

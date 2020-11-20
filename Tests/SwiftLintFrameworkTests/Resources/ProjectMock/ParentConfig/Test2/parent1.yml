@@ -1,3 +1,6 @@
+disabled_rules:
+  - private_outlet
+
 included:
   - Test/Test1/Test
   - Test/Test2/Test
@@ -6,4 +9,4 @@ excluded:
   - Test/Test1/Test/Test
   - Test/Test2/Test/Test
 
-parent_config: parent_config_parent2.yml
+parent_config: parent2.yml

@@ -11,4 +11,4 @@ identifier_name:
   excluded:
     - abc
 
-parent_config: parent_config_parent1.yml
+parent_config: parent1.yml

@@ -1,3 +1,3 @@
 line_length: 60
 
-child_config: child_config.yml
+child_config: child.yml

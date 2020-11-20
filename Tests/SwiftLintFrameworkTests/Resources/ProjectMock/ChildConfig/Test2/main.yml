@@ -22,4 +22,4 @@ identifier_name:
   excluded:
     - id
 
-child_config: child_config_child1.yml
+child_config: child1.yml

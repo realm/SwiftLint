@@ -2,4 +2,4 @@ included:
   - Test/Test1/Test/Test
   - Test/Test2/Test/Test
 
-child_config: Folder/child_config_child3.yml
+child_config: Folder/child3.yml

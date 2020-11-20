@@ -8,4 +8,4 @@ excluded:
 
 line_length: 80
 
-child_config: child_config_child1.yml
+child_config: child.yml

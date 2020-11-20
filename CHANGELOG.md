@@ -72,11 +72,14 @@
 * Add `non_private_xctest_member` rule.  
   [Keith Smiley](https://github.com/keith)
 
-#### Bug Fixes
-
-* Fix false positives in `inclusive_language` rule.  
+* Add an `override_allowed_terms` configuration parameter to the
+  `inclusive_language` rule, with a default value of `mastercard`.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3415](https://github.com/realm/SwiftLint/issues/3415)
+
+#### Bug Fixes
+
+* None.
 
 ## 0.41.0: World’s Cleanest Voting Booth
 

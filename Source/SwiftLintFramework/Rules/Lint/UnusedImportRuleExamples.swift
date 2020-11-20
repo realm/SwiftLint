@@ -56,13 +56,7 @@ struct UnusedImportRuleExamples {
         ↓import Foundation
         import UnknownModule
         func foo(error: Swift.Error) {}
-        """),
-        Example("""
-        ↓import Foundation
-        typealias Foo = CFData
-        """, configuration: [
-            "require_explicit_imports": true
-        ])
+        """)
     ]
 
     static let corrections = [

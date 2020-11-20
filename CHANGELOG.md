@@ -74,7 +74,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives in `inclusive_language` rule.  
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#3415](https://github.com/realm/SwiftLint/issues/3415)
 
 ## 0.41.0: World’s Cleanest Voting Booth
 

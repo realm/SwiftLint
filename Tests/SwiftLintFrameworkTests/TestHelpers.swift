@@ -45,7 +45,7 @@ extension Configuration {
     func applyingConfiguration(from example: Example) -> Configuration {
         guard let exampleConfiguration = example.configuration,
            case let .only(onlyRules) = self.rulesMode,
-           let firstRule = onlyRules.first,
+           let firstRule = (onlyRules.first { $0 != "superfluous_disable_command" }),
            case let configDict = ["only_rules": onlyRules, firstRule: exampleConfiguration],
            let typedConfiguration = try? Configuration(dict: configDict) else { return self }
         return merged(withChild: typedConfiguration, rootDirectory: rootDirectory)

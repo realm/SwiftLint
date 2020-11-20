@@ -161,7 +161,7 @@ private func render(violations: [StyleViolation], in contents: String) -> String
     }
     return """
         ```
-        \(contents)
+        \(contents.joined(separator: "\n"))
         ```
         """
 }
@@ -176,7 +176,7 @@ private func render(locations: [Location], in contents: String) -> String {
     }
     return """
         ```
-        \(contents)
+        \(contents.joined(separator: "\n"))
         ```
         """
 }
@@ -433,7 +433,7 @@ extension XCTestCase {
             if markerOffsets.isEmpty {
                 if triggerViolations.isEmpty {
                     XCTFail(
-                        "triggeringExample did not violate: \n```\n\(trigger)\n```",
+                        "triggeringExample did not violate: \n```\n\(trigger.code)\n```",
                         file: trigger.file,
                         line: trigger.line)
                 }
@@ -447,7 +447,7 @@ extension XCTestCase {
                 .filter { !expectedLocations.contains($0.location) }
             if !violationsAtUnexpectedLocation.isEmpty {
                 XCTFail("triggeringExample violated at unexpected location: \n" +
-                    "\(render(violations: violationsAtUnexpectedLocation, in: trigger.code))",
+                    "\(render(violations: violationsAtUnexpectedLocation, in: cleanTrigger))",
                     file: trigger.file,
                     line: trigger.line)
             }

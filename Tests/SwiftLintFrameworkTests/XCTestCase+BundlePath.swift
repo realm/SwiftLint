@@ -1,9 +1,16 @@
 import Foundation
 import XCTest
 
-extension XCTestCase {
-    var testResourcesPath: String {
-        return URL(fileURLWithPath: #file).deletingLastPathComponent()
-            .appendingPathComponent("Resources").path.absolutePathStandardized()
+enum TestResources {
+    static var path: String {
+        URL(fileURLWithPath: #file)
+            .deletingLastPathComponent()
+            .appendingPathComponent("Resources")
+            .path
+            .absolutePathStandardized()
     }
+}
+
+extension XCTestCase {
+    var testResourcesPath: String { TestResources.path }
 }

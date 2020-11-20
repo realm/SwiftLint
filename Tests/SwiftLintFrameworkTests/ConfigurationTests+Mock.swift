@@ -6,7 +6,7 @@ import XCTest
 internal extension ConfigurationTests {
     enum Mock {
         // MARK: Test Resources Path
-        static let testResourcesPath: String = XCTestCase().testResourcesPath
+        static let testResourcesPath: String = TestResources.path
 
         // MARK: Directory Paths
         enum Dir {

@@ -8,7 +8,14 @@ internal struct InclusiveLanguageRuleExamples {
             case foo, bar
         }
         """),
-        Example("func updateAllowList(add: String) {}")
+        Example("func updateAllowList(add: String) {}"),
+        Example("""
+        enum WalletItemType {
+            case visa
+            case mastercard
+        }
+        """),
+        Example("func chargeMasterCard(_ card: Card) {}")
     ]
 
     static let triggeringExamples: [Example] = [

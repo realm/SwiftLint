@@ -1,5 +1,4 @@
 @testable import SwiftLintFramework
-import XCTest
 
 // swiftlint:disable nesting identifier_name
 

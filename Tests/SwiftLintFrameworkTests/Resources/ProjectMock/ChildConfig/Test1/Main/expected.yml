@@ -1,0 +1,11 @@
+included:
+  - Test/Test1
+  - Test/Test2
+  - Test/Test1/Test
+  - Test/Test2/Test
+  - Test/Test1/Test/Test
+  - Test/Test2/Test/Test
+  - Folder/SomeFile
+  - ../SomeFile
+
+line_length: 80

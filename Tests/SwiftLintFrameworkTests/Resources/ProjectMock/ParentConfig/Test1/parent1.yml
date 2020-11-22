@@ -1,0 +1,9 @@
+included:
+  - Test/Test1/Test
+  - Test/Test2/Test
+
+excluded:
+  - Test/Test1/Test/Test
+  - Test/Test2/Test/Test
+
+parent_config: parent2.yml

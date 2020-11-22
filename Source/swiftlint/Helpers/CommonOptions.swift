@@ -1,5 +1,4 @@
 import Commandant
-import SwiftLintFramework
 
 func pathOption(action: String) -> Option<String> {
     return Option(key: "path",
@@ -13,8 +12,9 @@ func pathsArgument(action: String) -> Argument<[String]> {
 }
 
 let configOption = Option(key: "config",
-                          defaultValue: Configuration.fileName,
-                          usage: "the path to SwiftLint's configuration file")
+                          defaultValue: [String](),
+                          usage: "the path to one or more SwiftLint configuration files, "
+                            + "evaluated as a parent-child hierarchy")
 
 let useScriptInputFilesOption = Option(key: "use-script-input-files",
                                        defaultValue: false,

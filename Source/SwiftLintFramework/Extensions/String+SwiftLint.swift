@@ -100,4 +100,21 @@ extension String {
             $1 == character ? $0 + 1 : $0
         })
     }
+
+    /// If self is a path, this method can be used to get a path expression relative to a root directory
+    public func path(relativeTo rootDirectory: String) -> String {
+        var rootDirComps = rootDirectory.components(separatedBy: "/")
+        let rootDirCompsCount = rootDirComps.count
+
+        while true {
+            let sharedRootDir = rootDirComps.joined(separator: "/")
+            if hasPrefix(sharedRootDir) {
+                let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap { $0 }
+                    + String(dropFirst(sharedRootDir.count))
+                return String(path.dropFirst()) // Remove leading '/'
+            } else {
+                rootDirComps = rootDirComps.dropLast()
+            }
+        }
+    }
 }

@@ -1,0 +1,14 @@
+opt_in_rules:
+  - identifier_name
+
+disabled_rules:
+  - trailing_closure
+  - empty_count
+
+line_length: 80
+
+identifier_name:
+  excluded:
+    - abc
+
+parent_config: parent1.yml

@@ -1,0 +1,21 @@
+opt_in_rules:
+  - private_action
+
+disabled_rules:
+  - force_cast
+
+line_length: 80
+
+identifier_name:
+  excluded:
+    - abc
+
+included:
+  - Test/Test1
+  - Test/Test2
+  - Test/Test1/Test
+  - Test/Test2/Test
+
+excluded:
+  - Test/Test1/Test/Test
+  - Test/Test2/Test/Test

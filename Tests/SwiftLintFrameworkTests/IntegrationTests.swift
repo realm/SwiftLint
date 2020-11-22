@@ -9,7 +9,7 @@ private let config: Configuration = {
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
     _ = FileManager.default.changeCurrentDirectoryPath(directory)
-    return Configuration(path: Configuration.fileName)
+    return Configuration(configurationFiles: [Configuration.defaultFileName])
 }()
 
 class IntegrationTests: XCTestCase {

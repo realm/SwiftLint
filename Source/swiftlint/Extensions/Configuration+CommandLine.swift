@@ -67,12 +67,11 @@ extension Configuration {
 
         var groupedFiles = [Configuration: [SwiftLintFile]]()
         for file in files {
-            // If config was specified as a command line argument, always use it as an override. Otherwise, look for
-            // configs as normal, merging as necessary
-            let fileConfiguration = configurationSpecified() ? self : configuration(for: file)
-            let fileConfigurationRootPath = (fileConfiguration.rootPath ?? "").bridge()
+            let fileConfiguration = configuration(for: file)
+            let fileConfigurationRootPath = fileConfiguration.rootDirectory.bridge()
+
             // Files whose configuration specifies they should be excluded will be skipped
-            let shouldSkip = fileConfiguration.excluded.contains { excludedRelativePath in
+            let shouldSkip = fileConfiguration.excludedPaths.contains { excludedRelativePath in
                 let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
                 let filePathComponents = file.path?.bridge().pathComponents ?? []
                 let excludedPathComponents = excludedPath.bridge().pathComponents
@@ -94,8 +93,7 @@ extension Configuration {
         }
 
         var pathComponents = path.bridge().pathComponents
-        let root = self.rootPath ?? FileManager.default.currentDirectoryPath.bridge().standardizingPath
-        for component in root.bridge().pathComponents where pathComponents.first == component {
+        for component in rootDirectory.bridge().pathComponents where pathComponents.first == component {
             pathComponents.removeFirst()
         }
 
@@ -231,10 +229,11 @@ extension Configuration {
 
     init(options: LintOrAnalyzeOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile,
-                  rootPath: FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized(),
-                  optional: isConfigOptional(), quiet: options.quiet, enableAllRules: options.enableAllRules,
-                  cachePath: cachePath)
+        self.init(
+            configurationFiles: options.configurationFiles,
+            enableAllRules: options.enableAllRules,
+            cachePath: cachePath
+        )
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
@@ -252,24 +251,18 @@ extension Configuration {
 
     init(options: AutoCorrectOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(path: options.configurationFile,
-                  rootPath: FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized(),
-                  optional: isConfigOptional(), quiet: options.quiet, cachePath: cachePath)
+        self.init(
+            configurationFiles: options.configurationFiles,
+            cachePath: cachePath
+        )
     }
 
     // MARK: Rules command
-
     init(options: RulesOptions) {
-        self.init(path: options.configurationFile, optional: isConfigOptional())
+        self.init(
+            configurationFiles: options.configurationFiles
+        )
     }
-}
-
-private func isConfigOptional() -> Bool {
-    return !CommandLine.arguments.contains("--config")
-}
-
-private func configurationSpecified() -> Bool {
-    return CommandLine.arguments.contains("--config")
 }
 
 private struct DuplicateCollector {

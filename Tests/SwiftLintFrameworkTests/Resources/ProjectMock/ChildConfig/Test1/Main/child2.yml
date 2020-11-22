@@ -1,0 +1,5 @@
+included:
+  - Test/Test1/Test/Test
+  - Test/Test2/Test/Test
+
+child_config: Folder/child3.yml

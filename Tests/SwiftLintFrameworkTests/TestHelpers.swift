@@ -39,20 +39,20 @@ extension String {
     }
 }
 
-let allRuleIdentifiers = Array(primaryRuleList.list.keys)
+let allRuleIdentifiers = Set(primaryRuleList.list.keys)
 
 extension Configuration {
     func applyingConfiguration(from example: Example) -> Configuration {
         guard let exampleConfiguration = example.configuration,
            case let .only(onlyRules) = self.rulesMode,
-           let firstRule = onlyRules.first,
+           let firstRule = (onlyRules.first { $0 != "superfluous_disable_command" }),
            case let configDict = ["only_rules": onlyRules, firstRule: exampleConfiguration],
-           let typedConfiguration = Configuration(dict: configDict) else { return self }
-        return merge(with: typedConfiguration)
+           let typedConfiguration = try? Configuration(dict: configDict) else { return self }
+        return merged(withChild: typedConfiguration, rootDirectory: rootDirectory)
     }
 }
 
-func violations(_ example: Example, config inputConfig: Configuration = Configuration()!,
+func violations(_ example: Example, config inputConfig: Configuration = Configuration.default,
                 requiresFileOnDisk: Bool = false) -> [StyleViolation] {
     SwiftLintFile.clearCaches()
     let config = inputConfig.applyingConfiguration(from: example)
@@ -72,20 +72,20 @@ func violations(_ example: Example, config inputConfig: Configuration = Configur
 }
 
 extension Collection where Element == String {
-    func violations(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false)
+    func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
             return map(makeFile).violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
-    func corrections(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
         return map(makeFile).corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 }
 
 extension Collection where Element: SwiftLintFile {
-    func violations(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false)
+    func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
             let storage = RuleStorage()
             let violations = map({ file in
@@ -99,7 +99,7 @@ extension Collection where Element: SwiftLintFile {
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
 
-    func corrections(config: Configuration = Configuration()!, requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let storage = RuleStorage()
         let corrections = map({ file in
             Linter(file: file, configuration: config,
@@ -254,13 +254,17 @@ private extension String {
 internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
                          skipDisableCommandTests: Bool = false) -> Configuration? {
     let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
-    let identifiers = skipDisableCommandTests ? [identifier] : [identifier, superfluousDisableCommandRuleIdentifier]
+    let identifiers: Set<String> = skipDisableCommandTests ? [identifier]
+        : [identifier, superfluousDisableCommandRuleIdentifier]
 
     if let ruleConfiguration = ruleConfiguration, let ruleType = primaryRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
             let rules = skipDisableCommandTests ? [configuredRule] : [configuredRule, SuperfluousDisableCommandRule()]
-            return Configuration(rulesMode: .only(identifiers), configuredRules: rules)
+            return Configuration(
+                rulesMode: .only(identifiers),
+                allRulesWrapped: rules.map { ($0, false) }
+            )
         }
     }
     return Configuration(rulesMode: .only(identifiers))
@@ -277,10 +281,10 @@ private func testCorrection(_ correction: (Example, Example),
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
         case let .only(onlyRules) = configuration.rulesMode,
-        let firstRule = onlyRules.first,
-        case let configDict = ["only_rules": onlyRules, firstRule: correctionConfiguration],
-        let typedConfiguration = Configuration(dict: configDict) {
-        config = configuration.merge(with: typedConfiguration)
+        let ruleToConfigure = (onlyRules.first { $0 != SuperfluousDisableCommandRule.description.identifier }),
+        case let configDict = ["only_rules": onlyRules, ruleToConfigure: correctionConfiguration],
+        let typedConfiguration = try? Configuration(dict: configDict) {
+        config = configuration.merged(withChild: typedConfiguration, rootDirectory: configuration.rootDirectory)
     }
 
     config.assertCorrection(correction.0, expected: correction.1)

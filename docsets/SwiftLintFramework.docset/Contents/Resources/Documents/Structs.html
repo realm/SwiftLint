@@ -244,10 +244,10 @@
                 <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
@@ -376,7 +376,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Configuration</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Configuration</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Configuration</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Configuration</span><span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
 
                         </div>
                       </div>
@@ -573,7 +575,7 @@ non-triggering style</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Linter.swift#L161-L324">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Linter.swift#L161-L327">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -693,11 +695,12 @@ non-triggering style</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RuleList</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">RuleList</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/RuleList.swift#L8-L78">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/RuleList.swift#L8-L81">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

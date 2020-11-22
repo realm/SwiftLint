@@ -244,10 +244,10 @@
                 <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
@@ -413,12 +413,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ConfigurationError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ConfigurationError</span> <span class="p">:</span> <span class="kt">Error</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/ConfigurationError.swift#L2-L7">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/ConfigurationError.swift#L2-L11">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -498,7 +498,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>All possible configuration errors.</p>
+                        <p>All possible rule list configuration errors.</p>
 
                         <a href="Enums/RuleListError.html" class="slightly-smaller">See more</a>
                       </div>

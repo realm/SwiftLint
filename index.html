@@ -243,10 +243,10 @@
                 <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
@@ -556,7 +556,7 @@ environment variable.</p>
 </tbody></table>
 <h2 id='rules' class='heading'>Rules</h2>
 
-<p>Over 75 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)
+<p>Over 100 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)
 continues to contribute more over time.
 <a href="CONTRIBUTING.md">Pull requests</a> are encouraged.</p>
 
@@ -760,19 +760,6 @@ are all the possible syntax kinds:</p>
 
 <p>If using custom rules in combination with <code>only_rules</code>, make sure to add
 <code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>only_rules</code>.</p>
-<h4 id='nested-configurations' class='heading'>Nested Configurations</h4>
-
-<p>SwiftLint supports nesting configuration files for more granular control over
-the linting process.</p>
-
-<ul>
-<li>Include additional <code>.swiftlint.yml</code> files where necessary in your directory
-structure.</li>
-<li>Each file will be linted using the configuration file that is in its
-directory or at the deepest level of its parent directories. Otherwise the
-root configuration will be used.</li>
-<li><code>included</code> is ignored for nested configurations.</li>
-</ul>
 <h3 id='auto-correct' class='heading'>Auto-correct</h3>
 
 <p>SwiftLint can automatically correct certain violations. Files on disk are
@@ -799,6 +786,100 @@ with a clean <code>DerivedData</code> folder.</p>
 <p>This command and related code in SwiftLint is subject to substantial changes at
 any time while this feature is marked as experimental. Analyzer rules also tend
 to be considerably slower than lint rules.</p>
+<h2 id='using-multiple-configuration-files' class='heading'>Using Multiple Configuration Files</h2>
+
+<p>SwiftLint offers a variety of ways to include multiple configuration files.
+Multiple configuration files get merged into one single configuration that is then applied
+just as a single configuration file would get applied.</p>
+
+<p>There are quite a lot of use cases where using multiple configuration files could be helpful:</p>
+
+<p>For instance, one could use a team-wide shared SwiftLint configuration while allowing overrrides
+in each project via a child configuration file.</p>
+
+<p>Team-Wide Configuration:</p>
+<pre class="highlight yaml"><code><span class="na">disabled_rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">force_cast</span>
+</code></pre>
+
+<p>Project-Specific Configuration:</p>
+<pre class="highlight yaml"><code><span class="na">opt_in_rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">force_cast</span>
+</code></pre>
+<h3 id='child-parent-configs-locally' class='heading'>Child / Parent Configs (Locally)</h3>
+
+<p>You can specify a <code>child_config</code> and / or a <code>parent_config</code> reference within a configuration file.
+These references should be local paths relative to the folder of the configuration file they are specified in.
+This even works recursively, as long as there are no cycles and no ambiguities.</p>
+
+<p><strong>A child config is treated as a refinement and therefore has a higher priority</strong>,
+while a parent config is considered a base with lower priority in case of conflicts.</p>
+
+<p>Here&rsquo;s an example, assuming you have the following file structure:</p>
+<pre class="highlight plaintext"><code>ProjectRoot
+    |_ .swiftlint.yml
+    |_ .swiftlint_refinement.yml
+    |_ Base
+        |_ .swiftlint_base.yml
+</code></pre>
+
+<p>To include both the refinement and the base file, your <code>.swiftlint.yml</code> should look like this:</p>
+<pre class="highlight yaml"><code><span class="na">child_config</span><span class="pi">:</span> <span class="s">.swiftlint_refinement.yml</span>
+<span class="na">parent_config</span><span class="pi">:</span> <span class="s">Base/.swiftlint_base.yml</span>
+</code></pre>
+
+<p>When merging parent and child configs, <code>included</code> and <code>excluded</code> configurations
+are processed carefully to account for differences in the directory location
+of the containing configuration files.</p>
+<h3 id='child-parent-configs-remote' class='heading'>Child / Parent Configs (Remote)</h3>
+
+<p>Just as you can provide local <code>child_config</code> / <code>parent_config</code> references, instead of
+referencing local paths, you can just put urls that lead to configuration files.
+In order for SwiftLint to detect these remote references, they must start with <code>http://</code> or <code>https://</code>.</p>
+
+<p>The referenced remote configuration files may even recursively reference other
+remote configuration files, but aren&rsquo;t allowed to include local references.</p>
+
+<p>Using a remote reference, your <code>.swiftlint.yml</code> could look like this:</p>
+<pre class="highlight yaml"><code><span class="na">parent_config</span><span class="pi">:</span> <span class="s">https://myteamserver.com/our-base-swiftlint-config.yml</span>
+</code></pre>
+
+<p>Every time you run SwiftLint and have an Internet connection, SwiftLint tries to get a new version of
+every remote configuration that is referenced. If this request times out, a cached version is
+used if available. If there is no cached version available, SwiftLint fails – but no worries, a cached version
+should be there once SwiftLint has run successfully at least once.</p>
+
+<p>If needed, the timeouts for the remote configuration fetching can be specified manually via the
+configuration file(s) using the <code>remote_timeout</code> / <code>remote_timeout_if_cached</code> specifiers.
+These values default to 2 / 1 second(s).</p>
+<h3 id='command-line' class='heading'>Command Line</h3>
+
+<p>Instead of just providing one configuration file when running SwiftLint via the command line,
+you can also pass a hierarchy, where the first configuration is treated as a parent,
+while the last one is treated as the highest-priority child.</p>
+
+<p>A simple example including just two configuration files looks like this:</p>
+
+<p><code>swiftlint --config &quot;.swiftlint.yml .swiftlint_child.yml&quot;</code></p>
+<h3 id='nested-configurations' class='heading'>Nested Configurations</h3>
+
+<p>In addition to a main configuration (the <code>.swiftlint.yml</code> file in the root folder),
+you can put other configuration files named <code>.swiftlint.yml</code> into the directory structure
+that then get merged as a child config, but only with an effect for those files
+that are within the same directory as the config or in a deeper directory where
+there isn&rsquo;t another configuration file. In other words: Nested configurations don&rsquo;t work 
+recursively – there&rsquo;s a maximum number of one nested configuration per file 
+that may be applied in addition to the main configuration.</p>
+
+<p><code>.swiftlint.yml</code> files are only considered as a nested configuration if they have not been
+used to build the main configuration already (e. g. by having been referenced via something
+like <code>child_config: Folder/.swiftlint.yml</code>). Also, <code>parent_config</code> / <code>child_config</code>
+specifications of nested configurations are getting ignored because there&rsquo;s no sense to that.</p>
+
+<p>If one (or more) SwiftLint file(s) are explicitly specified via the <code>--config</code> parameter,
+that configuration will be treated as an override, no matter whether there exist
+other <code>.swiftlint.yml</code> files somewhere within the directory. <strong>So if you want to use
+use nested configurations, you can&rsquo;t use the <code>-- config</code> parameter.</strong></p>
 <h2 id='license' class='heading'>License</h2>
 
 <p><a href="LICENSE">MIT licensed.</a></p>

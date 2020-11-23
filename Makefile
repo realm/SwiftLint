@@ -33,10 +33,7 @@ LICENSE_PATH="$(shell pwd)/LICENSE"
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-SWIFTLINT_PLIST=Source/swiftlint/Supporting Files/Info.plist
-SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
-
-VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
+VERSION_STRING=0.41.0
 
 .PHONY: all clean build install package test uninstall docs
 
@@ -156,8 +153,7 @@ endif
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Master/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
-	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINTFRAMEWORK_PLIST)"
-	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
+	@sed -i  '' 's/VERSION_STRING.*/VERSION_STRING=$(NEW_VERSION)/g' Makefile
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin master

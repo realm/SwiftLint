@@ -349,4 +349,49 @@ class TypeContentsOrderRuleTests: XCTestCase {
             ]
         )
     }
+
+    func testTypeContentsOrderInitDetection() {
+        let nonTriggeringExamples = [
+            Example("""
+            class TestClass {
+                init() {}
+
+                static func make() -> Self {
+                    return TestClass()
+                }
+
+                func initSelf() { }
+            }
+            """)
+        ]
+
+        let triggeringExamples = [
+            Example("""
+            class TestClass {
+                init() {}
+
+                func initSelf() { }
+
+                static func make() -> Self {
+                    return TestClass()
+                }
+            }
+            """)
+        ]
+
+        let groupedOrderDescription = TypeContentsOrderRule.description
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(
+            groupedOrderDescription,
+            ruleConfiguration: [
+                "order": [
+                    ["initializer", "deinitializer"],
+                    ["type_method"],
+                    ["other_method"]
+                ]
+            ]
+        )
+    }
 }

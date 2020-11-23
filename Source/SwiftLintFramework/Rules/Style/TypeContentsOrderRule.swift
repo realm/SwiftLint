@@ -121,7 +121,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 "viewDidDisappear("
             ]
 
-            if typeContentStructure.name!.starts(with: "init") {
+            if typeContentStructure.name!.starts(with: "init(") {
                 return .initializer
             } else if typeContentStructure.name!.starts(with: "deinit") {
                 return .deinitializer

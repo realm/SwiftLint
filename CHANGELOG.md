@@ -86,7 +86,8 @@ Improve documentation for multiple configuration files.
 
 #### Bug Fixes
 
-* Fix methods starting `init` are treated like initializers.  
+* Fix methods starting with `init` are always treated like initializers
+  (`type_contents_order`).  
   [rabbitinspace](https://github.com/rabbitinspace)
 
 ## 0.41.0: World’s Cleanest Voting Booth

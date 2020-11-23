@@ -86,7 +86,8 @@ Improve documentation for multiple configuration files.
 
 #### Bug Fixes
 
-* None.
+* Fix methods starting `init` are treated like initializers.  
+  [rabbitinspace](https://github.com/rabbitinspace)
 
 ## 0.41.0: World’s Cleanest Voting Booth
 

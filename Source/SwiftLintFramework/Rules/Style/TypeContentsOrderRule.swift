@@ -121,7 +121,14 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 "viewDidDisappear("
             ]
 
-            if typeContentStructure.name!.starts(with: "init(") {
+            let initMethodNames = [
+                "init(",
+                "init<",
+                "init?",
+                "init!"
+            ]
+
+            if initMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
                 return .initializer
             } else if typeContentStructure.name!.starts(with: "deinit") {
                 return .deinitializer

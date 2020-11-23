@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable function_body_length type_body_length
+// swiftlint:disable function_body_length type_body_length file_length
 class TypeContentsOrderRuleTests: XCTestCase {
     func testTypeContentsOrderWithDefaultConfiguration() {
         verifyRule(TypeContentsOrderRule.description)
@@ -362,6 +362,39 @@ class TypeContentsOrderRuleTests: XCTestCase {
 
                 func initSelf() { }
             }
+            """),
+            Example("""
+            class TestClass {
+                init?() { return nil }
+
+                static func make() -> Self {
+                    return TestClass()
+                }
+
+                func initSelf() { }
+            }
+            """),
+            Example("""
+            class TestClass {
+                init!() { return nil }
+
+                static func make() -> Self {
+                    return TestClass()
+                }
+
+                func initSelf() { }
+            }
+            """),
+            Example("""
+            class TestClass {
+                init<T: Hashable>(t: T) { print(t.hashValue) }
+
+                static func make() -> Self {
+                    return TestClass()
+                }
+
+                func initSelf() { }
+            }
             """)
         ]
 
@@ -370,11 +403,38 @@ class TypeContentsOrderRuleTests: XCTestCase {
             class TestClass {
                 init() {}
 
-                func initSelf() { }
+                ↓func initSelf() { }
 
                 static func make() -> Self {
                     return TestClass()
                 }
+            }
+            """),
+            Example("""
+            class TestClass {
+                init() {}
+
+                ↓func initSelf() { }
+
+                init?() { return nil }
+            }
+            """),
+            Example("""
+            class TestClass {
+                init() {}
+
+                ↓func initSelf() { }
+
+                init!() { return nil }
+            }
+            """),
+            Example("""
+            class TestClass {
+                init() {}
+
+                ↓func initSelf() { }
+
+                init<T: Hashable>(t: T) { print(t.hashValue) }
             }
             """)
         ]

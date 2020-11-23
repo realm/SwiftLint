@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -euo pipefail
+
+cat Source/SwiftLintFramework/Models/Version.swift | awk -F '"' '{print $2}' | xargs

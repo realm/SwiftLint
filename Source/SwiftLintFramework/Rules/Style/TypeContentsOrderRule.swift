@@ -121,14 +121,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 "viewDidDisappear("
             ]
 
-            let initMethodNames = [
-                "init(",
-                "init<",
-                "init?",
-                "init!"
-            ]
-
-            if initMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
+            if isInitializer(typeContentStructure.name!) {
                 return .initializer
             } else if typeContentStructure.name!.starts(with: "deinit") {
                 return .deinitializer
@@ -146,5 +139,14 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         default:
             return nil
         }
+    }
+
+    private func isInitializer(_ name: String) -> Bool {
+        guard name.starts(with: "init") && name.count > 4 else {
+            return false
+        }
+
+        let next = name[name.index(name.startIndex, offsetBy: 4)]
+        return next == "(" || next == "<" || next == "?" || next == "!" || next.isWhitespace
     }
 }

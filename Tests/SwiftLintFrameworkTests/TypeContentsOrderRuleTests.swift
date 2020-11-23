@@ -436,6 +436,15 @@ class TypeContentsOrderRuleTests: XCTestCase {
 
                 init<T: Hashable>(t: T) { print(t.hashValue) }
             }
+            """),
+            Example("""
+            class TestClass {
+                init() {}
+
+                ↓func initSelf() { }
+
+                init    () {}
+            }
             """)
         ]
 

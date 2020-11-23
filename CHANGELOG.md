@@ -57,11 +57,11 @@
   [#1151](https://github.com/realm/SwiftLint/issues/1151)
   
 * Add option to specify a `child_config` / `parent_config` file
-(local or remote) in any SwiftLint configuration file.
-Allow passing multiple configuration files via the command line.
-Improve documentation for multiple configuration files.  
-[Frederick Pietschmann](https://github.com/fredpi)
-[#1352](https://github.com/realm/SwiftLint/issues/1352)
+  (local or remote) in any SwiftLint configuration file.
+  Allow passing multiple configuration files via the command line.
+  Improve documentation for multiple configuration files.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#1352](https://github.com/realm/SwiftLint/issues/1352)
 
 * Add an `always_keep_imports` configuration option for the
   `unused_import` rule.  

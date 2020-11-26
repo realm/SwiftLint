@@ -1,33 +1,17 @@
-import Commandant
+import ArgumentParser
 import Foundation
 import SwiftLintFramework
 
-struct GenerateDocsCommand: CommandProtocol {
-    let verb = "generate-docs"
-    let function = "Generates markdown documentation for all rules"
+extension SwiftLint {
+    struct GenerateDocs: ParsableCommand {
+        static let configuration = CommandConfiguration(abstract: "Generates markdown documentation for all rules")
 
-    func run(_ options: GenerateDocsOptions) -> Result<(), CommandantError<()>> {
-        let docs = RuleListDocumentation(primaryRuleList)
-        do {
-            try docs.write(to: URL(fileURLWithPath: options.path))
-        } catch {
-            return .failure(.usageError(description: error.localizedDescription))
+        @Option(help: "The directory where the documentation should be saved")
+        var path = "rule_docs"
+
+        mutating func run() throws {
+            try RuleListDocumentation(primaryRuleList)
+                .write(to: URL(fileURLWithPath: path))
         }
-
-        return .success(())
-    }
-}
-
-struct GenerateDocsOptions: OptionsProtocol {
-    let path: String
-
-    static func create(_ path: String) -> GenerateDocsOptions {
-        return self.init(path: path)
-    }
-
-    static func evaluate(_ mode: CommandMode) -> Result<GenerateDocsOptions, CommandantError<CommandantError<()>>> {
-        return create
-            <*> mode <| Option(key: "path", defaultValue: "rule_docs",
-                               usage: "the directory where the documentation should be saved. defaults to `rule_docs`.")
     }
 }

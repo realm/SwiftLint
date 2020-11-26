@@ -1,4 +1,4 @@
-import Commandant
+import ArgumentParser
 #if canImport(Darwin)
 import Darwin
 #elseif canImport(Glibc)
@@ -6,118 +6,100 @@ import Glibc
 #else
 #error("Unsupported platform")
 #endif
+import Foundation
 import SwiftLintFramework
 import SwiftyTextTable
 
-private func print(ruleDescription desc: RuleDescription) {
-    print("\(desc.consoleDescription)")
+enum RuleEnablementOptions: String, EnumerableFlag {
+    case enabled, disabled
 
-    if !desc.triggeringExamples.isEmpty {
+    static func name(for value: RuleEnablementOptions) -> NameSpecification {
+        return .shortAndLong
+    }
+
+    static func help(for value: RuleEnablementOptions) -> ArgumentHelp? {
+        return "Only show \(value.rawValue) rules"
+    }
+}
+
+extension SwiftLint {
+    struct Rules: ParsableCommand {
+        static let configuration = CommandConfiguration(abstract: "Display the list of rules and their identifiers")
+
+        @Option(help: "The path to a SwiftLint configuration file")
+        var config: String?
+        @Flag(exclusivity: .exclusive)
+        var ruleEnablement: RuleEnablementOptions?
+        @Flag(name: .shortAndLong, help: "Only display correctable rules")
+        var correctable = false
+        @Flag(name: .shortAndLong, help: "Display full configuration details")
+        var verbose = false
+        @Argument(help: "The rule identifier to display description for")
+        var ruleID: String?
+
+        mutating func run() throws {
+            if let ruleID = ruleID {
+                guard let rule = primaryRuleList.list[ruleID] else {
+                    throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
+                }
+
+                rule.description.printDescription()
+                return
+            }
+
+            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
+            let rules = ruleList(configuration: configuration)
+            let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
+            print(table.render())
+        }
+
+        private func ruleList(configuration: Configuration) -> RuleList {
+            guard ruleEnablement != nil || correctable else {
+                return primaryRuleList
+            }
+
+            let filtered: [Rule.Type] = primaryRuleList.list.compactMap { ruleID, ruleType in
+                let configuredRule = configuration.rules.first { rule in
+                    return type(of: rule).description.identifier == ruleID
+                }
+
+                if ruleEnablement == .enabled && configuredRule == nil {
+                    return nil
+                } else if ruleEnablement == .disabled && configuredRule != nil {
+                    return nil
+                } else if correctable && !(configuredRule is CorrectableRule) {
+                    return nil
+                }
+
+                return ruleType
+            }
+
+            return RuleList(rules: filtered)
+        }
+    }
+}
+
+private extension RuleDescription {
+    func printDescription() {
+        print("\(consoleDescription)")
+
+        guard !triggeringExamples.isEmpty else { return }
+
         func indent(_ string: String) -> String {
             return string.components(separatedBy: "\n")
                 .map { "    \($0)" }
                 .joined(separator: "\n")
         }
         print("\nTriggering Examples (violation is marked with '↓'):")
-        for (index, example) in desc.triggeringExamples.enumerated() {
+        for (index, example) in triggeringExamples.enumerated() {
             print("\nExample #\(index + 1)\n\n\(indent(example.code))")
         }
     }
 }
 
-struct RulesCommand: CommandProtocol {
-    let verb = "rules"
-    let function = "Display the list of rules and their identifiers"
-
-    func run(_ options: RulesOptions) -> Result<(), CommandantError<()>> {
-        if let ruleID = options.ruleID {
-            guard let rule = primaryRuleList.list[ruleID] else {
-                return .failure(.usageError(description: "No rule with identifier: \(ruleID)"))
-            }
-
-            print(ruleDescription: rule.description)
-            return .success(())
-        }
-
-        if options.onlyDisabledRules && options.onlyEnabledRules {
-            return .failure(.usageError(description: "You can't use --disabled and --enabled at the same time."))
-        }
-
-        let configuration = Configuration(options: options)
-        let rules = ruleList(for: options, configuration: configuration)
-
-        print(TextTable(ruleList: rules, configuration: configuration, verbose: options.verbose).render())
-        return .success(())
-    }
-
-    private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
-        guard options.onlyEnabledRules || options.onlyDisabledRules || options.onlyCorrectableRules else {
-            return primaryRuleList
-        }
-
-        let filtered: [Rule.Type] = primaryRuleList.list.compactMap { ruleID, ruleType in
-            let configuredRule = configuration.rules.first { rule in
-                return type(of: rule).description.identifier == ruleID
-            }
-
-            if options.onlyEnabledRules && configuredRule == nil {
-                return nil
-            } else if options.onlyDisabledRules && configuredRule != nil {
-                return nil
-            } else if options.onlyCorrectableRules && !(configuredRule is CorrectableRule) {
-                return nil
-            }
-
-            return ruleType
-        }
-
-        return RuleList(rules: filtered)
-    }
-}
-
-struct RulesOptions: OptionsProtocol {
-    fileprivate let ruleID: String?
-    let configurationFiles: [String]
-    fileprivate let onlyEnabledRules: Bool
-    fileprivate let onlyDisabledRules: Bool
-    fileprivate let onlyCorrectableRules: Bool
-    fileprivate let verbose: Bool
-
-    // swiftlint:disable line_length
-    static func create(_ configurationFiles: [String]) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> (_ onlyCorrectableRules: Bool) -> (_ verbose: Bool) -> RulesOptions {
-        return { ruleID in { onlyEnabledRules in { onlyDisabledRules in { onlyCorrectableRules in { verbose in
-            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID),
-                      configurationFiles: configurationFiles,
-                      onlyEnabledRules: onlyEnabledRules,
-                      onlyDisabledRules: onlyDisabledRules,
-                      onlyCorrectableRules: onlyCorrectableRules,
-                      verbose: verbose)
-        }}}}}
-    }
-
-    static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
-        return create
-            <*> mode <| configOption
-            <*> mode <| Argument(defaultValue: "",
-                                 usage: "the rule identifier to display description for")
-            <*> mode <| Switch(flag: "e",
-                               key: "enabled",
-                               usage: "only display enabled rules")
-            <*> mode <| Switch(flag: "d",
-                               key: "disabled",
-                               usage: "only display disabled rules")
-            <*> mode <| Switch(flag: "c",
-                               key: "correctable",
-                               usage: "only display correctable rules")
-            <*> mode <| Switch(flag: "v",
-                               key: "verbose",
-                               usage: "display full configuration detail")
-    }
-}
-
 // MARK: - SwiftyTextTable
 
-extension TextTable {
+private extension TextTable {
     init(ruleList: RuleList, configuration: Configuration, verbose: Bool) {
         let columns = [
             TextTableColumn(header: "identifier"),
@@ -169,7 +151,7 @@ extension TextTable {
     }
 }
 
-struct Terminal {
+private struct Terminal {
     static func currentWidth() -> Int {
         var size = winsize()
 #if os(Linux)

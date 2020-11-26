@@ -1,12 +1,14 @@
-import Commandant
+import ArgumentParser
 import SwiftLintFramework
 
-struct VersionCommand: CommandProtocol {
-    let verb = "version"
-    let function = "Display the current version of SwiftLint"
+extension SwiftLint {
+    struct Version: ParsableCommand {
+        static let configuration = CommandConfiguration(abstract: "Display the current version of SwiftLint")
 
-    func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
-        print(Version.current.value)
-        return .success(())
+        static var value: String { SwiftLintFramework.Version.current.value }
+
+        mutating func run() throws {
+            print(Self.value)
+        }
     }
 }

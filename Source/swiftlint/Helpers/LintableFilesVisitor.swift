@@ -1,4 +1,3 @@
-import Commandant
 import Foundation
 import SourceKittenFramework
 import SwiftLintFramework
@@ -96,7 +95,7 @@ struct LintableFilesVisitor {
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
                        block: @escaping (CollectedLinter) -> Void)
-        -> Result<LintableFilesVisitor, CommandantError<()>> {
+        -> Result<LintableFilesVisitor, SwiftLintError> {
         let compilerInvocations: CompilerInvocations?
         if options.mode == .lint {
             compilerInvocations = nil
@@ -141,9 +140,8 @@ struct LintableFilesVisitor {
     }
 
     private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions)
-        -> Result<CompilerInvocations, CommandantError<()>> {
-        if !options.compilerLogPath.isEmpty {
-            let path = options.compilerLogPath
+        -> Result<CompilerInvocations, SwiftLintError> {
+        if let path = options.compilerLogPath {
             guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
                 return .failure(
                     .usageError(description: "Could not read compiler log at path: '\(path)'")
@@ -151,17 +149,14 @@ struct LintableFilesVisitor {
             }
 
             return .success(.buildLog(compilerInvocations: compilerInvocations))
-        } else if !options.compileCommands.isEmpty {
-            let path = options.compileCommands
+        } else if let path = options.compileCommands {
             switch self.loadCompileCommands(path) {
             case .success(let compileCommands):
                 return .success(.compilationDatabase(compileCommands: compileCommands))
             case .failure(let error):
-                return .failure(
-                    .usageError(
-                        description: "Could not read compilation database at path: '\(path)' \(error.description)"
-                    )
-                )
+                return .failure(.usageError(
+                    description: "Could not read compilation database at path: '\(path)' \(error.localizedDescription)"
+                ))
             }
         }
 
@@ -220,14 +215,14 @@ struct LintableFilesVisitor {
     }
 }
 
-private enum CompileCommandsLoadError: Error {
+private enum CompileCommandsLoadError: LocalizedError {
     case nonExistentFile(String)
     case malformedCommands(String)
     case malformedFile(String, Int)
     case malformedArguments(String, Int)
     case missingFileInArguments(String, Int, [String])
 
-    var description: String {
+    var errorDescription: String? {
         switch self {
         case let .nonExistentFile(path):
             return "Could not read compile commands file at '\(path)'"

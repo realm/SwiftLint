@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.2
 import PackageDescription
 
 #if canImport(CommonCrypto)
@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Carthage/Commandant.git", .upToNextMinor(from: "0.17.0")),
+        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.1")),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.31.0")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
@@ -23,7 +23,7 @@ let package = Package(
         .target(
             name: "swiftlint",
             dependencies: [
-                "Commandant",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "SwiftLintFramework",
                 "SwiftyTextTable",
             ]
@@ -31,7 +31,7 @@ let package = Package(
         .target(
             name: "SwiftLintFramework",
             dependencies: [
-                "SourceKittenFramework",
+                .product(name: "SourceKittenFramework", package: "SourceKitten"),
                 "Yams",
             ] + (addCryptoSwift ? ["CryptoSwift"] : [])
         ),

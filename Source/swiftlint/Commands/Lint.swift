@@ -1,72 +1,55 @@
-import Commandant
+import ArgumentParser
+import SwiftLintFramework
 
-struct LintCommand: CommandProtocol {
-    let verb = "lint"
-    let function = "Print lint warnings and errors (default command)"
+extension SwiftLint {
+    struct Lint: ParsableCommand {
+        static let configuration = CommandConfiguration(abstract: "Print lint warnings and errors")
 
-    func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
-        return LintOrAnalyzeCommand.run(LintOrAnalyzeOptions(options))
-    }
-}
+        @OptionGroup
+        var common: LintOrAnalyzeArguments
+        @Option(help: pathOptionDescription(for: .lint))
+        var path: String?
+        @Flag(help: "Lint standard input.")
+        var useSTDIN = false
+        @Flag(help: quietOptionDescription(for: .lint))
+        var quiet = false
+        @Option(help: "The directory of the cache used when linting.")
+        var cachePath: String?
+        @Flag(help: "Ignore cache when linting.")
+        var noCache = false
+        @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
+        var enableAllRules = false
+        @Argument(help: pathsArgumentDescription(for: .lint))
+        var paths = [String]()
 
-struct LintOptions: OptionsProtocol {
-    let paths: [String]
-    let useSTDIN: Bool
-    let configurationFiles: [String]
-    let strict: Bool
-    let lenient: Bool
-    let forceExclude: Bool
-    let excludeByPrefix: Bool
-    let useScriptInputFiles: Bool
-    let benchmark: Bool
-    let reporter: String
-    let quiet: Bool
-    let cachePath: String
-    let ignoreCache: Bool
-    let enableAllRules: Bool
-
-    // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFiles: [String]) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ excludeByPrefix: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> (_ paths: [String]) -> LintOptions {
-        return { useSTDIN in { configurationFiles in { strict in { lenient in { forceExclude in { excludeByPrefix in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in { paths in
-            let allPaths: [String]
-            if !path.isEmpty {
-                allPaths = [path]
-            } else {
-                allPaths = paths
+        mutating func run() throws {
+            let options = LintOrAnalyzeOptions(
+                mode: .lint,
+                paths: paths + [path ?? ""],
+                useSTDIN: useSTDIN,
+                configurationFiles: common.config,
+                strict: common.strict,
+                lenient: common.lenient,
+                forceExclude: common.forceExclude,
+                useExcludingByPrefix: common.useAlternativeExcluding,
+                useScriptInputFiles: common.useScriptInputFiles,
+                benchmark: common.benchmark,
+                reporter: common.reporter,
+                quiet: quiet,
+                cachePath: cachePath,
+                ignoreCache: noCache,
+                enableAllRules: enableAllRules,
+                autocorrect: common.fix,
+                compilerLogPath: nil,
+                compileCommands: nil
+            )
+            let result = LintOrAnalyzeCommand.run(options)
+            switch result {
+            case .success:
+                return
+            case .failure(let error):
+                throw error
             }
-
-            return self.init(paths: allPaths, useSTDIN: useSTDIN, configurationFiles: configurationFiles, strict: strict, lenient: lenient, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
-            // swiftlint:enable line_length
-        }}}}}}}}}}}}}}
-    }
-
-    static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
-        return create
-            <*> mode <| pathOption(action: "lint")
-            <*> mode <| Option(key: "use-stdin", defaultValue: false,
-                               usage: "lint standard input")
-            <*> mode <| configOption
-            <*> mode <| Option(key: "strict", defaultValue: false,
-                               usage: "upgrades warnings to serious violations (errors)")
-            <*> mode <| Option(key: "lenient", defaultValue: false,
-                               usage: "downgrades serious violations to warnings, warning threshold is disabled")
-            <*> mode <| Option(key: "force-exclude", defaultValue: false,
-                               usage: "exclude files in config `excluded` even if their paths are explicitly specified")
-            <*> mode <| useAlternativeExcludingOption
-            <*> mode <| useScriptInputFilesOption
-            <*> mode <| Option(key: "benchmark", defaultValue: false,
-                               usage: "save benchmarks to benchmark_files.txt " +
-                                      "and benchmark_rules.txt")
-            <*> mode <| Option(key: "reporter", defaultValue: "",
-                               usage: "the reporter used to log errors and warnings")
-            <*> mode <| quietOption(action: "linting")
-            <*> mode <| Option(key: "cache-path", defaultValue: "",
-                               usage: "the directory of the cache used when linting")
-            <*> mode <| Option(key: "no-cache", defaultValue: false,
-                               usage: "ignore cache when linting")
-            <*> mode <| Option(key: "enable-all-rules", defaultValue: false,
-                               usage: "run all rules, even opt-in and disabled ones, ignoring `only_rules`")
-            // This should go last to avoid eating other args
-            <*> mode <| pathsArgument(action: "lint")
+        }
     }
 }

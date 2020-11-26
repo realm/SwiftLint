@@ -1,4 +1,3 @@
-import Commandant
 import Dispatch
 import Foundation
 import SourceKittenFramework
@@ -6,8 +5,8 @@ import SwiftLintFramework
 
 private let indexIncrementerQueue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")
 
-private func scriptInputFiles() -> Result<[SwiftLintFile], CommandantError<()>> {
-    func getEnvironmentVariable(_ variable: String) -> Result<String, CommandantError<()>> {
+private func scriptInputFiles() -> Result<[SwiftLintFile], SwiftLintError> {
+    func getEnvironmentVariable(_ variable: String) -> Result<String, SwiftLintError> {
         let environment = ProcessInfo.processInfo.environment
         if let value = environment[variable] {
             return .success(value)
@@ -15,7 +14,7 @@ private func scriptInputFiles() -> Result<[SwiftLintFile], CommandantError<()>> 
         return .failure(.usageError(description: "Environment variable not set: \(variable)"))
     }
 
-    let count: Result<Int, CommandantError<()>> = {
+    let count: Result<Int, SwiftLintError> = {
         let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
         guard let countString = ProcessInfo.processInfo.environment[inputFileKey] else {
             return .failure(.usageError(description: "\(inputFileKey) variable not set"))
@@ -48,7 +47,7 @@ private func autoreleasepool<T>(block: () -> T) -> T { return block() }
 
 extension Configuration {
     func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage)
-        -> Result<[SwiftLintFile], CommandantError<()>> {
+        -> Result<[SwiftLintFile], SwiftLintError> {
             return getFiles(with: visitor)
                 .flatMap { groupFiles($0, visitor: visitor) }
                 .map { linters(for: $0, visitor: visitor) }
@@ -59,7 +58,7 @@ extension Configuration {
 
     private func groupFiles(_ files: [SwiftLintFile],
                             visitor: LintableFilesVisitor)
-        -> Result<[Configuration: [SwiftLintFile]], CommandantError<()>> {
+        -> Result<[Configuration: [SwiftLintFile]], SwiftLintError> {
         if files.isEmpty && !visitor.allowZeroLintableFiles {
             let errorMessage = "No lintable files found at paths: '\(visitor.paths.joined(separator: ", "))'"
             return .failure(.usageError(description: errorMessage))
@@ -188,7 +187,7 @@ extension Configuration {
         return visitor.parallel ? linters.parallelMap(transform: visit) : linters.map(visit)
     }
 
-    fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[SwiftLintFile], CommandantError<()>> {
+    fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[SwiftLintFile], SwiftLintError> {
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             if let stdinString = String(data: stdinData, encoding: .utf8) {
@@ -225,20 +224,9 @@ extension Configuration {
         })
     }
 
-    // MARK: LintOrAnalyze Command
-
-    init(options: LintOrAnalyzeOptions) {
-        let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(
-            configurationFiles: options.configurationFiles,
-            enableAllRules: options.enableAllRules,
-            cachePath: cachePath
-        )
-    }
-
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) -> Void)
-        -> Result<[SwiftLintFile], CommandantError<()>> {
+        -> Result<[SwiftLintFile], SwiftLintError> {
             return LintableFilesVisitor.create(options,
                                                cache: cache,
                                                allowZeroLintableFiles: allowZeroLintableFiles,
@@ -247,20 +235,13 @@ extension Configuration {
         })
     }
 
-    // MARK: AutoCorrect Command
+    // MARK: LintOrAnalyze Command
 
-    init(options: AutoCorrectOptions) {
-        let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
+    init(options: LintOrAnalyzeOptions) {
         self.init(
             configurationFiles: options.configurationFiles,
-            cachePath: cachePath
-        )
-    }
-
-    // MARK: Rules command
-    init(options: RulesOptions) {
-        self.init(
-            configurationFiles: options.configurationFiles
+            enableAllRules: options.enableAllRules,
+            cachePath: options.cachePath
         )
     }
 }

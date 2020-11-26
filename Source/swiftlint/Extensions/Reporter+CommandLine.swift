@@ -11,7 +11,6 @@ extension Reporter {
     }
 }
 
-func reporterFrom(optionsReporter: String, configuration: Configuration) -> Reporter.Type {
-    let string = optionsReporter.isEmpty ? configuration.reporter : optionsReporter
-    return reporterFrom(identifier: string)
+func reporterFrom(optionsReporter: String?, configuration: Configuration) -> Reporter.Type {
+    return reporterFrom(identifier: optionsReporter ?? configuration.reporter)
 }

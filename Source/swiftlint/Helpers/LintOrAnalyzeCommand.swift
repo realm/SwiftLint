@@ -1,10 +1,18 @@
-import Commandant
 import Dispatch
 import Foundation
 import SwiftLintFramework
 
 enum LintOrAnalyzeMode {
     case lint, analyze
+
+    var imperative: String {
+        switch self {
+        case .lint:
+            return "lint"
+        case .analyze:
+            return "analyze"
+        }
+    }
 
     var verb: String {
         switch self {
@@ -17,7 +25,11 @@ enum LintOrAnalyzeMode {
 }
 
 struct LintOrAnalyzeCommand {
-    static func run(_ options: LintOrAnalyzeOptions) -> Result<(), CommandantError<()>> {
+    static func run(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
+        return options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+    }
+
+    private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
         var fileBenchmark = Benchmark(name: "files")
         var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
@@ -125,6 +137,26 @@ struct LintOrAnalyzeCommand {
             queuedFatalError("Invalid command line options: 'lenient' and 'strict' are mutually exclusive.")
         }
     }
+
+    private static func autocorrect(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
+        let storage = RuleStorage()
+        let configuration = Configuration(options: options)
+        return configuration.visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
+            let corrections = linter.correct(using: storage)
+            if !corrections.isEmpty && !options.quiet {
+                let correctionLogs = corrections.map({ $0.consoleDescription })
+                queuedPrint(correctionLogs.joined(separator: "\n"))
+            }
+        }.flatMap { files in
+            if !options.quiet {
+                let pluralSuffix = { (collection: [Any]) -> String in
+                    return collection.count != 1 ? "s" : ""
+                }
+                queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
+            }
+            return .success(())
+        }
+    }
 }
 
 struct LintOrAnalyzeOptions {
@@ -138,56 +170,14 @@ struct LintOrAnalyzeOptions {
     let useExcludingByPrefix: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
-    let reporter: String
+    let reporter: String?
     let quiet: Bool
-    let cachePath: String
+    let cachePath: String?
     let ignoreCache: Bool
     let enableAllRules: Bool
     let autocorrect: Bool
-    let compilerLogPath: String
-    let compileCommands: String
-
-    init(_ options: LintOptions) {
-        mode = .lint
-        paths = options.paths
-        useSTDIN = options.useSTDIN
-        configurationFiles = options.configurationFiles
-        strict = options.strict
-        lenient = options.lenient
-        forceExclude = options.forceExclude
-        useExcludingByPrefix = options.excludeByPrefix
-        useScriptInputFiles = options.useScriptInputFiles
-        benchmark = options.benchmark
-        reporter = options.reporter
-        quiet = options.quiet
-        cachePath = options.cachePath
-        ignoreCache = options.ignoreCache
-        enableAllRules = options.enableAllRules
-        autocorrect = false
-        compilerLogPath = ""
-        compileCommands = ""
-    }
-
-    init(_ options: AnalyzeOptions) {
-        mode = .analyze
-        paths = options.paths
-        useSTDIN = false
-        configurationFiles = options.configurationFiles
-        strict = options.strict
-        lenient = options.lenient
-        forceExclude = options.forceExclude
-        useExcludingByPrefix = options.excludeByPrefix
-        useScriptInputFiles = options.useScriptInputFiles
-        benchmark = options.benchmark
-        reporter = options.reporter
-        quiet = options.quiet
-        cachePath = ""
-        ignoreCache = true
-        enableAllRules = options.enableAllRules
-        autocorrect = options.autocorrect
-        compilerLogPath = options.compilerLogPath
-        compileCommands = options.compileCommands
-    }
+    let compilerLogPath: String?
+    let compileCommands: String?
 
     var verb: String {
         if autocorrect {

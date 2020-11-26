@@ -147,6 +147,6 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         }
 
         let next = name[name.index(name.startIndex, offsetBy: 4)]
-        return next == "(" || next == "<" || next == "?" || next == "!" || next.isWhitespace
+        return next == "(" || next == "<" || next == "?" || next == "!"
     }
 }

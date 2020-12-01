@@ -211,7 +211,7 @@ extension Configuration {
         }
         if !visitor.quiet {
             let filesInfo: String
-            if visitor.paths.isEmpty || visitor.paths.first == "" {
+            if visitor.paths.isEmpty || visitor.paths[0].isEmpty {
                 filesInfo = "in current working directory"
             } else {
                 filesInfo = "at paths \(visitor.paths.joined(separator: ", "))"

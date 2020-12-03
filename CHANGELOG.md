@@ -86,7 +86,9 @@
 
 #### Bug Fixes
 
-* None.
+* Remove `@IBOutlet` and `@IBInspectable` from UnusedDeclarationRule.  
+  [Keith Smiley](https://github.com/keith)
+  [#3184](https://github.com/realm/SwiftLint/issues/3184)
 
 ## 0.41.0: World’s Cleanest Voting Booth
 

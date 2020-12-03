@@ -126,6 +126,20 @@ struct UnusedDeclarationRuleExamples {
             func applicationWillFinishLaunching(_ notification: Notification) {}
             func applicationWillBecomeActive(_ notification: Notification) {}
         }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @IBAction private func foo() {}
+        }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @objc func foo() {}
+        }
         """)
     ]
 
@@ -145,6 +159,20 @@ struct UnusedDeclarationRuleExamples {
         final class ↓AppDelegate: NSObject, NSApplicationDelegate {
             func applicationWillFinishLaunching(_ notification: Notification) {}
             func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @IBOutlet var ↓bar: NSObject!
+        }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @IBInspectable var ↓bar: String!
         }
         """)
     ]

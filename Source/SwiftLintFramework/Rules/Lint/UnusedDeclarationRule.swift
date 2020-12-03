@@ -268,8 +268,6 @@ private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
 
 private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
     .ibaction,
-    .ibinspectable,
-    .iboutlet,
     .main,
     .nsApplicationMain,
     .override,

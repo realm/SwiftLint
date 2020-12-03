@@ -398,6 +398,18 @@
     <span class="kd">func</span> <span class="nf">applicationWillBecomeActive</span><span class="p">(</span><span class="n">_</span> <span class="nv">notification</span><span class="p">:</span> <span class="kt">Notification</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
+    <span class="kd">@IBAction</span> <span class="kd">private</span> <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
+    <span class="kd">@objc</span> <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">let</span> <span class="err">↓</span><span class="n">kConstant</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
@@ -447,6 +459,18 @@
 <span class="kd">final</span> <span class="kd">class</span> <span class="err">↓</span><span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">NSApplicationDelegate</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">applicationWillFinishLaunching</span><span class="p">(</span><span class="n">_</span> <span class="nv">notification</span><span class="p">:</span> <span class="kt">Notification</span><span class="p">)</span> <span class="p">{}</span>
     <span class="kd">func</span> <span class="nf">applicationWillBecomeActive</span><span class="p">(</span><span class="n">_</span> <span class="nv">notification</span><span class="p">:</span> <span class="kt">Notification</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">var</span> <span class="err">↓</span><span class="nv">bar</span><span class="p">:</span> <span class="kt">NSObject</span><span class="o">!</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
+    <span class="kd">@IBInspectable</span> <span class="kd">var</span> <span class="err">↓</span><span class="nv">bar</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span>
 <span class="p">}</span>
 </code></pre>
 

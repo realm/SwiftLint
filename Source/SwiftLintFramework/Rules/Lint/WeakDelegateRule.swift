@@ -25,7 +25,8 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
             // There's no way to declare a property weak in a protocol
             Example("protocol P {\n var delegate: AnyObject? { get set }\n}\n"),
             Example("class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"),
-            Example("class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}")
+            Example("class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"),
+            Example("struct Foo {\n @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}")
         ],
         triggeringExamples: [
             Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"),
@@ -73,6 +74,17 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
         // Check if non-computed
         let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
+        
+        // Check for UIApplicationDelegateAdaptor
+        for attribute in dictionary.swiftAttributes {
+            if
+                let offset = attribute.offset,
+                let length = attribute.length,
+                let value = file.stringView.substringWithByteRange(ByteRange(location: offset, length: length)),
+                value.hasPrefix("@UIApplicationDelegateAdaptor") {
+                return []
+            }
+        }
 
         guard let offset = dictionary.offset,
             let range = file.stringView.byteRangeToNSRange(ByteRange(location: offset, length: 3))
@@ -99,4 +111,5 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
             return [dictionary]
         }
     }
+    
 }

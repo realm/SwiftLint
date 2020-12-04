@@ -74,7 +74,7 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
         // Check if non-computed
         let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
-        
+
         // Check for UIApplicationDelegateAdaptor
         for attribute in dictionary.swiftAttributes {
             if
@@ -111,5 +111,4 @@ public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, Configu
             return [dictionary]
         }
     }
-    
 }

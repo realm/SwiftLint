@@ -1,4 +1,4 @@
-## Master
+## 0.42.0-rc.1
 
 #### Breaking
 

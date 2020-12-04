@@ -45,6 +45,10 @@
 
 #### Enhancements
 
+* Don't report `@UIApplicationDelegateAdaptor` statements in `weak-delegate` rule.
+  [Richard Turton](https://github.com/jrturton)
+  [#3286](https://github.com/realm/SwiftLint/issues/3456)
+
 * Don't report `unavailable_function` violations for functions returning
   `Never`.  
   [Artem Garmash](https://github.com/agarmash)

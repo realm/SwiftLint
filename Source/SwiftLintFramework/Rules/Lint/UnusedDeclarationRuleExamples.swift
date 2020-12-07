@@ -140,6 +140,16 @@ struct UnusedDeclarationRuleExamples {
         public final class Foo: NSObject {
             @objc func foo() {}
         }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @IBInspectable private var innerPaddingWidth: Int {
+                set { self.backgroundView.innerPaddingWidth = newValue }
+                get { return self.backgroundView.innerPaddingWidth }
+            }
+        }
         """)
     ]
 

@@ -138,8 +138,15 @@ private extension SwiftLintFile {
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
             indexEntity.isIndexEntitySwiftUIProvider() ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
-            indexEntity.value["key.is_implicit"] as? Bool == true ||
+            indexEntity.isImplicit ||
             indexEntity.value["key.is_test_candidate"] as? Bool == true {
+            return nil
+        }
+
+        if indexEntity.enclosedSwiftAttributes.contains(.ibinspectable),
+           let getter = indexEntity.entities.first(where: { $0.declarationKind == .functionAccessorGetter }),
+           let setter = indexEntity.entities.first(where: { $0.declarationKind == .functionAccessorSetter }),
+           !getter.isImplicit, !setter.isImplicit {
             return nil
         }
 
@@ -205,6 +212,10 @@ private extension SourceKittenDictionary {
 
     var annotatedDeclaration: String? {
         return value["key.annotated_decl"] as? String
+    }
+
+    var isImplicit: Bool {
+        return value["key.is_implicit"] as? Bool == true
     }
 
     func aclAtOffset(_ offset: ByteCount) -> AccessControlLevel? {

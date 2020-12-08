@@ -38,7 +38,7 @@ public struct Configuration {
     /// This value is `true` iff the `--config` parameter was used to specify (a) configuration file(s)
     /// In particular, this means that the value is also `true` if the `--config` parameter
     /// was used to explicitly specify the default `.swiftlint.yml` as the configuration file
-    public private(set) var basedOnCustomConfigurationFiles: Bool = false
+    public private(set) var basedOnCustomConfigurationFiles = false
 
     // MARK: Public Computed
     /// All rules enabled in this configuration

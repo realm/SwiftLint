@@ -70,7 +70,7 @@ internal extension Configuration.FileGraph.FilePath {
 
             // Load from url
             var taskResult: (Data?, URLResponse?, Error?)
-            var taskDone: Bool = false
+            var taskDone = false
 
             // `.ephemeral` disables caching (which we don't want to be managed by the system)
             let task = URLSession(configuration: .ephemeral).dataTask(with: url) { data, response, error in

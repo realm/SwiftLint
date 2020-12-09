@@ -213,26 +213,13 @@ public struct Configuration {
             self.fileGraph = fileGraph
             setCached(forIdentifier: cacheIdentifier)
         } catch {
-            let errorString: String
-            switch error {
-            case let ConfigurationError.fileNotFound(path: path):
-                if hasCustomConfigurationFiles {
-                    errorString = "Configuration file not found at path: \(path)"
-                } else {
-                    // Not an error, the user didn't specify a configuration file and none was found at the
-                    // default location. Use default configuration.
-                    self.init(rulesMode: rulesMode, cachePath: cachePath)
-                    return
-                }
-            case let ConfigurationError.generic(message):
-                errorString = "SwiftLint Configuration Error: \(message)"
-            case let YamlParserError.yamlParsing(message):
-                errorString = "YML Parsing Error: \(message)"
-            default:
-                errorString = "Unknown Error"
+            guard let errorString = message(for: error, hasCustomConfigurationFiles: hasCustomConfigurationFiles) else {
+                // Not an error. Use default configuration.
+                self.init(rulesMode: rulesMode, cachePath: cachePath)
+                return
             }
 
-            if useDefaultConfigOnFailure ?? !hasCustomConfigurationFiles {
+            if useDefaultConfigOnFailure ?? false {
                 // No files were explicitly specified, so maybe the user doesn't want a config at all -> warn
                 queuedPrintError("warning: \(errorString) – Falling back to default configuration")
                 self.init(rulesMode: rulesMode, cachePath: cachePath)
@@ -242,6 +229,25 @@ public struct Configuration {
                 queuedFatalError("Could not read configuration")
             }
         }
+    }
+}
+
+func message(for error: Error, hasCustomConfigurationFiles: Bool) -> String? {
+    switch error {
+    case let ConfigurationError.fileNotFound(path: path):
+        if hasCustomConfigurationFiles {
+            return "Configuration file not found at path: \(path)"
+        } else {
+            // Not an error, the user didn't specify a configuration file and none was found at the
+            // default location.
+            return nil
+        }
+    case let ConfigurationError.generic(message):
+        return "SwiftLint Configuration Error: \(message)"
+    case let YamlParserError.yamlParsing(message):
+        return "YML Parsing Error: \(message)"
+    default:
+        return error.localizedDescription
     }
 }
 

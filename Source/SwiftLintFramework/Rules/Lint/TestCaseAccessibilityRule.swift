@@ -18,14 +18,13 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return testClasses(in: file).flatMap {
-            violationRanges(in: file, for: $0).map { range in
+        return testClasses(in: file).flatMap { dictionary in
+            violationRanges(in: file, for: dictionary).map { range in
                 return StyleViolation(ruleDescription: Self.description,
                                       severity: configuration.severity,
                                       location: Location(file: file, characterOffset: range.location))
             }
         }
-
     }
 
     // MARK: - SubstitutionCorrectableRule

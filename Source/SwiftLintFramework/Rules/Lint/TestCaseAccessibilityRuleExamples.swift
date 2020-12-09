@@ -53,7 +53,6 @@ internal struct TestCaseAccessibilityRuleExamples {
         }
         """, configuration: ["allowed_prefixes": ["allowedPrefix"]]),
 
-
         // Not an XCTestCase class
 
         Example("""

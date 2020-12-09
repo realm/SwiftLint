@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.0.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -1063,12 +1063,6 @@ extension NoSpaceInMethodCallRuleTests {
     ]
 }
 
-extension NonPrivateXCTestMembersRuleTests {
-    static var allTests: [(String, (NonPrivateXCTestMembersRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension NotificationCenterDetachmentRuleTests {
     static var allTests: [(String, (NotificationCenterDetachmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1898,7 +1892,6 @@ XCTMain([
     testCase(NoFallthroughOnlyRuleTests.allTests),
     testCase(NoGroupingExtensionRuleTests.allTests),
     testCase(NoSpaceInMethodCallRuleTests.allTests),
-    testCase(NonPrivateXCTestMembersRuleTests.allTests),
     testCase(NotificationCenterDetachmentRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),

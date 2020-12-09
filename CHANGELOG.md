@@ -2,6 +2,19 @@
 
 #### Breaking
 
+* The command line syntax has slightly changed due to migrating from the
+  Commandant command line parsing library to swift-argument-parser.
+  For the most part the breaking changes are all to make the syntax more
+  unix compliant and intuitive to use. For example, commands such as
+  `swiftlint --help` or `swiftlint -h` now work as expected.
+  The help output from various commands has greatly improved as well.
+  Notably: `swiftlint autocorrect` was removed in favor of
+  `swiftlint --fix`.
+  Previous commands should continue to work temporarily to help with the
+  transition. Please let us know if there's a command that no longer
+  works and we'll attempt to add a bridge to help with its transition.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

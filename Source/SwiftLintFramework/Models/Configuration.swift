@@ -274,7 +274,7 @@ extension Configuration: CustomStringConvertible {
             + "- Indentation Style: \(indentation)\n"
             + "- Included Paths: \(includedPaths)\n"
             + "- Excluded Paths: \(excludedPaths)\n"
-            + "- Warning Treshold: \(warningThreshold as Optional)\n"
+            + "- Warning Threshold: \(warningThreshold as Optional)\n"
             + "- Root Directory: \(rootDirectory as Optional)\n"
             + "- Reporter: \(reporter)\n"
             + "- Cache Path: \(cachePath as Optional)\n"

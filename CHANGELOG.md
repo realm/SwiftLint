@@ -80,9 +80,6 @@
   [jkroepke](https://github.com/jkroepke)
   [#3424](https://github.com/realm/SwiftLint/issues/3424)
 
-* Add `non_private_xctest_member` rule.  
-  [Keith Smiley](https://github.com/keith)
-
 * Add an `override_allowed_terms` configuration parameter to the
   `inclusive_language` rule, with a default value of `mastercard`.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)

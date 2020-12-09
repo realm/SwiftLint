@@ -1,6 +1,8 @@
+import Foundation
 import SourceKittenFramework
 
-public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule,
+                                         SubstitutionCorrectableRule {
     public var configuration = TestCaseAccessibilityConfiguration()
 
     public init() {}
@@ -11,25 +13,41 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
         description: "Test cases should only contain private non-test members.",
         kind: .lint,
         nonTriggeringExamples: TestCaseAccessibilityRuleExamples.nonTriggeringExamples,
-        triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples
+        triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,
+        corrections: TestCaseAccessibilityRuleExamples.corrections
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return testClasses(in: file).flatMap { violations(in: file, for: $0) }
+        return testClasses(in: file).flatMap { dictionary in
+            violationRanges(in: file, for: dictionary).map { range in
+                return StyleViolation(ruleDescription: Self.description,
+                                      severity: configuration.severity,
+                                      location: Location(file: file, characterOffset: range.location))
+            }
+        }
+    }
+
+    // MARK: - SubstitutionCorrectableRule
+
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        return testClasses(in: file).flatMap { violationRanges(in: file, for: $0) }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        return (violationRange, "private ")
     }
 
     // MARK: - Private
 
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        let dict = file.structureDictionary
-        return dict.substructure.filter { dictionary in
+        return file.structureDictionary.substructure.filter { dictionary in
             dictionary.declarationKind == .class && dictionary.inheritedTypes.contains("XCTestCase")
         }
     }
 
-    private func violations(in file: SwiftLintFile,
-                            for dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
+    private func violationRanges(in file: SwiftLintFile,
+                                 for dictionary: SourceKittenDictionary) -> [NSRange] {
+        return dictionary.substructure.compactMap { subDictionary -> NSRange? in
             guard
                 let kind = subDictionary.declarationKind,
                 kind != .varLocal,
@@ -38,9 +56,7 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
                 let offset = subDictionary.offset,
                 subDictionary.accessibility?.isPrivate != true else { return nil }
 
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
+            return file.stringView.byteRangeToNSRange(ByteRange(location: offset, length: 0))
         }
     }
 

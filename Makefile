@@ -105,10 +105,10 @@ portable_zip: installables
 	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
-zip_linux:
+zip_linux: docker_image
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run -v `pwd`:`pwd` -w `pwd` --rm swift:latest sh -c 'apt-get update && apt-get install -y libxml2-dev && swift build -c release -Xswiftc -static-stdlib'
-	mv .build/release/swiftlint "$(TMP_FOLDER)"
+	docker run swiftlint cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
+	chmod +x "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
@@ -121,6 +121,9 @@ package: installables
 		"$(OUTPUT_PACKAGE)"
 
 release: package portable_zip zip_linux
+
+docker_image:
+	docker build --force-rm --tag swiftlint .
 
 docker_test:
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.3 swift test --parallel

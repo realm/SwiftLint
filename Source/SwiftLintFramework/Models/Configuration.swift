@@ -215,12 +215,19 @@ public struct Configuration {
         } catch {
             let errorString: String
             switch error {
+            case let ConfigurationError.fileNotFound(path: path):
+                if hasCustomConfigurationFiles {
+                    errorString = "Configuration file not found at path: \(path)"
+                } else {
+                    // Not an error, the user didn't specify a configuration file and none was found at the
+                    // default location. Use default configuration.
+                    self.init(rulesMode: rulesMode, cachePath: cachePath)
+                    return
+                }
             case let ConfigurationError.generic(message):
                 errorString = "SwiftLint Configuration Error: \(message)"
-
             case let YamlParserError.yamlParsing(message):
                 errorString = "YML Parsing Error: \(message)"
-
             default:
                 errorString = "Unknown Error"
             }

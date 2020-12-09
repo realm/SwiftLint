@@ -8,4 +8,7 @@ public enum ConfigurationError: Error, Equatable {
 
     /// A generic configuration error specified by a string.
     case generic(String)
+
+    /// An error for a configuration file that was not found on disk.
+    case fileNotFound(path: String)
 }

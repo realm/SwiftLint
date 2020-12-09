@@ -72,7 +72,7 @@ internal extension Configuration.FileGraph {
 
         private func read(at path: String) throws -> String {
             guard !path.isEmpty && FileManager.default.fileExists(atPath: path) else {
-                throw ConfigurationError.fileNotFound(path: path)
+                throw ConfigurationError.generic("File \(path) can't be found.")
             }
 
             return try String(contentsOfFile: path, encoding: .utf8)

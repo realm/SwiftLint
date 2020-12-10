@@ -213,21 +213,16 @@ public struct Configuration {
             self.fileGraph = fileGraph
             setCached(forIdentifier: cacheIdentifier)
         } catch {
-            let errorString: String
-            switch error {
-            case let ConfigurationError.generic(message):
-                errorString = "SwiftLint Configuration Error: \(message)"
-
-            case let YamlParserError.yamlParsing(message):
-                errorString = "YML Parsing Error: \(message)"
-
-            default:
-                errorString = "Unknown Error"
+            guard let errorString = errorMessage(for: error, hasCustomConfigurationFiles: hasCustomConfigurationFiles)
+            else {
+                // Fall back to default
+                self.init(rulesMode: rulesMode, cachePath: cachePath)
+                return
             }
 
             if useDefaultConfigOnFailure ?? !hasCustomConfigurationFiles {
-                // No files were explicitly specified, so maybe the user doesn't want a config at all.
-                // Fall back to default configuration.
+                // No files were explicitly specified, so maybe the user doesn't want a config at all -> warn
+                queuedPrintError("warning: \(errorString) – Falling back to default configuration")
                 self.init(rulesMode: rulesMode, cachePath: cachePath)
             } else {
                 // Files that were explicitly specified could not be loaded -> fail
@@ -235,6 +230,23 @@ public struct Configuration {
                 queuedFatalError("Could not read configuration")
             }
         }
+    }
+}
+
+func errorMessage(for error: Error, hasCustomConfigurationFiles: Bool) -> String? {
+    switch error {
+    case let ConfigurationError.initialFileNotFound(path):
+        if hasCustomConfigurationFiles {
+            return "SwiftLint Configuration Error: Could not read file at path: \(path)"
+        } else {
+            return nil
+        }
+    case let ConfigurationError.generic(message):
+        return "SwiftLint Configuration Error: \(message)"
+    case let YamlParserError.yamlParsing(message):
+        return "YML Parsing Error: \(message)"
+    default:
+        return error.localizedDescription
     }
 }
 

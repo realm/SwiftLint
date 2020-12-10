@@ -117,7 +117,8 @@ internal extension Configuration {
                 : Configuration.Key.parentConfig.rawValue
 
             if let reference = vertix.configurationDict[key] as? String {
-                let referencedVertix = Vertix(string: reference, rootDirectory: vertix.rootDirectory, isInitialVertix: false)
+                let referencedVertix = Vertix(string: reference, rootDirectory: vertix.rootDirectory,
+                                              isInitialVertix: false)
 
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references

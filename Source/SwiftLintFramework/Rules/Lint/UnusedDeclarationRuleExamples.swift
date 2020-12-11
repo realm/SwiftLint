@@ -1,3 +1,5 @@
+// swiftlint:disable type_body_length
+
 struct UnusedDeclarationRuleExamples {
     static let nonTriggeringExamples = [
         Example("""

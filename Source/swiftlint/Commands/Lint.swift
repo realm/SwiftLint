@@ -22,9 +22,17 @@ extension SwiftLint {
         var paths = [String]()
 
         mutating func run() throws {
+            let allPaths: [String]
+            if let path = path {
+                allPaths = [path]
+            } else if !paths.isEmpty {
+                allPaths = paths
+            } else {
+                allPaths = [""] // Lint files in current working directory if no paths were specified.
+            }
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
-                paths: paths + [path ?? ""],
+                paths: allPaths,
                 useSTDIN: useSTDIN,
                 configurationFiles: common.config,
                 strict: common.strict,

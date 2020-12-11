@@ -1,3 +1,5 @@
+// swiftlint:disable type_body_length
+
 struct UnusedDeclarationRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -148,6 +150,24 @@ struct UnusedDeclarationRuleExamples {
             @IBInspectable private var innerPaddingWidth: Int {
                 set { self.backgroundView.innerPaddingWidth = newValue }
                 get { return self.backgroundView.innerPaddingWidth }
+            }
+        }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @IBOutlet private var bar: NSObject! {
+                set { fatalError() }
+                get { fatalError() }
+            }
+
+            @IBOutlet private var baz: NSObject! {
+                willSet { print("willSet") }
+            }
+
+            @IBOutlet private var buzz: NSObject! {
+                didSet { print("didSet") }
             }
         }
         """)

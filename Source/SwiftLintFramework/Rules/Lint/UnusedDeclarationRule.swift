@@ -202,11 +202,21 @@ private extension SwiftLintFile {
             return true
         }
 
-        if indexEntity.enclosedSwiftAttributes.contains(.ibinspectable),
-           let getter = indexEntity.entities.first(where: { $0.declarationKind == .functionAccessorGetter }),
-           let setter = indexEntity.entities.first(where: { $0.declarationKind == .functionAccessorSetter }),
-           !getter.isImplicit, !setter.isImplicit {
-            return true
+        if !Set(indexEntity.enclosedSwiftAttributes).isDisjoint(with: [.ibinspectable, .iboutlet]) {
+            if let getter = indexEntity.entities.first(where: { $0.declarationKind == .functionAccessorGetter }),
+               !getter.isImplicit {
+                return true
+            }
+
+            if let setter = indexEntity.entities.first(where: { $0.declarationKind == .functionAccessorSetter }),
+               !setter.isImplicit {
+                return true
+            }
+
+            if !Set(indexEntity.entities.compactMap(\.declarationKind))
+                .isDisjoint(with: [.functionAccessorWillset, .functionAccessorDidset]) {
+                return true
+            }
         }
 
         return false

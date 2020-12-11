@@ -150,6 +150,16 @@ struct UnusedDeclarationRuleExamples {
                 get { return self.backgroundView.innerPaddingWidth }
             }
         }
+        """),
+        Example("""
+        import Foundation
+
+        public final class Foo: NSObject {
+            @IBOutlet private var bar: NSObject! {
+                set { fatalError() }
+                get { fatalError() }
+            }
+        }
         """)
     ]
 

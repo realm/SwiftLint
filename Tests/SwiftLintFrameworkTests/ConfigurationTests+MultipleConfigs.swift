@@ -203,7 +203,7 @@ extension ConfigurationTests {
 
             // If the cycle is properly detected, the config should equal the default config.
             XCTAssertEqual(
-                Configuration(configurationFiles: []), // not specifiying a file means the .swiftlint.yml will be used
+                Configuration(configurationFiles: []), // not specifying a file means the .swiftlint.yml will be used
                 Configuration()
             )
         }

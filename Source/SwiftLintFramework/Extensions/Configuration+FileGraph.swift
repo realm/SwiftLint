@@ -17,7 +17,9 @@ internal extension Configuration {
 
         // MARK: - Initializers
         internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
-            let verticesArray = commandLineChildConfigs.map { Vertix(string: $0, rootDirectory: rootDirectory) }
+            let verticesArray = commandLineChildConfigs.map { config in
+                Vertix(string: config, rootDirectory: rootDirectory, isInitialVertix: true)
+            }
             vertices = Set(verticesArray)
             edges = Set(zip(verticesArray, verticesArray.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
 
@@ -115,7 +117,8 @@ internal extension Configuration {
                 : Configuration.Key.parentConfig.rawValue
 
             if let reference = vertix.configurationDict[key] as? String {
-                let referencedVertix = Vertix(string: reference, rootDirectory: vertix.rootDirectory)
+                let referencedVertix = Vertix(string: reference, rootDirectory: vertix.rootDirectory,
+                                              isInitialVertix: false)
 
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references

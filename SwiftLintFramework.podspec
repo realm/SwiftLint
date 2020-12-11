@@ -11,5 +11,5 @@ Pod::Spec.new do |s|
   s.swift_versions      = ['5.2', '5.3']
   s.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
   s.dependency            'SourceKittenFramework', '~> 0.30.1'
-  s.dependency            'Yams', '~> 4.0'
+  s.dependency            'Yams', '~> 4.0.2'
 end

@@ -298,7 +298,7 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Rules from config dictionary
 
-    let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
+    private let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]

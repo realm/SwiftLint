@@ -2,7 +2,7 @@
 import XCTest
 
 final class ConfigurationAliasesTests: XCTestCase {
-    let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
+    private let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {
         let ruleConfiguration = [1, 2]

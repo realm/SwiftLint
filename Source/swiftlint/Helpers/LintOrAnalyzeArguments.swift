@@ -1,5 +1,18 @@
 import ArgumentParser
 
+enum LeniencyOptions: String, EnumerableFlag {
+    case strict, lenient
+
+    static func help(for value: LeniencyOptions) -> ArgumentHelp? {
+        switch value {
+        case .strict:
+            return "Upgrades warnings to serious violations (errors)."
+        case .lenient:
+            return "Downgrades serious violations to warnings, warning threshold is disabled."
+        }
+    }
+}
+
 // MARK: - Common Arguments
 
 struct LintOrAnalyzeArguments: ParsableArguments {
@@ -11,10 +24,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var useAlternativeExcluding = false
     @Flag(help: "Read SCRIPT_INPUT_FILE* environment variables as files.")
     var useScriptInputFiles = false
-    @Flag(help: "Upgrades warnings to serious violations (errors).")
-    var strict = false
-    @Flag(help: "Downgrades serious violations to warnings, warning threshold is disabled.")
-    var lenient = false
+    @Flag(exclusivity: .exclusive)
+    var leniency: LeniencyOptions?
     @Flag(help: "Exclude files in config `excluded` even if their paths are explicitly specified.")
     var forceExclude = false
     @Flag(help: "Save benchmarks to `benchmark_files.txt` and `benchmark_rules.txt`.")

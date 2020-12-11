@@ -215,14 +215,6 @@ private extension SwiftLintFile {
 }
 
 private extension SourceKittenDictionary {
-    var usr: String? {
-        return value["key.usr"] as? String
-    }
-
-    var annotatedDeclaration: String? {
-        return value["key.annotated_decl"] as? String
-    }
-
     var isImplicit: Bool {
         return value["key.is_implicit"] as? Bool == true
     }

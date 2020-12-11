@@ -113,15 +113,6 @@ private extension SwiftLintFile {
             unusedImports.remove("Foundation")
         }
 
-        if unusedImports.isNotEmpty {
-            unusedImports.subtract(
-                operatorImports(
-                    arguments: compilerArguments,
-                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
-                )
-            )
-        }
-
         let contentsNSString = stringView.nsString
         let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports), contents: contentsNSString)
             .map { ImportUsage.unused(module: $0, range: $1) }

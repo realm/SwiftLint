@@ -1,5 +1,4 @@
 import ArgumentParser
-import SwiftLintFramework
 
 extension SwiftLint {
     struct Lint: ParsableCommand {

@@ -159,6 +159,14 @@ struct UnusedDeclarationRuleExamples {
                 set { fatalError() }
                 get { fatalError() }
             }
+
+            @IBOutlet private var baz: NSObject! {
+                willSet { print("willSet") }
+            }
+
+            @IBOutlet private var buzz: NSObject! {
+                didSet { print("didSet") }
+            }
         }
         """)
     ]

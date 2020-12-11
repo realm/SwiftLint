@@ -219,7 +219,7 @@ public struct Configuration {
             )
             switch initializationResult {
             case .initialImplicitFileNotFound:
-                // Silently back to default
+                // Silently fall back to default
                 self.init(rulesMode: rulesMode, cachePath: cachePath)
                 return
             case .error(let message):

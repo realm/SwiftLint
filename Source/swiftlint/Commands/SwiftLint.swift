@@ -1,5 +1,5 @@
 import ArgumentParser
-import Foundation
+import SwiftLintFramework
 
 struct SwiftLint: ParsableCommand {
     static var configuration = CommandConfiguration(
@@ -25,13 +25,11 @@ struct SwiftLint: ParsableCommand {
             return
         }
 
-        fputs(
+        queuedPrintError(
             """
             The `swiftlint autocorrect` command is no longer available.
             Please use `swiftlint --fix` instead.
-
-            """,
-            stderr
+            """
         )
         var newArguments = argumentsToCheck
         newArguments[0] = "--fix"

@@ -1,4 +1,4 @@
-## Master
+## 0.42.0: He Chutes, He Scores
 
 #### Breaking
 

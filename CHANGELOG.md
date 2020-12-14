@@ -1,3 +1,19 @@
+## Master
+
+#### Breaking
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.42.0: He Chutes, He Scores
 
 #### Breaking

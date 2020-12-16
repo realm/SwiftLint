@@ -2,9 +2,9 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(severity) \(severity.consoleDescription), " +
             "excluded: \(excluded.sorted()), " +
-            "prefixPattern: \(prefixPattern), " +
-            "suffixPattern: \(suffixPattern), " +
-            "nestedTypeSeparator: \(nestedTypeSeparator)"
+            "prefix_pattern: \(prefixPattern), " +
+            "suffix_pattern: \(suffixPattern), " +
+            "nested_type_separator: \(nestedTypeSeparator)"
     }
 
     public private(set) var severity: SeverityConfiguration

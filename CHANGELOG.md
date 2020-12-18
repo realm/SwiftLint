@@ -26,7 +26,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix misleading warnings about rules defined in the `custom_rules` not
+  being available (when using multiple configurations).  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#3472](https://github.com/realm/SwiftLint/issues/3472)
 
 ## 0.42.0: He Chutes, He Scores
 

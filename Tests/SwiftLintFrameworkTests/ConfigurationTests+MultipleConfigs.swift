@@ -103,6 +103,23 @@ extension ConfigurationTests {
         )
     }
 
+    func testCustomRulesMergingWithOnlyRules() {
+        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
+            withChild: Mock.Config._2CustomRulesOnly,
+            rootDirectory: ""
+        )
+        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+            else {
+            return XCTFail("Custom rule are expected to be present")
+        }
+        XCTAssertTrue(
+            mergedCustomRules.configuration.customRuleConfigurations.contains(where: { $0.identifier == "no_abc" })
+        )
+        XCTAssertTrue(
+            mergedCustomRules.configuration.customRuleConfigurations.contains(where: { $0.identifier == "no_abcd" })
+        )
+    }
+
     // MARK: - Nested Configurations
     func testLevel0() {
         XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._0)!),

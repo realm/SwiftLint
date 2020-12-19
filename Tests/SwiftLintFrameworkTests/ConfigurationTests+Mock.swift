@@ -38,8 +38,10 @@ internal extension ConfigurationTests {
             static var _0: String { Dir.level0.stringByAppendingPathComponent(Configuration.defaultFileName) }
             static var _0CustomPath: String { Dir.level0.stringByAppendingPathComponent("custom.yml") }
             static var _0CustomRules: String { Dir.level0.stringByAppendingPathComponent("custom_rules.yml") }
+            static var _0CustomRulesOnly: String { Dir.level0.stringByAppendingPathComponent("custom_rules_only.yml") }
             static var _2: String { Dir.level2.stringByAppendingPathComponent(Configuration.defaultFileName) }
             static var _2CustomRules: String { Dir.level2.stringByAppendingPathComponent("custom_rules.yml") }
+            static var _2CustomRulesOnly: String { Dir.level2.stringByAppendingPathComponent("custom_rules_only.yml") }
             static var _2CustomRulesDisabled: String {
                 Dir.level2.stringByAppendingPathComponent("custom_rules_disabled.yml")
             }
@@ -61,8 +63,10 @@ internal extension ConfigurationTests {
             static var _0: Configuration { Configuration(configurationFiles: []) }
             static var _0CustomPath: Configuration { Configuration(configurationFiles: [Yml._0CustomPath]) }
             static var _0CustomRules: Configuration { Configuration(configurationFiles: [Yml._0CustomRules]) }
+            static var _0CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._0CustomRulesOnly]) }
             static var _2: Configuration { Configuration(configurationFiles: [Yml._2]) }
             static var _2CustomRules: Configuration { Configuration(configurationFiles: [Yml._2CustomRules]) }
+            static var _2CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._2CustomRulesOnly]) }
             static var _2CustomRulesDisabled: Configuration {
                 Configuration(configurationFiles: [Yml._2CustomRulesDisabled])
             }

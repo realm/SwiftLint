@@ -142,10 +142,24 @@ internal extension Configuration {
                     newAllRulesWrapped: newAllRulesWrapped,
                     child: child,
                     childDisabled: childDisabled,
-                    childOptIn: childOptIn
+                    childOptIn: childOptIn,
+                    validRuleIdentifiers: validRuleIdentifiers
                 )
 
             case var .only(childOnlyRules):
+                // If the custom_rules rule is enabled, add all rules defined by the child's custom_rules rule
+                if
+                    (childOnlyRules.contains { $0 == CustomRules.description.identifier }),
+                    let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
+                        as? CustomRules
+                {
+                    childOnlyRules = childOnlyRules.union(
+                        Set(
+                            childCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
+                        )
+                    )
+                }
+
                 childOnlyRules = child.validate(ruleIds: childOnlyRules, valid: validRuleIdentifiers)
 
                 // Always use the child only rules
@@ -159,11 +173,7 @@ internal extension Configuration {
             // Assemble & return merged rules
             return RulesWrapper(
                 mode: newMode,
-                allRulesWrapped: mergedCustomRules(
-                    newAllRulesWrapped: newAllRulesWrapped,
-                    mode: newMode,
-                    with: child
-                ),
+                allRulesWrapped: mergedCustomRules(newAllRulesWrapped: newAllRulesWrapped, with: child),
                 aliasResolver: { child.aliasResolver(self.aliasResolver($0)) }
             )
         }
@@ -183,7 +193,7 @@ internal extension Configuration {
         }
 
         private func mergedCustomRules(
-            newAllRulesWrapped: [ConfigurationRuleWrapper], mode: RulesMode, with child: RulesWrapper
+            newAllRulesWrapped: [ConfigurationRuleWrapper], with child: RulesWrapper
         ) -> [ConfigurationRuleWrapper] {
             guard
                 let parentCustomRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule
@@ -211,12 +221,13 @@ internal extension Configuration {
             newAllRulesWrapped: [ConfigurationRuleWrapper],
             child: RulesWrapper,
             childDisabled: Set<String>,
-            childOptIn: Set<String>
+            childOptIn: Set<String>,
+            validRuleIdentifiers: Set<String>
         ) -> RulesMode {
             let childDisabled = child.validate(ruleIds: childDisabled, valid: validRuleIdentifiers)
             let childOptIn = child.validate(ruleIds: childOptIn, valid: validRuleIdentifiers)
 
-            switch mode {
+            switch mode { // Switch parent's mode. Child is in default mode.
             case var .default(disabled, optIn):
                 disabled = validate(ruleIds: disabled, valid: validRuleIdentifiers)
                 optIn = child.validate(ruleIds: optIn, valid: validRuleIdentifiers)
@@ -236,6 +247,27 @@ internal extension Configuration {
                 )
 
             case var .only(onlyRules):
+                // Add identifiers of custom rules iff the custom_rules rule is enabled
+                if (onlyRules.contains { $0 == CustomRules.description.identifier }) {
+                    if let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
+                        as? CustomRules {
+                        onlyRules = onlyRules.union(
+                            Set(
+                                childCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
+                            )
+                        )
+                    }
+
+                    if let parentCustomRulesRule = (self.allRulesWrapped.first { $0.rule is CustomRules })?.rule
+                        as? CustomRules {
+                        onlyRules = onlyRules.union(
+                            Set(
+                                parentCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
+                            )
+                        )
+                    }
+                }
+
                 onlyRules = validate(ruleIds: onlyRules, valid: validRuleIdentifiers)
 
                 // Allow parent only rules that weren't disabled via the child config

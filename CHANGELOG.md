@@ -30,6 +30,11 @@
   being available (when using multiple configurations).  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3472](https://github.com/realm/SwiftLint/issues/3472)
+  
+* Fix `custom_rules` merging when the parent configuration is based on `only_rules`.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#3468](https://github.com/realm/SwiftLint/issues/3468)
+
 
 ## 0.42.0: He Chutes, He Scores
 

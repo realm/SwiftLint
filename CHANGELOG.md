@@ -17,7 +17,8 @@
 
 #### Experimental
 
-* None.
+* Fix typos in configuration options for `file_name` rule.  
+  [advantis](https://github.com/advantis)
 
 #### Enhancements
 

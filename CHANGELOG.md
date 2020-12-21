@@ -17,8 +17,7 @@
 
 #### Experimental
 
-* Fix typos in configuration options for `file_name` rule.  
-  [advantis](https://github.com/advantis)
+* None.
 
 #### Enhancements
 
@@ -34,7 +33,9 @@
 * Fix `custom_rules` merging when the parent configuration is based on `only_rules`.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3468](https://github.com/realm/SwiftLint/issues/3468)
-
+  
+  * Fix typos in configuration options for `file_name` rule.  
+    [advantis](https://github.com/advantis)
 
 ## 0.42.0: He Chutes, He Scores
 

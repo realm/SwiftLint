@@ -45,6 +45,9 @@ internal extension ConfigurationTests {
             static var _2CustomRulesDisabled: String {
                 Dir.level2.stringByAppendingPathComponent("custom_rules_disabled.yml")
             }
+            static var _2CustomRulesReconfig: String {
+                Dir.level2.stringByAppendingPathComponent("custom_rules_reconfig.yml")
+            }
             static var _3: String { Dir.level3.stringByAppendingPathComponent(Configuration.defaultFileName) }
             static var nested: String { Dir.nested.stringByAppendingPathComponent(Configuration.defaultFileName) }
         }
@@ -69,6 +72,9 @@ internal extension ConfigurationTests {
             static var _2CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._2CustomRulesOnly]) }
             static var _2CustomRulesDisabled: Configuration {
                 Configuration(configurationFiles: [Yml._2CustomRulesDisabled])
+            }
+            static var _2CustomRulesReconfig: Configuration {
+                Configuration(configurationFiles: [Yml._2CustomRulesReconfig])
             }
             static var _3: Configuration { Configuration(configurationFiles: [Yml._3]) }
             static var nested: Configuration { Configuration(configurationFiles: [Yml.nested]) }

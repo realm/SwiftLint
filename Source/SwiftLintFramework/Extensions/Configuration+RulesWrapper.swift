@@ -205,10 +205,12 @@ internal extension Configuration {
 
             // Create new custom rules rule, prioritizing child custom rules
             var configuration = CustomRulesConfiguration()
-            configuration.customRuleConfigurations = Array(
-                Set(childCustomRulesRule.configuration.customRuleConfigurations)
-                    .union(Set(parentCustomRulesRule.configuration.customRuleConfigurations))
-            )
+            configuration.customRuleConfigurations = childCustomRulesRule.configuration.customRuleConfigurations
+                + parentCustomRulesRule.configuration.customRuleConfigurations.filter { parentConfig in
+                    !childCustomRulesRule.configuration.customRuleConfigurations.contains { childConfig in
+                        childConfig.identifier == parentConfig.identifier
+                    }
+                }
             var newCustomRulesRule = CustomRules()
             newCustomRulesRule.configuration = configuration
 

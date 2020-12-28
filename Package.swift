@@ -9,6 +9,7 @@ private let addCryptoSwift = true
 
 let package = Package(
     name: "SwiftLint",
+    platforms: [.macOS(.v10_12)],
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])

@@ -54,6 +54,10 @@
   [Blake](https://github.com/72A12F4E)
   [#2758](https://github.com/realm/SwiftLint/issues/2758)
 
+* Support Swift Playground control comments in the `comment_spacing`
+  rule.  
+  [Thomas Goyne](https://github.com/tgoyne)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

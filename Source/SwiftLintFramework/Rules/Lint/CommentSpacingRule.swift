@@ -36,12 +36,31 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
             // - MARK: Mark comment
             """),
             Example("""
+            //: Swift Playground prose section
+            """),
+            Example("""
+            ///////////////////////////////////////////////
+            // Comment with some lines of slashes boxing it
+            ///////////////////////////////////////////////
+            """),
+            Example("""
+            //:#localized(key: "SwiftPlaygroundLocalizedProse")
+            """),
+            Example("""
             /* Asterisk comment */
             """),
             Example("""
             /*
                 Multiline asterisk comment
             */
+            """),
+            Example("""
+            /*:
+                Multiline Swift Playground prose section
+            */
+            """),
+            Example("""
+            /*#-editable-code Swift Platground editable area*/default/*#-end-editable-code*/
             """)
         ],
         triggeringExamples: [
@@ -70,6 +89,9 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
             """),
             Example("""
             //↓- MARK: Mark comment
+            """),
+            Example("""
+            //:↓Swift Playground prose section
             """)
         ],
         corrections: [
@@ -110,20 +132,22 @@ public struct CommentSpacingRule: ConfigurationProviderRule,
                     .substringWithByteRange(token.range)
                     .map(StringView.init)
                     .map { commentBody in
-                        // Look for 2-3 slash characters followed immediately by a non-whitespace, non-slash
-                        // character (this is a violation)
-                        regex(#"^(\/){2,3}[^\s\/]"#).matches(in: commentBody, options: .anchored).compactMap { result in
-                            // Set the location to be directly before the first non-slash,
-                            // non-whitespace character which was matched
-                            return file.stringView.byteRangeToNSRange(
-                                ByteRange(
-                                    // Safe to mix NSRange offsets with byte offsets here because the regex can't
-                                    // contain multi-byte characters
-                                    location: ByteCount(token.range.lowerBound.value + result.range.upperBound - 1),
-                                    length: 0
+                        // Look for 2+ slash characters followed immediately by
+                        // a non-colon, non-whitespace charcter or by a colon
+                        // followed by a non-whitespace character other than #
+                        regex(#"^(?:\/){2,}+(?:[^\s:]|:[^\s#])"#).matches(in: commentBody, options: .anchored)
+                            .compactMap { result in
+                                // Set the location to be directly before the first non-slash,
+                                // non-whitespace character which was matched
+                                return file.stringView.byteRangeToNSRange(
+                                    ByteRange(
+                                        // Safe to mix NSRange offsets with byte offsets here because the regex can't
+                                        // contain multi-byte characters
+                                        location: ByteCount(token.range.lowerBound.value + result.range.upperBound - 1),
+                                        length: 0
+                                    )
                                 )
-                            )
-                        }
+                            }
                     }
             }
             .flatMap { $0 }

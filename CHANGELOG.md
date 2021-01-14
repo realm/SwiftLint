@@ -22,7 +22,9 @@
 
 #### Enhancements
 
-* None.
+* Support Swift Playground control comments in the `comment_spacing` rule.  
+  [Thomas Goyne](https://github.com/tgoyne)
+  [#3490](https://github.com/realm/SwiftLint/pull/3490)
 
 #### Bug Fixes
 

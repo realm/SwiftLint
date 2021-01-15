@@ -1,0 +1,4 @@
+custom_rules:
+  no_abcd:
+    name: "Don't use abcd"
+    regex: 'abcd'

@@ -190,11 +190,11 @@ public struct Configuration {
         let configurationFiles = configurationFiles.isEmpty ? [Configuration.defaultFileName] : configurationFiles
         defer { basedOnCustomConfigurationFiles = hasCustomConfigurationFiles }
 
-        let rootDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
+        let cwd = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
         let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
 
         // Try obtaining cached config
-        let cacheIdentifier = "\(rootDirectory) - \(configurationFiles)"
+        let cacheIdentifier = "\(cwd) - \(configurationFiles)"
         if let cachedConfig = Configuration.getCached(forIdentifier: cacheIdentifier) {
             self.init(copying: cachedConfig)
             return
@@ -204,7 +204,7 @@ public struct Configuration {
         do {
             var fileGraph = FileGraph(
                 commandLineChildConfigs: configurationFiles,
-                rootDirectory: rootDirectory,
+                rootDirectory: cwd,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
             let resultingConfiguration = try fileGraph.resultingConfiguration(enableAllRules: enableAllRules)

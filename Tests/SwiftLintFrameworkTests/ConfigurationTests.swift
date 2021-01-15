@@ -170,18 +170,38 @@ class ConfigurationTests: XCTestCase {
         )
     }
 
-    func testIncludedPathRelatedToConfigurationFileLocation() {
+    func testIncludedExcludedRelativeLocationLevel1() {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level1)
 
         // The included path "File.swift" should be put relative to the configuration file
         // (~> Resources/ProjectMock/File.swift) and not relative to the path where
         // SwiftLint is run from (~> Resources/ProjectMock/Level1/File.swift)
-        let configuration = Configuration(configurationFiles: ["../custom_included.yml"])
+        let configuration = Configuration(configurationFiles: ["../custom_included_excluded.yml"])
         let actualIncludedPath = configuration.includedPaths.first!.bridge()
             .absolutePathRepresentation(rootDirectory: configuration.rootDirectory)
-        let desiredIncludedPath = "File.swift".absolutePathRepresentation(rootDirectory: Mock.Dir.level0)
+        let desiredIncludedPath = "File1.swift".absolutePathRepresentation(rootDirectory: Mock.Dir.level0)
+        let actualExcludedPath = configuration.excludedPaths.first!.bridge()
+            .absolutePathRepresentation(rootDirectory: configuration.rootDirectory)
+        let desiredExcludedPath = "File2.swift".absolutePathRepresentation(rootDirectory: Mock.Dir.level0)
 
         XCTAssertEqual(actualIncludedPath, desiredIncludedPath)
+        XCTAssertEqual(actualExcludedPath, desiredExcludedPath)
+    }
+
+    func testIncludedExcludedRelativeLocationLevel0() {
+        // Same as testIncludedPathRelatedToConfigurationFileLocationLevel1(),
+        // but run from the directory the config file resides in
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
+        let configuration = Configuration(configurationFiles: ["custom_included_excluded.yml"])
+        let actualIncludedPath = configuration.includedPaths.first!.bridge()
+            .absolutePathRepresentation(rootDirectory: configuration.rootDirectory)
+        let desiredIncludedPath = "File1.swift".absolutePathRepresentation(rootDirectory: Mock.Dir.level0)
+        let actualExcludedPath = configuration.excludedPaths.first!.bridge()
+            .absolutePathRepresentation(rootDirectory: configuration.rootDirectory)
+        let desiredExcludedPath = "File2.swift".absolutePathRepresentation(rootDirectory: Mock.Dir.level0)
+
+        XCTAssertEqual(actualIncludedPath, desiredIncludedPath)
+        XCTAssertEqual(actualExcludedPath, desiredExcludedPath)
     }
 
     private class TestFileManager: LintableFileManager {

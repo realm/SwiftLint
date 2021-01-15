@@ -5,6 +5,8 @@ import XCTest
 
 private let optInRules = primaryRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
+// swiftlint:disable file_length type_body_length
+
 class ConfigurationTests: XCTestCase {
     // MARK: Setup & Teardown
     private var previousWorkingDir: String!
@@ -168,6 +170,20 @@ class ConfigurationTests: XCTestCase {
         )
     }
 
+    func testIncludedPathRelatedToConfigurationFileLocation() {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level1)
+
+        // The included path "File.swift" should be put relative to the configuration file
+        // (~> Resources/ProjectMock/File.swift) and not relative to the path where
+        // SwiftLint is run from (~> Resources/ProjectMock/Level1/File.swift)
+        let configuration = Configuration(configurationFiles: ["../custom_included.yml"])
+        let actualIncludedPath = configuration.includedPaths.first!.bridge()
+            .absolutePathRepresentation(rootDirectory: configuration.rootDirectory)
+        let desiredIncludedPath = "File.swift".absolutePathRepresentation(rootDirectory: Mock.Dir.level0)
+
+        XCTAssertEqual(actualIncludedPath, desiredIncludedPath)
+    }
+
     private class TestFileManager: LintableFileManager {
         func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
@@ -259,7 +275,7 @@ class ConfigurationTests: XCTestCase {
     func testCustomConfiguration() {
         let file = SwiftLintFile(path: Mock.Swift._0)!
         XCTAssertNotEqual(Mock.Config._0.configuration(for: file),
-                          Mock.Config._0CustomPath.configuration(for: file))
+                          Mock.Config._0Custom.configuration(for: file))
     }
 
     func testConfigurationWithSwiftFileAsRoot() {
@@ -270,7 +286,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
-        let configuration = Configuration(configurationFiles: [Mock.Yml._0CustomPath])
+        let configuration = Mock.Config._0Custom
 
         let file = SwiftLintFile(path: Mock.Swift._0)!
         XCTAssertEqual(configuration.configuration(for: file), configuration)

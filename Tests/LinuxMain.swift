@@ -997,7 +997,8 @@ extension MultilineParametersBracketsRuleTests {
 
 extension MultilineParametersRuleTests {
     static var allTests: [(String, (MultilineParametersRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWhenAllowsSingleLineIsTrue),
+        ("testWhenAllowsSingleLineIsFalse", testWhenAllowsSingleLineIsFalse)
     ]
 }
 

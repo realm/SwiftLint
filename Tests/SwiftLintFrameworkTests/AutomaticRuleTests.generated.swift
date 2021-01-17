@@ -666,6 +666,12 @@ class RequiredDeinitRuleTests: XCTestCase {
     }
 }
 
+class RequiredXCTestTearDownRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RequiredXCTestTearDownRule.description)
+    }
+}
+
 class ReturnArrowWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)

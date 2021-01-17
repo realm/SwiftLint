@@ -51,6 +51,10 @@
 * Add opt-in rule `private_subject` rule which warns against
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
+* Adds `required_xctest_teardown` opt-in rule to enforce `tearDown` when 
+  `setUp` is implemented in a test class.  
+  [Otavio Cordeiro](https://github.com/otaviocc)
+  [#3452](https://github.com/realm/SwiftLint/issues/3452)
 
 * Tweak the auto-correction result console output for clarity.  
   [mokagio](https://github.com/mokagio)

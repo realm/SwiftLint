@@ -1361,6 +1361,12 @@ extension RequiredEnumCaseRuleTestCase {
     ]
 }
 
+extension RequiredXCTestTearDownRuleTests {
+    static var allTests: [(String, (RequiredXCTestTearDownRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ReturnArrowWhitespaceRuleTests {
     static var allTests: [(String, (ReturnArrowWhitespaceRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1953,6 +1959,7 @@ XCTMain([
     testCase(ReporterTests.allTests),
     testCase(RequiredDeinitRuleTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
+    testCase(RequiredXCTestTearDownRuleTests.allTests),
     testCase(ReturnArrowWhitespaceRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),

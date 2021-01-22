@@ -16,7 +16,8 @@ enum CompilerInvocations {
                 return CompilerArgumentsExtractor
                     .compilerArgumentsForFile(path, compilerInvocations: compilerInvocations)
             case let .compilationDatabase(compileCommands):
-                return compileCommands[path]
+                return compileCommands[path] ??
+                    compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
             }
         } ?? []
     }

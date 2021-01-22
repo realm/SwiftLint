@@ -21,11 +21,14 @@
 
 #### Enhancements
 
-* None.
+* Support relative paths in compilation databases for SwiftLint analyzer
+  rules.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes
 
-* Fix `custom_rules` merging when the parent configuration is based on `only_rules`.  
+* Fix `custom_rules` merging when the parent configuration is based on
+  `only_rules`.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3468](https://github.com/realm/SwiftLint/issues/3468)
 
@@ -34,7 +37,8 @@
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3472](https://github.com/realm/SwiftLint/issues/3472)
   
-* Fix bug that prevented the reconfiguration of a custom rule in a child config.  
+* Fix bug that prevented the reconfiguration of a custom rule in a child
+  config.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3477](https://github.com/realm/SwiftLint/issues/3477)
   

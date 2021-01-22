@@ -1,7 +1,0 @@
-only_rules:
-  - custom_rules
-
-custom_rules:
-  no_abc:
-    name: "Don't use abc"
-    regex: 'abc'

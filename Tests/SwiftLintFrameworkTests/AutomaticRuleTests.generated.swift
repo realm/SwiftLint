@@ -540,6 +540,12 @@ class PrivateActionRuleTests: XCTestCase {
     }
 }
 
+class PrivatePassthroughSubjectRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PrivatePassthroughSubjectRule.description)
+    }
+}
+
 class PrivateUnitTestRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateUnitTestRule.description)

@@ -133,6 +133,7 @@ public let primaryRuleList = RuleList(rules: [
     PrivateActionRule.self,
     PrivateOutletRule.self,
     PrivateOverFilePrivateRule.self,
+    PrivatePassthroughSubjectRule.self,
     PrivateUnitTestRule.self,
     ProhibitedInterfaceBuilderRule.self,
     ProhibitedSuperRule.self,

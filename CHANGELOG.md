@@ -28,6 +28,8 @@
 * Add opt-in rule `discouraged_assert` to encourage the use of
   `assertionFailure()` and/or `preconditionFailure()` over
   `assert(false)`.  
+* Add opt-in rule `private_passthrough_subject` rule which warns against
+  public passthrough subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
 #### Bug Fixes

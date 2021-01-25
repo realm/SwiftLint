@@ -55,6 +55,27 @@ internal struct PrivateSubjectRuleExamples {
                 private let goodSubject: CurrentValueSubject<String, Never> = .ini("toto")
             }
             """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                private let goodSubject = PassthroughSubject<Set<String>, Never>()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                private let goodSubject: PassthroughSubject<Set<String>, Never> = .init()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                private let goodSubject: CurrentValueSubject<Set<String>, Never> = .init([])
+            }
+            """#
         )
     ]
 
@@ -162,6 +183,27 @@ internal struct PrivateSubjectRuleExamples {
                 private(set) let ↓badSubject = CurrentValueSubject<Bool, Never>(false)
                 private let goodSubject: CurrentValueSubject<Bool, Never>
                 private(set) let ↓anotherBadSubject = CurrentValueSubject<Bool, Never>(true)
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                let ↓badSubject = PassthroughSubject<Set<String>, Never>()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                let ↓badSubject: PassthroughSubject<Set<String>, Never> = .init()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                let ↓badSubject: CurrentValueSubject<Set<String>, Never> = .init([])
             }
             """#
         )

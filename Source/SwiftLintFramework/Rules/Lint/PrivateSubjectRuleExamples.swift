@@ -86,8 +86,7 @@ internal struct PrivateSubjectRuleExamples {
                 private(set) let ↓badSubject = PassthroughSubject<Bool, Never>()
             }
             """#
-        )
-        ,
+        ),
         Example(
             #"""
             final class Foobar {
@@ -140,8 +139,7 @@ internal struct PrivateSubjectRuleExamples {
                 private(set) let ↓badSubject = CurrentValueSubject<Bool, Never>(false)
             }
             """#
-        )
-        ,
+        ),
         Example(
             #"""
             final class Foobar {

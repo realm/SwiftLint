@@ -30,6 +30,8 @@
   `assert(false)`.  
 * Add opt-in rule `private_passthrough_subject` rule which warns against
   public passthrough subjects.  
+* Add opt-in rule `private_subject` rule which warns against
+  public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
 #### Bug Fixes

@@ -1,18 +1,20 @@
 import SourceKittenFramework
 
-public struct PrivatePassthroughSubjectRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct PrivateSubjectRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     // MARK: - Properties
 
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(
-        identifier: "private_passthrough_subject",
-        name: "Private PassthroughSubject",
-        description: "PassthroughSubjects should be private.",
+        identifier: "private_subject",
+        name: "Private Combine Subject",
+        description: "Combine Subject should be private.",
         kind: .lint,
-        nonTriggeringExamples: PrivatePassthroughSubjectRuleExamples.nonTriggeringExamples,
-        triggeringExamples: PrivatePassthroughSubjectRuleExamples.triggeringExamples
+        nonTriggeringExamples: PrivateSubjectRuleExamples.nonTriggeringExamples,
+        triggeringExamples: PrivateSubjectRuleExamples.triggeringExamples
     )
+
+    private let subjectTypes: Set<String> = ["PassthroughSubject", "CurrentValueSubject"]
 
     // MARK: - Life cycle
 
@@ -56,9 +58,15 @@ public struct PrivatePassthroughSubjectRule: ASTRule, OptInRule, ConfigurationPr
     ///
     /// * `let subject: PassthroughSubject<Bool, Never>`
     /// * `let subject: PassthroughSubject<Bool, Never> = .init()`
+    /// * `let subject: CurrentValueSubject<Bool, Never>`
+    /// * `let subject: CurrentValueSubject<String, Never> = .ini("toto")`
     ///
+    /// - Returns: The violation offset.
     private func declarationViolationOffset(dictionary: SourceKittenDictionary) -> ByteCount? {
-        guard dictionary.typeName?.hasPrefix("PassthroughSubject") == true else {
+        guard
+            let typeName = dictionary.typeName,
+            subjectTypes.contains(where: typeName.hasPrefix) == true
+        else {
             return nil
         }
 
@@ -67,8 +75,10 @@ public struct PrivatePassthroughSubjectRule: ASTRule, OptInRule, ConfigurationPr
 
     /// Looks for violations matching the format:
     ///
-    /// * `let ↓subject = PassthroughSubject<Bool, Never>()`
+    /// * `let subject = PassthroughSubject<Bool, Never>()`
+    /// * `let subject = CurrentValueSubject<String, Never> = .ini("toto")`
     ///
+    /// - Returns: The violation offset.
     private func defaultValueViolationOffset(file: SwiftLintFile,
                                              dictionary: SourceKittenDictionary) -> ByteCount? {
         guard
@@ -76,7 +86,9 @@ public struct PrivatePassthroughSubjectRule: ASTRule, OptInRule, ConfigurationPr
             let length = dictionary.length,
             case let byteRange = ByteRange(location: offset, length: length),
             let range = file.stringView.byteRangeToNSRange(byteRange),
-            file.match(pattern: "PassthroughSubject<(.*)>\\(\\)", range: range).isEmpty == false
+            case let subjects = subjectTypes.joined(separator: "|"),
+            case let pattern = "(\(subjects))<(.+)>\\((.*)\\)",
+            file.match(pattern: pattern, range: range).isEmpty == false
         else {
             return nil
         }

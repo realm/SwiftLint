@@ -133,7 +133,7 @@ public struct DiscouragedDefaultSwitchCaseRule: ASTRule, OptInRule, Configuratio
             case let defaultCase = allCases.filter({ $0.content == "default" }),
             defaultCase.count == 1,
             enumCases.count == allCases.count - 1,
-            let offSet = defaultCase.first?.offset
+            let offset = defaultCase.first?.offset
         else {
             return []
         }
@@ -141,7 +141,7 @@ public struct DiscouragedDefaultSwitchCaseRule: ASTRule, OptInRule, Configuratio
         return [
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offSet))
+                           location: Location(file: file, byteOffset: offset))
         ]
     }
 

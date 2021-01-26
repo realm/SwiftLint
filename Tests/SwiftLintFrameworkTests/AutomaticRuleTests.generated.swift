@@ -114,6 +114,12 @@ class DiscouragedAssertRuleTests: XCTestCase {
     }
 }
 
+class DiscouragedDefaultSwitchCaseRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DiscouragedDefaultSwitchCaseRule.description)
+    }
+}
+
 class DiscouragedOptionalBooleanRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalBooleanRule.description)

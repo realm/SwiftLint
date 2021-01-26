@@ -115,7 +115,7 @@ public struct DiscouragedDefaultSwitchCaseRule: ASTRule, OptInRule, Configuratio
 
     // MARK: - Nested type
 
-    private typealias EnumSwitchCase = (offset: ByteCount, content: String)
+    private typealias SwitchCase = (offset: ByteCount, content: String)
 
     // MARK: - Life cycle
 
@@ -123,6 +123,10 @@ public struct DiscouragedDefaultSwitchCaseRule: ASTRule, OptInRule, Configuratio
 
     // MARK: - Public
 
+    /// Checks if all the elements from cases in a `switch` are from an enum and
+    /// include `default`.
+    ///
+    /// - Returns: Violations in case `default` is found in a `switch` of enums.
     public func validate(file: SwiftLintFile,
                          kind: StatementKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
@@ -147,14 +151,29 @@ public struct DiscouragedDefaultSwitchCaseRule: ASTRule, OptInRule, Configuratio
 
     // MARK: - Private
 
+    /// Array of all elements in a `switch`, including multiple elements from
+    /// a `switch` case.
+    ///
+    /// E.g.,
+    ///
+    /// ```
+    /// switch foo {
+    ///     case "a", "b": doSomething()
+    ///     case "c": doSomethingElse()
+    /// }
+    /// ```
+    ///
+    /// generates "a", "b", and "c" (and their offsets)
+    ///
+    /// - Returns: An array with all elements in a `switch`,
     private func allSwitchCases(in switchDictionary: SourceKittenDictionary,
-                                file: SwiftLintFile) -> [EnumSwitchCase] {
+                                file: SwiftLintFile) -> [SwitchCase] {
         switchDictionary.substructure
             .filter { element in
                 element.kind == StatementKind.case.rawValue
             }
             .flatMap { caseStatement in
-                caseStatement.elements.compactMap { caseElement -> EnumSwitchCase? in
+                caseStatement.elements.compactMap { caseElement -> SwitchCase? in
                     guard
                         let offset = caseElement.offset,
                         let length = caseElement.length,

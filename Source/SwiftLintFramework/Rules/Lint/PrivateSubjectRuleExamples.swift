@@ -1,3 +1,4 @@
+// swiftlint:disable:next type_body_length
 internal struct PrivateSubjectRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example(
@@ -74,6 +75,30 @@ internal struct PrivateSubjectRuleExamples {
             #"""
             final class Foobar {
                 private let goodSubject: CurrentValueSubject<Set<String>, Never> = .init([])
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                private let goodSubject =
+                    PassthroughSubject<Bool, Never>()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                private let goodSubject:
+                    PassthroughSubject<Bool, Never> = .ini()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                private let goodSubject =
+                    CurrentValueSubject<Bool, Never>(true)
             }
             """#
         )
@@ -204,6 +229,30 @@ internal struct PrivateSubjectRuleExamples {
             #"""
             final class Foobar {
                 let ↓badSubject: CurrentValueSubject<Set<String>, Never> = .init([])
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                let ↓badSubject =
+                    PassthroughSubject<Bool, Never>()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                let ↓badSubject:
+                    PassthroughSubject<Bool, Never> = .ini()
+            }
+            """#
+        ),
+        Example(
+            #"""
+            final class Foobar {
+                let ↓badSubject =
+                    CurrentValueSubject<Bool, Never>(true)
             }
             """#
         )

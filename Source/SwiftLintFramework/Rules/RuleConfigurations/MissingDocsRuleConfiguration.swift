@@ -1,16 +1,27 @@
 public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var parameters = [RuleParameter<AccessControlLevel>]()
+    private(set) var mindIncompleteDocs: Bool = true
+
+    private static let incompleteDocsKey: String = "mind_incomplete_docs"
 
     public var consoleDescription: String {
-        return parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
+        var items = parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
             "\($0.rawValue): \($1.map { $0.value.description }.sorted(by: <).joined(separator: ", "))"
-        }.joined(separator: ", ")
+        }
+        items.append("\(MissingDocsRuleConfiguration.incompleteDocsKey): \(mindIncompleteDocs)")
+        return items.joined(separator: ", ")
     }
 
     public mutating func apply(configuration: Any) throws {
-        guard let dict = configuration as? [String: Any] else {
+        guard var dict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
+
+        if let mindIncompleteDocs = dict[MissingDocsRuleConfiguration.incompleteDocsKey] as? Bool {
+            self.mindIncompleteDocs = mindIncompleteDocs
+            dict.removeValue(forKey: MissingDocsRuleConfiguration.incompleteDocsKey)
+        }
+
         let parameters = try dict.flatMap { (key: String, value: Any) -> [RuleParameter<AccessControlLevel>] in
             guard let severity = ViolationSeverity(rawValue: key) else {
                 throw ConfigurationError.unknownConfiguration

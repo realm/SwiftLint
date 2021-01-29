@@ -346,6 +346,12 @@ extension DiscardedNotificationCenterObserverRuleTests {
     ]
 }
 
+extension DiscouragedAssertRuleTests {
+    static var allTests: [(String, (DiscouragedAssertRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension DiscouragedDirectInitRuleTests {
     static var allTests: [(String, (DiscouragedDirectInitRuleTests) -> () throws -> Void)] = [
         ("testDiscouragedDirectInitWithDefaultConfiguration", testDiscouragedDirectInitWithDefaultConfiguration),
@@ -1798,6 +1804,7 @@ XCTMain([
     testCase(DeploymentTargetRuleTests.allTests),
     testCase(DisableAllTests.allTests),
     testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
+    testCase(DiscouragedAssertRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(DiscouragedObjectLiteralRuleTests.allTests),
     testCase(DiscouragedOptionalBooleanRuleTests.allTests),

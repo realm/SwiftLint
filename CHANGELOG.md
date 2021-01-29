@@ -25,6 +25,11 @@
   rules.  
   [JP Simard](https://github.com/jpsim)
 
+* Add opt-in rule `discouraged_assert` to encourage the use of
+  `assertionFailure()` and/or `preconditionFailure()` over
+  `assert(false)`.  
+  [Otavio Cordeiro](https://github.com/otaviocc)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

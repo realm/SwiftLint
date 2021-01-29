@@ -24,13 +24,6 @@ public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRu
         ]
     )
 
-    // MARK: - Nested types
-
-    private enum DiscouragedAssertError: Error {
-        case missingArgument
-        case missingArguments
-    }
-
     // MARK: - Life cycle
 
     public init() {}
@@ -43,15 +36,9 @@ public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRu
         guard
             kind == .call,
             let offset = dictionary.offset,
-            dictionary.name == "assert"
+            dictionary.name == "assert",
+            isArgumentFalse(dictionary: dictionary, file: file)
         else {
-            return []
-        }
-
-        let isSingleFalse = try? isSingleArgumentFalse(dictionary: dictionary, file: file)
-        let isFirstOfMultiplesFalse = try? isFirstOfMultipleArgumentsFalse(dictionary: dictionary, file: file)
-
-        guard isSingleFalse == true || isFirstOfMultiplesFalse == true else {
             return []
         }
 
@@ -74,14 +61,14 @@ public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRu
     ///
     /// - Returns: A boolean indicating if the single argument is `false`.
     private func isSingleArgumentFalse(dictionary: SourceKittenDictionary,
-                                       file: SwiftLintFile) throws -> Bool {
+                                       file: SwiftLintFile) -> Bool {
         guard
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
             case let byteRange = ByteRange(location: bodyOffset, length: bodyLength),
             let argument = file.stringView.substringWithByteRange(byteRange)
         else {
-            throw DiscouragedAssertError.missingArgument
+            return false
         }
 
         return argument == "false"
@@ -99,7 +86,7 @@ public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRu
     ///
     /// - Returns: A boolean indicating if the first argument is `false`.
     private func isFirstOfMultipleArgumentsFalse(dictionary: SourceKittenDictionary,
-                                                 file: SwiftLintFile) throws -> Bool {
+                                                 file: SwiftLintFile) -> Bool {
         let firstArgument = dictionary.substructure
             .filter { $0.offset != nil }
             .sorted { arg1, arg2 -> Bool in
@@ -115,10 +102,12 @@ public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRu
             }
             .first
 
-        guard let argument = firstArgument else {
-            throw DiscouragedAssertError.missingArguments
-        }
+        return firstArgument == "false"
+    }
 
-        return argument == "false"
+    private func isArgumentFalse(dictionary: SourceKittenDictionary,
+                                 file: SwiftLintFile) -> Bool {
+        isSingleArgumentFalse(dictionary: dictionary, file: file)
+            || isFirstOfMultipleArgumentsFalse(dictionary: dictionary, file: file)
     }
 }

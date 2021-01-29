@@ -13,7 +13,9 @@ public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRu
         nonTriggeringExamples: [
             Example(#"assert(true)"#),
             Example(#"assert(true, "foobar")"#),
-            Example(#"assert(true, "foobar", file: "toto", line: 42)"#)
+            Example(#"assert(true, "foobar", file: "toto", line: 42)"#),
+            Example(#"assert(false || true)"#),
+            Example(#"XCTAssert(false)"#)
         ],
         triggeringExamples: [
             Example(#"↓assert(false)"#),

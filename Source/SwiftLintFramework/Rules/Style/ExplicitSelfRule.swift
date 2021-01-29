@@ -66,6 +66,14 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
             }
             """),
             Example("""
+            struct A {
+                func f1(a b: Int) {}
+                func f2() {
+                    ↓f1(a: 0)
+                }
+            }
+            """),
+            Example("""
             @propertyWrapper
             struct Wrapper<Value> {
                 let wrappedValue: Value
@@ -115,6 +123,22 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
                 let p1: Int
                 func f1() {
                     _ = self.p1
+                }
+            }
+            """),
+            Example("""
+            struct A {
+                func f1(a b: Int) {}
+                func f2() {
+                    ↓f1(a: 0)
+                }
+            }
+            """):
+            Example("""
+            struct A {
+                func f1(a b: Int) {}
+                func f2() {
+                    self.f1(a: 0)
                 }
             }
             """),
@@ -243,8 +267,12 @@ private extension SwiftLintFile {
             // prefixes `$` and `_`), while `key.name` contains the prefix. Hence we need to check for explicit access
             // at a corrected offset as well.
             var prefixLength: Int64 = 0
-            if let name = cursorInfo["key.name"] as? String, let length = cursorInfo["key.length"] as? Int64 {
-                prefixLength = Int64(name.count) - length
+            let sourceKittenDictionary = SourceKittenDictionary(cursorInfo)
+            if sourceKittenDictionary.kind == "source.lang.swift.ref.var.instance",
+               let name = sourceKittenDictionary.name,
+               let length = sourceKittenDictionary.length
+            {
+                prefixLength = Int64(name.count - length.value)
                 if prefixLength > 0, isExplicitAccess(at: offset - ByteCount(prefixLength)) {
                     return nil
                 }

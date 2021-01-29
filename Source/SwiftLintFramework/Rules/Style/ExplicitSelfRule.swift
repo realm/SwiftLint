@@ -11,151 +11,9 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
         name: "Explicit Self",
         description: "Instance variables and functions should be explicitly accessed with 'self.'.",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
-            struct A {
-                func f1() {}
-                func f2() {
-                    self.f1()
-                }
-            }
-            """),
-            Example("""
-            struct A {
-                let p1: Int
-                func f1() {
-                    _ = self.p1
-                }
-            }
-            """),
-            Example("""
-            @propertyWrapper
-            struct Wrapper<Value> {
-                let wrappedValue: Value
-                var projectedValue: [Value] {
-                    [self.wrappedValue]
-                }
-            }
-            struct A {
-                @Wrapper var p1: Int
-                func f1() {
-                    self.$p1
-                    self._p1
-                }
-            }
-            func f1() {
-                A(p1: 10).$p1
-            }
-            """)
-        ],
-        triggeringExamples: [
-            Example("""
-            struct A {
-                func f1() {}
-                func f2() {
-                    ↓f1()
-                }
-            }
-            """),
-            Example("""
-            struct A {
-                let p1: Int
-                func f1() {
-                    _ = ↓p1
-                }
-            }
-            """),
-            Example("""
-            @propertyWrapper
-            struct Wrapper<Value> {
-                let wrappedValue: Value
-                var projectedValue: [Value] {
-                    [self.wrappedValue]
-                }
-            }
-            struct A {
-                @Wrapper var p1: Int
-                func f1() {
-                    ↓$p1
-                    ↓_p1
-                }
-            }
-            func f1() {
-                A(p1: 10).$p1
-            }
-            """)
-        ],
-        corrections: [
-            Example("""
-            struct A {
-                func f1() {}
-                func f2() {
-                    ↓f1()
-                }
-            }
-            """):
-            Example("""
-            struct A {
-                func f1() {}
-                func f2() {
-                    self.f1()
-                }
-            }
-            """),
-            Example("""
-            struct A {
-                let p1: Int
-                func f1() {
-                    _ = ↓p1
-                }
-            }
-            """):
-            Example("""
-            struct A {
-                let p1: Int
-                func f1() {
-                    _ = self.p1
-                }
-            }
-            """),
-            Example("""
-            @propertyWrapper
-            struct Wrapper<Value> {
-                let wrappedValue: Value
-                var projectedValue: [Value] {
-                    [self.wrappedValue]
-                }
-            }
-            struct A {
-                @Wrapper var p1: Int
-                func f1() {
-                    ↓$p1
-                    ↓_p1
-                }
-            }
-            func f1() {
-                A(p1: 10).$p1
-            }
-            """): Example("""
-            @propertyWrapper
-            struct Wrapper<Value> {
-                let wrappedValue: Value
-                var projectedValue: [Value] {
-                    [self.wrappedValue]
-                }
-            }
-            struct A {
-                @Wrapper var p1: Int
-                func f1() {
-                    self.$p1
-                    self._p1
-                }
-            }
-            func f1() {
-                A(p1: 10).$p1
-            }
-            """)
-        ],
+        nonTriggeringExamples: ExplicitSelfRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ExplicitSelfRuleExamples.triggeringExamples,
+        corrections: ExplicitSelfRuleExamples.corrections,
         requiresFileOnDisk: true
     )
 
@@ -243,8 +101,11 @@ private extension SwiftLintFile {
             // prefixes `$` and `_`), while `key.name` contains the prefix. Hence we need to check for explicit access
             // at a corrected offset as well.
             var prefixLength: Int64 = 0
-            if let name = cursorInfo["key.name"] as? String, let length = cursorInfo["key.length"] as? Int64 {
-                prefixLength = Int64(name.count) - length
+            let sourceKittenDictionary = SourceKittenDictionary(cursorInfo)
+            if sourceKittenDictionary.kind == "source.lang.swift.ref.var.instance",
+               let name = sourceKittenDictionary.name,
+               let length = sourceKittenDictionary.length {
+                prefixLength = Int64(name.count - length.value)
                 if prefixLength > 0, isExplicitAccess(at: offset - ByteCount(prefixLength)) {
                     return nil
                 }

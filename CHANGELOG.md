@@ -35,6 +35,10 @@
 * Fix typos in configuration options for `file_name` rule.  
   [advantis](https://github.com/advantis)
 
+* Fix violation location and misplaced corrections for some function
+  references in `explicit_self` rule.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.42.0: He Chutes, He Scores
 
 #### Breaking

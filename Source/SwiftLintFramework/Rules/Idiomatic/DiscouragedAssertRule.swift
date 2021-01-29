@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {

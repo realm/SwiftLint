@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.0.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 /// The rule list containing all available rules built into SwiftLint.
@@ -30,6 +30,7 @@ public let primaryRuleList = RuleList(rules: [
     CyclomaticComplexityRule.self,
     DeploymentTargetRule.self,
     DiscardedNotificationCenterObserverRule.self,
+    DiscouragedAssertRule.self,
     DiscouragedDirectInitRule.self,
     DiscouragedObjectLiteralRule.self,
     DiscouragedOptionalBooleanRule.self,

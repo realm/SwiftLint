@@ -37,6 +37,8 @@
 
 * Add opt-in rule `private_subject` rule which warns against
   public Combine subjects.  
+* Add opt-in rule `discouraged_default_switch_case` to discourage
+  default switch case for enums.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
 #### Bug Fixes

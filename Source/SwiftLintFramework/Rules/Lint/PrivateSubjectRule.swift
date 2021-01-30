@@ -76,7 +76,7 @@ public struct PrivateSubjectRule: ASTRule, OptInRule, ConfigurationProviderRule,
     /// Looks for violations matching the format:
     ///
     /// * `let subject = PassthroughSubject<Bool, Never>()`
-    /// * `let subject = CurrentValueSubject<String, Never> = .ini("toto")`
+    /// * `let subject = CurrentValueSubject<String, Never>("toto")`
     ///
     /// - Returns: The violation offset.
     private func defaultValueViolationOffset(file: SwiftLintFile,

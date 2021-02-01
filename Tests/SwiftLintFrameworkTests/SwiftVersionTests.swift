@@ -4,7 +4,9 @@ import XCTest
 final class SwiftVersionTests: XCTestCase {
     // swiftlint:disable:next function_body_length
     func testDetectSwiftVersion() {
-        #if compiler(>=5.3.2)
+        #if compiler(>=5.3.3)
+            let version = "5.3.3"
+        #elseif compiler(>=5.3.2)
             let version = "5.3.2"
         #elseif compiler(>=5.3.1)
             let version = "5.3.1"

@@ -408,6 +408,12 @@ class MultilineParametersBracketsRuleTests: XCTestCase {
     }
 }
 
+class MultilineParametersRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultilineParametersRule.description)
+    }
+}
+
 class MultipleClosuresWithTrailingClosureRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultipleClosuresWithTrailingClosureRule.description)

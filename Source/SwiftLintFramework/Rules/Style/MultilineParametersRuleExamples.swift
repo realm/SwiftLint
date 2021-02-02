@@ -164,7 +164,34 @@ internal struct MultilineParametersRuleExamples {
                           param2: Bool,
                           param3: @escaping (Int, (Int) -> Void) -> Void = { (x: Int, f: (Int) -> Void) in }) { }
         }
-        """)
+        """),
+        Example("func foo() { }",
+                configuration: ["allows_single_line": false]),
+        Example("func foo(param1: Int) { }",
+                configuration: ["allows_single_line": false]),
+        Example("""
+        protocol Foo {
+            func foo(param1: Int,
+                     param2: Bool,
+                     param3: [String]) { }
+        }
+        """, configuration: ["allows_single_line": false]),
+        Example("""
+        protocol Foo {
+            func foo(
+                param1: Int
+            ) { }
+        }
+        """, configuration: ["allows_single_line": false]),
+        Example("""
+        protocol Foo {
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: [String]
+            ) { }
+        }
+        """, configuration: ["allows_single_line": false])
     ]
 
     static let triggeringExamples: [Example] = [
@@ -293,6 +320,10 @@ internal struct MultilineParametersRuleExamples {
            class func ↓foo(param1: Int,
                           param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }
         }
-        """)
+        """),
+        Example("func ↓foo(param1: Int, param2: Bool) { }",
+                configuration: ["allows_single_line": false]),
+        Example("func ↓foo(param1: Int, param2: Bool, param3: [String]) { }",
+                configuration: ["allows_single_line": false])
     ]
 }

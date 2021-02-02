@@ -21,6 +21,11 @@
 
 #### Enhancements
 
+* Added `allows_single_line` option in `multiline_parameters` rule
+  configuration. Defaults to `true`. This enforces parameters in a method
+  with multiple parameters to always be in different lines.  
+  [Otavio Cordeiro](https://github.com/otaviocc)
+
 * Support relative paths in compilation databases for SwiftLint analyzer
   rules.  
   [JP Simard](https://github.com/jpsim)

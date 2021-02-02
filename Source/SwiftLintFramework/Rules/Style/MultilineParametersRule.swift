@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = MultilineParametersConfiguration()
 
     public init() {}
 
@@ -49,14 +49,14 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         }
 
         guard
-            linesWithParameters.count > 1,
+            linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
             numberOfParameters != linesWithParameters.count
         else {
             return []
         }
 
         return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, byteOffset: nameRange.location))]
     }
 }

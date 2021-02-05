@@ -49,6 +49,12 @@ public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProvider
             final class FooTests: XCTestCase {
                 override func setUpAlLExamples() {}
             }
+            """#),
+            Example(#"""
+            final class FooTests: XCTestCase {
+                class func setUp() {}
+                class func tearDown() {}
+            }
             """#)
         ],
         triggeringExamples: [
@@ -69,6 +75,11 @@ public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProvider
             }
             final class ↓BarTests: XCTestCase {
                 override func setUpWithError() throws {}
+            }
+            """#),
+            Example(#"""
+            final class ↓FooTests: XCTestCase {
+                class func setUp() {}
             }
             """#)
         ]

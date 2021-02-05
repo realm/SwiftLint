@@ -1,6 +1,8 @@
 import SourceKittenFramework
 
 public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+    // MARK: - Properties
+
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(
@@ -85,11 +87,17 @@ public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProvider
         ]
     )
 
+    // MARK: - Life cycle
+
     public init() {}
+
+    // MARK: - Public
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         testClasses(in: file).compactMap { violations(in: file, for: $0) }
     }
+
+    // MARK: - Private
 
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         file.structureDictionary.substructure.filter { dictionary in

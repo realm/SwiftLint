@@ -109,7 +109,7 @@ class IndentationWidthRuleTests: XCTestCase {
         )
     }
 
-    /// It's okay to have comments not following the indentation pattern iff the configuration allows this.
+    /// It's okay to have comments not following the indentation pattern if the configuration allows this.
     func testCommentLines() {
         assert1Violation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",

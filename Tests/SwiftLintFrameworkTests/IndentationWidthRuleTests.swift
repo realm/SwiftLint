@@ -126,6 +126,16 @@ class IndentationWidthRuleTests: XCTestCase {
             includeComments: true
         )
 
+        assert1Violation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t//\ttest\n\t\t\tfifthLine",
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//\t\ttest\n\t\tfourthLine",
+            includeComments: true
+        )
+
         assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
             includeComments: false

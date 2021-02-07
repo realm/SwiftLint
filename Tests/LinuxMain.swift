@@ -40,6 +40,12 @@ extension BlockBasedKVORuleTests {
     ]
 }
 
+extension CaptureVariableRuleTests {
+    static var allTests: [(String, (CaptureVariableRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ClassDelegateProtocolRuleTests {
     static var allTests: [(String, (ClassDelegateProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1786,6 +1792,7 @@ XCTMain([
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
+    testCase(CaptureVariableRuleTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
     testCase(ClosureBodyLengthRuleTests.allTests),

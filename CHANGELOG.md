@@ -87,6 +87,12 @@
   [Artem Garmash](https://github.com/agarmash)
   [#3423](https://github.com/realm/SwiftLint/issues/3423)
 
+* Add a new `capture_variable` analyzer rule to warn about listing a
+  non-constant (`var`) variable in a closure's capture list. This
+  captures the variable's value at closure creation time instead of
+  closure call time, which may be unexpected.  
+  [Laszlo Kustra](https://github.com/kustra)
+
 * Log references to a specified module when running the `unused_import`
   by setting the `SWIFTLINT_LOG_MODULE_USAGE=<module-name>` environment
   variable when running analyze.  

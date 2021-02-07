@@ -105,7 +105,7 @@ private extension SwiftLintFile {
     }
 
     func referencedUSRs(index: SourceKittenDictionary) -> Set<String> {
-        return Set(index.traverseEntities { entity -> String? in
+        return Set(index.traverseEntitiesDepthFirst { entity -> String? in
             if let usr = entity.usr,
                 let kind = entity.kind,
                 kind.starts(with: "source.lang.swift.ref") {
@@ -119,7 +119,7 @@ private extension SwiftLintFile {
     func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
                       compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
     -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        return Set(index.traverseEntities { indexEntity in
+        return Set(index.traverseEntitiesDepthFirst { indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
@@ -153,14 +153,14 @@ private extension SwiftLintFile {
         // Skip CodingKeys as they are used for Codable generation
         if kind == .enum,
             indexEntity.name == "CodingKeys",
-            case let allRelatedUSRs = indexEntity.traverseEntities(traverseBlock: { $0.usr }),
+            case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $0.usr }),
             allRelatedUSRs.contains("s:s9CodingKeyP") {
             return nil
         }
 
         // Skip `static var allTests` members since those are used for Linux test discovery.
         if kind == .varStatic, indexEntity.name == "allTests" {
-            let allTestCandidates = indexEntity.traverseEntities { subEntity -> Bool in
+            let allTestCandidates = indexEntity.traverseEntitiesDepthFirst { subEntity -> Bool in
                 subEntity.value["key.is_test_candidate"] as? Bool == true
             }
 
@@ -327,25 +327,6 @@ private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
     .override,
     .uiApplicationMain
 ]
-
-private extension SourceKittenDictionary {
-    func traverseEntities<T>(traverseBlock: (SourceKittenDictionary) -> T?) -> [T] {
-        var result: [T] = []
-        traverseEntitiesDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
-        return result
-    }
-
-    private func traverseEntitiesDepthFirst<T>(collectingValuesInto array: inout [T],
-                                               traverseBlock: (SourceKittenDictionary) -> T?) {
-        entities.forEach { subDict in
-            subDict.traverseEntitiesDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
-
-            if let collectedValue = traverseBlock(subDict) {
-                array.append(collectedValue)
-            }
-        }
-    }
-}
 
 private extension StringView {
     func byteOffset(forLine line: Int, column: Int) -> ByteCount {

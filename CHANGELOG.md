@@ -48,9 +48,6 @@
   `assert(false)`.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
-* Add opt-in rule `private_subject` rule which warns against
-  public Combine subjects.  
-  [Otavio Cordeiro](https://github.com/otaviocc)
 * Adds `required_xctest_teardown` opt-in rule to enforce `tearDown` when 
   `setUp` is implemented in a test class.  
   [Otavio Cordeiro](https://github.com/otaviocc)
@@ -94,6 +91,9 @@
   by setting the `SWIFTLINT_LOG_MODULE_USAGE=<module-name>` environment
   variable when running analyze.  
   [jpsim](https://github.com/jpsim)
+* Add opt-in rule `private_subject` rule which warns against
+  public Combine subjects.  
+  [Otavio Cordeiro](https://github.com/otaviocc)
 
 #### Bug Fixes
 

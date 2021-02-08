@@ -6,12 +6,14 @@ extension Array {
     }
 
     func parallelMap<T>(transform: (Element) -> T) -> [T] {
-        var result = ContiguousArray<T?>(repeating: nil, count: count)
-        return result.withUnsafeMutableBufferPointer { buffer in
-            DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
-                buffer[idx] = transform(self[idx])
+        return [T](unsafeUninitializedCapacity: count) { buffer, initializedCount in
+            let baseAddress = buffer.baseAddress!
+            DispatchQueue.concurrentPerform(iterations: count) { index in
+                // Using buffer[index] does assignWithTake which tries
+                // to read the uninitialized value (to release it) and crashes
+                (baseAddress + index).initialize(to: transform(self[index]))
             }
-            return buffer.map { $0! }
+            initializedCount = count
         }
     }
 }

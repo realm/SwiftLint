@@ -1189,6 +1189,12 @@ extension PrivateOverFilePrivateRuleTests {
     ]
 }
 
+extension PrivateSubjectRuleTests {
+    static var allTests: [(String, (PrivateSubjectRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension PrivateUnitTestRuleTests {
     static var allTests: [(String, (PrivateUnitTestRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1917,6 +1923,7 @@ XCTMain([
     testCase(PrivateActionRuleTests.allTests),
     testCase(PrivateOutletRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),
+    testCase(PrivateSubjectRuleTests.allTests),
     testCase(PrivateUnitTestRuleTests.allTests),
     testCase(ProhibitedInterfaceBuilderRuleTests.allTests),
     testCase(ProhibitedSuperRuleTests.allTests),

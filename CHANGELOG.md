@@ -35,6 +35,10 @@
   `assert(false)`.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
+* Add opt-in rule `private_subject` rule which warns against
+  public Combine subjects.  
+  [Otavio Cordeiro](https://github.com/otaviocc)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

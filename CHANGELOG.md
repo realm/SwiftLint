@@ -39,6 +39,10 @@
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
+* Added 'directory_name_no_space' opt-in rule.
+  [timcmiller](https://github.com/timcmiller)
+  [#3012](https://github.com/realm/SwiftLint/issues/3012)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  
@@ -416,10 +420,6 @@
   after iOS 9/macOS 10.11.  
   [Amzd](https://github.com/Amzd)
   [#2755](https://github.com/realm/SwiftLint/issues/2755)  
-* Added 'directory_name_no_space' opt-in rule.
-  [timcmiller](https://github.com/timcmiller)
-  [#3012](https://github.com/realm/SwiftLint/issues/3012)
-
 
 #### Bug Fixes
 

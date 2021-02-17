@@ -16,7 +16,11 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
 
     public typealias FileInfo = FileUSRs
 
-    public var configuration = UnusedDeclarationConfiguration(severity: .error, includePublicAndOpen: false)
+    public var configuration = UnusedDeclarationConfiguration(
+        severity: .error,
+        includePublicAndOpen: false,
+        relatedUSRsToSkip: ["s:7SwiftUI15PreviewProviderP"]
+    )
 
     public init() {}
 
@@ -61,7 +65,7 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
             declared: file.declaredUSRs(index: index,
                                         editorOpen: editorOpen,
                                         compilerArguments: compilerArguments,
-                                        includePublicAndOpen: configuration.includePublicAndOpen)
+                                        configuration: configuration)
         )
     }
 
@@ -113,16 +117,17 @@ private extension SwiftLintFile {
     }
 
     func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                      compilerArguments: [String], includePublicAndOpen: Bool)
-        -> Set<UnusedDeclarationRule.DeclaredUSR> {
+                      compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
+    -> Set<UnusedDeclarationRule.DeclaredUSR> {
         return Set(index.traverseEntities { indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
-                             includePublicAndOpen: includePublicAndOpen)
+                             configuration: configuration)
         })
     }
 
     func declaredUSR(indexEntity: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                     compilerArguments: [String], includePublicAndOpen: Bool) -> UnusedDeclarationRule.DeclaredUSR? {
+                     compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
+    -> UnusedDeclarationRule.DeclaredUSR? {
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),
@@ -135,13 +140,13 @@ private extension SwiftLintFile {
             return nil
         }
 
-        if shouldIgnoreEntity(indexEntity) {
+        if shouldIgnoreEntity(indexEntity, relatedUSRsToSkip: configuration.relatedUSRsToSkip) {
             return nil
         }
 
         let nameOffset = stringView.byteOffset(forLine: line, column: column)
 
-        if !includePublicAndOpen, [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
+        if !configuration.includePublicAndOpen, [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
             return nil
         }
 
@@ -193,9 +198,9 @@ private extension SwiftLintFile {
         return (try? request.sendIfNotDisabled()).map(SourceKittenDictionary.init)
     }
 
-    private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary) -> Bool {
+    private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
-            indexEntity.isIndexEntitySwiftUIProvider() ||
+            indexEntity.shouldSkipRelated(relatedUSRsToSkip: relatedUSRsToSkip) ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
             indexEntity.isImplicit ||
             indexEntity.value["key.is_test_candidate"] as? Bool == true {
@@ -250,10 +255,10 @@ private extension SourceKittenDictionary {
         return nil
     }
 
-    func isIndexEntitySwiftUIProvider() -> Bool {
+    func shouldSkipRelated(relatedUSRsToSkip: Set<String>) -> Bool {
         return (value["key.related"] as? [[String: SourceKitRepresentable]])?
-            .map(SourceKittenDictionary.init)
-            .contains(where: { $0.usr == "s:7SwiftUI15PreviewProviderP" }) == true
+            .compactMap { SourceKittenDictionary($0).usr }
+            .contains(where: relatedUSRsToSkip.contains) == true
     }
 
     func shouldSkipIndexEntityToWorkAroundSR11985() -> Bool {

@@ -39,6 +39,13 @@
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
+* Allow configuring related USRs to skip in UnusedDeclarationRule by
+  specifying a list of USRs in the `related_usrs_to_skip` key.
+  For example you might have custom source tooling that does something
+  with types conforming to a procotol even if that type is never
+  explicitly referenced by other code.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

@@ -94,6 +94,9 @@ target, and go to Build Phases. Click the + and select "New Run Script Phase".
 Insert the following as the script:
 
 ```bash
+# Support for M1 Macs: Homebrew is installed on /opt/homebrew/ by default
+PATH=/opt/homebrew/bin/:$PATH
+
 if which swiftlint >/dev/null; then
   swiftlint
 else

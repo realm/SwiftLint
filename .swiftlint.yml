@@ -67,7 +67,6 @@ opt_in_rules:
   - toggle_bool
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
-  - unowned_variable_capture
   - untyped_error_in_catch
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces

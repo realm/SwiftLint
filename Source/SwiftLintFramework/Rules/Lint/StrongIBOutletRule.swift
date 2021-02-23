@@ -1,6 +1,8 @@
+import Foundation
 import SourceKittenFramework
 
-public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
+public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, SubstitutionCorrectableASTRule, OptInRule,
+    AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -15,28 +17,43 @@ public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, OptInRule,
             wrapExample("weak var label: UILabel?")
         ],
         triggeringExamples: [
-            wrapExample("@IBOutlet weak ↓var label: UILabel?"),
-            wrapExample("@IBOutlet unowned ↓var label: UILabel!"),
-            wrapExample("@IBOutlet weak ↓var textField: UITextField?")
+            wrapExample("@IBOutlet ↓weak var label: UILabel?"),
+            wrapExample("@IBOutlet ↓unowned var label: UILabel!"),
+            wrapExample("@IBOutlet ↓weak var textField: UITextField?")
+        ],
+        corrections: [
+            wrapExample("@IBOutlet ↓weak var label: UILabel?"):
+                wrapExample("@IBOutlet var label: UILabel?"),
+            wrapExample("@IBOutlet ↓unowned var label: UILabel!"):
+                wrapExample("@IBOutlet var label: UILabel!"),
+            wrapExample("@IBOutlet ↓weak var textField: UITextField?"):
+                wrapExample("@IBOutlet var textField: UITextField?")
         ]
     )
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .varInstance,
-            case let attributes = dictionary.enclosedSwiftAttributes,
-            attributes.contains(.iboutlet),
-            attributes.contains(.weak),
-            let offset = dictionary.offset
-        else {
-            return []
-        }
-
-        return [
+        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+                           location: Location(file: file, characterOffset: $0.location))
+        }
+    }
+
+    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                dictionary: SourceKittenDictionary) -> [NSRange] {
+        guard kind == .varInstance && dictionary.enclosedSwiftAttributes.contains(.iboutlet),
+            let weakAttribute = dictionary.swiftAttributes.first(where: {
+                $0.attribute == SwiftDeclarationAttributeKind.weak.rawValue
+            }),
+            let byteRange = weakAttribute.byteRange,
+            let range = file.stringView.byteRangeToNSRange(byteRange)
+            else { return [] }
+        return [range]
+    }
+
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        return (NSRange(location: violationRange.location, length: violationRange.length + 1), "")
     }
 }
 

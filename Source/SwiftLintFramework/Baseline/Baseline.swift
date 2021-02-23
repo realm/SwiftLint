@@ -10,18 +10,17 @@ public class Baseline {
 
     public func isInBaseline(violation: StyleViolation) -> Bool {
         let baselineViolation = BaselineViolation(
-                ruleIdentifier: violation.ruleIdentifier,
-                location: violation.location.description,
-                reason: violation.reason
+            ruleIdentifier: violation.ruleIdentifier,
+            location: violation.location.description,
+            reason: violation.reason
         )
-        let contains = baselineViolations.contains(baselineViolation)
-        return contains
+        return baselineViolations.contains(baselineViolation)
     }
 
     public func saveBaseline(violations: [StyleViolation]) {
-        let fileContent = violations.map(generateForSingleViolation).joined(separator: "\n")
         let fileManager = FileManager.default
         if !fileManager.fileExists(atPath: baselinePath) {
+            let fileContent = violations.map(generateForSingleViolation).joined(separator: "\n")
             fileManager.createFile(atPath: baselinePath, contents: fileContent.data(using: .utf8))
         }
     }
@@ -46,9 +45,9 @@ public class Baseline {
         let ruleIdentifier = components[2]
 
         return BaselineViolation(
-                ruleIdentifier: ruleIdentifier,
-                location: location,
-                reason: reason
+            ruleIdentifier: ruleIdentifier,
+            location: location,
+            reason: reason
         )
     }
 

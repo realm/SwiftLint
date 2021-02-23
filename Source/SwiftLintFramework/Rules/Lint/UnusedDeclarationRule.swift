@@ -203,7 +203,8 @@ private extension SwiftLintFile {
             indexEntity.shouldSkipRelated(relatedUSRsToSkip: relatedUSRsToSkip) ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
             indexEntity.isImplicit ||
-            indexEntity.value["key.is_test_candidate"] as? Bool == true {
+            indexEntity.value["key.is_test_candidate"] as? Bool == true ||
+            indexEntity.shouldSkipResultBuilder() {
             return true
         }
 
@@ -283,6 +284,26 @@ private extension SourceKittenDictionary {
         ]
 
         return functionsToSkipForSR11985.contains(name)
+    }
+
+    func shouldSkipResultBuilder() -> Bool {
+        guard let name = name, declarationKind == .functionMethodStatic else {
+            return false
+        }
+
+        // https://github.com/apple/swift-evolution/blob/main/proposals/0289-result-builders.md#result-building-methods
+        let resultBuilderStaticMethods = [
+            "buildBlock(_:)",
+            "buildIf(_:)",
+            "buildOptional(_:)",
+            "buildEither(_:)",
+            "buildArray(_:)",
+            "buildExpression(_:)",
+            "buildFinalResult(_:)",
+            "buildLimitedAvailability(_:)"
+        ]
+
+        return resultBuilderStaticMethods.contains(name)
     }
 }
 

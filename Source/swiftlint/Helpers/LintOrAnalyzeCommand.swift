@@ -44,24 +44,20 @@ struct LintOrAnalyzeCommand {
             baseline.readBaseline()
         }
         return configuration.visitLintableFiles(options: options, cache: cache, storage: storage) { linter in
-            var currentViolations: [StyleViolation]
+            let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
                 let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes(using: storage)
-                currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
-                if options.useBaseline {
-                    currentViolations = filteredViolations(baseline: baseline, currentViolations: currentViolations)
-                }
+                currentViolations = transformViolations(options: options, baseline: baseline,
+                                                        violations: violationsBeforeLeniency)
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
                     violations += currentViolations
                 }
             } else {
-                currentViolations = applyLeniency(options: options, violations: linter.styleViolations(using: storage))
-                if options.useBaseline {
-                    currentViolations = filteredViolations(baseline: baseline, currentViolations: currentViolations)
-                }
+                currentViolations = transformViolations(options: options, baseline: baseline,
+                                                        violations: linter.styleViolations(using: storage))
                 visitorMutationQueue.sync {
                     violations += currentViolations
                 }
@@ -93,17 +89,6 @@ struct LintOrAnalyzeCommand {
         }
     }
 
-    private static func filteredViolations(baseline: Baseline,
-                                           currentViolations: [StyleViolation]) -> [StyleViolation] {
-        var filteredViolations = [StyleViolation]()
-        for violation in currentViolations {
-            if !baseline.isInBaseline(violation: violation) {
-                filteredViolations.append(violation)
-            }
-        }
-        return filteredViolations
-    }
-
     private static func printStatus(violations: [StyleViolation], files: [SwiftLintFile], serious: Int, verb: String) {
         let pluralSuffix = { (collection: [Any]) -> String in
             return collection.count != 1 ? "s" : ""
@@ -133,6 +118,18 @@ struct LintOrAnalyzeCommand {
             severity: .error,
             location: Location(file: "", line: 0, character: 0),
             reason: "Number of warnings exceeded threshold of \(threshold).")
+    }
+
+    private static func transformViolations(options: LintOrAnalyzeOptions, baseline: Baseline,
+                                            violations: [StyleViolation])
+        -> [StyleViolation] {
+        let violationsWithLeniency = applyLeniency(options: options, violations: violations)
+        if options.useBaseline {
+            return violationsWithLeniency
+                .filter { !baseline.isInBaseline(violation: $0) }
+        } else {
+            return violationsWithLeniency
+        }
     }
 
     private static func applyLeniency(options: LintOrAnalyzeOptions, violations: [StyleViolation]) -> [StyleViolation] {

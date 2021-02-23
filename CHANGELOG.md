@@ -49,6 +49,11 @@
 * Make `strong_iboutlet` rule correctable.  
   [MaxHaertwig](https://github.com/maxhaertwig)
 
+* Add `legacy_objc_type` opt-in rule to warn against using
+  bridged Objective-C reference types instead of Swift value types.  
+  [Blake](https://github.com/72A12F4E)
+  [#2758](https://github.com/realm/SwiftLint/issues/2758)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

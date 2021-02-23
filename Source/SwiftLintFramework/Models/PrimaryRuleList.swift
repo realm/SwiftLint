@@ -91,6 +91,7 @@ public let primaryRuleList = RuleList(rules: [
     LegacyHashingRule.self,
     LegacyMultipleRule.self,
     LegacyNSGeometryFunctionsRule.self,
+    LegacyObjcTypeRule.self,
     LegacyRandomRule.self,
     LetVarWhitespaceRule.self,
     LineLengthRule.self,

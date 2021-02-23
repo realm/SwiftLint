@@ -71,6 +71,36 @@ struct UnusedDeclarationRuleExamples {
         class MyTests: BestTestCase {
             func testExample() {}
         }
+        """),
+        Example("""
+        enum Component {
+          case string(StaticString)
+          indirect case array([Component])
+          indirect case optional(Component?)
+        }
+
+        @_functionBuilder
+        struct ComponentBuilder {
+          static func buildExpression(_ string: StaticString) -> Component {
+            return .string(string)
+          }
+
+          static func buildBlock(_ components: Component...) -> Component {
+            return .array(components)
+          }
+
+          static func buildIf(_ value: Component?) -> Component {
+            return .optional(value)
+          }
+        }
+
+        func acceptComponentBuilder(@ComponentBuilder _ body: () -> Component) {
+          print(body())
+        }
+
+        acceptComponentBuilder {
+          "hello"
+        }
         """)
     ] + platformSpecificNonTriggeringExamples
 
@@ -115,6 +145,33 @@ struct UnusedDeclarationRuleExamples {
         class ↓MyTests: NSObject {
             func ↓testExample() {}
         }
+        """),
+        Example("""
+        enum Component {
+          case string(StaticString)
+          indirect case array([Component])
+          indirect case optional(Component?)
+        }
+
+        struct ComponentBuilder {
+          func ↓buildExpression(_ string: StaticString) -> Component {
+            return .string(string)
+          }
+
+          func ↓buildBlock(_ components: Component...) -> Component {
+            return .array(components)
+          }
+
+          func ↓buildIf(_ value: Component?) -> Component {
+            return .optional(value)
+          }
+
+          static func ↓buildABear(_ components: Component...) -> Component {
+            return .array(components)
+          }
+        }
+
+        _ = ComponentBuilder()
         """)
     ] + platformSpecificTriggeringExamples
 

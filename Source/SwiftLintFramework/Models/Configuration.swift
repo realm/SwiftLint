@@ -15,10 +15,10 @@ public struct Configuration {
 
     // MARK: Public Instance
     /// The paths that should be included when linting
-    public let includedPaths: [String]
+    public private(set) var includedPaths: [String]
 
     /// The paths that should be excluded when linting
-    public let excludedPaths: [String]
+    public private(set) var excludedPaths: [String]
 
     /// The style to use when indenting Swift source code.
     public let indentation: IndentationStyle
@@ -46,7 +46,8 @@ public struct Configuration {
 
     /// The root directory is the directory that included & excluded paths relate to.
     /// By default, the root directory is the current working directory,
-    /// but in some merging algorithms it is used differently.
+    /// but during some merging algorithms it may be used differently.
+    /// The rootDirectory also serves as the stopping point when searching for nested configs along the file hierarchy.
     public var rootDirectory: String { fileGraph.rootDirectory }
 
     /// The rules mode used for this configuration.
@@ -190,11 +191,11 @@ public struct Configuration {
         let configurationFiles = configurationFiles.isEmpty ? [Configuration.defaultFileName] : configurationFiles
         defer { basedOnCustomConfigurationFiles = hasCustomConfigurationFiles }
 
-        let rootDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
+        let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
         let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
 
         // Try obtaining cached config
-        let cacheIdentifier = "\(rootDirectory) - \(configurationFiles)"
+        let cacheIdentifier = "\(currentWorkingDirectory) - \(configurationFiles)"
         if let cachedConfig = Configuration.getCached(forIdentifier: cacheIdentifier) {
             self.init(copying: cachedConfig)
             return
@@ -204,7 +205,7 @@ public struct Configuration {
         do {
             var fileGraph = FileGraph(
                 commandLineChildConfigs: configurationFiles,
-                rootDirectory: rootDirectory,
+                rootDirectory: currentWorkingDirectory,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
             let resultingConfiguration = try fileGraph.resultingConfiguration(enableAllRules: enableAllRules)
@@ -237,8 +238,20 @@ public struct Configuration {
             }
         }
     }
+
+    // MARK: - Methods: Internal
+    mutating func makeIncludedAndExcludedPaths(relativeTo newBasePath: String, previousBasePath: String) {
+        includedPaths = includedPaths.map {
+            $0.bridge().absolutePathRepresentation(rootDirectory: previousBasePath).path(relativeTo: newBasePath)
+        }
+
+        excludedPaths = excludedPaths.map {
+            $0.bridge().absolutePathRepresentation(rootDirectory: previousBasePath).path(relativeTo: newBasePath)
+        }
+    }
 }
 
+// MARK: - FileGraphInitializationResult
 private enum FileGraphInitializationResult {
     case initialImplicitFileNotFound
     case error(message: String)

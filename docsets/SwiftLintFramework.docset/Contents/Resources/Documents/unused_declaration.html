@@ -390,6 +390,35 @@
     <span class="kd">func</span> <span class="nf">testExample</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Component</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="nf">string</span><span class="p">(</span><span class="kt">StaticString</span><span class="p">)</span>
+  <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">array</span><span class="p">([</span><span class="kt">Component</span><span class="p">])</span>
+  <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">optional</span><span class="p">(</span><span class="kt">Component</span><span class="p">?)</span>
+<span class="p">}</span>
+
+<span class="kd">@_functionBuilder</span>
+<span class="kd">struct</span> <span class="kt">ComponentBuilder</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildExpression</span><span class="p">(</span><span class="n">_</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">StaticString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildBlock</span><span class="p">(</span><span class="n">_</span> <span class="nv">components</span><span class="p">:</span> <span class="kt">Component</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildIf</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Component</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">optional</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">acceptComponentBuilder</span><span class="p">(</span><span class="kd">@ComponentBuilder</span> <span class="n">_</span> <span class="nv">body</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Component</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">print</span><span class="p">(</span><span class="nf">body</span><span class="p">())</span>
+<span class="p">}</span>
+
+<span class="n">acceptComponentBuilder</span> <span class="p">{</span>
+  <span class="s">"hello"</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Cocoa</span>
 
 <span class="kd">@NSApplicationMain</span>
@@ -471,6 +500,32 @@
 <span class="kd">class</span> <span class="err">↓</span><span class="kt">MyTests</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="err">↓</span><span class="nf">testExample</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Component</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="nf">string</span><span class="p">(</span><span class="kt">StaticString</span><span class="p">)</span>
+  <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">array</span><span class="p">([</span><span class="kt">Component</span><span class="p">])</span>
+  <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">optional</span><span class="p">(</span><span class="kt">Component</span><span class="p">?)</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">ComponentBuilder</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="err">↓</span><span class="nf">buildExpression</span><span class="p">(</span><span class="n">_</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">StaticString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="err">↓</span><span class="nf">buildBlock</span><span class="p">(</span><span class="n">_</span> <span class="nv">components</span><span class="p">:</span> <span class="kt">Component</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="err">↓</span><span class="nf">buildIf</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Component</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">optional</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="err">↓</span><span class="nf">buildABear</span><span class="p">(</span><span class="n">_</span> <span class="nv">components</span><span class="p">:</span> <span class="kt">Component</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="kt">ComponentBuilder</span><span class="p">()</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Cocoa</span>
 

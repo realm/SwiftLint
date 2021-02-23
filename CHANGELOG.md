@@ -46,6 +46,9 @@
   explicitly referenced by other code.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `strong_iboutlet` rule correctable.  
+  [MaxHaertwig](https://github.com/maxhaertwig)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

@@ -13,7 +13,7 @@ internal extension Configuration {
         private var vertices: Set<Vertix>
         private var edges: Set<Edge>
 
-        private var isBuilt: Bool = false
+        private var isBuilt = false
 
         // MARK: - Initializers
         internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {

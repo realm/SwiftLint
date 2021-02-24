@@ -167,6 +167,10 @@
   `inclusive_language` rule, with a default value of `mastercard`.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3415](https://github.com/realm/SwiftLint/issues/3415)
+  
+* Add Bool violation reporting in `redundant_type_annotation`.  
+  [Artem Garmash](https://github.com/agarmash)
+  [#3423](https://github.com/realm/SwiftLint/issues/3423)
 
 #### Bug Fixes
 

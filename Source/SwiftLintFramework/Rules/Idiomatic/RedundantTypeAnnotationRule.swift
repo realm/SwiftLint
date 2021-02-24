@@ -5,8 +5,6 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
                                            ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "redundant_type_annotation",
         name: "Redundant Type Annotation",
@@ -15,7 +13,23 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         nonTriggeringExamples: [
             Example("var url = URL()"),
             Example("var url: CustomStringConvertible = URL()"),
-            Example("@IBInspectable var color: UIColor = UIColor.white")
+            Example("@IBInspectable var color: UIColor = UIColor.white"),
+            Example("""
+            enum Direction {
+                case up
+                case down
+            }
+
+            var direction: Direction = .up
+            """),
+            Example("""
+            enum Direction {
+                case up
+                case down
+            }
+
+            var direction = Direction.up
+            """)
         ],
         triggeringExamples: [
             Example("var url↓:URL=URL()"),
@@ -30,6 +44,15 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
                 let myVar↓: Int = Int(5)
               }
             }
+            """),
+            Example("var isEnabled↓: Bool = true"),
+            Example("""
+            enum Direction {
+                case up
+                case down
+            }
+
+            var direction↓: Direction = Direction.up
             """)
         ],
         corrections: [
@@ -68,42 +91,81 @@ public struct RedundantTypeAnnotationRule: OptInRule, SubstitutionCorrectableRul
         return (violationRange, "")
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let typeAnnotationPattern = ":\\s?\\w+"
-        let pattern = "(var|let)\\s?\\w+\(typeAnnotationPattern)\\s?=\\s?\\w+(\\(|.)"
-        let foundRanges = file.match(pattern: pattern, with: [.keyword, .identifier, .typeidentifier, .identifier])
-        return foundRanges
-            .filter { !isFalsePositive(in: file, range: $0) && !isIBInspectable(range: $0, file: file) }
-            .compactMap {
-                file.match(pattern: typeAnnotationPattern,
-                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds, range: $0).first
-            }
+    private let typeAnnotationPattern: String
+    private let expressionPattern: String
+
+    public init() {
+        typeAnnotationPattern =
+            ":\\s*" + // semicolon and any number of whitespaces
+            "\\w+"    // type name
+
+        expressionPattern =
+            "(var|let)" + // var or let
+            "\\s+" +      // at least single whitespace
+            "\\w+" +      // variable name
+            "\\s*" +      // possible whitespaces
+            typeAnnotationPattern +
+            "\\s*=\\s*" + // assignment operator with possible surrounding whitespaces
+            "\\w+" +      // assignee name (type or keyword)
+            "[\\(\\.]?"   // possible opening parenthesis or dot
     }
 
-    private func isFalsePositive(in file: SwiftLintFile, range: NSRange) -> Bool {
-        let substring = file.stringView.substring(with: range)
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        let violatingRanges = file
+            .match(pattern: expressionPattern)
+            .filter {
+                $0.1 == [.keyword, .identifier, .typeidentifier, .identifier] ||
+                $0.1 == [.keyword, .identifier, .typeidentifier, .keyword]
+            }
+            .filter { !isFalsePositive(file: file, range: $0.0) }
+            .filter { !isIBInspectable(file: file, range: $0.0) }
+            .compactMap {
+                file.match(pattern: typeAnnotationPattern,
+                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds, range: $0.0).first
+            }
 
+        return violatingRanges
+    }
+
+    private func isFalsePositive(file: SwiftLintFile, range: NSRange) -> Bool {
+        guard let typeNames = getPartsOfExpression(in: file, range: range) else { return false }
+
+        let lhs = typeNames.variableTypeName
+        let rhs = typeNames.assigneeName
+
+        if lhs == rhs || (lhs == "Bool" && (rhs == "true" || rhs == "false")) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    private func getPartsOfExpression(
+        in file: SwiftLintFile, range: NSRange
+    ) -> (variableTypeName: String, assigneeName: String)? {
+        let substring = file.stringView.substring(with: range)
         let components = substring.components(separatedBy: "=")
-        let charactersToTrimFromRhs = CharacterSet(charactersIn: ".(").union(.whitespaces)
 
         guard
             components.count == 2,
-            let lhsTypeName = components[0].components(separatedBy: ":").last?.trimmingCharacters(in: .whitespaces)
+            let variableTypeName = components[0].components(separatedBy: ":").last?.trimmingCharacters(in: .whitespaces)
         else {
-            return true
+            return nil
         }
 
-        let rhsTypeName = components[1].trimmingCharacters(in: charactersToTrimFromRhs)
-        return lhsTypeName != rhsTypeName
+        let charactersToTrimFromRhs = CharacterSet(charactersIn: ".(").union(.whitespaces)
+        let assigneeName = components[1].trimmingCharacters(in: charactersToTrimFromRhs)
+
+        return (variableTypeName, assigneeName)
     }
 
-    private func isIBInspectable(range: NSRange, file: SwiftLintFile) -> Bool {
-        guard let byteRange = file.stringView.NSRangeToByteRange(start: range.location, length: range.length),
+    private func isIBInspectable(file: SwiftLintFile, range: NSRange) -> Bool {
+        guard
+            let byteRange = file.stringView.NSRangeToByteRange(start: range.location, length: range.length),
             let dict = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
             let kind = dict.declarationKind,
-            SwiftDeclarationKind.variableKinds.contains(kind) else {
-                return false
-        }
+            SwiftDeclarationKind.variableKinds.contains(kind)
+        else { return false }
 
         return dict.enclosedSwiftAttributes.contains(.ibinspectable)
     }

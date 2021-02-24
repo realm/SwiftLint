@@ -66,16 +66,14 @@ extension Configuration {
 
         var groupedFiles = [Configuration: [SwiftLintFile]]()
         for file in files {
+            guard let filePath = file.path else {
+                continue
+            }
+
             let fileConfiguration = configuration(for: file)
-            let fileConfigurationRootPath = fileConfiguration.rootDirectory.bridge()
 
             // Files whose configuration specifies they should be excluded will be skipped
-            let shouldSkip = fileConfiguration.excludedPaths.contains { excludedRelativePath in
-                let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
-                let filePathComponents = file.path?.bridge().pathComponents ?? []
-                let excludedPathComponents = excludedPath.bridge().pathComponents
-                return filePathComponents.starts(with: excludedPathComponents)
-            }
+            let shouldSkip = fileConfiguration.filterExcludedPaths(in: [filePath]).isEmpty
 
             if !shouldSkip {
                 groupedFiles[fileConfiguration, default: []].append(file)

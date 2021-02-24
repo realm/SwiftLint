@@ -74,6 +74,9 @@
 * Fix false positives with result builders in `unused_declaration`.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix glob not being resolved in excluded paths when passing in individual files.  
+  [Seth Friedman](https://github.com/sethfri)
+
 ## 0.42.0: He Chutes, He Scores
 
 #### Breaking

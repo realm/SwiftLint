@@ -97,7 +97,6 @@ struct LintableFilesVisitor {
     static func create(_ options: LintOrAnalyzeOptions,
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
-                       stableGitRevision: String?,
                        block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, SwiftLintError> {
         Signposts.record(name: "LintableFilesVisitor.Create") {
@@ -121,7 +120,7 @@ struct LintableFilesVisitor {
                                                cache: cache,
                                                compilerInvocations: compilerInvocations,
                                                allowZeroLintableFiles: allowZeroLintableFiles,
-                                               stableGitRevision: stableGitRevision,
+                                               stableGitRevision: options.stableGitRevision,
                                                block: block)
             return .success(visitor)
         }

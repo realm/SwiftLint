@@ -18,6 +18,14 @@ extension SwiftLint {
         var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
+        @Option(help:
+            """
+            A git revision or "commit-ish" that is considered stable. If specified, SwiftLint will attempt to query \
+            the git repository index for files changed since that revision, using only those files as input as opposed \
+            to traversing the file system to collect lintable files.
+            """
+        )
+        var stableGitRevision: String?
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 
@@ -48,7 +56,8 @@ extension SwiftLint {
                 enableAllRules: enableAllRules,
                 autocorrect: common.fix,
                 compilerLogPath: nil,
-                compileCommands: nil
+                compileCommands: nil,
+                stableGitRevision: stableGitRevision
             )
             let result = LintOrAnalyzeCommand.run(options)
             switch result {

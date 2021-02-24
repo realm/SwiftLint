@@ -41,9 +41,8 @@ struct LintOrAnalyzeCommand {
         -> Result<[SwiftLintFile], SwiftLintError> {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        let configuration = builder.configuration
-        return configuration.visitLintableFiles(options: options, cache: builder.cache, storage: builder.storage,
-                                                stableGitRevision: configuration.stableGitRevision) { linter in
+        return builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
+                                                        storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
@@ -157,8 +156,7 @@ struct LintOrAnalyzeCommand {
     private static func autocorrect(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
         let storage = RuleStorage()
         let configuration = Configuration(options: options)
-        return configuration.visitLintableFiles(options: options, cache: nil, storage: storage,
-                                                stableGitRevision: configuration.stableGitRevision) { linter in
+        return configuration.visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
             let corrections = linter.correct(using: storage)
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
@@ -195,6 +193,7 @@ struct LintOrAnalyzeOptions {
     let autocorrect: Bool
     let compilerLogPath: String?
     let compileCommands: String?
+    let stableGitRevision: String?
 
     var verb: String {
         if autocorrect {

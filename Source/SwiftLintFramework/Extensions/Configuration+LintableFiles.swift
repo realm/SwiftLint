@@ -8,6 +8,7 @@ extension Configuration {
     ///                              file.
     /// - parameter forceExclude:    Whether or not excludes defined in this configuration should be applied even if
     ///                              `path` is an exact match.
+    /// - parameter fileManager:     The lintable file manager to use to search for lintable files.
     /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
     ///
     /// - returns: Files to lint.

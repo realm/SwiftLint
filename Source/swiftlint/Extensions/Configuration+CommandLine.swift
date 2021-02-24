@@ -256,13 +256,12 @@ extension Configuration {
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
-                            stableGitRevision: String?, visitorBlock: @escaping (CollectedLinter) -> Void)
+                            visitorBlock: @escaping (CollectedLinter) -> Void)
         -> Result<[SwiftLintFile], SwiftLintError> {
         return LintableFilesVisitor.create(
             options,
             cache: cache,
-            allowZeroLintableFiles: allowZeroLintableFiles || stableGitRevision != nil,
-            stableGitRevision: stableGitRevision,
+            allowZeroLintableFiles: allowZeroLintableFiles || options.stableGitRevision != nil,
             block: visitorBlock
         )
         .flatMap { visitLintableFiles(with: $0, storage: storage) }

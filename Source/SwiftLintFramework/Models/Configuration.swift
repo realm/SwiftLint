@@ -40,11 +40,6 @@ public struct Configuration {
     /// was used to explicitly specify the default `.swiftlint.yml` as the configuration file
     public private(set) var basedOnCustomConfigurationFiles = false
 
-    /// A git revision or "commit-ish" that is considered stable. If specified, SwiftLint will attempt to query the git
-    /// repository index for files changed since that revision, using only those files as input as opposed to traversing
-    /// the file system to collect lintable files.
-    public let stableGitRevision: String?
-
     // MARK: Public Computed
     /// All rules enabled in this configuration
     public var rules: [Rule] { rulesWrapper.resultingRules }
@@ -74,8 +69,7 @@ public struct Configuration {
         warningThreshold: Int?,
         reporter: String,
         cachePath: String?,
-        allowZeroLintableFiles: Bool,
-        stableGitRevision: String?
+        allowZeroLintableFiles: Bool
     ) {
         self.rulesWrapper = rulesWrapper
         self.fileGraph = fileGraph
@@ -86,7 +80,6 @@ public struct Configuration {
         self.reporter = reporter
         self.cachePath = cachePath
         self.allowZeroLintableFiles = allowZeroLintableFiles
-        self.stableGitRevision = stableGitRevision
     }
 
     /// Creates a Configuration by copying an existing configuration.
@@ -103,7 +96,6 @@ public struct Configuration {
         basedOnCustomConfigurationFiles = configuration.basedOnCustomConfigurationFiles
         cachePath = configuration.cachePath
         allowZeroLintableFiles = configuration.allowZeroLintableFiles
-        stableGitRevision = configuration.stableGitRevision
     }
 
     /// Creates a `Configuration` by specifying its properties directly,
@@ -125,10 +117,6 @@ public struct Configuration {
     /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
-    /// - parameter stableGitRevision:      A git revision or "commit-ish" that is considered stable. If specified,
-    ///                                     SwiftLint will attempt to query the git repository index for files changed
-    ///                                     since that revision, using only those files as input as opposed to
-    ///                                     traversing the file system to collect lintable files.
     internal init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
@@ -141,8 +129,7 @@ public struct Configuration {
         reporter: String = XcodeReporter.identifier,
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
-        allowZeroLintableFiles: Bool = false,
-        stableGitRevision: String? = nil
+        allowZeroLintableFiles: Bool = false
     ) {
         if let pinnedVersion = pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -167,8 +154,7 @@ public struct Configuration {
             warningThreshold: warningThreshold,
             reporter: reporter,
             cachePath: cachePath,
-            allowZeroLintableFiles: allowZeroLintableFiles,
-            stableGitRevision: stableGitRevision
+            allowZeroLintableFiles: allowZeroLintableFiles
         )
     }
 

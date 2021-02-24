@@ -44,7 +44,8 @@ extension SwiftLint {
                 enableAllRules: false,
                 autocorrect: common.fix,
                 compilerLogPath: compilerLogPath,
-                compileCommands: compileCommands
+                compileCommands: compileCommands,
+                stableGitRevision: nil
             )
 
             let result = LintOrAnalyzeCommand.run(options)

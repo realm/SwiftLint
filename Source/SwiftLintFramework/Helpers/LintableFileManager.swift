@@ -50,14 +50,26 @@ extension FileManager: LintableFileManager {
 
 // MARK: - GitLintableFileManager
 
+/// A producer of lintable files that compares against a stable git revision.
 public class GitLintableFileManager {
     private let stableRevision: String
+    /// Creates a `GitLintableFileManager` with the specified stable revision.
+    ///
+    /// - parameter stableRevision: The stable git revision to compare lintable files against.
     public init(stableRevision: String) {
         self.stableRevision = stableRevision
     }
 }
 
 extension GitLintableFileManager: LintableFileManager {
+    /// Returns all files that can be linted in the specified path. If the path is relative, it will be appended to the
+    /// specified root path, or currentt working directory if no root directory is specified.
+    ///
+    /// - parameter path:          The path in which lintable files should be found.
+    /// - parameter rootDirectory: The parent directory for the specified path. If none is provided, the current working
+    ///                            directory will be used.
+    ///
+    /// - returns: Files to lint.
     public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
         func git(_ args: [String]) -> [String]? {
             let out = Exec.run("/usr/bin/env", ["git"] + args)
@@ -89,6 +101,12 @@ extension GitLintableFileManager: LintableFileManager {
         }
     }
 
+    /// Returns the date when the file at the specified path was last modified. Returns `nil` if the file cannot be
+    /// found or its last modification date cannot be determined.
+    ///
+    /// - parameter path: The file whose modification date should be determined.
+    ///
+    /// - returns: A date, if one was determined.
     public func modificationDate(forFileAtPath path: String) -> Date? {
         return FileManager.default.modificationDate(forFileAtPath: path)
     }

@@ -27,23 +27,6 @@ enum Exec {
     }
 
     /**
-    Run a command with arguments and return its output and exit status.
-
-    - parameter command: Absolute path of the command to run.
-    - parameter arguments: Arguments to pass to the command.
-    - parameter currentDirectory: Current directory for the command.  By default
-                                  the parent process's current directory.
-    - parameter stderr: What to do with stderr output from the command.  By default
-                        whatever the parent process does.
-    */
-    static func run(_ command: String,
-                    _ arguments: String...,
-                    currentDirectory: String = FileManager.default.currentDirectoryPath,
-                    stderr: Stderr = .inherit) -> Results {
-        return run(command, arguments, currentDirectory: currentDirectory, stderr: stderr)
-    }
-
-    /**
      Run a command with arguments and return its output and exit status.
 
      - parameter command: Absolute path of the command to run.

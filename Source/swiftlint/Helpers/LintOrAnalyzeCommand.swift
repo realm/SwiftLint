@@ -26,54 +26,69 @@ enum LintOrAnalyzeMode {
 
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
-        return options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+        return Signposts.record(name: "LintOrAnalyzeCommand.run") {
+            options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+        }
     }
 
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
-        var fileBenchmark = Benchmark(name: "files")
-        var ruleBenchmark = Benchmark(name: "rules")
-        var violations = [StyleViolation]()
-        let storage = RuleStorage()
-        let configuration = Configuration(options: options)
-        let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
-        let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
+        let builder = LintOrAnalyzeResultBuilder(options)
+        return collectViolations(builder: builder)
+            .flatMap { postProcessViolations(files: $0, builder: builder) }
+    }
+
+    private static func collectViolations(builder: LintOrAnalyzeResultBuilder)
+        -> Result<[SwiftLintFile], SwiftLintError> {
+        let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        return configuration.visitLintableFiles(options: options, cache: cache, storage: storage) { linter in
+        return builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
+                                                        storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
-                let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes(using: storage)
+                let (violationsBeforeLeniency, currentRuleTimes) = linter
+                    .styleViolationsAndRuleTimes(using: builder.storage)
                 currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
                 visitorMutationQueue.sync {
-                    fileBenchmark.record(file: linter.file, from: start)
-                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
-                    violations += currentViolations
+                    builder.fileBenchmark.record(file: linter.file, from: start)
+                    currentRuleTimes.forEach { builder.ruleBenchmark.record(id: $0, time: $1) }
+                    builder.violations += currentViolations
                 }
             } else {
-                currentViolations = applyLeniency(options: options, violations: linter.styleViolations(using: storage))
+                currentViolations = applyLeniency(options: options,
+                                                  violations: linter.styleViolations(using: builder.storage))
                 visitorMutationQueue.sync {
-                    violations += currentViolations
+                    builder.violations += currentViolations
                 }
             }
             linter.file.invalidateCache()
-            reporter.report(violations: currentViolations, realtimeCondition: true)
-        }.flatMap { files in
-            if isWarningThresholdBroken(configuration: configuration, violations: violations)
+            builder.reporter.report(violations: currentViolations, realtimeCondition: true)
+        }
+    }
+
+    private static func postProcessViolations(files: [SwiftLintFile], builder: LintOrAnalyzeResultBuilder)
+        -> Result<(), SwiftLintError> {
+        return Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
+            let options = builder.options
+            let configuration = builder.configuration
+            if isWarningThresholdBroken(configuration: configuration, violations: builder.violations)
                 && !options.lenient {
-                violations.append(createThresholdViolation(threshold: configuration.warningThreshold!))
-                reporter.report(violations: [violations.last!], realtimeCondition: true)
+                builder.violations.append(
+                    createThresholdViolation(threshold: configuration.warningThreshold!)
+                )
+                builder.reporter.report(violations: [builder.violations.last!], realtimeCondition: true)
             }
-            reporter.report(violations: violations, realtimeCondition: false)
-            let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
+            builder.reporter.report(violations: builder.violations, realtimeCondition: false)
+            let numberOfSeriousViolations = builder.violations.filter({ $0.severity == .error }).count
             if !options.quiet {
-                printStatus(violations: violations, files: files, serious: numberOfSeriousViolations,
+                printStatus(violations: builder.violations, files: files, serious: numberOfSeriousViolations,
                             verb: options.verb)
             }
             if options.benchmark {
-                fileBenchmark.save()
-                ruleBenchmark.save()
+                builder.fileBenchmark.save()
+                builder.ruleBenchmark.save()
             }
-            try? cache?.save()
+            try? builder.cache?.save()
             guard numberOfSeriousViolations == 0 else { exit(2) }
             return .success(())
         }
@@ -185,5 +200,26 @@ struct LintOrAnalyzeOptions {
         } else {
             return mode.verb
         }
+    }
+}
+
+private class LintOrAnalyzeResultBuilder {
+    var fileBenchmark = Benchmark(name: "files")
+    var ruleBenchmark = Benchmark(name: "rules")
+    var violations = [StyleViolation]()
+    let storage = RuleStorage()
+    let configuration: Configuration
+    let reporter: Reporter.Type
+    let cache: LinterCache?
+    let options: LintOrAnalyzeOptions
+
+    init(_ options: LintOrAnalyzeOptions) {
+        let config = Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") {
+            Configuration(options: options)
+        }
+        configuration = config
+        reporter = reporterFrom(optionsReporter: options.reporter, configuration: config)
+        cache = options.ignoreCache ? nil : LinterCache(configuration: config)
+        self.options = options
     }
 }

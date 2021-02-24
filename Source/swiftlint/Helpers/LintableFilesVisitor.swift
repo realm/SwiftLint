@@ -97,27 +97,29 @@ struct LintableFilesVisitor {
                        allowZeroLintableFiles: Bool,
                        block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, SwiftLintError> {
-        let compilerInvocations: CompilerInvocations?
-        if options.mode == .lint {
-            compilerInvocations = nil
-        } else {
-            switch loadCompilerInvocations(options) {
-            case let .success(invocations):
-                compilerInvocations = invocations
-            case let .failure(error):
-                return .failure(error)
+        Signposts.record(name: "LintableFilesVisitor.Create") {
+            let compilerInvocations: CompilerInvocations?
+            if options.mode == .lint {
+                compilerInvocations = nil
+            } else {
+                switch loadCompilerInvocations(options) {
+                case let .success(invocations):
+                    compilerInvocations = invocations
+                case let .failure(error):
+                    return .failure(error)
+                }
             }
-        }
 
-        let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
-                                           useSTDIN: options.useSTDIN, quiet: options.quiet,
-                                           useScriptInputFiles: options.useScriptInputFiles,
-                                           forceExclude: options.forceExclude,
-                                           useExcludingByPrefix: options.useExcludingByPrefix,
-                                           cache: cache,
-                                           compilerInvocations: compilerInvocations,
-                                           allowZeroLintableFiles: allowZeroLintableFiles, block: block)
-        return .success(visitor)
+            let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
+                                               useSTDIN: options.useSTDIN, quiet: options.quiet,
+                                               useScriptInputFiles: options.useScriptInputFiles,
+                                               forceExclude: options.forceExclude,
+                                               useExcludingByPrefix: options.useExcludingByPrefix,
+                                               cache: cache,
+                                               compilerInvocations: compilerInvocations,
+                                               allowZeroLintableFiles: allowZeroLintableFiles, block: block)
+            return .success(visitor)
+        }
     }
 
     func shouldSkipFile(atPath path: String?) -> Bool {

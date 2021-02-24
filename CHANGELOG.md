@@ -58,6 +58,10 @@
   rule.  
   [Thomas Goyne](https://github.com/tgoyne)
 
+* [Internal] Integrate OS Signposts to help profile SwiftLint
+  performance.  
+  [jpsim](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

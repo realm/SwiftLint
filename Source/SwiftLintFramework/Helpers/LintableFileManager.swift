@@ -59,18 +59,27 @@ public class GitLintableFileManager {
 
 extension GitLintableFileManager: LintableFileManager {
     public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
-        let changedFilesCommand = ["git", "diff", "--diff-filter=d", stableRevision, "--name-only", "--",
-                                   path, "'*.swift'"]
-        let changedFilesOutput = Exec.run("/usr/bin/env", changedFilesCommand)
-        guard changedFilesOutput.terminationStatus == 0 else {
+        func git(_ args: [String]) -> [String]? {
+            let out = Exec.run("/usr/bin/env", ["git"] + args)
+            if out.terminationStatus == 0 {
+                return out.string?.components(separatedBy: .newlines) ?? []
+            } else {
+                return nil
+            }
+        }
+
+        guard let mergeBase = git(["merge-base", stableRevision, "HEAD"])?.first,
+              let normalFiles = git(["diff", "--name-only", "--diff-filter=AMRCU", mergeBase, "--", path, "'*.swift'"]),
+              let untrackedFiles = git(["ls-files", "--others", "--exclude-standard", "--", path])
+        else {
             queuedPrintError(
                 "Could not get files changed from specified stable git revision. Falling back to file system traversal."
             )
             return FileManager.default.filesToLint(inPath: path, rootDirectory: rootDirectory)
         }
 
-        let relativePaths = changedFilesOutput.string?.components(separatedBy: .newlines) ?? []
-        return relativePaths.compactMap { relativePath in
+        let filesToLint = normalFiles + untrackedFiles
+        return filesToLint.compactMap { relativePath in
             relativePath.bridge()
                 .absolutePathRepresentation(
                     rootDirectory: rootDirectory ?? FileManager.default.currentDirectoryPath

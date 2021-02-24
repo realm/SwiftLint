@@ -171,7 +171,7 @@
   `inclusive_language` rule, with a default value of `mastercard`.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3415](https://github.com/realm/SwiftLint/issues/3415)
-  
+
 #### Bug Fixes
 
 * Remove `@IBOutlet` and `@IBInspectable` from UnusedDeclarationRule.  

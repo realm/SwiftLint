@@ -24,7 +24,8 @@ extension Configuration {
             warningThreshold: mergedWarningTreshold(with: childConfiguration),
             reporter: reporter,
             cachePath: cachePath,
-            allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles
+            allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles,
+            stableGitRevision: stableGitRevision
         )
     }
 

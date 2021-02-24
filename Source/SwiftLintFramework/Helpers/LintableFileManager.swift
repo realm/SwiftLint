@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - Protocol
+
 /// An interface for enumerating files that can be linted by SwiftLint.
 public protocol LintableFileManager {
     /// Returns all files that can be linted in the specified path. If the path is relative, it will be appended to the
@@ -21,6 +23,8 @@ public protocol LintableFileManager {
     func modificationDate(forFileAtPath path: String) -> Date?
 }
 
+// MARK: - FileManager Conformance
+
 extension FileManager: LintableFileManager {
     public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
         let absolutePath = path.bridge()
@@ -41,5 +45,42 @@ extension FileManager: LintableFileManager {
 
     public func modificationDate(forFileAtPath path: String) -> Date? {
         return (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
+    }
+}
+
+// MARK: - GitLintableFileManager
+
+public class GitLintableFileManager {
+    private let stableRevision: String
+    public init(stableRevision: String) {
+        self.stableRevision = stableRevision
+    }
+}
+
+extension GitLintableFileManager: LintableFileManager {
+    public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
+        let changedFilesCommand = ["git", "diff", "--diff-filter=d", stableRevision, "--name-only", "--",
+                                   path, "'*.swift'"]
+        let changedFilesOutput = Exec.run("/usr/bin/env", changedFilesCommand)
+        guard changedFilesOutput.terminationStatus == 0 else {
+            queuedPrintError(
+                "Could not get files changed from specified stable git revision. Falling back to file system traversal."
+            )
+            return FileManager.default.filesToLint(inPath: path, rootDirectory: rootDirectory)
+        }
+
+        let relativePaths = changedFilesOutput.string?.components(separatedBy: .newlines) ?? []
+        return relativePaths.compactMap { relativePath in
+            relativePath.bridge()
+                .absolutePathRepresentation(
+                    rootDirectory: rootDirectory ?? FileManager.default.currentDirectoryPath
+                )
+                .bridge()
+                .standardizingPath
+        }
+    }
+
+    public func modificationDate(forFileAtPath path: String) -> Date? {
+        return FileManager.default.modificationDate(forFileAtPath: path)
     }
 }

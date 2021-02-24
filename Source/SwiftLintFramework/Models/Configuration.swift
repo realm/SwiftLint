@@ -40,6 +40,11 @@ public struct Configuration {
     /// was used to explicitly specify the default `.swiftlint.yml` as the configuration file
     public private(set) var basedOnCustomConfigurationFiles = false
 
+    /// A git revision or "commit-ish" that is considered stable. If specified, SwifLint will attempt to query the git
+    /// repository index for files changed since that revision, using only those files as input as opposed to traversing
+    /// the file system to collect lintable files.
+    public let stableGitRevision: String?
+
     // MARK: Public Computed
     /// All rules enabled in this configuration
     public var rules: [Rule] { rulesWrapper.resultingRules }
@@ -69,7 +74,8 @@ public struct Configuration {
         warningThreshold: Int?,
         reporter: String,
         cachePath: String?,
-        allowZeroLintableFiles: Bool
+        allowZeroLintableFiles: Bool,
+        stableGitRevision: String?
     ) {
         self.rulesWrapper = rulesWrapper
         self.fileGraph = fileGraph
@@ -80,11 +86,12 @@ public struct Configuration {
         self.reporter = reporter
         self.cachePath = cachePath
         self.allowZeroLintableFiles = allowZeroLintableFiles
+        self.stableGitRevision = stableGitRevision
     }
 
     /// Creates a Configuration by copying an existing configuration.
     ///
-    /// - parameter copying:    The existing configuration to copy.
+    /// - parameter copying: The existing configuration to copy.
     internal init(copying configuration: Configuration) {
         rulesWrapper = configuration.rulesWrapper
         fileGraph = configuration.fileGraph
@@ -96,6 +103,7 @@ public struct Configuration {
         basedOnCustomConfigurationFiles = configuration.basedOnCustomConfigurationFiles
         cachePath = configuration.cachePath
         allowZeroLintableFiles = configuration.allowZeroLintableFiles
+        stableGitRevision = configuration.stableGitRevision
     }
 
     /// Creates a `Configuration` by specifying its properties directly,
@@ -117,6 +125,10 @@ public struct Configuration {
     /// - parameter cachePath:              The location of the persisted cache to use whith this configuration.
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
+    /// - parameter stableGitRevision:      A git revision or "commit-ish" that is considered stable. If specified,
+    ///                                     SwifLint will attempt to query the git repository index for files changed
+    ///                                     since that revision, using only those files as input as opposed to
+    ///                                     traversing the file system to collect lintable files.
     internal init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
@@ -129,7 +141,8 @@ public struct Configuration {
         reporter: String = XcodeReporter.identifier,
         cachePath: String? = nil,
         pinnedVersion: String? = nil,
-        allowZeroLintableFiles: Bool = false
+        allowZeroLintableFiles: Bool = false,
+        stableGitRevision: String? = nil
     ) {
         if let pinnedVersion = pinnedVersion, pinnedVersion != Version.current.value {
             queuedPrintError(
@@ -154,7 +167,8 @@ public struct Configuration {
             warningThreshold: warningThreshold,
             reporter: reporter,
             cachePath: cachePath,
-            allowZeroLintableFiles: allowZeroLintableFiles
+            allowZeroLintableFiles: allowZeroLintableFiles,
+            stableGitRevision: stableGitRevision
         )
     }
 

@@ -48,13 +48,14 @@ struct LintableFilesVisitor {
     let cache: LinterCache?
     let parallel: Bool
     let allowZeroLintableFiles: Bool
+    let stableGitRevision: String?
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool,
          quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
          cache: LinterCache?, parallel: Bool,
-         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
+         allowZeroLintableFiles: Bool, stableGitRevision: String?, block: @escaping (CollectedLinter) -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -66,13 +67,14 @@ struct LintableFilesVisitor {
         self.parallel = parallel
         self.mode = .lint
         self.allowZeroLintableFiles = allowZeroLintableFiles
+        self.stableGitRevision = stableGitRevision
         self.block = block
     }
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool,
                  useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
+                 allowZeroLintableFiles: Bool, stableGitRevision: String?, block: @escaping (CollectedLinter) -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -89,11 +91,13 @@ struct LintableFilesVisitor {
         }
         self.block = block
         self.allowZeroLintableFiles = allowZeroLintableFiles
+        self.stableGitRevision = stableGitRevision
     }
 
     static func create(_ options: LintOrAnalyzeOptions,
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
+                       stableGitRevision: String?,
                        block: @escaping (CollectedLinter) -> Void)
         -> Result<LintableFilesVisitor, SwiftLintError> {
         Signposts.record(name: "LintableFilesVisitor.Create") {
@@ -116,7 +120,9 @@ struct LintableFilesVisitor {
                                                useExcludingByPrefix: options.useExcludingByPrefix,
                                                cache: cache,
                                                compilerInvocations: compilerInvocations,
-                                               allowZeroLintableFiles: allowZeroLintableFiles, block: block)
+                                               allowZeroLintableFiles: allowZeroLintableFiles,
+                                               stableGitRevision: stableGitRevision,
+                                               block: block)
             return .success(visitor)
         }
     }

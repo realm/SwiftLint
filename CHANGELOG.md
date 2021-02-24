@@ -123,6 +123,13 @@
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
+* Add "stable git revision" to configuration. This allows specifying a
+  git revision or "commit-ish" that is considered stable. If specified,
+  SwifLint will attempt to query the git repository index for files
+  changed since that revision, using only those files as input as
+  opposed to traversing the file system to collect lintable files.  
+  [jpsim](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix `custom_rules` merging when the parent configuration is based on

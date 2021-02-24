@@ -22,6 +22,7 @@ extension Configuration {
         case parentConfig = "parent_config"
         case remoteConfigTimeout = "remote_timeout"
         case remoteConfigTimeoutIfCached = "remote_timeout_if_cached"
+        case stableGitRevision = "stable_git_revision"
     }
 
     // MARK: - Properties
@@ -92,7 +93,8 @@ extension Configuration {
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },
-            allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false
+            allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
+            stableGitRevision: dict[Key.stableGitRevision.rawValue] as? String
         )
     }
 

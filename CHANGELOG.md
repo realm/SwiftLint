@@ -65,6 +65,10 @@
 * Update CodeClimateReporter to produce relative paths.  
   [bmwalters](https://github.com/bmwalters)
 
+* Add Bool violation reporting in `redundant_type_annotation`.  
+  [Artem Garmash](https://github.com/agarmash)
+  [#3423](https://github.com/realm/SwiftLint/issues/3423)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  
@@ -168,10 +172,6 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#3415](https://github.com/realm/SwiftLint/issues/3415)
   
-* Add Bool violation reporting in `redundant_type_annotation`.  
-  [Artem Garmash](https://github.com/agarmash)
-  [#3423](https://github.com/realm/SwiftLint/issues/3423)
-
 #### Bug Fixes
 
 * Remove `@IBOutlet` and `@IBInspectable` from UnusedDeclarationRule.  

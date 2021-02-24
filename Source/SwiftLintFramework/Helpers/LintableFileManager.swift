@@ -63,7 +63,7 @@ public class GitLintableFileManager {
 
 extension GitLintableFileManager: LintableFileManager {
     /// Returns all files that can be linted in the specified path. If the path is relative, it will be appended to the
-    /// specified root path, or currentt working directory if no root directory is specified.
+    /// specified root path, or current working directory if no root directory is specified.
     ///
     /// - parameter path:          The path in which lintable files should be found.
     /// - parameter rootDirectory: The parent directory for the specified path. If none is provided, the current working

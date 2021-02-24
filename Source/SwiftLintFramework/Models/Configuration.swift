@@ -40,7 +40,7 @@ public struct Configuration {
     /// was used to explicitly specify the default `.swiftlint.yml` as the configuration file
     public private(set) var basedOnCustomConfigurationFiles = false
 
-    /// A git revision or "commit-ish" that is considered stable. If specified, SwifLint will attempt to query the git
+    /// A git revision or "commit-ish" that is considered stable. If specified, SwiftLint will attempt to query the git
     /// repository index for files changed since that revision, using only those files as input as opposed to traversing
     /// the file system to collect lintable files.
     public let stableGitRevision: String?
@@ -126,7 +126,7 @@ public struct Configuration {
     /// - parameter pinnedVersion:          The SwiftLint version defined in this configuration.
     /// - parameter allowZeroLintableFiles: Allow SwiftLint to exit successfully when passed ignored or unlintable files
     /// - parameter stableGitRevision:      A git revision or "commit-ish" that is considered stable. If specified,
-    ///                                     SwifLint will attempt to query the git repository index for files changed
+    ///                                     SwiftLint will attempt to query the git repository index for files changed
     ///                                     since that revision, using only those files as input as opposed to
     ///                                     traversing the file system to collect lintable files.
     internal init(

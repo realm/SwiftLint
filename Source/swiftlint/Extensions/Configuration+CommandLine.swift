@@ -48,12 +48,34 @@ private func autoreleasepool<T>(block: () -> T) -> T { return block() }
 extension Configuration {
     func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage)
         -> Result<[SwiftLintFile], SwiftLintError> {
-            return getFiles(with: visitor)
-                .flatMap { groupFiles($0, visitor: visitor) }
-                .map { linters(for: $0, visitor: visitor) }
-                .map { ($0, $0.duplicateFileNames) }
-                .map { collect(linters: $0.0, visitor: visitor, storage: storage, duplicateFileNames: $0.1) }
-                .map { visit(linters: $0.0, visitor: visitor, storage: storage, duplicateFileNames: $0.1) }
+        return Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
+            getFiles(with: visitor)
+        }
+        .flatMap { files in
+            Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
+                groupFiles(files, visitor: visitor)
+            }
+        }
+        .map { file in
+            Signposts.record(name: "Configuration.VisitLintableFiles.LintersForFile") {
+                linters(for: file, visitor: visitor)
+            }
+        }
+        .map { linters in
+            Signposts.record(name: "Configuration.VisitLintableFiles.DuplicateFileNames") {
+                (linters, linters.duplicateFileNames)
+            }
+        }
+        .map { linters, duplicateFileNames in
+            Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
+                collect(linters: linters, visitor: visitor, storage: storage, duplicateFileNames: duplicateFileNames)
+            }
+        }
+        .map { linters, duplicateFileNames in
+            Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
+                visit(linters: linters, visitor: visitor, storage: storage, duplicateFileNames: duplicateFileNames)
+            }
+        }
     }
 
     private func groupFiles(_ files: [SwiftLintFile],
@@ -180,7 +202,9 @@ extension Configuration {
             }
 
             autoreleasepool {
-                visitor.block(linter)
+                Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+                    visitor.block(linter)
+                }
             }
             return linter.file
         }

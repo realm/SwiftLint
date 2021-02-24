@@ -26,7 +26,9 @@ enum LintOrAnalyzeMode {
 
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
-        return options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+        return Signposts.record(name: "LintOrAnalyzeCommand.run") {
+            options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+        }
     }
 
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
@@ -34,7 +36,9 @@ struct LintOrAnalyzeCommand {
         var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
         let storage = RuleStorage()
-        let configuration = Configuration(options: options)
+        let configuration = Signposts.record(name: "LintOrAnalyzeCommand.ParseConfiguration") {
+            Configuration(options: options)
+        }
         let reporter = reporterFrom(optionsReporter: options.reporter, configuration: configuration)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
@@ -58,24 +62,26 @@ struct LintOrAnalyzeCommand {
             linter.file.invalidateCache()
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if isWarningThresholdBroken(configuration: configuration, violations: violations)
-                && !options.lenient {
-                violations.append(createThresholdViolation(threshold: configuration.warningThreshold!))
-                reporter.report(violations: [violations.last!], realtimeCondition: true)
+            Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
+                if isWarningThresholdBroken(configuration: configuration, violations: violations)
+                    && !options.lenient {
+                    violations.append(createThresholdViolation(threshold: configuration.warningThreshold!))
+                    reporter.report(violations: [violations.last!], realtimeCondition: true)
+                }
+                reporter.report(violations: violations, realtimeCondition: false)
+                let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
+                if !options.quiet {
+                    printStatus(violations: violations, files: files, serious: numberOfSeriousViolations,
+                                verb: options.verb)
+                }
+                if options.benchmark {
+                    fileBenchmark.save()
+                    ruleBenchmark.save()
+                }
+                try? cache?.save()
+                guard numberOfSeriousViolations == 0 else { exit(2) }
+                return .success(())
             }
-            reporter.report(violations: violations, realtimeCondition: false)
-            let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
-            if !options.quiet {
-                printStatus(violations: violations, files: files, serious: numberOfSeriousViolations,
-                            verb: options.verb)
-            }
-            if options.benchmark {
-                fileBenchmark.save()
-                ruleBenchmark.save()
-            }
-            try? cache?.save()
-            guard numberOfSeriousViolations == 0 else { exit(2) }
-            return .success(())
         }
     }
 

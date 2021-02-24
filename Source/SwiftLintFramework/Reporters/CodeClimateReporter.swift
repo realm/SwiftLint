@@ -29,7 +29,7 @@ public struct CodeClimateReporter: Reporter {
             "engine_name": "SwiftLint",
             "fingerprint": generateFingerprint(violation),
             "location": [
-                "path": violation.location.file ?? NSNull() as Any,
+                "path": violation.location.relativeFile ?? NSNull() as Any,
                 "lines": [
                     "begin": violation.location.line ?? NSNull() as Any,
                     "end": violation.location.line ?? NSNull() as Any

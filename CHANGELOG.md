@@ -62,6 +62,9 @@
   performance.  
   [jpsim](https://github.com/jpsim)
 
+* Update CodeClimateReporter to produce relative paths.  
+  [bmwalters](https://github.com/bmwalters)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

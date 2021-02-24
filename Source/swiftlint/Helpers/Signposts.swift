@@ -10,6 +10,7 @@ struct Signposts {
     }
 
     static func record<R>(name: StaticString, span: Span = .timeline, body: () -> R) -> R {
+#if canImport(os)
         if #available(OSX 10.14, *) {
             let log: OSLog
             let description: String?
@@ -35,8 +36,8 @@ struct Signposts {
                 os_signpost(.end, log: log, name: name, signpostID: signpostID)
             }
             return result
-        } else {
-            return body()
         }
+#endif
+        return body()
     }
 }

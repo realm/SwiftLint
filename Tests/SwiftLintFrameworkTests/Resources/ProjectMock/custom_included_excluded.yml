@@ -1,5 +1,0 @@
-included:
-  - "File1.swift"
-
-excluded:
-  - "File2.swift"

@@ -38,10 +38,15 @@ internal extension ConfigurationTests {
             static var _0: String { Dir.level0.stringByAppendingPathComponent(Configuration.defaultFileName) }
             static var _0Custom: String { Dir.level0.stringByAppendingPathComponent("custom.yml") }
             static var _0CustomRules: String { Dir.level0.stringByAppendingPathComponent("custom_rules.yml") }
+            static var _0CustomRulesOnly: String { Dir.level0.stringByAppendingPathComponent("custom_rules_only.yml") }
             static var _2: String { Dir.level2.stringByAppendingPathComponent(Configuration.defaultFileName) }
             static var _2CustomRules: String { Dir.level2.stringByAppendingPathComponent("custom_rules.yml") }
+            static var _2CustomRulesOnly: String { Dir.level2.stringByAppendingPathComponent("custom_rules_only.yml") }
             static var _2CustomRulesDisabled: String {
                 Dir.level2.stringByAppendingPathComponent("custom_rules_disabled.yml")
+            }
+            static var _2CustomRulesReconfig: String {
+                Dir.level2.stringByAppendingPathComponent("custom_rules_reconfig.yml")
             }
             static var _3: String { Dir.level3.stringByAppendingPathComponent(Configuration.defaultFileName) }
             static var nested: String { Dir.nested.stringByAppendingPathComponent(Configuration.defaultFileName) }
@@ -61,10 +66,15 @@ internal extension ConfigurationTests {
             static var _0: Configuration { Configuration(configurationFiles: []) }
             static var _0Custom: Configuration { Configuration(configurationFiles: [Yml._0Custom]) }
             static var _0CustomRules: Configuration { Configuration(configurationFiles: [Yml._0CustomRules]) }
+            static var _0CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._0CustomRulesOnly]) }
             static var _2: Configuration { Configuration(configurationFiles: [Yml._2]) }
             static var _2CustomRules: Configuration { Configuration(configurationFiles: [Yml._2CustomRules]) }
+            static var _2CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._2CustomRulesOnly]) }
             static var _2CustomRulesDisabled: Configuration {
                 Configuration(configurationFiles: [Yml._2CustomRulesDisabled])
+            }
+            static var _2CustomRulesReconfig: Configuration {
+                Configuration(configurationFiles: [Yml._2CustomRulesReconfig])
             }
             static var _3: Configuration { Configuration(configurationFiles: [Yml._3]) }
             static var nested: Configuration { Configuration(configurationFiles: [Yml.nested]) }

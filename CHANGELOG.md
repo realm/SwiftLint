@@ -76,6 +76,21 @@
 
 #### Bug Fixes
 
+* Fix `custom_rules` merging when the parent configuration is based on
+  `only_rules`.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#3468](https://github.com/realm/SwiftLint/issues/3468)
+
+* Fix misleading warnings about rules defined in the `custom_rules` not
+  being available (when using multiple configurations).  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#3472](https://github.com/realm/SwiftLint/issues/3472)
+  
+* Fix bug that prevented the reconfiguration of a custom rule in a child
+  config.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#3477](https://github.com/realm/SwiftLint/issues/3477)
+  
 * Fix typos in configuration options for `file_name` rule.  
   [advantis](https://github.com/advantis)
   

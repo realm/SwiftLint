@@ -64,5 +64,19 @@ public extension Configuration {
                 return .allEnabled
             }
         }
+
+        internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> RulesMode {
+            // In the only mode, if the custom rules rule is enabled, all custom rules are also enabled implicitly
+            // This method makes the implicity explicit
+            switch self {
+            case let .only(onlyRules) where onlyRules.contains { $0 == CustomRules.description.identifier }:
+                let customRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule as? CustomRules
+                let customRuleIdentifiers = customRulesRule?.configuration.customRuleConfigurations.map(\.identifier)
+                return .only(onlyRules.union(Set(customRuleIdentifiers ?? [])))
+
+            default:
+                return self
+            }
+        }
     }
 }

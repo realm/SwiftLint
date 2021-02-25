@@ -5,7 +5,6 @@ import SourceKittenFramework
 /// and is preferred in case of conflicts!
 
 extension Configuration {
-    // MARK: - Subtypes
     // MARK: - Methods: Merging
     internal func merged(
         withChild childConfiguration: Configuration,

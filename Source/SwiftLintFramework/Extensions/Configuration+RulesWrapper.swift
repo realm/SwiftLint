@@ -28,7 +28,7 @@ internal extension Configuration {
             resultingRulesLock.lock()
             defer { resultingRulesLock.unlock() }
 
-            // Return existing value if there
+            // Return existing value if it's available
             if let cachedResultingRules = cachedResultingRules { return cachedResultingRules }
 
             // Calculate value
@@ -98,11 +98,18 @@ internal extension Configuration {
         init(
             mode: RulesMode,
             allRulesWrapped: [ConfigurationRuleWrapper],
-            aliasResolver: @escaping (String) -> String
+            aliasResolver: @escaping (String) -> String,
+            originatesFromMergingProcess: Bool = false
         ) {
             self.allRulesWrapped = allRulesWrapped
             self.aliasResolver = aliasResolver
-            self.mode = mode.applied(aliasResolver: aliasResolver)
+            let mode = mode.applied(aliasResolver: aliasResolver)
+
+            // If this instance originates from a merging process, some custom rules may be treated as not activated
+            // Otherwise, custom rules should be treated as implicitly activated
+            self.mode = originatesFromMergingProcess
+                ? mode
+                : mode.activateCustomRuleIdentifiers(allRulesWrapped: allRulesWrapped)
         }
 
         // MARK: - Methods: Validation
@@ -146,20 +153,7 @@ internal extension Configuration {
                     validRuleIdentifiers: validRuleIdentifiers
                 )
 
-            case var .only(childOnlyRules):
-                // If the custom_rules rule is enabled, add all rules defined by the child's custom_rules rule
-                if (childOnlyRules.contains { $0 == CustomRules.description.identifier }),
-                    let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
-                        as? CustomRules {
-                    childOnlyRules = childOnlyRules.union(
-                        Set(
-                            childCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
-                        )
-                    )
-                }
-
-                childOnlyRules = child.validate(ruleIds: childOnlyRules, valid: validRuleIdentifiers)
-
+            case let .only(childOnlyRules):
                 // Always use the child only rules
                 newMode = .only(childOnlyRules)
 
@@ -172,7 +166,8 @@ internal extension Configuration {
             return RulesWrapper(
                 mode: newMode,
                 allRulesWrapped: mergedCustomRules(newAllRulesWrapped: newAllRulesWrapped, with: child),
-                aliasResolver: { child.aliasResolver(self.aliasResolver($0)) }
+                aliasResolver: { child.aliasResolver(self.aliasResolver($0)) },
+                originatesFromMergingProcess: true
             )
         }
 
@@ -247,22 +242,14 @@ internal extension Configuration {
                 )
 
             case var .only(onlyRules):
-                // Add identifiers of custom rules iff the custom_rules rule is enabled
+                // Also add identifiers of child custom rules iff the custom_rules rule is enabled
+                // (parent custom rules are already added)
                 if (onlyRules.contains { $0 == CustomRules.description.identifier }) {
                     if let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
                         as? CustomRules {
                         onlyRules = onlyRules.union(
                             Set(
                                 childCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
-                            )
-                        )
-                    }
-
-                    if let parentCustomRulesRule = (self.allRulesWrapped.first { $0.rule is CustomRules })?.rule
-                        as? CustomRules {
-                        onlyRules = onlyRules.union(
-                            Set(
-                                parentCustomRulesRule.configuration.customRuleConfigurations.map { $0.identifier }
                             )
                         )
                     }

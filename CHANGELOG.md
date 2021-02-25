@@ -15,6 +15,11 @@
   works and we'll attempt to add a bridge to help with its transition.  
   [JP Simard](https://github.com/jpsim)
 
+* The `discarded_notification_center_observer` is not opt-in due to some
+  difficult to resolve false positives, such as
+  [#3498](https://github.com/realm/SwiftLint/issues/3498).  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

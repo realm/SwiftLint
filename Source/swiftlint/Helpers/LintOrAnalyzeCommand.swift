@@ -167,7 +167,7 @@ struct LintOrAnalyzeCommand {
                 let pluralSuffix = { (collection: [Any]) -> String in
                     return collection.count != 1 ? "s" : ""
                 }
-                queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
+                queuedPrintError("Done inspecting \(files.count) file\(pluralSuffix(files)) for auto-correction!")
             }
             return .success(())
         }

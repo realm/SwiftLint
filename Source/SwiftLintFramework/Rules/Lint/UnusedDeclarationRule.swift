@@ -119,7 +119,7 @@ private extension SwiftLintFile {
     func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
                       compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
     -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        return Set(index.traverseEntities { indexEntity in
+        return Set(index.traverseEntitiesDepthFirst { indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })

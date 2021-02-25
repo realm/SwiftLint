@@ -68,10 +68,11 @@
 * Add Bool violation reporting in `redundant_type_annotation`.  
   [Artem Garmash](https://github.com/agarmash)
   [#3423](https://github.com/realm/SwiftLint/issues/3423)
-* Add opt-in rule `capture_variable` to warn about listing a non-constant
-  (`var`) variable in a closure's capture list. This captures the variable's
-  value at closure creation time instead of closure call time, which may be
-  unexpected.
+
+* Add a new `capture_variable` analyzer rule to warn about listing a
+  non-constant (`var`) variable in a closure's capture list. This
+  captures the variable's value at closure creation time instead of
+  closure call time, which may be unexpected.  
   [Laszlo Kustra](https://github.com/kustra)
 
 #### Bug Fixes

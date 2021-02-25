@@ -88,6 +88,26 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(only, configuredIdentifiers)
     }
 
+    func testOnlyRulesWithCustomRules() {
+        // All custom rules from a config file should be active if the `custom_rules` is included in the `only_rules`
+        // As the behavior is different for custom rules from parent configs, this test is helpful
+        let only = ["custom_rules"]
+        let customRuleIdentifier = "my_custom_rule"
+        let customRules = [customRuleIdentifier: ["name": "A name for this custom rule", "regex": "this is illegal"]]
+
+        // swiftlint:disable:next force_try
+        let config = try! Configuration(dict: ["only_rules": only, "custom_rules": customRules])
+        guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
+            else {
+            return XCTFail("Custom rules are expected to be present")
+        }
+        XCTAssertTrue(
+            resultingCustomRules.configuration.customRuleConfigurations.contains {
+                $0.identifier == customRuleIdentifier
+            }
+        )
+    }
+
     func testWarningThreshold_value() {
         // swiftlint:disable:next force_try
         let config = try! Configuration(dict: ["warning_threshold": 5])

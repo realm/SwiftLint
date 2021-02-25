@@ -103,7 +103,31 @@ extension ConfigurationTests {
         )
     }
 
-    func testCustomRulesMergingWithOnlyRules() {
+    func testCustomRulesMergingWithOnlyRulesCase1() {
+        // The base configuration is in only rules mode
+        // The child configuration is in the default rules mode
+        // => all custom rules should be considered
+        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
+            withChild: Mock.Config._2CustomRules,
+            rootDirectory: ""
+        )
+        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+            else {
+            return XCTFail("Custom rules are expected to be present")
+        }
+        XCTAssertTrue(
+            mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
+        )
+        XCTAssertTrue(
+            mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" }
+        )
+    }
+
+    func testCustomRulesMergingWithOnlyRulesCase2() {
+        // The base configuration is in only rules mode
+        // The child configuration is in the only rules mode
+        // => only the custom rules from the child configuration should be considered
+        // (because custom rules from base configuration would require explicit mention as one of the `only_rules`)
         let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRulesOnly,
             rootDirectory: ""
@@ -112,7 +136,7 @@ extension ConfigurationTests {
             else {
             return XCTFail("Custom rules are expected to be present")
         }
-        XCTAssertTrue(
+        XCTAssertFalse(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
         )
         XCTAssertTrue(

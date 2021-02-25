@@ -43,6 +43,7 @@
 * Add opt-in rule `private_subject` rule which warns against
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
+
 * Tweak the auto-correction result console output for clarity.  
   [mokagio](https://github.com/mokagio)
   [#3522](https://github.com/realm/SwiftLint/issues/3522)

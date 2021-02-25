@@ -1,6 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
+private let moduleToLog = ProcessInfo.processInfo.environment["SWIFTLINT_LOG_MODULE_USAGE"]
+
 public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
     public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
                                                          allowedTransitiveImports: [], alwaysKeepImports: [])
@@ -261,6 +263,11 @@ private extension SwiftLintFile {
     func appendUsedImports(cursorInfo: SourceKittenDictionary, usrFragments: inout Set<String>) {
         if let rootModuleName = cursorInfo.moduleName?.split(separator: ".").first.map(String.init) {
             usrFragments.insert(rootModuleName)
+            if rootModuleName == moduleToLog, let filePath = path, let usr = cursorInfo.value["key.usr"] as? String {
+                queuedPrintError(
+                    "[SWIFTLINT_LOG_MODULE_USAGE] \(rootModuleName) referenced by USR '\(usr)' in file '\(filePath)'"
+                )
+            }
         }
     }
 }

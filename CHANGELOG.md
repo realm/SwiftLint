@@ -74,6 +74,11 @@
   [Artem Garmash](https://github.com/agarmash)
   [#3423](https://github.com/realm/SwiftLint/issues/3423)
 
+* Log references to a specified module when running the `unused_import`
+  by setting the `SWIFTLINT_LOG_MODULE_USAGE=<module-name>` environment
+  variable when running analyze.  
+  [jpsim](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix typos in configuration options for `file_name` rule.  

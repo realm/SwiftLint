@@ -3,6 +3,8 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length type_body_length
+
 private let optInRules = primaryRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 class ConfigurationTests: XCTestCase {

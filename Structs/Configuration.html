@@ -434,7 +434,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">includedPaths</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">includedPaths</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -464,7 +464,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">excludedPaths</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">excludedPaths</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -714,7 +714,8 @@ was used to explicitly specify the default <code>.swiftlint.yml</code> as the co
                       <div class="abstract">
                         <p>The root directory is the directory that included &amp; excluded paths relate to.
 By default, the root directory is the current working directory,
-but in some merging algorithms it is used differently.</p>
+but during some merging algorithms it may be used differently.
+The rootDirectory also serves as the stopping point when searching for nested configs along the file hierarchy.</p>
 
                       </div>
                       <div class="declaration">
@@ -726,7 +727,7 @@ but in some merging algorithms it is used differently.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L50">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L51">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -756,7 +757,7 @@ but in some merging algorithms it is used differently.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L53">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L54">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -888,7 +889,7 @@ but in some merging algorithms it is used differently.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L172-L239">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L173-L240">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1410,7 +1411,7 @@ nested configurations in the directory inheritance graph present until the level
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L268-L279">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L281-L292">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1439,7 +1440,7 @@ nested configurations in the directory inheritance graph present until the level
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L281-L292">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L294-L305">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1481,7 +1482,7 @@ nested configurations in the directory inheritance graph present until the level
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L297-L308">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Models/Configuration.swift#L310-L321">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

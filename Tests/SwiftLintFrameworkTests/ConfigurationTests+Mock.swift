@@ -36,7 +36,7 @@ internal extension ConfigurationTests {
         // MARK: YAML File Paths
         enum Yml {
             static var _0: String { Dir.level0.stringByAppendingPathComponent(Configuration.defaultFileName) }
-            static var _0CustomPath: String { Dir.level0.stringByAppendingPathComponent("custom.yml") }
+            static var _0Custom: String { Dir.level0.stringByAppendingPathComponent("custom.yml") }
             static var _0CustomRules: String { Dir.level0.stringByAppendingPathComponent("custom_rules.yml") }
             static var _0CustomRulesOnly: String { Dir.level0.stringByAppendingPathComponent("custom_rules_only.yml") }
             static var _2: String { Dir.level2.stringByAppendingPathComponent(Configuration.defaultFileName) }
@@ -64,7 +64,7 @@ internal extension ConfigurationTests {
         // MARK: Configurations
         enum Config {
             static var _0: Configuration { Configuration(configurationFiles: []) }
-            static var _0CustomPath: Configuration { Configuration(configurationFiles: [Yml._0CustomPath]) }
+            static var _0Custom: Configuration { Configuration(configurationFiles: [Yml._0Custom]) }
             static var _0CustomRules: Configuration { Configuration(configurationFiles: [Yml._0CustomRules]) }
             static var _0CustomRulesOnly: Configuration { Configuration(configurationFiles: [Yml._0CustomRulesOnly]) }
             static var _2: Configuration { Configuration(configurationFiles: [Yml._2]) }

@@ -15,6 +15,14 @@
   works and we'll attempt to add a bridge to help with its transition.  
   [JP Simard](https://github.com/jpsim)
 
+* Configuration files now consistently have their `included`/`excluded`
+  relative file paths applied relative to their location in the file
+  system. Previously the root configuration file applied these relative
+  to the current working directory, but nested configurations applied
+  these to their location in the file system.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [JP Simard](https://github.com/jpsim)
+
 * The `discarded_notification_center_observer` is not opt-in due to some
   difficult to resolve false positives, such as
   [#3498](https://github.com/realm/SwiftLint/issues/3498).  
@@ -102,6 +110,11 @@
   
 * Fix typos in configuration options for `file_name` rule.  
   [advantis](https://github.com/advantis)
+  
+* Fix issue that prevented the inclusion of a configuration file from a
+  parent folder.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#3485](https://github.com/realm/SwiftLint/issues/3485)
 
 * Fix violation location and misplaced corrections for some function
   references in `explicit_self` rule.  

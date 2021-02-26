@@ -237,7 +237,15 @@ internal extension Configuration {
                 dict: firstConfigurationData.configurationDict,
                 enableAllRules: enableAllRules
             )
-            firstConfiguration.fileGraph = FileGraph(rootDirectory: firstConfigurationData.rootDirectory)
+
+            // Set the config's rootDirectory to rootDirectory (+ adjust included / excluded paths that relate to it).
+            // firstConfigurationData.rootDirectory may be different from rootDirectory,
+            // e. g. when ../file.yml is passed as the first config
+            firstConfiguration.fileGraph = FileGraph(rootDirectory: rootDirectory)
+            firstConfiguration.makeIncludedAndExcludedPaths(
+                relativeTo: rootDirectory,
+                previousBasePath: firstConfigurationData.rootDirectory
+            )
 
             // Build succeeding configurations
             return try configurationData.reduce(firstConfiguration) {

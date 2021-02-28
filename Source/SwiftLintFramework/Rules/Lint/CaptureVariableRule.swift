@@ -12,7 +12,8 @@ public struct CaptureVariableRule: AutomaticTestableRule, ConfigurationProviderR
     public static let description = RuleDescription(
         identifier: "capture_variable",
         name: "Capture Variable",
-        description: "Non-constant variables should not be captured.",
+        description: "Non-constant variables should not be listed in a closure's capture list" +
+            " to avoid confusion about closures capturing variables at creation time.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -48,6 +49,29 @@ public struct CaptureVariableRule: AutomaticTestableRule, ConfigurationProviderR
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
+            """),
+            Example("""
+            var j: Int!
+            j = 0
+
+            let closure: () -> Void = { [j] in
+                print(j)
+            }
+
+            closure()
+            j = 1
+            closure()
+            """),
+            Example("""
+            lazy var j: Int = { 0 }()
+
+            let closure: () -> Void = { [j] in
+                print(j)
+            }
+
+            closure()
+            j = 1
+            closure()
             """)
         ],
         triggeringExamples: [
@@ -222,10 +246,14 @@ private extension SwiftLintFile {
     static func declaredVariableOffsets(parentStructure: SourceKittenDictionary) -> Set<ByteCount> {
         Set(
             parentStructure.traverseDepthFirst {
+                let hasSetter = $0.setterAccessibility != nil
+                let isAutoUnwrap = $0.typeName?.hasSuffix("!") ?? false
                 guard
+                    hasSetter,
+                    !isAutoUnwrap,
                     let declarationKind = $0.declarationKind,
                     checkedDeclarationKinds.contains(declarationKind),
-                    $0.setterAccessibility != nil,
+                    !$0.enclosedSwiftAttributes.contains(.lazy),
                     let nameOffset = $0.nameOffset
                 else { return [] }
                 return [nameOffset]

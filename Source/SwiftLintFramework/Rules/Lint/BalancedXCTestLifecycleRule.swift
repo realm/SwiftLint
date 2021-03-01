@@ -1,14 +1,14 @@
 import SourceKittenFramework
 
-public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     // MARK: - Properties
 
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(
-        identifier: "required_xctest_teardown",
-        name: "Required XCTest Tear Down",
-        description: "Test classes must implement tearDown when setUp is provided.",
+        identifier: "balanced_xctest_lifecycle",
+        name: "Balanced XCTest life-cycle",
+        description: "Test classes must implement balanced setUp and tearDown methods.",
         kind: .lint,
         nonTriggeringExamples: [
             Example(#"""

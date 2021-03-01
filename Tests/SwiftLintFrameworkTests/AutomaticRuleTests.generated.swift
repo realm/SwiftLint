@@ -1,6 +1,5 @@
-// Generated using Sourcery 1.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.2.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 import SwiftLintFramework
 import XCTest
 
@@ -15,6 +14,12 @@ class AnyObjectProtocolRuleTests: XCTestCase {
 class ArrayInitRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
+    }
+}
+
+class BalancedXCTestLifecycleRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(BalancedXCTestLifecycleRule.description)
     }
 }
 
@@ -663,12 +668,6 @@ class RedundantVoidReturnRuleTests: XCTestCase {
 class RequiredDeinitRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RequiredDeinitRule.description)
-    }
-}
-
-class RequiredXCTestTearDownRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RequiredXCTestTearDownRule.description)
     }
 }
 

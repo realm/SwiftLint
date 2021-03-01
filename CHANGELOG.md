@@ -48,8 +48,8 @@
   `assert(false)`.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
-* Adds `required_xctest_teardown` opt-in rule to enforce `tearDown` when 
-  `setUp` is implemented in a test class.  
+* Adds `balanced_xctest_lifecycle` opt-in rule to enforce balanced `setUp`
+  and `tearDown` methods in a test class.  
   [Otavio Cordeiro](https://github.com/otaviocc)
   [#3452](https://github.com/realm/SwiftLint/issues/3452)
 

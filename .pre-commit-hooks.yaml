@@ -1,7 +1,7 @@
--   id: swiftlint
-    name: SwiftLint
-    description: "Check swift files for issues with SwiftLint"
-    entry: swiftlint
-    language: swift
-    types: [swift]
-    pass_filenames: false
+- id: swiftlint
+  name: SwiftLint
+  description: "Check swift files for issues with SwiftLint"
+  entry: "swiftlint --quiet --"
+  language: swift
+  types: [swift]
+  pass_filenames: true

@@ -4,3 +4,4 @@
     entry: swiftlint
     language: swift
     types: [swift]
+    pass_filenames: false

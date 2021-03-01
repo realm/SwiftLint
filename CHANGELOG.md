@@ -48,9 +48,10 @@
   `assert(false)`.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
-* Add opt-in rule `private_subject` rule which warns against
-  public Combine subjects.  
+* Adds `balanced_xctest_lifecycle` opt-in rule to enforce balanced `setUp`
+  and `tearDown` methods in a test class.  
   [Otavio Cordeiro](https://github.com/otaviocc)
+  [#3452](https://github.com/realm/SwiftLint/issues/3452)
 
 * Tweak the auto-correction result console output for clarity.  
   [mokagio](https://github.com/mokagio)
@@ -90,6 +91,10 @@
   by setting the `SWIFTLINT_LOG_MODULE_USAGE=<module-name>` environment
   variable when running analyze.  
   [jpsim](https://github.com/jpsim)
+
+* Add opt-in rule `private_subject` rule which warns against
+  public Combine subjects.  
+  [Otavio Cordeiro](https://github.com/otaviocc)
 
 #### Bug Fixes
 

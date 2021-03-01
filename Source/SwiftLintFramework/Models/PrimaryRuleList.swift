@@ -155,6 +155,7 @@ public let primaryRuleList = RuleList(rules: [
     RedundantVoidReturnRule.self,
     RequiredDeinitRule.self,
     RequiredEnumCaseRule.self,
+    BalancedXCTestLifecycleRule.self,
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
     SingleTestClassRule.self,

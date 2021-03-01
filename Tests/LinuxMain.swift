@@ -1,6 +1,5 @@
-// Generated using Sourcery 1.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.2.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 @testable import SwiftLintFrameworkTests
 import XCTest
 
@@ -31,6 +30,12 @@ extension AttributesRuleTests {
         ("testAttributesWithAlwaysOnSameLine", testAttributesWithAlwaysOnSameLine),
         ("testAttributesWithAlwaysOnLineAbove", testAttributesWithAlwaysOnLineAbove),
         ("testAttributesWithAttributesOnLineAboveButOnOtherDeclaration", testAttributesWithAttributesOnLineAboveButOnOtherDeclaration)
+    ]
+}
+
+extension BalancedXCTestLifecycleRuleTests {
+    static var allTests: [(String, (BalancedXCTestLifecycleRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -185,12 +190,15 @@ extension ConfigurationTests {
         ("testInitWithRelativePathAndRootPath", testInitWithRelativePathAndRootPath),
         ("testEnableAllRulesConfiguration", testEnableAllRulesConfiguration),
         ("testOnlyRules", testOnlyRules),
+        ("testOnlyRulesWithCustomRules", testOnlyRulesWithCustomRules),
         ("testWarningThreshold_value", testWarningThreshold_value),
         ("testWarningThreshold_nil", testWarningThreshold_nil),
         ("testOtherRuleConfigurationsAlongsideOnlyRules", testOtherRuleConfigurationsAlongsideOnlyRules),
         ("testDisabledRules", testDisabledRules),
         ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
         ("testDuplicatedRules", testDuplicatedRules),
+        ("testIncludedExcludedRelativeLocationLevel1", testIncludedExcludedRelativeLocationLevel1),
+        ("testIncludedExcludedRelativeLocationLevel0", testIncludedExcludedRelativeLocationLevel0),
         ("testExcludedPaths", testExcludedPaths),
         ("testForceExcludesFile", testForceExcludesFile),
         ("testForceExcludesFileNotPresentInExcluded", testForceExcludesFileNotPresentInExcluded),
@@ -220,6 +228,9 @@ extension ConfigurationTests {
         ("testOnlyRulesMerging", testOnlyRulesMerging),
         ("testCustomRulesMerging", testCustomRulesMerging),
         ("testMergingAllowsDisablingParentsCustomRules", testMergingAllowsDisablingParentsCustomRules),
+        ("testCustomRulesMergingWithOnlyRulesCase1", testCustomRulesMergingWithOnlyRulesCase1),
+        ("testCustomRulesMergingWithOnlyRulesCase2", testCustomRulesMergingWithOnlyRulesCase2),
+        ("testCustomRulesReconfiguration", testCustomRulesReconfiguration),
         ("testLevel0", testLevel0),
         ("testLevel1", testLevel1),
         ("testLevel2", testLevel2),
@@ -1785,6 +1796,7 @@ XCTMain([
     testCase(AnyObjectProtocolRuleTests.allTests),
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
+    testCase(BalancedXCTestLifecycleRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),

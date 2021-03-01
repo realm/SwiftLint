@@ -81,7 +81,26 @@ public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProvider
             """#),
             Example(#"""
             final class ↓FooTests: XCTestCase {
-                class func setUp() {}
+                class func tearDown() {}
+            }
+            """#),
+            Example(#"""
+            final class ↓FooTests: XCTestCase {
+                override func tearDown() {}
+            }
+            """#),
+            Example(#"""
+            final class ↓FooTests: XCTestCase {
+                override func tearDownWithError() throws {}
+            }
+            """#),
+            Example(#"""
+            final class FooTests: XCTestCase {
+                override func setUp() {}
+                override func tearDownWithError() throws {}
+            }
+            final class ↓BarTests: XCTestCase {
+                override func tearDownWithError() throws {}
             }
             """#)
         ]
@@ -112,8 +131,7 @@ public struct RequiredXCTestTearDownRule: Rule, OptInRule, ConfigurationProvider
             .compactMap { XCTMethod($0.name) }
 
         guard
-            methods.contains(.setUp) == true,
-            methods.contains(.tearDown) == false,
+            methods.contains(.setUp) != methods.contains(.tearDown),
             let offset = dictionary.nameOffset
         else {
             return nil

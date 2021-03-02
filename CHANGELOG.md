@@ -128,6 +128,9 @@
 * Fix false positives with result builders in `unused_declaration`.  
   [JP Simard](https://github.com/jpsim)
 
+* Find more unused declarations in `unused_declaration`.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.42.0: He Chutes, He Scores
 
 #### Breaking

@@ -28,6 +28,15 @@ extension Array where Element: Hashable {
         }
         return nil
     }
+
+    var unique: [Element] {
+        var uniqueValues = [Element]()
+        var added = Set<Element>()
+        for item in self where added.insert(item).inserted {
+            uniqueValues.append(item)
+        }
+        return uniqueValues
+    }
 }
 
 extension Array {

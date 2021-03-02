@@ -261,6 +261,14 @@ struct UnusedDeclarationRuleExamples {
         public final class Foo: NSObject {
             @IBInspectable var ↓bar: String!
         }
+        """),
+        Example("""
+        import Foundation
+
+        final class Foo: NSObject {}
+        final class ↓Bar {
+            var ↓foo = Foo()
+        }
         """)
     ]
 #else

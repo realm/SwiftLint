@@ -15,7 +15,7 @@ require 'erb'
 
 @options = {
   branch: 'HEAD',
-  iterations: 1,
+  iterations: 5,
   skip_clean: false,
   verbose: false
 }
@@ -292,7 +292,17 @@ end
 @working_dir = 'osscheck'
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
-  Repo.new('Alamofire', 'Alamofire/Alamofire')
+  Repo.new('Alamofire', 'Alamofire/Alamofire'),
+  Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
+  Repo.new('Kickstarter', 'kickstarter/ios-oss'),
+  Repo.new('Moya', 'Moya/Moya'),
+  Repo.new('Nimble', 'Quick/Nimble'),
+  Repo.new('Quick', 'Quick/Quick'),
+  Repo.new('Realm', 'realm/realm-cocoa'),
+  Repo.new('SourceKitten', 'jpsim/SourceKitten'),
+  Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
+  Repo.new('Swift', 'apple/swift'),
+  Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
 
 # Clean up

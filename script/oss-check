@@ -15,7 +15,7 @@ require 'erb'
 
 @options = {
   branch: 'HEAD',
-  iterations: 5,
+  iterations: 1,
   skip_clean: false,
   verbose: false
 }
@@ -204,7 +204,7 @@ def build(branch)
   if File.directory?(dir)
     perform("cd #{dir}; git checkout #{target}")
   else
-    perform("git fetch && git worktree add --detach #{dir} #{target}")
+    perform("git worktree add --detach #{dir} #{target}")
   end
 
   Dir.chdir(dir) do
@@ -238,8 +238,8 @@ def diff_and_report_changes_to_danger
       next
     end
 
-    branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt")
-    master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt")
+    branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt").sort
+    master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt").sort
 
     (master - branch).each do |fixed|
       escaped_message = ERB::Util.html_escape remove_base_path(repo, fixed)
@@ -263,7 +263,7 @@ end
 
 def set_globals
   @effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`.chomp
-  @changed_swift_files = `git diff --diff-filter=d #{@effective_master_commitish} --name-only | grep "\.swift$" || true`.split("\n")
+  @changed_swift_files = `git diff --diff-filter=AMRCU #{@effective_master_commitish} --name-only | grep "\.swift$" || true`.split("\n")
   @changed_rule_files = @changed_swift_files.select do |file|
     file.start_with? 'Source/SwiftLintFramework/Rules/'
   end
@@ -292,17 +292,7 @@ end
 @working_dir = 'osscheck'
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
-  Repo.new('Alamofire', 'Alamofire/Alamofire'),
-  Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
-  Repo.new('Kickstarter', 'kickstarter/ios-oss'),
-  Repo.new('Moya', 'Moya/Moya'),
-  Repo.new('Nimble', 'Quick/Nimble'),
-  Repo.new('Quick', 'Quick/Quick'),
-  Repo.new('Realm', 'realm/realm-cocoa'),
-  Repo.new('SourceKitten', 'jpsim/SourceKitten'),
-  Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
-  Repo.new('Swift', 'apple/swift'),
-  Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
+  Repo.new('Alamofire', 'Alamofire/Alamofire')
 ]
 
 # Clean up
@@ -311,11 +301,11 @@ clean_up unless @options[:skip_clean]
 # Prep
 $stdout.sync = true
 validate_state_to_run
+fetch_origin
 set_globals
 print_rules_changed
 setup_repos
 make_directory_structure
-fetch_origin
 
 # Build & generate reports for branch & master
 %w[branch master].each do |branch|

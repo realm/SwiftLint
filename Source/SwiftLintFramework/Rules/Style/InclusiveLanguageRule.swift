@@ -25,7 +25,7 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
             else { return [] }
 
         let lowercased = name.lowercased()
-        let violationTerm = configuration.allTerms.first { term in
+        let violationTerm = configuration.allTerms.sorted().first { term in
             guard let range = lowercased.range(of: term) else { return false }
             let overlapsAllowedTerm = configuration.allAllowedTerms.contains { allowedTerm in
                 guard let allowedRange = lowercased.range(of: allowedTerm) else { return false }

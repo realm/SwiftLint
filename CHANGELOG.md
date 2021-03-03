@@ -137,6 +137,11 @@
 * Find more unused declarations in `unused_declaration`.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix parsing xcode logs for analyzer rules for target names with
+  spaces.  
+  [JP Simard](https://github.com/jpsim)
+  [#3021](https://github.com/realm/SwiftLint/issues/3021)
+
 ## 0.42.0: He Chutes, He Scores
 
 #### Breaking

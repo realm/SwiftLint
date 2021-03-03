@@ -6,15 +6,14 @@ typealias File = String
 typealias Arguments = [String]
 
 enum CompilerInvocations {
-    case buildLog(compilerInvocations: [String])
+    case buildLog(compilerInvocations: [[String]])
     case compilationDatabase(compileCommands: [File: Arguments])
 
     func arguments(forFile path: String?) -> [String] {
         return path.flatMap { path in
             switch self {
             case let .buildLog(compilerInvocations):
-                return CompilerArgumentsExtractor
-                    .compilerArgumentsForFile(path, compilerInvocations: compilerInvocations)
+                return compilerInvocations.first(where: { $0.contains(path) })
             case let .compilationDatabase(compileCommands):
                 return compileCommands[path] ??
                     compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
@@ -166,7 +165,7 @@ struct LintableFilesVisitor {
         return .failure(.usageError(description: "Could not read compiler invocations"))
     }
 
-    private static func loadLogCompilerInvocations(_ path: String) -> [String]? {
+    private static func loadLogCompilerInvocations(_ path: String) -> [[String]]? {
         if let data = FileManager.default.contents(atPath: path),
             let logContents = String(data: data, encoding: .utf8) {
             if logContents.isEmpty {
@@ -198,7 +197,7 @@ struct LintableFilesVisitor {
                 return .failure(.malformedFile(path, index))
             }
 
-            guard var arguments = entry["arguments"] as? [String] else {
+            guard let arguments = entry["arguments"] as? [String] else {
                 return .failure(.malformedArguments(path, index))
             }
 
@@ -206,12 +205,7 @@ struct LintableFilesVisitor {
                 return .failure(.missingFileInArguments(path, index, arguments))
             }
 
-            // Compilation databases include the compiler, but it's left out when sending to SourceKit.
-            if arguments.first == "swiftc" {
-                arguments.removeFirst()
-            }
-
-            commands[file] = CompilerArgumentsExtractor.filterCompilerArguments(arguments)
+            commands[file] = arguments.filteringCompilerArguments
         }
 
         return .success(commands)

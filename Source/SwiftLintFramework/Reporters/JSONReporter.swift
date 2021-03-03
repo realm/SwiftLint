@@ -23,6 +23,7 @@ public struct JSONReporter: Reporter {
             "file": violation.location.file ?? NSNull() as Any,
             "line": violation.location.line ?? NSNull() as Any,
             "character": violation.location.character ?? NSNull() as Any,
+            "identifier": violation.location.identifier ?? NSNull() as Any,
             "severity": violation.severity.rawValue.capitalized,
             "type": violation.ruleName,
             "rule_id": violation.ruleIdentifier,

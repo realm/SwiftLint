@@ -23,19 +23,3 @@ class CompilerProtocolInitRuleTests: XCTestCase {
         )
     }
 }
-
-// https://bugs.swift.org/browse/SR-11501
-#if SWIFT_PACKAGE && os(macOS) && compiler(<5.2)
-private enum UnwrapError: Error {
-    case missingValue
-}
-
-private func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?,
-                          _ message: @autoclosure () -> String = "") throws -> T {
-    if let value = try expression() {
-        return value
-    } else {
-        throw UnwrapError.missingValue
-    }
-}
-#endif

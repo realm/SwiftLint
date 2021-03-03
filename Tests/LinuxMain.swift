@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest

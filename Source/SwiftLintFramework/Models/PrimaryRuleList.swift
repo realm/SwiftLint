@@ -1,11 +1,11 @@
-// Generated using Sourcery 1.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,
     AttributesRule.self,
+    BalancedXCTestLifecycleRule.self,
     BlockBasedKVORule.self,
     CaptureVariableRule.self,
     ClassDelegateProtocolRule.self,
@@ -156,7 +156,6 @@ public let primaryRuleList = RuleList(rules: [
     RedundantVoidReturnRule.self,
     RequiredDeinitRule.self,
     RequiredEnumCaseRule.self,
-    BalancedXCTestLifecycleRule.self,
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
     SingleTestClassRule.self,

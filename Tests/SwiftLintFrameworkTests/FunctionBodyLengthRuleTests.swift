@@ -25,7 +25,7 @@ class FunctionBodyLengthRuleTests: XCTestCase {
         let longerFunctionBody = violatingFuncWithBody(repeatElement("x = 0\n", count: 40).joined())
         XCTAssertEqual(self.violations(longerFunctionBody), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 1),
+            location: Location(file: nil, line: 1, character: 1, identifier: "abc()"),
             reason: "Function body should span 40 lines or less excluding comments and " +
             "whitespace: currently spans 41 lines")])
 
@@ -48,7 +48,7 @@ class FunctionBodyLengthRuleTests: XCTestCase {
         )
         XCTAssertEqual(self.violations(longerFunctionBodyWithComments), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 1),
+            location: Location(file: nil, line: 1, character: 1, identifier: "abc()"),
             reason: "Function body should span 40 lines or less excluding comments and " +
             "whitespace: currently spans 41 lines")])
     }
@@ -66,7 +66,7 @@ class FunctionBodyLengthRuleTests: XCTestCase {
         )
         XCTAssertEqual(self.violations(longerFunctionBodyWithMultilineComments), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 1),
+            location: Location(file: nil, line: 1, character: 1, identifier: "abc()"),
             reason: "Function body should span 40 lines or less excluding comments and " +
             "whitespace: currently spans 41 lines")])
     }

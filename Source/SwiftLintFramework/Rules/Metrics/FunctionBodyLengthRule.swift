@@ -26,7 +26,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
             return [
                 StyleViolation(
                     ruleDescription: Self.description, severity: parameter.severity,
-                    location: Location(file: file, byteOffset: input.offset),
+                    location: Location(file: file, byteOffset: input.offset, identifier: input.identifier),
                     reason: """
                         Function body should span \(configuration.warning) lines or less excluding comments and \
                         whitespace: currently spans \(lineCount) lines
@@ -43,12 +43,14 @@ private struct RuleInput {
     let offset: ByteCount
     let startLine: Int
     let endLine: Int
+    let identifier: String
 
     init?(file: SwiftLintFile, kind: SwiftDeclarationKind, dictionary: SourceKittenDictionary) {
         guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
+            let identifier = dictionary.name,
             case let contentsNSString = file.stringView,
             let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)?.line,
             let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
@@ -59,5 +61,6 @@ private struct RuleInput {
         self.offset = offset
         self.startLine = startLine
         self.endLine = endLine
+        self.identifier = identifier
     }
 }

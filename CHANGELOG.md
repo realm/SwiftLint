@@ -227,7 +227,8 @@
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
-* Add new `location` property `identifier` to allow the ability to name the object in the AST related to the violation.
+* Add new `location` property `identifier` to allow the ability 
+  to name the object in the AST related to the violation.  
   [George Walters](https://github.com/walterg2)
   [Butch Howard](https://github.com/butchhoward)
 

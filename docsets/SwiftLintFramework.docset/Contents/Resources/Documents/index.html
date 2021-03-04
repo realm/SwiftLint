@@ -366,20 +366,7 @@ running it.</p>
 <h3 id='installing-from-source' class='heading'>Installing from source:</h3>
 
 <p>You can also build and install from source by cloning this project and running
-<code>make install</code> (Xcode 11.4 or later).</p>
-<h3 id='known-installation-issues-on-macos-before-10-14-4' class='heading'>Known Installation Issues On MacOS Before 10.14.4</h3>
-
-<p>Starting with <a href="https://github.com/realm/SwiftLint/releases/tag/0.32.0">SwiftLint 0.32.0</a>, if you get
-an error similar to <code>dyld: Symbol not found: _$s11SubSequenceSlTl</code> when running SwiftLint,
-you&rsquo;ll need to install the <a href="https://support.apple.com/kb/DL1998">Swift 5 Runtime Support for Command Line Tools</a>.</p>
-
-<p>Alternatively, you can:</p>
-
-<ul>
-<li>Update to macOS 10.14.4 or later</li>
-<li>Install Xcode 11.4 or later at <code>/Applications/Xcode.app</code></li>
-<li>Rebuild SwiftLint from source using Xcode 11.4 or later</li>
-</ul>
+<code>make install</code> (Xcode 12 or later).</p>
 <h2 id='usage' class='heading'>Usage</h2>
 <h3 id='presentation' class='heading'>Presentation</h3>
 
@@ -518,41 +505,6 @@ notation that identifies a Swift toolchain version:</p>
 <p>On Linux, SourceKit is expected to be located in
 <code>/usr/lib/libsourcekitdInProc.so</code> or specified by the <code>LINUX_SOURCEKIT_LIB_PATH</code>
 environment variable.</p>
-<h3 id='swift-version-support' class='heading'>Swift Version Support</h3>
-
-<p>Here&rsquo;s a reference of which SwiftLint version to use for a given Swift version.</p>
-
-<table><thead>
-<tr>
-<th style="text-align: left">Swift version</th>
-<th style="text-align: left">Last supported SwiftLint release</th>
-</tr>
-</thead><tbody>
-<tr>
-<td style="text-align: left">Swift 1.x</td>
-<td style="text-align: left">SwiftLint 0.1.2</td>
-</tr>
-<tr>
-<td style="text-align: left">Swift 2.x</td>
-<td style="text-align: left">SwiftLint 0.18.1</td>
-</tr>
-<tr>
-<td style="text-align: left">Swift 3.x</td>
-<td style="text-align: left">SwiftLint 0.25.1</td>
-</tr>
-<tr>
-<td style="text-align: left">Swift 4.0-4.1.x</td>
-<td style="text-align: left">SwiftLint 0.28.2</td>
-</tr>
-<tr>
-<td style="text-align: left">Swift 4.2.x</td>
-<td style="text-align: left">SwiftLint 0.35.0</td>
-</tr>
-<tr>
-<td style="text-align: left">Swift 5.x</td>
-<td style="text-align: left">Latest</td>
-</tr>
-</tbody></table>
 <h2 id='rules' class='heading'>Rules</h2>
 
 <p>Over 100 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)

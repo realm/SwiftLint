@@ -161,19 +161,6 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 
 在 Linux 上，SourceKit 默认需要位于 `/usr/lib/libsourcekitdInProc.so` 或者通过 `LINUX_SOURCEKIT_LIB_PATH` 环境变量进行指定。
 
-### Swift Version Support
-
-这里有一份 SwiftLint 版本和对应该 Swift 版本的对照表作为参考。
-
-| Swift 版本      | 最后一个 SwiftLint 支持版本 |
-|:----------------|:----------------------------|
-| Swift 1.x       | SwiftLint 0.1.2             |
-| Swift 2.x       | SwiftLint 0.18.1            |
-| Swift 3.x       | SwiftLint 0.25.1            |
-| Swift 4.0-4.1.x | SwiftLint 0.28.2            |
-| Swift 4.2.x     | SwiftLint 0.35.0            |
-| Swift 5.x       | 最新的                      |
-
 ## 规则
 
 SwiftLint 已经包含了超过 75 条规则，并且我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。

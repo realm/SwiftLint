@@ -60,19 +60,7 @@ running it.
 ### Installing from source:
 
 You can also build and install from source by cloning this project and running
-`make install` (Xcode 11.4 or later).
-
-### Known Installation Issues On MacOS Before 10.14.4
-
-Starting with [SwiftLint 0.32.0](https://github.com/realm/SwiftLint/releases/tag/0.32.0), if you get
-an error similar to `dyld: Symbol not found: _$s11SubSequenceSlTl` when running SwiftLint,
-you'll need to install the [Swift 5 Runtime Support for Command Line Tools](https://support.apple.com/kb/DL1998).
-
-Alternatively, you can:
-
-* Update to macOS 10.14.4 or later
-* Install Xcode 11.4 or later at `/Applications/Xcode.app`
-* Rebuild SwiftLint from source using Xcode 11.4 or later
+`make install` (Xcode 12 or later).
 
 ## Usage
 
@@ -229,19 +217,6 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 On Linux, SourceKit is expected to be located in
 `/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
 environment variable.
-
-### Swift Version Support
-
-Here's a reference of which SwiftLint version to use for a given Swift version.
-
-| Swift version   | Last supported SwiftLint release |
-|:----------------|:---------------------------------|
-| Swift 1.x       | SwiftLint 0.1.2                  |
-| Swift 2.x       | SwiftLint 0.18.1                 |
-| Swift 3.x       | SwiftLint 0.25.1                 |
-| Swift 4.0-4.1.x | SwiftLint 0.28.2                 |
-| Swift 4.2.x     | SwiftLint 0.35.0                 |
-| Swift 5.x       | Latest                           |
 
 ## Rules
 

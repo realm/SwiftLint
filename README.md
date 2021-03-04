@@ -218,20 +218,6 @@ On Linux, SourceKit is expected to be located in
 `/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
 environment variable.
 
-### Swift Version Support
-
-Here's a reference of which SwiftLint version to use for a given Swift version.
-
-| Swift version   | Last supported SwiftLint release |
-|:----------------|:---------------------------------|
-| Swift 1.x       | SwiftLint 0.1.2                  |
-| Swift 2.x       | SwiftLint 0.18.1                 |
-| Swift 3.x       | SwiftLint 0.25.1                 |
-| Swift 4.0-4.1.x | SwiftLint 0.28.2                 |
-| Swift 4.2.x     | SwiftLint 0.35.0                 |
-| Swift 5.0-5.2.x | SwiftLint 0.43.0                 |
-| Swift 5.3+      | Latest                           |
-
 ## Rules
 
 Over 100 rules are included in SwiftLint and the Swift community (that's you!)

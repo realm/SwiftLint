@@ -15,7 +15,7 @@
 
 #### Bug Fixes
 
-* Fix the File Length rule name.
+* Fix the File Length rule name.  
   [onato](https://github.com/onato)
   [#3560](https://github.com/realm/SwiftLint/issues/3560)
 

@@ -7,7 +7,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
 
     public static let description = RuleDescription(
         identifier: "file_length",
-        name: "File Line Length",
+        name: "File Length",
         description: "Files should not span too many lines.",
         kind: .metrics,
         nonTriggeringExamples: [

@@ -15,7 +15,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix the File Length rule name.  
+  [onato](https://github.com/onato)
+  [#3560](https://github.com/realm/SwiftLint/issues/3560)
 
 ## 0.43.0: Clothes Line Interface
 

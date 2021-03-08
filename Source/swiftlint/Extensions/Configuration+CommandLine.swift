@@ -212,9 +212,16 @@ extension Configuration {
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[SwiftLintFile], SwiftLintError> {
-        let fileManager: LintableFileManager = visitor.stableGitRevision
-            .map(GitLintableFileManager.init(stableRevision:)) ??
-            FileManager.default
+        let fileManager: LintableFileManager
+        if let stableGitRevision = visitor.stableGitRevision {
+            fileManager = GitLintableFileManager(
+                stableRevision: stableGitRevision,
+                explicitConfigurationPaths: visitor.explicitConfigurationPaths
+            )
+        } else {
+            fileManager = FileManager.default
+        }
+
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             if let stdinString = String(data: stdinData, encoding: .utf8) {

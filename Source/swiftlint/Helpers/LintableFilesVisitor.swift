@@ -49,13 +49,15 @@ struct LintableFilesVisitor {
     let parallel: Bool
     let allowZeroLintableFiles: Bool
     let stableGitRevision: String?
+    let explicitConfigurationPaths: [String]
     let mode: LintOrAnalyzeModeWithCompilerArguments
     let block: (CollectedLinter) -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool,
          quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
          cache: LinterCache?, parallel: Bool,
-         allowZeroLintableFiles: Bool, stableGitRevision: String?, block: @escaping (CollectedLinter) -> Void) {
+         allowZeroLintableFiles: Bool, stableGitRevision: String?, explicitConfigurationPaths: [String],
+         block: @escaping (CollectedLinter) -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -68,13 +70,15 @@ struct LintableFilesVisitor {
         self.mode = .lint
         self.allowZeroLintableFiles = allowZeroLintableFiles
         self.stableGitRevision = stableGitRevision
+        self.explicitConfigurationPaths = explicitConfigurationPaths
         self.block = block
     }
 
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool,
                  useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, stableGitRevision: String?, block: @escaping (CollectedLinter) -> Void) {
+                 allowZeroLintableFiles: Bool, stableGitRevision: String?, explicitConfigurationPaths: [String],
+                 block: @escaping (CollectedLinter) -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -92,6 +96,7 @@ struct LintableFilesVisitor {
         self.block = block
         self.allowZeroLintableFiles = allowZeroLintableFiles
         self.stableGitRevision = stableGitRevision
+        self.explicitConfigurationPaths = explicitConfigurationPaths
     }
 
     static func create(_ options: LintOrAnalyzeOptions,
@@ -121,6 +126,7 @@ struct LintableFilesVisitor {
                                                compilerInvocations: compilerInvocations,
                                                allowZeroLintableFiles: allowZeroLintableFiles,
                                                stableGitRevision: options.stableGitRevision,
+                                               explicitConfigurationPaths: options.configurationFiles,
                                                block: block)
             return .success(visitor)
         }

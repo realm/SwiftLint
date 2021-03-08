@@ -53,11 +53,15 @@ extension FileManager: LintableFileManager {
 /// A producer of lintable files that compares against a stable git revision.
 public class GitLintableFileManager {
     private let stableRevision: String
+    private let explicitConfigurationPaths: [String]
+
     /// Creates a `GitLintableFileManager` with the specified stable revision.
     ///
-    /// - parameter stableRevision: The stable git revision to compare lintable files against.
-    public init(stableRevision: String) {
+    /// - parameter stableRevision:             The stable git revision to compare lintable files against.
+    /// - parameter explicitConfigurationPaths: The explicit configuration file paths specified by the user.
+    public init(stableRevision: String, explicitConfigurationPaths: [String]) {
         self.stableRevision = stableRevision
+        self.explicitConfigurationPaths = explicitConfigurationPaths
     }
 }
 
@@ -80,17 +84,37 @@ extension GitLintableFileManager: LintableFileManager {
             }
         }
 
-        guard let mergeBase = git(["merge-base", stableRevision, "HEAD"])?.first,
-              let normalFiles = git(["diff", "--name-only", "--diff-filter=AMRCU", mergeBase, "--", path, "'*.swift'"]),
-              let untrackedFiles = git(["ls-files", "--others", "--exclude-standard", "--", path])
-        else {
+        func fallback(reason: GitFallbackReason) -> [String] {
             queuedPrintError(
-                "Could not get files changed from specified stable git revision. Falling back to file system traversal."
+                "\(reason.description) from specified stable git revision. Falling back to file system traversal."
             )
             return FileManager.default.filesToLint(inPath: path, rootDirectory: rootDirectory)
         }
 
-        let filesToLint = normalFiles + untrackedFiles
+        guard let mergeBase = git(["merge-base", stableRevision, "HEAD"])?.first else {
+            return fallback(reason: .mergeBaseNotFound)
+        }
+
+        func allFilesChanged(filters: [String]) -> [String]? {
+            guard let changed = git(["diff", "--name-only", "--diff-filter=AMRCU", mergeBase, "--", path] + filters),
+                  let untracked = git(["ls-files", "--others", "--exclude-standard", "--", path] + filters)
+            else {
+                return nil
+            }
+
+            return changed + untracked
+        }
+
+        if let configurationFiles = allFilesChanged(filters: ["'*.swiftlint.yml'"] + explicitConfigurationPaths),
+           !configurationFiles.isEmpty
+        {
+            return fallback(reason: .configChanged)
+        }
+
+        guard let filesToLint = allFilesChanged(filters: ["'*.swift'"]) else {
+            return fallback(reason: .filesChangedNotFound)
+        }
+
         return filesToLint.compactMap { relativePath in
             relativePath.bridge()
                 .absolutePathRepresentation(
@@ -109,5 +133,20 @@ extension GitLintableFileManager: LintableFileManager {
     /// - returns: A date, if one was determined.
     public func modificationDate(forFileAtPath path: String) -> Date? {
         return FileManager.default.modificationDate(forFileAtPath: path)
+    }
+}
+
+private enum GitFallbackReason {
+    case mergeBaseNotFound, configChanged, filesChangedNotFound
+
+    var description: String {
+        switch self {
+        case .mergeBaseNotFound:
+            return "Merge base not found"
+        case .configChanged:
+            return "Configuration files changed"
+        case .filesChangedNotFound:
+            return "Could not get changed files"
+        }
     }
 }

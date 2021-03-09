@@ -106,8 +106,7 @@ extension GitLintableFileManager: LintableFileManager {
         }
 
         if let configurationFiles = allFilesChanged(filters: ["'*.swiftlint.yml'"] + explicitConfigurationPaths),
-           !configurationFiles.isEmpty
-        {
+           !configurationFiles.isEmpty {
             return fallback(reason: .configChanged)
         }
 

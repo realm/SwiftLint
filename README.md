@@ -128,6 +128,12 @@ To integrate SwiftLint with [Atom](https://atom.io/), install the
 [`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from
 APM.
 
+
+### Visual Studio Code
+
+To integrate SwiftLint with [vscode](https://code.visualstudio.com), install the
+[`vscode-swiftlint`](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint) extension from the marketplace.
+
 ### fastlane
 
 You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/swiftlint) to run SwiftLint as part of your fastlane process.

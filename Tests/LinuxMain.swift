@@ -1609,6 +1609,12 @@ extension TypeNameRuleTests {
     ]
 }
 
+extension UIImageRequireBundleRuleTests {
+    static var allTests: [(String, (UIImageRequireBundleRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnavailableFunctionRuleTests {
     static var allTests: [(String, (UnavailableFunctionRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -2001,6 +2007,7 @@ XCTMain([
     testCase(TypeBodyLengthRuleTests.allTests),
     testCase(TypeContentsOrderRuleTests.allTests),
     testCase(TypeNameRuleTests.allTests),
+    testCase(UIImageRequireBundleRuleTests.allTests),
     testCase(UnavailableFunctionRuleTests.allTests),
     testCase(UnneededBreakInSwitchRuleTests.allTests),
     testCase(UnneededParenthesesInClosureArgumentRuleTests.allTests),

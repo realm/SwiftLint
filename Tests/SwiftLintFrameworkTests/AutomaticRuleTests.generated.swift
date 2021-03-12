@@ -761,6 +761,12 @@ class TypeBodyLengthRuleTests: XCTestCase {
     }
 }
 
+class UIImageRequireBundleRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UIImageRequireBundleRule.description)
+    }
+}
+
 class UnavailableFunctionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableFunctionRule.description)

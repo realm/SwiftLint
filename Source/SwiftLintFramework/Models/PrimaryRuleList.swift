@@ -180,6 +180,7 @@ public let primaryRuleList = RuleList(rules: [
     TypeBodyLengthRule.self,
     TypeContentsOrderRule.self,
     TypeNameRule.self,
+    UIImageRequireBundleRule.self,
     UnavailableFunctionRule.self,
     UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,

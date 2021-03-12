@@ -118,6 +118,8 @@
   by setting the `SWIFTLINT_LOG_MODULE_USAGE=<module-name>` environment
   variable when running analyze.  
   [jpsim](https://github.com/jpsim)
+* Add `uiimage_require_bundle` rule.  
+  [Dwayne Coussement](https://github.com/DwayneCoussement)
 
 * Add opt-in rule `private_subject` rule which warns against
   public Combine subjects.  

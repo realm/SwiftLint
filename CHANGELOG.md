@@ -15,6 +15,24 @@
 
 #### Bug Fixes
 
+* None.
+
+## 0.43.1: Laundroformat
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
 * Fix the File Length rule name.  
   [onato](https://github.com/onato)
   [#3560](https://github.com/realm/SwiftLint/issues/3560)

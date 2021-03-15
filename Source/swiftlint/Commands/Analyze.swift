@@ -43,6 +43,7 @@ extension SwiftLint {
                 ignoreCache: true,
                 enableAllRules: false,
                 autocorrect: common.fix,
+                format: common.format,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands
             )

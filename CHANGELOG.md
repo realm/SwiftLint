@@ -19,6 +19,11 @@
   [onato](https://github.com/onato)
   [#3560](https://github.com/realm/SwiftLint/issues/3560)
 
+* Re-add `--format` flag to reformat Swift files using SourceKit.
+  Only applied with `--fix`/`--autocorrect`.  
+  [JP Simard](https://github.com/jpsim)
+  [#3571](https://github.com/realm/SwiftLint/issues/3571)
+
 ## 0.43.0: Clothes Line Interface
 
 #### Breaking

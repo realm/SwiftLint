@@ -157,6 +157,15 @@ struct LintOrAnalyzeCommand {
         let storage = RuleStorage()
         let configuration = Configuration(options: options)
         return configuration.visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
+            if options.format {
+                switch configuration.indentation {
+                case .tabs:
+                    linter.format(useTabs: true, indentWidth: 4)
+                case .spaces(let count):
+                    linter.format(useTabs: false, indentWidth: count)
+                }
+            }
+
             let corrections = linter.correct(using: storage)
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
@@ -191,6 +200,7 @@ struct LintOrAnalyzeOptions {
     let ignoreCache: Bool
     let enableAllRules: Bool
     let autocorrect: Bool
+    let format: Bool
     let compilerLogPath: String?
     let compileCommands: String?
 

@@ -34,7 +34,9 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         ],
         triggeringExamples: [
             Example("// TODO: [10/14/2019]\n"),
-            Example("// FIXME: [10/14/2019]\n")
+            Example("// FIXME: [10/14/2019]\n"),
+            Example("// FIXME: [1/14/2019]\n"),
+            Example("// FIXME: [10/4/2019]\n")
         ]
     )
 

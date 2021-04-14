@@ -25,7 +25,8 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
             Example("protocol P {\n var delegate: AnyObject? { get set }\n}\n"),
             Example("class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"),
             Example("class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"),
-            Example("struct Foo {\n @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}")
+            Example("struct Foo {\n @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}"),
+            Example("struct Foo {\n @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}")
         ],
         triggeringExamples: [
             Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"),
@@ -74,7 +75,7 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
                 let offset = attribute.offset,
                 let length = attribute.length,
                 let value = file.stringView.substringWithByteRange(ByteRange(location: offset, length: length)),
-                value.hasPrefix("@UIApplicationDelegateAdaptor") {
+                (value.hasPrefix("@UIApplicationDelegateAdaptor") || value.hasPrefix("@NSApplicationDelegateAdaptor")) {
                 return []
             }
         }

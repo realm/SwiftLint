@@ -587,7 +587,9 @@ macOS < 12.
 
 #### Enhancements
 
-* None.
+* Don't report `@NSApplicationDelegateAdaptor` statements in
+  [Till Hainbach](https://github.com/tillhainbach)
+  [#3598](https://github.com/realm/SwiftLint/issues/3456)
 
 #### Bug Fixes
 

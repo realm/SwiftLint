@@ -53,7 +53,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         var previousLineIndentations: [Indentation] = []
 
         for line in file.lines {
-            let comments = ["//", "/**", "/*"]
+            let comments = ["///", "//", "/**", "/*"]
             var content = line.content
 
             for comment in comments {

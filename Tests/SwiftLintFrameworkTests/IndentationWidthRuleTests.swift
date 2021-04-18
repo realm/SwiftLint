@@ -1,3 +1,5 @@
+// swiftlint:disable type_body_length
+
 @testable import SwiftLintFramework
 import XCTest
 
@@ -192,6 +194,21 @@ class IndentationWidthRuleTests: XCTestCase {
         assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*test\n  bad indent...\n test*/\n\t\tfourthLine",
             includeComments: false
+        )
+
+        assertNoViolation(
+            in:
+                """
+                //
+                //  File.swift
+                //  App
+                //
+                //  Created by Name on date.
+                //  Copyright © year Name. All rights reserved.
+                //
+                import Foundation
+                """,
+            includeComments: true
         )
     }
 

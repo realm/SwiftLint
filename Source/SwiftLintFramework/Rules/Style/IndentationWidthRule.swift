@@ -51,17 +51,32 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
+        var isPastHeaderComment = false
 
         for line in file.lines {
             // Remove comment start part from the beginning of line so the real
             // indentation of the line is taken into consideration
             let comments = ["///", "//", "/**", "/*"]
             var content = line.content
+            var isUnindentedComment = false
 
             for comment in comments {
                 if content.hasPrefix(comment) {
-                    content = String(content.dropFirst(comment.count))
+                    // Only strip the unindented comments that are not part of
+                    // the header comment
+                    if isPastHeaderComment {
+                        content = String(content.dropFirst(comment.count))
+                    }
+
+                    isUnindentedComment = true
                 }
+            }
+
+            // When we find the first line that isn't an unindented comment, we
+            // mark the fact that we are past the header comment. Or, if this is
+            // the first line, it means that there is no header comment.
+            if !isUnindentedComment {
+                isPastHeaderComment = true
             }
 
             // Skip line if it's a whitespace-only line

@@ -53,11 +53,13 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         var previousLineIndentations: [Indentation] = []
 
         for line in file.lines {
-            let comment = "//"
+            let comments = ["//", "/**", "/*"]
             var content = line.content
 
-            if content.hasPrefix(comment) {
-                content = String(content.dropFirst(comment.count))
+            for comment in comments {
+                if content.hasPrefix(comment) {
+                    content = String(content.dropFirst(comment.count))
+                }
             }
 
             // Skip line if it's a whitespace-only line
@@ -70,6 +72,9 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 if syntaxKindsInLine.isNotEmpty &&
                     SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
             }
+
+            // Skip line if it contains only a multiline comment end part
+            if content == "*/" { continue }
 
             // Get space and tab count in prefix
             let prefix = String(content.prefix(indentationCharacterCount))

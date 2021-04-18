@@ -110,6 +110,7 @@ class IndentationWidthRuleTests: XCTestCase {
     }
 
     /// It's okay to have comments not following the indentation pattern if the configuration allows this.
+    // swiftlint:disable:next function_body_length
     func testCommentLines() {
         assert1Violation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
@@ -130,9 +131,45 @@ class IndentationWidthRuleTests: XCTestCase {
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t//\ttest\n\t\t\tfifthLine",
             includeComments: true
         )
+        assert1Violation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t/*\ttest */\n\t\t\tfifthLine",
+            includeComments: true
+        )
+        assert1Violation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t/**\ttest */\n\t\t\tfifthLine",
+            includeComments: true
+        )
 
         assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//\t\ttest\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\t\ttest */\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/**\t\ttest */\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\t\ttest\n*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\t\ttest\n\t\t*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n\t\t*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n\t*/\n\t\tfourthLine",
             includeComments: true
         )
 

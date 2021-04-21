@@ -26,6 +26,13 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 brew install swiftlint
 ```
 
+For Apple Silicon you need to add this
+```bash
+# Adds support for Apple Silicon brew directory
+export PATH="$PATH:/opt/homebrew/bin"
+```
+on the top of the script phase, otherwise xcode will not find the swiftlint (see [Xcode](#Xcode)).
+
 ### Using [CocoaPods](https://cocoapods.org):
 
 Simply add the following line to your Podfile:

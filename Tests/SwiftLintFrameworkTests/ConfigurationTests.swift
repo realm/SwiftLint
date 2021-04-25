@@ -280,7 +280,8 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testLintablePaths() {
-        let paths = Configuration.default.lintablePaths(inPath: Mock.Dir.level0, forceExclude: false)
+        let paths = Configuration.default.lintablePaths(inPath: Mock.Dir.level0, forceExclude: false,
+                                                        fileManager: FileManager.default)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
             "DirectoryLevel1.swift",
@@ -297,7 +298,8 @@ class ConfigurationTests: XCTestCase {
             excludedPaths: [Mock.Dir.level3.stringByAppendingPathComponent("*.swift")]
         )
 
-        XCTAssertEqual(configuration.lintablePaths(inPath: "", forceExclude: false), [])
+        XCTAssertEqual(configuration.lintablePaths(inPath: "", forceExclude: false, fileManager: FileManager.default),
+                       [])
     }
 
     // MARK: - Testing Configuration Equality
@@ -385,7 +387,8 @@ extension ConfigurationTests {
                                                           "Level1/Level2/Level3"])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0,
                                                 forceExclude: false,
-                                                excludeByPrefix: true)
+                                                excludeByPrefix: true,
+                                                fileManager: FileManager.default)
         let filenames = paths.map { $0.bridge().lastPathComponent }
         XCTAssertEqual(filenames, ["Level2.swift"])
     }
@@ -395,7 +398,8 @@ extension ConfigurationTests {
         let configuration = Configuration(excludedPaths: ["Level1/Level2/Level3/Level3.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1/Level2/Level3/Level3.swift",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeByPrefix: true,
+                                                fileManager: FileManager.default)
         XCTAssertEqual([], paths)
     }
 
@@ -405,7 +409,8 @@ extension ConfigurationTests {
                                           excludedPaths: ["Level1/Level1.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeByPrefix: true,
+                                                fileManager: FileManager.default)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(["Level2.swift", "Level3.swift"], filenames)
     }
@@ -419,7 +424,8 @@ extension ConfigurationTests {
         )
         let paths = configuration.lintablePaths(inPath: ".",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeByPrefix: true,
+                                                fileManager: FileManager.default)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(["Level0.swift", "Level1.swift"], filenames)
     }
@@ -433,7 +439,8 @@ extension ConfigurationTests {
         )
         let paths = configuration.lintablePaths(inPath: ".",
                                                 forceExclude: true,
-                                                excludeByPrefix: true)
+                                                excludeByPrefix: true,
+                                                fileManager: FileManager.default)
         let filenames = paths.map { $0.bridge().lastPathComponent }
         XCTAssertEqual(["Level0.swift"], filenames)
     }
@@ -445,7 +452,8 @@ extension ConfigurationTests {
             excludedPaths: ["Level1/**/*.swift", "Level1/**/**/*.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: false,
-                                                excludeByPrefix: true)
+                                                excludeByPrefix: true,
+                                                fileManager: FileManager.default)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(filenames, ["Level1.swift"])
     }

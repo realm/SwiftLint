@@ -84,7 +84,7 @@ public struct Configuration {
 
     /// Creates a Configuration by copying an existing configuration.
     ///
-    /// - parameter copying:    The existing configuration to copy.
+    /// - parameter copying: The existing configuration to copy.
     internal init(copying configuration: Configuration) {
         rulesWrapper = configuration.rulesWrapper
         fileGraph = configuration.fileGraph

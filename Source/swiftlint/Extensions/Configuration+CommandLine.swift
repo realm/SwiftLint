@@ -212,6 +212,16 @@ extension Configuration {
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[SwiftLintFile], SwiftLintError> {
+        let fileManager: LintableFileManager
+        if let stableGitRevision = visitor.stableGitRevision {
+            fileManager = GitLintableFileManager(
+                stableRevision: stableGitRevision,
+                explicitConfigurationPaths: visitor.explicitConfigurationPaths
+            )
+        } else {
+            fileManager = FileManager.default
+        }
+
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             if let stdinString = String(data: stdinData, encoding: .utf8) {
@@ -228,7 +238,7 @@ extension Configuration {
                     let scriptInputPaths = files.compactMap { $0.path }
                     let filesToLint = visitor.useExcludingByPrefix
                                       ? filterExcludedPathsByPrefix(in: scriptInputPaths)
-                                      : filterExcludedPaths(in: scriptInputPaths)
+                                      : filterExcludedPaths(fileManager: fileManager, in: scriptInputPaths)
                     return filesToLint.map(SwiftLintFile.init(pathDeferringReading:))
                 }
         }
@@ -240,10 +250,14 @@ extension Configuration {
                 filesInfo = "at paths \(visitor.paths.joined(separator: ", "))"
             }
 
-            queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
+            let gitInfo = visitor.stableGitRevision
+                .map { " that have changed compared to \($0)" }
+                ?? ""
+
+            queuedPrintError("\(visitor.action) Swift files \(filesInfo)\(gitInfo)")
         }
         return .success(visitor.paths.flatMap {
-            self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude,
+            self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude, fileManager: fileManager,
                                excludeByPrefix: visitor.useExcludingByPrefix)
         })
     }
@@ -251,12 +265,13 @@ extension Configuration {
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) -> Void)
         -> Result<[SwiftLintFile], SwiftLintError> {
-            return LintableFilesVisitor.create(options,
-                                               cache: cache,
-                                               allowZeroLintableFiles: allowZeroLintableFiles,
-                                               block: visitorBlock).flatMap({ visitor in
-            visitLintableFiles(with: visitor, storage: storage)
-        })
+        return LintableFilesVisitor.create(
+            options,
+            cache: cache,
+            allowZeroLintableFiles: allowZeroLintableFiles || options.stableGitRevision != nil,
+            block: visitorBlock
+        )
+        .flatMap { visitLintableFiles(with: $0, storage: storage) }
     }
 
     // MARK: LintOrAnalyze Command

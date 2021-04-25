@@ -203,6 +203,7 @@ struct LintOrAnalyzeOptions {
     let format: Bool
     let compilerLogPath: String?
     let compileCommands: String?
+    let stableGitRevision: String?
 
     var verb: String {
         if autocorrect {

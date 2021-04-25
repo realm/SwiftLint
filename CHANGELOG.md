@@ -11,7 +11,12 @@
 
 #### Enhancements
 
-* None.
+* Add `--stable-git-revision` option to the lint command. This allows
+  specifying a git revision or "commit-ish" that is considered stable.
+  If specified, SwiftLint will attempt to query the git repository index
+  for files changed since that revision, using only those files as input
+  as opposed to traversing the file system to collect lintable files.  
+  [jpsim](https://github.com/jpsim)
 
 #### Bug Fixes
 

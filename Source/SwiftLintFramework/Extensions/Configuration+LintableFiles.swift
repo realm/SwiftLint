@@ -8,12 +8,15 @@ extension Configuration {
     ///                              file.
     /// - parameter forceExclude:    Whether or not excludes defined in this configuration should be applied even if
     ///                              `path` is an exact match.
+    /// - parameter fileManager:     The lintable file manager to use to search for lintable files.
     /// - parameter excludeByPrefix: Whether or not uses excluding by prefix algorithm.
     ///
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String, forceExclude: Bool,
+                              fileManager: LintableFileManager,
                               excludeByPrefix: Bool = false) -> [SwiftLintFile] {
-        return lintablePaths(inPath: path, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix)
+        return lintablePaths(inPath: path, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix,
+                             fileManager: fileManager)
             .compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
@@ -31,7 +34,7 @@ extension Configuration {
         inPath path: String,
         forceExclude: Bool,
         excludeByPrefix: Bool = false,
-        fileManager: LintableFileManager = FileManager.default
+        fileManager: LintableFileManager
     ) -> [String] {
         // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
         if path.isFile && !forceExclude { return [path] }
@@ -53,7 +56,7 @@ extension Configuration {
     ///
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPaths(
-        fileManager: LintableFileManager = FileManager.default,
+        fileManager: LintableFileManager,
         in paths: [String]...
     ) -> [String] {
         let allPaths = paths.flatMap { $0 }

@@ -8,6 +8,7 @@ import Glibc
 #endif
 
 DispatchQueue.global().async {
+    // Touch
     SwiftLint.mainHandlingDeprecatedCommands()
     exit(EXIT_SUCCESS)
 }

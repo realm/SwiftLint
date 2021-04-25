@@ -16,5 +16,7 @@
       <true/>
     <key>DashDocSetFamily</key>
       <string>dashtoc</string>
+    <key>DashDocSetFallbackURL</key>
+      <string>https://realm.github.io/SwiftLint/</string>
   </dict>
 </plist>

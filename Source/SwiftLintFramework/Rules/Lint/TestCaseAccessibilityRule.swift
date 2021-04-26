@@ -52,7 +52,7 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
                 let kind = subDictionary.declarationKind,
                 kind != .varLocal,
                 let name = subDictionary.name,
-                !isXCTestMember(kind: kind, name: name, attributes: subDictionary.enclosedSwiftAttributes),
+                !isXCTestMember(kind: kind, name: name, dictionary: subDictionary),
                 let offset = subDictionary.offset,
                 subDictionary.accessibility?.isPrivate != true else { return nil }
 
@@ -61,8 +61,8 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
     }
 
     private func isXCTestMember(kind: SwiftDeclarationKind, name: String,
-                                attributes: [SwiftDeclarationAttributeKind]) -> Bool {
-        return XCTestHelpers.isXCTestMember(kind: kind, name: name, attributes: attributes)
+                                dictionary: SourceKittenDictionary) -> Bool {
+        return XCTestHelpers.isXCTestMember(kind: kind, name: name, dictionary: dictionary)
             || configuration.allowedPrefixes.contains(where: name.hasPrefix)
     }
 }

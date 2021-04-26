@@ -44,6 +44,12 @@ internal struct TestCaseAccessibilityRuleExamples {
             func testFoo() {
                 XCTAssertTrue(true)
             }
+
+            func testBar() {
+                func nestedFunc() {}
+            }
+
+            private someFunc(hasParam: Bool) {}
         }
         """),
 
@@ -85,6 +91,8 @@ internal struct TestCaseAccessibilityRuleExamples {
             ↓static func testFoo() {}
 
             ↓static func allTests() {}
+
+            ↓func testFoo(hasParam: Bool) {}
         }
 
         final class BarTests: XCTestCase {

@@ -11,7 +11,10 @@
 
 #### Enhancements
 
-* None.
+* Make `test_case_accessibility` rule identify invalid test functions
+  with parameters.  
+  [Keith Smiley](https://github.com/keith)
+  [#3612](https://github.com/realm/SwiftLint/pull/3612)
 
 #### Bug Fixes
 

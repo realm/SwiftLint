@@ -369,6 +369,12 @@
     <span class="kd">func</span> <span class="nf">testFoo</span><span class="p">()</span> <span class="p">{</span>
         <span class="kt">XCTAssertTrue</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
     <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">testBar</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">func</span> <span class="nf">nestedFunc</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="nf">someFunc</span><span class="p">(</span><span class="nv">hasParam</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
@@ -401,6 +407,8 @@
     <span class="err">↓</span><span class="kd">static</span> <span class="kd">func</span> <span class="nf">testFoo</span><span class="p">()</span> <span class="p">{}</span>
 
     <span class="err">↓</span><span class="kd">static</span> <span class="kd">func</span> <span class="nf">allTests</span><span class="p">()</span> <span class="p">{}</span>
+
+    <span class="err">↓</span><span class="kd">func</span> <span class="nf">testFoo</span><span class="p">(</span><span class="nv">hasParam</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
 
 <span class="kd">final</span> <span class="kd">class</span> <span class="kt">BarTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>

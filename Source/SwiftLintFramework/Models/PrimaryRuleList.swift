@@ -38,6 +38,7 @@ public let primaryRuleList = RuleList(rules: [
     DiscouragedOptionalCollectionRule.self,
     DuplicateEnumCasesRule.self,
     DuplicateImportsRule.self,
+    DuplicatedKeyInDictionaryLiteralRule.self,
     DynamicInlineRule.self,
     EmptyCollectionLiteralRule.self,
     EmptyCountRule.self,

@@ -25,7 +25,7 @@ to execute SwiftLint. A folder that contains swift source files.
 
 |Arguments|Options|
 |-|-|
-|![image](https://user-images.githubusercontent.com/474794/93893073-1676b000-fca2-11ea-9428-20423c5f5237.png)|![image](https://user-images.githubusercontent.com/474794/93893135-27bfbc80-fca2-11ea-805a-ee21b446c3f0.png)|
+|![image](https://user-images.githubusercontent.com/5748627/115156411-d38c8780-a08c-11eb-9de4-939606c81574.png)|![image](https://user-images.githubusercontent.com/5748627/115156276-287bce00-a08c-11eb-9e1d-35684a665228.png)|
 
 Then you can use the full power of Xcode/LLDB/Instruments to develop and debug your changes to SwiftLint.
 

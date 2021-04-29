@@ -68,8 +68,11 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.structureDictionary.traverseWithParentDepthFirst { parent, subDict in
-            guard let kind = subDict.declarationKind else { return nil }
+        return file.structureDictionary.traverseWithParentsDepthFirst { parents, subDict in
+            guard let kind = subDict.declarationKind,
+                  let parent = parents.lastIgnoringCallAndArgument() else {
+                return nil
+            }
             return validate(file: file, kind: kind, dictionary: subDict, parentStructure: parent)
         }
     }
@@ -176,5 +179,46 @@ private extension SwiftLintFile {
 private extension Collection where Element == ByteRange {
     func contains(_ index: ByteCount) -> Bool {
         return contains { $0.contains(index) }
+    }
+}
+
+private extension SourceKittenDictionary {
+    func traverseWithParentsDepthFirst<T>(traverseBlock: ([SourceKittenDictionary], SourceKittenDictionary) -> [T]?)
+        -> [T] {
+        var result: [T] = []
+        traverseWithParentDepthFirst(collectingValuesInto: &result,
+                                     parents: [],
+                                     traverseBlock: traverseBlock)
+        return result
+    }
+
+    private func traverseWithParentDepthFirst<T>(
+        collectingValuesInto array: inout [T],
+        parents: [SourceKittenDictionary],
+        traverseBlock: ([SourceKittenDictionary], SourceKittenDictionary) -> [T]?) {
+        var updatedParents = parents
+        updatedParents.append(self)
+
+        substructure.forEach { subDict in
+            subDict.traverseWithParentDepthFirst(collectingValuesInto: &array,
+                                                 parents: updatedParents,
+                                                 traverseBlock: traverseBlock)
+
+            if let collectedValues = traverseBlock(updatedParents, subDict) {
+                array += collectedValues
+            }
+        }
+    }
+}
+
+private extension Array where Element == SourceKittenDictionary {
+    func lastIgnoringCallAndArgument() -> Element? {
+        guard SwiftVersion.current >= .fiveDotFour else {
+            return last
+        }
+
+        return last { element in
+            element.expressionKind != .call && element.expressionKind != .argument
+        }
     }
 }

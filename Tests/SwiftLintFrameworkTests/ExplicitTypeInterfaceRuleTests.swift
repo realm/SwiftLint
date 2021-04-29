@@ -1,9 +1,38 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable:next type_body_length
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
     func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
+    }
+
+    func testLocalVars() {
+        let nonTriggeringExamples = [
+            Example("func foo() {\nlet intVal: Int = 1\n}"),
+            Example("""
+            func foo() {
+                bar {
+                    let x: Int = 1
+                }
+            }
+            """)
+        ]
+        let triggeringExamples = [
+            Example("func foo() {\n↓let intVal = 1\n}"),
+            Example("""
+            func foo() {
+                bar {
+                    ↓let x = 1
+                }
+            }
+            """)
+        ]
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description)
     }
 
     func testExcludeLocalVars() {
@@ -160,12 +189,14 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             enum Foo {
                 case failure(Any)
                 case success(Any)
-                }
-                func bar() {
-                    let foo: Foo = .success(1)
-                    switch foo {
-                    case .failure(let error): let bar: Int = 1
-                    case .success(let result): let bar: Int = 2
+            }
+            func bar() {
+                let foo: Foo = .success(1)
+                switch foo {
+                case .failure(let error):
+                    let bar: Int = 1
+                case .success(let result):
+                    let bar: Int = 2
                 }
             }
             """),

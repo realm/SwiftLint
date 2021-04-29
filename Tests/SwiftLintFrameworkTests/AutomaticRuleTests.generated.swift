@@ -149,6 +149,12 @@ class DuplicateImportsRuleTests: XCTestCase {
     }
 }
 
+class DuplicatedKeyInDictionaryLiteralRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
+    }
+}
+
 class DynamicInlineRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DynamicInlineRule.description)

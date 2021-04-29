@@ -16,6 +16,10 @@
   [Keith Smiley](https://github.com/keith)
   [#3612](https://github.com/realm/SwiftLint/pull/3612)
 
+* Add `duplicated_key_in_dictionary_literal` rule to warn against duplicated
+  keys in dictionary literals.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * None.

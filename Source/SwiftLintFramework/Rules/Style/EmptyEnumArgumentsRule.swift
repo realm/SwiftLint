@@ -95,7 +95,9 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
             guard dict.expressionKind == .call,
                 let byteRange = dict.byteRange,
-                let range = contents.byteRangeToNSRange(byteRange)
+                let range = contents.byteRangeToNSRange(byteRange),
+                let name = dict.name,
+                !name.starts(with: ".")
             else {
                 return nil
             }

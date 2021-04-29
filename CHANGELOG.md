@@ -590,6 +590,7 @@ macOS < 12.
 * Don't report `@NSApplicationDelegateAdaptor` and `@WKExtensionDelegateAdaptor` statements in `weak-delegate` rule.
   [Till Hainbach](https://github.com/tillhainbach)
   [#3598](https://github.com/realm/SwiftLint/issues/3456)
+  [#3611](https://github.com/realm/SwiftLint/issues/3611)
 
 #### Bug Fixes
 

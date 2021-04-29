@@ -44,7 +44,9 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
             wrapInSwitch("case (let f as () -> String)?"),
             wrapInSwitch("default"),
             Example("if case .bar = foo {\n}"),
-            Example("guard case .bar = foo else {\n}")
+            Example("guard case .bar = foo else {\n}"),
+            Example("if foo == .bar() {}"),
+            Example("guard foo == .bar() else { return }")
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -53,7 +55,9 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
             wrapInSwitch("case .bar↓() where method() > 2"),
             wrapInFunc("case .bar↓(_)"),
             Example("if case .bar↓(_) = foo {\n}"),
-            Example("guard case .bar↓(_) = foo else {\n}")
+            Example("guard case .bar↓(_) = foo else {\n}"),
+            Example("if case .bar↓() = foo {\n}"),
+            Example("guard case .bar↓() = foo else {\n}")
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
@@ -85,6 +89,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
             return []
         }
 
+        let needsCase = kind == .if || kind == .guard
         let contents = file.stringView
 
         let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
@@ -125,6 +130,10 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
                         Set(file.syntaxMap.kinds(inByteRange: byteRange)) == [.keyword] {
                         return nil
                     }
+                }
+
+                if needsCase, file.match(pattern: "\\bcase\\b", with: [.keyword], range: caseRange).isEmpty {
+                    return nil
                 }
 
                 if callsRanges.contains(where: parenthesesRange.intersects) {

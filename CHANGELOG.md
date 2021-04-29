@@ -22,7 +22,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives in `empty_enum_arguments` rule when comparing values
+  with a static member (e.g. `if number == .zero`).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3562](https://github.com/realm/SwiftLint/issues/3562)
 
 ## 0.43.1: Laundroformat
 

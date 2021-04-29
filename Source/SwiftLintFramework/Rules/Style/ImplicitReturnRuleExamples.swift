@@ -53,6 +53,15 @@ internal struct ImplicitReturnRuleExamples {
             class Foo {
                 func foo() -> Int { 0 }
             }
+            """),
+            Example("""
+            func fetch() -> Data? {
+                do {
+                    return try loadData()
+                } catch {
+                    return nil
+                }
+            }
             """)
         ]
 

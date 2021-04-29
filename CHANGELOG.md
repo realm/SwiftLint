@@ -57,9 +57,11 @@
   on `unneeded_parentheses_in_closure_argument` rule.  
   [p-x9](https://github.com/p-x9)
   [#3633](https://github.com/realm/SwiftLint/issues/3633)
-* Fix `unused_capture_list`, `empty_enum_arguments` and `implicit_return` rules
-  when using Swift 5.4.  
+
+* Fix `unused_capture_list`, `empty_enum_arguments`, `implicit_return` and
+  `explicit_type_interface` rules when using Swift 5.4.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3615](https://github.com/realm/SwiftLint/issues/3615)
 
 ## 0.43.1: Laundroformat
 

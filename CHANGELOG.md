@@ -27,6 +27,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3562](https://github.com/realm/SwiftLint/issues/3562)
 
+* Fix incorrect expiring_todo configuration key.  
+  [Dan Loman](https://github.com/namolnad)
+  [#3590](https://github.com/realm/SwiftLint/issues/3590)
+
 ## 0.43.1: Laundroformat
 
 #### Breaking

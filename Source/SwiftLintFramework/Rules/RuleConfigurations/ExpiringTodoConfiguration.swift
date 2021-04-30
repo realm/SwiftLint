@@ -13,7 +13,7 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return "(approaching_expiry_severity) \(approachingExpirySeverity.consoleDescription), " +
-        "(reached_or_passed_expiry_severity) \(expiredSeverity.consoleDescription)"
+        "(expired_severity) \(expiredSeverity.consoleDescription)"
     }
 
     private(set) var approachingExpirySeverity: SeverityConfiguration

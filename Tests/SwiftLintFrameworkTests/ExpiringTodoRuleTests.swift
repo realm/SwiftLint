@@ -77,6 +77,18 @@ class ExpiringTodoRuleTests: XCTestCase {
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved.")
     }
 
+    func testAlternativeConfigSyntax() {
+        XCTAssertEqual(makeConfig(nil, ExpiringTodoRule.description.identifier)!.ruleConfiguration.expiredSeverity, .init(.error))
+
+        let serializedConfig: [String: Any] = [
+            "reached_or_passed_expiry_severity": "warning"
+        ]
+
+        let config = makeConfig(serializedConfig, ExpiringTodoRule.description.identifier)!
+
+        XCTAssertEqual(config.ruleConfiguration.expiredSeverity, .init(.warning))
+    }
+
     private func violations(_ example: Example) -> [StyleViolation] {
         return SwiftLintFrameworkTests.violations(example, config: config)
     }

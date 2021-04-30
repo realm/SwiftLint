@@ -53,7 +53,7 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         if let approachingExpiryConfiguration = configurationDict["approaching_expiry_severity"] {
             try approachingExpirySeverity.apply(configuration: approachingExpiryConfiguration)
         }
-        if let expiredConfiguration = configurationDict["expired_severity"] {
+        if let expiredConfiguration = configurationDict["expired_severity"] ?? configurationDict["reached_or_passed_expiry_severity"] {
             try expiredSeverity.apply(configuration: expiredConfiguration)
         }
         if let approachingExpiryThreshold = configurationDict["approaching_expiry_threshold"] as? Int {

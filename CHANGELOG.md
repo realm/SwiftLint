@@ -27,6 +27,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3562](https://github.com/realm/SwiftLint/issues/3562)
 
+* Fix `type_contents_order` initializer detection.  
+  [StevenMagdy](https://github.com/StevenMagdy)
+
 ## 0.43.1: Laundroformat
 
 #### Breaking

@@ -247,6 +247,9 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 // Other Method
                 func goToInfoVc() { /* TODO */ }
 
+                // Other Method
+                func initInfoVc () { /* TODO */ }
+
                 // IBAction
                 @IBAction func goNextButtonPressed() {
                     goToNextVc()

@@ -60,6 +60,7 @@
   
 * Fix the rule name from "Colon" to "Colon Spacing" to improve phrasing.
   [Radu](https://github.com/raduciobanu002)
+  [#3587](https://github.com/realm/SwiftLint/issues/3587)
 
 ## 0.43.0: Clothes Line Interface
 

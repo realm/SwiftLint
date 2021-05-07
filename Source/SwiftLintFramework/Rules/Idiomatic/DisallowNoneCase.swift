@@ -10,13 +10,7 @@ public struct DisallowNoneCase: ASTRule, OptInRule, ConfigurationProviderRule {
         identifier: "disallow_none_case",
         name: "Disallow None Case",
         description: "Disallows the naming of enum cases as 'none' which can conflict with Optional<T>.none",
-        kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("")
-        ],
-        triggeringExamples: [
-            Example("")
-        ]
+        kind: .idiomatic
     )
 
     public func validate(
@@ -31,7 +25,7 @@ public struct DisallowNoneCase: ASTRule, OptInRule, ConfigurationProviderRule {
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: offset),
                 reason: """
-\(kind.reasonPrefix) should not be named `none` since the compiler can think you mean `Optional<T>.none`.
+\(kind.reasonPrefix) should not be named `none` since the compiler can think you mean `Optional<T>.none when checking equality`.
 """
             )
         ]
@@ -39,7 +33,7 @@ public struct DisallowNoneCase: ASTRule, OptInRule, ConfigurationProviderRule {
 }
 
 private extension SwiftDeclarationKind {
-    var isForValidating: Bool { self == .enum || self == .varClass || self == .varStatic }
+    var isForValidating: Bool { self == .enumcase || self == .varClass || self == .varStatic }
 
     var reasonPrefix: String {
         switch self {

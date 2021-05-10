@@ -30,6 +30,9 @@
   [namolnad](https://github.com/namolnad)
   [#3597](https://github.com/realm/SwiftLint/pull/3597)
 
+* Fix `type_contents_order` initializer detection.  
+  [StevenMagdy](https://github.com/StevenMagdy)
+
 ## 0.43.1: Laundroformat
 
 #### Breaking

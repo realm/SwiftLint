@@ -226,7 +226,7 @@ environment variable.
 
 ## Rules
 
-Over 100 rules are included in SwiftLint and the Swift community (that's you!)
+Over 200 rules are included in SwiftLint and the Swift community (that's you!)
 continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
 

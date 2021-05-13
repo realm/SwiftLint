@@ -29,54 +29,53 @@ public struct GroupedReporter: Reporter {
         return "Reports how many times certain violations are broken."
     }
 
-    public static func generateReport(_ violations: [StyleViolation]) -> String {
-        var report = ""
+    private static func groupViolations(_ violations: [StyleViolation],
+                                        WithViolationsSeverity severity: ViolationSeverity) -> [[StyleViolation]] {
+        
         let groupedBySeverity = Dictionary(grouping: violations) { $0.severity }
-        var groupedErrorsArray = [[StyleViolation]]()
-        var groupdeWarningsArray = [[StyleViolation]]()
+        var groupedArrays = [[StyleViolation]]()
         
-        
-        if let errorViolations = groupedBySeverity[.error] {
-            report = report + "\(errorViolations.count) Errors found:\n"
+        if let errorViolations = groupedBySeverity[severity] {
             let groupedErrorViolations = Dictionary(grouping: errorViolations) { $0.ruleIdentifier }
             for key in groupedErrorViolations.keys {
                 if let violations = groupedErrorViolations[key] {
-                    groupedErrorsArray.append(violations)
+                    groupedArrays.append(violations)
                 }
             }
-        } else {
-            report = report + "No Errors found\n"
         }
         
-        groupedErrorsArray.sort { (array0, array1) -> Bool in
+        groupedArrays.sort { (array0, array1) -> Bool in
             return array0.count > array1.count
         }
+        return groupedArrays
+    }
+    
+    public static func generateReport(_ violations: [StyleViolation]) -> String {
+        var report = ""
         
-        for errorsArray in groupedErrorsArray {
+        let errorsCount = violations.filter{ $0.severity == .error }.count
+        let warningsCount = violations.filter{ $0.severity == .warning }.count
+        
+        let groupedErrors = groupViolations(violations, WithViolationsSeverity: .error)
+        let groupdeWarnings = groupViolations(violations, WithViolationsSeverity: .warning)
+        
+        report.append("--------------------------------------------\n")
+        report.append("Errors: \(errorsCount)\n")
+        report.append("--------------------------------------------\n")
+        
+        for errorsArray in groupedErrors {
             if let errorInstance = errorsArray.first {
-                report = report + "\(errorsArray.count): \(errorInstance.ruleIdentifier) \n"
+                report.append("\(errorsArray.count): \(errorInstance.ruleIdentifier) \n")
             }
         }
         
-        if let warningViolations = groupedBySeverity[.warning] {
-            report = report + "\(warningViolations.count) Warnings found:\n"
-            let groupedWarningViolations = Dictionary(grouping: warningViolations) { $0.ruleIdentifier }
-            for key in groupedWarningViolations.keys {
-                if let violations = groupedWarningViolations[key] {
-                    groupdeWarningsArray.append(violations)
-                }
-            }
-        } else {
-            report = report + "No Warnings found\n"
-        }
+        report.append("--------------------------------------------\n")
+        report.append("Warnings: \(warningsCount)\n")
+        report.append("--------------------------------------------\n")
         
-        groupdeWarningsArray.sort { (array0, array1) -> Bool in
-            return array0.count > array1.count
-        }
-        
-        for warningsArray in groupdeWarningsArray {
+        for warningsArray in groupdeWarnings {
             if let warningInstance = warningsArray.first {
-                report = report + "\(warningsArray.count): \(warningInstance.ruleIdentifier) \n"
+                report.append("\(warningsArray.count): \(warningInstance.ruleIdentifier) \n")
             }
         }
         

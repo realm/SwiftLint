@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftyTextTable
 
 /// Reports how numerous violations for each rule violated is.
 class ViolationTally: CustomStringConvertible {
@@ -59,26 +60,49 @@ public struct GroupedReporter: Reporter {
         let groupedErrors = groupViolations(violations, WithViolationsSeverity: .error)
         let groupdeWarnings = groupViolations(violations, WithViolationsSeverity: .warning)
         
-        report.append("--------------------------------------------\n")
-        report.append("Errors: \(errorsCount)\n")
-        report.append("--------------------------------------------\n")
+        var errorsTable = TextTable(groupedViolations: groupedErrors)
+        errorsTable.header = "Errors: \(errorsCount)\n"
         
-        for errorsArray in groupedErrors {
-            if let errorInstance = errorsArray.first {
-                report.append("\(errorsArray.count): \(errorInstance.ruleIdentifier) \n")
-            }
-        }
-        
-        report.append("--------------------------------------------\n")
-        report.append("Warnings: \(warningsCount)\n")
-        report.append("--------------------------------------------\n")
-        
-        for warningsArray in groupdeWarnings {
-            if let warningInstance = warningsArray.first {
-                report.append("\(warningsArray.count): \(warningInstance.ruleIdentifier) \n")
-            }
-        }
+        var warningsTable = TextTable(groupedViolations: groupdeWarnings)
+        warningsTable.header = "Errors: \(warningsCount)\n"
+
+        report.append(errorsTable.render())
+        report.append("\n\n\n")
+        report.append(warningsTable.render())
         
         return report
+    }
+}
+
+private extension TextTable {
+    init(groupedViolations: [[StyleViolation]]) {
+        let columns = [
+            TextTableColumn(header: "Count"),
+            TextTableColumn(header: "Correctable"),
+            TextTableColumn(header: "Name"),
+            TextTableColumn(header: "Rule ID")
+        ]
+        self.init(columns: columns)
+
+        for violations in groupedViolations {
+            if let violation = violations.first {
+                self.addRow(values: [
+                    violations.count,
+                    violation.isCorrectable ? "YES" : "NO",
+                    violation.ruleName,
+                    violation.ruleIdentifier
+                ])
+            }
+        }
+    }
+}
+
+private extension StyleViolation {
+    var isCorrectable: Bool {
+        if let rule = primaryRuleList.list[self.ruleIdentifier], rule.init() is CorrectableRule {
+            return true
+        } else {
+            return false
+        }
     }
 }

@@ -378,6 +378,12 @@ extension DiscouragedDirectInitRuleTests {
     ]
 }
 
+extension DiscouragedNoneNameTests {
+    static var allTests: [(String, (DiscouragedNoneNameTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension DiscouragedObjectLiteralRuleTests {
     static var allTests: [(String, (DiscouragedObjectLiteralRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration),
@@ -1444,8 +1450,7 @@ extension RulesTests {
         ("testMark", testMark),
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline),
-        ("testOrphanedDocComment", testOrphanedDocComment),
-        ("testDiscouragedNoneName", testDiscouragedNoneName)
+        ("testOrphanedDocComment", testOrphanedDocComment)
     ]
 }
 
@@ -1844,6 +1849,7 @@ XCTMain([
     testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
     testCase(DiscouragedAssertRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
+    testCase(DiscouragedNoneNameTests.allTests),
     testCase(DiscouragedObjectLiteralRuleTests.allTests),
     testCase(DiscouragedOptionalBooleanRuleTests.allTests),
     testCase(DiscouragedOptionalCollectionRuleTests.allTests),

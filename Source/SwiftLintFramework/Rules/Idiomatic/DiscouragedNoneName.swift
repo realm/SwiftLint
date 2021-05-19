@@ -9,6 +9,7 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
         description: "Discourages the naming of enum cases and static members as 'none', which can conflict with Optional<T>.none",
         kind: .idiomatic,
         nonTriggeringExamples: [
+            // Should not trigger unless exactly matches "none"
             Example("""
             enum MyEnum {
                 case nOne
@@ -59,6 +60,28 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
                 static let nonenone = MyStruct()
             }
             """),
+
+            // Should not trigger if not an enum case or static/class member
+            Example("""
+            struct MyStruct {
+                let none = MyStruct()
+            }
+            """),
+            Example("""
+            struct MyStruct {
+                var none = MyStruct()
+            }
+            """),
+            Example("""
+            class MyClass {
+                let none = MyClass()
+            }
+            """),
+            Example("""
+            class MyClass {
+                var none = MyClass()
+            }
+            """)
         ],
         triggeringExamples: [
             Example("""
@@ -149,10 +172,10 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
             struct MyStruct {
                 static var none = MyStruct(), a = MyStruct()
             }
-            """),
+            """)
         ]
     )
-    
+
     public func validate(
         file: SwiftLintFile,
         kind: SwiftDeclarationKind,
@@ -164,19 +187,21 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
                 ruleDescription: Self.description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: offset),
-                reason: """
-\(kind.reasonPrefix) should not be named `none` since the compiler can think you mean `Optional<T>.none`.
-"""
+                reason: kind.reason
             )
         ]
     }
-    
+
     public init() {}
 }
 
 private extension SwiftDeclarationKind {
     var isForValidating: Bool { self == .enumelement || self == .varClass || self == .varStatic }
-    
+
+    var reason: String {
+        "\(reasonPrefix) should not be named `none` since the compiler can think you mean `Optional<T>.none`."
+    }
+
     var reasonPrefix: String {
         switch self {
         case .enumelement: return "`case`"

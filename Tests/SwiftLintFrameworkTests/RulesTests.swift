@@ -24,8 +24,4 @@ class RulesTests: XCTestCase {
     func testOrphanedDocComment() {
         verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
     }
-    
-    func testDiscouragedNoneName() {
-        verifyRule(DiscouragedNoneName.description)
-    }
 }

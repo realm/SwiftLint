@@ -6,7 +6,7 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
     public static var description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
-        description: "Discourages the naming of enum cases and static members as 'none', which can conflict with Optional<T>.none",
+        description: "Discourages name cases/static members `none`, which can conflict with `Optional<T>.none`.",
         kind: .idiomatic,
         nonTriggeringExamples: [
             // Should not trigger unless exactly matches "none"
@@ -37,7 +37,7 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
             """),
             Example("""
             class MyClass {
-                class var nonenone = MyClass()
+                class var nonenone: MyClass { MyClass() }
             }
             """),
             Example("""
@@ -140,7 +140,7 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
             """),
             Example("""
             class MyClass {
-                class var none = MyClass()
+                class var none: MyClass { MyClass() }
             }
             """),
             Example("""
@@ -199,15 +199,17 @@ private extension SwiftDeclarationKind {
     var isForValidating: Bool { self == .enumelement || self == .varClass || self == .varStatic }
 
     var reason: String {
-        "\(reasonPrefix) should not be named `none` since the compiler can think you mean `Optional<T>.none`."
-    }
-
-    var reasonPrefix: String {
-        switch self {
-        case .enumelement: return "`case`"
-        case .varClass, .varStatic: return "`static`/`class` members"
-        default: return ""
+        var reasonPrefix: String {
+            switch self {
+            case .enumelement: return "`case`"
+            case .varClass: return "`class` member"
+            case .varStatic: return "`static` member"
+            default: return ""
+            }
         }
+        let reason = "Avoid naming \(reasonPrefix) `none` as the compiler can think you mean `Optional<T>.none`."
+        let recommendation = "Consider using an Optional value instead."
+        return "\(reason) \(recommendation)"
     }
 }
 

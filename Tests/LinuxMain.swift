@@ -1444,7 +1444,8 @@ extension RulesTests {
         ("testMark", testMark),
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline),
-        ("testOrphanedDocComment", testOrphanedDocComment)
+        ("testOrphanedDocComment", testOrphanedDocComment),
+        ("testDiscouragedNoneName", testDiscouragedNoneName)
     ]
 }
 

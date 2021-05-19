@@ -20,6 +20,12 @@
   keys in dictionary literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `discouraged_none_name` rule to discourage naming cases and static/class
+  members "none", which can conflict with Swift's `Optional<T>.none` when
+  checking equality.
+  [Kane Cheshire](https://github.com/kanecheshire)
+  [#3624](https://github.com/realm/SwiftLint/issues/3624)
+
 #### Bug Fixes
 
 * Fix false positives in `empty_enum_arguments` rule when comparing values
@@ -170,15 +176,15 @@
   being available (when using multiple configurations).  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3472](https://github.com/realm/SwiftLint/issues/3472)
-  
+
 * Fix bug that prevented the reconfiguration of a custom rule in a child
   config.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3477](https://github.com/realm/SwiftLint/issues/3477)
-  
+
 * Fix typos in configuration options for `file_name` rule.  
   [advantis](https://github.com/advantis)
-  
+
 * Fix issue that prevented the inclusion of a configuration file from a
   parent folder.  
   [Frederick Pietschmann](https://github.com/fredpi)
@@ -260,7 +266,7 @@
   within a function even if breaking the maximum `type_level`.  
   [Skoti](https://github.com/Skoti)
   [#1151](https://github.com/realm/SwiftLint/issues/1151)
-  
+
 * Add option to specify a `child_config` / `parent_config` file
   (local or remote) in any SwiftLint configuration file.
   Allow passing multiple configuration files via the command line.

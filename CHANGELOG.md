@@ -36,6 +36,10 @@
 
 * Fix `type_contents_order` initializer detection.  
   [StevenMagdy](https://github.com/StevenMagdy)
+  
+* Fix Autocorrect on no space between the tuple and "in" in unneeded_parentheses_in_closure_argument.  
+  [p-x9](https://github.com/p-x9)
+  [#3633](https://github.com/realm/SwiftLint/issues/3633)
 
 ## 0.43.1: Laundroformat
 

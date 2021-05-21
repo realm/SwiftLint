@@ -30,6 +30,7 @@
   with a static member (e.g. `if number == .zero`).  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3562](https://github.com/realm/SwiftLint/issues/3562)
+
 * Fix the regex for expiring-todos  
   [namolnad](https://github.com/namolnad)
   [#3597](https://github.com/realm/SwiftLint/pull/3597)
@@ -37,7 +38,8 @@
 * Fix `type_contents_order` initializer detection.  
   [StevenMagdy](https://github.com/StevenMagdy)
   
-* Fix Autocorrect on no space between the tuple and "in" in unneeded_parentheses_in_closure_argument.  
+* Fix autocorrect when there's no space between the tuple the `in` keyword
+  on `unneeded_parentheses_in_closure_argument` rule.  
   [p-x9](https://github.com/p-x9)
   [#3633](https://github.com/realm/SwiftLint/issues/3633)
 

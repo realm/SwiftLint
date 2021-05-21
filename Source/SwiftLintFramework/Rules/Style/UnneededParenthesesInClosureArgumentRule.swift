@@ -111,13 +111,12 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                                           length: violatingRange.length - 2)
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange),
                 let updatedRange = correctedContents.nsrangeToIndexRange(correctingRange) {
-                let updatedArguments = correctedContents[updatedRange]
-                let whiteSpaceOffset = violatingRange.location + violatingRange.length
-                if let whiteSpaceIndex = correctedContents.index(correctedContents.startIndex,
-                                                                 offsetBy: whiteSpaceOffset,
+                var updatedArguments = correctedContents[updatedRange]
+                if let whiteSpaceIndex = correctedContents.index(indexRange.upperBound,
+                                                                 offsetBy: 0,
                                                                  limitedBy: correctedContents.endIndex),
                    !String(correctedContents[whiteSpaceIndex]).hasTrailingWhitespace() {
-                    correctedContents.insert(" ", at: whiteSpaceIndex)
+                    updatedArguments += " "
                 }
                 correctedContents = correctedContents.replacingCharacters(in: indexRange,
                                                                           with: String(updatedArguments))

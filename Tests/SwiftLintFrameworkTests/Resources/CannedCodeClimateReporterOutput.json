@@ -45,7 +45,7 @@
     "type" : "issue"
   },
   {
-    "check_name" : "Colon",
+    "check_name" : "Colon Spacing",
     "description" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
     "engine_name" : "SwiftLint",
     "fingerprint" : "1f9389145aa6d7e89a582fce5ae54659",

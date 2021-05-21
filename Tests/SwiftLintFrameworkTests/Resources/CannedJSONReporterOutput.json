@@ -33,6 +33,6 @@
     "rule_id" : "colon",
     "line" : null,
     "severity" : "Error",
-    "type" : "Colon"
+    "type" : "Colon Spacing"
   }
 ]

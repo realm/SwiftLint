@@ -85,91 +85,91 @@ public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule
         triggeringExamples: [
             Example("""
             enum MyEnum {
-                case none
+                case ↓none
             }
             """),
             Example("""
             enum MyEnum {
-                case a, none
+                case a, ↓none
             }
             """),
             Example("""
             enum MyEnum {
-                case none, b
+                case ↓none, b
             }
             """),
             Example("""
             enum MyEnum {
-                case a, none, b
+                case a, ↓none, b
             }
             """),
             Example("""
             enum MyEnum {
                 case a
-                case none
+                case ↓none
             }
             """),
             Example("""
             enum MyEnum {
-                case none
+                case ↓none
                 case b
             }
             """),
             Example("""
             enum MyEnum {
                 case a
-                case none
+                case ↓none
                 case b
             }
             """),
             Example("""
             class MyClass {
-                static let none = MyClass()
+                ↓static let none = MyClass()
             }
             """),
             Example("""
             class MyClass {
-                static let none: MyClass = MyClass()
+                ↓static let none: MyClass = MyClass()
             }
             """),
             Example("""
             class MyClass {
-                static var none: MyClass = MyClass()
+                ↓static var none: MyClass = MyClass()
             }
             """),
             Example("""
             class MyClass {
-                class var none: MyClass { MyClass() }
+                ↓class var none: MyClass { MyClass() }
             }
             """),
             Example("""
             struct MyStruct {
-                static var none = MyStruct()
+                ↓static var none = MyStruct()
             }
             """),
             Example("""
             struct MyStruct {
-                static var none: MyStruct = MyStruct()
+                ↓static var none: MyStruct = MyStruct()
             }
             """),
             Example("""
             struct MyStruct {
-                static var none = MyStruct()
+                ↓static var none = MyStruct()
             }
             """),
             Example("""
             struct MyStruct {
-                static var none: MyStruct = MyStruct()
+                ↓static var none: MyStruct = MyStruct()
             }
             """),
             Example("""
             struct MyStruct {
-                static var a = MyStruct(), none = MyStruct()
+                ↓static var a = MyStruct(), none = MyStruct()
             }
             """),
             Example("""
             struct MyStruct {
-                static var none = MyStruct(), a = MyStruct()
+                ↓static var none = MyStruct(), a = MyStruct()
             }
             """)
         ]

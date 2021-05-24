@@ -20,13 +20,13 @@
   keys in dictionary literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   
-* Fix the rule name from "Colon" to "Colon Spacing" to improve phrasing.
+* Fix the rule name from "Colon" to "Colon Spacing" to improve phrasing.  
   [Radu](https://github.com/raduciobanu002)
   [#3587](https://github.com/realm/SwiftLint/issues/3587)
 
-* Add `discouraged_none_name` rule to discourage naming cases and static/class
-  members "none", which can conflict with Swift's `Optional<T>.none` when
-  checking equality.
+* Add `discouraged_none_name` opt-in rule to discourage naming cases and
+  static/class members "none", which can conflict with Swift's
+  `Optional<T>.none` when checking equality.  
   [Kane Cheshire](https://github.com/kanecheshire)
   [#3624](https://github.com/realm/SwiftLint/issues/3624)
 
@@ -37,7 +37,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3562](https://github.com/realm/SwiftLint/issues/3562)
 
-* Fix the regex for expiring-todos  
+* Fix the regex for expiring-todos.  
   [namolnad](https://github.com/namolnad)
   [#3597](https://github.com/realm/SwiftLint/pull/3597)
 

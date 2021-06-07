@@ -41,6 +41,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = value
                 }
             }
+            """),
+            Example("""
+            override var aValue: String {
+             get {
+                 return Persister.shared.aValue
+             }
+             set() { }
+            }
             """)
         ],
         triggeringExamples: [
@@ -108,7 +116,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 let bodyByteRange = dict.bodyByteRange,
                 case let contents = file.stringView,
                 let propertyRange = contents.byteRangeToNSRange(bodyByteRange),
-                let getToken = findGetToken(in: propertyRange, file: file, propertyStructure: dict)
+                let getToken = findGetToken(in: propertyRange, file: file, propertyStructure: dict),
+                !dict.enclosedSwiftAttributes.contains(.override)
             else {
                 return nil
             }

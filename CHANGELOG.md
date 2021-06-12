@@ -30,6 +30,11 @@
   [Kane Cheshire](https://github.com/kanecheshire)
   [#3624](https://github.com/realm/SwiftLint/issues/3624)
 
+* Add `observable_object_main_actor` opt-in rule to warn when a class conforming 
+to `ObservableObject` is not annotated with the `@MainActor` attribute. 
+  [Blake](https://github.com/72A12F4E)
+  [#3655](https://github.com/realm/SwiftLint/issues/3655)
+
 #### Bug Fixes
 
 * Fix false positives in `empty_enum_arguments` rule when comparing values

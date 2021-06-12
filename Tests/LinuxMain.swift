@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest
@@ -1128,6 +1128,12 @@ extension ObjectLiteralRuleTests {
     ]
 }
 
+extension ObservableObjectMainActorRuleTests {
+    static var allTests: [(String, (ObservableObjectMainActorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension OpeningBraceRuleTests {
     static var allTests: [(String, (OpeningBraceRuleTests) -> () throws -> Void)] = [
         ("testOpeningBraceWithDefaultConfiguration", testOpeningBraceWithDefaultConfiguration),
@@ -1948,6 +1954,7 @@ XCTMain([
     testCase(NotificationCenterDetachmentRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
+    testCase(ObservableObjectMainActorRuleTests.allTests),
     testCase(OpeningBraceRuleTests.allTests),
     testCase(OperatorFunctionWhitespaceRuleTests.allTests),
     testCase(OperatorUsageWhitespaceRuleTests.allTests),

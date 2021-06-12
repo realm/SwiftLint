@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
@@ -506,6 +506,12 @@ class NoSpaceInMethodCallRuleTests: XCTestCase {
 class NotificationCenterDetachmentRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)
+    }
+}
+
+class ObservableObjectMainActorRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ObservableObjectMainActorRule.description)
     }
 }
 

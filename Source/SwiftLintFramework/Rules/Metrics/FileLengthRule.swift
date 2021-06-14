@@ -40,7 +40,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
 
         for parameter in configuration.severityConfiguration.params where lineCount > parameter.value {
             let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less" +
-                         (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespace" : "") +
+                         (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespaces" : "") +
                          ": currently contains \(lineCount)"
             return [StyleViolation(ruleDescription: Self.description,
                                    severity: parameter.severity,

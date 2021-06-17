@@ -36,7 +36,7 @@
   [#3654](https://github.com/realm/SwiftLint/pull/3654)
 
 * Add `anonymous_argument_in_multiline_closure` opt-in rule to validate that
-  named arguments are used in closures that spawn multiple lines.  
+  named arguments are used in closures that span multiple lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes

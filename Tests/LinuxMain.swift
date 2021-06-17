@@ -12,6 +12,12 @@ extension AccessControlLevelTests {
     ]
 }
 
+extension AnonymousArgumentInMultilineClosureRuleTests {
+    static var allTests: [(String, (AnonymousArgumentInMultilineClosureRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension AnyObjectProtocolRuleTests {
     static var allTests: [(String, (AnyObjectProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1811,6 +1817,7 @@ extension YodaConditionRuleTests {
 
 XCTMain([
     testCase(AccessControlLevelTests.allTests),
+    testCase(AnonymousArgumentInMultilineClosureRuleTests.allTests),
     testCase(AnyObjectProtocolRuleTests.allTests),
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),

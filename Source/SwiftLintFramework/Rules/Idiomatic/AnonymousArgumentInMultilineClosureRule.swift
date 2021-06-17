@@ -41,11 +41,12 @@ public struct AnonymousArgumentInMultilineClosureRule: ASTRule, OptInRule, Confi
               let range = dictionary.bodyByteRange,
               let (initialLine, _) = file.stringView.lineAndCharacter(forByteOffset: range.lowerBound),
               let (finalLine, _) = file.stringView.lineAndCharacter(forByteOffset: range.upperBound),
-              initialLine != finalLine else {
+              initialLine != finalLine,
+              let bodyNSRange = file.stringView.byteRangeToNSRange(range) else {
                 return []
         }
 
-        let matches = file.match(pattern: "\\$0", with: [.identifier]).filter { range in
+        let matches = file.match(pattern: "\\$0", with: [.identifier], range: bodyNSRange).filter { range in
             guard range.length == 2,
                   let byteRange = file.stringView.NSRangeToByteRange(range) else {
                 return false

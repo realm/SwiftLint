@@ -30,6 +30,11 @@
   [Kane Cheshire](https://github.com/kanecheshire)
   [#3624](https://github.com/realm/SwiftLint/issues/3624)
 
+* Improve language and positioning of `file_length` warnings when
+  `ignore_comment_only_lines: true`.  
+  [Steven Grosmark](https://github.com/g-mark)
+  [#3654](https://github.com/realm/SwiftLint/pull/3654)
+
 #### Bug Fixes
 
 * Fix false positives in `empty_enum_arguments` rule when comparing values

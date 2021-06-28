@@ -181,7 +181,7 @@ To specify a list of files when using `lint`, `autocorrect` or `analyze`
 plugin, or modified files in the working tree based on `git ls-files -m`), you
 can do so by passing the option `--use-script-input-files` and setting the
 following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
-`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
+`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}`.
 
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).

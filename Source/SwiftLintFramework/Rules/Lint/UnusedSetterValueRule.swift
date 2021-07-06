@@ -102,6 +102,16 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = aValue
                 }
             }
+            """),
+            Example("""
+            override var aValue: String {
+                get {
+                    return Persister.shared.aValue
+                }
+                ↓set {
+                    Persister.shared.aValue = aValue
+                }
+            }
             """)
         ]
     )
@@ -116,8 +126,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 let bodyByteRange = dict.bodyByteRange,
                 case let contents = file.stringView,
                 let propertyRange = contents.byteRangeToNSRange(bodyByteRange),
-                let getToken = findGetToken(in: propertyRange, file: file, propertyStructure: dict),
-                !dict.enclosedSwiftAttributes.contains(.override)
+                let getToken = findGetToken(in: propertyRange, file: file, propertyStructure: dict)
             else {
                 return nil
             }
@@ -131,7 +140,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 if let argumentToken = argument?.token {
                     startOfBody = argumentToken.offset + argumentToken.length
                 } else {
-                    startOfBody = setToken.offset
+                    startOfBody = setToken.offset + setToken.length
                 }
                 setterByteRange = ByteRange(location: startOfBody,
                                             length: propertyEndOffset - startOfBody)
@@ -140,7 +149,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                 if let argumentToken = argument?.token {
                     startOfBody = argumentToken.offset + argumentToken.length
                 } else {
-                    startOfBody = setToken.offset
+                    startOfBody = setToken.offset + setToken.length
                 }
                 setterByteRange = ByteRange(location: startOfBody,
                                             length: getToken.offset - startOfBody)
@@ -152,6 +161,11 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
             let argumentName = argument?.name ?? "newValue"
             guard file.match(pattern: "\\b\(argumentName)\\b", with: [.identifier], range: setterRange).isEmpty else {
+                return nil
+            }
+
+            if dict.enclosedSwiftAttributes.contains(.override) &&
+                file.syntaxMap.kinds(inByteRange: setterByteRange).filter({ !$0.isCommentLike }).isEmpty {
                 return nil
             }
 

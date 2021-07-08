@@ -1,4 +1,4 @@
-## 0.43.0-LeadingAgile
+## Master
 
 #### Breaking
 
@@ -41,6 +41,11 @@
   has observers.  
   [Isaac Ressler](https://github.com/iressler)
   [#3621](https://github.com/realm/SwiftLint/issues/3621)
+* Add new `location` property `identifier` to allow the ability
+  to name the object in the AST related to the violation.
+  [George Walters](https://github.com/walterg2)
+  [Butch Howard](https://github.com/butchhoward)
+  [#3551](https://github.com/realm/SwiftLint/pull/3551)
 
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  
@@ -69,10 +74,6 @@
 * Add `anonymous_argument_in_multiline_closure` opt-in rule to validate that
   named arguments are used in closures that span multiple lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-* Add new `location` property `identifier` to allow the ability
-  to name the object in the AST related to the violation.
-  [George Walters](https://github.com/walterg2)
-  [Butch Howard](https://github.com/butchhoward)
 
 #### Bug Fixes
 

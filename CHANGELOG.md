@@ -13,7 +13,7 @@
 
 * Add document comments to `Reporter+CommandLine.swift` file.
   [Anh Pham](https://github.com/Taenerys)
-  [??](??)  
+  [#3673](https://github.com/realm/SwiftLint/pull/3673)  
   
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  

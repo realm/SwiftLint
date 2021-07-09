@@ -11,6 +11,10 @@
 
 #### Enhancements
 
+* Add document comments to `Reporter+CommandLine.swift` file.
+  [Anh Pham](https://github.com/Taenerys)
+  [??](??)  
+  
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  
   [Keith Smiley](https://github.com/keith)

@@ -2,7 +2,7 @@ import SwiftLintFramework
 
 extension Reporter {
     /**
-     Optionally reports violations as they are found.
+        Optionally reports violations as they are found.
              
         - Parameters:
             - violations: An array of `StyleViolation` to report.

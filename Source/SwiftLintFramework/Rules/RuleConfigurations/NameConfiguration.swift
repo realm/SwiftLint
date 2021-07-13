@@ -5,6 +5,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
             "excluded: \(excluded.sorted()), " +
+            "excluded_pattern: \(excludedPattern)," +
             "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
             "validates_start_with_lowercase: \(validatesStartWithLowercase)"
     }
@@ -12,6 +13,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
     var excluded: Set<String>
+    var excludedPattern: String
     private var allowedSymbolsSet: Set<String>
     var validatesStartWithLowercase: Bool
 
@@ -32,11 +34,13 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
                 maxLengthWarning: Int,
                 maxLengthError: Int,
                 excluded: [String] = [],
+                excludedPattern: String = "",
                 allowedSymbols: [String] = [],
                 validatesStartWithLowercase: Bool = true) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
+        self.excludedPattern = excludedPattern
         self.allowedSymbolsSet = Set(allowedSymbols)
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
@@ -54,6 +58,9 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
+        }
+        if let excludedPattern = configurationDict["excluded_pattern"] as? String {
+            self.excludedPattern = excludedPattern
         }
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
             self.allowedSymbolsSet = Set(allowedSymbols)

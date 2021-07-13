@@ -48,4 +48,17 @@ class GenericTypeNameRuleTests: XCTestCase {
                                          .with(triggeringExamples: triggeringExamples)
         verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
+
+    func testGenericTypeNameWithExcludedPattern() {
+        let baseDescription = GenericTypeNameRule.description
+        let triggeringExamples = [
+            Example("func foo<T_$_>() {}\n")
+        ]
+        let nonTriggeringExamples = [
+            Example("func foo<T_$>() {}\n")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded_pattern": #".*_\$$"#])
+    }
 }

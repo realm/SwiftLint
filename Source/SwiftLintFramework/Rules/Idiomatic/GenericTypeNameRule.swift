@@ -81,7 +81,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func validate(name: String, file: SwiftLintFile, offset: ByteCount) -> [StyleViolation] {
-        guard !configuration.excluded.contains(name) else {
+        guard !shouldExcludeName(name) else {
             return []
         }
 
@@ -112,6 +112,18 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return []
+    }
+
+    private func shouldExcludeName(_ name: String) -> Bool {
+        guard !configuration.excluded.contains(name) else {
+            return true
+        }
+        if !configuration.excludedPattern.isEmpty,
+           let match = regex(configuration.excludedPattern).firstMatch(in: name, options: [], range: name.fullNSRange),
+           name.nsrangeToIndexRange(match.range) != nil {
+            return true
+        }
+        return false
     }
 }
 

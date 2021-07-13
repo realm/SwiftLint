@@ -30,7 +30,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.excluded.contains(name), let firstCharacter = name.first else {
+            guard !shouldExcludeName(name), let firstCharacter = name.first else {
                 return []
             }
 
@@ -82,6 +82,18 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
             return []
         } ?? []
+    }
+
+    private func shouldExcludeName(_ name: String) -> Bool {
+        guard !configuration.excluded.contains(name) else {
+            return true
+        }
+        if !configuration.excludedPattern.isEmpty,
+           let match = regex(configuration.excludedPattern).firstMatch(in: name, options: [], range: name.fullNSRange),
+           name.nsrangeToIndexRange(match.range) != nil {
+            return true
+        }
+        return false
     }
 
     private func validateName(dictionary: SourceKittenDictionary,

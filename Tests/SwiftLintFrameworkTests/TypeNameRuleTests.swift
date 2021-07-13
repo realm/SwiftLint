@@ -48,4 +48,17 @@ class TypeNameRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
+
+    func testTypeNameWithExcludedPattern() {
+        let baseDescription = TypeNameRule.description
+        let nonTriggeringExamples = [
+            Example("enum MyType$")
+        ]
+        let triggeringExamples = [
+            Example("enum MyTypee$")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded_pattern": #".*Type\$$"#])
+    }
 }

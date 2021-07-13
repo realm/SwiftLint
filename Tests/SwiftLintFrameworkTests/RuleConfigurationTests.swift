@@ -9,6 +9,7 @@ class RuleConfigurationTests: XCTestCase {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],
                        "excluded": "id",
+                       "excluded_pattern": "X",
                        "allowed_symbols": ["$"],
                        "validates_start_with_lowercase": false] as [String: Any]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
@@ -20,6 +21,7 @@ class RuleConfigurationTests: XCTestCase {
                                      maxLengthWarning: 170,
                                      maxLengthError: 700,
                                      excluded: ["id"],
+                                     excludedPattern: "X",
                                      allowedSymbols: ["$"],
                                      validatesStartWithLowercase: false)
         do {

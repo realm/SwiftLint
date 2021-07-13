@@ -56,4 +56,17 @@ class IdentifierNameRuleTests: XCTestCase {
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
+
+    func testIdentifierNameWithExcludedPattern() {
+        let baseDescription = IdentifierNameRule.description
+        let nonTriggeringExamples = [
+            Example("let my_Let$ = 0")
+        ]
+        let triggeringExamples = [
+            Example("let my_Let$_ = 0")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded_pattern": #"Let\$$"#])
+    }
 }

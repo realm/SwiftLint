@@ -11,6 +11,10 @@
 
 #### Enhancements
 
+* Add `excluded_pattern` property to `NameConfiguration`.  
+  [Arnaud Dorgans](https://github.com/arnauddorgans)
+  [#3676](https://github.com/realm/SwiftLint/pull/3676) 
+  
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  
   [Keith Smiley](https://github.com/keith)

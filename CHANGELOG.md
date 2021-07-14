@@ -69,6 +69,9 @@
   [#3615](https://github.com/realm/SwiftLint/issues/3615)
   [#3685](https://github.com/realm/SwiftLint/issues/3685)
 
+* Fix Xcode build logs with spaces in paths preventing `analyze` from running.  
+  [adamawolf](https://github.com/adamawolf)
+
 ## 0.43.1: Laundroformat
 
 #### Breaking

@@ -110,3 +110,11 @@ custom_rules:
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
+  ast_error:
+    included: Tests/SwiftLintFrameworkTests/RulesTests.swift
+    name: Rule Test AST
+    message: Rule Test AST is parsed
+    # TODO: how should we represent '_' parameter labels
+    ast: >
+      {"kind": "expr.call", "name": "join", "subcomponents": [{ "kind": "expr.argument": "name": null}]}
+    severity: error

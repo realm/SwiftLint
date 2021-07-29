@@ -13,10 +13,10 @@ class CustomRulesTests: XCTestCase {
                 "severity": "error"
             ]
         ]
-        var comp = RegexConfiguration(identifier: "my_custom_rule")
+        var comp = CustomMatcherConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = regex("regex")
+        comp.matcher = ContentMatcher.regex(regex: regex("regex"), captureGroup: 0)
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = SyntaxKind.allKinds.subtracting([.comment])
         var compRules = CustomRulesConfiguration()
@@ -40,10 +40,10 @@ class CustomRulesTests: XCTestCase {
                 "severity": "error"
             ]
         ]
-        var comp = RegexConfiguration(identifier: "my_custom_rule")
+        var comp = CustomMatcherConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = regex("regex")
+        comp.matcher = ContentMatcher.regex(regex: regex("regex"), captureGroup: 0)
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = Set<SyntaxKind>([.comment])
         var compRules = CustomRulesConfiguration()
@@ -75,7 +75,7 @@ class CustomRulesTests: XCTestCase {
             "severity": "error"
         ]
 
-        var configuration = RegexConfiguration(identifier: "my_custom_rule")
+        var configuration = CustomMatcherConfiguration(identifier: "my_custom_rule")
         checkError(ConfigurationError.ambiguousMatchKindParameters) {
             try configuration.apply(configuration: configDict)
         }
@@ -164,12 +164,12 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations[0].location.character, 6)
     }
 
-    private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (RegexConfiguration, CustomRules) {
+    private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (CustomMatcherConfiguration, CustomRules) {
         var config: [String: Any] = ["regex": "pattern",
                                      "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }
 
-        var regexConfig = RegexConfiguration(identifier: "custom")
+        var regexConfig = CustomMatcherConfiguration(identifier: "custom")
         do {
             try regexConfig.apply(configuration: config)
         } catch {
@@ -184,11 +184,11 @@ class CustomRulesTests: XCTestCase {
         return (regexConfig, customRules)
     }
 
-    private func getCustomRulesWithTwoRules() -> ((RegexConfiguration, RegexConfiguration), CustomRules) {
+    private func getCustomRulesWithTwoRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration), CustomRules) {
         let config1 = ["regex": "pattern",
                        "match_kinds": "comment"]
 
-        var regexConfig1 = RegexConfiguration(identifier: "custom1")
+        var regexConfig1 = CustomMatcherConfiguration(identifier: "custom1")
         do {
             try regexConfig1.apply(configuration: config1)
         } catch {
@@ -198,7 +198,7 @@ class CustomRulesTests: XCTestCase {
         let config2 = ["regex": "something",
                        "match_kinds": "comment"]
 
-        var regexConfig2 = RegexConfiguration(identifier: "custom2")
+        var regexConfig2 = CustomMatcherConfiguration(identifier: "custom2")
         do {
             try regexConfig2.apply(configuration: config2)
         } catch {

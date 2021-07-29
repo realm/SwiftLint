@@ -1,6 +1,58 @@
 import Foundation
 import SourceKittenFramework
 
+public struct AST: Codable, Hashable, CacheDescriptionProvider {
+    var consoleDescription: String { "" }
+    var cacheDescription: String { "" }
+}
+
+public enum ContentMatcher: Hashable, CacheDescriptionProvider {
+    case regex(regex: NSRegularExpression, captureGroup: Int)
+    case ast(AST)
+
+    var consoleDescription: String {
+        switch self {
+        case .regex(let regex, _):
+            return regex.pattern
+        case .ast(let ast):
+            return ast.consoleDescription
+        }
+    }
+
+    var cacheDescription: String {
+        switch self {
+        case .regex(let regex, _):
+            return regex.pattern
+        case .ast(let ast):
+            return ast.cacheDescription
+        }
+    }
+
+    init?(configuration: [String: Any]) throws {
+        let captureGroup = configuration["capture_group"] as? Int ?? 0
+        if let regexString = configuration["regex"] as? String {
+            let regex = try NSRegularExpression.cached(pattern: regexString)
+
+            guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
+                throw ConfigurationError.unknownConfiguration
+            }
+
+            self = .regex(regex: regex, captureGroup: captureGroup)
+            return
+        }
+
+        if let astString = configuration["ast"] as? String {
+            guard let astData = astString.data(using: .utf8) else {
+                throw ConfigurationError.unknownConfiguration
+            }
+            self = try .ast(JSONDecoder().decode(AST.self, from: astData))
+            return
+        }
+
+        throw ConfigurationError.unknownConfiguration
+    }
+}
+
 extension SwiftLintFile {
     // TODO: theres a bunch of stuff in SwiftLintFile+Regex that unrelated to Regex...
     

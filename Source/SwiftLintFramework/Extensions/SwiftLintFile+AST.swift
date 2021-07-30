@@ -51,8 +51,8 @@ public struct ASTQuery: Codable, Hashable, CacheDescriptionProvider {
                     parent.byteRange.map { ret.append($0) }
                 } else {
                     // TODO: will this handle holes?
-                    //{ name: foo, substructure [{ }, { name: param }] } should match .foo(bar: baz, param: qux)
-                    //{ name: foo, substructure [{ name: param }] } should not match .foo(bar: baz, param: qux) only .foo(param: qux)
+                    // { name: foo, substructure [{ }, { name: param }] } should match .foo(bar: baz, param: qux)
+                    // { name: foo, substructure [{ name: param }] } should not match .foo(bar: baz, param: qux) only .foo(param: qux)
                     for subQuery in query.substructure {
                         ret.append(contentsOf: matches(subtree: next, query: subQuery))
                         // TODO: determine how to best union ranges so we get accurate byteRanges (or use some other sourceLocation metadata)

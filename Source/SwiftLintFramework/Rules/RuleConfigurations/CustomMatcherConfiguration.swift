@@ -4,7 +4,7 @@ import SourceKittenFramework
 public struct CustomMatcherConfiguration: RuleConfiguration, Hashable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
-    public var message = "Regex matched."
+    public var message = "Content matched."
     public var matcher: ContentMatcher!
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?

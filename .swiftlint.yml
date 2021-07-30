@@ -111,10 +111,18 @@ custom_rules:
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
   ast_error:
-    included: Tests/SwiftLintFrameworkTests/RulesTests.swift
     name: Rule Test AST
-    message: Rule Test AST is parsed
+    message: Rule Test AST is parsed message - Avoid joined(separator:)
     # TODO: how should we represent '_' parameter labels
     ast: >
-      {"kind": "expr.call", "name": "join", "subcomponents": [{ "kind": "expr.argument": "name": null}]}
+      {
+      "expressionKind": "call",
+      "name": "joined",
+      "subcomponents": [
+        {
+          "expressionKind": "argument",
+          "name": "separator"
+        }
+      ]
+      }
     severity: error

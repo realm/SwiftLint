@@ -2,8 +2,45 @@ import Foundation
 import SourceKittenFramework
 
 public struct AST: Codable, Hashable, CacheDescriptionProvider {
-    var consoleDescription: String { "" }
-    var cacheDescription: String { "" }
+    enum ASTCodingKeys: CodingKey {
+        case expressionKind
+        case declarationKind
+        case statementKind
+
+        case name
+        case substructure
+    }
+
+    let expressionKind: String?
+    let declarationKind: String?
+    let statementKind: String?
+
+    let name: String?
+    let substructure: [AST]
+
+    init(expressionKind: String? = nil, declarationKind: String? = nil, statementKind: String? = nil, name: String? = nil, substructure: [AST] = []) {
+        self.expressionKind = expressionKind
+        self.declarationKind = declarationKind
+        self.statementKind = declarationKind
+
+        self.name = name
+        self.substructure = substructure
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: ASTCodingKeys.self)
+
+        expressionKind = try container.decodeIfPresent(String.self, forKey: .expressionKind)
+        declarationKind = try container.decodeIfPresent(String.self, forKey: .declarationKind)
+        statementKind = try container.decodeIfPresent(String.self, forKey: .statementKind)
+
+        name = try container.decodeIfPresent(String.self, forKey: .name)
+        substructure = try container.decodeIfPresent([AST].self, forKey: .substructure) ?? []
+    }
+
+    var consoleDescription: String { "TODO" }
+
+    var cacheDescription: String { "TODO" }
 }
 
 public enum ContentMatcher: Hashable, CacheDescriptionProvider {

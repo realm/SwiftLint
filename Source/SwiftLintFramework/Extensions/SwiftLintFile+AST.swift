@@ -41,6 +41,27 @@ public struct AST: Codable, Hashable, CacheDescriptionProvider {
     var consoleDescription: String { "TODO" }
 
     var cacheDescription: String { "TODO" }
+
+    func matches(subtree source: SourceKittenDictionary, query: AST) -> [ByteRange] {
+        return source.traverseWithParentDepthFirst { parent, next in
+            if parent ~= query {
+                var ret = [ByteRange]()
+                if query.substructure.isEmpty {
+                    parent.byteRange.map { ret.append($0) }
+                } else {
+                    // TODO: will this handle holes?
+                    //{ name: foo, substructure [{ }, { name: param }] } should match .foo(bar: baz, param: qux)
+                    //{ name: foo, substructure [{ name: param }] } should not match .foo(bar: baz, param: qux) only .foo(param: qux)
+                    for subQuery in query.substructure {
+                        ret.append(contentsOf: matches(subtree: next, query: subQuery))
+                        // TODO: determine how to best union ranges so we get accurate byteRanges (or use some other sourceLocation metadata)
+                    }
+                }
+                return ret
+            }
+            return []
+        }
+    }
 }
 
 public enum ContentMatcher: Hashable, CacheDescriptionProvider {
@@ -90,37 +111,75 @@ public enum ContentMatcher: Hashable, CacheDescriptionProvider {
     }
 }
 
+protocol ASTQueryable {
+    static func ~= (left: Self, right: AST) -> Bool
+}
+
+// FIXME: these matchers a lil awkward.
+
+extension SourceKittenDictionary: ASTQueryable {
+    static func ~= (source: Self, ast: AST) -> Bool {
+        // TODO: nil AST.name as a wildcard?
+        var result = false
+        if let ast_expressionKind = ast.expressionKind, let expressionKind = source.expressionKind {
+            result = expressionKind ~= ast_expressionKind
+        }
+        if let ast_declarationKind = ast.declarationKind, let declarationKind = source.declarationKind {
+            result = declarationKind ~= ast_declarationKind
+        }
+        if let ast_statementKind = ast.statementKind, let statementKind = source.statementKind {
+            result = statementKind ~= ast_statementKind
+        }
+        // TODO: nil kinds as a wildcard? or explicit
+        if let sourceName = source.name, let astName = ast.name {
+            result = sourceName.hasSuffix(astName)
+        }
+        return result
+    }
+}
+
+extension SwiftExpressionKind: ASTQueryable {
+    static func ~= (left: Self, right: AST) -> Bool {
+        guard let expressionKind = right.expressionKind else { return false }
+        return left.rawValue.hasSuffix(expressionKind)
+    }
+    static func ~= (left: Self, right: String) -> Bool {
+        return left.rawValue.hasSuffix(right)
+    }
+}
+
+extension SwiftDeclarationKind: ASTQueryable {
+    static func ~= (left: Self, right: AST) -> Bool {
+        guard let declarationKind = right.declarationKind else { return false }
+        return left.rawValue.hasSuffix(declarationKind)
+    }
+    static func ~= (left: Self, right: String) -> Bool {
+        return left.rawValue.hasSuffix(right)
+    }
+}
+
+extension StatementKind: ASTQueryable {
+    static func ~= (left: Self, right: AST) -> Bool {
+        guard let statementKind = right.statementKind else { return false }
+        return left.rawValue.hasSuffix(statementKind)
+    }
+    static func ~= (left: Self, right: String) -> Bool {
+        return left.rawValue.hasSuffix(right)
+    }
+}
+
 extension SwiftLintFile {
     // TODO: theres a bunch of stuff in SwiftLintFile+Regex that unrelated to Regex...
-    
+
     internal func matchesAndSyntaxKinds(matching ast: AST,
-                                        fileAST: SourceKittenDictionary) -> [(ByteRange, [SyntaxKind])] {
-//        // working return type. Whatever we need to bridge SourceKittenDictionary to StyleViolation.location
-//        let ret = [(ByteCount, [SyntaxKind])]()
-//
-//        self.structureDictionary.traverseDepthFirst { potentialRoot in
-//            // what does it mean to compare a high level AST/json summary that fits in .swiftlint against a SourceKittenDictionary
-//            if sourceKittenDictionary matches ast {
-//                // base case
-//                if ast.substructures.isEmpty {
-//                    // which ByteCount do we return to build an error type? how do we handle .swiftlints SyntaxKind filters
-//                    let result = build and return this node's [(ByteCount, [SyntaxKind])]
-//                    ret.append(result)
-//                }
-//                else {
-//                    // is this how subgraph matching works.
-//                    // does dfs/bfs matter here?
-//                    ast.substructures.traverseBreadthFirst { child in
-//                    ret.append(self.matchesAndSyntaxKinds(ast: child, fileAST: potentialRoot))
-//                }
-//            }
-//            return []
-//        }
-        return []
+                                        fileAST: SourceKittenDictionary) -> [(ByteRange, [SwiftLintSyntaxToken])] {
+        let syntax = syntaxMap
+        let ranges = ast.matches(subtree: structureDictionary, query: ast)
+        return ranges.map { ($0, syntax.tokens(inByteRange: $0)) }
     }
 
     internal func match(ast: AST) -> [(ByteRange, [SyntaxKind])] {
-        return matchesAndSyntaxKinds(matching: ast, fileAST: structureDictionary)
+        return matchesAndSyntaxKinds(matching: ast, fileAST: structureDictionary).map { ($0, $1.kinds) }
     }
 
     /**
@@ -144,7 +203,11 @@ extension SwiftLintFile {
                          range: range,
                          captureGroup: captureGroup)
         case .ast(let ast):
-            return match(ast: ast, excludingSyntaxKinds: syntaxKinds)
+            let matches = match(ast: ast, excludingSyntaxKinds: syntaxKinds)
+            if matches.count > 0 {
+                print(matches)
+            }
+            return matches
         }
     }
 
@@ -163,7 +226,6 @@ extension SwiftLintFile {
                         excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>) -> [NSRange] {
         return match(ast: ast)
             .filter { syntaxKinds.isDisjoint(with: $0.1) }
-            .map { NSRange(location: $0.0.lowerBound.value, length: $0.0.length.value) } // TODO: this is probably not right.
+            .map { stringView.byteRangeToNSRange($0.0)! } // FIXME: given joined(seperator:) query its finding a cursor: '^'.joined(seperator:) which highlights incorrectly un multiline statements.
     }
-
 }

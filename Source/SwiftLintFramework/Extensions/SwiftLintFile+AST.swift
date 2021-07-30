@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct AST: Codable, Hashable, CacheDescriptionProvider {
+// TODO: do we need to cache these?
+public struct ASTQuery: Codable, Hashable, CacheDescriptionProvider {
     enum ASTCodingKeys: CodingKey {
         case expressionKind
         case declarationKind
@@ -16,9 +17,9 @@ public struct AST: Codable, Hashable, CacheDescriptionProvider {
     let statementKind: String?
 
     let name: String?
-    let substructure: [AST]
+    let substructure: [ASTQuery]
 
-    init(expressionKind: String? = nil, declarationKind: String? = nil, statementKind: String? = nil, name: String? = nil, substructure: [AST] = []) {
+    init(expressionKind: String? = nil, declarationKind: String? = nil, statementKind: String? = nil, name: String? = nil, substructure: [ASTQuery] = []) {
         self.expressionKind = expressionKind
         self.declarationKind = declarationKind
         self.statementKind = declarationKind
@@ -35,14 +36,14 @@ public struct AST: Codable, Hashable, CacheDescriptionProvider {
         statementKind = try container.decodeIfPresent(String.self, forKey: .statementKind)
 
         name = try container.decodeIfPresent(String.self, forKey: .name)
-        substructure = try container.decodeIfPresent([AST].self, forKey: .substructure) ?? []
+        substructure = try container.decodeIfPresent([ASTQuery].self, forKey: .substructure) ?? []
     }
 
     var consoleDescription: String { "TODO" }
 
     var cacheDescription: String { "TODO" }
 
-    func matches(subtree source: SourceKittenDictionary, query: AST) -> [ByteRange] {
+    func matches(subtree source: SourceKittenDictionary, query: ASTQuery) -> [ByteRange] {
         return source.traverseWithParentDepthFirst { parent, next in
             if parent ~= query {
                 var ret = [ByteRange]()
@@ -66,7 +67,7 @@ public struct AST: Codable, Hashable, CacheDescriptionProvider {
 
 public enum ContentMatcher: Hashable, CacheDescriptionProvider {
     case regex(regex: NSRegularExpression, captureGroup: Int)
-    case ast(AST)
+    case ast(ASTQuery)
 
     var consoleDescription: String {
         switch self {
@@ -103,7 +104,7 @@ public enum ContentMatcher: Hashable, CacheDescriptionProvider {
             guard let astData = astString.data(using: .utf8) else {
                 throw ConfigurationError.unknownConfiguration
             }
-            self = try .ast(JSONDecoder().decode(AST.self, from: astData))
+            self = try .ast(JSONDecoder().decode(ASTQuery.self, from: astData))
             return
         }
 
@@ -112,13 +113,13 @@ public enum ContentMatcher: Hashable, CacheDescriptionProvider {
 }
 
 protocol ASTQueryable {
-    static func ~= (left: Self, right: AST) -> Bool
+    static func ~= (left: Self, right: ASTQuery) -> Bool
 }
 
 // FIXME: these matchers a lil awkward.
 
 extension SourceKittenDictionary: ASTQueryable {
-    static func ~= (source: Self, ast: AST) -> Bool {
+    static func ~= (source: Self, ast: ASTQuery) -> Bool {
         // TODO: nil AST.name as a wildcard?
         var result = false
         if let ast_expressionKind = ast.expressionKind, let expressionKind = source.expressionKind {
@@ -139,7 +140,7 @@ extension SourceKittenDictionary: ASTQueryable {
 }
 
 extension SwiftExpressionKind: ASTQueryable {
-    static func ~= (left: Self, right: AST) -> Bool {
+    static func ~= (left: Self, right: ASTQuery) -> Bool {
         guard let expressionKind = right.expressionKind else { return false }
         return left.rawValue.hasSuffix(expressionKind)
     }
@@ -149,7 +150,7 @@ extension SwiftExpressionKind: ASTQueryable {
 }
 
 extension SwiftDeclarationKind: ASTQueryable {
-    static func ~= (left: Self, right: AST) -> Bool {
+    static func ~= (left: Self, right: ASTQuery) -> Bool {
         guard let declarationKind = right.declarationKind else { return false }
         return left.rawValue.hasSuffix(declarationKind)
     }
@@ -159,7 +160,7 @@ extension SwiftDeclarationKind: ASTQueryable {
 }
 
 extension StatementKind: ASTQueryable {
-    static func ~= (left: Self, right: AST) -> Bool {
+    static func ~= (left: Self, right: ASTQuery) -> Bool {
         guard let statementKind = right.statementKind else { return false }
         return left.rawValue.hasSuffix(statementKind)
     }
@@ -171,14 +172,14 @@ extension StatementKind: ASTQueryable {
 extension SwiftLintFile {
     // TODO: theres a bunch of stuff in SwiftLintFile+Regex that unrelated to Regex...
 
-    internal func matchesAndSyntaxKinds(matching ast: AST,
+    internal func matchesAndSyntaxKinds(matching ast: ASTQuery,
                                         fileAST: SourceKittenDictionary) -> [(ByteRange, [SwiftLintSyntaxToken])] {
         let syntax = syntaxMap
         let ranges = ast.matches(subtree: structureDictionary, query: ast)
         return ranges.map { ($0, syntax.tokens(inByteRange: $0)) }
     }
 
-    internal func match(ast: AST) -> [(ByteRange, [SyntaxKind])] {
+    internal func match(ast: ASTQuery) -> [(ByteRange, [SyntaxKind])] {
         return matchesAndSyntaxKinds(matching: ast, fileAST: structureDictionary).map { ($0, $1.kinds) }
     }
 
@@ -222,7 +223,7 @@ extension SwiftLintFile {
      - returns: An array of [NSRange] objects consisting of ast matches inside
      file contents.
      */
-    internal func match(ast: AST,
+    internal func match(ast: ASTQuery,
                         excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>) -> [NSRange] {
         return match(ast: ast)
             .filter { syntaxKinds.isDisjoint(with: $0.1) }

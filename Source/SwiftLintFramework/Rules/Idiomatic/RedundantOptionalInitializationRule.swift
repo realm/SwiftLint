@@ -57,7 +57,12 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
             Example("var myVar: Int?↓ = nil\n"),
             Example("var myVar: Optional<Int>↓ = nil\n"),
             Example("var myVar: Int?↓=nil\n"),
-            Example("var myVar: Optional<Int>↓=nil\n)")
+            Example("var myVar: Optional<Int>↓=nil\n)"),
+            Example("""
+              var myVar: String?↓ = nil {
+                didSet { print("didSet") }
+              }
+              """)
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {
@@ -99,7 +104,7 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         return corrections
     }()
 
-    private let pattern = "\\s*=\\s*nil\\b"
+    private let pattern = "\\s*=\\s*nil\\b\\s*\\{?"
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {

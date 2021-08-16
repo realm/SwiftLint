@@ -11,6 +11,11 @@
 
 #### Enhancements
 
+* Fix false negative on `redundant_optional_initialization` rule when variable
+has observers.  
+[Isaac Ressler](https://github.com/iressler)
+[#3621](https://github.com/realm/SwiftLint/issues/3621)
+
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  
   [Keith Smiley](https://github.com/keith)

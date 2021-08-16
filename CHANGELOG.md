@@ -12,9 +12,9 @@
 #### Enhancements
 
 * Fix false negative on `redundant_optional_initialization` rule when variable
-has observers.  
-[Isaac Ressler](https://github.com/iressler)
-[#3621](https://github.com/realm/SwiftLint/issues/3621)
+  has observers.  
+  [Isaac Ressler](https://github.com/iressler)
+  [#3621](https://github.com/realm/SwiftLint/issues/3621)
 
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  
@@ -67,6 +67,7 @@ has observers.
   `explicit_type_interface` rules when using Swift 5.4.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3615](https://github.com/realm/SwiftLint/issues/3615)
+  [#3685](https://github.com/realm/SwiftLint/issues/3685)
 
 ## 0.43.1: Laundroformat
 

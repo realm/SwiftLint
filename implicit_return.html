@@ -325,7 +325,7 @@
 <li><strong>Kind:</strong> style</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 3.0.0</li>
-<li><strong>Default configuration:</strong> warning, included: [getter, function, closure]</li>
+<li><strong>Default configuration:</strong> warning, included: [function, closure, getter]</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="n">foo</span> <span class="p">{</span>
@@ -348,6 +348,14 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">fetch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Data</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">try</span> <span class="nf">loadData</span><span class="p">()</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="kc">true</span> <span class="p">}</span>

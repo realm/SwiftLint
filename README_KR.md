@@ -119,7 +119,7 @@ Available commands:
 스위프트 파일이 있는 디렉토리에서 `swiftlint`를 실행합니다. 디렉토리는 재귀적으로 탐색됩니다.
 
 `lint`나 `autocorrect`를 사용할 때 여러 파일(예를 들면, [`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) 플러그인에 의해 Xcode가 변경한 파일들 혹은 `git ls-files -m` 명령으로 인해 작업 트리에서 변경된 파일들)을 지정하려면 `--use-script-input-files` 옵션을 넘기고 다음 인스턴스 변수들을 설정하면 됩니다. `SCRIPT_INPUT_FILE_COUNT` and
-`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`
+`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}`
 
 이는 [Xcode의 커스텀 스크립트 단계](http://indiestack.com/2014/12/speeding-up-custom-script-phases/)에 입력 파일로 환경 변수를 지정하는 것과 동일합니다.
 

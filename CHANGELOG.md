@@ -47,7 +47,7 @@
 * Add `scope_depth` rule to validate that scopes aren't nested more than `N`
   levels deep. `N` defaults to 10 but is configurable.  
   [Dale Myers](https://github.com/dalemyers)
-  [#?](https://github.com/realm/SwiftLint/pull/?)
+  [#3695](https://github.com/realm/SwiftLint/pull/3695)
 
 #### Bug Fixes
 

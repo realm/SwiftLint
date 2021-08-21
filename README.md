@@ -551,7 +551,7 @@ while the last one is treated as the highest-priority child.
 
 A simple example including just two configuration files looks like this:
 
-`swiftlint --config ".swiftlint.yml .swiftlint_child.yml"`
+`swiftlint --config .swiftlint.yml --config .swiftlint_child.yml`
 
 ### Nested Configurations
 

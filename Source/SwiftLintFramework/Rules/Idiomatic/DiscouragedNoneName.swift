@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct DiscouragedNoneName: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DiscouragedNoneNameRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
     public static var description = RuleDescription(
         identifier: "discouraged_none_name",

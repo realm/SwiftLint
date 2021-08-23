@@ -131,9 +131,9 @@ class DiscouragedAssertRuleTests: XCTestCase {
     }
 }
 
-class DiscouragedNoneNameTests: XCTestCase {
+class DiscouragedNoneNameRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(DiscouragedNoneName.description)
+        verifyRule(DiscouragedNoneNameRule.description)
     }
 }
 

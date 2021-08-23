@@ -34,7 +34,7 @@ public let primaryRuleList = RuleList(rules: [
     DiscardedNotificationCenterObserverRule.self,
     DiscouragedAssertRule.self,
     DiscouragedDirectInitRule.self,
-    DiscouragedNoneName.self,
+    DiscouragedNoneNameRule.self,
     DiscouragedObjectLiteralRule.self,
     DiscouragedOptionalBooleanRule.self,
     DiscouragedOptionalCollectionRule.self,

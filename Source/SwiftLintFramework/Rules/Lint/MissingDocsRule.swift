@@ -2,24 +2,26 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func missingDocOffsets(in dictionary: SourceKittenDictionary,
-                           acls: [AccessControlLevel]) -> [(ByteCount, AccessControlLevel)] {
+                           acls: [AccessControlLevel],
+                           excludesExtensions: Bool,
+                           excludesInheritedTypes: Bool) -> [(ByteCount, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
-            dictionary.inheritedTypes.isNotEmpty {
+            (dictionary.inheritedTypes.isNotEmpty && excludesInheritedTypes) {
             return []
         }
         let substructureOffsets = dictionary.substructure.flatMap {
-            missingDocOffsets(in: $0, acls: acls)
+            missingDocOffsets(in: $0, acls: acls, excludesExtensions: excludesExtensions, excludesInheritedTypes: excludesInheritedTypes)
         }
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
                                                          .extensionStruct, .extensionProtocol]
         guard let kind = dictionary.declarationKind,
-            !extensionKinds.contains(kind),
-            case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
-            !isDeinit,
-            let offset = dictionary.offset,
-            let acl = dictionary.accessibility,
-            acls.contains(acl) else {
-                return substructureOffsets
+              (!extensionKinds.contains(kind) || !excludesExtensions),
+              case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
+              !isDeinit,
+              let offset = dictionary.offset,
+              let acl = dictionary.accessibility,
+              acls.contains(acl) else {
+            return substructureOffsets
         }
         if dictionary.docLength != nil {
             return substructureOffsets
@@ -32,7 +34,9 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     public init() {
         configuration = MissingDocsRuleConfiguration(
             parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
-                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
+                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)],
+            excludesExtensions: true,
+            excludesInheritedTypes: true)
     }
 
     public typealias ConfigurationType = MissingDocsRuleConfiguration
@@ -98,7 +102,12 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
         let dict = file.structureDictionary
-        return file.missingDocOffsets(in: dict, acls: acls).map { offset, acl in
+        return file.missingDocOffsets(
+            in: dict,
+            acls: acls,
+            excludesExtensions: configuration.excludesExtensions,
+            excludesInheritedTypes: configuration.excludesInheritedTypes
+        ).map { offset, acl in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.parameters.first { $0.value == acl }?.severity ?? .warning,
                            location: Location(file: file, byteOffset: offset),

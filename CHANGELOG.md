@@ -11,6 +11,9 @@
 
 #### Enhancements
 
+* Add configurations to  `missing_docs` rule.
+[Ben Fox](https://github.com/bdfox325)
+
 * Fix false negative on `redundant_optional_initialization` rule when variable
   has observers.  
   [Isaac Ressler](https://github.com/iressler)

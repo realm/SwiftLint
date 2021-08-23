@@ -4,9 +4,15 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var excludesInheritedTypes = true
 
     public var consoleDescription: String {
-        return parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
+        let parametersDescription = parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
             "\($0.rawValue): \($1.map { $0.value.description }.sorted(by: <).joined(separator: ", "))"
-        }.joined(separator: ", ") + ", excludes_extensions: \(excludesExtensions)"
+        }.joined(separator: ", ")
+
+        if parametersDescription.isEmpty {
+            return "excludes_extensions: \(excludesExtensions), excludes_inherited_types: \(excludesInheritedTypes)"
+        } else {
+            return "\(parametersDescription), excludes_extensions: \(excludesExtensions), excludes_inherited_types: \(excludesInheritedTypes)"
+        }
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -21,7 +27,7 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
 
         for (key, value) in dict {
             guard let severity = ViolationSeverity(rawValue: key) else {
-                continue
+                throw ConfigurationError.unknownConfiguration
             }
 
             if let array = [String].array(of: value) {

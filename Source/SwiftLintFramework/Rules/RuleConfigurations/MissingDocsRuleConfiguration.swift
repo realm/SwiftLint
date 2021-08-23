@@ -9,9 +9,18 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         }.joined(separator: ", ")
 
         if parametersDescription.isEmpty {
-            return "excludes_extensions: \(excludesExtensions), excludes_inherited_types: \(excludesInheritedTypes)"
+            return [
+                "excludes_extensions: \(excludesExtensions)",
+                "excludes_inherited_types: \(excludesInheritedTypes)"
+            ]
+            .joined(separator: ", ")
         } else {
-            return "\(parametersDescription), excludes_extensions: \(excludesExtensions), excludes_inherited_types: \(excludesInheritedTypes)"
+            return [
+                parametersDescription,
+                "excludes_extensions: \(excludesExtensions)",
+                "excludes_inherited_types: \(excludesInheritedTypes)"
+            ]
+            .joined(separator: ", ")
         }
     }
 
@@ -31,12 +40,13 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             }
 
             if let array = [String].array(of: value) {
-                let rules: [RuleParameter<AccessControlLevel>] = try array.map { val -> RuleParameter<AccessControlLevel> in
-                    guard let acl = AccessControlLevel(description: val) else {
-                        throw ConfigurationError.unknownConfiguration
+                let rules: [RuleParameter<AccessControlLevel>] = try array
+                    .map { val -> RuleParameter<AccessControlLevel> in
+                        guard let acl = AccessControlLevel(description: val) else {
+                            throw ConfigurationError.unknownConfiguration
+                        }
+                        return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
                     }
-                    return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
-                }
 
                 parameters.append(contentsOf: rules)
             } else if let string = value as? String, let acl = AccessControlLevel(description: string) {

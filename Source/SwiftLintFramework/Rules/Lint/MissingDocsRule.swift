@@ -10,7 +10,12 @@ private extension SwiftLintFile {
             return []
         }
         let substructureOffsets = dictionary.substructure.flatMap {
-            missingDocOffsets(in: $0, acls: acls, excludesExtensions: excludesExtensions, excludesInheritedTypes: excludesInheritedTypes)
+            missingDocOffsets(
+                in: $0,
+                acls: acls,
+                excludesExtensions: excludesExtensions,
+                excludesInheritedTypes: excludesInheritedTypes
+            )
         }
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
                                                          .extensionStruct, .extensionProtocol]

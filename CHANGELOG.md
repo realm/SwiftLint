@@ -130,6 +130,9 @@
 
 #### Enhancements
 
+* Add  `mind_incomplete_docs` option in `missing_docs` to find incomplete 
+documentation.  
+[Jort Berends](https://github.com/jortberends)
 * Added `allows_single_line` option in `multiline_parameters` rule
   configuration. Defaults to `true`. This enforces parameters in a method
   with multiple parameters to always be in different lines.  

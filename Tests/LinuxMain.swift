@@ -979,13 +979,19 @@ extension LowerACLThanParentRuleTests {
 extension MissingDocsRuleConfigurationTests {
     static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
         ("testDescriptionEmpty", testDescriptionEmpty),
-        ("testDescriptionSingleServety", testDescriptionSingleServety),
+        ("testDescriptionSingleSeverity", testDescriptionSingleSeverity),
+        ("testDescriptionSingleSeverityWithoutMindIncompleteDocs", testDescriptionSingleSeverityWithoutMindIncompleteDocs),
         ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
+        ("testDescriptionMultipleSeveritiesWithoutMindIncompleteDocs", testDescriptionMultipleSeveritiesWithoutMindIncompleteDocs),
         ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
-        ("testParsingSingleServety", testParsingSingleServety),
+        ("testDescriptionMultipleAclsWithoutMindIncompleteDocs", testDescriptionMultipleAclsWithoutMindIncompleteDocs),
+        ("testParsingSingleSeverity", testParsingSingleSeverity),
+        ("testParsingSingleSeverityWithoutMindIncompleteDocs", testParsingSingleSeverityWithoutMindIncompleteDocs),
         ("testParsingMultipleSeverities", testParsingMultipleSeverities),
+        ("testParsingMultipleSeveritiesWithoutMindIncompleteDocs", testParsingMultipleSeveritiesWithoutMindIncompleteDocs),
         ("testParsingMultipleAcls", testParsingMultipleAcls),
-        ("testInvalidServety", testInvalidServety),
+        ("testParsingMultipleAclsWithoutMindIncompleteDocs", testParsingMultipleAclsWithoutMindIncompleteDocs),
+        ("testInvalidSeverity", testInvalidSeverity),
         ("testInvalidAcl", testInvalidAcl),
         ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
     ]

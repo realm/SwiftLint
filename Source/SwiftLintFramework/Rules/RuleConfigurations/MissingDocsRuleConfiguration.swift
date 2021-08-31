@@ -29,8 +29,13 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        excludesExtensions = dict["excludes_extensions"] as? Bool ?? true
-        excludesInheritedTypes = dict["excludes_inherited_types"] as? Bool ?? true
+        if let shouldExcludeExtensions = dict["excludes_extensions"] as? Bool {
+            excludesExtensions = shouldExcludeExtensions
+        }
+
+        if let shouldExcludeInheritedTypes = dict["excludes_inherited_types"] as? Bool {
+            excludesExtensions = shouldExcludeInheritedTypes
+        }
 
         var parameters: [RuleParameter<AccessControlLevel>] = []
 

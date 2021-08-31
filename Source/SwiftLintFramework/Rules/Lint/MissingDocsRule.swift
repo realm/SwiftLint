@@ -20,13 +20,13 @@ private extension SwiftLintFile {
         let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
                                                          .extensionStruct, .extensionProtocol]
         guard let kind = dictionary.declarationKind,
-              (!extensionKinds.contains(kind) || !excludesExtensions),
-              case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
-              !isDeinit,
-              let offset = dictionary.offset,
-              let acl = dictionary.accessibility,
-              acls.contains(acl) else {
-            return substructureOffsets
+            (!extensionKinds.contains(kind) || !excludesExtensions),
+            case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
+            !isDeinit,
+            let offset = dictionary.offset,
+            let acl = dictionary.accessibility,
+            acls.contains(acl) else {
+                return substructureOffsets
         }
         if dictionary.docLength != nil {
             return substructureOffsets

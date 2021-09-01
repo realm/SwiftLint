@@ -11,6 +11,13 @@
 
 #### Enhancements
 
+* Add configuration options to  `missing_docs` rule:
+  * `excludes_extensions` defaults to `true` to skip reporting violations
+     for extensions with missing documentation comments.
+  * `excludes_inherited_types` defaults to `true` to skip reporting
+     violations for inherited declarations, like subclass overrides.  
+  [Ben Fox](https://github.com/bdfox325)
+
 * Fix false negative on `redundant_optional_initialization` rule when variable
   has observers.  
   [Isaac Ressler](https://github.com/iressler)

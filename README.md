@@ -456,9 +456,11 @@ command invocation (incremental builds will fail) must be passed to `analyze`
 via the `--compiler-log-path` flag.
 e.g. `--compiler-log-path /path/to/xcodebuild.log`
 
-This can be obtained by running
-`xcodebuild -workspace {WORKSPACE}.xcworkspace -scheme {SCHEME} > xcodebuild.log`
-with a clean `DerivedData` folder.
+This can be obtained by 
+
+1. Cleaning DerivedData (incremental builds won't work with analyze)
+2. Running `xcodebuild -workspace {WORKSPACE}.xcworkspace -scheme {SCHEME} > xcodebuild.log`
+3. Running `swiftlint analyze --compiler-log-path xcodebuild.log`
 
 This command and related code in SwiftLint is subject to substantial changes at
 any time while this feature is marked as experimental. Analyzer rules also tend

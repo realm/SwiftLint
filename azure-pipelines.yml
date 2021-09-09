@@ -8,8 +8,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift53:
-        containerImage: swift:5.3
       swift54:
         containerImage: swift:5.4
   container: $[ variables['containerImage'] ]
@@ -23,8 +21,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode124:
-        DEVELOPER_DIR: /Applications/Xcode_12.4.app
       xcode125:
         DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
@@ -51,8 +47,6 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode124:
-        DEVELOPER_DIR: /Applications/Xcode_12.4.app
       xcode125:
         DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:

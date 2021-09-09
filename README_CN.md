@@ -45,7 +45,7 @@ $ mint install realm/SwiftLint
 
 ### 编译源代码：
 
-你也可以通过 Clone SwiftLint 的 Git 仓库到本地然后执行 `make install` (Xcode 11.4+) 编译源代码的方式来安装。
+你也可以通过 Clone SwiftLint 的 Git 仓库到本地然后执行 `make install` (Xcode 12.5+) 编译源代码的方式来安装。
 
 ## 用法
 

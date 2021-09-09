@@ -11,7 +11,7 @@
 
 #### Enhancements
 
-* Add configuration options to  `missing_docs` rule:
+* Add configuration options to `missing_docs` rule:
   * `excludes_extensions` defaults to `true` to skip reporting violations
      for extensions with missing documentation comments.
   * `excludes_inherited_types` defaults to `true` to skip reporting

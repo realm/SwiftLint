@@ -117,28 +117,10 @@ public struct CaptureVariableRule: AutomaticTestableRule, ConfigurationProviderR
             """),
             Example("""
             class C {
-                class var iClass: Int {
-                    get { iStatic }
-                    set { iStatic = newValue }
-                }
-                static var iStatic: Int = 0
-
-                func callTest() {
-                    test { [iClass=C.iClass] j in
-                        print(iClass, j)
-                    }
-                }
-
-                func test(_ completionHandler: @escaping (Int) -> Void) {
-                }
-            }
-            """),
-            Example("""
-            class C {
                 static var iStatic: Int = 0
 
                 static func callTest() {
-                    test { [iStatic] j in
+                    test { [↓iStatic] j in
                         print(iStatic, j)
                     }
                 }

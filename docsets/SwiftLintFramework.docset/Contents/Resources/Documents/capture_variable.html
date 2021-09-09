@@ -420,27 +420,10 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
-    <span class="kd">class</span> <span class="k">var</span> <span class="nv">iClass</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
-        <span class="k">get</span> <span class="p">{</span> <span class="n">iStatic</span> <span class="p">}</span>
-        <span class="k">set</span> <span class="p">{</span> <span class="n">iStatic</span> <span class="o">=</span> <span class="n">newValue</span> <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="kd">static</span> <span class="k">var</span> <span class="nv">iStatic</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="kd">func</span> <span class="nf">callTest</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">test</span> <span class="p">{</span> <span class="p">[</span><span class="n">iClass</span><span class="o">=</span><span class="kt">C</span><span class="o">.</span><span class="n">iClass</span><span class="p">]</span> <span class="n">j</span> <span class="k">in</span>
-            <span class="nf">print</span><span class="p">(</span><span class="n">iClass</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="kd">func</span> <span class="nf">test</span><span class="p">(</span><span class="n">_</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
     <span class="kd">static</span> <span class="k">var</span> <span class="nv">iStatic</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="kd">static</span> <span class="kd">func</span> <span class="nf">callTest</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">test</span> <span class="p">{</span> <span class="p">[</span><span class="n">iStatic</span><span class="p">]</span> <span class="n">j</span> <span class="k">in</span>
+        <span class="n">test</span> <span class="p">{</span> <span class="p">[</span><span class="err">↓</span><span class="n">iStatic</span><span class="p">]</span> <span class="n">j</span> <span class="k">in</span>
             <span class="nf">print</span><span class="p">(</span><span class="n">iStatic</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>

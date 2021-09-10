@@ -90,8 +90,8 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
             [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
              RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
         )
-        XCTAssertEqual(configuration.excludesExtensions, true)
-        XCTAssertEqual(configuration.excludesInheritedTypes, true)
+        XCTAssertTrue(configuration.excludesExtensions)
+        XCTAssertTrue(configuration.excludesInheritedTypes)
     }
 
     func testInvalidServety() {
@@ -102,8 +102,8 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
     func testInvalidAcl() {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["debug": ["public", "open"]])
-        XCTAssertEqual(configuration.excludesExtensions, true)
-        XCTAssertEqual(configuration.excludesInheritedTypes, true)
+        XCTAssertTrue(configuration.excludesExtensions)
+        XCTAssertTrue(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
             [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
@@ -119,8 +119,8 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
     func testExcludesFalse() {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": false, "excludes_inherited_types": false])
-        XCTAssertEqual(configuration.excludesExtensions, false)
-        XCTAssertEqual(configuration.excludesInheritedTypes, false)
+        XCTAssertFalse(configuration.excludesExtensions)
+        XCTAssertFalse(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
             [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
@@ -131,8 +131,8 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
     func testExcludesExtensionsFalseExcludesInheritedTypesTrue() {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": false, "excludes_inherited_types": true])
-        XCTAssertEqual(configuration.excludesExtensions, false)
-        XCTAssertEqual(configuration.excludesInheritedTypes, true)
+        XCTAssertFalse(configuration.excludesExtensions)
+        XCTAssertTrue(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
             [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
@@ -143,8 +143,8 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
     func testExcludesExtensionsTrueExcludesInheritedTypesFalse() {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": true, "excludes_inherited_types": false])
-        XCTAssertEqual(configuration.excludesExtensions, true)
-        XCTAssertEqual(configuration.excludesInheritedTypes, false)
+        XCTAssertTrue(configuration.excludesExtensions)
+        XCTAssertFalse(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
             [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
@@ -156,8 +156,8 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": true, "excludes_inherited_types": false, "error": ["public"]])
 
-        XCTAssertEqual(configuration.excludesExtensions, true)
-        XCTAssertEqual(configuration.excludesInheritedTypes, false)
+        XCTAssertTrue(configuration.excludesExtensions)
+        XCTAssertFalse(configuration.excludesInheritedTypes)
         XCTAssertEqual(
             configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
             [RuleParameter<AccessControlLevel>(severity: .error, value: .public)]

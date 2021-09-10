@@ -8,8 +8,8 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift53:
-        containerImage: swift:5.3
+      swift54:
+        containerImage: swift:5.4
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel
@@ -17,14 +17,12 @@ jobs:
 
 - job: Xcode
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   strategy:
     maxParallel: 10
     matrix:
-      xcode12:
-        DEVELOPER_DIR: /Applications/Xcode_12.app
-      xcode124:
-        DEVELOPER_DIR: /Applications/Xcode_12.4.app
+      xcode125:
+        DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
     - script: |
         sw_vers
@@ -45,14 +43,12 @@ jobs:
 
 - job: SwiftPM
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   strategy:
     maxParallel: 10
     matrix:
-      xcode12:
-        DEVELOPER_DIR: /Applications/Xcode_12.app
-      xcode124:
-        DEVELOPER_DIR: /Applications/Xcode_12.4.app
+      xcode125:
+        DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
     - script: |
         sw_vers
@@ -65,9 +61,9 @@ jobs:
 
 - job: CocoaPods
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_12.4.app
+    DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -78,18 +74,18 @@ jobs:
 
 - job: Analyze
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_12.4.app
+    DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
     - script: make analyze
       displayName: Run SwiftLint Analyze
 
 - job: TSan
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_12.4.app
+    DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
     - script: swift run --sanitize=thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run
@@ -100,9 +96,9 @@ jobs:
 
 - job: jazzy
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_12.4.app
+    DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

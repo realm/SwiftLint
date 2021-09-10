@@ -4,9 +4,24 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var excludesInheritedTypes = true
 
     public var consoleDescription: String {
-        return parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
+        let parametersDescription = parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
             "\($0.rawValue): \($1.map { $0.value.description }.sorted(by: <).joined(separator: ", "))"
-        }.joined(separator: ", ") + ", excludes_extensions: \(excludesExtensions)"
+        }.joined(separator: ", ")
+
+        if parametersDescription.isEmpty {
+            return [
+                "excludes_extensions: \(excludesExtensions)",
+                "excludes_inherited_types: \(excludesInheritedTypes)"
+            ]
+            .joined(separator: ", ")
+        } else {
+            return [
+                parametersDescription,
+                "excludes_extensions: \(excludesExtensions)",
+                "excludes_inherited_types: \(excludesInheritedTypes)"
+            ]
+            .joined(separator: ", ")
+        }
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -14,23 +29,29 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        excludesExtensions = dict["excludes_extensions"] as? Bool ?? true
-        excludesInheritedTypes = dict["excludes_inherited_types"] as? Bool ?? true
+        if let shouldExcludeExtensions = dict["excludes_extensions"] as? Bool {
+            excludesExtensions = shouldExcludeExtensions
+        }
+
+        if let shouldExcludeInheritedTypes = dict["excludes_inherited_types"] as? Bool {
+            excludesExtensions = shouldExcludeInheritedTypes
+        }
 
         var parameters: [RuleParameter<AccessControlLevel>] = []
 
         for (key, value) in dict {
             guard let severity = ViolationSeverity(rawValue: key) else {
-                continue
+                throw ConfigurationError.unknownConfiguration
             }
 
             if let array = [String].array(of: value) {
-                let rules: [RuleParameter<AccessControlLevel>] = try array.map { val -> RuleParameter<AccessControlLevel> in
-                    guard let acl = AccessControlLevel(description: val) else {
-                        throw ConfigurationError.unknownConfiguration
+                let rules: [RuleParameter<AccessControlLevel>] = try array
+                    .map { val -> RuleParameter<AccessControlLevel> in
+                        guard let acl = AccessControlLevel(description: val) else {
+                            throw ConfigurationError.unknownConfiguration
+                        }
+                        return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
                     }
-                    return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
-                }
 
                 parameters.append(contentsOf: rules)
             } else if let string = value as? String, let acl = AccessControlLevel(description: string) {

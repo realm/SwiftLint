@@ -384,8 +384,8 @@ extension DiscouragedDirectInitRuleTests {
     ]
 }
 
-extension DiscouragedNoneNameTests {
-    static var allTests: [(String, (DiscouragedNoneNameTests) -> () throws -> Void)] = [
+extension DiscouragedNoneNameRuleTests {
+    static var allTests: [(String, (DiscouragedNoneNameRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -553,6 +553,7 @@ extension ExplicitTypeInterfaceConfigurationTests {
 extension ExplicitTypeInterfaceRuleTests {
     static var allTests: [(String, (ExplicitTypeInterfaceRuleTests) -> () throws -> Void)] = [
         ("testExplicitTypeInterface", testExplicitTypeInterface),
+        ("testLocalVars", testLocalVars),
         ("testExcludeLocalVars", testExcludeLocalVars),
         ("testExcludeClassVars", testExcludeClassVars),
         ("testAllowRedundancy", testAllowRedundancy),
@@ -1856,7 +1857,7 @@ XCTMain([
     testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
     testCase(DiscouragedAssertRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
-    testCase(DiscouragedNoneNameTests.allTests),
+    testCase(DiscouragedNoneNameRuleTests.allTests),
     testCase(DiscouragedObjectLiteralRuleTests.allTests),
     testCase(DiscouragedOptionalBooleanRuleTests.allTests),
     testCase(DiscouragedOptionalCollectionRuleTests.allTests),

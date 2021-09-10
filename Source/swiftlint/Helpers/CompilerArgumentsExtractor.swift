@@ -104,6 +104,7 @@ extension Array where Element == String {
 
         // https://github.com/realm/SwiftLint/issues/3365
         args = args.map { $0.replacingOccurrences(of: "\\=", with: "=") }
+        args = args.map { $0.replacingOccurrences(of: "\\ ", with: " ") }
         args.append(contentsOf: ["-D", "DEBUG"])
         var shouldContinueToFilterArguments = true
         while shouldContinueToFilterArguments {

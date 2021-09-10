@@ -2,6 +2,25 @@
 
 #### Breaking
 
+* SwiftLint now requires Swift 5.4 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
+## 0.44.0: Travel Size Lint Roller
+
+#### Breaking
+
 * SwiftLint now requires Swift 5.3 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
@@ -13,6 +32,12 @@
 
 * Add configurations to  `missing_docs` rule.
 [Ben Fox](https://github.com/bdfox325)
+* Add configuration options to `missing_docs` rule:
+  * `excludes_extensions` defaults to `true` to skip reporting violations
+     for extensions with missing documentation comments.
+  * `excludes_inherited_types` defaults to `true` to skip reporting
+     violations for inherited declarations, like subclass overrides.  
+  [Ben Fox](https://github.com/bdfox325)
 
 * Fix false negative on `redundant_optional_initialization` rule when variable
   has observers.  
@@ -71,6 +96,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3615](https://github.com/realm/SwiftLint/issues/3615)
   [#3685](https://github.com/realm/SwiftLint/issues/3685)
+
+* Fix Xcode build logs with spaces in paths preventing `analyze` from running.  
+  [adamawolf](https://github.com/adamawolf)
 
 ## 0.43.1: Laundroformat
 

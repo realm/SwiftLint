@@ -34,14 +34,14 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         }
 
         if let shouldExcludeInheritedTypes = dict["excludes_inherited_types"] as? Bool {
-            excludesExtensions = shouldExcludeInheritedTypes
+            excludesInheritedTypes = shouldExcludeInheritedTypes
         }
 
         var parameters: [RuleParameter<AccessControlLevel>] = []
 
         for (key, value) in dict {
             guard let severity = ViolationSeverity(rawValue: key) else {
-                throw ConfigurationError.unknownConfiguration
+                continue
             }
 
             if let array = [String].array(of: value) {
@@ -61,10 +61,8 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             }
         }
 
-        guard parameters.count == parameters.map({ $0.value }).unique.count else {
-            throw ConfigurationError.unknownConfiguration
+        if parameters.map({ $0.value }).unique.isNotEmpty {
+            self.parameters = parameters
         }
-
-        self.parameters = parameters
     }
 }

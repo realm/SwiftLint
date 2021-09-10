@@ -33,7 +33,7 @@ jobs:
       displayName: Version Informations
     - script: >
         set -o pipefail &&
-        xcodebuild -scheme swiftlint test |
+        xcodebuild -scheme swiftlint test -destination "platform=macOS" |
         xcpretty -r junit -o build/reports/xcodebuild.xml
       displayName: xcodebuild test
     - script: bash <(curl -s https://codecov.io/bash)

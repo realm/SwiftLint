@@ -154,7 +154,13 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
 
     func testExcludesExtensionsTrueExcludesInheritedTypesFalseWithParameters() {
         var configuration = MissingDocsRuleConfiguration()
-        try? configuration.apply(configuration: ["excludes_extensions": true, "excludes_inherited_types": false, "error": ["public"]])
+        try? configuration.apply(
+            configuration: [
+                "excludes_extensions": true,
+                "excludes_inherited_types": false,
+                "error": ["public"]
+            ]
+        )
 
         XCTAssertTrue(configuration.excludesExtensions)
         XCTAssertFalse(configuration.excludesInheritedTypes)

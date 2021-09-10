@@ -37,11 +37,7 @@ private extension SwiftLintFile {
 
 public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public init() {
-        configuration = MissingDocsRuleConfiguration(
-            parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
-                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)],
-            excludesExtensions: true,
-            excludesInheritedTypes: true)
+        configuration = MissingDocsRuleConfiguration()
     }
 
     public typealias ConfigurationType = MissingDocsRuleConfiguration

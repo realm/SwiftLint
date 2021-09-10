@@ -1,5 +1,8 @@
 public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
-    private(set) var parameters = [RuleParameter<AccessControlLevel>]()
+    private(set) var parameters = [
+        RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+        RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
+    ]
     private(set) var excludesExtensions = true
     private(set) var excludesInheritedTypes = true
 
@@ -61,7 +64,11 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             }
         }
 
-        if parameters.map({ $0.value }).unique.isNotEmpty {
+        guard parameters.count == parameters.map({ $0.value }).unique.count else {
+            throw ConfigurationError.unknownConfiguration
+        }
+
+        if parameters.isNotEmpty {
             self.parameters = parameters
         }
     }

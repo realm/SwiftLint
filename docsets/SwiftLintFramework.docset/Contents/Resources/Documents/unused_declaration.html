@@ -349,9 +349,9 @@
 <span class="p">}</span>
 
 <span class="k">let</span> <span class="nv">changes</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Change</span><span class="o">.</span><span class="nf">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span>
-<span class="n">changes</span><span class="o">.</span><span class="nf">deletes</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">changes</span><span class="o">.</span><span class="nf">deletes</span><span class="p">()</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Item</span> <span class="p">{}</span>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Item</span><span class="p">:</span> <span class="kt">Codable</span> <span class="p">{}</span>
 <span class="kd">struct</span> <span class="kt">ResponseModel</span><span class="p">:</span> <span class="kt">Codable</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">items</span><span class="p">:</span> <span class="p">[</span><span class="kt">Item</span><span class="p">]</span>
 
@@ -396,7 +396,7 @@
   <span class="kd">indirect</span> <span class="k">case</span> <span class="nf">optional</span><span class="p">(</span><span class="kt">Component</span><span class="p">?)</span>
 <span class="p">}</span>
 
-<span class="kd">@_functionBuilder</span>
+<span class="kd">@resultBuilder</span>
 <span class="kd">struct</span> <span class="kt">ComponentBuilder</span> <span class="p">{</span>
   <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildExpression</span><span class="p">(</span><span class="n">_</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">StaticString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>

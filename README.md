@@ -224,6 +224,22 @@ On Linux, SourceKit is expected to be located in
 `/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
 environment variable.
 
+### pre-commit
+
+SwiftLint can be run as a [pre-commit](https://pre-commit.com/) hook.
+Once [installed](https://pre-commit.com/#install), add this to the
+`.pre-commit-config.yaml` in the root of your repository:
+
+```yaml
+repos:
+  - repo: https://github.com/realm/SwiftLint
+    rev: 0.44.0
+    hooks:
+      - id: swiftlint
+```
+
+Adjust `rev` to the SwiftLint version of your choice.
+
 ## Rules
 
 Over 200 rules are included in SwiftLint and the Swift community (that's you!)

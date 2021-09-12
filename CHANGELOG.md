@@ -50,7 +50,7 @@
 * Add `duplicated_key_in_dictionary_literal` rule to warn against duplicated
   keys in dictionary literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  
+
 * Fix the rule name from "Colon" to "Colon Spacing" to improve phrasing.  
   [Radu](https://github.com/raduciobanu002)
   [#3587](https://github.com/realm/SwiftLint/issues/3587)
@@ -83,7 +83,7 @@
 
 * Fix `type_contents_order` initializer detection.  
   [StevenMagdy](https://github.com/StevenMagdy)
-  
+
 * Fix autocorrect when there's no space between the tuple the `in` keyword
   on `unneeded_parentheses_in_closure_argument` rule.  
   [p-x9](https://github.com/p-x9)
@@ -275,7 +275,7 @@
   [JP Simard](https://github.com/jpsim)
 
 * SwiftLintFramework can no longer be integrated as a Carthage
-  depdendency.  
+  dependency.  
   [JP Simard](https://github.com/jpsim)
   [#3412](https://github.com/realm/SwiftLint/issues/3412)
 

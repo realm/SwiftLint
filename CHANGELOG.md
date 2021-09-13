@@ -15,7 +15,7 @@
 
 #### Bug Fixes
 
-* None.
+* Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.
 
 ## 0.44.0: Travel Size Lint Roller
 

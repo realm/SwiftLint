@@ -35,13 +35,9 @@ private extension SwiftLintFile {
     }
 }
 
-public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
     public init() {
-        configuration = MissingDocsRuleConfiguration(
-            parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
-                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)],
-            excludesExtensions: true,
-            excludesInheritedTypes: true)
+        configuration = MissingDocsRuleConfiguration()
     }
 
     public typealias ConfigurationType = MissingDocsRuleConfiguration
@@ -61,13 +57,13 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             /// docs
             public func b() {}
             }
-            /// docs
+            // no docs
             public class B: A { override public func b() {} }
             """),
             // externally-defined superclass member is documented, but subclass member is not
             Example("""
             import Foundation
-            /// docs
+            // no docs
             public class B: NSObject {
             // no docs
             override public var description: String { fatalError() } }

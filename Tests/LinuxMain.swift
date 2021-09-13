@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest
@@ -979,6 +979,9 @@ extension LowerACLThanParentRuleTests {
 extension MissingDocsRuleConfigurationTests {
     static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
         ("testDescriptionEmpty", testDescriptionEmpty),
+        ("testDescriptionExcludesFalse", testDescriptionExcludesFalse),
+        ("testDescriptionExcludesExtensionsFalseExcludesInheritedTypesTrue", testDescriptionExcludesExtensionsFalseExcludesInheritedTypesTrue),
+        ("testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse", testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse),
         ("testDescriptionSingleServety", testDescriptionSingleServety),
         ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
         ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
@@ -987,13 +990,19 @@ extension MissingDocsRuleConfigurationTests {
         ("testParsingMultipleAcls", testParsingMultipleAcls),
         ("testInvalidServety", testInvalidServety),
         ("testInvalidAcl", testInvalidAcl),
-        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl),
+        ("testExcludesFalse", testExcludesFalse),
+        ("testExcludesExtensionsFalseExcludesInheritedTypesTrue", testExcludesExtensionsFalseExcludesInheritedTypesTrue),
+        ("testExcludesExtensionsTrueExcludesInheritedTypesFalse", testExcludesExtensionsTrueExcludesInheritedTypesFalse),
+        ("testExcludesExtensionsTrueExcludesInheritedTypesFalseWithParameters", testExcludesExtensionsTrueExcludesInheritedTypesFalseWithParameters)
     ]
 }
 
 extension MissingDocsRuleTests {
     static var allTests: [(String, (MissingDocsRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithExcludesExtensionsDisabled", testWithExcludesExtensionsDisabled),
+        ("testWithExcludesInheritedTypesDisabled", testWithExcludesInheritedTypesDisabled)
     ]
 }
 

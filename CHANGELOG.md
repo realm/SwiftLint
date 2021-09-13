@@ -11,7 +11,11 @@
 
 #### Enhancements
 
-* None.
+* Add new `location` property `identifier` to allow the ability
+  to name the object in the AST related to the violation.
+  [George Walters](https://github.com/walterg2)
+  [Butch Howard](https://github.com/butchhoward)
+  [#3551](https://github.com/realm/SwiftLint/pull/3551)
 
 #### Bug Fixes
 
@@ -41,11 +45,6 @@
   has observers.  
   [Isaac Ressler](https://github.com/iressler)
   [#3621](https://github.com/realm/SwiftLint/issues/3621)
-* Add new `location` property `identifier` to allow the ability
-  to name the object in the AST related to the violation.
-  [George Walters](https://github.com/walterg2)
-  [Butch Howard](https://github.com/butchhoward)
-  [#3551](https://github.com/realm/SwiftLint/pull/3551)
 
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  

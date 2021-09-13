@@ -85,7 +85,27 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
             Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
             Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
             Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
-                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}")
+                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
+            Example("""
+            var myVar: Int?↓ = nil {
+                didSet { }
+            }
+            """):
+                Example("""
+                var myVar: Int? {
+                    didSet { }
+                }
+                """),
+            Example("""
+            var myVar: Int?↓=nil{
+                didSet { }
+            }
+            """):
+                Example("""
+                var myVar: Int?{
+                    didSet { }
+                }
+                """)
         ]
 
         guard SwiftVersion.current >= .fourDotOne else {
@@ -104,7 +124,7 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         return corrections
     }()
 
-    private let pattern = "\\s*=\\s*nil\\b\\s*\\{?"
+    private let pattern = "(\\s*=\\s*nil\\b)\\s*\\{?"
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
@@ -126,13 +146,22 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
             typeIsOptional(type),
             !dictionary.enclosedSwiftAttributes.contains(.lazy),
             dictionary.isMutableVariable(file: file),
-            let range = range(for: dictionary, file: file),
-            let match = file.match(pattern: pattern, with: [.keyword], range: range).first,
-            match.location == range.location + range.length - match.length else {
+            let range = range(for: dictionary, file: file) else {
+            return []
+        }
+
+        let regularExpression = regex(pattern)
+        guard let match = regularExpression.matches(in: file.stringView, range: range).first,
+            match.range.location == range.location + range.length - match.range.length else {
                 return []
         }
 
-        return [match]
+        let matched = file.stringView.substring(with: match.range)
+        if matched.hasSuffix("{"), match.numberOfRanges > 1 {
+            return [match.range(at: 1)]
+        } else {
+            return [match.range]
+        }
     }
 
     private func range(for dictionary: SourceKittenDictionary, file: SwiftLintFile) -> NSRange? {

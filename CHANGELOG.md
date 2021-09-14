@@ -70,6 +70,11 @@
   named arguments are used in closures that span multiple lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `scope_depth` rule to validate that scopes aren't nested more than `N`
+  levels deep. `N` defaults to 10 but is configurable.  
+  [Dale Myers](https://github.com/dalemyers)
+  [#3695](https://github.com/realm/SwiftLint/pull/3695)
+
 #### Bug Fixes
 
 * Fix false positives in `empty_enum_arguments` rule when comparing values

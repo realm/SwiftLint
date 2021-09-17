@@ -116,10 +116,4 @@ public struct AddTargetInVariableDeclarationClosureRule: ConfigurationProviderRu
                            location: Location(file: file, byteOffset: byteOffset))
         }
     }
-
-    private func substructureElements(of dict: SourceKittenDictionary,
-                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        return dict.substructure
-            .filter { $0.declarationKind == kind }
-    }
 }

@@ -5,9 +5,9 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
-class AddTargetInVariableDeclarationClosureRuleTests: XCTestCase {
+class AddTargetInVariableDeclClosureRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(AddTargetInVariableDeclarationClosureRule.description)
+        verifyRule(AddTargetInVariableDeclClosureRule.description)
     }
 }
 

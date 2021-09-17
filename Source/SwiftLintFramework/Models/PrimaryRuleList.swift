@@ -2,7 +2,7 @@
 // DO NOT EDIT
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
-    AddTargetInVariableDeclarationClosureRule.self,
+    AddTargetInVariableDeclClosureRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,

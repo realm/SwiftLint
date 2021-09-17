@@ -11,7 +11,11 @@
 
 #### Enhancements
 
-* None.
+* Add `add_target_in_variable_declaration_closure` rule to catch uses of 
+  `addTarget(_:, action:, for:)` inside an inline closure used for initializing
+  a variable. In this case `self` won't have the proper value. 
+  You can make the variable `lazy` to fix it.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

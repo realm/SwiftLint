@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct AddTargetInVariableDeclarationClosureRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
+public struct AddTargetInVariableDeclClosureRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

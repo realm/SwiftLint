@@ -6,6 +6,8 @@ final class SwiftVersionTests: XCTestCase {
     func testDetectSwiftVersion() {
         #if compiler(>=5.5.0)
             let version = "5.5.0"
+        #elseif compiler(>=5.4.3)
+            let version = "5.4.3"
         #elseif compiler(>=5.4.2)
             let version = "5.4.2"
         #elseif compiler(>=5.4.1)

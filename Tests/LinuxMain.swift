@@ -12,12 +12,6 @@ extension AccessControlLevelTests {
     ]
 }
 
-extension AddTargetInVariableDeclClosureRuleTests {
-    static var allTests: [(String, (AddTargetInVariableDeclClosureRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension AnonymousArgumentInMultilineClosureRuleTests {
     static var allTests: [(String, (AnonymousArgumentInMultilineClosureRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1476,6 +1470,12 @@ extension RulesTests {
     ]
 }
 
+extension SelfInPropertyInitializationRuleTests {
+    static var allTests: [(String, (SelfInPropertyInitializationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ShorthandOperatorRuleTests {
     static var allTests: [(String, (ShorthandOperatorRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1833,7 +1833,6 @@ extension YodaConditionRuleTests {
 
 XCTMain([
     testCase(AccessControlLevelTests.allTests),
-    testCase(AddTargetInVariableDeclClosureRuleTests.allTests),
     testCase(AnonymousArgumentInMultilineClosureRuleTests.allTests),
     testCase(AnyObjectProtocolRuleTests.allTests),
     testCase(ArrayInitRuleTests.allTests),
@@ -2014,6 +2013,7 @@ XCTMain([
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
+    testCase(SelfInPropertyInitializationRuleTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),
     testCase(SingleTestClassRuleTests.allTests),
     testCase(SortedFirstLastRuleTests.allTests),

@@ -11,10 +11,12 @@
 
 #### Enhancements
 
-* Add `add_target_in_variable_declaration_closure` rule to catch uses of 
-  `addTarget(_:, action:, for:)` inside an inline closure used for initializing
-  a variable. In this case `self` won't have the proper value. 
-  You can make the variable `lazy` to fix it.  
+* Add `self_in_property_initialization` rule to catch uses of `self`
+  inside an inline closure used for initializing a variable. In this case, 
+  `self` refers to the `NSObject.self` method and likely won't be what you
+  expect. You can make the variable `lazy` to be able to refer to the current
+  instance with `self` or use `MyClass.self` if you really want to reference 
+  the method.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes

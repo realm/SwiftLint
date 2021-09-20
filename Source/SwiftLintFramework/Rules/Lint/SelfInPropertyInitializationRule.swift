@@ -1,15 +1,15 @@
 import SourceKittenFramework
 
-public struct AddTargetInVariableDeclClosureRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
+public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "add_target_in_variable_declaration_closure",
-        name: "Add Target in Variable Declaration Closure",
-        description: "When using addTarget(_:, action:, for:) inside an inline closure used " +
-            "for initializing a variable, self won't have the proper value. Make the variable lazy to fix it.",
+        identifier: "self_in_property_initialization",
+        name: "Self in Property Initialization",
+        description: "`self` refers to the unapplied `NSObject.self()` method, which is likely not expected. " +
+            "Make the variable `lazy` to be able to refer to the current instance or use `ClassName.self`.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -34,6 +34,17 @@ public struct AddTargetInVariableDeclClosureRule: ConfigurationProviderRule, AST
                     let button = UIButton()
                     button.addTarget(otherObject, action: #selector(didTapButton), for: .touchUpInside)
                     return button
+                }()
+            }
+            """),
+            Example("""
+            class View: UIView {
+                private let collectionView: UICollectionView = {
+                    let layout = UICollectionViewFlowLayout()
+                    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+                    collectionView.registerReusable(Cell.self)
+
+                    return collectionView
                 }()
             }
             """)
@@ -68,24 +79,14 @@ public struct AddTargetInVariableDeclClosureRule: ConfigurationProviderRule, AST
 
         let inlineClosures = dictionary.substructure
             .filter { entry in
-                guard let name = entry.name else {
+                guard let name = entry.name,
+                      entry.expressionKind == .call, name.hasPrefix("{"),
+                      let closureByteRange = entry.nameByteRange,
+                      let closureRange = file.stringView.byteRangeToNSRange(closureByteRange) else {
                     return false
                 }
-                return entry.expressionKind == .call && name.hasPrefix("{")
-            }
-            .filter { entry in
-                !entry.traverseBreadthFirst { dict -> [SourceKittenDictionary] in
-                    guard dict.expressionKind == .call, let name = dict.name,
-                          name.hasSuffix(".addTarget"),
-                          dict.enclosedArguments.map(\.name) == [nil, "action", "for"],
-                          let firstParamBodyRange = dict.enclosedArguments[0].bodyByteRange,
-                          file.stringView.substringWithByteRange(firstParamBodyRange) == "self",
-                          file.syntaxMap.kinds(inByteRange: firstParamBodyRange) == [.keyword] else {
-                        return []
-                    }
 
-                    return [dict]
-                }.isEmpty
+                return file.match(pattern: "\\b(?<!\\.)self\\b", with: [.keyword], range: closureRange).isNotEmpty
             }
 
         let variableDeclarations = inlineClosures.compactMap { closureDict -> ByteCount? in

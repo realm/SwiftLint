@@ -22,6 +22,7 @@
 #### Bug Fixes
 
 * Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.
+
 * Fix redundant_optional_initialization autocorrect broken
   in case observer's brace exists.
   [Naruki Chigira](https://github.com/naru-jpn)

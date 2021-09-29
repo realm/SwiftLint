@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Rule Directory  Reference</title>
+    <title>self_in_property_initialization  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="Rule Directory  Reference"></a>
+    <a title="self_in_property_initialization  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -49,7 +49,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
       <img class="carat" src="img/carat.png" />
-      Rule Directory  Reference
+      self_in_property_initialization  Reference
     </p>
 
     <div class="content-wrapper">
@@ -314,217 +314,69 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='rule-directory' class='heading'>Rule Directory</h1>
+            <h1 id='self-in-property-initialization' class='heading'>Self in Property Initialization</h1>
+
+<p><code>self</code> refers to the unapplied <code>NSObject.self()</code> method, which is likely not expected. Make the variable <code>lazy</code> to be able to refer to the current instance or use <code>ClassName.self</code>.</p>
 
 <ul>
-<li><a href="anonymous_argument_in_multiline_closure.html">Anonymous Argument in Multiline Closure</a></li>
-<li><a href="anyobject_protocol.html">AnyObject Protocol</a></li>
-<li><a href="array_init.html">Array Init</a></li>
-<li><a href="attributes.html">Attributes</a></li>
-<li><a href="balanced_xctest_lifecycle.html">Balanced XCTest life-cycle</a></li>
-<li><a href="block_based_kvo.html">Block Based KVO</a></li>
-<li><a href="capture_variable.html">Capture Variable</a></li>
-<li><a href="class_delegate_protocol.html">Class Delegate Protocol</a></li>
-<li><a href="closing_brace.html">Closing Brace Spacing</a></li>
-<li><a href="closure_body_length.html">Closure Body Length</a></li>
-<li><a href="closure_end_indentation.html">Closure End Indentation</a></li>
-<li><a href="closure_parameter_position.html">Closure Parameter Position</a></li>
-<li><a href="closure_spacing.html">Closure Spacing</a></li>
-<li><a href="collection_alignment.html">Collection Element Alignment</a></li>
-<li><a href="colon.html">Colon Spacing</a></li>
-<li><a href="comma.html">Comma Spacing</a></li>
-<li><a href="comment_spacing.html">Comment Spacing</a></li>
-<li><a href="compiler_protocol_init.html">Compiler Protocol Init</a></li>
-<li><a href="computed_accessors_order.html">Computed Accessors Order</a></li>
-<li><a href="conditional_returns_on_newline.html">Conditional Returns on Newline</a></li>
-<li><a href="contains_over_filter_count.html">Contains Over Filter Count</a></li>
-<li><a href="contains_over_filter_is_empty.html">Contains Over Filter Is Empty</a></li>
-<li><a href="contains_over_first_not_nil.html">Contains over first not nil</a></li>
-<li><a href="contains_over_range_nil_comparison.html">Contains over range(of:) comparison to nil</a></li>
-<li><a href="control_statement.html">Control Statement</a></li>
-<li><a href="convenience_type.html">Convenience Type</a></li>
-<li><a href="custom_rules.html">Custom Rules</a></li>
-<li><a href="cyclomatic_complexity.html">Cyclomatic Complexity</a></li>
-<li><a href="deployment_target.html">Deployment Target</a></li>
-<li><a href="discarded_notification_center_observer.html">Discarded Notification Center Observer</a></li>
-<li><a href="discouraged_assert.html">Discouraged Assert</a></li>
-<li><a href="discouraged_direct_init.html">Discouraged Direct Initialization</a></li>
-<li><a href="discouraged_none_name.html">Discouraged None Name</a></li>
-<li><a href="discouraged_object_literal.html">Discouraged Object Literal</a></li>
-<li><a href="discouraged_optional_boolean.html">Discouraged Optional Boolean</a></li>
-<li><a href="discouraged_optional_collection.html">Discouraged Optional Collection</a></li>
-<li><a href="duplicate_enum_cases.html">Duplicate Enum Cases</a></li>
-<li><a href="duplicate_imports.html">Duplicate Imports</a></li>
-<li><a href="duplicated_key_in_dictionary_literal.html">Duplicated Key in Dictionary Literal</a></li>
-<li><a href="dynamic_inline.html">Dynamic Inline</a></li>
-<li><a href="empty_collection_literal.html">Empty Collection Literal</a></li>
-<li><a href="empty_count.html">Empty Count</a></li>
-<li><a href="empty_enum_arguments.html">Empty Enum Arguments</a></li>
-<li><a href="empty_parameters.html">Empty Parameters</a></li>
-<li><a href="empty_parentheses_with_trailing_closure.html">Empty Parentheses with Trailing Closure</a></li>
-<li><a href="empty_string.html">Empty String</a></li>
-<li><a href="empty_xctest_method.html">Empty XCTest Method</a></li>
-<li><a href="enum_case_associated_values_count.html">Enum Case Associated Values Count</a></li>
-<li><a href="expiring_todo.html">ExpiringTodo</a></li>
-<li><a href="explicit_acl.html">Explicit ACL</a></li>
-<li><a href="explicit_enum_raw_value.html">Explicit Enum Raw Value</a></li>
-<li><a href="explicit_init.html">Explicit Init</a></li>
-<li><a href="explicit_self.html">Explicit Self</a></li>
-<li><a href="explicit_top_level_acl.html">Explicit Top Level ACL</a></li>
-<li><a href="explicit_type_interface.html">Explicit Type Interface</a></li>
-<li><a href="extension_access_modifier.html">Extension Access Modifier</a></li>
-<li><a href="fallthrough.html">Fallthrough</a></li>
-<li><a href="fatal_error_message.html">Fatal Error Message</a></li>
-<li><a href="file_header.html">File Header</a></li>
-<li><a href="file_length.html">File Length</a></li>
-<li><a href="file_name.html">File Name</a></li>
-<li><a href="file_name_no_space.html">File Name No Space</a></li>
-<li><a href="file_types_order.html">File Types Order</a></li>
-<li><a href="first_where.html">First Where</a></li>
-<li><a href="flatmap_over_map_reduce.html">FlatMap over map and reduce</a></li>
-<li><a href="for_where.html">For Where</a></li>
-<li><a href="force_cast.html">Force Cast</a></li>
-<li><a href="force_try.html">Force Try</a></li>
-<li><a href="force_unwrapping.html">Force Unwrapping</a></li>
-<li><a href="function_body_length.html">Function Body Length</a></li>
-<li><a href="function_default_parameter_at_end.html">Function Default Parameter at End</a></li>
-<li><a href="function_parameter_count.html">Function Parameter Count</a></li>
-<li><a href="generic_type_name.html">Generic Type Name</a></li>
-<li><a href="ibinspectable_in_extension.html">IBInspectable in Extension</a></li>
-<li><a href="identical_operands.html">Identical Operands</a></li>
-<li><a href="identifier_name.html">Identifier Name</a></li>
-<li><a href="implicit_getter.html">Implicit Getter</a></li>
-<li><a href="implicit_return.html">Implicit Return</a></li>
-<li><a href="implicitly_unwrapped_optional.html">Implicitly Unwrapped Optional</a></li>
-<li><a href="inclusive_language.html">Inclusive Language</a></li>
-<li><a href="indentation_width.html">Indentation Width</a></li>
-<li><a href="inert_defer.html">Inert Defer</a></li>
-<li><a href="is_disjoint.html">Is Disjoint</a></li>
-<li><a href="joined_default_parameter.html">Joined Default Parameter</a></li>
-<li><a href="large_tuple.html">Large Tuple</a></li>
-<li><a href="last_where.html">Last Where</a></li>
-<li><a href="leading_whitespace.html">Leading Whitespace</a></li>
-<li><a href="legacy_cggeometry_functions.html">Legacy CGGeometry Functions</a></li>
-<li><a href="legacy_constant.html">Legacy Constant</a></li>
-<li><a href="legacy_constructor.html">Legacy Constructor</a></li>
-<li><a href="legacy_hashing.html">Legacy Hashing</a></li>
-<li><a href="legacy_multiple.html">Legacy Multiple</a></li>
-<li><a href="legacy_nsgeometry_functions.html">Legacy NSGeometry Functions</a></li>
-<li><a href="legacy_objc_type.html">Legacy Objective-C Reference Type</a></li>
-<li><a href="legacy_random.html">Legacy Random</a></li>
-<li><a href="let_var_whitespace.html">Variable Declaration Whitespace</a></li>
-<li><a href="line_length.html">Line Length</a></li>
-<li><a href="literal_expression_end_indentation.html">Literal Expression End Indentation</a></li>
-<li><a href="lower_acl_than_parent.html">Lower ACL than parent</a></li>
-<li><a href="mark.html">Mark</a></li>
-<li><a href="missing_docs.html">Missing Docs</a></li>
-<li><a href="modifier_order.html">Modifier Order</a></li>
-<li><a href="multiline_arguments.html">Multiline Arguments</a></li>
-<li><a href="multiline_arguments_brackets.html">Multiline Arguments Brackets</a></li>
-<li><a href="multiline_function_chains.html">Multiline Function Chains</a></li>
-<li><a href="multiline_literal_brackets.html">Multiline Literal Brackets</a></li>
-<li><a href="multiline_parameters.html">Multiline Parameters</a></li>
-<li><a href="multiline_parameters_brackets.html">Multiline Parameters Brackets</a></li>
-<li><a href="multiple_closures_with_trailing_closure.html">Multiple Closures with Trailing Closure</a></li>
-<li><a href="nesting.html">Nesting</a></li>
-<li><a href="nimble_operator.html">Nimble Operator</a></li>
-<li><a href="no_extension_access_modifier.html">No Extension Access Modifier</a></li>
-<li><a href="no_fallthrough_only.html">No Fallthrough Only</a></li>
-<li><a href="no_grouping_extension.html">No Grouping Extension</a></li>
-<li><a href="no_space_in_method_call.html">No Space in Method Call</a></li>
-<li><a href="notification_center_detachment.html">Notification Center Detachment</a></li>
-<li><a href="nslocalizedstring_key.html">NSLocalizedString Key</a></li>
-<li><a href="nslocalizedstring_require_bundle.html">NSLocalizedString Require Bundle</a></li>
-<li><a href="nsobject_prefer_isequal.html">NSObject Prefer isEqual</a></li>
-<li><a href="number_separator.html">Number Separator</a></li>
-<li><a href="object_literal.html">Object Literal</a></li>
-<li><a href="opening_brace.html">Opening Brace Spacing</a></li>
-<li><a href="operator_usage_whitespace.html">Operator Usage Whitespace</a></li>
-<li><a href="operator_whitespace.html">Operator Function Whitespace</a></li>
-<li><a href="optional_enum_case_matching.html">Optional Enum Case Match</a></li>
-<li><a href="orphaned_doc_comment.html">Orphaned Doc Comment</a></li>
-<li><a href="overridden_super_call.html">Overridden methods call super</a></li>
-<li><a href="override_in_extension.html">Override in Extension</a></li>
-<li><a href="pattern_matching_keywords.html">Pattern Matching Keywords</a></li>
-<li><a href="prefer_nimble.html">Prefer Nimble</a></li>
-<li><a href="prefer_self_type_over_type_of_self.html">Prefer Self Type Over Type of Self</a></li>
-<li><a href="prefer_zero_over_explicit_init.html">Prefer Zero Over Explicit Init</a></li>
-<li><a href="prefixed_toplevel_constant.html">Prefixed Top-Level Constant</a></li>
-<li><a href="private_action.html">Private Actions</a></li>
-<li><a href="private_outlet.html">Private Outlets</a></li>
-<li><a href="private_over_fileprivate.html">Private over fileprivate</a></li>
-<li><a href="private_subject.html">Private Combine Subject</a></li>
-<li><a href="private_unit_test.html">Private Unit Test</a></li>
-<li><a href="prohibited_interface_builder.html">Prohibited Interface Builder</a></li>
-<li><a href="prohibited_super_call.html">Prohibited calls to super</a></li>
-<li><a href="protocol_property_accessors_order.html">Protocol Property Accessors Order</a></li>
-<li><a href="quick_discouraged_call.html">Quick Discouraged Call</a></li>
-<li><a href="quick_discouraged_focused_test.html">Quick Discouraged Focused Test</a></li>
-<li><a href="quick_discouraged_pending_test.html">Quick Discouraged Pending Test</a></li>
-<li><a href="raw_value_for_camel_cased_codable_enum.html">Raw Value For Camel Cased Codable Enum</a></li>
-<li><a href="reduce_boolean.html">Reduce Boolean</a></li>
-<li><a href="reduce_into.html">Reduce Into</a></li>
-<li><a href="redundant_discardable_let.html">Redundant Discardable Let</a></li>
-<li><a href="redundant_nil_coalescing.html">Redundant Nil Coalescing</a></li>
-<li><a href="redundant_objc_attribute.html">Redundant @objc Attribute</a></li>
-<li><a href="redundant_optional_initialization.html">Redundant Optional Initialization</a></li>
-<li><a href="redundant_set_access_control.html">Redundant Set Access Control Rule</a></li>
-<li><a href="redundant_string_enum_value.html">Redundant String Enum Value</a></li>
-<li><a href="redundant_type_annotation.html">Redundant Type Annotation</a></li>
-<li><a href="redundant_void_return.html">Redundant Void Return</a></li>
-<li><a href="required_deinit.html">Required Deinit</a></li>
-<li><a href="required_enum_case.html">Required Enum Case</a></li>
-<li><a href="return_arrow_whitespace.html">Returning Whitespace</a></li>
-<li><a href="self_in_property_initialization.html">Self in Property Initialization</a></li>
-<li><a href="shorthand_operator.html">Shorthand Operator</a></li>
-<li><a href="single_test_class.html">Single Test Class</a></li>
-<li><a href="sorted_first_last.html">Min or Max over Sorted First or Last</a></li>
-<li><a href="sorted_imports.html">Sorted Imports</a></li>
-<li><a href="statement_position.html">Statement Position</a></li>
-<li><a href="static_operator.html">Static Operator</a></li>
-<li><a href="strict_fileprivate.html">Strict fileprivate</a></li>
-<li><a href="strong_iboutlet.html">Strong IBOutlet</a></li>
-<li><a href="superfluous_disable_command.html">Superfluous Disable Command</a></li>
-<li><a href="switch_case_alignment.html">Switch and Case Statement Alignment</a></li>
-<li><a href="switch_case_on_newline.html">Switch Case on Newline</a></li>
-<li><a href="syntactic_sugar.html">Syntactic Sugar</a></li>
-<li><a href="test_case_accessibility.html">Test case accessibility</a></li>
-<li><a href="todo.html">Todo</a></li>
-<li><a href="toggle_bool.html">Toggle Bool</a></li>
-<li><a href="trailing_closure.html">Trailing Closure</a></li>
-<li><a href="trailing_comma.html">Trailing Comma</a></li>
-<li><a href="trailing_newline.html">Trailing Newline</a></li>
-<li><a href="trailing_semicolon.html">Trailing Semicolon</a></li>
-<li><a href="trailing_whitespace.html">Trailing Whitespace</a></li>
-<li><a href="type_body_length.html">Type Body Length</a></li>
-<li><a href="type_contents_order.html">Type Contents Order</a></li>
-<li><a href="type_name.html">Type Name</a></li>
-<li><a href="unavailable_function.html">Unavailable Function</a></li>
-<li><a href="unneeded_break_in_switch.html">Unneeded Break in Switch</a></li>
-<li><a href="unneeded_parentheses_in_closure_argument.html">Unneeded Parentheses in Closure Argument</a></li>
-<li><a href="unowned_variable_capture.html">Unowned Variable Capture</a></li>
-<li><a href="untyped_error_in_catch.html">Untyped Error in Catch</a></li>
-<li><a href="unused_capture_list.html">Unused Capture List</a></li>
-<li><a href="unused_closure_parameter.html">Unused Closure Parameter</a></li>
-<li><a href="unused_control_flow_label.html">Unused Control Flow Label</a></li>
-<li><a href="unused_declaration.html">Unused Declaration</a></li>
-<li><a href="unused_enumerated.html">Unused Enumerated</a></li>
-<li><a href="unused_import.html">Unused Import</a></li>
-<li><a href="unused_optional_binding.html">Unused Optional Binding</a></li>
-<li><a href="unused_setter_value.html">Unused Setter Value</a></li>
-<li><a href="valid_ibinspectable.html">Valid IBInspectable</a></li>
-<li><a href="vertical_parameter_alignment.html">Vertical Parameter Alignment</a></li>
-<li><a href="vertical_parameter_alignment_on_call.html">Vertical Parameter Alignment On Call</a></li>
-<li><a href="vertical_whitespace.html">Vertical Whitespace</a></li>
-<li><a href="vertical_whitespace_between_cases.html">Vertical Whitespace Between Cases</a></li>
-<li><a href="vertical_whitespace_closing_braces.html">Vertical Whitespace before Closing Braces</a></li>
-<li><a href="vertical_whitespace_opening_braces.html">Vertical Whitespace after Opening Braces</a></li>
-<li><a href="void_return.html">Void Return</a></li>
-<li><a href="weak_delegate.html">Weak Delegate</a></li>
-<li><a href="xct_specific_matcher.html">XCTest Specific Matcher</a></li>
-<li><a href="xctfail_message.html">XCTFail Message</a></li>
-<li><a href="yoda_condition.html">Yoda condition rule</a></li>
+<li><strong>Identifier:</strong> self_in_property_initialization</li>
+<li><strong>Enabled by default:</strong> Enabled</li>
+<li><strong>Supports autocorrection:</strong> No</li>
+<li><strong>Kind:</strong> lint</li>
+<li><strong>Analyzer rule:</strong> No</li>
+<li><strong>Minimum Swift compiler version:</strong> 3.0.0</li>
+<li><strong>Default configuration:</strong> warning</li>
 </ul>
+<h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">UIButton</span><span class="p">()</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">button</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="n">otherObject</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">button</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">collectionView</span><span class="p">:</span> <span class="kt">UICollectionView</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="kt">UICollectionViewFlowLayout</span><span class="p">()</span>
+        <span class="k">let</span> <span class="nv">collectionView</span> <span class="o">=</span> <span class="kt">UICollectionView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="o">.</span><span class="n">zero</span><span class="p">,</span> <span class="nv">collectionViewLayout</span><span class="p">:</span> <span class="n">layout</span><span class="p">)</span>
+        <span class="n">collectionView</span><span class="o">.</span><span class="nf">registerReusable</span><span class="p">(</span><span class="kt">Cell</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">collectionView</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre>
+<h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">var</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">button</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">View</span><span class="p">:</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">let</span> <span class="nv">button</span><span class="p">:</span> <span class="kt">UIButton</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
+        <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="kd">#selector(</span><span class="nf">didTapButton</span><span class="kd">)</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">button</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>

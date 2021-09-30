@@ -23,6 +23,11 @@
 
 * Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.
 
+* Fix redundant_optional_initialization autocorrect broken
+  in case observer's brace exists.
+  [Naruki Chigira](https://github.com/naru-jpn)
+  [#3718](https://github.com/realm/SwiftLint/issues/3718)
+
 * Fix a false positive in the `unneeded_break_in_switch` rule when
   using `do/catch`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

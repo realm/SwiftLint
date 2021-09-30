@@ -82,7 +82,7 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule {
                                    file: SwiftLintFile,
                                    range: NSRange? = nil) -> [SwiftLintSyntaxToken] {
         let pattern = "\\b\(keyword)\\b"
-        return file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
+        return file.rangesAndTokens(matching: pattern, range: range).compactMap { _, tokens in
             guard tokens.count == 1,
                 let token = tokens.last,
                 token.kind == .keyword else {
@@ -101,7 +101,9 @@ private extension ComputedAccessorsOrderRule {
         let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
             .union([.functionSubscript])
 
-        func parse(dictionary: SourceKittenDictionary, parentKind: SwiftDeclarationKind?) {
+        func parse(dictionary: SourceKittenDictionary,
+                   parentKind: SwiftDeclarationKind?,
+                   into results: inout [SourceKittenDictionary]) {
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
             guard let kind = dictionary.declarationKind,
@@ -116,13 +118,13 @@ private extension ComputedAccessorsOrderRule {
             }
 
             for dictionary in dictionary.substructure {
-                parse(dictionary: dictionary, parentKind: kind)
+                parse(dictionary: dictionary, parentKind: kind, into: &results)
             }
         }
 
         let dict = structureDictionary
         for dictionary in dict.substructure {
-            parse(dictionary: dictionary, parentKind: nil)
+            parse(dictionary: dictionary, parentKind: nil, into: &results)
         }
 
         return results

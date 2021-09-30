@@ -33,6 +33,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3724](https://github.com/realm/SwiftLint/issues/3724)
 
+* Speed up Computed Accessors Order rule.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3727](https://github.com/realm/SwiftLint/issues/3727)  
+
 ## 0.44.0: Travel Size Lint Roller
 
 #### Breaking

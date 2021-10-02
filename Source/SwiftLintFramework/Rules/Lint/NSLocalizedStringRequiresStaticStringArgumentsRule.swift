@@ -8,7 +8,8 @@ public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptIn
     public static let description = RuleDescription(
         identifier: "nslocalizedstring_requires_staticstring_arguments",
         name: "NSLocalizedString Requires StaticString Arguments",
-        description: "All NSLocalizedString parameters (except bundle) should be static strings in order for genstrings to work.",
+        description: "All NSLocalizedString parameters (except bundle) should be static strings in order for " +
+        "genstrings to work.",
         kind: .lint,
         nonTriggeringExamples: [
             // Key validation
@@ -62,8 +63,8 @@ public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptIn
             """, comment: "")
             """#),
             Example("""
-            let format = NSLocalizedString("%@, %@.", value: "%@, %@.", comment: "Accessibility label for a post in the post list." +
-            " The parameters are the title, and date respectively." +
+            let format = NSLocalizedString("%@, %@.", value: "%@, %@.", comment: "Accessibility label for a post in" +
+            " the post list. The parameters are the title, and date respectively." +
             " For example, "Let it Go, 1 hour ago.")
             """),
             Example(#"""
@@ -87,7 +88,7 @@ public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptIn
             """)
             """#),
             // All parameters
-            Example(#"NSLocalizedString("key", tableName: "Table", value: "Value", comment: "Comment")"#),
+            Example(#"NSLocalizedString("key", tableName: "Table", value: "Value", comment: "Comment")"#)
         ],
         triggeringExamples: [
             // Key validation
@@ -109,7 +110,7 @@ public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptIn
             Example(#"NSLocalizedString("key", comment: ↓"comment with \(param)")"#),
             Example(#"NSLocalizedString("key", comment: ↓"comment with \(param)")"#),
             Example(#"NSLocalizedString(↓"key_\(param)", comment: ↓method())"#),
-            Example(#"NSLocalizedString(↓"key_\(param)", comment: ↓variable)"#),
+            Example(#"NSLocalizedString(↓"key_\(param)", comment: ↓variable)"#)
         ],
         deprecatedAliases: [
             "nslocalizedstring_key"
@@ -125,12 +126,12 @@ public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptIn
             getViolationForArgument(nil /* key */, file: file, dictionary: dictionary),
             getViolationForArgument("tableName", file: file, dictionary: dictionary),
             getViolationForArgument("value", file: file, dictionary: dictionary),
-            getViolationForArgument("comment", file: file, dictionary: dictionary),
+            getViolationForArgument("comment", file: file, dictionary: dictionary)
         ].compactMap { $0 }
     }
 
     // MARK: - Private helpers
-    
+
     private func getViolationForArgument(_ name: String?,
                                          file: SwiftLintFile,
                                          dictionary: SourceKittenDictionary) -> StyleViolation? {
@@ -146,7 +147,7 @@ public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptIn
             // All tokens are string literals
             return nil
         }
-        
+
         return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severity,
                               location: Location(file: file, byteOffset: bodyByteRange.location))

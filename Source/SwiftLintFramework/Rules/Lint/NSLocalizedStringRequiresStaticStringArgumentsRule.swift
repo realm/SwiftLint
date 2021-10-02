@@ -1,15 +1,14 @@
 import SourceKittenFramework
 
-public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NSLocalizedStringRequiresStaticStringArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "nslocalizedstring_key",
-        name: "NSLocalizedString Key",
-        description: "Static strings should be used as key/comment" +
-            " in NSLocalizedString in order for genstrings to work.",
+        identifier: "nslocalizedstring_requires_staticstring_arguments",
+        name: "NSLocalizedString Requires StaticString Arguments",
+        description: "All NSLocalizedString parameters (except bundle) should be static strings in order for genstrings to work.",
         kind: .lint,
         nonTriggeringExamples: [
             // Key validation
@@ -112,6 +111,9 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
             Example(#"NSLocalizedString(↓"key_\(param)", comment: ↓method())"#),
             Example(#"NSLocalizedString(↓"key_\(param)", comment: ↓variable)"#),
         ],
+        deprecatedAliases: [
+            "nslocalizedstring_key"
+        ]
     )
 
     public func validate(file: SwiftLintFile,

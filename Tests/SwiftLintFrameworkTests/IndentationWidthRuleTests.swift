@@ -182,6 +182,10 @@ class IndentationWidthRuleTests: XCTestCase {
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n\t*/\n\t\tfourthLine",
             includeComments: true
         )
+        assertNoViolation(
+            in: "firstLine\n// MARK: -\nthirdLine",
+            includeComments: true
+        )
 
         assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",

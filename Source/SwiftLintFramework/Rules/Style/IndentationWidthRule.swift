@@ -49,39 +49,17 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     // MARK: - Methods: Validation
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let commentsPrefixes = ["///", "//", "/**", "/*"]
+
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
-        var isPastHeaderComment = false
 
         for line in file.lines {
-            // Remove comment start part from the beginning of line so the real
-            // indentation of the line is taken into consideration
-            let comments = ["///", "//", "/**", "/*"]
-            var content = line.content
-            var isUnindentedComment = false
-
-            for comment in comments {
-                if content.hasPrefix(comment) {
-                    // Only strip the unindented comments that are not part of
-                    // the header comment
-                    if isPastHeaderComment {
-                        content = String(content.dropFirst(comment.count))
-                    }
-
-                    isUnindentedComment = true
-                }
-            }
-
-            // When we find the first line that isn't an unindented comment, we
-            // mark the fact that we are past the header comment. Or, if this is
-            // the first line, it means that there is no header comment.
-            if !isUnindentedComment {
-                isPastHeaderComment = true
-            }
-
             // Skip line if it's a whitespace-only line
-            let indentationCharacterCount = content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
-            if content.count == indentationCharacterCount { continue }
+            var indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            let contentIsOnlyIndentation = line.content.count == indentationCharacterCount
+
+            if contentIsOnlyIndentation { continue }
 
             if !configuration.includeComments {
                 // Skip line if it's part of a comment
@@ -89,6 +67,50 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 if syntaxKindsInLine.isNotEmpty &&
                     SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
             }
+
+            var content = line.content
+            var commentBodyIsOnlyIndentation = false
+
+            for commentPrefix in commentsPrefixes {
+                guard content.hasPrefix(commentPrefix) else {
+                    continue
+                }
+
+                // Remove the comment start part from the beginning of the line
+                // so the real indentation of the line is taken into
+                // consideration.
+                let stripped = String(content.dropFirst(commentPrefix.count))
+
+                let strippedIndentationCharacterCount = stripped
+                    .countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+                commentBodyIsOnlyIndentation = stripped.count == strippedIndentationCharacterCount
+
+                if commentBodyIsOnlyIndentation { break }
+
+                let prefix = String(stripped.prefix(strippedIndentationCharacterCount))
+                let tabCount = prefix.filter { $0 == "\t" }.count
+                let spaceCount = prefix.filter { $0 == " " }.count
+
+                if spaceCount != 0 && spaceCount % configuration.indentationWidth != 0 {
+                    // The spaces between the comment prefix and the body are
+                    // not an actual indentation, so it's probably not an
+                    // unindented comment.
+                    continue
+                }
+
+                if tabCount != 0 || spaceCount != 0 {
+                    // Found a line with unindented comment, so, use only the
+                    // comment's body as the content.
+                    content = stripped
+                    indentationCharacterCount = strippedIndentationCharacterCount
+                }
+
+                // Found a matching comment prefix, so there's no reason to
+                // check the rest of them.
+                break
+            }
+
+            if commentBodyIsOnlyIndentation { continue }
 
             // Skip line if it contains only a multiline comment end part
             if content == "*/" { continue }

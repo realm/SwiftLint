@@ -63,6 +63,12 @@
 
 * SwiftLint now requires Swift 5.4 or higher to build.  
   [JP Simard](https://github.com/jpsim)
+  
+* Deprecated the `nslocalizedstring_key` rule name in favor of new and
+  more accurate `nslocalizedstring_requires_staticstring_arguments`
+  behavior.
+
+  [Josh Asbury](http://github.com/theoriginalbit)
 
 #### Experimental
 
@@ -77,6 +83,12 @@
   instance with `self` or use `MyClass.self` if you really want to reference 
   the method.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+* Improve ``nslocalizedstring_key`` to validate the tableName and value
+  arguments in addition to the existing key and comment arguments. Also
+  renamed to `nslocalizedstring_requires_staticstring_arguments`
+  to better match new behavior.
+  [Josh Asbury](http://github.com/theoriginalbit)
+  [#3729](https://github.com/realm/SwiftLint/pull/3729)
 
 * Exclude `id` from `identifier_name` by default.  
   [Artem Garmash](https://github.com/agarmash)

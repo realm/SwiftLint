@@ -19,6 +19,10 @@
   the method.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Exclude `id` from `identifier_name` by default.  
+  [Artem Garmash](https://github.com/agarmash)
+  [#3651](https://github.com/realm/SwiftLint/issues/3651)
+
 #### Bug Fixes
 
 * Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.

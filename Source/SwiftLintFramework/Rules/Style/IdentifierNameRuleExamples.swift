@@ -24,7 +24,7 @@ internal struct IdentifierNameRuleExamples {
         Example("↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),
         Example("private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
         Example("↓let i = 0"),
-        Example("↓var id = 0"),
+        Example("↓var aa = 0"),
         Example("private ↓let _i = 0"),
         Example("↓func IsOperator(name: String) -> Bool"),
         Example("enum Foo { case ↓MyEnum }")

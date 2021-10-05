@@ -61,6 +61,10 @@
 * Speed up analyzer rules.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3747](https://github.com/realm/SwiftLint/issues/3747)
+* Add optional `prefer_self_in_static_references` rule to warn if the class/struct/enum name
+  is used to reference static variables/functions in the class/struct/enum. The advice is to
+  use `Self` instead which is not effected by renamings.  
+  [SimplyDanny](https://github.com/simplydanny)
 
 #### Bug Fixes
 

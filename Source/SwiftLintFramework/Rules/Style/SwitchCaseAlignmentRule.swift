@@ -66,7 +66,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
                     their enclosing switch statement.
                     """
 
-        return StyleViolation(ruleDescription: SwitchCaseAlignmentRule.description,
+        return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severityConfiguration.severity,
                               location: location,
                               reason: reason)

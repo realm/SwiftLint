@@ -176,7 +176,7 @@ private extension StatementPositionRule {
     func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.stringView
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegex.matches(in: file)
+        let matches = Self.uncuddledRegex.matches(in: file)
         let validator = Self.uncuddledMatchValidator(contents: contents)
         let filterMatches = Self.uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
@@ -188,7 +188,7 @@ private extension StatementPositionRule {
     func uncuddledCorrect(file: SwiftLintFile) -> [Correction] {
         var contents = file.contents
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegex.matches(in: file)
+        let matches = Self.uncuddledRegex.matches(in: file)
         let validator = Self.uncuddledMatchValidator(contents: file.stringView)
         let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
 

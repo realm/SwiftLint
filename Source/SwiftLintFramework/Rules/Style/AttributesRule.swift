@@ -253,7 +253,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let restOfLineOffset = attributeRange.upperBound
         let restOfLineLength = line.byteRange.upperBound - restOfLineOffset
 
-        let regex = AttributesRule.regularExpression
+        let regex = Self.regularExpression
         let contents = file.stringView
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`

@@ -123,7 +123,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
         let parameters = dictionary.enclosedVarParameters +
             dictionary.substructure.filter { $0.declarationKind == .varLocal } // capture lists
         let rangeStart = nameOffset + nameLength
-        let regex = ClosureParameterPositionRule.openBraceRegex
+        let regex = Self.openBraceRegex
 
         // parameters from inner closures are reported on the top-level one, so we can't just
         // use the first and last parameters to check, we need to check all of them

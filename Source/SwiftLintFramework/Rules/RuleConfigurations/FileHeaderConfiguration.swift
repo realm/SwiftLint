@@ -43,26 +43,26 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         // the regex will be recompiled for each validated file.
         if let requiredString = configuration["required_string"] {
             self.requiredString = requiredString
-            if !requiredString.contains(FileHeaderConfiguration.fileNamePlaceholder) {
+            if !requiredString.contains(Self.fileNamePlaceholder) {
                 _requiredRegex = try NSRegularExpression(pattern: requiredString,
-                                                         options: FileHeaderConfiguration.stringRegexOptions)
+                                                         options: Self.stringRegexOptions)
             }
         } else if let requiredPattern = configuration["required_pattern"] {
             self.requiredPattern = requiredPattern
-            if !requiredPattern.contains(FileHeaderConfiguration.fileNamePlaceholder) {
+            if !requiredPattern.contains(Self.fileNamePlaceholder) {
                 _requiredRegex = try .cached(pattern: requiredPattern)
             }
         }
 
         if let forbiddenString = configuration["forbidden_string"] {
             self.forbiddenString = forbiddenString
-            if !forbiddenString.contains(FileHeaderConfiguration.fileNamePlaceholder) {
+            if !forbiddenString.contains(Self.fileNamePlaceholder) {
                 _forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
-                                                          options: FileHeaderConfiguration.stringRegexOptions)
+                                                          options: Self.stringRegexOptions)
             }
         } else if let forbiddenPattern = configuration["forbidden_pattern"] {
             self.forbiddenPattern = forbiddenPattern
-            if !forbiddenPattern.contains(FileHeaderConfiguration.fileNamePlaceholder) {
+            if !forbiddenPattern.contains(Self.fileNamePlaceholder) {
                 _forbiddenRegex = try .cached(pattern: forbiddenPattern)
             }
         }
@@ -80,7 +80,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
             // Replace SWIFTLINT_CURRENT_FILENAME with the filename.
             let escapedName = escapeFileName ? NSRegularExpression.escapedPattern(for: fileName) : fileName
-            return pattern.replacingOccurrences(of: FileHeaderConfiguration.fileNamePlaceholder,
+            return pattern.replacingOccurrences(of: Self.fileNamePlaceholder,
                                                 with: escapedName)
         } ?? pattern
 
@@ -92,12 +92,12 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     }
 
     private func regexFromString(for file: SwiftLintFile, using pattern: String) -> NSRegularExpression? {
-        return makeRegex(for: file, using: pattern, options: FileHeaderConfiguration.stringRegexOptions,
+        return makeRegex(for: file, using: pattern, options: Self.stringRegexOptions,
                          escapeFileName: false)
     }
 
     private func regexFromPattern(for file: SwiftLintFile, using pattern: String) -> NSRegularExpression? {
-        return makeRegex(for: file, using: pattern, options: FileHeaderConfiguration.patternRegexOptions,
+        return makeRegex(for: file, using: pattern, options: Self.patternRegexOptions,
                          escapeFileName: true)
     }
 
@@ -115,7 +115,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
 
         if requiredPattern == nil, requiredString == nil {
-            return FileHeaderConfiguration.defaultRegex
+            return Self.defaultRegex
         }
 
         return nil

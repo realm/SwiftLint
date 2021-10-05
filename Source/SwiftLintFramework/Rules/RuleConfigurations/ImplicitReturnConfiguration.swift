@@ -9,7 +9,7 @@ public struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
 
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
-    private(set) var includedKinds = ImplicitReturnConfiguration.defaultIncludedKinds
+    private(set) var includedKinds = Self.defaultIncludedKinds
 
     public var consoleDescription: String {
         let includedKinds = self.includedKinds.map { $0.rawValue }
@@ -17,7 +17,7 @@ public struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
             ", included: [\(includedKinds.joined(separator: ", "))]"
     }
 
-    public init(includedKinds: Set<ReturnKind> = ImplicitReturnConfiguration.defaultIncludedKinds) {
+    public init(includedKinds: Set<ReturnKind> = Self.defaultIncludedKinds) {
         self.includedKinds = includedKinds
     }
 

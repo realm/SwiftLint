@@ -139,7 +139,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
             file.syntaxMap.kinds(inByteRange: afterIfRange)
 
         let doesntContainComments = !allKinds.contains { kind in
-            !ForWhereRule.commentKinds.contains(kind)
+            !Self.commentKinds.contains(kind)
         }
 
         return doesntContainComments

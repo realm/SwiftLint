@@ -130,7 +130,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
     }
 
     private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
-        let reason = "\(LiteralExpressionEndIdentationRule.description.description) " +
+        let reason = "\(Self.description.description) " +
                      "Expected \(violation.indentationRanges.expected.length), " +
                      "got \(violation.indentationRanges.actual.length)."
 
@@ -249,7 +249,7 @@ extension LiteralExpressionEndIdentationRule {
         }
 
         let range = file.lines[startLine - 1].range
-        let regex = LiteralExpressionEndIdentationRule.notWhitespace
+        let regex = Self.notWhitespace
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,

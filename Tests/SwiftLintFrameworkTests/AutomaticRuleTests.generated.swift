@@ -455,6 +455,12 @@ class MultipleClosuresWithTrailingClosureRuleTests: XCTestCase {
     }
 }
 
+class MutableHashRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MutableHashRule.description)
+    }
+}
+
 class NSLocalizedStringKeyRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringKeyRule.description)

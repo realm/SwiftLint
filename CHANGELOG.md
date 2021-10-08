@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Add `mutable_hash` rule to catch using of mutable property as a hash value,
+  which might violate `Hashable` protocol requirements.  
+  [Eugene Berdnikov](https://github.com/evnik)
 
 #### Bug Fixes
 

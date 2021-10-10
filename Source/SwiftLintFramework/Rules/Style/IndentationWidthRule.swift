@@ -62,10 +62,6 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         for line in file.lines {
             let initialContentWithoutIndentation = line.content.trimmingCharacters(in: indentations)
 
-            if isInsideMultilineComment {
-                if initialContentWithoutIndentation.starts(with: "* ") { continue }
-            }
-
             // Skip line if it's a whitespace-only line
             var indentationCharacterCount = line.content.countOfLeadingCharacters(in: indentations)
             let contentIsOnlyIndentation = line.content.count == indentationCharacterCount
@@ -129,6 +125,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 break
             }
 
+            let contentWithoutIndentation = content.trimmingCharacters(in: indentations)
+
             if isInsideHeaderComment && !isInsideMultilineComment && !isCommentedLine {
                 isInsideHeaderComment = false
             }
@@ -139,13 +137,19 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 isInsideHeaderComment = false
                 isInsideMultilineComment = false
 
+                // Skip line if it is part of a documentation comment
+                if contentWithoutIndentation.starts(with: "* ") { continue }
+
                 // Skip line if it contains only a multiline comment end part
-                if multilineCommentsSuffixes.contains(content.trimmingCharacters(in: indentations)) {
-                    continue
-                }
+                if multilineCommentsSuffixes.contains(contentWithoutIndentation) { continue }
             }
 
             if isInsideHeaderComment { continue }
+
+            if isInsideMultilineComment {
+                // Skip line if it is part of a documentation comment
+                if contentWithoutIndentation.starts(with: "* ") { continue }
+            }
 
             // Get space and tab count in prefix
             let prefix = String(content.prefix(indentationCharacterCount))

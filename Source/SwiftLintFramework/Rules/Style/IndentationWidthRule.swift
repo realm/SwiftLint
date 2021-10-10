@@ -49,6 +49,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     // MARK: - Methods: Validation
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let multilineCommentsSuffixes = ["**/", "*/"]
         let commentsPrefixes = ["///", "//", "/**", "/*"]
 
         var violations: [StyleViolation] = []
@@ -113,7 +114,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             if commentBodyIsOnlyIndentation { continue }
 
             // Skip line if it contains only a multiline comment end part
-            if content == "*/" { continue }
+            if multilineCommentsSuffixes.contains(content) { continue }
 
             // Get space and tab count in prefix
             let prefix = String(content.prefix(indentationCharacterCount))

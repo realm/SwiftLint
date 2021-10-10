@@ -114,7 +114,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             if commentBodyIsOnlyIndentation { continue }
 
             // Skip line if it contains only a multiline comment end part
-            if multilineCommentsSuffixes.contains(content) { continue }
+            if multilineCommentsSuffixes.contains(content.trimmingCharacters(in: indentations)) { continue }
 
             // Get space and tab count in prefix
             let prefix = String(content.prefix(indentationCharacterCount))

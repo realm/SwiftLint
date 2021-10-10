@@ -38,8 +38,21 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     }
                     """),
             Example("""
+                    struct NonHashableStruct {
+                      weak var weakMutableProperty: AnyObject?
+                    }
+                    """),
+            Example("""
                     struct HashableStruct: Hashable {
-                      let mutableProperty: Int = 42
+                      var mutableProperty: Int = 42
+                    }
+                    """),
+            Example("""
+                    struct HashableStruct: Hashable {
+                      var mutableProperty: Int = 42
+                      func hash(into hasher: inout Hasher) {
+                        hasher.combine(self.mutableProperty)
+                      }
                     }
                     """)
         ],
@@ -48,7 +61,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     class HashableClass: Hashable {
                       class var mutableClassProperty: Int = 42
                       func hash(into hasher: inout Hasher) {
-                        hasher.combine(↓HashableClass.mutableClassProperty)
+                        hasher.combine(↓-(HashableClass.mutableClassProperty+5)*3)
                       }
                     }
                     """),
@@ -86,14 +99,17 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     """),
             Example("""
                     struct HashableStruct: Hashable {
-                      ↓var mutableProperty: Int = 42
+                      let immutableProperty: Int = 42
+                      weak ↓var weakMutableProperty: AnyObject?
                     }
                     """),
             Example("""
                     struct HashableStruct: Hashable {
-                      var mutableProperty: Int = 42
+                      let immutableProperty: Int = 42
+                      weak var weakMutableProperty: AnyObject?
                       func hash(into hasher: inout Hasher) {
-                        hasher.combine(↓(-self.mutableProperty)*3)
+                        hasher.combine(self.immutableProperty)
+                        hasher.combine(↓self.weakMutableProperty)
                       }
                     }
                     """)
@@ -107,18 +123,15 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
 
         guard let hashMethod = dictionary.substructure.first(where: \.isHashIntoMethod) else {
             if kind == .struct {
-                let mutableProperties = dictionary.substructure.lazy.filter(\.isMutableProperty)
-                if mutableProperties.isNotEmpty {
-                    return mutableProperties.compactMap {
-                        if let offset = $0.offset {
-                            return StyleViolation(
-                                ruleDescription: Self.description,
-                                severity: configuration.severity,
-                                location: Location(file: file, byteOffset: offset))
-                        }
-
-                        return nil
+                return dictionary.substructure.lazy.filter(\.isMutableWeakProperty).compactMap {
+                    if let offset = $0.offset {
+                        return StyleViolation(
+                            ruleDescription: Self.description,
+                            severity: configuration.severity,
+                            location: Location(file: file, byteOffset: offset))
                     }
+
+                    return nil
                 }
             }
 
@@ -132,7 +145,13 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
         }
 
         let callParser = CallParser(file, parentTypeName: typeName)
-        let mutableProperties = Set(dictionary.substructure.lazy.filter(\.isMutableProperty).compactMap(\.name))
+        let mutableProperties: Set<String>
+        if kind == .struct {
+            mutableProperties = Set(dictionary.substructure.lazy.filter(\.isMutableWeakProperty).compactMap(\.name))
+        } else {
+            mutableProperties = Set(dictionary.substructure.lazy.filter(\.isMutableProperty).compactMap(\.name))
+        }
+
         let arguments = hashMethodSubstructure
             .filter({ $0.isCombineCall(instanceName: hasherParameterName) }).compactMap(callParser.parseArgument(from:))
         let calls = hashMethodSubstructure.filter(\.isHashIntoCall).compactMap(callParser.parseCallChain(from:))
@@ -165,6 +184,10 @@ private extension SourceKittenDictionary {
     var isMutableProperty: Bool {
         (declarationKind == .varClass || declarationKind == .varInstance || declarationKind == .varStatic)
             && value["key.setter_accessibility"] != nil
+    }
+
+    var isMutableWeakProperty: Bool {
+        isMutableProperty && enclosedSwiftAttributes.contains(.weak)
     }
 
     var isParameter: Bool {

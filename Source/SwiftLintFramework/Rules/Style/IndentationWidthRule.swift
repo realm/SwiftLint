@@ -49,14 +49,20 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     // MARK: - Methods: Validation
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let multilineCommentsPrefixes = ["/**", "/*"]
         let multilineCommentsSuffixes = ["**/", "*/"]
-        let commentsPrefixes = ["///", "//", "/**", "/*"]
+        let commentsPrefixes = ["///", "//"] + multilineCommentsPrefixes
         let indentations = CharacterSet(charactersIn: " \t")
 
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
+        var isInsideMultilineComment = false
 
         for line in file.lines {
+            if isInsideMultilineComment {
+                if line.content.trimmingCharacters(in: indentations).starts(with: "* ") { continue }
+            }
+
             // Skip line if it's a whitespace-only line
             var indentationCharacterCount = line.content.countOfLeadingCharacters(in: indentations)
             let contentIsOnlyIndentation = line.content.count == indentationCharacterCount
@@ -76,6 +82,10 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             for commentPrefix in commentsPrefixes {
                 guard content.hasPrefix(commentPrefix) else {
                     continue
+                }
+
+                if multilineCommentsPrefixes.contains(commentPrefix) {
+                    isInsideMultilineComment = true
                 }
 
                 // Remove the comment start part from the beginning of the line
@@ -114,7 +124,11 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             if commentBodyIsOnlyIndentation { continue }
 
             // Skip line if it contains only a multiline comment end part
-            if multilineCommentsSuffixes.contains(content.trimmingCharacters(in: indentations)) { continue }
+            if multilineCommentsSuffixes.contains(content.trimmingCharacters(in: indentations)) {
+                isInsideMultilineComment = false
+
+                continue
+            }
 
             // Get space and tab count in prefix
             let prefix = String(content.prefix(indentationCharacterCount))

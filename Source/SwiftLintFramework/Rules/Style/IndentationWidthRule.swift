@@ -60,8 +60,10 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         var isInsideMultilineComment = false
 
         for line in file.lines {
+            let initialContentWithoutIndentation = line.content.trimmingCharacters(in: indentations)
+
             if isInsideMultilineComment {
-                if line.content.trimmingCharacters(in: indentations).starts(with: "* ") { continue }
+                if initialContentWithoutIndentation.starts(with: "* ") { continue }
             }
 
             // Skip line if it's a whitespace-only line
@@ -82,7 +84,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             var isCommentedLine = false
 
             for commentPrefix in commentsPrefixes {
-                if content.trimmingCharacters(in: indentations).contains(commentPrefix) {
+                if initialContentWithoutIndentation.contains(commentPrefix) {
                     isCommentedLine = true
 
                     if multilineCommentsPrefixes.contains(commentPrefix) {

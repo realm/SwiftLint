@@ -80,12 +80,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             var commentBodyIsOnlyIndentation = false
 
             for commentPrefix in commentsPrefixes {
-                guard content.hasPrefix(commentPrefix) else {
-                    continue
+                if content.trimmingCharacters(in: indentations).contains(commentPrefix) {
+                    if multilineCommentsPrefixes.contains(commentPrefix) {
+                        isInsideMultilineComment = true
+                    }
                 }
 
-                if multilineCommentsPrefixes.contains(commentPrefix) {
-                    isInsideMultilineComment = true
+                guard content.hasPrefix(commentPrefix) else {
+                    continue
                 }
 
                 // Remove the comment start part from the beginning of the line

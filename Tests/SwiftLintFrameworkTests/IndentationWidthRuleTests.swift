@@ -225,6 +225,19 @@ class IndentationWidthRuleTests: XCTestCase {
                 """,
             includeComments: true
         )
+
+        assertNoViolation(
+            in:
+                """
+                class AClass {
+                    /**
+                     * A method.
+                     */
+                    func aMethod() {}
+                }
+                """,
+            includeComments: true
+        )
     }
 
     /// Duplicate warnings for one actual indentation issue should be avoided.

@@ -51,13 +51,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let multilineCommentsSuffixes = ["**/", "*/"]
         let commentsPrefixes = ["///", "//", "/**", "/*"]
+        let indentations = CharacterSet(charactersIn: " \t")
 
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 
         for line in file.lines {
             // Skip line if it's a whitespace-only line
-            var indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            var indentationCharacterCount = line.content.countOfLeadingCharacters(in: indentations)
             let contentIsOnlyIndentation = line.content.count == indentationCharacterCount
 
             if contentIsOnlyIndentation { continue }
@@ -82,8 +83,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 // consideration.
                 let stripped = String(content.dropFirst(commentPrefix.count))
 
-                let strippedIndentationCharacterCount = stripped
-                    .countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+                let strippedIndentationCharacterCount = stripped.countOfLeadingCharacters(in: indentations)
                 commentBodyIsOnlyIndentation = stripped.count == strippedIndentationCharacterCount
 
                 if commentBodyIsOnlyIndentation { break }

@@ -56,6 +56,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
+        var isInsideHeaderComment = true
         var isInsideMultilineComment = false
 
         for line in file.lines {
@@ -78,9 +79,12 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
             var content = line.content
             var commentBodyIsOnlyIndentation = false
+            var isCommentedLine = false
 
             for commentPrefix in commentsPrefixes {
                 if content.trimmingCharacters(in: indentations).contains(commentPrefix) {
+                    isCommentedLine = true
+
                     if multilineCommentsPrefixes.contains(commentPrefix) {
                         isInsideMultilineComment = true
                     }
@@ -122,6 +126,12 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 // check the rest of them.
                 break
             }
+
+            if isInsideHeaderComment && !isCommentedLine {
+                isInsideHeaderComment = false
+            }
+
+            if isInsideHeaderComment { continue }
 
             if commentBodyIsOnlyIndentation { continue }
 

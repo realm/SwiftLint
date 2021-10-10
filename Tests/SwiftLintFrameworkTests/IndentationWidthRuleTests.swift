@@ -238,6 +238,35 @@ class IndentationWidthRuleTests: XCTestCase {
                 """,
             includeComments: true
         )
+
+        assertNoViolation(
+            in:
+                """
+                // Prefix having a length that's not a multiple of 4: - First
+                //                                                    - Second
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+
+                // Prefix having a length that's not a multiple of 4: - First
+                //                                                    - Second
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                // Prefix having a length that's not a multiple of 4: - First
+                //                                                    - Second
+                import AModule
+                """,
+            includeComments: true
+        )
     }
 
     /// Duplicate warnings for one actual indentation issue should be avoided.

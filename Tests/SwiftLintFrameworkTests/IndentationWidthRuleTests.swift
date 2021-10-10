@@ -267,6 +267,17 @@ class IndentationWidthRuleTests: XCTestCase {
                 """,
             includeComments: true
         )
+
+        assertNoViolation(
+            in:
+                """
+                /**
+                 A header comment.
+                 */
+                import AModule
+                """,
+            includeComments: true
+        )
     }
 
     /// Duplicate warnings for one actual indentation issue should be avoided.

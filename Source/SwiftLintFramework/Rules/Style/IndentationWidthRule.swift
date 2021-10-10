@@ -133,12 +133,14 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
             if commentBodyIsOnlyIndentation { continue }
 
-            // Skip line if it contains only a multiline comment end part
-            if multilineCommentsSuffixes.contains(content.trimmingCharacters(in: indentations)) {
+            if multilineCommentsSuffixes.contains(where: { content.hasSuffix($0) }) {
                 isInsideHeaderComment = false
                 isInsideMultilineComment = false
 
-                continue
+                // Skip line if it contains only a multiline comment end part
+                if multilineCommentsSuffixes.contains(content.trimmingCharacters(in: indentations)) {
+                    continue
+                }
             }
 
             if isInsideHeaderComment { continue }

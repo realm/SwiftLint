@@ -9,8 +9,17 @@ internal extension Configuration.FileGraph {
 
     // MARK: - Vertix
     class Vertix: Hashable {
-        internal let originalRemoteString: String?
-        internal var originatesFromRemote: Bool { originalRemoteString != nil }
+        internal let originalFilePath: FilePath
+
+        internal var originatesFromRemote: Bool {
+            switch originalFilePath {
+            case .promised:
+                return true
+            case .existing:
+                return false
+            }
+        }
+
         internal var rootDirectory: String {
             if !originatesFromRemote, case let .existing(path) = filePath {
                 // This is a local file, so its root directory is its containing directory
@@ -30,19 +39,18 @@ internal extension Configuration.FileGraph {
         init(string: String, rootDirectory: String, isInitialVertix: Bool) {
             originalRootDirectory = rootDirectory
             if string.hasPrefix("http://") || string.hasPrefix("https://") {
-                originalRemoteString = string
                 filePath = .promised(urlString: string)
             } else {
-                originalRemoteString = nil
                 filePath = .existing(
                     path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
                 )
             }
+            originalFilePath = filePath
             self.isInitialVertix = isInitialVertix
         }
 
-        init(originalRemoteString: String?, originalRootDirectory: String, filePath: FilePath, isInitialVertix: Bool) {
-            self.originalRemoteString = originalRemoteString
+        init(originalFilePath: FilePath, originalRootDirectory: String, filePath: FilePath, isInitialVertix: Bool) {
+            self.originalFilePath = originalFilePath
             self.originalRootDirectory = originalRootDirectory
             self.filePath = filePath
             self.isInitialVertix = isInitialVertix
@@ -50,7 +58,7 @@ internal extension Configuration.FileGraph {
 
         internal func copy(withNewRootDirectory rootDirectory: String) -> Vertix {
             let vertix = Vertix(
-                originalRemoteString: originalRemoteString,
+                originalFilePath: originalFilePath,
                 originalRootDirectory: rootDirectory,
                 filePath: filePath,
                 isInitialVertix: isInitialVertix
@@ -86,13 +94,12 @@ internal extension Configuration.FileGraph {
 
         internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
             return lhs.filePath == rhs.filePath
-                && lhs.originalRemoteString == rhs.originalRemoteString
+                && lhs.originalFilePath == rhs.originalFilePath
                 && lhs.rootDirectory == rhs.rootDirectory
         }
 
         internal func hash(into hasher: inout Hasher) {
-            hasher.combine(filePath)
-            hasher.combine(originalRemoteString)
+            hasher.combine(originalFilePath)
             hasher.combine(originalRootDirectory)
         }
     }

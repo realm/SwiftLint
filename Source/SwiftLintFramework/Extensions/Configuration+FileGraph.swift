@@ -158,9 +158,12 @@ internal extension Configuration {
         }
 
         private func findPossiblyExistingVertix(sameAs vertix: Vertix) -> Vertix? {
-            return vertices.first {
-                $0.originalRemoteString != nil && $0.originalRemoteString == vertix.originalRemoteString
-            } ?? vertices.first { $0.filePath == vertix.filePath }
+            if case let .promised(urlString: urlString) = vertix.originalFilePath,
+                let existing = vertices.first(where: { $0.originalFilePath == .promised(urlString: urlString) }) {
+                return existing
+            }
+
+            return vertices.first { $0.filePath == vertix.filePath }
         }
 
         // MARK: Validating

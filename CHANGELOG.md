@@ -39,7 +39,11 @@
 
 * Speed up Computed Accessors Order rule.
   [PaulTaykalo](https://github.com/PaulTaykalo)
-  [#3727](https://github.com/realm/SwiftLint/issues/3727)  
+  [#3727](https://github.com/realm/SwiftLint/issues/3727)
+
+* [Colon Rule] Fix case when comment is used in function call.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/3740)
 
 ## 0.44.0: Travel Size Lint Roller
 

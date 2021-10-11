@@ -133,7 +133,7 @@ class IndentationWidthRuleTests: XCTestCase {
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t//\ttest\n\t\t\tfifthLine",
             includeComments: true
         )
-        assert1Violation(
+        assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t///\ttest\n\t\t\tfifthLine",
             includeComments: true
         )
@@ -264,6 +264,18 @@ class IndentationWidthRuleTests: XCTestCase {
                 // Prefix having a length that's not a multiple of 4: - First
                 //                                                    - Second
                 import AModule
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                import AModule
+
+                /// Prefix having a length that's not a multiple of 4: - First
+                ///                                                    - Second
+                func aMethod()
                 """,
             includeComments: true
         )

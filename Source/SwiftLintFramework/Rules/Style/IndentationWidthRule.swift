@@ -51,7 +51,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let multilineCommentsPrefixes = ["/**", "/*"]
         let multilineCommentsSuffixes = ["**/", "*/"]
-        let commentsPrefixes = ["///", "//"] + multilineCommentsPrefixes
+        let methodDocumentationPrefix = "///"
+        let commentsPrefixes = [methodDocumentationPrefix, "//"] + multilineCommentsPrefixes
         let indentations = CharacterSet(charactersIn: " \t")
 
         var violations: [StyleViolation] = []
@@ -78,6 +79,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             var content = line.content
             var commentBodyIsOnlyIndentation = false
             var isCommentedLine = false
+            var skipLine = false
 
             for commentPrefix in commentsPrefixes {
                 if initialContentWithoutIndentation.contains(commentPrefix) {
@@ -85,6 +87,11 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
                     if multilineCommentsPrefixes.contains(commentPrefix) {
                         isInsideMultilineComment = true
+                    }
+
+                    if commentPrefix == methodDocumentationPrefix {
+                        skipLine = true
+                        break
                     }
                 }
 
@@ -124,6 +131,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 // check the rest of them.
                 break
             }
+
+            if skipLine { continue }
 
             let contentWithoutIndentation = content.trimmingCharacters(in: indentations)
             let isPartOfDocumentationComment = contentWithoutIndentation.starts(with: "*")

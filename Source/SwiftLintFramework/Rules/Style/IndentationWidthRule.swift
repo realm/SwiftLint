@@ -126,6 +126,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             }
 
             let contentWithoutIndentation = content.trimmingCharacters(in: indentations)
+            let isPartOfDocumentationComment = contentWithoutIndentation.starts(with: "* ")
 
             if isInsideHeaderComment && !isInsideMultilineComment && !isCommentedLine {
                 isInsideHeaderComment = false
@@ -137,8 +138,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 isInsideHeaderComment = false
                 isInsideMultilineComment = false
 
-                // Skip line if it is part of a documentation comment
-                if contentWithoutIndentation.starts(with: "* ") { continue }
+                if isPartOfDocumentationComment { continue }
 
                 // Skip line if it contains only a multiline comment end part
                 if multilineCommentsSuffixes.contains(contentWithoutIndentation) { continue }
@@ -147,8 +147,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             if isInsideHeaderComment { continue }
 
             if isInsideMultilineComment {
-                // Skip line if it is part of a documentation comment
-                if contentWithoutIndentation.starts(with: "* ") { continue }
+                if isPartOfDocumentationComment { continue }
             }
 
             // Get space and tab count in prefix

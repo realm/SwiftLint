@@ -113,11 +113,11 @@ custom_rules:
   ast_error:
     name: Rule Test AST
     message: Rule Test AST is parsed message - Avoid joined(separator:)
-    # TODO: how should we represent '_' parameter labels
+    # TODO: how should we represent '_' parameter labels and wildcards
     ast: >
       {
       "expressionKind": "call",
-      "name": "joined",
+      "name": "_joined",
       "subcomponents": [
         {
           "expressionKind": "argument",

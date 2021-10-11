@@ -45,10 +45,10 @@ public struct ASTQuery: Codable, Hashable, CacheDescriptionProvider {
 
     func matches(subtree source: SourceKittenDictionary, query: ASTQuery) -> [ByteRange] {
         return source.traverseWithParentDepthFirst { parent, next in
-            if parent ~= query {
+            if next ~= query {
                 var ret = [ByteRange]()
                 if query.substructure.isEmpty {
-                    parent.byteRange.map { ret.append($0) }
+                    next.byteRange.map { ret.append($0) }
                 } else {
                     // TODO: will this handle holes?
                     // { name: foo, substructure [{ }, { name: param }] } should match .foo(bar: baz, param: qux)
@@ -122,14 +122,14 @@ extension SourceKittenDictionary: ASTQueryable {
     static func ~= (source: Self, ast: ASTQuery) -> Bool {
         // TODO: nil AST.name as a wildcard?
         var result = false
-        if let ast_expressionKind = ast.expressionKind, let expressionKind = source.expressionKind {
-            result = expressionKind ~= ast_expressionKind
+        if let astExpressionKind = ast.expressionKind, let expressionKind = source.expressionKind {
+            result = expressionKind ~= astExpressionKind
         }
-        if let ast_declarationKind = ast.declarationKind, let declarationKind = source.declarationKind {
-            result = declarationKind ~= ast_declarationKind
+        if let astDeclarationKind = ast.declarationKind, let declarationKind = source.declarationKind {
+            result = declarationKind ~= astDeclarationKind
         }
-        if let ast_statementKind = ast.statementKind, let statementKind = source.statementKind {
-            result = statementKind ~= ast_statementKind
+        if let astStatementKind = ast.statementKind, let statementKind = source.statementKind {
+            result = statementKind ~= astStatementKind
         }
         // TODO: nil kinds as a wildcard? or explicit
         if let sourceName = source.name, let astName = ast.name {
@@ -198,14 +198,14 @@ extension SwiftLintFile {
                         excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
                         range: NSRange? = nil) -> [NSRange] {
         switch matcher {
-        case .regex(let regex, let captureGroup):
+        case let .regex(regex, captureGroup):
             return match(pattern: regex.pattern,
                          excludingSyntaxKinds: syntaxKinds,
                          range: range,
                          captureGroup: captureGroup)
         case .ast(let ast):
             let matches = match(ast: ast, excludingSyntaxKinds: syntaxKinds)
-            if matches.count > 0 {
+            if !matches.isEmpty {
                 print(matches)
             }
             return matches

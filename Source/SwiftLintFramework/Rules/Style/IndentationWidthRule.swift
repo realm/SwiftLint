@@ -126,7 +126,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             }
 
             let contentWithoutIndentation = content.trimmingCharacters(in: indentations)
-            let isPartOfDocumentationComment = contentWithoutIndentation.starts(with: "* ")
+            let isPartOfDocumentationComment = contentWithoutIndentation.starts(with: "*")
 
             if isInsideHeaderComment && !isInsideMultilineComment && !isCommentedLine {
                 isInsideHeaderComment = false

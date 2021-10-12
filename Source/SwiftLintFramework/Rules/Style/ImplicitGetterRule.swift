@@ -31,7 +31,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                     return nil
                 }
             } else {
-                guard let range = dict.byteRange.map(file.stringView.byteRangeToNSRange) else {
+                guard let range = dict.byteRange.flatMap(file.stringView.byteRangeToNSRange) else {
                     return nil
                 }
 
@@ -47,6 +47,22 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                 }
 
                 guard !hasSetToken else {
+                    return nil
+                }
+            }
+
+            // If there's another keyword after `get`, it's allowed (e.g. `get async`)
+            if SwiftVersion.current >= .fiveDotFive {
+                guard let byteRange = dict.byteRange else {
+                    return nil
+                }
+
+                let nextToken = file.syntaxMap.tokens(inByteRange: byteRange)
+                    .first { $0.offset > token.offset }
+
+                let allowedKeywords: Set = ["throws", "async"]
+                if let nextToken = nextToken,
+                   allowedKeywords.contains(file.contents(for: nextToken) ?? "") {
                     return nil
                 }
             }

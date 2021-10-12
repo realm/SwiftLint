@@ -138,14 +138,7 @@ struct ImplicitGetterRuleExamples {
                     }
                 }
             }
-            """)
-        ]
-
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
-
-        return commonExamples + [
+            """),
             Example("""
             class Foo {
                 subscript(i: Int) -> Int {
@@ -169,6 +162,35 @@ struct ImplicitGetterRuleExamples {
             Example("""
             protocol Foo {
                 subscript(i: Int) -> Int { get set }
+            }
+            """)
+        ]
+
+        guard SwiftVersion.current >= .fiveDotFive else {
+            return commonExamples
+        }
+
+        return commonExamples + [
+            Example("""
+            class DatabaseEntity {
+                var isSynced: Bool {
+                    get async {
+                        await database.isEntitySynced(self)
+                    }
+                }
+            }
+            """),
+            Example("""
+            struct Test {
+                subscript(value: Int) -> Int {
+                    get throws {
+                        if value == 0 {
+                            throw NSError()
+                        } else {
+                            return value
+                        }
+                    }
+                }
             }
             """)
         ]

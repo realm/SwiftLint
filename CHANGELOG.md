@@ -23,6 +23,11 @@
   [Artem Garmash](https://github.com/agarmash)
   [#3651](https://github.com/realm/SwiftLint/issues/3651)
 
+* Handle `get async` and `get throws` (introduced in Swift 5.5) in the
+  `implicit_getter` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3684](https://github.com/realm/SwiftLint/issues/3684)
+
 #### Bug Fixes
 
 * Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.

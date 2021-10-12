@@ -118,7 +118,11 @@ class CustomRulesTests: XCTestCase {
 
     func testLocalDisableCustomRuleWithMultipleRules() {
         let (regexConfig, regexCustomRules) = getCustomRulesWithTwoRules()
-        let regexFile = SwiftLintFile(contents: "//swiftlint:disable \(regexConfig.1.identifier) \n// file with a pattern")
+        let regexFile = SwiftLintFile(contents:
+                                        """
+                                        //swiftlint:disable \(regexConfig.1.identifier)
+                                        //file with a pattern
+                                        """)
         XCTAssertEqual(regexCustomRules.validate(file: regexFile),
                        [StyleViolation(ruleDescription: regexConfig.0.description,
                                        severity: .warning,
@@ -196,8 +200,9 @@ class CustomRulesTests: XCTestCase {
         return (regexConfig, customRules)
     }
 
-    private func getCustomRulesWithTwoASTRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration), CustomRules) {
-        // TODO: The Current AST Query requires domain knowlege of expresson vs declaration vs sstatement kinds. (and when they become substructures.)
+    private func getCustomRulesWithTwoASTRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration),
+                                                     CustomRules) {
+        // TODO: The Current AST Query requires domain knowlege of expresson vs declaration vs sstatement kinds.
         let config1 = ["ast":
                        """
                        {
@@ -235,7 +240,8 @@ class CustomRulesTests: XCTestCase {
         return ((regexConfig1, regexConfig2), customRules)
     }
 
-    private func getCustomRulesWithTwoRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration), CustomRules) {
+    private func getCustomRulesWithTwoRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration),
+                                                  CustomRules) {
         let config1 = ["regex": "pattern",
                        "match_kinds": "comment"]
 

@@ -1,7 +1,6 @@
 import Foundation
 import SourceKittenFramework
 
-// TODO: do we need to cache these?
 public struct ASTQuery: Codable, Hashable, CacheDescriptionProvider {
     enum ASTCodingKeys: CodingKey {
         case expressionKind
@@ -19,10 +18,28 @@ public struct ASTQuery: Codable, Hashable, CacheDescriptionProvider {
     let name: String?
     let substructure: [ASTQuery]
 
-    init(expressionKind: String? = nil, declarationKind: String? = nil, statementKind: String? = nil, name: String? = nil, substructure: [ASTQuery] = []) {
-        self.expressionKind = expressionKind
+    init(statementKind: String? = nil, name: String? = nil, substructure: [ASTQuery] = []) {
+        self.statementKind = statementKind
+        expressionKind = nil
+        declarationKind = nil
+
+        self.name = name
+        self.substructure = substructure
+    }
+
+    init(declarationKind: String? = nil, name: String? = nil, substructure: [ASTQuery] = []) {
         self.declarationKind = declarationKind
-        self.statementKind = declarationKind
+        expressionKind = nil
+        statementKind = nil
+
+        self.name = name
+        self.substructure = substructure
+    }
+
+    init(expressionKind: String? = nil, name: String? = nil, substructure: [ASTQuery] = []) {
+        self.expressionKind = expressionKind
+        declarationKind = nil
+        statementKind = nil
 
         self.name = name
         self.substructure = substructure
@@ -39,12 +56,26 @@ public struct ASTQuery: Codable, Hashable, CacheDescriptionProvider {
         substructure = try container.decodeIfPresent([ASTQuery].self, forKey: .substructure) ?? []
     }
 
-    var consoleDescription: String { "TODO" }
+    var consoleDescription: String { return "user-defined" }
 
-    var cacheDescription: String { "TODO" }
+    var cacheDescription: String {
+        let jsonObject: [String?] = [
+            expressionKind ?? "",
+            declarationKind ?? "",
+            statementKind ?? "",
+            name ?? "",
+            substructure.map(\.cacheDescription).joined(separator: ",")
+        ]
+
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            return jsonString
+        }
+        queuedFatalError("Could not serialize ast configuration for cache")
+    }
 
     func matches(subtree source: SourceKittenDictionary, query: ASTQuery) -> [ByteRange] {
-        return source.traverseWithParentDepthFirst { parent, next in
+        return source.traverseDepthFirst { next in
             if next ~= query {
                 var ret = [ByteRange]()
                 if query.substructure.isEmpty {
@@ -170,8 +201,6 @@ extension StatementKind: ASTQueryable {
 }
 
 extension SwiftLintFile {
-    // TODO: theres a bunch of stuff in SwiftLintFile+Regex that unrelated to Regex...
-
     internal func matchesAndSyntaxKinds(matching ast: ASTQuery,
                                         fileAST: SourceKittenDictionary) -> [(ByteRange, [SwiftLintSyntaxToken])] {
         let syntax = syntaxMap
@@ -205,9 +234,6 @@ extension SwiftLintFile {
                          captureGroup: captureGroup)
         case .ast(let ast):
             let matches = match(ast: ast, excludingSyntaxKinds: syntaxKinds)
-            if !matches.isEmpty {
-                print(matches)
-            }
             return matches
         }
     }

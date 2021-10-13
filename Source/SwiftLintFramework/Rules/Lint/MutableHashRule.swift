@@ -61,7 +61,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     class HashableClass: Hashable {
                       class var mutableClassProperty: Int = 42
                       func hash(into hasher: inout Hasher) {
-                        hasher.combine(↓-(HashableClass.mutableClassProperty+5)*3)
+                        hasher.combine(-3*(HashableClass.↓mutableClassProperty+5))
                       }
                     }
                     """),
@@ -69,7 +69,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     class HashableClass: Hashable {
                       weak var mutableProperty: AnyObject?
                       func hash(into h: inout Hasher) {
-                        h.combine(↓self.mutableProperty!.pointerValue)
+                        h.combine(self.↓mutableProperty!.pointerValue)
                       }
                     }
                     """),
@@ -77,7 +77,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     class HashableClass: Hashable {
                       weak var mutableProperty: AnyObject?
                       func hash(into hasher: inout Hasher) {
-                        ↓self.mutableProperty?.pointerValue?.hash(into: &hasher)
+                        self.↓mutableProperty?.pointerValue?.hash(into: &hasher)
                       }
                     }
                     """),
@@ -85,7 +85,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     class HashableClass: Hashable {
                       static var mutableStaticProperty: [Int] = [42]
                       func hash(into hasher: inout Hasher) {
-                        hasher.combine(↓Self.mutableStaticProperty[0])
+                        hasher.combine(Self.↓mutableStaticProperty[0])
                       }
                     }
                     """),
@@ -93,7 +93,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                     class HashableClass: Hashable {
                       static var mutableStaticProperty: Int = 42
                       func hash(into h: inout Hasher) {
-                        ↓Self.mutableStaticProperty!.pointerValue?.hash(into: &h)
+                        Self.↓mutableStaticProperty!.pointerValue?.hash(into: &h)
                       }
                     }
                     """),
@@ -109,7 +109,7 @@ public struct MutableHashRule: ASTRule, AutomaticTestableRule, ConfigurationProv
                       weak var weakMutableProperty: AnyObject?
                       func hash(into hasher: inout Hasher) {
                         hasher.combine(self.immutableProperty)
-                        hasher.combine(↓self.weakMutableProperty)
+                        hasher.combine(self.↓weakMutableProperty)
                       }
                     }
                     """)
@@ -196,47 +196,41 @@ private extension SourceKittenDictionary {
 }
 
 private struct CallParser {
-    private static let callChainSeparators: Set<Character> =
-        [".", "?", "!", " ", "[", "(", ")", "&", "|", "^", "+", "-", "*", "/", "%", "<", ">", "="]
     private let file: SwiftLintFile
-    private let ignoredNames: Set<String>
+    private let parentTypeName: String
 
     init(_ file: SwiftLintFile, parentTypeName: String) {
         self.file = file
-        ignoredNames = ["self", "Self", parentTypeName]
+        self.parentTypeName = parentTypeName
     }
 
     func parseArgument(from substructure: SourceKittenDictionary) -> (name: String, offset: ByteCount)? {
         // for some reason there are no arguments in the call substructure, so extracting the whole body from the file
-        if let bodyRange = substructure.bodyByteRange,
-            let argumentExpression = file.stringView.substringWithByteRange(bodyRange),
-            let bodyOffset = substructure.bodyOffset {
-            return (parsePropertyName(from: argumentExpression), bodyOffset)
+        if let bodyRange = substructure.bodyByteRange {
+            return parseProperty(from: bodyRange)
         }
 
         return nil
     }
 
     func parseCallChain(from substructure: SourceKittenDictionary) -> (name: String, offset: ByteCount)? {
-        if let callExpression = substructure.name, let offset = substructure.offset {
-            return (parsePropertyName(from: callExpression), offset)
+        if let nameRange = substructure.nameByteRange {
+            return parseProperty(from: nameRange)
         }
 
         return nil
     }
 
-    private func parsePropertyName(from expression: String) -> String {
-        // result name should be in left part of the expression, it might be preceded by `self`, `Self` or type name
-        let expressionParts = expression.split(maxSplits: 2, whereSeparator: Self.callChainSeparators.contains)
-        if expressionParts.count > 1 {
-            var propertyName = String(expressionParts[0])
-            if ignoredNames.contains(propertyName) {
-                propertyName = String(expressionParts[1])
+    private func parseProperty(from range: ByteRange) -> (name: String, offset: ByteCount)? {
+        // property should be the first identifier in the expression,
+        // class/static property might be preceded by the type name identifier
+        let stringView = file.stringView
+        return file.syntaxMap.tokens(inByteRange: range).lazy.compactMap({
+            if $0.kind == .identifier, let name = stringView.substringWithByteRange($0.range), name != parentTypeName {
+                return (name, $0.range.location)
             }
 
-            return propertyName
-        }
-
-        return expression
+            return nil
+        }).first
     }
 }

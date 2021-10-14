@@ -26,6 +26,7 @@ internal struct ColonRuleExamples {
         Example("class Foo<T: Equatable>: Bar {}\n"),
         Example("class Foo<T, U>: Bar {}\n"),
         Example("class Foo<T: Equatable> {}\n"),
+        Example("object.method(x: /* comment */ 5)\n"),
         Example("""
         switch foo {
         case .bar:

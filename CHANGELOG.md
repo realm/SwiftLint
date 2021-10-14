@@ -28,6 +28,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3684](https://github.com/realm/SwiftLint/issues/3684)
 
+* Speedup explicit type interface rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/3745)
+
 #### Bug Fixes
 
 * Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.

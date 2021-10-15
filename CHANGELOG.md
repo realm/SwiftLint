@@ -32,6 +32,10 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#issue_number](https://github.com/realm/SwiftLint/issues/3745)
 
+* Speed up analyzer rules.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3747](https://github.com/realm/SwiftLint/issues/3747)
+
 #### Bug Fixes
 
 * Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.

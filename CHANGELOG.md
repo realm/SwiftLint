@@ -1,4 +1,4 @@
-## Master
+## 0.45.0: Effectful Apparel
 
 #### Breaking
 

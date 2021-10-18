@@ -28,9 +28,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3684](https://github.com/realm/SwiftLint/issues/3684)
 
-* Speedup explicit type interface rule.  
+* Speed up explicit type interface rule.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
-  [#issue_number](https://github.com/realm/SwiftLint/issues/3745)
+  [#3745](https://github.com/realm/SwiftLint/issues/3745)
 
 * Speed up analyzer rules.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
@@ -38,7 +38,9 @@
 
 #### Bug Fixes
 
-* Fixes a bug with the `missing_docs` rule where `excludes_inherited_types` would not be set.
+* Fix a bug with the `missing_docs` rule where
+  `excludes_inherited_types` would not be set.  
+  [Ben Fox](https://github.com/bdfox325)
 
 * Fix redundant_optional_initialization autocorrect broken
   in case observer's brace exists.
@@ -56,7 +58,7 @@
 
 * [Colon Rule] Fix case when comment is used in function call.
   [PaulTaykalo](https://github.com/PaulTaykalo)
-  [#issue_number](https://github.com/realm/SwiftLint/issues/3740)
+  [#3740](https://github.com/realm/SwiftLint/issues/3740)
 
 ## 0.44.0: Travel Size Lint Roller
 

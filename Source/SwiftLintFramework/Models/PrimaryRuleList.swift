@@ -7,6 +7,7 @@ public let primaryRuleList = RuleList(rules: [
     ArrayInitRule.self,
     AttributesRule.self,
     BalancedXCTestLifecycleRule.self,
+    InstanceOrStaticVariablesInXCTestRule.self,
     BlockBasedKVORule.self,
     CaptureVariableRule.self,
     ClassDelegateProtocolRule.self,

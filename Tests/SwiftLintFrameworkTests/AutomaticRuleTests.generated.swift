@@ -329,6 +329,12 @@ class InertDeferRuleTests: XCTestCase {
     }
 }
 
+class InstanceOrStaticVariablesInXCTestRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(InstanceOrStaticVariablesInXCTestRule.description)
+    }
+}
+
 class IsDisjointRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)

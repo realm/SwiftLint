@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest
@@ -822,6 +822,12 @@ extension IndentationWidthRuleTests {
 
 extension InertDeferRuleTests {
     static var allTests: [(String, (InertDeferRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension InstanceOrStaticVariablesInXCTestRuleTests {
+    static var allTests: [(String, (InstanceOrStaticVariablesInXCTestRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1929,6 +1935,7 @@ XCTMain([
     testCase(InclusiveLanguageRuleTests.allTests),
     testCase(IndentationWidthRuleTests.allTests),
     testCase(InertDeferRuleTests.allTests),
+    testCase(InstanceOrStaticVariablesInXCTestRuleTests.allTests),
     testCase(IntegrationTests.allTests),
     testCase(IsDisjointRuleTests.allTests),
     testCase(JoinedDefaultParameterRuleTests.allTests),

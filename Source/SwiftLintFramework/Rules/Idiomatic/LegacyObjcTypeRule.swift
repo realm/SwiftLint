@@ -49,7 +49,7 @@ public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule, Automati
         ]
     )
 
-    private let pattern = legacyObjcTypes.joined(separator: "|")
+    private let pattern = "(?:\(legacyObjcTypes.joined(separator: "|")))[^A-Za-z]"
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: pattern)

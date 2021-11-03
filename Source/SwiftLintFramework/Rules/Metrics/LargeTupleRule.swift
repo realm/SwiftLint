@@ -20,38 +20,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
         name: "Large Tuple",
         description: "Tuples shouldn't have too many members. Create a custom type instead.",
         kind: .metrics,
-        nonTriggeringExamples: [
-            Example("let foo: (Int, Int)\n"),
-            Example("let foo: (start: Int, end: Int)\n"),
-            Example("let foo: (Int, (Int, String))\n"),
-            Example("func foo() -> (Int, Int)\n"),
-            Example("func foo() -> (Int, Int) {}\n"),
-            Example("func foo(bar: String) -> (Int, Int)\n"),
-            Example("func foo(bar: String) -> (Int, Int) {}\n"),
-            Example("func foo() throws -> (Int, Int)\n"),
-            Example("func foo() throws -> (Int, Int) {}\n"),
-            Example("let foo: (Int, Int, Int) -> Void\n"),
-            Example("let foo: (Int, Int, Int) throws -> Void\n"),
-            Example("func foo(bar: (Int, String, Float) -> Void)\n"),
-            Example("func foo(bar: (Int, String, Float) throws -> Void)\n"),
-            Example("var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!\n"),
-            Example("func getDictionaryAndInt() -> (Dictionary<Int, String>, Int)?\n"),
-            Example("func getGenericTypeAndInt() -> (Type<Int, String, Float>, Int)?\n")
-        ],
-        triggeringExamples: [
-            Example("↓let foo: (Int, Int, Int)\n"),
-            Example("↓let foo: (start: Int, end: Int, value: String)\n"),
-            Example("↓let foo: (Int, (Int, Int, Int))\n"),
-            Example("func foo(↓bar: (Int, Int, Int))\n"),
-            Example("func foo() -> ↓(Int, Int, Int)\n"),
-            Example("func foo() -> ↓(Int, Int, Int) {}\n"),
-            Example("func foo(bar: String) -> ↓(Int, Int, Int)\n"),
-            Example("func foo(bar: String) -> ↓(Int, Int, Int) {}\n"),
-            Example("func foo() throws -> ↓(Int, Int, Int)\n"),
-            Example("func foo() throws -> ↓(Int, Int, Int) {}\n"),
-            Example("func foo() throws -> ↓(Int, ↓(String, String, String), Int) {}\n"),
-            Example("func getDictionaryAndInt() -> (Dictionary<Int, ↓(String, String, String)>, Int)?\n")
-        ]
+        nonTriggeringExamples: LargeTupleRuleExamples.nonTriggeringExamples,
+        triggeringExamples: LargeTupleRuleExamples.triggeringExamples
     )
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
@@ -194,7 +164,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
     }
 
     private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
-        let arrowRegex = regex("\\A(?:\\s*throws)?\\s*->")
+        let arrowRegex = SwiftVersion.current >= .fiveDotFive
+                        ? regex("\\A(?:\\s*async)?(?:\\s*throws)?\\s*->")
+                        : regex("\\A(?:\\s*throws)?\\s*->")
         let start = NSMaxRange(range)
         let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
 

@@ -18,6 +18,10 @@
   used import.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix false positives on `large_tuple` rule when using `async` closures.  
+  [Kaitlin Mahar](https://github.com/kmahar)
+  [#3753](https://github.com/realm/SwiftLint/issues/3753)
+
 ## 0.45.0: Effectful Apparel
 
 #### Breaking

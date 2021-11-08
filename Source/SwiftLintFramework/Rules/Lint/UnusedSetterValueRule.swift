@@ -156,7 +156,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
             }
 
             if dict.enclosedSwiftAttributes.contains(.override) &&
-                !file.syntaxMap.kinds(inByteRange: setterByteRange).contains(where: {!$0.isCommentLike}) {
+                !file.syntaxMap.kinds(inByteRange: setterByteRange).contains(where: { !$0.isCommentLike }) {
                 return nil
             }
 

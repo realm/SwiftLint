@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Update Rule list documentation to separate out default vs opt in rules
+  [Benny Wong](https://github.com/bdotdub)
 
 #### Bug Fixes
 

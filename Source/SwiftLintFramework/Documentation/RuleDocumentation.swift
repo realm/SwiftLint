@@ -1,6 +1,10 @@
 /// User-facing documentation for a SwiftLint rule.
 struct RuleDocumentation {
-    public let ruleType: Rule.Type
+    private let ruleType: Rule.Type
+
+    var isOptInRule: Bool {
+        return ruleType is OptInRule.Type
+    }
 
     /// Creates a RuleDocumentation instance from a Rule type.
     ///

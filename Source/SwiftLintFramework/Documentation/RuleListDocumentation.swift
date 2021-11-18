@@ -32,8 +32,8 @@ public struct RuleListDocumentation {
     // MARK: - Private
 
     private var indexContents: String {
-        let defaultRuleDocumentations = ruleDocumentations.drop { $0.ruleType is OptInRule.Type }
-        let optInRuleDocumentations = ruleDocumentations.filter { $0.ruleType is OptInRule.Type }
+        let defaultRuleDocumentations = ruleDocumentations.drop { $0.isOptInRule }
+        let optInRuleDocumentations = ruleDocumentations.filter { $0.isOptInRule }
 
         return """
             # Rule Directory

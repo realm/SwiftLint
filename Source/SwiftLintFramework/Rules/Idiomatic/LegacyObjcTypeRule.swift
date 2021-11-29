@@ -41,7 +41,9 @@ public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule, Automati
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var array = Array<Int>()\n"),
-            Example("var calendar: Calendar? = nil")
+            Example("var calendar: Calendar? = nil"),
+            Example("var formatter: NSDataDetector"),
+            Example("var className: String = NSStringFromClass(MyClass.self)")
         ],
         triggeringExamples: [
             Example("var array = NSArray()"),

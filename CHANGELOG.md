@@ -24,6 +24,11 @@
   [Jesse Crocker](https://github.com/JesseCrocker)
   [Hannes Ljungberg](https://github.com/hannseman)
 
+* Fix false positive on `legacy_objc_type` rule when using
+  types with names that start with a legacy type name.  
+  [Isaac Ressler](https://github.com/iressler)
+  [#3555](https://github.com/realm/SwiftLint/issues/3555)
+
 #### Bug Fixes
 
 * Fix `unused_import` rule incorrectly considering `SwiftShims` as a

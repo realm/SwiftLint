@@ -82,19 +82,19 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
     private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let syntaxMap = file.syntaxMap
 
-        let varDeclarationRanges = ForceUnwrappingRule.varDeclarationRegularExpression
+        let varDeclarationRanges = Self.varDeclarationRegularExpression
             .matches(in: file)
             .compactMap { match -> NSRange? in
                 return match.range
             }
 
-        let functionDeclarationRanges = regex(ForceUnwrappingRule.functionReturnPattern)
+        let functionDeclarationRanges = regex(Self.functionReturnPattern)
             .matches(in: file)
             .compactMap { match -> NSRange? in
                 return match.range
             }
 
-        return ForceUnwrappingRule.regularExpression
+        return Self.regularExpression
             .matches(in: file)
             .compactMap { match -> NSRange? in
                 if match.range.intersects(varDeclarationRanges) || match.range.intersects(functionDeclarationRanges) {
@@ -141,7 +141,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
             // check second capture '!'
             let kindsInSecondRange = syntaxMap.kinds(inByteRange: matchByteSecondRange)
             let forceUnwrapNotInCommentOrString = !kindsInSecondRange
-                .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains)
+                .contains(where: Self.excludingSyntaxKindsForSecondCapture.contains)
             if forceUnwrapNotInCommentOrString &&
                 !isTypeAnnotation(in: file, byteRange: matchByteFirstRange) {
                 return violationRange
@@ -157,7 +157,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, Automat
         let tokens = syntaxMap.tokens(inByteRange: byteRange)
         return tokens.contains { token in
             guard let kind = token.kind,
-                ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains(kind)
+                Self.excludingSyntaxKindsForFirstCapture.contains(kind)
                 else { return false }
             // check for `self
             guard kind == .keyword else { return true }

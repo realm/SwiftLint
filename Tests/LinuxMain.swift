@@ -1470,6 +1470,12 @@ extension RulesTests {
     ]
 }
 
+extension PreferSelfInStaticReferencesRuleTests {
+    static var allTests: [(String, (PreferSelfInStaticReferencesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension SelfInPropertyInitializationRuleTests {
     static var allTests: [(String, (SelfInPropertyInitializationRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -2013,6 +2019,7 @@ XCTMain([
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
+    testCase(PreferSelfInStaticReferencesRuleTests.allTests),
     testCase(SelfInPropertyInitializationRuleTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),
     testCase(SingleTestClassRuleTests.allTests),

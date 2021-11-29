@@ -284,13 +284,13 @@ internal extension Configuration {
         private func isOptInRule(
             _ identifier: String, allRulesWrapped: [ConfigurationRuleWrapper]
         ) -> Bool? {
-            if let cachedIsOptInRule = RulesWrapper.isOptInRuleCache[identifier] {
+            if let cachedIsOptInRule = Self.isOptInRuleCache[identifier] {
                 return cachedIsOptInRule
             }
 
             let isOptInRule = allRulesWrapped
                 .first { type(of: $0.rule).description.identifier == identifier }?.rule is OptInRule
-            RulesWrapper.isOptInRuleCache[identifier] = isOptInRule
+            Self.isOptInRuleCache[identifier] = isOptInRule
             return isOptInRule
         }
     }

@@ -88,7 +88,7 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
 
         let containsTerminatingCall = dictionary.substructure.contains { dict -> Bool in
             return dict.expressionKind == .call && (dict.name.map { name in
-                UnavailableFunctionRule.terminatingFunctions.contains(name)
+                Self.terminatingFunctions.contains(name)
             } ?? false)
         }
 

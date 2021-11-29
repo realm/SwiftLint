@@ -117,7 +117,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
         let offset = content.distance(from: content.startIndex, to: startIndex)
         let location = Location(file: file, characterOffset: offset + file.lines[line].range.location)
 
-        violations.append(StyleViolation(ruleDescription: LetVarWhitespaceRule.description,
+        violations.append(StyleViolation(ruleDescription: Self.description,
                                          severity: configuration.severity,
                                          location: location))
     }

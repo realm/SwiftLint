@@ -9,7 +9,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "compiler_protocol_init",
         name: "Compiler Protocol Init",
-        description: CompilerProtocolInitRule.violationReason(
+        description: Self.violationReason(
             protocolName: "such as `ExpressibleByArrayLiteral`",
             isPlural: true
         ),

@@ -695,6 +695,12 @@ class ReturnArrowWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class PreferSelfInStaticReferencesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfInStaticReferencesRule.description)
+    }
+}
+
 class SelfInPropertyInitializationRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)

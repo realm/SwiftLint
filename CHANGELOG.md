@@ -14,6 +14,11 @@
   on-by-default rules.  
   [Benny Wong](https://github.com/bdotdub)
 
+* Add opt-in `prefer_self_in_static_references` rule to warn if the
+  type name is used to reference static members the same type.
+  Prefer using `Self` instead which is not affected by renamings.  
+  [SimplyDanny](https://github.com/simplydanny)
+
 #### Bug Fixes
 
 * Fix `unused_import` rule incorrectly considering `SwiftShims` as a

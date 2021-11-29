@@ -160,6 +160,7 @@ public let primaryRuleList = RuleList(rules: [
     RequiredDeinitRule.self,
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,
+    PreferSelfInStaticReferencesRule.self,
     SelfInPropertyInitializationRule.self,
     ShorthandOperatorRule.self,
     SingleTestClassRule.self,

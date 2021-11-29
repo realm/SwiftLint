@@ -26,7 +26,7 @@ public struct SourceKittenDictionary {
 
         let substructure = value["key.substructure"] as? [SourceKitRepresentable] ?? []
         self.substructure = substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
-            .map(SourceKittenDictionary.init)
+            .map(Self.init)
 
         let stringKind = value["key.kind"] as? String
         self.expressionKind = stringKind.flatMap(SwiftExpressionKind.init)
@@ -143,20 +143,20 @@ public struct SourceKittenDictionary {
     var swiftAttributes: [SourceKittenDictionary] {
         let array = value["key.attributes"] as? [SourceKitRepresentable] ?? []
         let dictionaries = array.compactMap { $0 as? [String: SourceKitRepresentable] }
-            .map(SourceKittenDictionary.init)
+            .map(Self.init)
         return dictionaries
     }
 
     var elements: [SourceKittenDictionary] {
         let elements = value["key.elements"] as? [SourceKitRepresentable] ?? []
         return elements.compactMap { $0 as? [String: SourceKitRepresentable] }
-        .map(SourceKittenDictionary.init)
+        .map(Self.init)
     }
 
     var entities: [SourceKittenDictionary] {
         let entities = value["key.entities"] as? [SourceKitRepresentable] ?? []
         return entities.compactMap { $0 as? [String: SourceKitRepresentable] }
-            .map(SourceKittenDictionary.init)
+            .map(Self.init)
     }
 
     var enclosedVarParameters: [SourceKittenDictionary] {

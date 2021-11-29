@@ -73,7 +73,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 // Catch mixed indentation
                 violations.append(
                     StyleViolation(
-                        ruleDescription: IndentationWidthRule.description,
+                        ruleDescription: Self.description,
                         severity: configuration.severityConfiguration.severity,
                         location: Location(file: file, characterOffset: line.range.location),
                         reason: "Code should be indented with tabs or " +
@@ -97,7 +97,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                     // There's an indentation although this is the first line!
                     violations.append(
                         StyleViolation(
-                            ruleDescription: IndentationWidthRule.description,
+                            ruleDescription: Self.description,
                             severity: configuration.severityConfiguration.severity,
                             location: Location(file: file, characterOffset: line.range.location),
                             reason: "The first line shall not be indented."
@@ -122,7 +122,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                 let indentWidth = configuration.indentationWidth
                 violations.append(
                     StyleViolation(
-                        ruleDescription: IndentationWidthRule.description,
+                        ruleDescription: Self.description,
                         severity: configuration.severityConfiguration.severity,
                         location: Location(file: file, characterOffset: line.range.location),
                         reason: isIndentation ?

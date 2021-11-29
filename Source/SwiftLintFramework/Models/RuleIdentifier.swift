@@ -18,7 +18,7 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     public var stringRepresentation: String {
         switch self {
         case .all:
-            return RuleIdentifier.allStringRepresentation
+            return Self.allStringRepresentation
 
         case .single(let identifier):
             return identifier
@@ -31,7 +31,7 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     ///
     /// - parameter value: The string representation.
     public init(_ value: String) {
-        self = value == RuleIdentifier.allStringRepresentation ? .all : .single(identifier: value)
+        self = value == Self.allStringRepresentation ? .all : .single(identifier: value)
     }
 
     // MARK: - ExpressibleByStringLiteral Conformance

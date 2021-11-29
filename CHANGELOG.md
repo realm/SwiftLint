@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix `unused_import` rule incorrectly considering `SwiftShims` as a
+  used import.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.45.0: Effectful Apparel
 

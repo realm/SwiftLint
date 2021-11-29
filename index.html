@@ -509,6 +509,19 @@ notation that identifies a Swift toolchain version:</p>
 <p>On Linux, SourceKit is expected to be located in
 <code>/usr/lib/libsourcekitdInProc.so</code> or specified by the <code>LINUX_SOURCEKIT_LIB_PATH</code>
 environment variable.</p>
+<h3 id='pre-commit' class='heading'>pre-commit</h3>
+
+<p>SwiftLint can be run as a <a href="https://pre-commit.com/">pre-commit</a> hook.
+Once <a href="https://pre-commit.com/#install">installed</a>, add this to the
+<code>.pre-commit-config.yaml</code> in the root of your repository:</p>
+<pre class="highlight yaml"><code><span class="na">repos</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/realm/SwiftLint</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">0.44.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">swiftlint</span>
+</code></pre>
+
+<p>Adjust <code>rev</code> to the SwiftLint version of your choice.</p>
 <h2 id='rules' class='heading'>Rules</h2>
 
 <p>Over 200 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)

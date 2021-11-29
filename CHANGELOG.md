@@ -24,11 +24,6 @@
   [Jesse Crocker](https://github.com/JesseCrocker)
   [Hannes Ljungberg](https://github.com/hannseman)
 
-* Fix false positive on `legacy_objc_type` rule when using
-  types with names that start with a legacy type name.  
-  [Isaac Ressler](https://github.com/iressler)
-  [#3555](https://github.com/realm/SwiftLint/issues/3555)
-
 #### Bug Fixes
 
 * Fix `unused_import` rule incorrectly considering `SwiftShims` as a
@@ -38,6 +33,11 @@
 * Fix false positives on `large_tuple` rule when using `async` closures.  
   [Kaitlin Mahar](https://github.com/kmahar)
   [#3753](https://github.com/realm/SwiftLint/issues/3753)
+
+* Fix false positive on `legacy_objc_type` rule when using
+  types with names that start with a legacy type name.  
+  [Isaac Ressler](https://github.com/iressler)
+  [#3555](https://github.com/realm/SwiftLint/issues/3555)
 
 ## 0.45.0: Effectful Apparel
 

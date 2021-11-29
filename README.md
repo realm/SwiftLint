@@ -233,7 +233,7 @@ continues to contribute more over time.
 You can find an updated list of rules and more information about them
 [here](https://realm.github.io/SwiftLint/rule-directory.html).
 
-You can also check [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
+You can also check [Source/SwiftLintFramework/Rules](https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Rules)
 directory to see their implementation.
 
 ### Opt-In Rules

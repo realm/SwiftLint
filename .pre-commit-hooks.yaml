@@ -1,0 +1,6 @@
+- id: swiftlint
+  name: SwiftLint
+  description: "Check Swift files for issues with SwiftLint"
+  entry: "swiftlint --quiet"
+  language: swift
+  types: [swift]

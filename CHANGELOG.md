@@ -19,6 +19,11 @@
   Prefer using `Self` instead which is not affected by renamings.  
   [SimplyDanny](https://github.com/simplydanny)
 
+* Add support for running SwiftLint as a
+  [pre-commit](https://pre-commit.com/) hook.  
+  [Jesse Crocker](https://github.com/JesseCrocker)
+  [Hannes Ljungberg](https://github.com/hannseman)
+
 #### Bug Fixes
 
 * Fix `unused_import` rule incorrectly considering `SwiftShims` as a

@@ -10,7 +10,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         nonTriggeringExamples: [
             Example("""
                 class C {
-                    static let i = 0, j = C.i
+                    static private(set) var i = 0, j = C.i
                     let h = C.i
                     @GreaterThan(C.j) var k: Int
                 }
@@ -183,6 +183,10 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         var location = bodyRange.location
         return rangesToIgnore
             .flatMap { (range: ByteRange) -> [NSRange] in
+                if range.location < location {
+                    location = max(range.upperBound, location)
+                    return []
+                }
                 let searchRange = ByteRange(location: location, length: range.lowerBound - location)
                 location = range.upperBound
                 return file.match(

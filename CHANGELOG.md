@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix crash when parsing multi-line attributes with the `attributes`
+  rule.  
+  [JP Simard](https://github.com/jpsim)
+  [#3761](https://github.com/realm/SwiftLint/issues/3761)
 
 ## 0.45.1: Clothes Drying Hooks
 

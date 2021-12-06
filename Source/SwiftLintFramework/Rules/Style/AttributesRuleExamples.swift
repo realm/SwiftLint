@@ -58,6 +58,16 @@ internal struct AttributesRuleExamples {
         func printBoolOrTrue(_ expression: @autoclosure () throws -> Bool?) rethrows {
           try print(expression() ?? true)
         }
+        """),
+        Example("""
+        import Foundation
+
+        class MyClass: NSObject {
+          @objc(
+            first:
+          )
+          static func foo(first: String) {}
+        }
         """)
     ]
 

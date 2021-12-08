@@ -81,6 +81,8 @@ target, and go to Build Phases. Click the + and select "New Run Script Phase".
 Insert the following as the script:
 
 ```bash
+export PATH="$PATH:/opt/homebrew/bin"
+
 if which swiftlint >/dev/null; then
   swiftlint
 else

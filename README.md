@@ -96,8 +96,8 @@ to run on valid Swift code that cleanly completes the compiler's parsing stage.
 So running SwiftLint before 'Compile Sources' might yield some incorrect
 results.
 
-If you wish to autocorrect violations as well, your script could run
-`swiftlint autocorrect && swiftlint` instead of just `swiftlint`. This will mean
+If you wish to fix violations as well, your script could run
+`swiftlint --fix && swiftlint` instead of just `swiftlint`. This will mean
 that all correctable violations are fixed, while ensuring warnings show up in
 your project for remaining violations.
 
@@ -109,7 +109,7 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 
 #### Format on Save Xcode Plugin
 
-To run `swiftlint autocorrect` on save in Xcode, install the
+To run `swiftlint --fix` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
 ⚠️This plugin will not work with Xcode 8 or later without disabling SIP.
@@ -120,7 +120,7 @@ This is not recommended.
 To integrate SwiftLint with AppCode, install
 [this plugin](https://plugins.jetbrains.com/plugin/9175) and configure
 SwiftLint's installed path in the plugin's preferences.
-The `autocorrect` action is available via `⌥⏎`.
+The `fix` action is available via `⌥⏎`.
 
 ### Atom
 
@@ -164,7 +164,7 @@ $ swiftlint help
 Available commands:
 
    analyze         [Experimental] Run analysis rules
-   autocorrect     Automatically correct warnings and errors
+   fix           Automatically correct warnings and errors
    generate-docs   Generates markdown documentation for all rules
    help            Display general or command-specific help
    lint            Print lint warnings and errors (default command)
@@ -175,7 +175,7 @@ Available commands:
 Run `swiftlint` in the directory containing the Swift files to lint. Directories
 will be searched recursively.
 
-To specify a list of files when using `lint`, `autocorrect` or `analyze`
+To specify a list of files when using `lint`, `fix` or `analyze`
 (like the list of files modified by Xcode specified by the
 [`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) Xcode
 plugin, or modified files in the working tree based on `git ls-files -m`), you
@@ -217,7 +217,7 @@ You may also set the `TOOLCHAINS` environment variable to the reverse-DNS
 notation that identifies a Swift toolchain version:
 
 ```shell
-$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
+$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint --fix
 ```
 
 On Linux, SourceKit is expected to be located in
@@ -458,7 +458,7 @@ SwiftLint can automatically correct certain violations. Files on disk are
 overwritten with a corrected version.
 
 Please make sure to have backups of these files before running
-`swiftlint autocorrect`, otherwise important data may be lost.
+`swiftlint --fix`, otherwise important data may be lost.
 
 Standard linting is disabled while correcting because of the high likelihood of
 violations (or their offsets) being incorrect after modifying a file while

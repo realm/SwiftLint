@@ -301,8 +301,7 @@ end
   Repo.new('Realm', 'realm/realm-cocoa'),
   Repo.new('SourceKitten', 'jpsim/SourceKitten'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
-  Repo.new('Swift', 'apple/swift'),
-  Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
+  Repo.new('Swift', 'apple/swift')
 ]
 
 # Clean up

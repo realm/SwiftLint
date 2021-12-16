@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
@@ -50,6 +50,7 @@ public let primaryRuleList = RuleList(rules: [
     EmptyStringRule.self,
     EmptyXCTestMethodRule.self,
     EnumCaseAssociatedValuesLengthRule.self,
+    EnvironmentInViewOrViewModifierRule.self,
     ExpiringTodoRule.self,
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
@@ -132,6 +133,7 @@ public let primaryRuleList = RuleList(rules: [
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
     PreferNimbleRule.self,
+    PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
     PreferZeroOverExplicitInitRule.self,
     PrefixedTopLevelConstantRule.self,
@@ -160,7 +162,6 @@ public let primaryRuleList = RuleList(rules: [
     RequiredDeinitRule.self,
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,
-    PreferSelfInStaticReferencesRule.self,
     SelfInPropertyInitializationRule.self,
     ShorthandOperatorRule.self,
     SingleTestClassRule.self,

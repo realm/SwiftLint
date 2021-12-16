@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
@@ -212,6 +212,12 @@ class EmptyXCTestMethodRuleTests: XCTestCase {
 class EnumCaseAssociatedValuesLengthRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EnumCaseAssociatedValuesLengthRule.description)
+    }
+}
+
+class EnvironmentInViewOrViewModifierRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(EnvironmentInViewOrViewModifierRule.description)
     }
 }
 
@@ -551,6 +557,12 @@ class PreferNimbleRuleTests: XCTestCase {
     }
 }
 
+class PreferSelfInStaticReferencesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfInStaticReferencesRule.description)
+    }
+}
+
 class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
@@ -692,12 +704,6 @@ class RequiredDeinitRuleTests: XCTestCase {
 class ReturnArrowWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
-    }
-}
-
-class PreferSelfInStaticReferencesRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 

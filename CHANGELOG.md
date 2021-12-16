@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* add rule to check for @Environment usage.  
+  [hborawski](https://github.com/hborawski)
+  [#3786](https://github.com/realm/SwiftLint/pulls/3786)
 
 #### Bug Fixes
 

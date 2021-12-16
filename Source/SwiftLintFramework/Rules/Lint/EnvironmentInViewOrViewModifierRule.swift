@@ -33,7 +33,7 @@ public struct EnvironmentInViewOrViewModifierRule: ConfigurationProviderRule, Op
             struct Good: View {
                 @CustomPropertyWrapper @Environment(\\.keyPath) var variable
             }
-            """),
+            """)
         ],
         triggeringExamples: [
             Example("""

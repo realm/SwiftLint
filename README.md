@@ -161,15 +161,23 @@ swiftlint(
 
 ```
 $ swiftlint help
-Available commands:
+OVERVIEW: A tool to enforce Swift style and conventions.
 
-   analyze         [Experimental] Run analysis rules
-   fix           Automatically correct warnings and errors
-   generate-docs   Generates markdown documentation for all rules
-   help            Display general or command-specific help
-   lint            Print lint warnings and errors (default command)
-   rules           Display the list of rules and their identifiers
-   version         Display the current version of SwiftLint
+USAGE: swiftlint <subcommand>
+
+OPTIONS:
+  --version               Show the version.
+  -h, --help              Show help information.
+
+SUBCOMMANDS:
+  analyze                 Run analysis rules
+  docs                    Open SwiftLint documentation website in the default web browser
+  generate-docs           Generates markdown documentation for all rules
+  lint (default)          Print lint warnings and errors
+  rules                   Display the list of rules and their identifiers
+  version                 Display the current version of SwiftLint
+
+  See 'swiftlint help <subcommand>' for detailed help.
 ```
 
 Run `swiftlint` in the directory containing the Swift files to lint. Directories

@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Add support excluded names for `function_body_length` rule.
+[Vladimir Vysotsky](https://github.com/VldmrVstsk)
 
 #### Bug Fixes
 

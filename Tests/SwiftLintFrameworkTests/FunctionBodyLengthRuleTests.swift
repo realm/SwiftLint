@@ -20,10 +20,10 @@ class FunctionBodyLengthRuleTests: XCTestCase {
 
     func testFunctionBodyLengths() {
         let longFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 39).joined())
-        XCTAssertEqual(self.violations(longFunctionBody), [])
+        XCTAssertEqual(self.violations(longFunctionBody, ruleConfigurations: nil), [])
 
         let longerFunctionBody = violatingFuncWithBody(repeatElement("x = 0\n", count: 40).joined())
-        XCTAssertEqual(self.violations(longerFunctionBody), [StyleViolation(
+        XCTAssertEqual(self.violations(longerFunctionBody, ruleConfigurations: nil), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
             reason: "Function body should span 40 lines or less excluding comments and " +
@@ -32,7 +32,7 @@ class FunctionBodyLengthRuleTests: XCTestCase {
         let longerFunctionBodyWithEmptyLines = funcWithBody(
             repeatElement("\n", count: 100).joined()
         )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithEmptyLines), [])
+        XCTAssertEqual(self.violations(longerFunctionBodyWithEmptyLines, ruleConfigurations: nil), [])
     }
 
     func testFunctionBodyLengthsWithComments() {
@@ -40,13 +40,13 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             repeatElement("x = 0\n", count: 39).joined() +
             "// comment only line should be ignored.\n"
         )
-        XCTAssertEqual(violations(longFunctionBodyWithComments), [])
+        XCTAssertEqual(violations(longFunctionBodyWithComments, ruleConfigurations: nil), [])
 
         let longerFunctionBodyWithComments = violatingFuncWithBody(
             repeatElement("x = 0\n", count: 40).joined() +
             "// comment only line should be ignored.\n"
         )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithComments), [StyleViolation(
+        XCTAssertEqual(self.violations(longerFunctionBodyWithComments, ruleConfigurations: nil), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
             reason: "Function body should span 40 lines or less excluding comments and " +
@@ -58,21 +58,35 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             repeatElement("x = 0\n", count: 39).joined() +
             "/* multi line comment only line should be ignored.\n*/\n"
         )
-        XCTAssertEqual(self.violations(longFunctionBodyWithMultilineComments), [])
+        XCTAssertEqual(self.violations(longFunctionBodyWithMultilineComments, ruleConfigurations: nil), [])
 
         let longerFunctionBodyWithMultilineComments = violatingFuncWithBody(
             repeatElement("x = 0\n", count: 40).joined() +
             "/* multi line comment only line should be ignored.\n*/\n"
         )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithMultilineComments), [StyleViolation(
+        XCTAssertEqual(self.violations(longerFunctionBodyWithMultilineComments, ruleConfigurations: nil), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
             reason: "Function body should span 40 lines or less excluding comments and " +
             "whitespace: currently spans 41 lines")])
     }
+  
+    func testFunctionBodyLengthWithExcludedName() {
+        let longFunctionWithExcludedName = violatingFuncWithBody(
+            repeatElement("x = 0\n", count: 41).joined() +
+            "/* multi line comment only line should be ignored.\n*/\n"
+        )
+        XCTAssertEqual(self.violations(longFunctionWithExcludedName, ruleConfigurations: ["excluded": "abc"]), [])
 
-    private func violations(_ example: Example) -> [StyleViolation] {
-        let config = makeConfig(nil, FunctionBodyLengthRule.description.identifier)!
+        let longerFunctionWithExcludedName = violatingFuncWithBody(
+            repeatElement("x = 0\n", count: 101).joined() +
+            "/* multi line comment only line should be ignored.\n*/\n"
+        )
+        XCTAssertEqual(self.violations(longerFunctionWithExcludedName, ruleConfigurations: ["excluded": ["abc"]]), [])
+    }
+
+    private func violations(_ example: Example, ruleConfigurations: Any?) -> [StyleViolation] {
+        let config = makeConfig(ruleConfigurations, FunctionBodyLengthRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

@@ -18,7 +18,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         guard let input = RuleInput(file: file, kind: kind, dictionary: dictionary) else {
             return []
         }
-      
+
         let functionNameWithoutAgruments = dictionary.name?.split(separator: "(").first
           .flatMap(String.init)?
           .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -28,8 +28,9 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
                 input.startLine, input.endLine, parameter.value
             )
             guard exceeds else { continue }
-            
-            if let maybeExcludedFunction = functionNameWithoutAgruments, configuration.excluded.contains(maybeExcludedFunction) {
+
+            if let maybeExcludedFunction = functionNameWithoutAgruments,
+                configuration.excluded.contains(maybeExcludedFunction) {
                 return []
             } else {
                 return [
@@ -37,9 +38,10 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
                         ruleDescription: Self.description, severity: parameter.severity,
                         location: Location(file: file, byteOffset: input.offset),
                         reason: """
-                            Function body should span \(configuration.severityConfiguration.warning) lines or less excluding comments and \
-                            whitespace: currently spans \(lineCount) lines
-                            """
+                        Function body should span \(configuration.severityConfiguration.warning) \
+                        lines or less excluding comments and \
+                        whitespace: currently spans \(lineCount) lines
+                        """
                     )
                 ]
             }

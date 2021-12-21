@@ -1,5 +1,3 @@
-import Foundation
-
 public struct FunctionBodyLengthConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "warning: \(severityConfiguration.warning)" +
@@ -27,7 +25,7 @@ public struct FunctionBodyLengthConfiguration: RuleConfiguration, Equatable {
         if let errorConfiguration = configurationDict["error"] as? Int {
             severityConfiguration.error = errorConfiguration
         }
-      
+
         if let excludedConfiguration = configurationDict["excluded"] as? String {
             self.excluded = Set([excludedConfiguration])
         }

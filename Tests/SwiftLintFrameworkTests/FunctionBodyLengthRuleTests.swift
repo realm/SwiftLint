@@ -64,13 +64,15 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             repeatElement("x = 0\n", count: 40).joined() +
             "/* multi line comment only line should be ignored.\n*/\n"
         )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithMultilineComments, ruleConfigurations: nil), [StyleViolation(
-            ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 1),
-            reason: "Function body should span 40 lines or less excluding comments and " +
-            "whitespace: currently spans 41 lines")])
+        XCTAssertEqual(self.violations(longerFunctionBodyWithMultilineComments, ruleConfigurations: nil),
+                       [StyleViolation(
+                        ruleDescription: FunctionBodyLengthRule.description,
+                        location: Location(file: nil, line: 1, character: 1),
+                        reason: "Function body should span 40 lines or less excluding comments and " +
+                        "whitespace: currently spans 41 lines")]
+        )
     }
-  
+
     func testFunctionBodyLengthWithExcludedName() {
         let longFunctionWithExcludedName = violatingFuncWithBody(
             repeatElement("x = 0\n", count: 41).joined() +

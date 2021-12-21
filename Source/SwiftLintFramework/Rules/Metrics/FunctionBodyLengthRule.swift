@@ -23,28 +23,28 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
           .flatMap(String.init)?
           .trimmingCharacters(in: .whitespacesAndNewlines)
 
+        if let maybeExcludedFunction = functionNameWithoutAgruments,
+            configuration.excluded.contains(maybeExcludedFunction) {
+            return []
+        }
+
         for parameter in configuration.severityConfiguration.params {
             let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                 input.startLine, input.endLine, parameter.value
             )
             guard exceeds else { continue }
 
-            if let maybeExcludedFunction = functionNameWithoutAgruments,
-                configuration.excluded.contains(maybeExcludedFunction) {
-                return []
-            } else {
-                return [
-                    StyleViolation(
-                        ruleDescription: Self.description, severity: parameter.severity,
-                        location: Location(file: file, byteOffset: input.offset),
-                        reason: """
-                        Function body should span \(configuration.severityConfiguration.warning) \
-                        lines or less excluding comments and \
-                        whitespace: currently spans \(lineCount) lines
-                        """
-                    )
-                ]
-            }
+            return [
+                StyleViolation(
+                    ruleDescription: Self.description, severity: parameter.severity,
+                    location: Location(file: file, byteOffset: input.offset),
+                    reason: """
+                    Function body should span \(configuration.severityConfiguration.warning) \
+                    lines or less excluding comments and \
+                    whitespace: currently spans \(lineCount) lines
+                    """
+                )
+            ]
         }
 
         return []

@@ -1,6 +1,6 @@
-# Explicitly specify `bionic` because `swift:latest` does not use `ubuntu:latest`.
-ARG BUILDER_IMAGE=swift:bionic
-ARG RUNTIME_IMAGE=ubuntu:bionic
+# Explicitly specify `focal` because `swift:latest` does not use `ubuntu:latest`.
+ARG BUILDER_IMAGE=swift:focal
+ARG RUNTIME_IMAGE=ubuntu:focal
 
 # builder image
 FROM ${BUILDER_IMAGE} AS builder

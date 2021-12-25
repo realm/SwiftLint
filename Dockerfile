@@ -13,7 +13,7 @@ COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib"
+ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2"
 RUN swift build $SWIFT_FLAGS
 RUN mkdir -p /executables
 RUN for executable in $(swift package completion-tool list-executables); do \

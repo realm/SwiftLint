@@ -18,9 +18,9 @@ struct RuleDocumentation {
         return ruleType.description.name
     }
 
-    /// The web URL fragment for this documentation.
-    var urlFragment: String {
-        return "\(ruleType.description.identifier).html"
+    /// The identifier of the documented rule.
+    var ruleIdentifier: String {
+        return ruleType.description.identifier
     }
 
     /// The name of the file on disk for this rule documentation.

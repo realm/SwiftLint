@@ -9,8 +9,8 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
         identifier: "inclusive_language",
         name: "Inclusive Language",
         description: """
-            Identifiers should use inclusive language that avoids discrimination against groups of people based on \
-            race, gender, or socioeconomic status
+        Identifiers should use inclusive language that avoids discrimination against groups of people based on \
+        race, gender, or socioeconomic status
         """,
         kind: .style,
         nonTriggeringExamples: InclusiveLanguageRuleExamples.nonTriggeringExamples,

@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Fix malformed documentation for rule "InclusiveLanguage".  
+  [Ethan Wong](https://github.com/GetToSet)
 
 #### Bug Fixes
 

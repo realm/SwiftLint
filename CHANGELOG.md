@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Add rule identifiers in "Rule Directory" documentation page.  
+  [Ethan Wong](https://github.com/GetToSet)
 
 #### Bug Fixes
 

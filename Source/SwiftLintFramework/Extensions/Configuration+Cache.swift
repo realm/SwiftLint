@@ -8,6 +8,13 @@ extension Configuration {
     private static var cachedConfigurationsByIdentifier = [String: Configuration]()
     private static var cachedConfigurationsByIdentifierLock = NSLock()
 
+    /// Since the cache is stored in a static var, this function is used to reset the cache during tests
+    internal static func resetCache() {
+        Self.cachedConfigurationsByIdentifierLock.lock()
+        Self.cachedConfigurationsByIdentifier = [:]
+        Self.cachedConfigurationsByIdentifierLock.unlock()
+    }
+
     internal func setCached(forIdentifier identifier: String) {
         Self.cachedConfigurationsByIdentifierLock.lock()
         Self.cachedConfigurationsByIdentifier[identifier] = self

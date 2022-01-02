@@ -60,6 +60,11 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             List($names) { $name in
                 Text(name)
             }
+            """),
+            Example("""
+            List($names) { $name in
+                TextField($name)
+            }
             """)
         ],
         triggeringExamples: [
@@ -181,10 +186,9 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
     private func rangeAndName(parameter: SourceKittenDictionary, contents: StringView, byteRange: ByteRange,
                               file: SwiftLintFile) -> (range: NSRange, name: String)? {
         guard let paramOffset = parameter.offset,
-            let name = parameter.name?.replacingOccurrences(of: "$", with: ""),
+            let name = parameter.name?.replacingOccurrences(of: "$", with: "\\$?"),
             name != "_",
-            let regex = try? NSRegularExpression(pattern: name,
-                                                 options: [.ignoreMetacharacters]),
+            let regex = try? NSRegularExpression(pattern: name, options: []),
             let range = contents.byteRangeToNSRange(byteRange)
         else {
             return nil

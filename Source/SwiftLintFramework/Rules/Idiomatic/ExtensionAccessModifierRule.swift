@@ -149,7 +149,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         let violationOffsets = declarationOffsets.filter { typeOffset in
             // find the last ACL token before the type
             guard let previousInternalByteRange = lastACLByteRange(before: typeOffset, in: allACLRanges) else {
-                // didn't find a candidate token, so the ACL is implict (not a violation)
+                // didn't find a candidate token, so the ACL is implicit (not a violation)
                 return false
             }
 

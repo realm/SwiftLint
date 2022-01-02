@@ -55,6 +55,11 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             let failure: Failure = { task, error in
                 observer.sendFailed(error, task)
             }
+            """),
+            Example("""
+            List($names) { $name in
+                Text(name)
+            }
             """)
         ],
         triggeringExamples: [
@@ -76,6 +81,11 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             Example("""
             let failure: Failure = { ↓task, error in
                 observer.sendFailed(error)
+            }
+            """),
+            Example("""
+            List($names) { ↓$name in
+                Text("Foo")
             }
             """)
         ],
@@ -171,7 +181,7 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
     private func rangeAndName(parameter: SourceKittenDictionary, contents: StringView, byteRange: ByteRange,
                               file: SwiftLintFile) -> (range: NSRange, name: String)? {
         guard let paramOffset = parameter.offset,
-            let name = parameter.name,
+            let name = parameter.name?.replacingOccurrences(of: "$", with: ""),
             name != "_",
             let regex = try? NSRegularExpression(pattern: name,
                                                  options: [.ignoreMetacharacters]),

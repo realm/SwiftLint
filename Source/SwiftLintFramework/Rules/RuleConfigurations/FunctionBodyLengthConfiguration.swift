@@ -2,15 +2,18 @@ public struct FunctionBodyLengthConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "warning: \(severityConfiguration.warning)" +
         (severityConfiguration.error.map({ "error: \($0)" }) ?? "") +
-        "excluded: \(excluded.sorted())"
+        "excludedByName: \(excludedByName.sorted())" +
+        "excludedBySignature: \(excludedBySignature.sorted())"
     }
 
     var severityConfiguration: SeverityLevelsConfiguration
-    var excluded: Set<String>
+    var excludedByName: Set<String>
+    var excludedBySignature: Set<String>
 
-    public init(warning: Int, error: Int?, excluded: [String] = []) {
+    public init(warning: Int, error: Int?, excludedByName: [String] = [], excludedBySignature: [String] = []) {
         self.severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
-        self.excluded = Set(excluded)
+        self.excludedByName = Set(excludedByName)
+        self.excludedBySignature = Set(excludedBySignature)
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -26,12 +29,20 @@ public struct FunctionBodyLengthConfiguration: RuleConfiguration, Equatable {
             severityConfiguration.error = errorConfiguration
         }
 
-        if let excludedConfiguration = configurationDict["excluded"] as? String {
-            self.excluded = Set([excludedConfiguration])
+        if let excludedByNameConfiguration = configurationDict["excludedByName"] as? String {
+            self.excludedByName = Set([excludedByNameConfiguration])
         }
 
-        if let excludedConfiguration = configurationDict["excluded"] as? [String] {
-            self.excluded = Set(excludedConfiguration)
+        if let excludedByNameConfiguration = configurationDict["excludedByName"] as? [String] {
+            self.excludedByName = Set(excludedByNameConfiguration)
+        }
+
+        if let excludedBySignatureConfiguration = configurationDict["excludedBySignature"] as? String {
+            self.excludedBySignature = Set([excludedBySignatureConfiguration])
+        }
+
+        if let excludedBySignatureConfiguration = configurationDict["excludedBySignature"] as? [String] {
+            self.excludedBySignature = Set(excludedBySignatureConfiguration)
         }
     }
 }

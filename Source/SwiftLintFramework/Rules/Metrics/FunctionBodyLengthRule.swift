@@ -1,7 +1,10 @@
 import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = FunctionBodyLengthConfiguration(warning: 40, error: 100, excluded: [])
+    public var configuration = FunctionBodyLengthConfiguration(warning: 40,
+                                                               error: 100,
+                                                               excludedByName: [],
+                                                               excludedBySignature: [])
 
     public init() {}
 
@@ -19,12 +22,16 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
+        if let functionName = dictionary.name, configuration.excludedBySignature.contains(functionName) {
+            return []
+        }
+
         let functionNameWithoutAgruments = dictionary.name?.split(separator: "(").first
-          .flatMap(String.init)?
-          .trimmingCharacters(in: .whitespacesAndNewlines)
+            .flatMap(String.init)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let maybeExcludedFunction = functionNameWithoutAgruments,
-            configuration.excluded.contains(maybeExcludedFunction) {
+            configuration.excludedByName.contains(maybeExcludedFunction) {
             return []
         }
 

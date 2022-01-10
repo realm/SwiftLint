@@ -16,6 +16,10 @@
 
 #### Bug Fixes
 
+* Fix the regex for expiring-todos.  
+  [Sergei Shirokov](https://github.com/serges147)
+  [#3767](https://github.com/realm/SwiftLint/issues/3767)
+
 * Fix crash when parsing multi-line attributes with the `attributes`
   rule.  
   [JP Simard](https://github.com/jpsim)

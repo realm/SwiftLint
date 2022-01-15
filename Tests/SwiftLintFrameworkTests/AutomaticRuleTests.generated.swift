@@ -5,6 +5,12 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
+class AccessibilityLabelForImageRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AccessibilityLabelForImageRule.description)
+    }
+}
+
 class AnonymousArgumentInMultilineClosureRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnonymousArgumentInMultilineClosureRule.description)

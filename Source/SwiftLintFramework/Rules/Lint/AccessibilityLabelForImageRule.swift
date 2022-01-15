@@ -1,10 +1,11 @@
 import Foundation
 import SourceKittenFramework
 
-/// In UIKit, a `UIImageView` was by default not an accessibility element, and would only be visible to VoiceOver and other assistive
-/// technologies if the developer explicitly made them an accessibility element. In SwiftUI, however, an `Image` is an accessibility
-/// element by default. If the developer does not explicitly hide them from accessibility or give them an accessibility label, they will
-/// inherit the name of the image file, which often creates a poor experience when VoiceOver reads things like "close icon white".
+/// In UIKit, a `UIImageView` was by default not an accessibility element, and would only be visible to VoiceOver
+/// and other assistive technologies if the developer explicitly made them an accessibility element. In SwiftUI,
+/// however, an `Image` is an accessibility element by default. If the developer does not explicitly hide them from
+/// accessibility or give them an accessibility label, they will inherit the name of the image file, which often creates
+/// a poor experience when VoiceOver reads things like "close icon white".
 public struct AccessibilityLabelForImageRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -77,7 +78,7 @@ public struct AccessibilityLabelForImageRule: ConfigurationProviderRule, Automat
             """)
         ]
     )
-    
+
     private var pattern: String {
         "\\bImage\\(" +                         // SwiftUI Image literal
         "(?!" +                                 // start negative lookahead
@@ -91,7 +92,7 @@ public struct AccessibilityLabelForImageRule: ConfigurationProviderRule, Automat
         "accessibilityLabel\\(" +               // iOS 14+ way of setting label
         "))"                                    // end groups
     }
-    
+
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds).map {
             StyleViolation(ruleDescription: Self.description,

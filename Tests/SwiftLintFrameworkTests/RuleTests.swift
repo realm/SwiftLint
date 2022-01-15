@@ -136,6 +136,4 @@ class RuleTests: XCTestCase {
     func testDifferentSeverityLevelRulesNotEqual() {
         XCTAssertFalse(RuleWithLevelsMock().isEqualTo(RuleWithLevelsMock2()))
     }
-    
-    
 }

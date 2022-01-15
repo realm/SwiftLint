@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest
@@ -9,6 +9,12 @@ extension AccessControlLevelTests {
     static var allTests: [(String, (AccessControlLevelTests) -> () throws -> Void)] = [
         ("testDescription", testDescription),
         ("testPriority", testPriority)
+    ]
+}
+
+extension AccessibilityLabelForImageRuleTests {
+    static var allTests: [(String, (AccessibilityLabelForImageRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1200,6 +1206,12 @@ extension PreferNimbleRuleTests {
     ]
 }
 
+extension PreferSelfInStaticReferencesRuleTests {
+    static var allTests: [(String, (PreferSelfInStaticReferencesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension PreferSelfTypeOverTypeOfSelfRuleTests {
     static var allTests: [(String, (PreferSelfTypeOverTypeOfSelfRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1467,12 +1479,6 @@ extension RulesTests {
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline),
         ("testOrphanedDocComment", testOrphanedDocComment)
-    ]
-}
-
-extension PreferSelfInStaticReferencesRuleTests {
-    static var allTests: [(String, (PreferSelfInStaticReferencesRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1839,6 +1845,7 @@ extension YodaConditionRuleTests {
 
 XCTMain([
     testCase(AccessControlLevelTests.allTests),
+    testCase(AccessibilityLabelForImageRuleTests.allTests),
     testCase(AnonymousArgumentInMultilineClosureRuleTests.allTests),
     testCase(AnyObjectProtocolRuleTests.allTests),
     testCase(ArrayInitRuleTests.allTests),
@@ -1986,6 +1993,7 @@ XCTMain([
     testCase(ParserDiagnosticsTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
     testCase(PreferNimbleRuleTests.allTests),
+    testCase(PreferSelfInStaticReferencesRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PreferZeroOverExplicitInitRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
@@ -2019,7 +2027,6 @@ XCTMain([
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
-    testCase(PreferSelfInStaticReferencesRuleTests.allTests),
     testCase(SelfInPropertyInitializationRuleTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),
     testCase(SingleTestClassRuleTests.allTests),

@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Add `accessibility_label_for_image` rule to warn if a SwiftUI
+  Image does not have an accessibility label and is not hidden from
+  accessibility. When this is the case, the image's accessibility
+  label defaults to the name of the image file.  
+  [Ryan Cole](https://github.com/rcole34)
 
 #### Bug Fixes
 

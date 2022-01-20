@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Allow `unused_setter_value` for overrides.  
+  [Adrian Debbeler](https://github.com/grosem)
+  [#2585](https://github.com/realm/SwiftLint/issues/2585)
 
 #### Bug Fixes
 

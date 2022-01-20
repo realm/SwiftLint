@@ -15,6 +15,9 @@
   accessibility. When this is the case, the image's accessibility
   label defaults to the name of the image file.  
   [Ryan Cole](https://github.com/rcole34)
+* Allow `unused_setter_value` for overrides.  
+  [Adrian Debbeler](https://github.com/grosem)
+  [#2585](https://github.com/realm/SwiftLint/issues/2585)
 
 #### Bug Fixes
 

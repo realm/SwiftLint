@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Allow `unused_setter_value` for overrides.  
+  [Adrian Debbeler](https://github.com/grosem)
+  [#2585](https://github.com/realm/SwiftLint/issues/2585)
 
 #### Bug Fixes
 
@@ -193,10 +195,6 @@
   on `unneeded_parentheses_in_closure_argument` rule.  
   [p-x9](https://github.com/p-x9)
   [#3633](https://github.com/realm/SwiftLint/issues/3633)
-  
-* Allow `unused_setter_value` for overrides.  
-  [Adrian Debbeler](https://github.com/grosem)
-  [#2585](https://github.com/realm/SwiftLint/issues/2585)
 
 * Fix `unused_capture_list`, `empty_enum_arguments`, `implicit_return` and
   `explicit_type_interface` rules when using Swift 5.4.  

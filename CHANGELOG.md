@@ -1,10 +1,9 @@
-## 0.46.0: Detergent Container
+## 0.46.1: Detergent Container
 
 #### Breaking
 
-* The `weak_delegate` rule has been deprecated due to its high false
-  positive rate. The identifier will become invalid in a future
-  release.  
+* The `weak_delegate` rule has been opt-in due to its high false
+  positive rate.  
   [JP Simard](https://github.com/jpsim)
   [#2786](https://github.com/realm/SwiftLint/issues/2786)
 

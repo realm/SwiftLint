@@ -134,7 +134,6 @@ class ReporterTests: XCTestCase {
     func testMarkdownReporter() {
         let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
         let result = MarkdownReporter.generateReport(generateViolations())
-        
         XCTAssertEqual(result, expectedOutput)
     }
 }

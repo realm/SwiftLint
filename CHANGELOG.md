@@ -14,6 +14,11 @@
 
 #### Enhancements
 
+* Official Docker images are now available. See the
+  [Docker section of the README](README.md#docker) for usage
+  instructions.  
+  [Francisco Javier Trujillo Mata](https://github.com/fjtrujy)
+
 * Allow `unused_setter_value` for overrides.  
   [Adrian Debbeler](https://github.com/grosem)
   [#2585](https://github.com/realm/SwiftLint/issues/2585)

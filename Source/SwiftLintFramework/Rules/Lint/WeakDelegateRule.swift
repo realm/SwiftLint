@@ -1,5 +1,3 @@
-import SourceKittenFramework
-
 private let printDeprecationWarning: Void = {
     queuedPrintError(
         "warning: \(WeakDelegateRule.description.description)"

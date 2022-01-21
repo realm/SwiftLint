@@ -382,7 +382,9 @@ in the issue navigator.</p>
 <p>To do this click the Project in the file navigator, then click the primary app
 target, and go to Build Phases. Click the + and select &ldquo;New Run Script Phase&rdquo;.
 Insert the following as the script:</p>
-<pre class="highlight shell"><code><span class="k">if </span>which swiftlint <span class="o">&gt;</span>/dev/null<span class="p">;</span> <span class="k">then
+<pre class="highlight shell"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/opt/homebrew/bin"</span>
+
+<span class="k">if </span>which swiftlint <span class="o">&gt;</span>/dev/null<span class="p">;</span> <span class="k">then
   </span>swiftlint
 <span class="k">else
   </span><span class="nb">echo</span> <span class="s2">"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"</span>

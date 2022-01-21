@@ -1,6 +1,6 @@
-# Explicitly specify `bionic` because `swift:latest` does not use `ubuntu:latest`.
-ARG BUILDER_IMAGE=swift:bionic
-ARG RUNTIME_IMAGE=ubuntu:bionic
+# Explicitly specify `focal` because `swift:latest` does not use `ubuntu:latest`.
+ARG BUILDER_IMAGE=swift:focal
+ARG RUNTIME_IMAGE=ubuntu:focal
 
 # builder image
 FROM ${BUILDER_IMAGE} AS builder
@@ -13,7 +13,7 @@ COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib"
+ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2"
 RUN swift build $SWIFT_FLAGS
 RUN mkdir -p /executables
 RUN for executable in $(swift package completion-tool list-executables); do \

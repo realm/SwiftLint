@@ -38,6 +38,10 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         let prefixPattern = configuration.onlyAfterDot ? #"\."# : ""
         let pattern = prefixPattern + defaultPattern
 
+        for _ in 0..<10_000 {
+            _ = Int.random(in: 0..<10_000)
+        }
+
         // Offset the violation location in case `only_after_dot` is turned on,
         // to compensate for the pattern matching the dot
         let offset = configuration.onlyAfterDot ? 1 : 0

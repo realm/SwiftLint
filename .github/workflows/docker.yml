@@ -1,4 +1,4 @@
-name: CI-Docker
+name: docker
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
       - master
     tags:
       - '*'
-
 
 jobs:
   build:

@@ -14,6 +14,12 @@
   [Adrian Debbeler](https://github.com/grosem)
   [#2585](https://github.com/realm/SwiftLint/issues/2585)
 
+* Add new `location` property `identifier` to allow the ability
+  to name the object in the AST related to the violation.
+  [George Walters](https://github.com/walterg2)
+  [Butch Howard](https://github.com/butchhoward)
+  [#3551](https://github.com/realm/SwiftLint/pull/3551)
+
 #### Bug Fixes
 
 * Fix crash when parsing multi-line attributes with the `attributes`
@@ -75,11 +81,6 @@
 
 #### Enhancements
 
-* Add new `location` property `identifier` to allow the ability
-  to name the object in the AST related to the violation.
-  [George Walters](https://github.com/walterg2)
-  [Butch Howard](https://github.com/butchhoward)
-  [#3551](https://github.com/realm/SwiftLint/pull/3551)
 * Add `self_in_property_initialization` rule to catch uses of `self`
   inside an inline closure used for initializing a variable. In this case, 
   `self` refers to the `NSObject.self` method and likely won't be what you

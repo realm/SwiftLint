@@ -45,8 +45,12 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     public init() {}
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        // swiftlint:disable:next line_length
-        let regex = "\\b(?:TODO|FIXME)(?::|\\b)(?:.*)\\\(configuration.dateDelimiters.opening)(\\d{1,4}\\\(configuration.dateSeparator)\\d{1,2}\\\(configuration.dateSeparator)\\d{1,4})\\\(configuration.dateDelimiters.closing)"
+        let regex = #"""
+        \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
+        \\#(configuration.dateDelimiters.opening)\#
+        (\d{1,4}\\#(configuration.dateSeparator)\d{1,2}\\#(configuration.dateSeparator)\d{1,4})\#
+        \\#(configuration.dateDelimiters.closing)
+        """#
 
         return file.matchesAndSyntaxKinds(matching: regex).compactMap { checkingResult, syntaxKinds in
             guard

@@ -125,9 +125,8 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         if let byteRange = dictionary.byteRange,
            let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
            firstToken.kind == .keyword,
-           file.contents(for: firstToken) == "actor"
-        {
-            return []
+           file.contents(for: firstToken) == "actor" {
+                return []
         }
 
         let containsInstanceDeclarations = dictionary.substructure.contains { dict in

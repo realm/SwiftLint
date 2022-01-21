@@ -2,7 +2,7 @@
 
 #### Breaking
 
-* The 'weak_delegate' rule has been deprecated due to its high false
+* The `weak_delegate` rule has been deprecated due to its high false
   positive rate. The identifier will become invalid in a future
   release.  
   [JP Simard](https://github.com/jpsim)
@@ -24,7 +24,7 @@
   [JP Simard](https://github.com/jpsim)
   [#3770](https://github.com/realm/SwiftLint/issues/3770)
 
-* Fix the regex for expiring-todos.  
+* Fix the regex for expiring TODO comments.  
   [Sergei Shirokov](https://github.com/serges147)
   [#3767](https://github.com/realm/SwiftLint/issues/3767)
 
@@ -33,10 +33,14 @@
   [JP Simard](https://github.com/jpsim)
   [#3761](https://github.com/realm/SwiftLint/issues/3761)
 
-* Fix false trigger from `unused_closure_parameter` when using
+* Fix false positives in `unused_closure_parameter` when using
   list element bindings in SwiftUI.  
   [Paul Williamson](https://github.com/squarefrog)
   [#3790](https://github.com/realm/SwiftLint/issues/3790)
+
+* Fix the cache path not being properly set when using nested
+  configurations.  
+  [Andrés Cecilia Luque](https://github.com/acecilia)
 
 ## 0.45.1: Clothes Drying Hooks
 

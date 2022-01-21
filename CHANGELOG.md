@@ -26,6 +26,11 @@
   [JP Simard](https://github.com/jpsim)
   [#3761](https://github.com/realm/SwiftLint/issues/3761)
 
+* Fix false trigger from `unused_closure_parameter` when using
+  list element bindings in SwiftUI.  
+  [Paul Williamson](https://github.com/squarefrog)
+  [#3790](https://github.com/realm/SwiftLint/issues/3790)
+
 ## 0.45.1: Clothes Drying Hooks
 
 #### Breaking

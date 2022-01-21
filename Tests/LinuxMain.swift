@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest
@@ -235,6 +235,10 @@ extension ConfigurationTests {
         ("testExcludeByPrefixForceExcludesDirectory", testExcludeByPrefixForceExcludesDirectory),
         ("testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre", testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre),
         ("testExcludeByPrefixGlobExcludePaths", testExcludeByPrefixGlobExcludePaths),
+        ("testDictInitWithCachePath", testDictInitWithCachePath),
+        ("testDictInitWithCachePathFromCommandLine", testDictInitWithCachePathFromCommandLine),
+        ("testMainInitWithCachePath", testMainInitWithCachePath),
+        ("testMainInitWithCachePathAndCachedConfig", testMainInitWithCachePathAndCachedConfig),
         ("testMerge", testMerge),
         ("testWarningThresholdMerging", testWarningThresholdMerging),
         ("testOnlyRulesMerging", testOnlyRulesMerging),
@@ -1200,6 +1204,12 @@ extension PreferNimbleRuleTests {
     ]
 }
 
+extension PreferSelfInStaticReferencesRuleTests {
+    static var allTests: [(String, (PreferSelfInStaticReferencesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension PreferSelfTypeOverTypeOfSelfRuleTests {
     static var allTests: [(String, (PreferSelfTypeOverTypeOfSelfRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1467,12 +1477,6 @@ extension RulesTests {
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline),
         ("testOrphanedDocComment", testOrphanedDocComment)
-    ]
-}
-
-extension PreferSelfInStaticReferencesRuleTests {
-    static var allTests: [(String, (PreferSelfInStaticReferencesRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1780,12 +1784,6 @@ extension VoidReturnRuleTests {
     ]
 }
 
-extension WeakDelegateRuleTests {
-    static var allTests: [(String, (WeakDelegateRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
 extension XCTFailMessageRuleTests {
     static var allTests: [(String, (XCTFailMessageRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1986,6 +1984,7 @@ XCTMain([
     testCase(ParserDiagnosticsTests.allTests),
     testCase(PatternMatchingKeywordsRuleTests.allTests),
     testCase(PreferNimbleRuleTests.allTests),
+    testCase(PreferSelfInStaticReferencesRuleTests.allTests),
     testCase(PreferSelfTypeOverTypeOfSelfRuleTests.allTests),
     testCase(PreferZeroOverExplicitInitRuleTests.allTests),
     testCase(PrefixedTopLevelConstantRuleTests.allTests),
@@ -2019,7 +2018,6 @@ XCTMain([
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
-    testCase(PreferSelfInStaticReferencesRuleTests.allTests),
     testCase(SelfInPropertyInitializationRuleTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),
     testCase(SingleTestClassRuleTests.allTests),
@@ -2067,7 +2065,6 @@ XCTMain([
     testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
-    testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),
     testCase(XCTSpecificMatcherRuleTests.allTests),
     testCase(YamlParserTests.allTests),

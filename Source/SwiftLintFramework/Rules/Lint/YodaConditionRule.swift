@@ -67,7 +67,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
 
         let matches = file.lines.filter({ $0.byteRange.contains(offset) }).reduce(into: []) { matches, line in
             let range = line.content.fullNSRange
-            let lineMatches = YodaConditionRule.regularExpression.matches(in: line.content, options: [], range: range)
+            let lineMatches = Self.regularExpression.matches(in: line.content, options: [], range: range)
             matches.append(contentsOf: lineMatches)
         }
 

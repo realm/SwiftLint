@@ -45,7 +45,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestable
 
         let ignoredRanges = self.rangesInConditionalCompilation(file: file)
 
-        let importKinds = DuplicateImportsRule.importKinds.joined(separator: "|")
+        let importKinds = Self.importKinds.joined(separator: "|")
 
         // Grammar of import declaration
         // attributes(optional) import import-kind(optional) import-path

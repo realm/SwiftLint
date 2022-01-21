@@ -81,7 +81,7 @@ extension ClosureEndIndentationRule: CorrectableRule {
             return false
         }
 
-        let regex = ClosureEndIndentationRule.notWhitespace
+        let regex = Self.notWhitespace
         if regex.firstMatch(in: contents, options: [], range: actual) != nil {
             var correction = "\n"
             correction.append(contents.substring(from: expected.location, length: expected.length))
@@ -173,7 +173,7 @@ extension ClosureEndIndentationRule {
         }
 
         let range = file.lines[startLine - 1].range
-        let regex = ClosureEndIndentationRule.notWhitespace
+        let regex = Self.notWhitespace
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
@@ -236,7 +236,7 @@ extension ClosureEndIndentationRule {
         }
 
         let range = file.lines[startLine - 1].range
-        let regex = ClosureEndIndentationRule.notWhitespace
+        let regex = Self.notWhitespace
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,

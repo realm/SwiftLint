@@ -2,6 +2,70 @@
 
 #### Breaking
 
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Allow `unused_setter_value` for overrides.  
+  [Adrian Debbeler](https://github.com/grosem)
+  [#2585](https://github.com/realm/SwiftLint/issues/2585)
+
+#### Bug Fixes
+
+* Fix crash when parsing multi-line attributes with the `attributes`
+  rule.  
+  [JP Simard](https://github.com/jpsim)
+  [#3761](https://github.com/realm/SwiftLint/issues/3761)
+
+## 0.45.1: Clothes Drying Hooks
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Update Rule list documentation to distinguish between opt-in and
+  on-by-default rules.  
+  [Benny Wong](https://github.com/bdotdub)
+
+* Add opt-in `prefer_self_in_static_references` rule to warn if the
+  type name is used to reference static members the same type.
+  Prefer using `Self` instead which is not affected by renamings.  
+  [SimplyDanny](https://github.com/simplydanny)
+
+* Add support for running SwiftLint as a
+  [pre-commit](https://pre-commit.com/) hook.  
+  [Jesse Crocker](https://github.com/JesseCrocker)
+  [Hannes Ljungberg](https://github.com/hannseman)
+
+#### Bug Fixes
+
+* Fix `unused_import` rule incorrectly considering `SwiftShims` as a
+  used import.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix false positives on `large_tuple` rule when using `async` closures.  
+  [Kaitlin Mahar](https://github.com/kmahar)
+  [#3753](https://github.com/realm/SwiftLint/issues/3753)
+
+* Fix false positive on `legacy_objc_type` rule when using
+  types with names that start with a legacy type name.  
+  [Isaac Ressler](https://github.com/iressler)
+  [#3555](https://github.com/realm/SwiftLint/issues/3555)
+
+## 0.45.0: Effectful Apparel
+
+#### Breaking
+
 * SwiftLint now requires Swift 5.4 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
@@ -16,10 +80,54 @@
   [George Walters](https://github.com/walterg2)
   [Butch Howard](https://github.com/butchhoward)
   [#3551](https://github.com/realm/SwiftLint/pull/3551)
+* Add `self_in_property_initialization` rule to catch uses of `self`
+  inside an inline closure used for initializing a variable. In this case, 
+  `self` refers to the `NSObject.self` method and likely won't be what you
+  expect. You can make the variable `lazy` to be able to refer to the current
+  instance with `self` or use `MyClass.self` if you really want to reference 
+  the method.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Exclude `id` from `identifier_name` by default.  
+  [Artem Garmash](https://github.com/agarmash)
+  [#3651](https://github.com/realm/SwiftLint/issues/3651)
+
+* Handle `get async` and `get throws` (introduced in Swift 5.5) in the
+  `implicit_getter` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3684](https://github.com/realm/SwiftLint/issues/3684)
+
+* Speed up explicit type interface rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3745](https://github.com/realm/SwiftLint/issues/3745)
+
+* Speed up analyzer rules.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3747](https://github.com/realm/SwiftLint/issues/3747)
 
 #### Bug Fixes
 
-* None.
+* Fix a bug with the `missing_docs` rule where
+  `excludes_inherited_types` would not be set.  
+  [Ben Fox](https://github.com/bdfox325)
+
+* Fix redundant_optional_initialization autocorrect broken
+  in case observer's brace exists.
+  [Naruki Chigira](https://github.com/naru-jpn)
+  [#3718](https://github.com/realm/SwiftLint/issues/3718)
+
+* Fix a false positive in the `unneeded_break_in_switch` rule when
+  using `do/catch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3724](https://github.com/realm/SwiftLint/issues/3724)
+
+* Speed up Computed Accessors Order rule.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3727](https://github.com/realm/SwiftLint/issues/3727)
+
+* [Colon Rule] Fix case when comment is used in function call.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3740](https://github.com/realm/SwiftLint/issues/3740)
 
 ## 0.44.0: Travel Size Lint Roller
 

@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 @testable import SwiftLintFrameworkTests
 import XCTest
@@ -979,6 +979,9 @@ extension LowerACLThanParentRuleTests {
 extension MissingDocsRuleConfigurationTests {
     static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
         ("testDescriptionEmpty", testDescriptionEmpty),
+        ("testDescriptionExcludesFalse", testDescriptionExcludesFalse),
+        ("testDescriptionExcludesExtensionsFalseExcludesInheritedTypesTrue", testDescriptionExcludesExtensionsFalseExcludesInheritedTypesTrue),
+        ("testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse", testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse),
         ("testDescriptionSingleServety", testDescriptionSingleServety),
         ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
         ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
@@ -987,13 +990,19 @@ extension MissingDocsRuleConfigurationTests {
         ("testParsingMultipleAcls", testParsingMultipleAcls),
         ("testInvalidServety", testInvalidServety),
         ("testInvalidAcl", testInvalidAcl),
-        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl),
+        ("testExcludesFalse", testExcludesFalse),
+        ("testExcludesExtensionsFalseExcludesInheritedTypesTrue", testExcludesExtensionsFalseExcludesInheritedTypesTrue),
+        ("testExcludesExtensionsTrueExcludesInheritedTypesFalse", testExcludesExtensionsTrueExcludesInheritedTypesFalse),
+        ("testExcludesExtensionsTrueExcludesInheritedTypesFalseWithParameters", testExcludesExtensionsTrueExcludesInheritedTypesFalseWithParameters)
     ]
 }
 
 extension MissingDocsRuleTests {
     static var allTests: [(String, (MissingDocsRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithExcludesExtensionsDisabled", testWithExcludesExtensionsDisabled),
+        ("testWithExcludesInheritedTypesDisabled", testWithExcludesInheritedTypesDisabled)
     ]
 }
 
@@ -1458,6 +1467,18 @@ extension RulesTests {
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline),
         ("testOrphanedDocComment", testOrphanedDocComment)
+    ]
+}
+
+extension PreferSelfInStaticReferencesRuleTests {
+    static var allTests: [(String, (PreferSelfInStaticReferencesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SelfInPropertyInitializationRuleTests {
+    static var allTests: [(String, (SelfInPropertyInitializationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1998,6 +2019,8 @@ XCTMain([
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
+    testCase(PreferSelfInStaticReferencesRuleTests.allTests),
+    testCase(SelfInPropertyInitializationRuleTests.allTests),
     testCase(ShorthandOperatorRuleTests.allTests),
     testCase(SingleTestClassRuleTests.allTests),
     testCase(SortedFirstLastRuleTests.allTests),

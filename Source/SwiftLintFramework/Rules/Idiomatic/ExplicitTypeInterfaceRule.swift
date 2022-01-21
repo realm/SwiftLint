@@ -68,19 +68,22 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let captureGroupRanges = Lazy(self.captureGroupRanges(in: file))
         return file.structureDictionary.traverseWithParentsDepthFirst { parents, subDict in
             guard let kind = subDict.declarationKind,
                   let parent = parents.lastIgnoringCallAndArgument() else {
                 return nil
             }
-            return validate(file: file, kind: kind, dictionary: subDict, parentStructure: parent)
+            return validate(file: file, kind: kind, dictionary: subDict, parentStructure: parent,
+                            captureGroupRanges: captureGroupRanges.value)
         }
     }
 
     private func validate(file: SwiftLintFile,
                           kind: SwiftDeclarationKind,
                           dictionary: SourceKittenDictionary,
-                          parentStructure: SourceKittenDictionary) -> [StyleViolation] {
+                          parentStructure: SourceKittenDictionary,
+                          captureGroupRanges: [ByteRange]) -> [StyleViolation] {
         guard configuration.allowedKinds.contains(kind),
             let offset = dictionary.offset,
             !dictionary.containsType,
@@ -90,7 +93,7 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
             !parentStructure.contains([.forEach, .guard]),
             !parentStructure.caseStatementPatternRanges.contains(offset),
             !parentStructure.caseExpressionRanges.contains(offset),
-            !file.captureGroupByteRanges.contains(offset) else {
+            !captureGroupRanges.contains(offset) else {
                 return []
         }
 
@@ -99,6 +102,11 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
+    }
+
+    private func captureGroupRanges(in file: SwiftLintFile) -> [ByteRange] {
+        return file.match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]", excludingSyntaxKinds: SyntaxKind.commentKinds)
+            .compactMap { file.stringView.NSRangeToByteRange(start: $0.location, length: $0.length) }
     }
 }
 
@@ -168,14 +176,6 @@ private extension SourceKittenDictionary {
     }
 }
 
-private extension SwiftLintFile {
-    var captureGroupByteRanges: [ByteRange] {
-        return match(pattern: "\\{\\s*\\[(\\s*\\w+\\s+\\w+,*)+\\]",
-                     excludingSyntaxKinds: SyntaxKind.commentKinds)
-                .compactMap { stringView.NSRangeToByteRange(start: $0.location, length: $0.length) }
-    }
-}
-
 private extension Collection where Element == ByteRange {
     func contains(_ index: ByteCount) -> Bool {
         return contains { $0.contains(index) }
@@ -220,5 +220,15 @@ private extension Array where Element == SourceKittenDictionary {
         return last { element in
             element.expressionKind != .call && element.expressionKind != .argument
         }
+    }
+}
+
+// extracted from https://forums.swift.org/t/pitch-declaring-local-variables-as-lazy/9287/3
+private class Lazy<Result> {
+    private var computation: () -> Result
+    fileprivate private(set) lazy var value: Result = computation()
+
+    init(_ computation: @escaping @autoclosure () -> Result) {
+        self.computation = computation
     }
 }

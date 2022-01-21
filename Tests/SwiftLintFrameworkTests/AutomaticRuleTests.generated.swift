@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
@@ -419,12 +419,6 @@ class LowerACLThanParentRuleTests: XCTestCase {
     }
 }
 
-class MissingDocsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MissingDocsRule.description)
-    }
-}
-
 class MultilineArgumentsBracketsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsBracketsRule.description)
@@ -698,6 +692,18 @@ class RequiredDeinitRuleTests: XCTestCase {
 class ReturnArrowWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
+    }
+}
+
+class PreferSelfInStaticReferencesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfInStaticReferencesRule.description)
+    }
+}
+
+class SelfInPropertyInitializationRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SelfInPropertyInitializationRule.description)
     }
 }
 

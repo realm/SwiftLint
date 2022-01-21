@@ -60,7 +60,7 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, Autom
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        // Mark all fileprivate occurences as a violation
+        // Mark all fileprivate occurrences as a violation
         return file.match(pattern: "fileprivate", with: [.attributeBuiltin]).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,

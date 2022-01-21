@@ -4,7 +4,7 @@ import SourceKittenFramework
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
-    private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
+    private static let supportedTypes = Self.createSupportedTypes()
 
     public init() {}
 
@@ -130,7 +130,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, Automa
         if !file.isMutableProperty(dictionary) {
             shouldMakeViolation = true
         } else if let type = dictionary.typeName,
-            ValidIBInspectableRule.supportedTypes.contains(type) {
+            Self.supportedTypes.contains(type) {
             shouldMakeViolation = false
         } else {
             // Variable should have explicit type or IB won't recognize it

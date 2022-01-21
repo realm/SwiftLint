@@ -2,6 +2,10 @@
 struct RuleDocumentation {
     private let ruleType: Rule.Type
 
+    var isOptInRule: Bool {
+        return ruleType is OptInRule.Type
+    }
+
     /// Creates a RuleDocumentation instance from a Rule type.
     ///
     /// - parameter ruleType: A subtype of the `Rule` protocol to document.

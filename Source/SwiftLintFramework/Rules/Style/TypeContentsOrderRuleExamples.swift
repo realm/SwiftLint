@@ -115,7 +115,7 @@ internal struct TypeContentsOrderRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
         class TestViewController: UIViewController {
-        \(TypeContentsOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n")),
+        \(Self.defaultOrderParts.joined(separator: "\n\n")),
         }
         """)
     ]

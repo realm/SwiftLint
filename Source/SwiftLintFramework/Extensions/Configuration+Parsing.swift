@@ -52,8 +52,8 @@ extension Configuration {
         let onlyRules = defaultStringArray(dict[Key.onlyRules.rawValue] ?? dict[Key.whitelistRules.rawValue])
         let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
 
-        Configuration.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
-        Configuration.warnAboutDeprecations(
+        Self.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
+        Self.warnAboutDeprecations(
             configurationDictionary: dict, disabledRules: disabledRules,
             optInRules: optInRules, onlyRules: onlyRules, ruleList: ruleList
         )
@@ -77,7 +77,7 @@ extension Configuration {
             analyzerRules: analyzerRules
         )
 
-        Configuration.validateConfiguredRulesAreEnabled(
+        Self.validateConfiguredRulesAreEnabled(
             configurationDictionary: dict, ruleList: ruleList, rulesMode: rulesMode
         )
 
@@ -87,7 +87,7 @@ extension Configuration {
             ruleList: ruleList,
             includedPaths: defaultStringArray(dict[Key.included.rawValue]),
             excludedPaths: defaultStringArray(dict[Key.excluded.rawValue]),
-            indentation: Configuration.getIndentationLogIfInvalid(from: dict),
+            indentation: Self.getIndentationLogIfInvalid(from: dict),
             warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
@@ -103,7 +103,7 @@ extension Configuration {
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
         if let rawIndentation = dict[Key.indentation.rawValue] {
-            if let indentationStyle = Configuration.IndentationStyle(rawIndentation) {
+            if let indentationStyle = Self.IndentationStyle(rawIndentation) {
                 return indentationStyle
             }
 

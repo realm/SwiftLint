@@ -65,6 +65,11 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             final class Foo { // final class, but @objc static func can't exist on an enum
                @objc static func foo() {}
             }
+            """),
+            Example("""
+            @globalActor actor MyActor {
+              static let shared = MyActor()
+            }
             """)
         ],
         triggeringExamples: [
@@ -114,6 +119,13 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             [.class, .struct].contains(kind),
             dictionary.inheritedTypes.isEmpty,
             dictionary.substructure.isNotEmpty else {
+                return []
+        }
+
+        if let byteRange = dictionary.byteRange,
+           let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
+           firstToken.kind == .keyword,
+           file.contents(for: firstToken) == "actor" {
                 return []
         }
 

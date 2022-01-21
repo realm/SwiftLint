@@ -158,6 +158,30 @@ swiftlint(
 )
 ```
 
+### Docker
+
+`swiftlint` is also available as a [Docker](https://www.docker.com/) image using `Ubuntu`. 
+So just the first time you need to pull the docker image using the next command:
+```bash
+docker pull ghcr.io/realm/swiftlint:latest
+```
+
+Then following times, you just run `swiftlint` inside of the docker like:
+```bash
+docker run -it -v `pwd`:`pwd` -w `pwd` ghcr.io/realm/swiftlint:latest
+```
+
+This will execute `swiftlint` in the folder where you are right now (`pwd`), showing an output like:
+```bash
+$ docker run -it -v `pwd`:`pwd` -w `pwd` ghcr.io/realm/swiftlint:latest
+Linting Swift files in current working directory
+Linting 'RuleDocumentation.swift' (1/490)
+...
+Linting 'YamlSwiftLintTests.swift' (490/490)
+Done linting! Found 0 violations, 0 serious in 490 files.
+```
+
+Here you have more documentation about the usage of [Docker Images](https://docs.docker.com/).
 
 ### Command Line
 

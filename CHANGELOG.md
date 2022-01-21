@@ -2,7 +2,11 @@
 
 #### Breaking
 
-* None.
+* The 'weak_delegate' rule has been deprecated due to its high false
+  positive rate. The identifier will become invalid in a future
+  release.  
+  [JP Simard](https://github.com/jpsim)
+  [#2786](https://github.com/realm/SwiftLint/issues/2786)
 
 #### Experimental
 

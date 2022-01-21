@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
@@ -551,6 +551,12 @@ class PreferNimbleRuleTests: XCTestCase {
     }
 }
 
+class PreferSelfInStaticReferencesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfInStaticReferencesRule.description)
+    }
+}
+
 class PreferSelfTypeOverTypeOfSelfRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
@@ -692,12 +698,6 @@ class RequiredDeinitRuleTests: XCTestCase {
 class ReturnArrowWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
-    }
-}
-
-class PreferSelfInStaticReferencesRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 
@@ -896,12 +896,6 @@ class VerticalWhitespaceOpeningBracesRuleTests: XCTestCase {
 class VoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)
-    }
-}
-
-class WeakDelegateRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(WeakDelegateRule.description)
     }
 }
 

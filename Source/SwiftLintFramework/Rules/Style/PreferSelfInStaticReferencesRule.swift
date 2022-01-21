@@ -10,8 +10,9 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         nonTriggeringExamples: [
             Example("""
                 class C {
-                    static let i = 0, j = C.i
+                    static private(set) var i = 0, j = C.i
                     let h = C.i
+                    @GreaterThan(C.j) var k: Int
                 }
             """),
             Example("""
@@ -50,6 +51,15 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     static let j = Self.T.R.i + Self.R.j
                     let h = Self.T.R.i + Self.R.j
                 }
+            """),
+            Example("""
+                class C {
+                    static let s = 2
+                    func f(i: Int = C.s) -> Int {
+                        func g(@GreaterEqualThan(C.s) j: Int = C.s) -> Int { j }
+                        return i + Self.s
+                    }
+                }
             """)
         ],
         triggeringExamples: [
@@ -66,9 +76,13 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 }
             """),
             Example("""
-                struct S {
-                    static func f() { ↓S.g(↓S.f) }
-                    static func g(f: () -> Void) { f() }
+                class C {
+                    struct S {
+                        static let i = 2
+                        let h = ↓S.i
+                    }
+                    static let i = 1
+                    let h = C.i
                 }
             """),
             Example("""
@@ -114,14 +128,15 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
     )
 
     private static let nestedKindsToIgnore: Set = [
-        SwiftDeclarationKind.class.rawValue,
-        SwiftDeclarationKind.enum.rawValue,
-        SwiftDeclarationKind.struct.rawValue
+        SwiftDeclarationKind.class,
+        SwiftDeclarationKind.enum,
+        SwiftDeclarationKind.struct
     ]
 
     private static let nestedKindsToIgnoreIfClass: Set = [
-        SwiftDeclarationKind.varInstance.rawValue,
-        SwiftDeclarationKind.varStatic.rawValue
+        SwiftDeclarationKind.varInstance,
+        SwiftDeclarationKind.varStatic,
+        SwiftDeclarationKind.varParameter
     ]
 
     public var configuration = SeverityConfiguration(.warning)
@@ -159,7 +174,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         }
 
         var rangesToIgnore = dictionary.substructure
-            .filter { shallIgnore(kind: $0.kind, in: kind) }
+            .flatMap { getSubstructuresToIgnore(in: $0, containedIn: kind) }
             .compactMap(\.byteRange)
             .unique
             .sorted { $0.location < $1.location }
@@ -168,6 +183,10 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         var location = bodyRange.location
         return rangesToIgnore
             .flatMap { (range: ByteRange) -> [NSRange] in
+                if range.location < location {
+                    location = max(range.upperBound, location)
+                    return []
+                }
                 let searchRange = ByteRange(location: location, length: range.lowerBound - location)
                 location = range.upperBound
                 return file.match(
@@ -181,14 +200,23 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         kind == .class || kind == .struct || kind == .enum || SwiftDeclarationKind.extensionKinds.contains(kind)
     }
 
-    private func shallIgnore(kind: String?, in containingKind: SwiftDeclarationKind) -> Bool {
-        guard let kind = kind else {
-            return false
+    private func getSubstructuresToIgnore(in structure: SourceKittenDictionary,
+                                          containedIn parentKind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
+        guard let kind = structure.kind, let declarationKind = SwiftDeclarationKind(rawValue: kind) else {
+            return []
         }
-        let shallIgnore = Self.nestedKindsToIgnore.contains(kind)
-        if containingKind == .class || containingKind == .extensionClass {
-            return shallIgnore || Self.nestedKindsToIgnoreIfClass.contains(kind)
+        if Self.nestedKindsToIgnore.contains(declarationKind) {
+            return [structure]
         }
-        return shallIgnore
+        if parentKind != .class && parentKind != .extensionClass {
+            return []
+        }
+        var structures = structure.swiftAttributes
+        if Self.nestedKindsToIgnoreIfClass.contains(declarationKind) {
+            structures.append(structure)
+            return structures
+        }
+        return structures + structure.substructure
+            .flatMap { getSubstructuresToIgnore(in: $0, containedIn: parentKind) }
     }
 }

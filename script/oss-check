@@ -159,6 +159,7 @@ end
 def generate_reports(branch)
   @repos.each do |repo|
     Dir.chdir("#{@working_dir}/#{repo.name}") do
+      perform("git checkout #{repo.commit_hash}")
       iterations = @options[:iterations]
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []

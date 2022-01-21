@@ -160,7 +160,7 @@ swiftlint(
 
 ### Docker
 
-`swiftlint` is also available as a [Docker](https://www.docker.com/) image using `Ubuntu`. 
+`swiftlint` is also available as a [Docker](https://www.docker.com/) image using `Ubuntu`.
 So just the first time you need to pull the docker image using the next command:
 ```bash
 docker pull ghcr.io/realm/swiftlint:latest

@@ -22,7 +22,7 @@
 
 * Fix `convenience_type` false positives when using actors.  
   [JP Simard](https://github.com/jpsim)
-  [#3761](https://github.com/realm/SwiftLint/issues/3761)
+  [#3770](https://github.com/realm/SwiftLint/issues/3770)
 
 * Fix the regex for expiring-todos.  
   [Sergei Shirokov](https://github.com/serges147)

@@ -372,6 +372,10 @@
    <span class="kd">@objc</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">@globalActor</span> <span class="n">actor</span> <span class="kt">MyActor</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="k">let</span> <span class="nv">shared</span> <span class="o">=</span> <span class="kt">MyActor</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">struct</span> <span class="kt">Math</span> <span class="p">{</span>
   <span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">pi</span> <span class="o">=</span> <span class="mf">3.14</span>

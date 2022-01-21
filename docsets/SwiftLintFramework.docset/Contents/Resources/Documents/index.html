@@ -448,6 +448,27 @@ APM.</p>
     <span class="ss">strict: </span><span class="kp">true</span>                            <span class="c1"># Fail on warnings? (Default: false)</span>
 <span class="p">)</span>
 </code></pre>
+<h3 id='docker' class='heading'>Docker</h3>
+
+<p><code>swiftlint</code> is also available as a <a href="https://www.docker.com/">Docker</a> image using <code>Ubuntu</code>. 
+So just the first time you need to pull the docker image using the next command:</p>
+<pre class="highlight shell"><code>docker pull ghcr.io/realm/swiftlint:latest
+</code></pre>
+
+<p>Then following times, you just run <code>swiftlint</code> inside of the docker like:</p>
+<pre class="highlight shell"><code>docker run <span class="nt">-it</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> <span class="nt">-w</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> ghcr.io/realm/swiftlint:latest
+</code></pre>
+
+<p>This will execute <code>swiftlint</code> in the folder where you are right now (<code>pwd</code>), showing an output like:</p>
+<pre class="highlight shell"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> <span class="nt">-w</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> ghcr.io/realm/swiftlint:latest
+Linting Swift files <span class="k">in </span>current working directory
+Linting <span class="s1">'RuleDocumentation.swift'</span> <span class="o">(</span>1/490<span class="o">)</span>
+...
+Linting <span class="s1">'YamlSwiftLintTests.swift'</span> <span class="o">(</span>490/490<span class="o">)</span>
+Done linting! Found 0 violations, 0 serious <span class="k">in </span>490 files.
+</code></pre>
+
+<p>Here you have more documentation about the usage of <a href="https://docs.docker.com/">Docker Images</a>.</p>
 <h3 id='command-line' class='heading'>Command Line</h3>
 <pre class="highlight plaintext"><code>$ swiftlint help
 OVERVIEW: A tool to enforce Swift style and conventions.

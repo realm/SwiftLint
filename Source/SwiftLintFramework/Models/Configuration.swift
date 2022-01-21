@@ -208,7 +208,10 @@ public struct Configuration {
                 rootDirectory: currentWorkingDirectory,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
-            let resultingConfiguration = try fileGraph.resultingConfiguration(enableAllRules: enableAllRules)
+            let resultingConfiguration = try fileGraph.resultingConfiguration(
+                enableAllRules: enableAllRules,
+                cachePath: cachePath
+            )
 
             self.init(copying: resultingConfiguration)
             self.fileGraph = fileGraph

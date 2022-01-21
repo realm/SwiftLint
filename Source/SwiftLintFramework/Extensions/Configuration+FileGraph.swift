@@ -47,7 +47,10 @@ internal extension Configuration {
         }
 
         // MARK: - Methods
-        internal mutating func resultingConfiguration(enableAllRules: Bool) throws -> Configuration {
+        internal mutating func resultingConfiguration(
+            enableAllRules: Bool,
+            cachePath: String?
+        ) throws -> Configuration {
             // Build if needed
             if !isBuilt {
                 try build()
@@ -55,7 +58,8 @@ internal extension Configuration {
 
             return try merged(
                 configurationData: try validate(),
-                enableAllRules: enableAllRules
+                enableAllRules: enableAllRules,
+                cachePath: cachePath
             )
         }
 
@@ -226,7 +230,8 @@ internal extension Configuration {
         // MARK: Merging
         private func merged(
             configurationData: [(configurationDict: [String: Any], rootDirectory: String)],
-            enableAllRules: Bool
+            enableAllRules: Bool,
+            cachePath: String?
         ) throws -> Configuration {
             // Split into first & remainder; use empty dict for first if the array is empty
             let firstConfigurationData = configurationData.first ?? (configurationDict: [:], rootDirectory: "")
@@ -235,7 +240,8 @@ internal extension Configuration {
             // Build first configuration
             var firstConfiguration = try Configuration(
                 dict: firstConfigurationData.configurationDict,
-                enableAllRules: enableAllRules
+                enableAllRules: enableAllRules,
+                cachePath: cachePath
             )
 
             // Set the config's rootDirectory to rootDirectory (+ adjust included / excluded paths that relate to it).
@@ -249,7 +255,11 @@ internal extension Configuration {
 
             // Build succeeding configurations
             return try configurationData.reduce(firstConfiguration) {
-                var childConfiguration = try Configuration(dict: $1.configurationDict, enableAllRules: enableAllRules)
+                var childConfiguration = try Configuration(
+                    dict: $1.configurationDict,
+                    enableAllRules: enableAllRules,
+                    cachePath: cachePath
+                )
                 childConfiguration.fileGraph = FileGraph(rootDirectory: $1.rootDirectory)
 
                 return $0.merged(withChild: childConfiguration, rootDirectory: rootDirectory)

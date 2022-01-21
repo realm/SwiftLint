@@ -29,7 +29,7 @@ class ReporterTests: XCTestCase {
     }
 
     private func generateViolations() -> [StyleViolation] {
-        let location = Location(file: "filename", line: 1, character: 2)
+        let location = Location(file: "filename", line: 1, character: 2, identifier: "abc()")
         return [
             StyleViolation(ruleDescription: LineLengthRule.description,
                            location: location,
@@ -134,6 +134,7 @@ class ReporterTests: XCTestCase {
     func testMarkdownReporter() {
         let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
         let result = MarkdownReporter.generateReport(generateViolations())
+        
         XCTAssertEqual(result, expectedOutput)
     }
 }

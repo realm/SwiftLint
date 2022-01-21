@@ -8,7 +8,7 @@ Reason: Violation Reason.
 File: filename
 Line: 1
 Column: 2
-Identifier: nil
+Identifier: abc()
 		</failure>
 	</testcase>
 	<testcase name='error: line_length in filename:1'>
@@ -19,7 +19,7 @@ Reason: Violation Reason.
 File: filename
 Line: 1
 Column: 2
-Identifier: nil
+Identifier: abc()
 		</failure>
 	</testcase>
 	<testcase name='error: syntactic_sugar in filename:1'>
@@ -30,7 +30,7 @@ Reason: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt
 File: filename
 Line: 1
 Column: 2
-Identifier: nil
+Identifier: abc()
 		</failure>
 	</testcase>
 	<testcase name='error: colon in &lt;nopath&gt;'>

@@ -4,5 +4,5 @@ public struct Version {
     public let value: String
 
     /// The current SwiftLint version.
-    public static let current = Version(value: "0.45.1")
+    public static let current = Version(value: "0.46.0")
 }

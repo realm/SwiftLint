@@ -509,7 +509,11 @@ extension ExpiringTodoRuleTests {
         ("testNonExpiredTodo", testNonExpiredTodo),
         ("testExpiredCustomDelimiters", testExpiredCustomDelimiters),
         ("testExpiredCustomSeparator", testExpiredCustomSeparator),
-        ("testExpiredCustomFormat", testExpiredCustomFormat)
+        ("testExpiredCustomFormat", testExpiredCustomFormat),
+        ("testMultipleExpiredTodos", testMultipleExpiredTodos),
+        ("testTodoAndExpiredTodo", testTodoAndExpiredTodo),
+        ("testMultilineExpiredTodo", testMultilineExpiredTodo),
+        ("testTodoFunctionAndExpiredTodo", testTodoFunctionAndExpiredTodo)
     ]
 }
 
@@ -1784,6 +1788,12 @@ extension VoidReturnRuleTests {
     ]
 }
 
+extension WeakDelegateRuleTests {
+    static var allTests: [(String, (WeakDelegateRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension XCTFailMessageRuleTests {
     static var allTests: [(String, (XCTFailMessageRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -2065,6 +2075,7 @@ XCTMain([
     testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
+    testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),
     testCase(XCTSpecificMatcherRuleTests.allTests),
     testCase(YamlParserTests.allTests),

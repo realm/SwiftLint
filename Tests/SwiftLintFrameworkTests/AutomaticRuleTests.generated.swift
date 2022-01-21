@@ -899,6 +899,12 @@ class VoidReturnRuleTests: XCTestCase {
     }
 }
 
+class WeakDelegateRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(WeakDelegateRule.description)
+    }
+}
+
 class XCTFailMessageRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTFailMessageRule.description)

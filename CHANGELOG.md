@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Enable caching for collecting rules.  
+  [Andrés Cecilia Luque](https://github.com/acecilia)
+  [#3796](https://github.com/realm/SwiftLint/issues/3796)
 
 #### Bug Fixes
 
@@ -67,6 +69,7 @@
 * Fix the cache path not being properly set when using nested
   configurations.  
   [Andrés Cecilia Luque](https://github.com/acecilia)
+  [#3797](https://github.com/realm/SwiftLint/issues/3797)
 
 ## 0.45.1: Clothes Drying Hooks
 

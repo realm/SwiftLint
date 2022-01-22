@@ -168,7 +168,7 @@ struct LintableFilesVisitor {
             return Linter(file: file, configuration: configuration, cache: cache)
         case let .analyze(compilerInvocations):
             let compilerArguments = compilerInvocations.arguments(forFile: file.path)
-            return Linter(file: file, configuration: configuration, compilerArguments: compilerArguments)
+            return Linter(file: file, configuration: configuration, cache: cache, compilerArguments: compilerArguments)
         }
     }
 

@@ -2,6 +2,8 @@ import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length type_body_length
+
 private struct CacheTestHelper {
     fileprivate let configuration: Configuration
 
@@ -301,5 +303,118 @@ class LinterCacheTests: XCTestCase {
 
         XCTAssertNotNil(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration))
         XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
+    }
+
+    func testCacheCollectInfo() {
+        let fileManager = TestFileManager()
+        cache = LinterCache(fileManager: fileManager)
+        let helper = makeCacheTestHelper(dict: [:])
+        let file = "foo.swift"
+        let collectFileInfo = UnusedDeclarationRule.FileInfo(
+            referenced: ["referenced"],
+            declared: [.init(usr: "declared_usr", nameOffset: 1)]
+        )
+
+        helper.touch(file: file)
+        cache.cache(
+            collectFileInfo: collectFileInfo,
+            compilerArguments: ["someargs"],
+            rule: UnusedDeclarationRule.self,
+            forFile: file,
+            configuration: helper.configuration
+        )
+        cache = cache.flushed()
+        let result = cache.collectedFileInfo(
+            for: UnusedDeclarationRule.self,
+            forFile: file,
+            compilerArguments: ["someargs"],
+            configuration: helper.configuration
+        )
+
+        XCTAssertEqual(result, collectFileInfo)
+    }
+
+    func testCacheCollectInfoFromMultipleRules() {
+        let fileManager = TestFileManager()
+        cache = LinterCache(fileManager: fileManager)
+        let helper = makeCacheTestHelper(dict: [:])
+        let file = "foo.swift"
+        let unusedDeclarationFileInfo = UnusedDeclarationRule.FileInfo(
+            referenced: ["referenced"],
+            declared: [.init(usr: "declared_usr", nameOffset: 1)]
+        )
+        let captureVariableFileInfo = Set(["capture_variable"])
+
+        helper.touch(file: file)
+        cache.cache(
+            collectFileInfo: unusedDeclarationFileInfo,
+            compilerArguments: ["someargs1"],
+            rule: UnusedDeclarationRule.self,
+            forFile: file,
+            configuration: helper.configuration
+        )
+        cache.cache(
+            collectFileInfo: captureVariableFileInfo,
+            compilerArguments: ["someargs2"],
+            rule: CaptureVariableRule.self,
+            forFile: file,
+            configuration: helper.configuration
+        )
+        cache = cache.flushed()
+        let result1 = cache.collectedFileInfo(
+            for: UnusedDeclarationRule.self,
+            forFile: file,
+            compilerArguments: ["someargs1"],
+            configuration: helper.configuration
+        )
+        let result2 = cache.collectedFileInfo(
+            for: CaptureVariableRule.self,
+            forFile: file,
+            compilerArguments: ["someargs2"],
+            configuration: helper.configuration
+        )
+
+        XCTAssertEqual(result1, unusedDeclarationFileInfo)
+        XCTAssertEqual(result2, captureVariableFileInfo)
+    }
+
+    func testCacheCollectInfoWithDifferentCompilerArguments() {
+        let fileManager = TestFileManager()
+        cache = LinterCache(fileManager: fileManager)
+        let helper = makeCacheTestHelper(dict: [:])
+        let file = "foo.swift"
+        let unusedDeclarationFileInfo = UnusedDeclarationRule.FileInfo(
+            referenced: ["referenced"],
+            declared: [.init(usr: "declared_usr", nameOffset: 1)]
+        )
+
+        func saveCache(compilerArguments: [String]) {
+            cache.cache(
+                collectFileInfo: unusedDeclarationFileInfo,
+                compilerArguments: compilerArguments,
+                rule: UnusedDeclarationRule.self,
+                forFile: file,
+                configuration: helper.configuration
+            )
+        }
+
+        func readCache(compilerArguments: [String]) -> UnusedDeclarationRule.FileInfo? {
+            cache.collectedFileInfo(
+                for: UnusedDeclarationRule.self,
+                forFile: file,
+                compilerArguments: compilerArguments,
+                configuration: helper.configuration
+            )
+        }
+
+        helper.touch(file: file)
+        saveCache(compilerArguments: ["someargs1"])
+        saveCache(compilerArguments: ["someargs2"])
+        cache = cache.flushed()
+        let result1 = readCache(compilerArguments: ["someargs1"])
+        let result2 = readCache(compilerArguments: ["someargs2"])
+
+        XCTAssertNil(result1)
+        XCTAssertEqual(result2, unusedDeclarationFileInfo)
     }
 }

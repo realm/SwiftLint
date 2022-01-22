@@ -37,6 +37,10 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var benchmark = false
     @Option(help: "The reporter used to log errors and warnings.")
     var reporter: String?
+    @Option(help: "The directory of the cache used when linting.")
+    var cachePath: String?
+    @Flag(help: "Ignore cache when linting.")
+    var noCache = false
 }
 
 // MARK: - Common Argument Help

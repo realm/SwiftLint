@@ -149,7 +149,13 @@ public struct Linter {
     /// - returns: A linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
         DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
-            rules[idx].collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+            rules[idx].collectInfo(
+                for: file,
+                into: storage,
+                cache: cache,
+                configuration: configuration,
+                compilerArguments: compilerArguments
+            )
         }
         return CollectedLinter(from: self)
     }
@@ -169,7 +175,16 @@ public struct CollectedLinter {
     fileprivate init(from linter: Linter) {
         file = linter.file
         rules = linter.rules
-        cache = linter.cache
+        // Disable caching of violations when running analyze rules
+        //
+        // Discussion:
+        // When running analyze rules, violations change even when the associated file does not. For example:
+        // * When executing the UnusedDeclarationRule, initially FileA.swift does not have violations because all
+        //   its declarations are used
+        // * Removing a function in FileB.swift can result in a new violation in FileA.swift if any of its declarations
+        //   becomes unused
+        // As a result, caching violations does not make sense
+        cache = linter.rules.contains(where: { $0 is AnalyzerRule }) ? nil : linter.cache
         configuration = linter.configuration
         compilerArguments = linter.compilerArguments
     }

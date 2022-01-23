@@ -97,16 +97,13 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
     private func offsetOfElements(from elements: [SourceKittenElement], in file: SwiftLintFile,
                                   thatAreNotInRanges ranges: [ByteRange]) -> [ByteCount] {
-        let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
-                                                         .extensionProtocol, .extensionStruct]
-
         return elements.compactMap { element in
             guard let typeOffset = element.offset else {
                 return nil
             }
 
             guard let kind = element.declarationKind,
-                !extensionKinds.contains(kind) else {
+                !SwiftDeclarationKind.extensionKinds.contains(kind) else {
                     return nil
             }
 
@@ -167,9 +164,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 
             let isInExtension: Bool
             if let kind = parent.declarationKind {
-                let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
-                                                                 .extensionClass, .extensionStruct, .extensionProtocol]
-                isInExtension = extensionKinds.contains(kind)
+                isInExtension = SwiftDeclarationKind.extensionKinds.contains(kind)
             } else {
                 isInExtension = false
             }

@@ -60,6 +60,15 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                         return i + Self.s
                     }
                 }
+            """),
+            Example("""
+                struct S {
+                    static let i = 1
+                    static let j = { Self.i }()
+                }
+                extension S {
+                    static let k = { S.j }()
+                }
             """)
         ],
         triggeringExamples: [
@@ -197,7 +206,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
     }
 
     private func isComplexDeclaration(_ kind: SwiftDeclarationKind) -> Bool {
-        kind == .class || kind == .struct || kind == .enum || SwiftDeclarationKind.extensionKinds.contains(kind)
+        kind == .class || kind == .struct || kind == .enum
     }
 
     private func getSubstructuresToIgnore(in structure: SourceKittenDictionary,
@@ -208,7 +217,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         if Self.nestedKindsToIgnore.contains(declarationKind) {
             return [structure]
         }
-        if parentKind != .class && parentKind != .extensionClass {
+        if parentKind != .class {
             return []
         }
         var structures = structure.swiftAttributes

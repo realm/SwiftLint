@@ -162,11 +162,9 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
             let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
                 internalTypeElements(in: element)
 
-            let isInExtension: Bool
+            var isInExtension = false
             if let kind = parent.declarationKind {
                 isInExtension = SwiftDeclarationKind.extensionKinds.contains(kind)
-            } else {
-                isInExtension = false
             }
 
             if element.accessibility == .internal || (element.accessibility == nil && isInExtension) {

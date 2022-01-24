@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix SwiftLint.pkg installer on macOS 11 or later.  
+  [JP Simard](https://github.com/jpsim)
+  [#3815](https://github.com/realm/SwiftLint/issues/3815)
 
 ## 0.46.1: Detergent Container
 

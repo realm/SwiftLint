@@ -1,0 +1,31 @@
+name: SwiftPM
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ['*']
+
+jobs:
+  Xcode:
+    strategy:
+      matrix:
+        xcode_version: ['12.5.1', '13.0', '13.2.1']
+    runs-on: macos-11
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode_version }}.app
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift -version
+      - run: swift test
+
+  Linux:
+    strategy:
+      matrix:
+        tag: ['5.4', '5.5']
+    runs-on: ubuntu-latest
+    container:
+      image: swift:${{ matrix.tag }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift test --parallel

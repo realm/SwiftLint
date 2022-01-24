@@ -2,20 +2,6 @@ trigger:
 - master
 
 jobs:
-- job: linux
-  pool:
-    vmImage: 'Ubuntu 18.04'
-  strategy:
-    maxParallel: 10
-    matrix:
-      swift54:
-        containerImage: swift:5.4
-      # TODO: swift:5.5
-  container: $[ variables['containerImage'] ]
-  steps:
-    - script: swift test --parallel
-      displayName: swift test
-
 - job: Xcode
   pool:
     vmImage: 'macOS-11'
@@ -43,26 +29,6 @@ jobs:
         testRunner: JUnit
         testResultsFiles: build/reports/**
       condition: succeededOrFailed()
-
-- job: SwiftPM
-  pool:
-    vmImage: 'macOS-11'
-  strategy:
-    maxParallel: 10
-    matrix:
-      xcode125:
-        DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
-      xcode13:
-        DEVELOPER_DIR: /Applications/Xcode_13.0.app
-  steps:
-    - script: |
-        sw_vers
-        xcodebuild -version
-      displayName: Version Informations
-    - script: >
-        set -o pipefail &&
-        swift test --parallel
-      displayName: swift test
 
 - job: CocoaPods
   pool:

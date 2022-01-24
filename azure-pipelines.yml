@@ -56,7 +56,7 @@ jobs:
   pool:
     vmImage: 'macOS-11'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.0.app
+    DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

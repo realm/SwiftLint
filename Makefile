@@ -115,7 +115,7 @@ zip_linux: docker_image
 package: installables
 	pkgbuild \
 		--identifier "io.realm.swiftlint" \
-		--install-location "/" \
+		--install-location "/usr/local/bin" \
 		--root "$(TEMPORARY_FOLDER)" \
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"

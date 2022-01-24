@@ -2,9 +2,7 @@
 
 #### Breaking
 
-* Ignore `prefer_self_in_static_references` rule in extensions generally.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#3775](ihttps://github.com/realm/SwiftLint/issues/3775)
+* None.
 
 #### Experimental
 
@@ -19,6 +17,10 @@
 * Fix SwiftLint.pkg installer on macOS 11 or later.  
   [JP Simard](https://github.com/jpsim)
   [#3815](https://github.com/realm/SwiftLint/issues/3815)
+
+* Ignore `prefer_self_in_static_references` rule in extensions generally.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3775](ihttps://github.com/realm/SwiftLint/issues/3775)
 
 ## 0.46.1: Detergent Container
 

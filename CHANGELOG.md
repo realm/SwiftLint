@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* Ignore `prefer_self_in_static_references` rule in extensions generally.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3775](ihttps://github.com/realm/SwiftLint/issues/3775)
 
 #### Experimental
 

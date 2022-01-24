@@ -1,0 +1,17 @@
+name: Analyze
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ['*']
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+    steps:
+      - uses: actions/checkout@v2
+      - run: make analyze

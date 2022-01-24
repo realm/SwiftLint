@@ -32,15 +32,12 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule, Aut
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionClass, .extensionEnum,
-                                                         .extensionProtocol, .extensionStruct]
-
         // find all top-level types marked as internal (either explicitly or implicitly)
         let dictionary = file.structureDictionary
         let internalTypesOffsets = dictionary.substructure.compactMap { element -> ByteCount? in
             // ignore extensions
             guard let kind = element.declarationKind,
-                !extensionKinds.contains(kind) else {
+                !SwiftDeclarationKind.extensionKinds.contains(kind) else {
                     return nil
             }
 

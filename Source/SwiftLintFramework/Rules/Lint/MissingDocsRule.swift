@@ -17,10 +17,8 @@ private extension SwiftLintFile {
                 excludesInheritedTypes: excludesInheritedTypes
             )
         }
-        let extensionKinds: Set<SwiftDeclarationKind> = [.extension, .extensionEnum, .extensionClass,
-                                                         .extensionStruct, .extensionProtocol]
         guard let kind = dictionary.declarationKind,
-            (!extensionKinds.contains(kind) || !excludesExtensions),
+            (!SwiftDeclarationKind.extensionKinds.contains(kind) || !excludesExtensions),
             case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
             !isDeinit,
             let offset = dictionary.offset,

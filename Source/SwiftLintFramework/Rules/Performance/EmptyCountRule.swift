@@ -1,5 +1,7 @@
 import SourceKittenFramework
 
+// Touch
+
 public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
     public var configuration = EmptyCountConfiguration()
 

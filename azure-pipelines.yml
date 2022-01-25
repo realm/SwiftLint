@@ -1,0 +1,131 @@
+trigger:
+- master
+
+jobs:
+- job: linux
+  pool:
+    vmImage: 'Ubuntu 18.04'
+  strategy:
+    maxParallel: 10
+    matrix:
+      swift54:
+        containerImage: swift:5.4
+      # TODO: swift:5.5
+  container: $[ variables['containerImage'] ]
+  steps:
+    - script: swift test --parallel
+      displayName: swift test
+
+- job: Xcode
+  pool:
+    vmImage: 'macOS-11'
+  strategy:
+    maxParallel: 10
+    matrix:
+      xcode125:
+        DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
+      xcode13:
+        DEVELOPER_DIR: /Applications/Xcode_13.0.app
+  steps:
+    - script: |
+        sw_vers
+        xcodebuild -version
+      displayName: Version Informations
+    - script: >
+        set -o pipefail &&
+        xcodebuild -scheme swiftlint test -destination "platform=macOS" |
+        xcpretty -r junit -o build/reports/xcodebuild.xml
+      displayName: xcodebuild test
+    - script: bash <(curl -s https://codecov.io/bash)
+      displayName: Export code coverage
+    - task: PublishTestResults@2
+      inputs:
+        testRunner: JUnit
+        testResultsFiles: build/reports/**
+      condition: succeededOrFailed()
+
+- job: SwiftPM
+  pool:
+    vmImage: 'macOS-11'
+  strategy:
+    maxParallel: 10
+    matrix:
+      xcode125:
+        DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
+      xcode13:
+        DEVELOPER_DIR: /Applications/Xcode_13.0.app
+  steps:
+    - script: |
+        sw_vers
+        xcodebuild -version
+      displayName: Version Informations
+    - script: >
+        set -o pipefail &&
+        swift test --parallel
+      displayName: swift test
+
+- job: CocoaPods
+  pool:
+    vmImage: 'macOS-11'
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_13.0.app
+  steps:
+    - script: bundle install --path vendor/bundle
+      displayName: bundle install
+    - script: bundle exec pod repo update
+      displayName: pod repo update
+    - script: bundle exec pod lib lint --verbose SwiftLintFramework.podspec
+      displayName: pod lib lint
+
+- job: Analyze
+  pool:
+    vmImage: 'macOS-11'
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_13.0.app
+  steps:
+    - script: make analyze
+      displayName: Run SwiftLint Analyze
+
+- job: TSan
+  pool:
+    vmImage: 'macOS-11'
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_13.0.app
+  steps:
+    - script: swift run --sanitize=thread swiftlint lint --lenient
+      displayName: Pre-cache SwiftLint Run
+    - script: swift run --sanitize=thread swiftlint lint --lenient
+      displayName: Post-cache SwiftLint Run
+    - script: make test_tsan
+      displayName: Test With TSan
+
+- job: jazzy
+  pool:
+    vmImage: 'macOS-11'
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+  steps:
+    - script: swift run swiftlint generate-docs
+      displayName: Run swiftlint generate-docs
+    - script: bundle install --path vendor/bundle
+      displayName: bundle install
+    - script: bundle exec jazzy
+      displayName: Run jazzy
+    - script: >
+        if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+          echo "Undocumented declarations:"
+          cat docs/undocumented.json
+          exit 1
+        fi
+      displayName: Validate documentation coverage
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: 'API Docs'
+        targetPath: 'docs'
+    - task: DownloadSecureFile@1
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      inputs:
+        secureFile: doc_deploy_key
+    - script: ./script/push-docs
+      displayName: Publish
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')

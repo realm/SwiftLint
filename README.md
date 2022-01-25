@@ -7,8 +7,14 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=master)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=master)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
+[![Analyze](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml)
+[![CocoaPods](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/pod_lib_lint.yml)
+[![Docker](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/docker.yml)
+[![Docs](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/docs.yml)
+[![SwiftPM](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/swiftpm.yml)
+[![TSan](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/tsan.yml)
+[![Xcode](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/xcodebuild.yml)
+[![codecov](https://codecov.io/gh/realm/SwiftLint/branch/master/graph/badge.svg)](https://codecov.io/gh/realm/SwiftLint)
 
 ![](assets/screenshot.png)
 

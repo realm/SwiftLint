@@ -1,0 +1,24 @@
+name: xcodebuild
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ['*']
+
+jobs:
+  Xcode:
+    strategy:
+      matrix:
+        xcode_version: ['12.5.1', '13.0', '13.2.1']
+    runs-on: macos-11
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode_version }}.app
+    steps:
+      - uses: actions/checkout@v2
+      - run: xcodebuild -scheme swiftlint test -destination "platform=macOS" | xcpretty -r junit -o build/reports/xcodebuild.xml
+        name: xcodebuild test
+      - run: bash <(curl -s https://codecov.io/bash)
+        name: Export code coverage
+        if: matrix.xcode_version == '13.2.1'
+        env: { 'CODECOV_TOKEN': '${{ secrets.CODECOV_TOKEN }}' }

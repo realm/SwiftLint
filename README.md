@@ -8,12 +8,12 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 of your source files for more accurate results.
 
 [![Analyze](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml)
-[![CocoaPods](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/pod_lib_lint.yml)
-[![Docker](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/docker.yml)
-[![Docs](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/docs.yml)
-[![SwiftPM](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/swiftpm.yml)
-[![TSan](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/tsan.yml)
-[![Xcode](https://github.com/realm/SwiftLint/actions/workflows/analyze.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/xcodebuild.yml)
+[![CocoaPods](https://github.com/realm/SwiftLint/actions/workflows/pod_lib_lint.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/pod_lib_lint.yml)
+[![Docker](https://github.com/realm/SwiftLint/actions/workflows/docker.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/docker.yml)
+[![Docs](https://github.com/realm/SwiftLint/actions/workflows/docs.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/docs.yml)
+[![SwiftPM](https://github.com/realm/SwiftLint/actions/workflows/swiftpm.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/swiftpm.yml)
+[![TSan](https://github.com/realm/SwiftLint/actions/workflows/tsan.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/tsan.yml)
+[![Xcode](https://github.com/realm/SwiftLint/actions/workflows/xcodebuild.yml/badge.svg)](https://github.com/realm/SwiftLint/actions/workflows/xcodebuild.yml)
 [![codecov](https://codecov.io/gh/realm/SwiftLint/branch/master/graph/badge.svg)](https://codecov.io/gh/realm/SwiftLint)
 
 ![](assets/screenshot.png)

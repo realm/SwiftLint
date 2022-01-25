@@ -1,0 +1,54 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ['*']
+
+jobs:
+  Docs:
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+    steps:
+      - uses: actions/checkout@v2
+      - name: bundle install
+        run: bundle install
+      - name: Run swiftlint generate-docs
+        run: swift run swiftlint generate-docs
+      - name: Run jazzy
+        run: bundle exec jazzy
+      - name: Validate documentation coverage
+        run: |
+          if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+            echo "Undocumented declarations:"
+            cat docs/undocumented.json
+            exit 1
+          fi
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: API Docs
+          path: docs
+      - name: Push to gh-pages
+        if: github.event_name == 'push'
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}"
+          git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
+          git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" out
+
+          cd out
+          git checkout gh-pages
+          git rm -rf .
+          cd ..
+
+          cp -a docs/. out/.
+          cd out
+
+          git add -A
+          git commit -m "Automated deployment to GitHub Pages: ${GITHUB_SHA}" --allow-empty
+
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

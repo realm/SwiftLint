@@ -34,18 +34,8 @@ jobs:
         sw_vers
         xcodebuild -version
       displayName: Version Informations
-    - script: >
-        set -o pipefail &&
-        xcodebuild -scheme swiftlint test -destination "platform=macOS" |
-        xcpretty -r junit -o build/reports/xcodebuild.xml
+    - script: xcodebuild -scheme swiftlint test -destination "platform=macOS"
       displayName: xcodebuild test
-    - script: bash <(curl -s https://codecov.io/bash)
-      displayName: Export code coverage
-    - task: PublishTestResults@2
-      inputs:
-        testRunner: JUnit
-        testResultsFiles: build/reports/**
-      condition: succeededOrFailed()
 
 - job: SwiftPM
   pool:
@@ -64,10 +54,13 @@ jobs:
         sw_vers
         xcodebuild -version
       displayName: Version Informations
-    - script: >
-        set -o pipefail &&
-        swift test --parallel
+    - script: swift test --parallel --enable-code-coverage
       displayName: swift test
+    - script: |
+        xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+        bash <(curl -s https://codecov.io/bash)
+      displayName: Upload code coverage
+      condition: eq(variables['DEVELOPER_DIR'], '/Applications/Xcode_13.2.1.app')
 
 - job: CocoaPods
   pool:

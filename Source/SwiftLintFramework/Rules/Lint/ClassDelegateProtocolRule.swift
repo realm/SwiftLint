@@ -20,7 +20,9 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
             Example("@objc(MyFooDelegate)\n protocol FooDelegate {}\n"),
             Example("protocol FooDelegate: BarDelegate {}\n"),
             Example("protocol FooDelegate: AnyObject {}\n"),
-            Example("protocol FooDelegate: NSObjectProtocol {}\n")
+            Example("protocol FooDelegate: NSObjectProtocol {}\n"),
+            Example("protocol FooDelegate where Self: AnyObject {}\n"),
+            Example("protocol FooDelegate where Self: NSObjectProtocol {}\n")
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}\n"),
@@ -54,11 +56,6 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
         }
 
         // Check if inherits from a known reference type protocol
-        guard !dictionary.inheritedTypes.contains(where: isReferenceTypeProtocol) else {
-            return []
-        }
-
-        // Check if : class
         guard let offset = dictionary.offset,
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
@@ -80,14 +77,11 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
     }
 
     private func isClassProtocol(file: SwiftLintFile, range: NSRange) -> Bool {
-        return file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isNotEmpty
+        let keywords = referenceTypeProtocols.joined(separator: "|")
+        return file.match(pattern: "\\b(\(keywords))\\b", with: [.typeidentifier], range: range).isNotEmpty
     }
 
     private func isDelegateProtocol(_ name: String) -> Bool {
         return name.hasSuffix("Delegate")
-    }
-
-    private func isReferenceTypeProtocol(_ name: String) -> Bool {
-        return referenceTypeProtocols.contains(name)
     }
 }

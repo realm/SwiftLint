@@ -18,13 +18,14 @@
   [JP Simard](https://github.com/jpsim)
   [#3815](https://github.com/realm/SwiftLint/issues/3815)
 
-* Ignore `prefer_self_in_static_references` rule in extensions generally.  
+* Ignore `prefer_self_in_static_references` rule in extensions
+  generally.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3775](https://github.com/realm/SwiftLint/issues/3775)
 
-* Fix `class_delegate_protocol` false positives when using `where` clause.  
+* Fix `class_delegate_protocol` false positives when using `where`
+  clause.  
   [Steven Magdy](https://github.com/StevenMagdy)
-  [#3829](https://github.com/realm/SwiftLint/pull/3829)
 
 ## 0.46.1: Detergent Container
 

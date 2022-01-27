@@ -337,6 +337,7 @@ extension ClosureEndIndentationRule {
             let firstArgumentOffset = firstArgument.offset,
             case let offset = nameOffset + nameLength,
             case let length = firstArgumentOffset - offset,
+            length > 0,
             case let byteRange = ByteRange(location: offset, length: length),
             let range = file.stringView.byteRangeToNSRange(byteRange),
             let match = regex("\\(\\s*\\n\\s*").firstMatch(in: file.contents, options: [], range: range)?.range,

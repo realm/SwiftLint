@@ -22,12 +22,6 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 }
             """),
             Example("""
-                class S {
-                    static func f() { Self.g(Self.f) }
-                    static func g(f: () -> Void) { f() }
-                }
-            """),
-            Example("""
                 struct T {
                     static let i = 0
                 }
@@ -123,12 +117,12 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 }
             """),
             Example("""
-                struct S {
+                class S {
                     static func f() { ↓S.g(↓S.f) }
                     static func g(f: () -> Void) { f() }
                 }
             """): Example("""
-                struct S {
+                class S {
                     static func f() { Self.g(Self.f) }
                     static func g(f: () -> Void) { f() }
                 }

@@ -18,6 +18,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3830](https://github.com/realm/SwiftLint/issues/3830)
 
+* Ignore meta class types in `prefer_self_in_static_references` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3804](https://github.com/realm/SwiftLint/issues/3804)
+
 ## 0.46.2: Detergent Package
 
 #### Breaking

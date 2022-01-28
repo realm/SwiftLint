@@ -53,6 +53,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                         func g(@GreaterEqualThan(C.s) j: Int = C.s) -> Int { j }
                         return i + Self.s
                     }
+                    func g() -> Any { C.self }
                 }
             """),
             Example("""
@@ -76,6 +77,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 struct S {
                     static let i = 0
                     func f() -> Int { ↓S.i }
+                    func g() -> Any { ↓S.self }
                 }
             """),
             Example("""
@@ -185,6 +187,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
             .sorted { $0.location < $1.location }
         rangesToIgnore.append(ByteRange(location: bodyRange.upperBound, length: 0)) // Marks the end of the search
 
+        let pattern = "(?<!\\.)\\b\(name)\\.\(kind == .class ? "(?!self)" : "")"
         var location = bodyRange.location
         return rangesToIgnore
             .flatMap { (range: ByteRange) -> [NSRange] in
@@ -195,7 +198,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 let searchRange = ByteRange(location: location, length: range.lowerBound - location)
                 location = range.upperBound
                 return file.match(
-                    pattern: "(?<!\\.)\\b\(name)\\.",
+                    pattern: pattern,
                     with: [.identifier],
                     range: file.stringView.byteRangeToNSRange(searchRange))
             }

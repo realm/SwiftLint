@@ -130,7 +130,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         ]
     )
 
-    private static let nestedKindsToIgnore: Set = [
+    private static let complexDeclarations: Set = [
         SwiftDeclarationKind.class,
         SwiftDeclarationKind.enum,
         SwiftDeclarationKind.struct
@@ -172,7 +172,9 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
     public func violationRanges(in file: SwiftLintFile,
                                 kind: SwiftDeclarationKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard isComplexDeclaration(kind), let name = dictionary.name, let bodyRange = dictionary.bodyByteRange else {
+        guard Self.complexDeclarations.contains(kind),
+              let name = dictionary.name,
+              let bodyRange = dictionary.bodyByteRange else {
             return []
         }
 
@@ -199,16 +201,12 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
             }
     }
 
-    private func isComplexDeclaration(_ kind: SwiftDeclarationKind) -> Bool {
-        kind == .class || kind == .struct || kind == .enum
-    }
-
     private func getSubstructuresToIgnore(in structure: SourceKittenDictionary,
                                           containedIn parentKind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
         guard let kind = structure.kind, let declarationKind = SwiftDeclarationKind(rawValue: kind) else {
             return []
         }
-        if Self.nestedKindsToIgnore.contains(declarationKind) {
+        if Self.complexDeclarations.contains(declarationKind) {
             return [structure]
         }
         if parentKind != .class {

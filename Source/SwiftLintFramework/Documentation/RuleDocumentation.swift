@@ -55,7 +55,7 @@ private func h2(_ text: String) -> String {
 private func detailsSummary(_ rule: Rule) -> String {
     return """
         * **Identifier:** \(type(of: rule).description.identifier)
-        * **Enabled by default:** \(rule is OptInRule ? "Disabled" : "Enabled")
+        * **Enabled by default:** \(rule is OptInRule ? "No" : "Yes")
         * **Supports autocorrection:** \(rule is CorrectableRule ? "Yes" : "No")
         * **Kind:** \(type(of: rule).description.kind)
         * **Analyzer rule:** \(rule is AnalyzerRule ? "Yes" : "No")

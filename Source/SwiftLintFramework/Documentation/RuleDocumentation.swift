@@ -32,13 +32,15 @@ struct RuleDocumentation {
     var fileContents: String {
         let description = ruleType.description
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
-        if description.nonTriggeringExamples.isNotEmpty {
+        let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
+        if nonTriggeringExamples.isNotEmpty {
             content += [h2("Non Triggering Examples")]
-            content += description.nonTriggeringExamples.map(formattedCode)
+            content += nonTriggeringExamples.map(formattedCode)
         }
-        if description.triggeringExamples.isNotEmpty {
+        let triggeringExamples = description.triggeringExamples.filter { !$0.excludeFromDocumentation }
+        if triggeringExamples.isNotEmpty {
             content += [h2("Triggering Examples")]
-            content += description.triggeringExamples.map(formattedCode)
+            content += triggeringExamples.map(formattedCode)
         }
         return content.joined(separator: "\n\n")
     }

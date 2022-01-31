@@ -14,12 +14,20 @@ class ExampleTests: XCTestCase {
         XCTAssertEqual(first, second)
     }
 
+    func testEquatableDoesNotLookAtMethodName() {
+        let first = Example("foo", methodName: "f()")
+        let second = Example("foo", methodName: "f()")
+        XCTAssertEqual(first, second)
+    }
+
     func testEquatableLooksAtCode() {
-        let first = Example("a", file: "a", line: 1)
-        let second = Example("a", file: "x", line: 2)
-        let third = Example("c", file: "y", line: 2)
+        let first = Example("a", file: "a", line: 1, methodName: "f()")
+        let second = Example("a", file: "x", line: 2, methodName: "f()")
+        let third = Example("c", file: "y", line: 2, methodName: "f()")
+        let fourth = Example("a", file: "a", line: 2, methodName: "y()")
         XCTAssertEqual(first, second)
         XCTAssertNotEqual(first, third)
+        XCTAssertEqual(first, fourth)
     }
 
     func testTestMultiByteOffsets() {

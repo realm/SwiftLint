@@ -24,6 +24,8 @@ public struct Example {
     public private(set) var file: StaticString
     /// The line in the file where the example was created
     public var line: UInt
+    /// The identifier where the violation occurred
+    public private(set) var methodName: String?
 }
 
 public extension Example {
@@ -39,13 +41,14 @@ public extension Example {
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
     init(_ code: String, configuration: Any? = nil, testMultiByteOffsets: Bool = true, testOnLinux: Bool = true,
-         file: StaticString = #file, line: UInt = #line) {
+         file: StaticString = #file, line: UInt = #line, methodName: String? = nil) {
         self.code = code
         self.configuration = configuration
         self.testMultiByteOffsets = testMultiByteOffsets
         self.testOnLinux = testOnLinux
         self.file = file
         self.line = line
+        self.methodName = methodName
     }
 
     /// Returns the same example, but with the `code` that is passed in
@@ -64,14 +67,14 @@ public extension Example {
 
 extension Example: Hashable {
     public static func == (lhs: Example, rhs: Example) -> Bool {
-        // Ignoring file/line metadata because two Examples could represent
-        // the same idea, but captured at two different points in the code
+        // Ignoring file/line/methodName metadata because two Examples could
+        // represent the same idea, but captured at two different points in the code
         return lhs.code == rhs.code
     }
 
     public func hash(into hasher: inout Hasher) {
-        // Ignoring file/line metadata because two Examples could represent
-        // the same idea, but captured at two different points in the code
+        // Ignoring file/line/methodName metadata because two Examples could
+        // represent the same idea, but captured at two different points in the code
         hasher.combine(code)
     }
 }

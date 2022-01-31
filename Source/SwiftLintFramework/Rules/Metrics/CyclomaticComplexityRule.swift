@@ -19,7 +19,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                 }
                 if false { }
             }
-            """),
+            """, methodName: "f1()"),
             Example("""
             func f(code: Int) -> Int {
                 switch code {
@@ -35,7 +35,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                 default: return 1
                 }
             }
-            """),
+            """, methodName: "f()"),
             Example("""
             func f1() {
                 if true {}; if true {}; if true {}; if true {}; if true {}; if true {}
@@ -43,7 +43,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                     if true {}; if true {}; if true {}; if true {}; if true {}
                 }
             }
-            """)
+            """, methodName: "f1()")
         ],
         triggeringExamples: [
             Example("""
@@ -68,7 +68,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                     }
                 }
             }
-            """)
+            """, methodName: "f1()")
         ]
     )
 
@@ -82,11 +82,12 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where complexity > parameter.value {
             let offset = dictionary.offset ?? 0
+            let identifier = dictionary.name
             let reason = "Function should have complexity \(configuration.length.warning) or less: " +
                          "currently complexity equals \(complexity)"
             return [StyleViolation(ruleDescription: Self.description,
                                    severity: parameter.severity,
-                                   location: Location(file: file, byteOffset: offset),
+                                   location: Location(file: file, byteOffset: offset, identifier: identifier),
                                    reason: reason)]
         }
 

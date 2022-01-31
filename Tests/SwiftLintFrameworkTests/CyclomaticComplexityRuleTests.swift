@@ -10,7 +10,7 @@ class CyclomaticComplexityRuleTests: XCTestCase {
         }
         example += "    }\n"
         example += "}\n"
-        return Example(example)
+        return Example(example, methodName: "switcheroo()")
     }()
 
     private lazy var complexIfExample: Example = {
@@ -27,7 +27,7 @@ class CyclomaticComplexityRuleTests: XCTestCase {
             example += indent + "}\n"
         }
         example += "}\n"
-        return Example(example)
+        return Example(example, methodName: "nestThoseIfs()")
     }()
 
     func testCyclomaticComplexity() {

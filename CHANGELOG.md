@@ -18,6 +18,9 @@
   [JP Simard](https://github.com/jpsim)
   [#3830](https://github.com/realm/SwiftLint/issues/3830)
 
+* Fix incorrect default rule documentations.  
+  [Hiroki Nagasawa](https://github.com/pixyzehn)
+
 ## 0.46.2: Detergent Package
 
 #### Breaking

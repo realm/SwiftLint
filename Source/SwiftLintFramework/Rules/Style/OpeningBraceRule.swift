@@ -15,7 +15,7 @@ private extension SwiftLintFile {
         return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
                      excludingPattern: excludingPattern).compactMap {
-            if isAnonimousClosure(range: $0) {
+            if isAnonymousClosure(range: $0) {
                 return nil
             }
             let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
@@ -23,7 +23,7 @@ private extension SwiftLintFile {
         }
     }
 
-    func isAnonimousClosure(range: NSRange) -> Bool {
+    func isAnonymousClosure(range: NSRange) -> Bool {
         let contentsBridge = contents.bridge()
         guard range.location != NSNotFound else {
             return false

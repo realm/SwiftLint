@@ -25,7 +25,9 @@
 
 #### Bug Fixes
 
-* None.
+* Extend `class_delegate_protocol` to correctly identify cases with the protocol
+  body opening brace on a new line.  
+  [Tobisaninfo](https://github.com/Tobisaninfo)
 
 ## 0.46.5: Laundry Studio
 

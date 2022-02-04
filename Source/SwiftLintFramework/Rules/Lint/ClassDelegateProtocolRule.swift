@@ -74,7 +74,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
     }
 
     private func isClassProtocol(file: SwiftLintFile, range: NSRange) -> Bool {
-        let characterSet = Set(" {:&,")
+        let characterSet = Set(" {:&,\n")
         return file.stringView.substring(with: range)
             .split(whereSeparator: characterSet.contains)
             // Check if it inherits from a delegate or if its reference bound

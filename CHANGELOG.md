@@ -17,6 +17,8 @@
 * Fix crash in the `closure_end_indentation` rule when linting with Swift 5.6.  
   [JP Simard](https://github.com/jpsim)
   [#3830](https://github.com/realm/SwiftLint/issues/3830)
+* `class_delegate_protocol`: Add line break separator.  
+  [Tobisaninfo](https://github.com/Tobisaninfo)  
 
 ## 0.46.2: Detergent Package
 

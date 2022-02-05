@@ -18,6 +18,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3804](https://github.com/realm/SwiftLint/issues/3804)
 
+* Ignore MARK in multiline comment, fixing cases that would previously crash or
+  produce invalid results when correcting.  
+  [goranche](https://github.com/goranche)
+  [#1749](https://github.com/realm/SwiftLint/issues/1749)
+  [#3841](https://github.com/realm/SwiftLint/issues/3841)
+
 ## 0.46.3: Detergent Spill
 
 #### Breaking

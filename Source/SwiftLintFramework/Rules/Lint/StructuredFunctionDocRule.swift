@@ -47,26 +47,30 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
         let docLines = Array(file.stringView.lines[docLineRange.start - 1 ..< docLineRange.end - 1])
 
         guard let document = parseMarkdown(lines: docLines) else {
-            return violation(in: file, offset: docOffset)
+            return violation(in: file, offset: docOffset, reason: "documentation isn't a proper markdown")
         }
 
-        guard isValidSummary(document: document) else {
-            return violation(in: file, offset: docOffset)
+        if let invalidReason = validateSummary(document: document) {
+            return violation(in: file, offset: docOffset, reason: invalidReason)
         }
 
         guard let markdownParameters = parseMarkdownParameters(topMarkupElements: Array(document.children)) else {
-            return violation(in: file, offset: docOffset)
+            return violation(in: file, offset: docOffset, reason: "Parameters section or separate parameter fields " +
+                "must be in the first markdown list")
         }
 
         guard parameterNames.count == markdownParameters.count else {
-            return violation(in: file, offset: docOffset)
+            return violation(in: file, offset: docOffset,
+                             reason: "Documented parameters must match function definition.")
         }
 
         for index in 0..<markdownParameters.count {
             guard
                 markdownParameters[index].starts(with: parameterNames[index] + ":")
             else {
-                return violation(in: file, offset: docOffset)
+                let unexpectedParameter = markdownParameters[index].prefix(while: { $0 != ":" })
+                return violation(in: file, offset: docOffset, reason: "Expected documentation for " +
+                    "'\(parameterNames[index])', but found '\(unexpectedParameter)'")
             }
         }
 
@@ -89,17 +93,17 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
     }
 
     // The first element must be paragraph. Its content is the summary.
-    private func isValidSummary(document: Document) -> Bool {
+    private func validateSummary(document: Document) -> String? {
         guard let summaryParagraph = document.children.first?.cmarkNode.wrap() as? Paragraph else {
-            return false
+            return "Documentation must begin with summary paragraph"
         }
 
         if configuration.maxSummaryLineCount > 0 &&
             summaryParagraph.textLines.count > configuration.maxSummaryLineCount {
-            return false
+            return "Summary must not exceed \(configuration.maxSummaryLineCount) lines"
         }
 
-        return true
+        return nil
     }
 
     private func parseMarkdownParameters(topMarkupElements: [Node]) -> [String]? {
@@ -149,11 +153,12 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
             .map { String($0.dropFirst(Self.parameterKeyword.count)).removingCommonLeadingWhitespaceFromLines() }
     }
 
-    private func violation(in file: SwiftLintFile, offset: ByteCount) -> [StyleViolation] {
+    private func violation(in file: SwiftLintFile, offset: ByteCount, reason: String? = nil) -> [StyleViolation] {
         return [
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, byteOffset: offset))
+                           location: Location(file: file, byteOffset: offset),
+                           reason: reason)
         ]
     }
 }

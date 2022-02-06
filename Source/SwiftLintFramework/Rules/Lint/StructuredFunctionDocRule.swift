@@ -59,22 +59,8 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
                 "must be in the first markdown list")
         }
 
-        guard parameterNames.count == markdownParameters.count else {
-            return violation(in: file, offset: docOffset,
-                             reason: "Documented parameters must match function definition.")
-        }
-
-        for index in 0..<markdownParameters.count {
-            guard
-                markdownParameters[index].starts(with: parameterNames[index] + ":")
-            else {
-                let unexpectedParameter = markdownParameters[index].prefix(while: { $0 != ":" })
-                return violation(in: file, offset: docOffset, reason: "Expected documentation for " +
-                    "'\(parameterNames[index])', but found '\(unexpectedParameter)'")
-            }
-        }
-
-        return []
+        return validateParameters(parameterNames: parameterNames, markdownParameters: markdownParameters,
+                                  violation: { reason in violation(in: file, offset: docOffset, reason: reason) })
     }
 
     private func parseMarkdown(lines: [Line]) -> Document? {
@@ -153,6 +139,32 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
             .map { $0.dropFirst(Self.parameterKeyword.count) }
             .filter { $0.first?.isWhitespace ?? false }
             .map { String($0).removingCommonLeadingWhitespaceFromLines() }
+    }
+
+    private func validateParameters(parameterNames: [String], markdownParameters: [String],
+                                    violation: (String?) -> [StyleViolation]) -> [StyleViolation] {
+        let minCount = min(parameterNames.count, markdownParameters.count)
+
+        for index in 0..<minCount {
+            guard
+                markdownParameters[index].starts(with: parameterNames[index] + ":")
+            else {
+                let unexpectedParameter = markdownParameters[index].prefix(while: { $0 != ":" })
+                return violation("Expected documentation for parameter '\(parameterNames[index])'. " +
+                    "Found '\(unexpectedParameter)' instead.")
+            }
+        }
+
+        if parameterNames.count > minCount {
+            return violation("Missing documentation for parameter '\(parameterNames[minCount])'")
+        }
+
+        if markdownParameters.count > minCount {
+          let undefinedParameter = markdownParameters[minCount].prefix(while: { $0 != ":" })
+            return violation("Documented parameter '\(undefinedParameter)' is not defined")
+        }
+
+        return []
     }
 
     private func violation(in file: SwiftLintFile, offset: ByteCount, reason: String? = nil) -> [StyleViolation] {

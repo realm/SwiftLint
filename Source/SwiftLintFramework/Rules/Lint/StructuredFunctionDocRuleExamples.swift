@@ -12,13 +12,31 @@ internal struct StructuredFunctionDocRuleExamples {
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
+        /// Foo summary.
+        /// - Parameter a: a param.
+        /// - parameter b: b param.
+        /// - Parameter c: c param.
+        func foo(a: Int, b: Bool, c: String) { }
+        """),
+        Example("""
         /// Foo summary followed by details.
         ///
         /// Detailed discussion about foo awesome properties.
-        /// - Parameters:
+        /// - PARAMETERS:
         ///   - a: a param.
         ///   - b: b param.
         ///   - c: c param.
+        func foo(a: Int, b: Bool, c: String) { }
+        """),
+        Example("""
+        /// Foo summary followed by details.
+        ///
+        /// Detailed discussion about foo awesome properties.
+        /// - Parameter a: a param.
+        /// - parameter b: b param.
+        /// - Parameter c: c param.
+        /// - throws: something.
+        /// - returns: nothing
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
@@ -50,11 +68,18 @@ internal struct StructuredFunctionDocRuleExamples {
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
-        ↓/// Parameters are out of order.
+        ↓/// Parameters section is out of order.
         /// - Parameters:
         ///   - a: a param.
         ///   - c: c param.
         ///   - b: b param.
+        func foo(a: Int, b: Bool, c: String) { }
+        """),
+        Example("""
+        ↓/// Separate parameter fields are out of order.
+        /// - Parameter a: a param.
+        /// - Parameter c: c param.
+        /// - Parameter b: b param.
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
@@ -65,12 +90,26 @@ internal struct StructuredFunctionDocRuleExamples {
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
+        ↓/// Missing parameter.
+        /// - Parameter a: a param.
+        /// - Parameter b: b param.
+        func foo(a: Int, b: Bool, c: String) { }
+        """),
+        Example("""
         ↓/// Extra parameter.
         /// - Parameters:
         ///   - a: a param.
         ///   - b: b param.
         ///   - c: c param.
         ///   - d: d param.
+        func foo(a: Int, b: Bool, c: String) { }
+        """),
+        Example("""
+        ↓/// Extra parameter.
+        /// - Parameter a: a param.
+        /// - Parameter b: b param.
+        /// - Parameter c: c param.
+        /// - Parameter d: d param.
         func foo(a: Int, b: Bool, c: String) { }
         """)
     ]

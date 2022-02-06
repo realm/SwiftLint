@@ -6,6 +6,8 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
 
     public init() {}
 
+    private static let parameterKeyword = "parameter"
+
     public static let description = RuleDescription(
         identifier: "structured_function_doc",
         name: "Structured Function Doc",
@@ -52,23 +54,17 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
             return violation(in: file, offset: docOffset)
         }
 
-        guard let parametersList = findParametersList(topMarkupElements: Array(document.children)) else {
+        guard let markdownParameters = parseMarkdownParameters(topMarkupElements: Array(document.children)) else {
             return violation(in: file, offset: docOffset)
         }
 
-        let parameterFirstLines = parametersList.children
-            .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
-            .compactMap { $0.textLines.first }
-        let expectedPrefixes = parameterNames.map { $0 + ":" }
-
-        guard expectedPrefixes.count == parameterFirstLines.count else {
+        guard parameterNames.count == markdownParameters.count else {
             return violation(in: file, offset: docOffset)
         }
 
-        for index in 0..<parameterFirstLines.count {
+        for index in 0..<markdownParameters.count {
             guard
-                let docText = parameterFirstLines[index].literal,
-                docText.starts(with: expectedPrefixes[index])
+                markdownParameters[index].starts(with: parameterNames[index] + ":")
             else {
                 return violation(in: file, offset: docOffset)
             }
@@ -106,9 +102,7 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
         return true
     }
 
-    // Parameters list is an unordered list with "Parameters:" paragraph and an ordered list
-    // of the actual parameters.
-    private func findParametersList(topMarkupElements: [Node]) -> List? {
+    private func parseMarkdownParameters(topMarkupElements: [Node]) -> [String]? {
         guard
             let firstList = topMarkupElements.compactMap({ $0.cmarkNode.wrap() as? List }).first,
             case .bullet = firstList.listType
@@ -116,18 +110,43 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
             return nil
         }
 
+        if let parameters = parseSectionParameters(list: firstList) {
+          return parameters
+        }
+
+        return parseSeparateParameters(list: firstList)
+    }
+
+    // Section parameters is a list with "Parameters:" paragraph followed by list of actual parameters.
+    // Example:
+    // - Parameters:
+    //   - list:
+    private func parseSectionParameters(list: List) -> [String]? {
         guard
-            let listItem = firstList.children.first,
-            let headerParagraph = listItem.children.first as? Paragraph,
-            let headerText = headerParagraph.textLines.first,
-            headerText.literal == "Parameters:",
-            listItem.children.count > 1,
-            let parametersList = listItem.children[1].cmarkNode.wrap() as? List
+            let firstItem = list.children.first,
+            let headerParagraph = firstItem.children.first as? Paragraph,
+            let headerText = headerParagraph.textLines.first?.literal,
+            headerText.caseInsensitiveCompare("Parameters:") == .orderedSame,
+            firstItem.children.count > 1,
+            let parametersList = firstItem.children[1].cmarkNode.wrap() as? List
         else {
             return nil
         }
 
-        return parametersList
+        return parametersList.children
+            .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
+            .compactMap { $0.textLines.first?.literal }
+    }
+
+    // Parse separate parameters fields. Example:
+    // - Parameter a:
+    // - Parameter b:
+    private func parseSeparateParameters(list: List) -> [String]? {
+        return list.children
+            .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
+            .compactMap { $0.textLines.first?.literal }
+            .filter { $0.startsCaseInsensitive(with: Self.parameterKeyword) }
+            .map { String($0.dropFirst(Self.parameterKeyword.count)).removingCommonLeadingWhitespaceFromLines() }
     }
 
     private func violation(in file: SwiftLintFile, offset: ByteCount) -> [StyleViolation] {
@@ -139,8 +158,14 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
     }
 }
 
- private extension Paragraph {
+private extension Paragraph {
     var textLines: [MarkdownText] {
         children.compactMap { $0 as? MarkdownText }
     }
- }
+}
+
+private extension String {
+    func startsCaseInsensitive(with possiblePrefix: String) -> Bool {
+        prefix(possiblePrefix.count).caseInsensitiveCompare(possiblePrefix) == .orderedSame
+    }
+}

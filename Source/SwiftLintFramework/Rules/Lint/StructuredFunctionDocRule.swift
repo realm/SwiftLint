@@ -150,7 +150,9 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
             .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
             .compactMap { $0.textLines.first?.literal }
             .filter { $0.startsCaseInsensitive(with: Self.parameterKeyword) }
-            .map { String($0.dropFirst(Self.parameterKeyword.count)).removingCommonLeadingWhitespaceFromLines() }
+            .map { $0.dropFirst(Self.parameterKeyword.count) }
+            .filter { $0.first?.isWhitespace ?? false }
+            .map { String($0).removingCommonLeadingWhitespaceFromLines() }
     }
 
     private func violation(in file: SwiftLintFile, offset: ByteCount, reason: String? = nil) -> [StyleViolation] {

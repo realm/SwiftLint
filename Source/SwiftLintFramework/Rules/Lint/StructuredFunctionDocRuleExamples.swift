@@ -111,6 +111,13 @@ internal struct StructuredFunctionDocRuleExamples {
         /// - Parameter c: c param.
         /// - Parameter d: d param.
         func foo(a: Int, b: Bool, c: String) { }
+        """),
+        Example("""
+        ↓/// No space after 'parameter'.
+        /// - Parametera: a param.
+        /// - parameterb: b param.
+        /// - Parameterc: c param.
+        func foo(a: Int, b: Bool, c: String) { }
         """)
     ]
 }

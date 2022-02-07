@@ -12,7 +12,7 @@ internal struct StructuredFunctionDocRuleExamples {
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
-        /// Foo summary.
+        /// Foo takes `a`, ```b``` and `c`. Details follow.
         /// - Parameter a: a param.
         /// - parameter b: b param.
         /// - Parameter c: c param.

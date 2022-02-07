@@ -85,7 +85,7 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
         }
 
         if configuration.maxSummaryLineCount > 0 &&
-            summaryParagraph.textLines.count > configuration.maxSummaryLineCount {
+            summaryParagraph.lineCount > configuration.maxSummaryLineCount {
             return "Summary must not exceed \(configuration.maxSummaryLineCount) lines"
         }
 
@@ -115,7 +115,7 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
         guard
             let firstItem = list.children.first,
             let headerParagraph = firstItem.children.first as? Paragraph,
-            let headerText = headerParagraph.textLines.first?.literal,
+            let headerText = headerParagraph.firstText,
             headerText.caseInsensitiveCompare("Parameters:") == .orderedSame,
             firstItem.children.count > 1,
             let parametersList = firstItem.children[1].cmarkNode.wrap() as? List
@@ -125,7 +125,7 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
 
         return parametersList.children
             .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
-            .compactMap { $0.textLines.first?.literal }
+            .compactMap { $0.firstText }
     }
 
     // Parse separate parameters fields. Example:
@@ -134,7 +134,7 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
     private func parseSeparateParameters(list: List) -> [String]? {
         return list.children
             .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
-            .compactMap { $0.textLines.first?.literal }
+            .compactMap { $0.firstText }
             .filter { $0.startsCaseInsensitive(with: Self.parameterKeyword) }
             .map { $0.dropFirst(Self.parameterKeyword.count) }
             .filter { $0.first?.isWhitespace ?? false }
@@ -178,8 +178,12 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
 }
 
 private extension Paragraph {
-    var textLines: [MarkdownText] {
-        children.compactMap { $0 as? MarkdownText }
+    var firstText: String? {
+        (children.first as? MarkdownText)?.literal
+    }
+
+    var lineCount: Int {
+        children.filter { $0 is SoftBreak }.count + 1
     }
 }
 

@@ -9,6 +9,8 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
     public let line: Int?
     /// The character offset in the file for this location. 1-indexed.
     public let character: Int?
+    /// The identifier in the file for this location
+    public let identifier: String?
 
     /// A lossless printable description of this location.
     public var description: String {
@@ -30,10 +32,12 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
     /// - parameter file:      The file path on disk for this location.
     /// - parameter line:      The line offset in the file for this location. 1-indexed.
     /// - parameter character: The character offset in the file for this location. 1-indexed.
-    public init(file: String?, line: Int? = nil, character: Int? = nil) {
+    /// - parameter identifier: The identifier in the file for this location.
+    public init(file: String?, line: Int? = nil, character: Int? = nil, identifier: String? = nil) {
         self.file = file
         self.line = line
         self.character = character
+        self.identifier = identifier
     }
 
     /// Creates a `Location` based on a `SwiftLintFile` and a byte-offset into the file.
@@ -41,8 +45,11 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
     ///
     /// - parameter file:   The file for this location.
     /// - parameter offset: The offset in bytes into the file for this location.
-    public init(file: SwiftLintFile, byteOffset offset: ByteCount) {
+    /// - parameter identifier: The identifier in the file for this location.
+    public init(file: SwiftLintFile, byteOffset offset: ByteCount, identifier: String? = nil) {
         self.file = file.path
+        self.identifier = identifier
+
         if let lineAndCharacter = file.stringView.lineAndCharacter(forByteOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
@@ -57,8 +64,11 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
     ///
     /// - parameter file:   The file for this location.
     /// - parameter offset: The offset in UTF8 fragments into the file for this location.
-    public init(file: SwiftLintFile, characterOffset offset: Int) {
+    /// - parameter identifier: The identifier in the file for this location.
+    public init(file: SwiftLintFile, characterOffset offset: Int, identifier: String? = nil) {
         self.file = file.path
+        self.identifier = identifier
+
         if let lineAndCharacter = file.stringView.lineAndCharacter(forCharacterOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character

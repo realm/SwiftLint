@@ -456,7 +456,11 @@ extension XCTestCase {
                 continue
             }
             let file = SwiftLintFile(contents: cleanTrigger)
-            let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
+            let expectedLocations = markerOffsets.map { Location(
+                file: file,
+                characterOffset: $0,
+                identifier: trigger.methodName)
+            }
 
             // Assert violations on unexpected location
             let violationsAtUnexpectedLocation = triggerViolations

@@ -15,6 +15,7 @@ public struct GitLabJUnitReporter: Reporter {
                 let fileName = (violation.location.relativeFile ?? "<nopath>").escapedForXML()
                 let line = violation.location.line.map(String.init)
                 let column = violation.location.character.map(String.init)
+                let identifier = violation.location.identifier
 
                 let severity = violation.severity.rawValue
                 let rule = violation.ruleIdentifier
@@ -30,6 +31,7 @@ public struct GitLabJUnitReporter: Reporter {
                 File: \(fileName)
                 Line: \(line ?? "nil")
                 Column: \(column ?? "nil")
+                Identifier: \(identifier ?? "nil")
                 """
                 return [
                     "\n\t<testcase name='\(message)\'>\n",

@@ -111,6 +111,7 @@ public let primaryRuleList = RuleList(rules: [
     MultilineParametersBracketsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
+    MutableHashRule.self,
     NSLocalizedStringKeyRule.self,
     NSLocalizedStringRequireBundleRule.self,
     NSObjectPreferIsEqualRule.self,

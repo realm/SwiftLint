@@ -1072,6 +1072,12 @@ extension MultipleClosuresWithTrailingClosureRuleTests {
     ]
 }
 
+extension MutableHashRuleTests {
+    static var allTests: [(String, (MutableHashRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension NSLocalizedStringKeyRuleTests {
     static var allTests: [(String, (NSLocalizedStringKeyRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1973,6 +1979,7 @@ XCTMain([
     testCase(MultilineParametersBracketsRuleTests.allTests),
     testCase(MultilineParametersRuleTests.allTests),
     testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
+    testCase(MutableHashRuleTests.allTests),
     testCase(NSLocalizedStringKeyRuleTests.allTests),
     testCase(NSLocalizedStringRequireBundleRuleTests.allTests),
     testCase(NSObjectPreferIsEqualRuleTests.allTests),

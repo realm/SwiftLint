@@ -412,6 +412,10 @@
   public Combine subjects.  
   [Otavio Cordeiro](https://github.com/otaviocc)
 
+* Added 'directory_name_no_space' opt-in rule.
+  [timcmiller](https://github.com/timcmiller)
+  [#3012](https://github.com/realm/SwiftLint/issues/3012)
+
 #### Bug Fixes
 
 * Fix `custom_rules` merging when the parent configuration is based on

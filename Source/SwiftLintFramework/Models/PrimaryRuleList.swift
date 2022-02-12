@@ -31,6 +31,7 @@ public let primaryRuleList = RuleList(rules: [
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DeploymentTargetRule.self,
+    DirectoryNameNoSpaceRule.self,
     DiscardedNotificationCenterObserverRule.self,
     DiscouragedAssertRule.self,
     DiscouragedDirectInitRule.self,

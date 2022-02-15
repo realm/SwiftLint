@@ -17,6 +17,10 @@
 * Fix crash in the `closure_end_indentation` rule when linting with Swift 5.6.  
   [JP Simard](https://github.com/jpsim)
   [#3830](https://github.com/realm/SwiftLint/issues/3830)
+  
+* Fix default rules section in documentation.
+  [Natan Rolnik](https://github.com/natanrolnik)
+  [#3857](https://github.com/realm/SwiftLint/pull/3857)
 
 ## 0.46.2: Detergent Package
 

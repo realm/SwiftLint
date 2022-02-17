@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Change Fingerprint generation in `CodeClimateReporter.swift` to use relativeFile,
+  to better support CI/CD on multiple machines.  
+  [HA Pors](https://github.com/hpors)
 
 #### Bug Fixes
 

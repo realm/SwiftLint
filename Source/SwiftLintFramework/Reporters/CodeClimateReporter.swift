@@ -41,8 +41,14 @@ public struct CodeClimateReporter: Reporter {
     }
 
     internal static func generateFingerprint(_ violation: StyleViolation) -> String {
+        let fingerprintLocation = Location(
+            file: violation.location.relativeFile,
+            line: violation.location.line,
+            character: violation.location.character
+        )
+
         return [
-            "\(violation.location.relativeFile)",
+            "\(fingerprintLocation)",
             "\(violation.ruleIdentifier)"
         ].joined().md5()
     }

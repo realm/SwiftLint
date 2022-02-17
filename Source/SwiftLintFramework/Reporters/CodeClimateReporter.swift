@@ -42,7 +42,7 @@ public struct CodeClimateReporter: Reporter {
 
     internal static func generateFingerprint(_ violation: StyleViolation) -> String {
         return [
-            "\(violation.location)",
+            "\(violation.location.relativeFile)",
             "\(violation.ruleIdentifier)"
         ].joined().md5()
     }

@@ -19,7 +19,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.31.1"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
-    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.3.2"))] : []),
+    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),
     targets: [
         .target(
             name: "swiftlint",

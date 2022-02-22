@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 /// In UIKit, a `UIImageView` was by default not an accessibility element, and would only be visible to VoiceOver

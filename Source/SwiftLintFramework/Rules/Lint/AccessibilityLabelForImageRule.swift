@@ -93,15 +93,13 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     '--> Image(decorative: "myImage").resizable
         //         '--> Image
-        for dict in substructure {
-            if dict.isImage {
-                return true
-            }
+        if substructure.contains(where: { $0.isImage }) {
+            return true
         }
 
         return false
     }
-    
+
     /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor
     var isDecorativeImage: Bool {
         guard isImage else {

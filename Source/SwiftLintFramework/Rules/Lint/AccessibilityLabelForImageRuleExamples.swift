@@ -1,5 +1,4 @@
-import Foundation
-
+// swiftlint:disable type_body_length
 internal struct AccessibilityLabelForImageRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -145,7 +144,7 @@ internal struct AccessibilityLabelForImageRuleExamples {
         }
         """)
     ]
-    
+
     static let triggeringExamples = [
         Example("""
         struct MyView: View {

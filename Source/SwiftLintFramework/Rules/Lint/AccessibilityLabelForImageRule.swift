@@ -47,7 +47,7 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
 
             // if it's image, and does not hide from accessibility or provide a label, it's a violation
             if dictionary.isImage {
-                if !(dictionary.isDecorativeImage ||
+                if !(dictionary.isDecorativeOrSystemImage ||
                   dictionary.hasAccessibilityHiddenModifier(in: file) ||
                   dictionary.hasAccessibilityLabelModifier) {
                     violations.append(
@@ -99,14 +99,16 @@ private extension SourceKittenDictionary {
         return false
     }
 
-    /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor
-    var isDecorativeImage: Bool {
+    /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor (hides
+    /// from a11y) or the `Image(systemName:)` constructor (provides label).
+    var isDecorativeOrSystemImage: Bool {
         guard isImage else {
             return false
         }
 
         // check for Image(decorative:) constructor
-        if expressionKind == .call && enclosedArguments.contains(where: { $0.name == "decorative" }) {
+        if expressionKind == .call &&
+            enclosedArguments.contains(where: { ["decorative", "systemName"].contains($0.name) }) {
             return true
         }
 
@@ -115,7 +117,7 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     '--> Image(decorative: "myImage").resizable
         //         '--> Image
-        if substructure.contains(where: { $0.isDecorativeImage }) {
+        if substructure.contains(where: { $0.isDecorativeOrSystemImage }) {
             return true
         }
 

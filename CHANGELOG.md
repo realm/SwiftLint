@@ -10,17 +10,18 @@
 
 #### Enhancements
 
-* Change Fingerprint generation in `CodeClimateReporter.swift` to use relativeFile,
-  to better support CI/CD on multiple machines.  
+* Change fingerprint generation in `CodeClimateReporter.swift` to use
+  the relative file path to better support CI/CD on multiple machines.  
   [HA Pors](https://github.com/hpors)
 
 #### Bug Fixes
 
-* Fix crash in the `closure_end_indentation` rule when linting with Swift 5.6.  
+* Fix crash in the `closure_end_indentation` rule when linting with
+  Swift 5.6.  
   [JP Simard](https://github.com/jpsim)
   [#3830](https://github.com/realm/SwiftLint/issues/3830)
   
-* Fix default rules section in documentation.
+* Fix default rules section in documentation.  
   [Natan Rolnik](https://github.com/natanrolnik)
   [#3857](https://github.com/realm/SwiftLint/pull/3857)
 

@@ -16,7 +16,8 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
     public static let description = RuleDescription(
         identifier: "accessibility_label_for_image",
         name: "Accessibility Label for Image",
-        description: "All Images that provide context should have an accessibility label. Purely decorative images can be hidden from accessibility.",
+        description: "All Images that provide context should have an accessibility label. " +
+                    "Purely decorative images can be hidden from accessibility.",
         kind: .lint,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: AccessibilityLabelForImageRuleExamples.nonTriggeringExamples,

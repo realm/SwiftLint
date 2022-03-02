@@ -22,12 +22,6 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 }
             """),
             Example("""
-                class S {
-                    static func f() { Self.g(Self.f) }
-                    static func g(f: () -> Void) { f() }
-                }
-            """),
-            Example("""
                 struct T {
                     static let i = 0
                 }
@@ -59,6 +53,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                         func g(@GreaterEqualThan(C.s) j: Int = C.s) -> Int { j }
                         return i + Self.s
                     }
+                    func g() -> Any { C.self }
                 }
             """),
             Example("""
@@ -82,6 +77,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 struct S {
                     static let i = 0
                     func f() -> Int { ↓S.i }
+                    func g() -> Any { ↓S.self }
                 }
             """),
             Example("""
@@ -123,12 +119,12 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 }
             """),
             Example("""
-                struct S {
+                class S {
                     static func f() { ↓S.g(↓S.f) }
                     static func g(f: () -> Void) { f() }
                 }
             """): Example("""
-                struct S {
+                class S {
                     static func f() { Self.g(Self.f) }
                     static func g(f: () -> Void) { f() }
                 }
@@ -136,7 +132,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         ]
     )
 
-    private static let nestedKindsToIgnore: Set = [
+    private static let complexDeclarations: Set = [
         SwiftDeclarationKind.class,
         SwiftDeclarationKind.enum,
         SwiftDeclarationKind.struct
@@ -178,7 +174,9 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
     public func violationRanges(in file: SwiftLintFile,
                                 kind: SwiftDeclarationKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard isComplexDeclaration(kind), let name = dictionary.name, let bodyRange = dictionary.bodyByteRange else {
+        guard Self.complexDeclarations.contains(kind),
+              let name = dictionary.name,
+              let bodyRange = dictionary.bodyByteRange else {
             return []
         }
 
@@ -189,6 +187,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
             .sorted { $0.location < $1.location }
         rangesToIgnore.append(ByteRange(location: bodyRange.upperBound, length: 0)) // Marks the end of the search
 
+        let pattern = "(?<!\\.)\\b\(name)\\.\(kind == .class ? "(?!self)" : "")"
         var location = bodyRange.location
         return rangesToIgnore
             .flatMap { (range: ByteRange) -> [NSRange] in
@@ -199,14 +198,10 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 let searchRange = ByteRange(location: location, length: range.lowerBound - location)
                 location = range.upperBound
                 return file.match(
-                    pattern: "(?<!\\.)\\b\(name)\\.",
+                    pattern: pattern,
                     with: [.identifier],
                     range: file.stringView.byteRangeToNSRange(searchRange))
             }
-    }
-
-    private func isComplexDeclaration(_ kind: SwiftDeclarationKind) -> Bool {
-        kind == .class || kind == .struct || kind == .enum
     }
 
     private func getSubstructuresToIgnore(in structure: SourceKittenDictionary,
@@ -214,7 +209,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         guard let kind = structure.kind, let declarationKind = SwiftDeclarationKind(rawValue: kind) else {
             return []
         }
-        if Self.nestedKindsToIgnore.contains(declarationKind) {
+        if Self.complexDeclarations.contains(declarationKind) {
             return [structure]
         }
         if parentKind != .class {

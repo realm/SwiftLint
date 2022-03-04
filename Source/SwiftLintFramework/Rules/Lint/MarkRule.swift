@@ -17,7 +17,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             Example("// MARK: -\n"),
             Example("// BOOKMARK"),
             Example("//BOOKMARK"),
-            Example("// BOOKMARKS")
+            Example("// BOOKMARKS"),
+            issue1749Example
         ],
         triggeringExamples: [
             Example("↓//MARK: bad"),
@@ -64,7 +65,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             Example("↓// MARKK -"): Example("// MARK: -"),
             Example("↓/// MARK:"): Example("// MARK:"),
             Example("↓/// MARK comment"): Example("// MARK: comment"),
-            issue1029Example: issue1029Correction
+            issue1029Example: issue1029Correction,
+            issue1749Example: issue1749Correction
         ]
     )
 
@@ -183,11 +185,19 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
-            guard let syntaxKind = syntaxTokens.first?.kind else {
+        return file.rangesAndTokens(matching: pattern).filter { matchRange, syntaxTokens in
+            guard
+                let syntaxToken = syntaxTokens.first,
+                let syntaxKind = syntaxToken.kind,
+                SyntaxKind.commentKinds.contains(syntaxKind),
+                case let tokenLocation = Location(file: file, byteOffset: syntaxToken.offset),
+                case let matchLocation = Location(file: file, characterOffset: matchRange.location),
+                // Skip MARKs that are part of a multiline comment
+                tokenLocation.line == matchLocation.line
+            else {
                 return false
             }
-            return syntaxTokens.isNotEmpty && SyntaxKind.commentKinds.contains(syntaxKind)
+            return true
         }.compactMap { range, syntaxTokens in
             let byteRange = ByteRange(location: syntaxTokens[0].offset, length: 0)
             let identifierRange = file.stringView.byteRangeToNSRange(byteRange)
@@ -211,6 +221,23 @@ private let issue1029Correction = Example("""
     // MARK: - Bad mark
     extension MarkTest {}
     """)
+
+// https://github.com/realm/SwiftLint/issues/1749
+// https://github.com/realm/SwiftLint/issues/3841
+private let issue1749Example = Example(
+    """
+    /*
+    func test1() {
+    }
+    //MARK: mark
+    func test2() {
+    }
+    */
+    """
+)
+
+// This example should not trigger changes
+private let issue1749Correction = issue1749Example
 
 // These need to be at the bottom of the file to work around https://bugs.swift.org/browse/SR-10486
 

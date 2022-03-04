@@ -108,7 +108,8 @@ extension SwiftLintFile {
 
     internal var sourcekitdFailed: Bool {
         get {
-            return responseCache.get(self) == nil
+            return false
+            // return responseCache.get(self) == nil
         }
         set {
             if newValue {

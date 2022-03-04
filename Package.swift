@@ -7,6 +7,12 @@ private let addCryptoSwift = false
 private let addCryptoSwift = true
 #endif
 
+#if os(macOS)
+private let staticSwiftSyntax = true
+#else
+private let staticSwiftSyntax = false
+#endif
+
 let package = Package(
     name: "SwiftLint",
     platforms: [.macOS(.v10_12)],
@@ -35,9 +41,11 @@ let package = Package(
             name: "SwiftLintFramework",
             dependencies: [
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
-                "SwiftSyntax", "lib_InternalSwiftSyntaxParser",
+                "SwiftSyntax",
                 "Yams",
-            ] + (addCryptoSwift ? ["CryptoSwift"] : [])
+            ]
+            + (addCryptoSwift ? ["CryptoSwift"] : [])
+            + (staticSwiftSyntax ? ["lib_InternalSwiftSyntaxParser"] : [])
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",
@@ -48,10 +56,9 @@ let package = Package(
                 "Resources",
             ]
         ),
-        .binaryTarget(
+    ] + (staticSwiftSyntax ? [.binaryTarget(
             name: "lib_InternalSwiftSyntaxParser",
             url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.5.2/lib_InternalSwiftSyntaxParser.xcframework.zip",
             checksum: "96bbc9ab4679953eac9ee46778b498cb559b8a7d9ecc658e54d6679acfbb34b8"
-        ),
-    ]
+        )] : [])
 )

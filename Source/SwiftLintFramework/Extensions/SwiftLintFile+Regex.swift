@@ -21,9 +21,7 @@ extension SwiftLintFile {
                 return command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
             }
         } else {
-            // TODO: Move to SwiftSyntax
-            // commands = self.commands()
-            commands = []
+            commands = self.commands()
         }
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {

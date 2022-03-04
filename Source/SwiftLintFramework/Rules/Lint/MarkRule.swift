@@ -186,16 +186,15 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     private func violationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
         return file.rangesAndTokens(matching: pattern).filter { matchRange, syntaxTokens in
-            guard let syntaxToken = syntaxTokens.first, let syntaxKind = syntaxToken.kind else {
-                return false
-            }
-            guard SyntaxKind.commentKinds.contains(syntaxKind) else {
-                return false
-            }
-            let tokenLocation = Location(file: file, byteOffset: ByteCount(syntaxToken.offset.value))
-            let matchLocation = Location(file: file, characterOffset: matchRange.location)
-            // Skip those MARKs that are part of a multiline comment
-            guard let tokenLine = tokenLocation.line, let matchLine = matchLocation.line, matchLine == tokenLine else {
+            guard
+                let syntaxToken = syntaxTokens.first,
+                let syntaxKind = syntaxToken.kind,
+                SyntaxKind.commentKinds.contains(syntaxKind),
+                case let tokenLocation = Location(file: file, byteOffset: syntaxToken.offset),
+                case let matchLocation = Location(file: file, characterOffset: matchRange.location),
+                // Skip MARKs that are part of a multiline comment
+                tokenLocation.line == matchLocation.line
+            else {
                 return false
             }
             return true
@@ -225,7 +224,8 @@ private let issue1029Correction = Example("""
 
 // https://github.com/realm/SwiftLint/issues/1749
 // https://github.com/realm/SwiftLint/issues/3841
-private let issue1749Example = Example("""
+private let issue1749Example = Example(
+    """
     /*
     func test1() {
     }
@@ -233,7 +233,8 @@ private let issue1749Example = Example("""
     func test2() {
     }
     */
-    """)
+    """
+)
 
 // This example should not trigger changes
 private let issue1749Correction = issue1749Example

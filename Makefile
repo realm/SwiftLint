@@ -6,7 +6,7 @@ XCODEFLAGS=-scheme 'swiftlint' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
-SWIFT_BUILD_FLAGS=--configuration release
+SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
 UNAME=$(shell uname)
 
 SWIFTLINT_EXECUTABLE_X86=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch x86_64 --show-bin-path)/swiftlint

@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 internal func regex(_ pattern: String,
                     options: NSRegularExpression.Options? = nil) -> NSRegularExpression {
@@ -55,25 +56,26 @@ extension SwiftLintFile {
     }
 
     internal func commands(in range: NSRange? = nil) -> [Command] {
-        if sourcekitdFailed {
+        guard let tree = syntaxTree else {
             return []
         }
-        let contents = stringView
-        let range = range ?? stringView.range
-        let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, range: range).filter { match in
-            return Set(match.1).isSubset(of: [.comment, .commentURL])
-        }.compactMap { match -> Command? in
-            let range = match.0
-            let actionString = contents.substring(with: range)
-            guard let lineAndCharacter = stringView.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
-                else { return nil }
-            return Command(actionString: actionString,
-                           line: lineAndCharacter.line,
-                           character: lineAndCharacter.character)
-        }.flatMap { command in
-            return command.expand()
+        let locationConverter = SourceLocationConverter(file: path ?? "<nopath>", tree: tree)
+        let visitor = CommandVisitor(locationConverter: locationConverter)
+        visitor.walk(tree)
+
+        guard let range = range else {
+            return visitor.commands
+                .flatMap { $0.expand() }
         }
+
+        let rangeStart = Location(file: self, characterOffset: range.location)
+        let rangeEnd = Location(file: self, characterOffset: NSMaxRange(range))
+        return visitor.commands
+            .filter { command in
+                let commandLocation = Location(file: path, line: command.line, character: command.character)
+                return rangeStart <= commandLocation && commandLocation <= rangeEnd
+            }
+            .flatMap { $0.expand() }
     }
 
     fileprivate func endOf(next command: Command?) -> Location {

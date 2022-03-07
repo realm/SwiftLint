@@ -45,7 +45,7 @@ private final class ForceCastRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: AsExprSyntax) {
         if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            positions.append(node.position)
+            positions.append(node.asTok.positionAfterSkippingLeadingTrivia)
         }
     }
 }

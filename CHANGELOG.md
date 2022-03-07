@@ -29,6 +29,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3846](https://github.com/realm/SwiftLint/issues/3846)
 
+* Fix false negatives in `closure_parameter_position` rule with Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3845](https://github.com/realm/SwiftLint/issues/3845)
+
 ## 0.46.4: Detergent Tray
 
 #### Breaking

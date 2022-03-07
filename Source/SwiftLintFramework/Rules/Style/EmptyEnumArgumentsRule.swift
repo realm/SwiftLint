@@ -46,7 +46,14 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
             Example("if case .bar = foo {\n}"),
             Example("guard case .bar = foo else {\n}"),
             Example("if foo == .bar() {}"),
-            Example("guard foo == .bar() else { return }")
+            Example("guard foo == .bar() else { return }"),
+            Example("""
+            if case .appStore = self.appInstaller, !UIDevice.isSimulator() {
+                viewController.present(self, animated: false)
+            } else {
+                UIApplication.shared.open(self.appInstaller.url)
+            }
+            """)
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -57,7 +64,14 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
             Example("if case .bar↓(_) = foo {\n}"),
             Example("guard case .bar↓(_) = foo else {\n}"),
             Example("if case .bar↓() = foo {\n}"),
-            Example("guard case .bar↓() = foo else {\n}")
+            Example("guard case .bar↓() = foo else {\n}"),
+            Example("""
+            if case .appStore↓(_) = self.appInstaller, !UIDevice.isSimulator() {
+                viewController.present(self, animated: false)
+            } else {
+                UIApplication.shared.open(self.appInstaller.url)
+            }
+            """)
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
@@ -92,18 +106,27 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         let needsCase = kind == .if || kind == .guard
         let contents = file.stringView
 
-        let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
-            guard dict.expressionKind == .call,
-                let byteRange = dict.byteRange,
-                let range = contents.byteRangeToNSRange(byteRange),
-                let name = dict.name,
-                !name.starts(with: ".")
-            else {
-                return nil
-            }
+        let callsRanges = dictionary.substructure
+            .flatMap { dict -> [SourceKittenDictionary] in
+                // In Swift >= 5.6, calls are embedded in a `source.lang.swift.expr.argument` entry
+                guard SwiftVersion.current >= .fiveDotSix, dict.expressionKind == .argument else {
+                    return [dict]
+                }
 
-            return range
-        }
+                return dict.substructure
+            }
+            .compactMap { dict -> NSRange? in
+                guard dict.expressionKind == .call,
+                      let byteRange = dict.byteRange,
+                      let range = contents.byteRangeToNSRange(byteRange),
+                      let name = dict.name,
+                      !name.starts(with: ".")
+                else {
+                    return nil
+                }
+
+                return range
+            }
 
         return dictionary.elements.flatMap { subDictionary -> [NSRange] in
             guard (subDictionary.kind == "source.lang.swift.structure.elem.pattern" ||

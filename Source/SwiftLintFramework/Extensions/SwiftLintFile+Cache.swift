@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 private typealias FileCacheKey = UUID
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
@@ -22,6 +23,10 @@ private var structureCache = Cache({ file -> Structure? in
 
 private var structureDictionaryCache = Cache({ file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
+})
+
+private var syntaxTreeCache = Cache({ file in
+    return try? SyntaxParser.parse(source: file.contents)
 })
 
 private var syntaxMapCache = Cache({ file in
@@ -176,6 +181,8 @@ extension SwiftLintFile {
         }
         return syntaxMap
     }
+
+    internal var syntaxTree: SourceFileSyntax? { syntaxTreeCache.get(self) }
 
     internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {

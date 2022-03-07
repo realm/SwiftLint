@@ -24,6 +24,10 @@
   [#1749](https://github.com/realm/SwiftLint/issues/1749)
   [#3841](https://github.com/realm/SwiftLint/issues/3841)
 
+* Fix false positive in `EmptyEnumArgumentsRule` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3850](https://github.com/realm/SwiftLint/issues/3850)
+
 ## 0.46.3: Detergent Spill
 
 #### Breaking

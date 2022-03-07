@@ -6,21 +6,13 @@ XCODEFLAGS=-scheme 'swiftlint' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
-SWIFT_BUILD_FLAGS=--configuration release
+SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
 UNAME=$(shell uname)
-ifeq ($(UNAME), Darwin)
-USE_SWIFT_STATIC_STDLIB:=$(shell test -d $$(dirname $$(xcrun --find swift))/../lib/swift_static/macosx && echo yes)
-ifeq ($(USE_SWIFT_STATIC_STDLIB), yes)
-SWIFT_BUILD_FLAGS+= -Xswiftc -static-stdlib
-endif
-# SwiftPM 5.3 uses the `XCBuild.framework` to generate a universal binary when it receives multiple `--arch` options.
-SWIFT_BUILD_ARCHS:= arm64 x86_64
-# If SwiftPM supports `--arch $(1)` and `swiftc` succeeds in building with `-target $(1)-apple-macos10.9`, then produce `--arch $(1)`.
-ARCH_OPTION=$(shell swift build --show-bin-path --arch $(1) &>/dev/null && echo ''|swiftc -target $(1)-apple-macos10.9 - -o /dev/null &>/dev/null && echo "--arch" $(1))
-SWIFT_BUILD_FLAGS+=$(foreach arch,$(SWIFT_BUILD_ARCHS),$(call ARCH_OPTION,$(arch)))
-endif # Darwin
 
-SWIFTLINT_EXECUTABLE=$(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/swiftlint
+SWIFTLINT_EXECUTABLE_X86=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch x86_64 --show-bin-path)/swiftlint
+SWIFTLINT_EXECUTABLE_ARM64=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch arm64 --show-bin-path)/swiftlint
+SWIFTLINT_EXECUTABLE_PARENT=.build/universal
+SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
 
 TSAN_LIB=$(subst bin/swift,lib/swift/clang/lib/darwin/libclang_rt.tsan_osx_dynamic.dylib,$(shell xcrun --find swift))
 TSAN_SWIFT_BUILD_FLAGS=-Xswiftc -sanitize=thread
@@ -74,8 +66,19 @@ clean:
 clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-build:
-	swift build $(SWIFT_BUILD_FLAGS)
+build_x86_64:
+	swift build $(SWIFT_BUILD_FLAGS) --arch x86_64
+
+build_arm64:
+	swift build $(SWIFT_BUILD_FLAGS) --arch arm64
+
+build: clean build_x86_64 build_arm64
+	# Need to build for each arch independently to work around https://bugs.swift.org/browse/SR-15802
+	mkdir -p $(SWIFTLINT_EXECUTABLE_PARENT)
+	lipo -create -output \
+		"$(SWIFTLINT_EXECUTABLE)" \
+		"$(SWIFTLINT_EXECUTABLE_X86)" \
+		"$(SWIFTLINT_EXECUTABLE_ARM64)"
 
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)

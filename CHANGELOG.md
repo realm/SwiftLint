@@ -2,7 +2,14 @@
 
 #### Breaking
 
-* None.
+* SwiftLint now requires Swift 5.5 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
+* The `SwiftLintFramework` podspec has been removed. To our knowledge, this was
+  completely unused by other projects and was not worth the complexity needed
+  to justify its continued maintenance, especially in light of the integration
+  of SwiftSyntax. The `SwiftLint` podspec is still supported.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Experimental
 

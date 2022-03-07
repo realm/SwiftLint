@@ -105,28 +105,7 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
 
         let needsCase = kind == .if || kind == .guard
         let contents = file.stringView
-
-        let callsRanges = dictionary.substructure
-            .flatMap { dict -> [SourceKittenDictionary] in
-                // In Swift >= 5.6, calls are embedded in a `source.lang.swift.expr.argument` entry
-                guard SwiftVersion.current >= .fiveDotSix, dict.expressionKind == .argument else {
-                    return [dict]
-                }
-
-                return dict.substructure
-            }
-            .compactMap { dict -> NSRange? in
-                guard dict.expressionKind == .call,
-                      let byteRange = dict.byteRange,
-                      let range = contents.byteRangeToNSRange(byteRange),
-                      let name = dict.name,
-                      !name.starts(with: ".")
-                else {
-                    return nil
-                }
-
-                return range
-            }
+        let callsRanges = dictionary.methodCallRanges(in: file)
 
         return dictionary.elements.flatMap { subDictionary -> [NSRange] in
             guard (subDictionary.kind == "source.lang.swift.structure.elem.pattern" ||
@@ -168,5 +147,31 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
                 return parenthesesRange
             }
         }
+    }
+}
+
+private extension SourceKittenDictionary {
+    func methodCallRanges(in file: SwiftLintFile) -> [NSRange] {
+        return substructure
+            .flatMap { dict -> [SourceKittenDictionary] in
+                // In Swift >= 5.6, calls are embedded in a `source.lang.swift.expr.argument` entry
+                guard SwiftVersion.current >= .fiveDotSix, dict.expressionKind == .argument else {
+                    return [dict]
+                }
+
+                return dict.substructure
+            }
+            .compactMap { dict -> NSRange? in
+                guard dict.expressionKind == .call,
+                      let byteRange = dict.byteRange,
+                      let range = file.stringView.byteRangeToNSRange(byteRange),
+                      let name = dict.name,
+                      !name.starts(with: ".")
+                else {
+                    return nil
+                }
+
+                return range
+            }
     }
 }

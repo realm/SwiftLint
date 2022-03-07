@@ -60,7 +60,7 @@ running it.
 ### Installing from source:
 
 You can also build and install from source by cloning this project and running
-`make install` (Xcode 12.5 or later).
+`make install` (Xcode 13 or later).
 
 ## Usage
 

@@ -39,11 +39,7 @@ VERSION_STRING="$(shell ./script/get-version)"
 
 all: build
 
-sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift Tests/LinuxMain.swift
-
-Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
-	sourcery --sources Tests --exclude-sources Tests/SwiftLintFrameworkTests/Resources --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated
-	mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
+sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
 
 Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/PrimaryRuleList.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
@@ -123,13 +119,13 @@ package: installables
 release: package portable_zip zip_linux
 
 docker_image:
-	docker build --force-rm --tag swiftlint .
+	docker build --platform linux/amd64 --force-rm --tag swiftlint .
 
 docker_test:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.4 swift test --parallel
+	docker run --platform linux/amd64 -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.5 swift test --parallel
 
 docker_htop:
-	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
+	docker run --platform linux/amd64 -it --rm --pid=container:swiftlint terencewestphal/htop || reset
 
 # https://irace.me/swift-profiling
 display_compilation_time:
@@ -137,7 +133,6 @@ display_compilation_time:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push SwiftLintFramework.podspec
 	pod trunk push SwiftLint.podspec
 
 docs:

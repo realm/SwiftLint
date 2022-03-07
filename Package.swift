@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.5
 import PackageDescription
 
 #if canImport(CommonCrypto)
@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),
     targets: [
-        .target(
+        .executableTarget(
             name: "swiftlint",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),

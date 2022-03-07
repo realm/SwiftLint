@@ -80,7 +80,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
 
         // avoid the more expensive regex match if there's no trailing closure in the substructure
         if SwiftVersion.current >= .fourDotTwo,
-            dictionary.substructure.last?.expressionKind != .closure {
+            !dictionary.hasTrailingClosure {
             return []
         }
 
@@ -97,5 +97,19 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
         }
 
         return [match]
+    }
+}
+
+private extension SourceKittenDictionary {
+    var hasTrailingClosure: Bool {
+        guard let lastStructure = substructure.last else {
+            return false
+        }
+
+        if SwiftVersion.current >= .fiveDotSix, lastStructure.expressionKind == .argument {
+            return lastStructure.substructure.last?.expressionKind == .closure
+        } else {
+            return lastStructure.expressionKind == .closure
+        }
     }
 }

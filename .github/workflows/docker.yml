@@ -3,7 +3,7 @@ name: docker
 on:
   push:
     branches:
-      - ks/add-i-to-_internalswiftsyntaxparser-on-linux
+      - master
     tags:
       - '*'
 

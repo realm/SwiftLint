@@ -1,8 +1,7 @@
 // swiftlint:disable:next type_body_length
 struct ImplicitGetterRuleExamples {
-    static var nonTriggeringExamples: [Example] {
-        let commonExamples = [
-            Example("""
+    static let nonTriggeringExamples: [Example] = [
+        Example("""
             class Foo {
                 var foo: Int {
                     get { return 3 }
@@ -10,21 +9,21 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 var foo: Int {
                     return 20
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 static var foo: Int {
                     return 20
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 static var foo: Int {
                     get { return 3 }
@@ -32,35 +31,35 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 var foo: Int
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 var foo: Int {
                     return getValueFromDisk()
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 var foo: String {
                     return "get"
                 }
             }
             """),
-            Example("""
+        Example("""
             protocol Foo {
                 var foo: Int { get }
             """),
-            Example("""
+        Example("""
             protocol Foo {
                 var foo: Int { get set }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 var foo: Int {
                     struct Bar {
@@ -74,12 +73,12 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             var _objCTaggedPointerBits: UInt {
                 @inline(__always) get { return 0 }
             }
             """),
-            Example("""
+        Example("""
             var next: Int? {
                 mutating get {
                     defer { self.count += 1 }
@@ -87,7 +86,7 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             extension Foo {
                 var bar: Bool {
                     get { _bar }
@@ -95,7 +94,7 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             extension Foo {
                 var bar: Bool {
                     get { _bar }
@@ -103,7 +102,7 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             extension Float {
                 var clamped: Float {
                     set {
@@ -115,7 +114,7 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             extension Reactive where Base: UITapGestureRecognizer {
                 var tapped: CocoaAction<Base>? {
                     get {
@@ -127,7 +126,7 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             extension Test {
                 var foo: Bool {
                     get {
@@ -139,14 +138,14 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 subscript(i: Int) -> Int {
                     return 20
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 subscript(i: Int) -> Int {
                     get { return 3 }
@@ -154,24 +153,17 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             protocol Foo {
                 subscript(i: Int) -> Int { get }
             }
             """),
-            Example("""
+        Example("""
             protocol Foo {
                 subscript(i: Int) -> Int { get set }
             }
-            """)
-        ]
-
-        guard SwiftVersion.current >= .fiveDotFive else {
-            return commonExamples
-        }
-
-        return commonExamples + [
-            Example("""
+            """),
+        Example("""
             class DatabaseEntity {
                 var isSynced: Bool {
                     get async {
@@ -180,7 +172,7 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             struct Test {
                 subscript(value: Int) -> Int {
                     get throws {
@@ -193,12 +185,10 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """)
-        ]
-    }
+    ]
 
-    static var triggeringExamples: [Example] {
-        let commonExamples = [
-            Example("""
+    static let triggeringExamples: [Example] = [
+        Example("""
             class Foo {
                 var foo: Int {
                     ↓get {
@@ -207,14 +197,14 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 var foo: Int {
                     ↓get{ return 20 }
                 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 static var foo: Int {
                     ↓get {
@@ -223,12 +213,12 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             var foo: Int {
                 ↓get { return 20 }
             }
             """),
-            Example("""
+        Example("""
             class Foo {
                 @objc func bar() {}
                 var foo: Int {
@@ -238,21 +228,14 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """),
-            Example("""
+        Example("""
             extension Foo {
                 var bar: Bool {
                     ↓get { _bar }
                 }
             }
-            """)
-        ]
-
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
-
-        return commonExamples + [
-            Example("""
+            """),
+        Example("""
             class Foo {
                 subscript(i: Int) -> Int {
                     ↓get {
@@ -261,6 +244,5 @@ struct ImplicitGetterRuleExamples {
                 }
             }
             """)
-        ]
-    }
+    ]
 }

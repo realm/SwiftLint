@@ -391,10 +391,6 @@ class ModifierOrderTests: XCTestCase {
     }
 
     func testViolationMessage() {
-        guard SwiftVersion.current >= ModifierOrderRule.description.minSwiftVersion else {
-            return
-        }
-
         let ruleID = ModifierOrderRule.description.identifier
         guard let config = makeConfig(["preferred_modifier_order": ["acl", "final"]], ruleID) else {
             XCTFail("Failed to create configuration")

@@ -180,10 +180,6 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     // swiftlint:disable function_body_length
     func testSwitchCaseDeclarations() {
-        guard SwiftVersion.current >= .fourDotOne else {
-            return
-        }
-
         let nonTriggeringExamples = [
             Example("""
             enum Foo {

@@ -167,7 +167,7 @@ public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, Conf
     public func violationRanges(in file: SwiftLintFile,
                                 kind: StatementKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard SwiftVersion.current >= Self.description.minSwiftVersion, kind == .case else {
+        guard kind == .case else {
             return []
         }
 

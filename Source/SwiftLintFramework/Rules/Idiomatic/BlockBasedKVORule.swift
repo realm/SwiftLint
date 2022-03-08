@@ -11,6 +11,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
         name: "Block Based KVO",
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.",
         kind: .idiomatic,
+        minSwiftVersion: .four,
         nonTriggeringExamples: [
             Example("""
             let observer = foo.observe(\\.value, options: [.new]) { (foo, change) in
@@ -38,7 +39,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftVersion.current >= .four, kind == .functionMethodInstance,
+        guard kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.override),
             dictionary.name == "observeValue(forKeyPath:of:change:context:)",
             hasExpectedParamTypes(types: dictionary.enclosedVarParameters.parameterTypes),

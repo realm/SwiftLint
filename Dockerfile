@@ -13,7 +13,7 @@ COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 
-RUN swift build -c release
+RUN swift build -c release -Xlinker -dead_strip
 RUN install -v .build/release/swiftlint /usr/bin
 
 RUN swiftlint version

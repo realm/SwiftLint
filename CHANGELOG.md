@@ -13,10 +13,10 @@
 
 #### Experimental
 
-* The `force_cast` rule has been updated to use SwiftSyntax to find violations
-  instead of SourceKit. Please report any problems you encounter by opening a
-  GitHub issue. If this is successful, more rules may use Swift Syntax in the
-  future.  
+* The `force_cast` rule and the comment command parsing mechanism have been
+  updated to use SwiftSyntax instead of SourceKit. Please report any problems
+  you encounter by opening a GitHub issue. If this is successful, more rules may
+  use Swift Syntax in the future.  
   [JP Simard](https://github.com/jpsim)
 
 #### Enhancements

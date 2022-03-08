@@ -26,7 +26,7 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = try? SyntaxParser.parse(source: file.contents) else {
+        guard let tree = file.syntaxTree else {
             warnSyntaxParserFailureOnce()
             return []
         }

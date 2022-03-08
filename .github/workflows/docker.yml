@@ -3,7 +3,7 @@ name: docker
 on:
   push:
     branches:
-      - master
+      - jp-fix-docker
     tags:
       - '*'
 

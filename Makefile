@@ -156,7 +156,7 @@ endif
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
-	git push origin master
+	git push origin HEAD
 	git push origin $(NEW_VERSION)
 
 %:

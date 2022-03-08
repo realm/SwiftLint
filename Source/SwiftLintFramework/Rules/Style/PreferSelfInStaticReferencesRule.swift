@@ -10,16 +10,8 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         nonTriggeringExamples: [
             Example("""
                 class C {
-                    static private(set) var i = 0, j = C.i
-                    let h = C.i
-                    @GreaterThan(C.j) var k: Int
-                }
-            """),
-            Example("""
-                class `Self` {
-                    static let i = 0
-                    func f() -> Int { Self.i }
-                }
+                    static let primes = [2, 3, 5, 7]
+                    func isPrime(i: Int) -> Bool { Self.primes.contains(i) }
             """),
             Example("""
                 struct T {
@@ -29,9 +21,24 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     static let i = 0
                 }
                 extension T {
-                    static let j = S.i + Self.i
+                    static let j = S.i + T.i
+                    static let k = { T.j }()
                 }
             """),
+            Example("""
+                class `Self` {
+                    static let i = 0
+                    func f() -> Int { Self.i }
+                }
+            """),
+            Example("""
+                class C {
+                    static private(set) var i = 0, j = C.i
+                    static let k = { C.i }()
+                    let h = C.i
+                    @GreaterThan(C.j) var k: Int
+                }
+            """, excludeFromDocumentation: true),
             Example("""
                 struct S {
                     struct T {
@@ -45,7 +52,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     static let j = Self.T.R.i + Self.R.j
                     let h = Self.T.R.i + Self.R.j
                 }
-            """),
+            """, excludeFromDocumentation: true),
             Example("""
                 class C {
                     static let s = 2
@@ -55,31 +62,9 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     }
                     func g() -> Any { C.self }
                 }
-            """),
-            Example("""
-                struct S {
-                    static let i = 1
-                    static let j = { Self.i }()
-                }
-                extension S {
-                    static let k = { S.j }()
-                }
-            """)
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
-            Example("""
-                struct C {
-                    static let i = 0
-                    static let j = ↓C.i
-                }
-            """),
-            Example("""
-                struct S {
-                    static let i = 0
-                    func f() -> Int { ↓S.i }
-                    func g() -> Any { ↓S.self }
-                }
-            """),
             Example("""
                 class C {
                     struct S {
@@ -88,8 +73,16 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     }
                     static let i = 1
                     let h = C.i
+                    func f() -> Int { ↓C.i + h }
                 }
             """),
+            Example("""
+                    struct S {
+                        static let i = 1
+                        static func f() -> Int { ↓S.i }
+                        func g() -> Any { ↓S.self }
+                    }
+                    """),
             Example("""
                 struct S {
                     struct T {
@@ -105,28 +98,19 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         corrections: [
             Example("""
                 struct S {
-                    struct T {
-                        static let i = 3
-                    }
-                    static let h = ↓S.T.i
+                    static let i = 1
+                    static let j = ↓S.i
+                    let k = ↓S.j
+                    static func f(_ l: Int = ↓S.i) -> Int { l*↓S.j }
+                    func g() { ↓S.i + ↓S.f() + k }
                 }
             """): Example("""
                 struct S {
-                    struct T {
-                        static let i = 3
-                    }
-                    static let h = Self.T.i
-                }
-            """),
-            Example("""
-                class S {
-                    static func f() { ↓S.g(↓S.f) }
-                    static func g(f: () -> Void) { f() }
-                }
-            """): Example("""
-                class S {
-                    static func f() { Self.g(Self.f) }
-                    static func g(f: () -> Void) { f() }
+                    static let i = 1
+                    static let j = Self.i
+                    let k = Self.j
+                    static func f(_ l: Int = Self.i) -> Int { l*Self.j }
+                    func g() { Self.i + Self.f() + k }
                 }
             """)
         ]

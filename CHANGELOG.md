@@ -33,6 +33,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3845](https://github.com/realm/SwiftLint/issues/3845)
 
+* Fix regression in `last_where` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3847](https://github.com/realm/SwiftLint/issues/3847)
+
 ## 0.46.4: Detergent Tray
 
 #### Breaking

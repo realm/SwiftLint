@@ -35,7 +35,19 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter",
                         severity: configuration.severity) { dictionary in
-            if dictionary.substructure.isNotEmpty {
+            let substructure: [SourceKittenDictionary] = {
+                if SwiftVersion.current >= .fiveDotSix {
+                    return dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
+                        if dict.expressionKind == .argument {
+                            return dict.substructure
+                        }
+                        return [dict]
+                    }
+                }
+
+                return dictionary.substructure
+            }()
+            if substructure.isNotEmpty {
                 return true // has a substructure, like a closure
             }
 

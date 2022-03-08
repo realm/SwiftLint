@@ -15,7 +15,7 @@ COPY Package.* ./
 
 RUN ln -s /usr/lib/swift/_InternalSwiftSyntaxParser .
 
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I."
+ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
 RUN swift build $SWIFT_FLAGS
 RUN mkdir -p /executables
 RUN for executable in $(swift package completion-tool list-executables); do \

@@ -80,7 +80,7 @@ internal struct NoFallthroughOnlyRuleExamples {
             }
             """)
     ]
-    
+
     static let triggeringExamples = [
         Example("""
         switch myvar {

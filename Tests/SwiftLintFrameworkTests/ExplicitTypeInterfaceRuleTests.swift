@@ -1,7 +1,6 @@
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable:next type_body_length
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
     func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)

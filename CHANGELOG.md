@@ -25,6 +25,24 @@
 
 #### Bug Fixes
 
+* None.
+
+## 0.46.5: Laundry Studio
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
 * Fix `empty_parentheses_with_trailing_closure` rule when using Swift 5.6.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3846](https://github.com/realm/SwiftLint/issues/3846)

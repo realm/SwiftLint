@@ -37,6 +37,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3847](https://github.com/realm/SwiftLint/issues/3847)
 
+* Fix regression in `unused_import` rule when using Swift 5.6.  
+  [JP Simard](https://github.com/jpsim)
+  [#3849](https://github.com/realm/SwiftLint/issues/3849)
+
 ## 0.46.4: Detergent Tray
 
 #### Breaking

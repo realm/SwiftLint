@@ -329,15 +329,8 @@
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="kt">C</span><span class="o">.</span><span class="n">i</span>
-        <span class="k">let</span> <span class="nv">h</span> <span class="o">=</span> <span class="kt">C</span><span class="o">.</span><span class="n">i</span>
-        <span class="kd">@GreaterThan</span><span class="p">(</span><span class="kt">C</span><span class="o">.</span><span class="n">j</span><span class="p">)</span> <span class="k">var</span> <span class="nv">k</span><span class="p">:</span> <span class="kt">Int</span>
-    <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code>    <span class="kd">class</span> <span class="p">`</span><span class="nv">Self</span><span class="p">`</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">Self</span><span class="o">.</span><span class="n">i</span> <span class="p">}</span>
-    <span class="p">}</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">primes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+        <span class="kd">func</span> <span class="nf">isPrime</span><span class="p">(</span><span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">Self</span><span class="o">.</span><span class="n">primes</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">T</span> <span class="p">{</span>
         <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -346,51 +339,16 @@
         <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">}</span>
     <span class="kd">extension</span> <span class="kt">T</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="kt">S</span><span class="o">.</span><span class="n">i</span> <span class="o">+</span> <span class="k">Self</span><span class="o">.</span><span class="n">i</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="kt">S</span><span class="o">.</span><span class="n">i</span> <span class="o">+</span> <span class="kt">T</span><span class="o">.</span><span class="n">i</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">k</span> <span class="o">=</span> <span class="p">{</span> <span class="kt">T</span><span class="o">.</span><span class="n">j</span> <span class="p">}()</span>
     <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
-        <span class="kd">struct</span> <span class="kt">T</span> <span class="p">{</span>
-            <span class="kd">struct</span> <span class="kt">R</span> <span class="p">{</span>
-                <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">3</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="kd">struct</span> <span class="kt">R</span> <span class="p">{</span>
-            <span class="kd">static</span> <span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="kt">S</span><span class="o">.</span><span class="kt">T</span><span class="o">.</span><span class="kt">R</span><span class="o">.</span><span class="n">i</span>
-        <span class="p">}</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="k">Self</span><span class="o">.</span><span class="kt">T</span><span class="o">.</span><span class="kt">R</span><span class="o">.</span><span class="n">i</span> <span class="o">+</span> <span class="k">Self</span><span class="o">.</span><span class="kt">R</span><span class="o">.</span><span class="n">j</span>
-        <span class="k">let</span> <span class="nv">h</span> <span class="o">=</span> <span class="k">Self</span><span class="o">.</span><span class="kt">T</span><span class="o">.</span><span class="kt">R</span><span class="o">.</span><span class="n">i</span> <span class="o">+</span> <span class="k">Self</span><span class="o">.</span><span class="kt">R</span><span class="o">.</span><span class="n">j</span>
-    <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">s</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="kd">func</span> <span class="nf">f</span><span class="p">(</span><span class="nv">i</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">C</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
-            <span class="kd">func</span> <span class="nf">g</span><span class="p">(</span><span class="kd">@GreaterEqualThan</span><span class="p">(</span><span class="kt">C</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="nv">j</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kt">C</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="n">j</span> <span class="p">}</span>
-            <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="k">Self</span><span class="o">.</span><span class="n">s</span>
-        <span class="p">}</span>
-        <span class="kd">func</span> <span class="nf">g</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Any</span> <span class="p">{</span> <span class="kt">C</span><span class="o">.</span><span class="k">self</span> <span class="p">}</span>
-    <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="p">{</span> <span class="k">Self</span><span class="o">.</span><span class="n">i</span> <span class="p">}()</span>
-    <span class="p">}</span>
-    <span class="kd">extension</span> <span class="kt">S</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">k</span> <span class="o">=</span> <span class="p">{</span> <span class="kt">S</span><span class="o">.</span><span class="n">j</span> <span class="p">}()</span>
+<pre class="highlight swift"><code>    <span class="kd">class</span> <span class="p">`</span><span class="nv">Self</span><span class="p">`</span> <span class="p">{</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">Self</span><span class="o">.</span><span class="n">i</span> <span class="p">}</span>
     <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">C</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">j</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">C</span><span class="o">.</span><span class="n">i</span>
-    <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
-        <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="err">↓</span><span class="kt">S</span><span class="o">.</span><span class="n">i</span> <span class="p">}</span>
-        <span class="kd">func</span> <span class="nf">g</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Any</span> <span class="p">{</span> <span class="err">↓</span><span class="kt">S</span><span class="o">.</span><span class="k">self</span> <span class="p">}</span>
-    <span class="p">}</span>
-</code></pre>
 <pre class="highlight swift"><code>    <span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
         <span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
             <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">2</span>
@@ -398,7 +356,14 @@
         <span class="p">}</span>
         <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">let</span> <span class="nv">h</span> <span class="o">=</span> <span class="kt">C</span><span class="o">.</span><span class="n">i</span>
+        <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="err">↓</span><span class="kt">C</span><span class="o">.</span><span class="n">i</span> <span class="o">+</span> <span class="n">h</span> <span class="p">}</span>
     <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span> <span class="err">↓</span><span class="kt">S</span><span class="o">.</span><span class="n">i</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">g</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Any</span> <span class="p">{</span> <span class="err">↓</span><span class="kt">S</span><span class="o">.</span><span class="k">self</span> <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code>    <span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
         <span class="kd">struct</span> <span class="kt">T</span> <span class="p">{</span>

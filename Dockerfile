@@ -1,6 +1,6 @@
 # Explicitly specify `focal` because `swift:latest` does not use `ubuntu:latest`.
 ARG BUILDER_IMAGE=swift:focal
-ARG RUNTIME_IMAGE=swift:focal
+ARG RUNTIME_IMAGE=swift:focal-slim
 
 # builder image
 FROM ${BUILDER_IMAGE} AS builder

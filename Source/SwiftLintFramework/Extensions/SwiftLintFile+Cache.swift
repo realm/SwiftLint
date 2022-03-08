@@ -29,6 +29,16 @@ private var syntaxTreeCache = Cache({ file in
     return try? SyntaxParser.parse(source: file.contents)
 })
 
+private var commandsCache = Cache({ file -> [Command] in
+    guard let tree = syntaxTreeCache.get(file) else {
+        return []
+    }
+    let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)
+    let visitor = CommandVisitor(locationConverter: locationConverter)
+    visitor.walk(tree)
+    return visitor.commands
+})
+
 private var syntaxMapCache = Cache({ file in
     responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
 })
@@ -184,6 +194,8 @@ extension SwiftLintFile {
 
     internal var syntaxTree: SourceFileSyntax? { syntaxTreeCache.get(self) }
 
+    internal var commands: [Command] { commandsCache.get(self) }
+
     internal var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
@@ -215,6 +227,8 @@ extension SwiftLintFile {
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
+        syntaxTreeCache.invalidate(self)
+        commandsCache.invalidate(self)
     }
 
     internal static func clearCaches() {
@@ -226,5 +240,7 @@ extension SwiftLintFile {
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
+        syntaxTreeCache.clear()
+        commandsCache.clear()
     }
 }

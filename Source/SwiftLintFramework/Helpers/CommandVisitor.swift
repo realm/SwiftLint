@@ -15,11 +15,9 @@ final class CommandVisitor: SyntaxVisitor {
     override func visitPost(_ node: TokenSyntax) {
         let leadingCommands = node.leadingTrivia.commands(offset: node.position,
                                                           locationConverter: locationConverter)
-        self.commands.append(contentsOf: leadingCommands)
-
         let trailingCommands = node.trailingTrivia.commands(offset: node.endPositionBeforeTrailingTrivia,
                                                             locationConverter: locationConverter)
-        self.commands.append(contentsOf: trailingCommands)
+        self.commands.append(contentsOf: leadingCommands + trailingCommands)
     }
 }
 

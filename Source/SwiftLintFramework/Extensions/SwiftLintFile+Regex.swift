@@ -56,21 +56,14 @@ extension SwiftLintFile {
     }
 
     internal func commands(in range: NSRange? = nil) -> [Command] {
-        guard let tree = syntaxTree else {
-            return []
-        }
-        let locationConverter = SourceLocationConverter(file: path ?? "<nopath>", tree: tree)
-        let visitor = CommandVisitor(locationConverter: locationConverter)
-        visitor.walk(tree)
-
         guard let range = range else {
-            return visitor.commands
+            return commands
                 .flatMap { $0.expand() }
         }
 
         let rangeStart = Location(file: self, characterOffset: range.location)
         let rangeEnd = Location(file: self, characterOffset: NSMaxRange(range))
-        return visitor.commands
+        return commands
             .filter { command in
                 let commandLocation = Location(file: path, line: command.line, character: command.character)
                 return rangeStart <= commandLocation && commandLocation <= rangeEnd

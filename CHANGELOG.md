@@ -41,6 +41,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3849](https://github.com/realm/SwiftLint/issues/3849)
 
+* Fix regression in `trailing_closure` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3848](https://github.com/realm/SwiftLint/issues/3848)
+
 ## 0.46.4: Detergent Tray
 
 #### Breaking

@@ -1,6 +1,5 @@
 import Foundation
 import SourceKittenFramework
-import SwiftSyntax
 
 internal func regex(_ pattern: String,
                     options: NSRegularExpression.Options? = nil) -> NSRegularExpression {

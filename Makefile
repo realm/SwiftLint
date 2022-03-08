@@ -136,7 +136,8 @@ display_compilation_time:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push SwiftLint.podspec
+	# Workaround for https://github.com/CocoaPods/CocoaPods/issues/11185
+	arch -arch x86_64 pod trunk push SwiftLint.podspec
 
 docs:
 	swift run swiftlint generate-docs

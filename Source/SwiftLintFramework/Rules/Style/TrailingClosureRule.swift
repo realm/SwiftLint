@@ -82,8 +82,16 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             return shouldTrigger()
         }
 
+        let argumentsCountIsExpected: Bool = {
+            if SwiftVersion.current >= .fiveDotSix, arguments.count == 1,
+               arguments[0].expressionKind == .argument {
+                return true
+            }
+
+            return arguments.isEmpty
+        }()
         // check if there's only one unnamed parameter that is a closure
-        if arguments.isEmpty,
+        if argumentsCountIsExpected,
             let offset = dictionary.offset,
             let totalLength = dictionary.length,
             let nameOffset = dictionary.nameOffset,

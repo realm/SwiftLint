@@ -1,4 +1,4 @@
-## 0.46.5: Laundry Studio
+## Master
 
 #### Breaking
 
@@ -18,6 +18,24 @@
   you encounter by opening a GitHub issue. If this is successful, more rules may
   use Swift Syntax in the future.  
   [JP Simard](https://github.com/jpsim)
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
+## 0.46.5: Laundry Studio
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
 
 #### Enhancements
 

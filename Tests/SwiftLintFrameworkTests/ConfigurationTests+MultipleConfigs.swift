@@ -76,7 +76,8 @@ extension ConfigurationTests {
         )
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertTrue(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
@@ -93,7 +94,8 @@ extension ConfigurationTests {
         )
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertFalse(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
@@ -113,7 +115,8 @@ extension ConfigurationTests {
         )
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertTrue(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
@@ -134,7 +137,8 @@ extension ConfigurationTests {
         )
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertFalse(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
@@ -152,7 +156,8 @@ extension ConfigurationTests {
         )
         guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertEqual(
             mergedCustomRules.configuration.customRuleConfigurations.filter { $0.identifier == "no_abc" }.count, 1
@@ -160,7 +165,8 @@ extension ConfigurationTests {
         guard let customRule = (mergedCustomRules.configuration.customRuleConfigurations.first {
             $0.identifier == "no_abc"
         }) else {
-            return XCTFail("Custom rule is expected to be present")
+            XCTFail("Custom rule is expected to be present")
+            return
         }
         XCTAssertEqual(customRule.severityConfiguration.severity, .error)
     }

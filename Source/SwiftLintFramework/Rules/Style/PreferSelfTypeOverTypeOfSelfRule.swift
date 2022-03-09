@@ -118,10 +118,6 @@ public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProvider
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
-            return []
-        }
-
         let pattern = "((?:Swift\\s*\\.\\s*)?type\\(\\s*of\\:\\s*self\\s*\\))\\s*\\."
         return file.matchesAndSyntaxKinds(matching: pattern)
             .filter {

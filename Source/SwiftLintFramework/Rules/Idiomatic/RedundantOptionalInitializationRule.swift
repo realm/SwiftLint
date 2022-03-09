@@ -52,77 +52,61 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         corrections: corrections
     )
 
-    private static let triggeringExamples: [Example] = {
-        let commonExamples = [
-            Example("var myVar: Int?↓ = nil\n"),
-            Example("var myVar: Optional<Int>↓ = nil\n"),
-            Example("var myVar: Int?↓=nil\n"),
-            Example("var myVar: Optional<Int>↓=nil\n)"),
-            Example("""
+    private static let triggeringExamples: [Example] = [
+        Example("var myVar: Int?↓ = nil\n"),
+        Example("var myVar: Optional<Int>↓ = nil\n"),
+        Example("var myVar: Int?↓=nil\n"),
+        Example("var myVar: Optional<Int>↓=nil\n)"),
+        Example("""
               var myVar: String?↓ = nil {
                 didSet { print("didSet") }
               }
-              """)
-        ]
-
-        guard SwiftVersion.current >= .fourDotOne else {
-            return commonExamples
-        }
-
-        return commonExamples + [
-            Example("""
+              """),
+        Example("""
             func funcName() {
                 var myVar: String?↓ = nil
             }
             """)
-        ]
-    }()
+    ]
 
-    private static let corrections: [Example: Example] = {
-        var corrections = [
-            Example("var myVar: Int?↓ = nil\n"): Example("var myVar: Int?\n"),
-            Example("var myVar: Optional<Int>↓ = nil\n"): Example("var myVar: Optional<Int>\n"),
-            Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
-            Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
-            Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
-                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
-            Example("""
+    private static let corrections: [Example: Example] = [
+        Example("var myVar: Int?↓ = nil\n"): Example("var myVar: Int?\n"),
+        Example("var myVar: Optional<Int>↓ = nil\n"): Example("var myVar: Optional<Int>\n"),
+        Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
+        Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
+        Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
+            Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
+        Example("""
             var myVar: Int?↓ = nil {
                 didSet { }
             }
             """):
-                Example("""
+            Example("""
                 var myVar: Int? {
                     didSet { }
                 }
                 """),
-            Example("""
+        Example("""
             var myVar: Int?↓=nil{
                 didSet { }
             }
             """):
-                Example("""
+            Example("""
                 var myVar: Int?{
                     didSet { }
                 }
-                """)
-        ]
-
-        guard SwiftVersion.current >= .fourDotOne else {
-            return corrections
-        }
-
-        corrections[Example("""
+                """),
+        Example("""
         func foo() {
             var myVar: String?↓ = nil
         }
-        """)] = Example("""
-        func foo() {
-            var myVar: String?
-        }
-        """)
-        return corrections
-    }()
+        """):
+            Example("""
+            func foo() {
+                var myVar: String?
+            }
+            """)
+    ]
 
     private let pattern = "(\\s*=\\s*nil\\b)\\s*\\{?"
 

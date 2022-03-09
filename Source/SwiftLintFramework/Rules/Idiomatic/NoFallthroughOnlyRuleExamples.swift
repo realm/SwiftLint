@@ -1,7 +1,6 @@
 internal struct NoFallthroughOnlyRuleExamples {
-    static let nonTriggeringExamples: [Example] = {
-        let commonExamples = [
-            Example("""
+    static let nonTriggeringExamples: [Example] = [
+        Example("""
             switch myvar {
             case 1:
                 var a = 1
@@ -10,7 +9,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 var a = 2
             }
             """),
-            Example("""
+        Example("""
             switch myvar {
             case "a":
                 var one = 1
@@ -20,7 +19,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 var three = 3
             }
             """),
-            Example("""
+        Example("""
             switch myvar {
             case 1:
                 let one = 1
@@ -29,7 +28,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 var two = 2
             }
             """),
-            Example("""
+        Example("""
             switch myvar {
             case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
                 var three = 3
@@ -38,7 +37,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 var three = 4
             }
             """),
-            Example("""
+        Example("""
             switch myvar {
             case .alpha:
                 var one = 1
@@ -49,7 +48,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 var four = 4
             }
             """),
-            Example("""
+        Example("""
             let aPoint = (1, -1)
             switch aPoint {
             case let (x, y) where x == y:
@@ -61,7 +60,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 let C = "C"
             }
             """),
-            Example("""
+        Example("""
             switch myvar {
             case MyFun(with: { $1 }):
                 let one = 1
@@ -69,15 +68,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             case "abc":
                 let two = 2
             }
-            """)
-        ]
-
-        guard SwiftVersion.current >= .five else {
-            return commonExamples
-        }
-
-        return commonExamples + [
-            Example("""
+            """),
+        Example("""
             switch enumInstance {
             case .caseA:
                 print("it's a")
@@ -87,8 +79,7 @@ internal struct NoFallthroughOnlyRuleExamples {
                 print("it's not a")
             }
             """)
-        ]
-    }()
+    ]
 
     static let triggeringExamples = [
         Example("""

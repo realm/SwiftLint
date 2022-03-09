@@ -391,7 +391,7 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
   - Source/*/ExcludedFile.swift # Exclude files with a wildcard
-analyzer_rules: # Rules run by `swiftlint analyze` (experimental)
+analyzer_rules: # Rules run by `swiftlint analyze`
   - explicit_self
 
 # configurable rules can be customized from this configuration file
@@ -498,9 +498,9 @@ Standard linting is disabled while correcting because of the high likelihood of
 violations (or their offsets) being incorrect after modifying a file while
 applying corrections.
 
-### Analyze (experimental)
+### Analyze
 
-The _experimental_ `swiftlint analyze` command can lint Swift files using the
+The `swiftlint analyze` command can lint Swift files using the
 full type-checked AST. The compiler log path containing the clean `swiftc` build
 command invocation (incremental builds will fail) must be passed to `analyze`
 via the `--compiler-log-path` flag.
@@ -512,9 +512,7 @@ This can be obtained by
 2. Running `xcodebuild -workspace {WORKSPACE}.xcworkspace -scheme {SCHEME} > xcodebuild.log`
 3. Running `swiftlint analyze --compiler-log-path xcodebuild.log`
 
-This command and related code in SwiftLint is subject to substantial changes at
-any time while this feature is marked as experimental. Analyzer rules also tend
-to be considerably slower than lint rules.
+Analyzer rules tend to be considerably slower than lint rules.
 
 ## Using Multiple Configuration Files
 

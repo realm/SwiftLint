@@ -1,4 +1,4 @@
-## Master
+## 0.47.0-rc.1: Smart Appliance
 
 #### Breaking
 

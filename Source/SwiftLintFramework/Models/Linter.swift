@@ -58,6 +58,10 @@ private extension Rule {
             return nil
         }
 
+        if SwiftVersion.current < Self.description.minSwiftVersion {
+            return nil
+        }
+
         let ruleID = Self.description.identifier
 
         let violations: [StyleViolation]

@@ -1,7 +1,6 @@
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable:next type_body_length
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
     func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
@@ -180,10 +179,6 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     // swiftlint:disable function_body_length
     func testSwitchCaseDeclarations() {
-        guard SwiftVersion.current >= .fourDotOne else {
-            return
-        }
-
         let nonTriggeringExamples = [
             Example("""
             enum Foo {

@@ -663,7 +663,7 @@ only configurable rule list, there are no equivalents for <code>disabled_rules</
   <span class="pi">-</span> <span class="s">Source/ExcludedFolder</span>
   <span class="pi">-</span> <span class="s">Source/ExcludedFile.swift</span>
   <span class="pi">-</span> <span class="s">Source/*/ExcludedFile.swift</span> <span class="c1"># Exclude files with a wildcard</span>
-<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze` (experimental)</span>
+<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze`</span>
   <span class="pi">-</span> <span class="s">explicit_self</span>
 
 <span class="c1"># configurable rules can be customized from this configuration file</span>
@@ -770,9 +770,9 @@ overwritten with a corrected version.</p>
 <p>Standard linting is disabled while correcting because of the high likelihood of
 violations (or their offsets) being incorrect after modifying a file while
 applying corrections.</p>
-<h3 id='analyze-experimental' class='heading'>Analyze (experimental)</h3>
+<h3 id='analyze' class='heading'>Analyze</h3>
 
-<p>The <em>experimental</em> <code>swiftlint analyze</code> command can lint Swift files using the
+<p>The <code>swiftlint analyze</code> command can lint Swift files using the
 full type-checked AST. The compiler log path containing the clean <code>swiftc</code> build
 command invocation (incremental builds will fail) must be passed to <code>analyze</code>
 via the <code>--compiler-log-path</code> flag.
@@ -786,9 +786,7 @@ e.g. <code>--compiler-log-path /path/to/xcodebuild.log</code></p>
 <li>Running <code>swiftlint analyze --compiler-log-path xcodebuild.log</code></li>
 </ol>
 
-<p>This command and related code in SwiftLint is subject to substantial changes at
-any time while this feature is marked as experimental. Analyzer rules also tend
-to be considerably slower than lint rules.</p>
+<p>Analyzer rules tend to be considerably slower than lint rules.</p>
 <h2 id='using-multiple-configuration-files' class='heading'>Using Multiple Configuration Files</h2>
 
 <p>SwiftLint offers a variety of ways to include multiple configuration files.

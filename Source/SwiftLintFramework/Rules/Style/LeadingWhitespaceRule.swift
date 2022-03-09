@@ -12,7 +12,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         description: "Files should not contain leading whitespace.",
         kind: .style,
         nonTriggeringExamples: [ Example("//\n") ],
-        triggeringExamples: [ Example("\n"), Example(" //\n") ],
+        triggeringExamples: [ Example("\n//\n"), Example(" //\n") ],
         corrections: [Example("\n //"): Example("//")]
     )
 

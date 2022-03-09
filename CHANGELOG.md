@@ -21,7 +21,9 @@
 
 #### Enhancements
 
-* None.
+* Empty files no longer trigger any violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#3854](https://github.com/realm/SwiftLint/issues/3854)
 
 #### Bug Fixes
 

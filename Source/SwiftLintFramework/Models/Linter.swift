@@ -54,6 +54,9 @@ private extension Rule {
               configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
+        // Empty files shouldn't trigger violations
+        if file.isEmpty { return nil }
+
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
         }
@@ -199,6 +202,11 @@ public struct CollectedLinter {
 
     private func getStyleViolations(using storage: RuleStorage,
                                     benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+        guard !file.isEmpty else {
+            // Empty files shouldn't trigger violations
+            return ([], [])
+        }
+
         if let cached = cachedStyleViolations(benchmark: benchmark) {
             return cached
         }
@@ -327,5 +335,11 @@ public struct CollectedLinter {
                 )
             }
         }
+    }
+}
+
+private extension SwiftLintFile {
+    var isEmpty: Bool {
+        contents.isEmpty || contents == "\n"
     }
 }

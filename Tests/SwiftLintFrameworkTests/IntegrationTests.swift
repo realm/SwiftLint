@@ -66,7 +66,7 @@ class IntegrationTests: XCTestCase {
         }
 
         let swiftlintInSandboxArgs = ["sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
-                                      "SWIFTLINT_SWIFT_VERSION=3 \(swiftlintURL.path) --no-cache"]
+                                      "SWIFTLINT_SWIFT_VERSION=5 \(swiftlintURL.path) --no-cache"]
         let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
         let statusWithoutCrash: Int32 = 0
         let stdoutWithoutCrash = """

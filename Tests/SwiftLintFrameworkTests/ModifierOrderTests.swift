@@ -1,17 +1,10 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable file_length type_body_length
-
 class ModifierOrderTests: XCTestCase {
     func testAttributeTypeMethod() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [
                 Example("""
                 public class SomeClass {
                    class public func someFunc() {}
@@ -22,8 +15,8 @@ class ModifierOrderTests: XCTestCase {
                    static public func someFunc() {}
                 }
                 """)
-            ],
-            triggeringExamples: [
+            ])
+            .with(triggeringExamples: [
                 Example("""
                 public class SomeClass {
                    public class func someFunc() {}
@@ -34,21 +27,16 @@ class ModifierOrderTests: XCTestCase {
                    public static func someFunc() {}
                 }
                 """)
-            ]
-        )
+            ])
+            .with(corrections: [:])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["typeMethods", "acl"]])
     }
 
     func testRightOrderedModifierGroups() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [
                 Example("public protocol Foo: class {}\n" +
                 "public weak internal(set) var bar: Foo? \n"),
                 Example("open final class Foo {" +
@@ -56,8 +44,8 @@ class ModifierOrderTests: XCTestCase {
                 "  open class func barFoo() {} }"),
                 Example("public struct Foo {" +
                 "  private mutating func bar() {} }")
-            ],
-            triggeringExamples: [
+            ])
+            .with(triggeringExamples: [
                 Example("public protocol Foo: class {} \n" +
                 "public internal(set) weak var bar: Foo? \n"),
                 Example("final public class Foo {" +
@@ -65,8 +53,8 @@ class ModifierOrderTests: XCTestCase {
                 "  class open func barFoo() {} }"),
                 Example("public struct Foo {" +
                 "  mutating private func bar() {} }")
-            ]
-        )
+            ])
+            .with(corrections: [:])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["acl",
@@ -80,13 +68,8 @@ class ModifierOrderTests: XCTestCase {
 
     // swiftlint:disable function_body_length
     func testAtPrefixedGroup() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [
                 Example("class Foo { \n"                                        +
                 "   @objc \n"                                           +
                 "   internal var bar: String {\n"                       +
@@ -116,8 +99,8 @@ class ModifierOrderTests: XCTestCase {
                 Example("public class Bar {\n"                                  +
                 "   @NSManaged public final var foo: NSString \n"       +
                 "}\n")
-            ],
-            triggeringExamples: [
+            ])
+            .with(triggeringExamples: [
                 Example("class Foo { \n"                                        +
                 "   @objc \n"                                           +
                 "   internal var bar: String {\n"                       +
@@ -147,21 +130,16 @@ class ModifierOrderTests: XCTestCase {
                 Example("public class Bar {\n"                                  +
                 "   @NSManaged final public var foo: NSString \n"       +
                 "}\n")
-            ]
-        )
+            ])
+            .with(corrections: [:])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
     }
 
     func testNonSpecifiedModifiersDontInterfere() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [
                 Example("""
                 class Foo {
                     weak final override private var bar: UIView?
@@ -182,8 +160,8 @@ class ModifierOrderTests: XCTestCase {
                     final override private weak var bar: UIView?
                 }
                 """)
-            ],
-            triggeringExamples: [
+            ])
+            .with(triggeringExamples: [
                 Example("""
                 class Foo {
                     weak override final private var bar: UIView?
@@ -204,23 +182,17 @@ class ModifierOrderTests: XCTestCase {
                     override final private weak var bar: UIView?
                 }
                 """)
-            ]
-        )
+            ])
+            .with(corrections: [:])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
     }
 
     func testCorrectionsAreAppliedCorrectly() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [],
-            triggeringExamples: [],
-            corrections: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [], triggeringExamples: [])
+            .with(corrections: [
                 Example("""
                 class Foo {
                     private final override var bar: UIView?
@@ -277,23 +249,16 @@ class ModifierOrderTests: XCTestCase {
                 Example("""
                 final private class Foo {}
                 """)
-            ]
-        )
+            ])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
     func testCorrectionsAreNotAppliedToIrrelevantModifier() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [],
-            triggeringExamples: [],
-            corrections: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [], triggeringExamples: [])
+            .with(corrections: [
                 Example("""
                 class Foo {
                     weak class final var bar: UIView?
@@ -354,23 +319,16 @@ class ModifierOrderTests: XCTestCase {
                     var bar: UIView?
                 }
                 """)
-            ]
-        )
+            ])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
     func testTypeMethodClassCorrection() {
-        let descriptionOverride = RuleDescription(
-            identifier: "modifier_order",
-            name: "Modifier Order",
-            description: "Modifier order should be consistent.",
-            kind: .style,
-            minSwiftVersion: .fourDotOne,
-            nonTriggeringExamples: [],
-            triggeringExamples: [],
-            corrections: [
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [], triggeringExamples: [])
+            .with(corrections: [
                 Example("""
                 private final class Foo {}
                 """):
@@ -383,8 +341,7 @@ class ModifierOrderTests: XCTestCase {
                 Example("""
                 public protocol Foo: class {}\n
                 """)
-            ]
-        )
+            ])
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]])

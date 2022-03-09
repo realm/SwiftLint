@@ -11,7 +11,6 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         name: "Unused Capture List",
         description: "Unused reference in a capture list should be removed.",
         kind: .lint,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("""
             [1, 2].map {

@@ -12,7 +12,6 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         name: "No Space in Method Call",
         description: "Don't add a space between the method name and the parentheses.",
         kind: .style,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: nonTriggeringExamples,
         triggeringExamples: [
             Example("foo↓ ()"),

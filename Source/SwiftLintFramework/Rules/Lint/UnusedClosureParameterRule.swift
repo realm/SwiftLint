@@ -12,7 +12,6 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
         name: "Unused Closure Parameter",
         description: "Unused parameter in a closure should be replaced with _.",
         kind: .lint,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("[1, 2].map { $0 + 1 }\n"),
             Example("[1, 2].map({ $0 + 1 })\n"),

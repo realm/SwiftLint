@@ -11,7 +11,6 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
         name: "Toggle Bool",
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`.",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("isHidden.toggle()\n"),
             Example("view.clipsToBounds.toggle()\n"),

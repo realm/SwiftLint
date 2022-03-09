@@ -11,7 +11,6 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule {
         name: "Computed Accessors Order",
         description: "Getter and setters in computed properties and subscripts should be in a consistent order.",
         kind: .style,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: ComputedAccessorsOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: ComputedAccessorsOrderRuleExamples.triggeringExamples
     )

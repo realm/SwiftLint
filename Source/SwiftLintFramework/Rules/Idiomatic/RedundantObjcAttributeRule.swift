@@ -15,7 +15,6 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         name: "Redundant @objc Attribute",
         description: "Objective-C attribute (@objc) is redundant in declaration.",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: RedundantObjcAttributeRuleExamples.nonTriggeringExamples,
         triggeringExamples: RedundantObjcAttributeRuleExamples.triggeringExamples,
         corrections: RedundantObjcAttributeRuleExamples.corrections)

@@ -10,7 +10,6 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
         name: "Last Where",
         description: "Prefer using `.last(where:)` over `.filter { }.last` in collections.",
         kind: .performance,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("kinds.filter(excludingKinds.contains).isEmpty && kinds.last == .identifier\n"),
             Example("myList.last(where: { $0 % 2 == 0 })\n"),

@@ -11,7 +11,6 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
         name: "XCTest Specific Matcher",
         description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )

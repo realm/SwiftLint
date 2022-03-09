@@ -1,8 +1,8 @@
-import Foundation
 import SwiftSyntax
 
 /// A rule that leverages the SwiftSyntax library.
 public protocol SyntaxRule: Rule {
+    /// The `SyntaxRuleVisitor` type that will be used to compute violations.
     associatedtype Visitor: SyntaxRuleVisitor
 
     /// Creates the visitor that will be used to compute violations. By default, it calls `Visitor.init()`.
@@ -14,6 +14,7 @@ public protocol SyntaxRuleVisitor: SyntaxVisitor {
     /// The rule that uses this visitor.
     associatedtype Rule: SyntaxRule
 
+    /// A default initializer for visitors. All visitors need to be trivially initializable.
     init()
 
     /// Returns the violations that should be calculated based on data that was accumulated during the `visit` methods.

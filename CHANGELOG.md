@@ -25,6 +25,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3854](https://github.com/realm/SwiftLint/issues/3854)
 
+* Support glob recursive.  
+  [funzin](https://github.com/funzin)
+  [#3789](https://github.com/realm/SwiftLint/issues/3789)
+
 #### Bug Fixes
 
 * Extend `class_delegate_protocol` to correctly identify cases with the protocol

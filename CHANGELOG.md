@@ -31,6 +31,11 @@
   body opening brace on a new line.  
   [Tobisaninfo](https://github.com/Tobisaninfo)
 
+* Fix SwiftLint.pkg installer installing multiple copies of SwiftLint.  
+  [JP Simard](https://github.com/jpsim)
+  [#3815](https://github.com/realm/SwiftLint/issues/3815)
+  [#3887](https://github.com/realm/SwiftLint/issues/3887)
+
 ## 0.46.5: Laundry Studio
 
 #### Breaking

@@ -2,13 +2,14 @@ import Dispatch
 import Foundation
 
 extension Array where Element: NSTextCheckingResult {
+    @inlinable
     func ranges() -> [NSRange] {
         return map { $0.range }
     }
 }
 
 extension Array where Element: Equatable {
-    var unique: [Element] {
+    @inlinable var unique: [Element] {
         var uniqueValues = [Element]()
         for item in self where !uniqueValues.contains(item) {
             uniqueValues.append(item)
@@ -40,10 +41,12 @@ extension Array {
         return nil
     }
 
+    @inlinable
     func group<U: Hashable>(by transform: (Element) -> U) -> [U: [Element]] {
         return Dictionary(grouping: self, by: { transform($0) })
     }
 
+    @inlinable
     func partitioned(by belongsInSecondPartition: (Element) throws -> Bool) rethrows ->
         (first: ArraySlice<Element>, second: ArraySlice<Element>) {
             var copy = self
@@ -51,14 +54,17 @@ extension Array {
             return (copy[0..<pivot], copy[pivot..<count])
     }
 
+    @inlinable
     func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 
+    @inlinable
     func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
         return parallelMap(transform: transform).compactMap { $0 }
     }
 
+    @inlinable
     func parallelMap<T>(transform: (Element) -> T) -> [T] {
         var result = ContiguousArray<T?>(repeating: nil, count: count)
         return result.withUnsafeMutableBufferPointer { buffer in
@@ -71,7 +77,7 @@ extension Array {
 }
 
 extension Collection {
-    var isNotEmpty: Bool {
+    @inlinable var isNotEmpty: Bool {
         return !isEmpty
     }
 }

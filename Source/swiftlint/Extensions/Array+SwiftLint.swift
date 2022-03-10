@@ -1,10 +1,12 @@
 import Dispatch
 
 extension Array {
+    @inlinable
     func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
         return parallelMap(transform: transform).compactMap { $0 }
     }
 
+    @inlinable
     func parallelMap<T>(transform: (Element) -> T) -> [T] {
         return [T](unsafeUninitializedCapacity: count) { buffer, initializedCount in
             let baseAddress = buffer.baseAddress!

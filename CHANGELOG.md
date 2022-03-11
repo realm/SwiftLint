@@ -34,6 +34,9 @@
   [#3789](https://github.com/realm/SwiftLint/issues/3789)
   [#3891](https://github.com/realm/SwiftLint/issues/3891)
 
+* The `legacy_random` rule is now enabled by default.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Extend `class_delegate_protocol` to correctly identify cases with the protocol
@@ -57,8 +60,7 @@
 
 #### Enhancements
 
-* The `legacy_random` rule is now enabled by default.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
+* None.
 
 #### Bug Fixes
 

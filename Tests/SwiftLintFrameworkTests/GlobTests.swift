@@ -65,7 +65,7 @@ final class GlobTests: XCTestCase {
     func testGlobstarSupport() {
         let expectedFiles = Set(
             [
-                "Directory.swift/",
+                "Directory.swift",
                 "Directory.swift/DirectoryLevel1.swift",
                 "Level0.swift",
                 "Level1/Level1.swift",

@@ -72,7 +72,7 @@ public struct RuleDescription: Equatable {
     /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
     /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.
     public init(identifier: String, name: String, description: String, kind: RuleKind,
-                minSwiftVersion: SwiftVersion = .three,
+                minSwiftVersion: SwiftVersion = .five,
                 nonTriggeringExamples: [Example] = [], triggeringExamples: [Example] = [],
                 corrections: [Example: Example] = [:],
                 deprecatedAliases: Set<String> = [],

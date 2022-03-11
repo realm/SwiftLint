@@ -11,7 +11,6 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         description: "Types used for hosting only static members should be implemented as a caseless enum " +
                      "to avoid instantiation.",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             Example("""
             enum Math { // enum

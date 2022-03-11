@@ -13,7 +13,6 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         description: "Availability checks or attributes shouldn't be using older versions " +
                      "that are satisfied by the deployment target.",
         kind: .lint,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             Example("@available(iOS 12.0, *)\nclass A {}"),
             Example("@available(watchOS 4.0, *)\nclass A {}"),

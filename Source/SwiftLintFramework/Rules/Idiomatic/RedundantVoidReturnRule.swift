@@ -73,7 +73,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard functionKinds.contains(kind),
-            !shouldReturnEarlyBasedOnTypeName(dictionary: dictionary),
+              containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,
@@ -93,14 +93,6 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
-    }
-
-    private func shouldReturnEarlyBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
-        guard SwiftVersion.current >= .fourDotOne else {
-            return false
-        }
-
-        return !containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary)
     }
 
     private func containsVoidReturnTypeBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {

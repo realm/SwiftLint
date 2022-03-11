@@ -21,8 +21,6 @@ struct Glob {
             return [pattern]
         }
 
-        defer { isDirectoryCache.removeAll() }
-
         return expandGlobstar(pattern: pattern)
             .reduce(into: [String]()) { paths, pattern in
                 var globResult = glob_t()
@@ -38,8 +36,6 @@ struct Glob {
     }
 
     // MARK: Private
-
-    private static var isDirectoryCache = [String: Bool]()
 
     private static func expandGlobstar(pattern: String) -> [String] {
         guard pattern.contains("**") else {
@@ -90,17 +86,9 @@ struct Glob {
     }
 
     private static func isDirectory(path: String) -> Bool {
-        if let isDirectory = isDirectoryCache[path] {
-            return isDirectory
-        }
-
         var isDirectoryBool = ObjCBool(false)
-        var isDirectory = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryBool)
-        isDirectory = isDirectory && isDirectoryBool.boolValue
-
-        isDirectoryCache[path] = isDirectory
-
-        return isDirectory
+        let isDirectory = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryBool)
+        return isDirectory && isDirectoryBool.boolValue
     }
 
     private static func populateFiles(globResult: glob_t) -> [String] {

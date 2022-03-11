@@ -42,9 +42,9 @@ let package = Package(
             name: "SwiftLintFramework",
             dependencies: [
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
+                "Pathos",
                 "SwiftSyntax",
-                "Yams",
-                "Pathos"
+                "Yams"
             ]
             + (addCryptoSwift ? ["CryptoSwift"] : [])
             + (staticSwiftSyntax ? ["lib_InternalSwiftSyntaxParser"] : [])

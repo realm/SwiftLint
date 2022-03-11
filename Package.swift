@@ -27,7 +27,6 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.31.1"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
-        .package(url: "https://github.com/dduan/Pathos", from: "0.4.2")
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),
     targets: [
         .executableTarget(
@@ -42,9 +41,8 @@ let package = Package(
             name: "SwiftLintFramework",
             dependencies: [
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
-                "Pathos",
                 "SwiftSyntax",
-                "Yams"
+                "Yams",
             ]
             + (addCryptoSwift ? ["CryptoSwift"] : [])
             + (staticSwiftSyntax ? ["lib_InternalSwiftSyntaxParser"] : [])

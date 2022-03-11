@@ -443,12 +443,12 @@ extension ConfigurationTests {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             includedPaths: ["Level1"],
-            excludedPaths: ["Level1/**/*.swift", "Level1/**/**/*.swift"])
+            excludedPaths: ["Level1/**/*.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: false,
                                                 excludeByPrefix: true)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
-        XCTAssertEqual(filenames, ["Level1.swift"])
+        XCTAssertEqual(filenames, [])
     }
 
     func testDictInitWithCachePath() throws {

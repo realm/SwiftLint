@@ -11,7 +11,6 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         name: "Unowned Variable Capture",
         description: "Prefer capturing references as weak to avoid potential crashes.",
         kind: .lint,
-        minSwiftVersion: .five,
         nonTriggeringExamples: [
             Example("foo { [weak self] in _ }"),
             Example("foo { [weak self] param in _ }"),

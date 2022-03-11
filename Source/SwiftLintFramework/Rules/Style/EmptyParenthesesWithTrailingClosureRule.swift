@@ -79,8 +79,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableAS
         }
 
         // avoid the more expensive regex match if there's no trailing closure in the substructure
-        if SwiftVersion.current >= .fourDotTwo,
-            !dictionary.hasTrailingClosure {
+        if !dictionary.hasTrailingClosure {
             return []
         }
 

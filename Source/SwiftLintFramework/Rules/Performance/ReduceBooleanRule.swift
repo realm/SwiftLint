@@ -10,7 +10,6 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTesta
         name: "Reduce Boolean",
         description: "Prefer using `.allSatisfy()` or `.contains()` over `reduce(true)` or `reduce(false)`",
         kind: .performance,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("nums.reduce(0) { $0.0 + $0.1 }"),
             Example("nums.reduce(0.0) { $0.0 + $0.1 }")

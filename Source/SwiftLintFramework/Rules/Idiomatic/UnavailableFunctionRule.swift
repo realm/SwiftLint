@@ -11,7 +11,6 @@ public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptIn
         name: "Unavailable Function",
         description: "Unimplemented functions should be marked as unavailable.",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             Example("""
             class ViewController: UIViewController {

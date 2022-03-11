@@ -10,7 +10,6 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, Automati
         name: "Legacy Multiple",
         description: "Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`).",
         kind: .idiomatic,
-        minSwiftVersion: .five,
         nonTriggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row.isMultiple(of: 2) ? .gray : .white"),
             Example("guard count.isMultiple(of: 2) else { throw DecodingError.dataCorrupted(...) }"),

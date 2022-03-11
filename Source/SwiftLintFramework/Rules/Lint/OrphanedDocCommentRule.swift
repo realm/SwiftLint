@@ -11,7 +11,6 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
         name: "Orphaned Doc Comment",
         description: "A doc comment should be attached to a declaration.",
         kind: .lint,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             Example("""
             /// My great property

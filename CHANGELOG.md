@@ -11,6 +11,9 @@
   of SwiftSyntax. The `SwiftLint` podspec is still supported.  
   [JP Simard](https://github.com/jpsim)
 
+* SwiftLint now requires at least Swift 5.0 installed in order to lint files.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Experimental
 
 * The `force_cast` rule and the comment command parsing mechanism have been
@@ -30,6 +33,9 @@
   [JP Simard](https://github.com/jpsim)
   [#3789](https://github.com/realm/SwiftLint/issues/3789)
   [#3891](https://github.com/realm/SwiftLint/issues/3891)
+
+* The `legacy_random` rule is now enabled by default.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

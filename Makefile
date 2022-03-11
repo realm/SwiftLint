@@ -111,12 +111,14 @@ zip_linux: docker_image
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-package: installables
+package: build
+	$(eval PACKAGE_ROOT := $(shell mktemp -d))
+	cp "$(SWIFTLINT_EXECUTABLE)" "$(PACKAGE_ROOT)"
 	pkgbuild \
 		--identifier "io.realm.swiftlint" \
 		--install-location "/usr/local/bin" \
-		--root "$(TEMPORARY_FOLDER)" \
-		--version "$(VERSION_STRING)" \
+		--root "$(PACKAGE_ROOT)" \
+		--version $(VERSION_STRING) \
 		"$(OUTPUT_PACKAGE)"
 
 release: package portable_zip zip_linux

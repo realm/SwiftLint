@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "Pathos",
-        "repositoryURL": "https://github.com/dduan/Pathos",
-        "state": {
-          "branch": null,
-          "revision": "8697a340a25e9974d4bbdee80a4c361c74963c00",
-          "version": "0.4.2"
-        }
-      },
-      {
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {

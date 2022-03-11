@@ -443,7 +443,7 @@ extension ConfigurationTests {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             includedPaths: ["Level1"],
-            excludedPaths: ["Level1/**/*.swift", "Level1/**/**/*.swift"])
+            excludedPaths: ["Level1/*/*.swift", "Level1/*/*/*.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: false,
                                                 excludeByPrefix: true)

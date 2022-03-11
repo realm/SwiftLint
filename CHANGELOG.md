@@ -25,7 +25,7 @@
   [JP Simard](https://github.com/jpsim)
   [#3854](https://github.com/realm/SwiftLint/issues/3854)
 
-* Support glob recursive.  
+* Support recursive globs.  
   [funzin](https://github.com/funzin)
   [#3789](https://github.com/realm/SwiftLint/issues/3789)
 

@@ -8,7 +8,14 @@ struct Glob {
             return [pattern]
         }
 
-        let paths = try? Path(pattern).glob()
-        return paths?.compactMap { $0.description } ?? []
+        do {
+            let paths = try Path(pattern).glob()
+            return try paths.compactMap { path in
+                try path.absolute().description
+            }
+        } catch {
+            queuedPrintError(error.localizedDescription)
+            return []
+        }
     }
 }

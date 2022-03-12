@@ -72,6 +72,19 @@ over time. This way adding a unit test for your new Rule is just a matter of
 adding a test case in `RulesTests.swift` which simply calls
 `verifyRule(YourNewRule.description)`.
 
+For debugging purposes examples can be marked as `focused`. If there are any
+focused examples found, then only those will be run when running tests.
+```
+nonTriggeringExamples: [
+    Example("let x: [Int]"),
+    Example("let x: [Int: String]").focused()   // only this one will be run in tests
+],
+triggeringExamples: [
+    Example("let x: ↓Array<String>"),
+    Example("let x: ↓Dictionary<Int, String>")
+]
+```
+
 ### `ConfigurationProviderRule`
 
 If your rule supports user-configurable options via `.swiftlint.yml`, you can

@@ -1,6 +1,7 @@
+import SwiftOperators
 import SwiftSyntax
 
-public struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverRangeNilComparisonRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -23,8 +24,18 @@ public struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, Co
         }
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor(viewMode: .sourceAccurate)
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        guard let tree = file.syntaxTree?.folded() else {
+            return []
+        }
+
+        return Visitor(viewMode: .sourceAccurate)
+            .walk(tree: tree, handler: \.violationPositions)
+            .map { position in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, position: position))
+            }
     }
 }
 
@@ -32,13 +43,12 @@ private extension ContainsOverRangeNilComparisonRule {
     final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         private(set) var violationPositions: [AbsolutePosition] = []
 
-        override func visitPost(_ node: ExprListSyntax) {
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard
-                node.count == 3,
-                node.last?.is(NilLiteralExprSyntax.self) == true,
-                let second = node.dropFirst().first,
-                second.firstToken?.tokenKind.isEqualityComparison == true,
-                let first = node.first?.as(FunctionCallExprSyntax.self),
+                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                node.rightOperand.is(NilLiteralExprSyntax.self),
+                let first = node.leftOperand.as(FunctionCallExprSyntax.self),
                 first.argumentList.count == 1,
                 first.argumentList.allSatisfy({ $0.label?.text == "of" }),
                 let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
@@ -47,8 +57,16 @@ private extension ContainsOverRangeNilComparisonRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension SourceFileSyntax {
+    func folded() -> SourceFileSyntax? {
+        OperatorTable.standardOperators
+            .foldAll(self) { _ in }
+            .as(SourceFileSyntax.self)
     }
 }
 

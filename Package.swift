@@ -12,6 +12,7 @@ let frameworkDependencies: [Target.Dependency] = [
     .product(name: "SwiftSyntax", package: "SwiftSyntax"),
     .product(name: "SwiftSyntaxBuilder", package: "SwiftSyntax"),
     .product(name: "SwiftParser", package: "SwiftSyntax"),
+    .product(name: "SwiftOperators", package: "SwiftSyntax"),
     "Yams",
 ]
 + (addCryptoSwift ? ["CryptoSwift"] : [])

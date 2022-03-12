@@ -6,7 +6,7 @@ protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
 extension SwiftLintSyntaxVisitor {
-    func walk<T>(tree: SourceFileSyntax, handler: (Self) -> T) -> T {
+    func walk<T, SyntaxType: SyntaxProtocol>(tree: SyntaxType, handler: (Self) -> T) -> T {
         #if DEBUG
         // workaround for stack overflow when running in debug
         // https://bugs.swift.org/browse/SR-11170

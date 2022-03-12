@@ -24,6 +24,7 @@ swift_library(
         "@com_github_apple_swift_syntax//:SwiftSyntax",
         "@com_github_apple_swift_syntax//:SwiftSyntaxBuilder",
         "@com_github_apple_swift_syntax//:SwiftParser",
+        "@com_github_apple_swift_syntax//:SwiftOperators",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],

@@ -47,3 +47,11 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [":SwiftSyntax", ":SwiftBasicFormat", ":SwiftParser"],
 )
+
+swift_library(
+    name = "SwiftOperators",
+    srcs = glob(["Sources/SwiftOperators/**/*.swift"]),
+    module_name = "SwiftOperators",
+    visibility = ["//visibility:public"],
+    deps = [":SwiftSyntax", ":SwiftDiagnostics", ":SwiftParser"],
+)

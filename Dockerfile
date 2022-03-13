@@ -1,5 +1,5 @@
 # Explicitly specify `focal` because `swift:latest` does not use `ubuntu:latest`.
-ARG BUILDER_IMAGE=swift:focal
+ARG BUILDER_IMAGE=swiftlang/swift:nightly-5.6-focal
 ARG RUNTIME_IMAGE=ubuntu:focal
 
 # builder image
@@ -13,12 +13,10 @@ COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2"
+ARG SWIFT_FLAGS="-c release"
 RUN swift build $SWIFT_FLAGS
 RUN mkdir -p /executables
-RUN for executable in $(swift package completion-tool list-executables); do \
-        install -v `swift build $SWIFT_FLAGS --show-bin-path`/$executable /executables; \
-    done
+RUN mv $(swift build $SWIFT_FLAGS --show-bin-path)/swiftlint /executables
 
 # runtime image
 FROM ${RUNTIME_IMAGE}
@@ -28,8 +26,7 @@ RUN apt-get update && apt-get install -y \
     libxml2 \
  && rm -r /var/lib/apt/lists/*
 COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libBlocksRuntime.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/* /usr/lib
 COPY --from=builder /executables/* /usr/bin
 
 RUN swiftlint version

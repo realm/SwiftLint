@@ -74,7 +74,9 @@ private extension FunctionDeclSyntax {
 }
 
 private let warnSyntaxParserFailureOnceImpl: Void = {
-    queuedPrintError("The return_value_from_void_function rule is disabled because the Swift Syntax tree could not be parsed")
+    queuedPrintError(
+        "The return_value_from_void_function rule is disabled because the Swift Syntax tree could not be parsed"
+    )
 }()
 
 private func warnSyntaxParserFailureOnce() {

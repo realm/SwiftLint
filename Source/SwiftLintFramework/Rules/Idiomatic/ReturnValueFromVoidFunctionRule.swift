@@ -1,9 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SyntaxRule,
-                                               AutomaticTestableRule {
-    public typealias Visitor = ReturnVisitor
+public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -17,12 +15,23 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
         nonTriggeringExamples: ReturnValueFromVoidFunctionRuleExamples.nonTriggeringExamples,
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )
+
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        guard let tree = file.syntaxTree else {
+            warnSyntaxParserFailureOnce()
+            return []
+        }
+
+        let visitor = ReturnVisitor()
+        visitor.walk(tree)
+        return visitor.violations(for: self, in: file)
+    }
 }
 
-public final class ReturnVisitor: SyntaxVisitor, SyntaxRuleVisitor {
+private final class ReturnVisitor: SyntaxVisitor {
     private var positions = [AbsolutePosition]()
 
-    override public func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
         if node.expression != nil,
            let functionNode = Syntax(node).enclosingFunction(),
             functionNode.returnsVoid {
@@ -31,7 +40,7 @@ public final class ReturnVisitor: SyntaxVisitor, SyntaxRuleVisitor {
         return .visitChildren
     }
 
-    public func violations(for rule: ReturnValueFromVoidFunctionRule, in file: SwiftLintFile) -> [StyleViolation] {
+    func violations(for rule: ReturnValueFromVoidFunctionRule, in file: SwiftLintFile) -> [StyleViolation] {
         return positions.map { position in
             StyleViolation(ruleDescription: type(of: rule).description,
                            severity: rule.configuration.severity,
@@ -62,4 +71,12 @@ private extension FunctionDeclSyntax {
 
         return signature.output?.returnType == nil
     }
+}
+
+private let warnSyntaxParserFailureOnceImpl: Void = {
+    queuedPrintError("The return_value_from_void_function rule is disabled because the Swift Syntax tree could not be parsed")
+}()
+
+private func warnSyntaxParserFailureOnce() {
+    _ = warnSyntaxParserFailureOnceImpl
 }

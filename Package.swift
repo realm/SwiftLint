@@ -21,10 +21,10 @@ let package = Package(
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.1"),
+        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.0.3")),
         .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git",
                  .revision("cf40be70deaf4ce7d44eb1a7e14299c391e2363f")),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.31.1"),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.32.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),

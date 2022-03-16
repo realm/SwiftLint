@@ -8,7 +8,9 @@ private let addCryptoSwift = true
 #endif
 
 #if os(macOS)
-private let staticSwiftSyntax = true
+// TODO: Set back to true when a Swift 5.6 release of
+// StaticInternalSwiftSyntaxParser is available
+private let staticSwiftSyntax = false
 #else
 private let staticSwiftSyntax = false
 #endif
@@ -22,8 +24,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.0.3")),
-        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git",
-                 .revision("cf40be70deaf4ce7d44eb1a7e14299c391e2363f")),
+        .package(url: "https://github.com/apple/swift-syntax.git", branch: "0.50600.0"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.32.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
@@ -41,7 +42,8 @@ let package = Package(
             name: "SwiftLintFramework",
             dependencies: [
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
-                "SwiftSyntax",
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
                 "Yams",
             ]
             + (addCryptoSwift ? ["CryptoSwift"] : [])

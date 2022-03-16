@@ -28,6 +28,18 @@ class DeploymentTargetRuleTests: XCTestCase {
         XCTAssertEqual(violations.first?.reason, expectedMessage)
     }
 
+    func testiOSNegativeAttributeReason() throws {
+        try XCTSkipUnless(SwiftVersion.current >= .fiveDotSix)
+
+        let example = Example("if #unavailable(iOS 14) { legacyImplementation() }")
+        let violations = self.violations(example, config: ["iOS_deployment_target": "15.0"])
+
+        let expectedMessage = "Availability negative condition is using a version (14) that is satisfied by " +
+                              "the deployment target (15.0) for platform iOS."
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, expectedMessage)
+    }
+
     private func violations(_ example: Example, config: Any?) -> [StyleViolation] {
         guard let config = makeConfig(config, DeploymentTargetRule.description.identifier) else {
             return []

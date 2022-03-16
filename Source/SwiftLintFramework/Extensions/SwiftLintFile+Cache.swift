@@ -1,7 +1,9 @@
 import Foundation
 import SourceKittenFramework
 import SwiftSyntax
+#if canImport(SwiftSyntaxParser)
 import SwiftSyntaxParser
+#endif
 
 private typealias FileCacheKey = UUID
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in

@@ -38,7 +38,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * The `deployment_target` rule now supports the `#unavailable` syntax
-  added on Swift 5.6.  
+  added in Swift 5.6.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3896](https://github.com/realm/SwiftLint/issues/3896)
 

@@ -10,6 +10,8 @@ jobs:
     matrix:
       swift55:
         containerImage: swift:5.5
+      swift56:
+        containerImage: swift:5.6
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel
@@ -84,9 +86,11 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
   steps:
-    - script: swift run --sanitize=thread swiftlint lint --lenient
+    - script: swift build --configuration release --sanitize thread
+      displayName: Build SwiftLint
+    - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run
-    - script: swift run --sanitize=thread swiftlint lint --lenient
+    - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
       displayName: Post-cache SwiftLint Run
     - script: make test_tsan
       displayName: Test With TSan

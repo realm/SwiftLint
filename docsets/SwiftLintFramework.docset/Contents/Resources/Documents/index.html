@@ -385,14 +385,15 @@ Insert the following as the script:</p>
 
 <p><img src="assets/runscript.png" alt=""></p>
 
-<p>When you installed <code>SwiftLint</code> via <code>homebrew</code> on <code>Apple Silicon</code> machine, you might experience this <code>warning/error</code>,</p>
+<p>If you installed <code>SwiftLint</code> via Homebrew on Apple Silicon, you might experience this warning:</p>
 
 <blockquote>
 <p>warning: SwiftLint not installed, download from <a href="https://github.com/realm/SwiftLint">https://github.com/realm/SwiftLint</a></p>
 </blockquote>
 
-<p>That is because <code>homebrew</code> on <code>Apple silicon</code> is installing the binaries inside the <code>/opt/homebrew/bin</code> folder.
-So to solve this issue, you can either append the <code>/opt/homebrew/bin</code> to the search path along build phase:</p>
+<p>That is because Homebrew on Apple Silicon is installs the binaries inside the <code>/opt/homebrew/bin</code>
+folder by default. To instruct Xcode where to find SwiftLint, you can either add
+<code>/opt/homebrew/bin</code> to the <code>PATH</code> environment variable in your build phase:</p>
 <pre class="highlight shell"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/opt/homebrew/bin"</span>
 <span class="k">if </span>which swiftlint <span class="o">&gt;</span>/dev/null<span class="p">;</span> <span class="k">then
   </span>swiftlint
@@ -401,8 +402,9 @@ So to solve this issue, you can either append the <code>/opt/homebrew/bin</code>
 <span class="k">fi</span>
 </code></pre>
 
-<p>Or by just creating a symbolic link pointing to <code>/usr/local/bin</code> from your terminal,</p>
-<pre class="highlight shell"><code><span class="nb">ln</span> /opt/homebrew/bin/swiftlint /usr/local/bin
+<p>or you can create a symbolic link in <code>/usr/local/bin</code> pointing to the actual binary by running this
+command:</p>
+<pre class="highlight shell"><code><span class="nb">ln</span> <span class="nt">-s</span> /opt/homebrew/bin/swiftlint /usr/local/bin
 </code></pre>
 
 <p>You might want to move your SwiftLint phase directly before &lsquo;Compile Sources&rsquo;

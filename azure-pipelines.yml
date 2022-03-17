@@ -84,9 +84,9 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
   steps:
-    - script: swift run --sanitize=thread swiftlint lint --lenient
+    - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
       displayName: Pre-cache SwiftLint Run
-    - script: swift run --sanitize=thread swiftlint lint --lenient
+    - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
       displayName: Post-cache SwiftLint Run
     - script: make test_tsan
       displayName: Test With TSan

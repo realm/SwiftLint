@@ -1,17 +1,11 @@
 // swift-tools-version:5.5
 import PackageDescription
 
-#if canImport(CommonCrypto)
+#if os(macOS)
 private let addCryptoSwift = false
+private let staticSwiftSyntax = true
 #else
 private let addCryptoSwift = true
-#endif
-
-#if os(macOS)
-// TODO: Set back to true when a Swift 5.6 release of
-// StaticInternalSwiftSyntaxParser is available
-private let staticSwiftSyntax = false
-#else
 private let staticSwiftSyntax = false
 #endif
 
@@ -20,6 +14,15 @@ private let swiftSyntaxFiveDotSix = false
 #else
 private let swiftSyntaxFiveDotSix = true
 #endif
+
+let frameworkDependencies: [Target.Dependency] = [
+    .product(name: "SourceKittenFramework", package: "SourceKitten"),
+    .product(name: "SwiftSyntax", package: "SwiftSyntax"),
+    "Yams",
+]
++ (addCryptoSwift ? ["CryptoSwift"] : [])
++ (staticSwiftSyntax ? ["lib_InternalSwiftSyntaxParser"] : [])
++ (swiftSyntaxFiveDotSix ? [.product(name: "SwiftSyntaxParser", package: "SwiftSyntax")] : [])
 
 let package = Package(
     name: "SwiftLint",
@@ -47,14 +50,11 @@ let package = Package(
         ),
         .target(
             name: "SwiftLintFramework",
-            dependencies: [
-                .product(name: "SourceKittenFramework", package: "SourceKitten"),
-                .product(name: "SwiftSyntax", package: "SwiftSyntax"),
-                "Yams",
-            ]
-            + (addCryptoSwift ? ["CryptoSwift"] : [])
-            + (staticSwiftSyntax ? ["lib_InternalSwiftSyntaxParser"] : [])
-            + (swiftSyntaxFiveDotSix ? [.product(name: "SwiftSyntaxParser", package: "SwiftSyntax")] : [])
+            dependencies: frameworkDependencies,
+            // Pass `-dead_strip_dylibs` to ignore the dynamic version of `lib_InternalSwiftSyntaxParser`
+            // that ships with SwiftSyntax because we want the static version from
+            // `StaticInternalSwiftSyntaxParser`.
+            swiftSettings: staticSwiftSyntax ? [.unsafeFlags(["-Xlinker", "-dead_strip_dylibs"])] : []
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",
@@ -67,7 +67,7 @@ let package = Package(
         ),
     ] + (staticSwiftSyntax ? [.binaryTarget(
             name: "lib_InternalSwiftSyntaxParser",
-            url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.5.2/lib_InternalSwiftSyntaxParser.xcframework.zip",
-            checksum: "96bbc9ab4679953eac9ee46778b498cb559b8a7d9ecc658e54d6679acfbb34b8"
+            url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.6/lib_InternalSwiftSyntaxParser.xcframework.zip",
+            checksum: "88d748f76ec45880a8250438bd68e5d6ba716c8042f520998a438db87083ae9d"
         )] : [])
 )

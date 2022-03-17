@@ -42,6 +42,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3896](https://github.com/realm/SwiftLint/issues/3896)
 
+* Add `IN_PROCESS_SOURCEKIT` environment variable, which uses
+  the in-process version of sourcekitd on macOS when Xcode 13 or later is
+  selected. This avoids the use of XPC, which is prohibited in some sandboxed
+  environments, such as in Swift Package Manager plugins.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+
 #### Bug Fixes
 
 * Extend `class_delegate_protocol` to correctly identify cases with the protocol

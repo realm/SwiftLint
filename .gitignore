@@ -38,10 +38,8 @@ xcuserdata
 # SwiftLint
 
 SwiftLint.pkg
-SwiftLintFramework.framework.zip
+*.zip
 benchmark_*
-portable_swiftlint.zip
-swiftlint_linux.zip
 osscheck/
 docs/
 rule_docs/

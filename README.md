@@ -82,12 +82,13 @@ Insert the following as the script:
 
 ![](assets/runscript.png)
 
-When you installed `SwiftLint` via `homebrew` on `Apple Silicon` machine, you might experience this `warning/error`,
+If you installed `SwiftLint` via Homebrew on Apple Silicon, you might experience this warning:
 
 > warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
 
-That is because `homebrew` on `Apple silicon` is installing the binaries inside the `/opt/homebrew/bin` folder.
-So to solve this issue, you can either append the `/opt/homebrew/bin` to the search path along build phase:
+That is because Homebrew on Apple Silicon is installs the binaries inside the `/opt/homebrew/bin`
+folder by default. To instruct Xcode where to find SwiftLint, you can either add
+`/opt/homebrew/bin` to the `PATH` environment variable in your build phase:
 
 ```bash
 export PATH="$PATH:/opt/homebrew/bin"
@@ -98,10 +99,11 @@ else
 fi
 ```
 
-Or by just creating a symbolic link pointing to `/usr/local/bin` from your terminal,
+or you can create a symbolic link in `/usr/local/bin` pointing to the actual binary by running this
+command:
 
 ```bash
-ln /opt/homebrew/bin/swiftlint /usr/local/bin
+ln -s /opt/homebrew/bin/swiftlint /usr/local/bin
 ```
 
 You might want to move your SwiftLint phase directly before 'Compile Sources'

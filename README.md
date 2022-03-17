@@ -80,9 +80,17 @@ To do this click the Project in the file navigator, then click the primary app
 target, and go to Build Phases. Click the + and select "New Run Script Phase".
 Insert the following as the script:
 
+![](assets/runscript.png)
+
+When you installed `SwiftLint` via `homebrew` on `Apple Silicon` machine, you might experience this `warning/error`,
+
+> warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
+
+That is because `homebrew` on `Apple silicon` is installing the binaries inside the `/opt/homebrew/bin` folder.
+So to solve this issue, you can either append the `/opt/homebrew/bin` to the search path along build phase:
+
 ```bash
 export PATH="$PATH:/opt/homebrew/bin"
-
 if which swiftlint >/dev/null; then
   swiftlint
 else
@@ -90,7 +98,11 @@ else
 fi
 ```
 
-![](assets/runscript.png)
+Or by just creating a symbolic link pointing to `/usr/local/bin` from your terminal,
+
+```bash
+ln /opt/homebrew/bin/swiftlint /usr/local/bin
+```
 
 You might want to move your SwiftLint phase directly before 'Compile Sources'
 step, to detect errors quickly before compiling. However, SwiftLint is designed

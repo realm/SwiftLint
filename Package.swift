@@ -54,7 +54,7 @@ let package = Package(
             // Pass `-dead_strip_dylibs` to ignore the dynamic version of `lib_InternalSwiftSyntaxParser`
             // that ships with SwiftSyntax because we want the static version from
             // `StaticInternalSwiftSyntaxParser`.
-            swiftSettings: staticSwiftSyntax ? [.unsafeFlags(["-Xlinker", "-dead_strip_dylibs"])] : []
+            linkerSettings: staticSwiftSyntax ? [.unsafeFlags(["-Xlinker", "-dead_strip_dylibs"])] : []
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",

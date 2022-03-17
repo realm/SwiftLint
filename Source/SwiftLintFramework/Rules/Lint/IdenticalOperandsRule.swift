@@ -57,15 +57,26 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
                 Example("XCTAssertTrue(↓s3 \(operation) s3)"),
                 Example("if let tab = tabManager.selectedTab, ↓tab.webView \(operation) tab.webView")
             ]
-        }
+        } + [
+            Example("""
+                return ↓lhs.foo == lhs.foo &&
+                       lhs.bar == rhs.bar
+            """),
+            Example("""
+                return lhs.foo == rhs.foo &&
+                       ↓lhs.bar == lhs.bar
+            """)
+        ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let tree = file.syntaxTree else {
             return []
         }
+        let rewriter = SequenceExprFoldingRewriter(operatorContext: .makeBuiltinOperatorContext())
+        let folded = rewriter.visit(tree)
         let visitor = IdenticalOperandsVisitor()
-        visitor.walk(tree)
+        visitor.walk(folded)
         return visitor.positions.map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,

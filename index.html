@@ -379,36 +379,35 @@ we encourage you to watch this presentation or read the transcript:</p>
 <p>Integrate SwiftLint into your Xcode project to get warnings and errors displayed
 in the issue navigator.</p>
 
-<p>To do this click the Project in the file navigator, then click the primary app
+<p>To do this select the project in the file navigator, then select the primary app
 target, and go to Build Phases. Click the + and select &ldquo;New Run Script Phase&rdquo;.
 Insert the following as the script:</p>
 
 <p><img src="assets/runscript.png" alt=""></p>
 
-<p>If you installed <code>SwiftLint</code> via Homebrew on Apple Silicon, you might experience this warning:</p>
+<p>If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:</p>
 
 <blockquote>
 <p>warning: SwiftLint not installed, download from <a href="https://github.com/realm/SwiftLint">https://github.com/realm/SwiftLint</a></p>
 </blockquote>
 
-<p>That is because Homebrew on Apple Silicon is installs the binaries inside the <code>/opt/homebrew/bin</code>
+<p>That is because Homebrew on Apple Silicon installs the binaries into the <code>/opt/homebrew/bin</code>
 folder by default. To instruct Xcode where to find SwiftLint, you can either add
-<code>/opt/homebrew/bin</code> to the <code>PATH</code> environment variable in your build phase:</p>
+<code>/opt/homebrew/bin</code> to the <code>PATH</code> environment variable in your build phase</p>
 <pre class="highlight shell"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/opt/homebrew/bin"</span>
-<span class="k">if </span>which swiftlint <span class="o">&gt;</span>/dev/null<span class="p">;</span> <span class="k">then
+<span class="k">if </span>which swiftlint <span class="o">&gt;</span> /dev/null<span class="p">;</span> <span class="k">then
   </span>swiftlint
 <span class="k">else
   </span><span class="nb">echo</span> <span class="s2">"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"</span>
 <span class="k">fi</span>
 </code></pre>
 
-<p>or you can create a symbolic link in <code>/usr/local/bin</code> pointing to the actual binary by running this
-command:</p>
+<p>or you can create a symbolic link in <code>/usr/local/bin</code> pointing to the actual binary:</p>
 <pre class="highlight shell"><code><span class="nb">ln</span> <span class="nt">-s</span> /opt/homebrew/bin/swiftlint /usr/local/bin
 </code></pre>
 
-<p>You might want to move your SwiftLint phase directly before &lsquo;Compile Sources&rsquo;
-step, to detect errors quickly before compiling. However, SwiftLint is designed
+<p>You might want to move your SwiftLint phase directly before the &lsquo;Compile Sources&rsquo;
+step to detect errors quickly before compiling. However, SwiftLint is designed
 to run on valid Swift code that cleanly completes the compiler&rsquo;s parsing stage.
 So running SwiftLint before &lsquo;Compile Sources&rsquo; might yield some incorrect
 results.</p>

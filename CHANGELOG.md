@@ -29,6 +29,9 @@
   [Keith Smiley](https://github.com/keith)
   [#3516](https://github.com/realm/SwiftLint/issues/3516)
 
+* Add `explicit_return` opt-in rule that warns against omitting the `return`
+  keyword inside closures, functions and getters.
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

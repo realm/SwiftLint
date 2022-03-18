@@ -3011,6 +3011,10 @@ accordingly._
   [JP Simard](https://github.com/jpsim)
 
 ### Bug Fixes
+* Add `explicit_return` opt-in rule that warns against omitting the `return`
+  keyword inside closures, functions and getters.
+
+#### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using
   closures inside `didSet` and other accessors.  

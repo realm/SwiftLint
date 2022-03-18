@@ -1,4 +1,4 @@
-## 0.47.0-rc.3: Smart Appliance
+## 0.47.0-rc.4: Smart Appliance
 
 #### Breaking
 

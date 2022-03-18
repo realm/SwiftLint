@@ -15,6 +15,7 @@ modified_files = git.modified_files + git.added_files
 has_app_changes = !modified_files.grep(/Source/).empty?
 has_test_changes = !modified_files.grep(/Tests/).empty?
 has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_package_changes = !modified_files.grep(/Package\.swift/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !modified_files.include?('CHANGELOG.md') && has_app_changes
@@ -30,7 +31,7 @@ Here's an example of your CHANGELOG entry:
 MARKDOWN
 end
 
-return unless has_app_changes || has_danger_changes
+return unless has_app_changes || has_danger_changes || has_package_changes
 
 # Non-trivial amounts of app changes without tests
 if git.lines_of_code > 50 && has_app_changes && !has_test_changes

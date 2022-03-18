@@ -62,6 +62,7 @@ public let builtInRules: [any Rule.Type] = [
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
+    ExplicitReturnRule.self,
     ExplicitSelfRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,

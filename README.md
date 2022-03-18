@@ -76,38 +76,37 @@ we encourage you to watch this presentation or read the transcript:
 Integrate SwiftLint into your Xcode project to get warnings and errors displayed
 in the issue navigator.
 
-To do this click the Project in the file navigator, then click the primary app
+To do this select the project in the file navigator, then select the primary app
 target, and go to Build Phases. Click the + and select "New Run Script Phase".
 Insert the following as the script:
 
 ![](assets/runscript.png)
 
-If you installed `SwiftLint` via Homebrew on Apple Silicon, you might experience this warning:
+If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:
 
 > warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
 
-That is because Homebrew on Apple Silicon is installs the binaries inside the `/opt/homebrew/bin`
+That is because Homebrew on Apple Silicon installs the binaries into the `/opt/homebrew/bin`
 folder by default. To instruct Xcode where to find SwiftLint, you can either add
-`/opt/homebrew/bin` to the `PATH` environment variable in your build phase:
+`/opt/homebrew/bin` to the `PATH` environment variable in your build phase
 
 ```bash
 export PATH="$PATH:/opt/homebrew/bin"
-if which swiftlint >/dev/null; then
+if which swiftlint > /dev/null; then
   swiftlint
 else
   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi
 ```
 
-or you can create a symbolic link in `/usr/local/bin` pointing to the actual binary by running this
-command:
+or you can create a symbolic link in `/usr/local/bin` pointing to the actual binary:
 
 ```bash
 ln -s /opt/homebrew/bin/swiftlint /usr/local/bin
 ```
 
-You might want to move your SwiftLint phase directly before 'Compile Sources'
-step, to detect errors quickly before compiling. However, SwiftLint is designed
+You might want to move your SwiftLint phase directly before the 'Compile Sources'
+step to detect errors quickly before compiling. However, SwiftLint is designed
 to run on valid Swift code that cleanly completes the compiler's parsing stage.
 So running SwiftLint before 'Compile Sources' might yield some incorrect
 results.

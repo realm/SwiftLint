@@ -21,6 +21,11 @@
   environment variable.  
   [Juozas Valancius](https://github.com/juozasvalancius)
 
+* Add a new `artifactbundle` release asset containing `swiftlint` binaries for
+  x86 & arm64 macOS.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+  [#3840](https://github.com/realm/SwiftLint/issues/3840)
+
 #### Bug Fixes
 
 * Fix false positives in `unused_closure_parameter` when using parameters with

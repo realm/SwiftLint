@@ -37,6 +37,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var benchmark = false
     @Option(help: "The reporter used to log errors and warnings.")
     var reporter: String?
+    @Flag(help: "Use the in-process version of sourcekit.")
+    var inProcessSourcekit = false
 }
 
 // MARK: - Common Argument Help

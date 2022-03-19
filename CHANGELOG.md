@@ -16,6 +16,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3749](https://github.com/realm/SwiftLint/issues/3749)
 
+* Add the `--in-process-sourcekit` command line flag to `lint` and `analyze`
+  commands, which has the same effect as setting the `IN_PROCESS_SOURCEKIT`
+  environment variable.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+
 #### Bug Fixes
 
 * Fix false positives in `unused_closure_parameter` when using parameters with

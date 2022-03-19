@@ -1,5 +1,6 @@
 import Dispatch
 import Foundation
+import SourceKittenFramework
 import SwiftLintFramework
 
 enum LintOrAnalyzeMode {
@@ -26,6 +27,7 @@ enum LintOrAnalyzeMode {
 
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
+        SourceKittenConfiguration.preferInProcessSourceKit = options.inProcessSourcekit
         return Signposts.record(name: "LintOrAnalyzeCommand.run") {
             options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
@@ -203,6 +205,7 @@ struct LintOrAnalyzeOptions {
     let format: Bool
     let compilerLogPath: String?
     let compileCommands: String?
+    let inProcessSourcekit: Bool
 
     var verb: String {
         if autocorrect {

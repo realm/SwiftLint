@@ -79,6 +79,7 @@ build: clean build_x86_64 build_arm64
 		"$(SWIFTLINT_EXECUTABLE)" \
 		"$(SWIFTLINT_EXECUTABLE_X86)" \
 		"$(SWIFTLINT_EXECUTABLE_ARM64)"
+	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
 
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)

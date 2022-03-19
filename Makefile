@@ -25,7 +25,7 @@ LICENSE_PATH="$(shell pwd)/LICENSE"
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-VERSION_STRING="$(shell ./script/get-version)"
+VERSION_STRING=$(shell ./script/get-version)
 
 .PHONY: all clean build install package test uninstall docs
 
@@ -105,6 +105,13 @@ portable_zip: installables
 	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
+spm_artifactbundle_macos: installables
+	mkdir -p "$(TEMPORARY_FOLDER)/macos.artifactbundle/swiftlint-$(VERSION_STRING)-macos/bin"
+	sed 's/__VERSION__/$(VERSION_STRING)/g' script/info-macos.json.template > "$(TEMPORARY_FOLDER)/macos.artifactbundle/info.json"
+	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(TEMPORARY_FOLDER)/macos.artifactbundle/swiftlint-$(VERSION_STRING)-macos/bin"
+	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)/macos.artifactbundle"
+	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "macos.artifactbundle") > "./macos.artifactbundle.zip"
+
 zip_linux: docker_image
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	docker run swiftlint cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
@@ -114,14 +121,14 @@ zip_linux: docker_image
 
 zip_linux_release:
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run ghcr.io/realm/swiftlint:$(VERSION_STRING) cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
+	docker run "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
 	chmod +x "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
 zip_linux_release_5_5:
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run ghcr.io/realm/swiftlint:5.5-$(VERSION_STRING) cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
+	docker run "ghcr.io/realm/swiftlint:5.5-$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
 	chmod +x "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_swift_5_5.zip"
@@ -133,10 +140,10 @@ package: build
 		--identifier "io.realm.swiftlint" \
 		--install-location "/usr/local/bin" \
 		--root "$(PACKAGE_ROOT)" \
-		--version $(VERSION_STRING) \
+		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
-release: package portable_zip zip_linux_release zip_linux_release_5_5
+release: package portable_zip spm_artifactbundle_macos zip_linux_release zip_linux_release_5_5
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .
@@ -162,7 +169,7 @@ docs:
 	bundle exec jazzy
 
 get_version:
-	@echo $(VERSION_STRING)
+	@echo "$(VERSION_STRING)"
 
 push_version:
 ifneq ($(strip $(shell git status --untracked-files=no --porcelain 2>/dev/null)),)

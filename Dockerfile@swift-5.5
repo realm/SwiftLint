@@ -20,7 +20,6 @@ RUN swift build $SWIFT_FLAGS
 RUN mkdir -p /executables
 RUN for executable in $(swift package completion-tool list-executables); do \
         install -v `swift build $SWIFT_FLAGS --show-bin-path`/$executable /executables; \
-        strip -rSTX /executables/$executable; \
     done
 
 # runtime image

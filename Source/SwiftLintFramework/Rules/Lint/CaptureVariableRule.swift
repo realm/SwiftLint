@@ -285,3 +285,21 @@ private extension StringView {
         return lines[line - 1].byteRange.location + ByteCount(column - 1)
     }
 }
+
+extension CaptureVariableRule.FileInfo: CollectingCacheable {
+    public typealias CacheDto = [CaptureVariableRule.USR]
+
+    public func toDto() -> CollectingCacheDto {
+        return .captureVariable(self.sorted())
+    }
+
+    public static func fromDto(_ collectingCacheDto: CollectingCacheDto) -> CaptureVariableRule.FileInfo? {
+        switch collectingCacheDto {
+        case let .captureVariable(wrapped):
+            return Set(wrapped)
+
+        default:
+            return nil
+        }
+    }
+}

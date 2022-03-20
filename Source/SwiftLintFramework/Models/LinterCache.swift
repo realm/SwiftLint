@@ -1,13 +1,30 @@
 import Foundation
 
+private typealias RuleId = String
+
 private enum LinterCacheError: Error {
     case noLocation
 }
 
 private struct FileCacheEntry: Codable {
-    let violations: [StyleViolation]
-    let lastModification: Date
-    let swiftVersion: SwiftVersion
+    var violations: [StyleViolation]
+    var collectInfo: [RuleId: CollectCacheInfo]
+    var lastModification: Date
+    var swiftVersion: SwiftVersion
+
+    static func empty(lastModification: Date, swiftVersion: SwiftVersion) -> FileCacheEntry {
+        return FileCacheEntry(
+            violations: [],
+            collectInfo: [:],
+            lastModification: lastModification,
+            swiftVersion: swiftVersion
+        )
+    }
+}
+
+private struct CollectCacheInfo: Codable {
+    let compilerArgumentsHash: String
+    let dto: CollectingCacheDto
 }
 
 private struct FileCache: Codable {
@@ -58,7 +75,39 @@ public final class LinterCache {
     }
 
     internal func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
+        update(violations: violations, file: file, configuration: configuration)
+    }
+
+    internal func cache<R: CollectingRule>(
+        collectFileInfo: R.FileInfo,
+        compilerArguments: [String],
+        rule: R.Type,
+        forFile file: String,
+        configuration: Configuration
+    ) where R.FileInfo: CollectingCacheable {
+        update(
+            collectInfo: (
+                R.description.identifier,
+                CollectCacheInfo(
+                    compilerArgumentsHash: compilerArguments.hash(),
+                    dto: collectFileInfo.toDto()
+                )
+            ),
+            file: file,
+            configuration: configuration
+        )
+    }
+
+    private func update(
+        violations: [StyleViolation]? = nil,
+        collectInfo: (RuleId, CollectCacheInfo)? = nil,
+        file: String,
+        configuration: Configuration
+    ) {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
+            queuedPrintError(
+                "Unexpected error for file '\(file)': could not obtain the last modification date while saving to cache"
+            )
             return
         }
 
@@ -66,13 +115,47 @@ public final class LinterCache {
 
         writeCacheLock.lock()
         var filesCache = writeCache[configurationDescription] ?? .empty
-        filesCache.entries[file] = FileCacheEntry(violations: violations, lastModification: lastModification,
-                                                  swiftVersion: swiftVersion)
+        var fileEntry = filesCache.entries[file] ?? .empty(
+            lastModification: lastModification,
+            swiftVersion: swiftVersion
+        )
+
+        if let violations = violations {
+            fileEntry.violations = violations
+        }
+        if let (ruleId, collectInfo) = collectInfo {
+            fileEntry.collectInfo[ruleId] = collectInfo
+        }
+
+        filesCache.entries[file] = fileEntry
         writeCache[configurationDescription] = filesCache
         writeCacheLock.unlock()
     }
 
     internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
+        guard let entry = getEntry(forFile: file, configuration: configuration) else {
+            return nil
+        }
+
+        return entry.violations
+    }
+
+    internal func collectedFileInfo<R: CollectingRule>(
+        for rule: R.Type,
+        forFile file: String,
+        compilerArguments: [String],
+        configuration: Configuration
+    ) -> R.FileInfo? where R.FileInfo: CollectingCacheable {
+        guard let entry = getEntry(forFile: file, configuration: configuration),
+              let collectInfo = entry.collectInfo[R.description.identifier],
+              collectInfo.compilerArgumentsHash == compilerArguments.hash() else {
+            return nil
+        }
+
+        return R.FileInfo.fromDto(collectInfo.dto)
+    }
+
+    private func getEntry(forFile file: String, configuration: Configuration) -> FileCacheEntry? {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file),
             let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file],
             entry.lastModification == lastModification,
@@ -81,7 +164,7 @@ public final class LinterCache {
             return nil
         }
 
-        return entry.violations
+        return entry
     }
 
     /// Persists the cache to disk.
@@ -150,5 +233,11 @@ public final class LinterCache {
         return lazyReadCache.merging(writeCache) { read, write in
             FileCache(entries: read.entries.merging(write.entries) { _, write in write })
         }
+    }
+}
+
+private extension Array where Element == String {
+    func hash() -> String {
+        return self.joined(separator: " ").md5()
     }
 }

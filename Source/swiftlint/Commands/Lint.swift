@@ -12,10 +12,6 @@ extension SwiftLint {
         var useSTDIN = false
         @Flag(help: quietOptionDescription(for: .lint))
         var quiet = false
-        @Option(help: "The directory of the cache used when linting.")
-        var cachePath: String?
-        @Flag(help: "Ignore cache when linting.")
-        var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
         @Argument(help: pathsArgumentDescription(for: .lint))
@@ -43,8 +39,8 @@ extension SwiftLint {
                 benchmark: common.benchmark,
                 reporter: common.reporter,
                 quiet: quiet,
-                cachePath: cachePath,
-                ignoreCache: noCache,
+                cachePath: common.cachePath,
+                ignoreCache: common.noCache,
                 enableAllRules: enableAllRules,
                 autocorrect: common.fix,
                 format: common.format,

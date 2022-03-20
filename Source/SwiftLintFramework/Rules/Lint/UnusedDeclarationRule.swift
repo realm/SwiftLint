@@ -334,3 +334,39 @@ private extension StringView {
         return lines[line - 1].byteRange.location + ByteCount(column - 1)
     }
 }
+
+extension UnusedDeclarationRule.FileInfo: CollectingCacheable {
+    public struct CacheDto: Codable {
+        var referenced: [String]
+        var declared: [DeclaredUSR]
+
+        // swiftlint:disable:next nesting
+        struct DeclaredUSR: Codable {
+            let usr: String
+            let nameOffset: Int
+        }
+    }
+
+    public func toDto() -> CollectingCacheDto {
+        let cacheDto = CacheDto(
+            referenced: Array(self.referenced).sorted(),
+            declared: self.declared
+                .map { .init(usr: $0.usr, nameOffset: $0.nameOffset.value) }
+                .sorted(by: { $0.nameOffset < $1.nameOffset })
+        )
+        return .unusedDeclaration(cacheDto)
+    }
+
+    public static func fromDto(_ collectingCacheDto: CollectingCacheDto) -> UnusedDeclarationRule.FileInfo? {
+        switch collectingCacheDto {
+        case let .unusedDeclaration(wrapped):
+            return UnusedDeclarationRule.FileInfo(
+                referenced: Set(wrapped.referenced),
+                declared: Set(wrapped.declared.map { .init(usr: $0.usr, nameOffset: .init($0.nameOffset)) })
+            )
+
+        default:
+            return nil
+        }
+    }
+}

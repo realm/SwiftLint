@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import Foundation
 import SourceKittenFramework
 
@@ -47,8 +49,16 @@ public protocol Rule {
     ///
     /// - parameter file:              The file for which to collect info.
     /// - parameter storage:           The storage object where collected info should be saved.
+    /// - parameter cache:             The cache object where collected info should be saved, if rule supports caching.
+    /// - parameter configuration:     The configuration to use when caching.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
-    func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String])
+    func collectInfo(
+        for file: SwiftLintFile,
+        into storage: RuleStorage,
+        cache: LinterCache?,
+        configuration: Configuration,
+        compilerArguments: [String]
+    )
 
     /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
     /// expectations.
@@ -77,7 +87,13 @@ extension Rule {
         return Self.description == type(of: rule).description
     }
 
-    public func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
+    public func collectInfo(
+        for file: SwiftLintFile,
+        into storage: RuleStorage,
+        cache: LinterCache?,
+        configuration: Configuration,
+        compilerArguments: [String]
+    ) {
         // no-op: only CollectingRules mutate their storage
     }
 
@@ -270,9 +286,14 @@ public protocol CollectingRule: AnyCollectingRule {
 }
 
 public extension CollectingRule {
-    func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
-        storage.collect(info: collectInfo(for: file, compilerArguments: compilerArguments),
-                        for: file, in: self)
+    func collectInfo(
+        for file: SwiftLintFile,
+        into storage: RuleStorage,
+        cache: LinterCache?,
+        configuration: Configuration,
+        compilerArguments: [String]
+    ) {
+        storage.collect(info: collectInfo(for: file, compilerArguments: compilerArguments), for: file, in: self)
     }
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
         guard let info = storage.collectedInfo(for: self) else {
@@ -292,6 +313,41 @@ public extension CollectingRule {
     }
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
+    }
+}
+
+public extension CollectingRule where FileInfo: CollectingCacheable {
+    func collectInfo(
+        for file: SwiftLintFile,
+        into storage: RuleStorage,
+        cache: LinterCache?,
+        configuration: Configuration,
+        compilerArguments: [String]
+    ) {
+        let info: FileInfo
+        if let cache = cache,
+           let file = file.path,
+           let cachedInfo = cache.collectedFileInfo(
+               for: Self.self,
+               forFile: file,
+               compilerArguments: compilerArguments,
+               configuration: configuration
+           ) {
+            info = cachedInfo
+        } else {
+            info = collectInfo(for: file, compilerArguments: compilerArguments)
+            if let cache = cache,
+               let file = file.path {
+                cache.cache(
+                    collectFileInfo: info,
+                    compilerArguments: compilerArguments,
+                    rule: Self.self,
+                    forFile: file,
+                    configuration: configuration
+                )
+            }
+        }
+        storage.collect(info: info, for: file, in: self)
     }
 }
 

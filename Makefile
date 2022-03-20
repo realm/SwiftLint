@@ -106,11 +106,11 @@ portable_zip: installables
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
 spm_artifactbundle_macos: installables
-	mkdir -p "$(TEMPORARY_FOLDER)/macos.artifactbundle/swiftlint-$(VERSION_STRING)-macos/bin"
-	sed 's/__VERSION__/$(VERSION_STRING)/g' script/info-macos.json.template > "$(TEMPORARY_FOLDER)/macos.artifactbundle/info.json"
-	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(TEMPORARY_FOLDER)/macos.artifactbundle/swiftlint-$(VERSION_STRING)-macos/bin"
-	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)/macos.artifactbundle"
-	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "macos.artifactbundle") > "./macos.artifactbundle.zip"
+	mkdir -p "$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle/swiftlint-$(VERSION_STRING)-macos/bin"
+	sed 's/__VERSION__/$(VERSION_STRING)/g' script/info-macos.json.template > "$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle/info.json"
+	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle/swiftlint-$(VERSION_STRING)-macos/bin"
+	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle"
+	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary-macos.artifactbundle.zip"
 
 zip_linux: docker_image
 	$(eval TMP_FOLDER := $(shell mktemp -d))

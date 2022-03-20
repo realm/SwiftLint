@@ -48,6 +48,15 @@
   environments, such as in Swift Package Manager plugins.  
   [Juozas Valancius](https://github.com/juozasvalancius)
 
+* The above can also be achieved using `--in-process-sourcekit` command line
+  option.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+
+* Added macOS `artifactbundle` as a release asset that contains the built
+  `swiftlint` tool.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+  [#3840](https://github.com/realm/SwiftLint/issues/3840)
+
 #### Bug Fixes
 
 * Extend `class_delegate_protocol` to correctly identify cases with the protocol

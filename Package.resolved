@@ -20,6 +20,24 @@
         }
       },
       {
+        "package": "cmark-gfm",
+        "repositoryURL": "https://github.com/apple/swift-cmark.git",
+        "state": {
+          "branch": "gfm",
+          "revision": "7fc530e5f12432db9768326ff74dc46de72a24e2",
+          "version": null
+        }
+      },
+      {
+        "package": "swift-markdown",
+        "repositoryURL": "https://github.com/apple/swift-markdown.git",
+        "state": {
+          "branch": "main",
+          "revision": "16ebb0ccea68c0009f550bd48cca1df8675685dc",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftSyntax",
         "repositoryURL": "https://github.com/apple/swift-syntax.git",
         "state": {

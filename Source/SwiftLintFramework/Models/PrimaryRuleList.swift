@@ -170,6 +170,7 @@ public let primaryRuleList = RuleList(rules: [
     StaticOperatorRule.self,
     StrictFilePrivateRule.self,
     StrongIBOutletRule.self,
+    StructuredFunctionDocRule.self,
     SuperfluousDisableCommandRule.self,
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,

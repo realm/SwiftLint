@@ -16,6 +16,7 @@ private let swiftSyntaxFiveDotSix = true
 #endif
 
 let frameworkDependencies: [Target.Dependency] = [
+    .product(name: "Markdown", package: "swift-markdown"),
     .product(name: "SourceKittenFramework", package: "SourceKitten"),
     .product(name: "SwiftSyntax", package: "SwiftSyntax"),
     "Yams",
@@ -38,6 +39,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.32.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
+        .package(url: "https://github.com/apple/swift-markdown.git", .branch("main")),
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),
     targets: [
         .executableTarget(

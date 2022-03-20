@@ -749,6 +749,12 @@ class StrongIBOutletRuleTests: XCTestCase {
     }
 }
 
+class StructuredFunctionDocRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StructuredFunctionDocRule.description)
+    }
+}
+
 class SwitchCaseOnNewlineRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseOnNewlineRule.description)

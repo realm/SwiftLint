@@ -1,7 +1,7 @@
 import Dispatch
 import Foundation
-import SwiftLintFramework
 import SourceKittenFramework
+import SwiftLintFramework
 
 enum LintOrAnalyzeMode {
     case lint, analyze

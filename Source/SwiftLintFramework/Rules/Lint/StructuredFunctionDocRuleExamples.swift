@@ -1,3 +1,6 @@
+import class Down.Text
+typealias MarkdownText = Text
+
 internal struct StructuredFunctionDocRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""
@@ -47,27 +50,27 @@ internal struct StructuredFunctionDocRuleExamples {
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
-        /// Parameters are out of order.
+        ↓/// Parameters are out of order.
         /// - Parameters:
         ///   - a: a param.
-        ↓///   - c: c param.
+        ///   - c: c param.
         ///   - b: b param.
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
-        /// Missing parameter.
+        ↓/// Missing parameter.
         /// - Parameters:
         ///   - a: a param.
-        ///   - b: b param.↓
+        ///   - b: b param.
         func foo(a: Int, b: Bool, c: String) { }
         """),
         Example("""
-        /// Extra parameter.
+        ↓/// Extra parameter.
         /// - Parameters:
         ///   - a: a param.
         ///   - b: b param.
         ///   - c: c param.
-        ↓///   - d: d param.
+        ///   - d: d param.
         func foo(a: Int, b: Bool, c: String) { }
         """)
     ]

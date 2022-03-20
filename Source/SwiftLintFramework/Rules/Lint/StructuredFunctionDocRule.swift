@@ -1,5 +1,4 @@
-import Foundation
-import Markdown
+import Down
 import SourceKittenFramework
 
 public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -45,11 +44,10 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
         }
         let docLines = Array(file.stringView.lines[docLineRange.start - 1 ..< docLineRange.end - 1])
 
-        let lineContents = docLines.map {
-            $0.content.removingCommonLeadingWhitespaceFromLines().dropFirst(3)
-        }.joined(separator: "\n")
+        guard let document = parseMarkdown(lines: docLines) else {
+            return violation(in: file, offset: docOffset)
+        }
 
-        let document = Document(parsing: lineContents)
         guard isValidSummary(document: document) else {
             return violation(in: file, offset: docOffset)
         }
@@ -58,33 +56,45 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
             return violation(in: file, offset: docOffset)
         }
 
-        let parameterFirstLines = Array(parametersList.children)
-            .compactMap { $0.child(at: 0) as? Markdown.Paragraph }
+        let parameterFirstLines = parametersList.children
+            .compactMap { $0.children.first?.cmarkNode.wrap() as? Paragraph }
             .compactMap { $0.textLines.first }
         let expectedPrefixes = parameterNames.map { $0 + ":" }
 
-        let minCount = min(expectedPrefixes.count, parameterFirstLines.count)
-        for index in 0..<minCount {
-            let docText = parameterFirstLines[index]
-            guard docText.string.starts(with: expectedPrefixes[index]) else {
-                return violation(in: file, offset: computeOffset(of: docText, in: docLines))
+        guard expectedPrefixes.count == parameterFirstLines.count else {
+            return violation(in: file, offset: docOffset)
+        }
+
+        for index in 0..<parameterFirstLines.count {
+            guard
+                let docText = parameterFirstLines[index].literal,
+                docText.starts(with: expectedPrefixes[index])
+            else {
+                return violation(in: file, offset: docOffset)
             }
-        }
-
-        if parameterFirstLines.count > minCount {
-            return violation(in: file, offset: computeOffset(of: parameterFirstLines[minCount], in: docLines))
-        }
-
-        if expectedPrefixes.count > minCount {
-            return violation(in: file, offset: docByteRange.upperBound - 1)
         }
 
         return []
     }
 
-    // The first element must be paragraph. It's content is summary.
-    private func isValidSummary(document: Markup) -> Bool {
-        guard let summaryParagraph = Array(document.children).first as? Markdown.Paragraph else {
+    private func parseMarkdown(lines: [Line]) -> Document? {
+        let markdownString = lines.map {
+            $0.content.removingCommonLeadingWhitespaceFromLines().dropFirst(3)
+        }.joined(separator: "\n")
+
+        let document: CMarkNode
+        do {
+            document = try Down(markdownString: markdownString).toAST()
+        } catch {
+            return nil
+        }
+
+        return document.wrap() as? Document
+    }
+
+    // The first element must be paragraph. Its content is the summary.
+    private func isValidSummary(document: Document) -> Bool {
+        guard let summaryParagraph = document.children.first?.cmarkNode.wrap() as? Paragraph else {
             return false
         }
 
@@ -98,17 +108,21 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
 
     // Parameters list is an unordered list with "Parameters:" paragraph and an ordered list
     // of the actual parameters.
-    private func findParametersList(topMarkupElements: [Markup]) -> UnorderedList? {
-        guard let firstList = topMarkupElements.compactMap({ $0 as? UnorderedList }).first else {
+    private func findParametersList(topMarkupElements: [Node]) -> List? {
+        guard
+            let firstList = topMarkupElements.compactMap({ $0.cmarkNode.wrap() as? List }).first,
+            case .bullet = firstList.listType
+        else {
             return nil
         }
 
         guard
-            let listItem = firstList.child(at: 0),
-            let headerParagraph = listItem.child(at: 0) as? Paragraph,
+            let listItem = firstList.children.first,
+            let headerParagraph = listItem.children.first as? Paragraph,
             let headerText = headerParagraph.textLines.first,
-            headerText.string == "Parameters:",
-            let parametersList = listItem.child(at: 1) as? UnorderedList
+            headerText.literal == "Parameters:",
+            listItem.children.count > 1,
+            let parametersList = listItem.children[1].cmarkNode.wrap() as? List
         else {
             return nil
         }
@@ -123,15 +137,10 @@ public struct StructuredFunctionDocRule: ASTRule, OptInRule, ConfigurationProvid
                            location: Location(file: file, byteOffset: offset))
         ]
     }
-
-    private func computeOffset(of markup: Markup, in docLines: [Line]) -> ByteCount {
-        let lineIndex = markup.range?.lowerBound.line ?? 1
-        return docLines[lineIndex - 1].byteRange.location
-    }
 }
 
-private extension Paragraph {
-    var textLines: [Markdown.Text] {
-        children.compactMap { $0 as? Markdown.Text }
+ private extension Paragraph {
+    var textLines: [MarkdownText] {
+        children.compactMap { $0 as? MarkdownText }
     }
-}
+ }

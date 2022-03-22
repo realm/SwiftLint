@@ -73,7 +73,7 @@ adding a test case in `RulesTests.swift` which simply calls
 `verifyRule(YourNewRule.description)`.
 
 For debugging purposes examples can be marked as `focused`. If there are any
-focused examples found, then only those will be run when running tests.
+focused examples found, then only those will be run when running tests for that rule.
 ```
 nonTriggeringExamples: [
     Example("let x: [Int]"),

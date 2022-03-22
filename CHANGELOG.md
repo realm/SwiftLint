@@ -48,7 +48,7 @@
   environments, such as in Swift Package Manager plugins.  
   [Juozas Valancius](https://github.com/juozasvalancius)
 
-* Add ability to run only one (focused) example
+* Add ability to run only one (focused) example.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3911](https://github.com/realm/SwiftLint/issues/3911)
 

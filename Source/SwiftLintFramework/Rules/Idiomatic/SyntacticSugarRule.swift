@@ -409,13 +409,7 @@ private struct CorrectingContex {
     }
 
     private mutating func replaceCharacters(in range: NSRange, with replacement: String) {
-        contents = contents.replacingCharacters(in: range, with: replacement)
-    }
-}
-
-private extension String {
-    func replacingCharacters(in range: NSRange, with replacement: String) -> String {
-        return (self.bridge()).replacingCharacters(in: range, with: replacement)
+        contents = contents.bridge().replacingCharacters(in: range, with: replacement)
     }
 }
 

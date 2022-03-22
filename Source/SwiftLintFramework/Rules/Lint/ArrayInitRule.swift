@@ -27,18 +27,26 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
             Example("↓foo.map({ $0 })\n"),
             Example("↓foo.map { $0 }\n"),
             Example("↓foo.map { return $0 }\n"),
-            Example("↓foo.map { elem in\n" +
-            "   elem\n" +
-            "}\n"),
-            Example("↓foo.map { elem in\n" +
-            "   return elem\n" +
-            "}\n"),
-            Example("↓foo.map { (elem: String) in\n" +
-                "   elem\n" +
-            "}\n"),
-            Example("↓foo.map { elem -> String in\n" +
-            "   elem\n" +
-            "}\n"),
+            Example("""
+                ↓foo.map { elem in
+                    elem
+                }
+            """),
+            Example("""
+                ↓foo.map { elem in
+                    return elem
+                }
+            """),
+            Example("""
+                ↓foo.map { (elem: String) in
+                    elem
+                }
+            """),
+            Example("""
+                ↓foo.map { elem -> String in
+                    elem
+                }
+            """),
             Example("↓foo.map { $0 /* a comment */ }\n"),
             Example("↓foo.map { /* a comment */ $0 }\n")
         ]

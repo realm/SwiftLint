@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
@@ -185,6 +185,7 @@ public let primaryRuleList = RuleList(rules: [
     TypeBodyLengthRule.self,
     TypeContentsOrderRule.self,
     TypeNameRule.self,
+    TypesafeArrayInitRule.self,
     UnavailableFunctionRule.self,
     UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,

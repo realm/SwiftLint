@@ -14,7 +14,7 @@ jobs:
         containerImage: swift:5.6
   container: $[ variables['containerImage'] ]
   steps:
-    - script: swift test --parallel
+    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
 - job: Xcode
@@ -32,7 +32,7 @@ jobs:
         sw_vers
         xcodebuild -version
       displayName: Version Informations
-    - script: xcodebuild -scheme swiftlint test -destination "platform=macOS"
+    - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="-D DISABLE_FOCUSED_EXAMPLES"
       displayName: xcodebuild test
 
 - job: SwiftPM
@@ -50,7 +50,7 @@ jobs:
         sw_vers
         xcodebuild -version
       displayName: Version Informations
-    - script: swift test --parallel --enable-code-coverage
+    - script: swift test --parallel --enable-code-coverage -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
     - script: |
         xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov

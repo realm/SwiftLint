@@ -32,6 +32,9 @@ public struct Example {
     /// pathological use cases which are indeed important to test but not helpful for understanding can be
     /// hidden from the documentation with this option.
     let excludeFromDocumentation: Bool
+
+    /// Specifies whether the test example should be the only example run during the current test case execution.
+    var isFocused: Bool
 }
 
 public extension Example {
@@ -55,6 +58,7 @@ public extension Example {
         self.file = file
         self.line = line
         self.excludeFromDocumentation = excludeFromDocumentation
+        self.isFocused = false
     }
 
     /// Returns the same example, but with the `code` that is passed in
@@ -68,6 +72,13 @@ public extension Example {
     /// Returns a copy of the Example with all instances of the "↓" character removed.
     func removingViolationMarkers() -> Example {
         return with(code: code.replacingOccurrences(of: "↓", with: ""))
+    }
+
+    /// Makes the current example focused.
+    func focused() -> Example {
+        var new = self
+        new.isFocused = true
+        return new
     }
 }
 

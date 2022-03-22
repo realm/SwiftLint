@@ -356,7 +356,11 @@ extension XCTestCase {
                            requiresFileOnDisk: ruleDescription.requiresFileOnDisk,
                            file: file, line: line)
         }
+        func makeViolations(_ example: Example) -> [StyleViolation] {
+            return violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+        }
 
+        let ruleDescription = ruleDescription.focused()
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
         verify(triggers: triggers, nonTriggers: nonTriggers)
@@ -367,10 +371,6 @@ extension XCTestCase {
 
         if testShebang {
             verify(triggers: triggers.map(addShebang), nonTriggers: nonTriggers.map(addShebang))
-        }
-
-        func makeViolations(_ example: Example) -> [StyleViolation] {
-            return violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
 
         // Comment doesn't violate
@@ -401,6 +401,8 @@ extension XCTestCase {
 
     func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
                            disableCommands: [String], testMultiByteOffsets: Bool) {
+        let ruleDescription = ruleDescription.focused()
+
         parserDiagnosticsDisabledForTests = true
 
         // corrections
@@ -507,5 +509,39 @@ extension XCTestCase {
         } catch {
             XCTFail("Wrong error caught", file: (file), line: line)
         }
+    }
+}
+
+private struct FocusedRuleDescription {
+    let nonTriggeringExamples: [Example]
+    let triggeringExamples: [Example]
+    let corrections: [Example: Example]
+
+    init(rule: RuleDescription) {
+        let nonTriggering = rule.nonTriggeringExamples.filter(\.isFocused)
+        let triggering = rule.triggeringExamples.filter(\.isFocused)
+        let corrections = rule.corrections.filter { _, value in value.isFocused }
+        let anyFocused = nonTriggering.isNotEmpty || triggering.isNotEmpty || corrections.isNotEmpty
+
+        if anyFocused {
+            self.nonTriggeringExamples = nonTriggering
+            self.triggeringExamples = triggering
+            self.corrections = corrections
+#if DISABLE_FOCUSED_EXAMPLES
+            (nonTriggering + triggering + corrections.values).forEach { example in
+                XCTFail("Focused examples are disabled", file: example.file, line: example.line)
+            }
+#endif
+        } else {
+            self.nonTriggeringExamples = rule.nonTriggeringExamples
+            self.triggeringExamples = rule.triggeringExamples
+            self.corrections = rule.corrections
+        }
+    }
+}
+
+private extension RuleDescription {
+    func focused() -> FocusedRuleDescription {
+        return FocusedRuleDescription(rule: self)
     }
 }

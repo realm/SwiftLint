@@ -64,7 +64,8 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             List($names) { $name in
                 TextField($name)
             }
-            """)
+            """),
+            Example(#"_ = ["a"].filter { `class` in `class`.hasPrefix("a") }"#)
         ],
         triggeringExamples: [
             Example("[1, 2].map { ↓number in\n return 3\n}\n"),
@@ -200,17 +201,32 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             guard let byteRange = contents.NSRangeToByteRange(start: range.location,
                                                               length: range.length),
                 // if it's the parameter declaration itself, we should skip
-                byteRange.location > paramOffset,
+                byteRange.location > (paramOffset + 1), // + 1 to handle backticks
                 case let tokens = file.syntaxMap.tokens(inByteRange: byteRange)
             else {
                 continue
             }
 
             let token = tokens.first(where: { token -> Bool in
-                return (token.kind == .identifier
-                    || (token.kind == .keyword && name == "self")) &&
-                    token.offset == byteRange.location &&
-                    token.length == byteRange.length
+                let isIdentifierOrSelf = token.kind == .identifier || (token.kind == .keyword && name == "self")
+                guard isIdentifierOrSelf else { return false }
+
+                let locationAndLengthMatch = token.offset == byteRange.location && token.length == byteRange.length
+                if locationAndLengthMatch { return true }
+
+                // Handle backticks
+                let locationAndLengthMatchForBackticks = (token.offset == byteRange.location - 1) &&
+                    (token.length == byteRange.length + 2)
+                if
+                    locationAndLengthMatchForBackticks,
+                    let tokenContents = file.contents(for: token),
+                    tokenContents.hasPrefix("`"),
+                    tokenContents.hasSuffix("`")
+                {
+                    return true
+                }
+
+                return false
             })
 
             // found a usage, there's no violation!

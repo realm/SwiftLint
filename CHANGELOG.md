@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Add type-checked analyzer rule version of `ArrayInitRule` named
+  `TypesafeArrayInitRule` with identifier `typesafe_array_init` that
+  avoids the false positives present in the lint rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3749](https://github.com/realm/SwiftLint/issues/3749)
 
 #### Bug Fixes
 

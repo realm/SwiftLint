@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
@@ -782,6 +782,12 @@ class TrailingSemicolonRuleTests: XCTestCase {
 class TypeBodyLengthRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)
+    }
+}
+
+class TypesafeArrayInitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TypesafeArrayInitRule.description)
     }
 }
 

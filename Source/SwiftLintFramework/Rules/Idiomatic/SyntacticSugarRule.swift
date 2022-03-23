@@ -113,7 +113,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
         return allViolations.map { violation in
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: ByteCount(violation.position.utf8Offset)),
+                                  location: Location(file: file, byteOffset: ByteCount(violation.position)),
                                   reason: message(for: violation.type))
         }
     }
@@ -384,12 +384,12 @@ private struct CorrectingContex {
             replaceCharacters(in: rightRange, with: "]")
             guard let commaRange = stringView.NSRange(start: commaStart, end: commaEnd) else { return }
 
-            let violationsAfterComma = violation.children.filter { $0.position.utf8Offset > commaStart.utf8Offset }
+            let violationsAfterComma = violation.children.filter { $0.position > commaStart }
             correctViolations(violationsAfterComma)
 
             replaceCharacters(in: commaRange, with: ": ")
 
-            let violationsBeforeComma = violation.children.filter { $0.position.utf8Offset < commaStart.utf8Offset }
+            let violationsBeforeComma = violation.children.filter { $0.position < commaStart }
             correctViolations(violationsBeforeComma)
             replaceCharacters(in: leftRange, with: "[")
 
@@ -404,7 +404,7 @@ private struct CorrectingContex {
             replaceCharacters(in: leftRange, with: "")
         }
 
-        let location = Location(file: file, byteOffset: ByteCount(correction.typeStart.utf8Offset))
+        let location = Location(file: file, byteOffset: ByteCount(correction.typeStart))
         corrections.append(Correction(ruleDescription: type(of: rule).description, location: location))
     }
 

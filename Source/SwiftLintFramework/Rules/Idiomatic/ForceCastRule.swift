@@ -35,7 +35,7 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
         return visitor.positions.map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
+                           location: Location(file: file, byteOffset: ByteCount(position)))
         }
     }
 }

@@ -10,8 +10,8 @@ extension StringView {
     ///
     /// - returns: `NSRange` or nil in case of empty string.
     func NSRange(start: AbsolutePosition, end: AbsolutePosition) -> NSRange? {
-        precondition(end.utf8Offset >= start.utf8Offset, "End position should be bigger than start position")
-        return NSRange(start: start, length: end.utf8Offset - start.utf8Offset)
+        precondition(end.utf8Offset >= start.utf8Offset, "End position should be bigger than the start position")
+        return NSRange(start: start, length: ByteCount(end.utf8Offset - start.utf8Offset))
     }
 
     /// Converts absolute position with length from SwiftSyntax to a valid `NSRange` if possible.
@@ -20,8 +20,14 @@ extension StringView {
     /// - parameter length: Length in bytes.
     ///
     /// - returns: `NSRange` or nil in case of empty string.
-    private func NSRange(start: AbsolutePosition, length: Int) -> NSRange? {
-        let byteRange = ByteRange(location: ByteCount(start.utf8Offset), length: ByteCount(length))
+    private func NSRange(start: AbsolutePosition, length: ByteCount) -> NSRange? {
+        let byteRange = ByteRange(location: ByteCount(start), length: length)
         return byteRangeToNSRange(byteRange)
+    }
+}
+
+private extension ByteCount {
+    init(_ position: AbsolutePosition) {
+        self.init(position.utf8Offset)
     }
 }

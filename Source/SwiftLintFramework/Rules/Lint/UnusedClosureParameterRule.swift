@@ -92,6 +92,10 @@ public struct UnusedClosureParameterRule: SubstitutionCorrectableASTRule, Config
             List($names) { ↓$name in
                 Text("Foo")
             }
+            """),
+            Example("""
+            let class1 = "a"
+            _ = ["a"].filter { ↓`class` in `class1`.hasPrefix("a") }
             """)
         ],
         corrections: [

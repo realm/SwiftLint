@@ -103,7 +103,7 @@ private struct SyntacticSugarRuleViolation {
     var children: [SyntacticSugarRuleViolation] = []
 }
 
-private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
+private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
     private let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
 
     var violations: [SyntacticSugarRuleViolation] = []

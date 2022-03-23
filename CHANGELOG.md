@@ -126,6 +126,9 @@
 #### Experimental
 
 * None.
+* Fix incorrect autocorrection in `syntactic_sugar` rule 
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [#3866](https://github.com/realm/SwiftLint/issues/3866)
 
 #### Enhancements
 

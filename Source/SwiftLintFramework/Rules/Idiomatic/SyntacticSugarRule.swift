@@ -18,9 +18,8 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
-            return []
-        }
+        guard let tree = file.syntaxTree else { return [] }
+
         let visitor = SyntacticSugarRuleVisitor()
         visitor.walk(tree)
 
@@ -29,7 +28,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: ByteCount(violation.position)),
-                                  reason: message(for: violation.type))
+                                  reason: violation.type.violationReason)
         }
     }
 
@@ -38,42 +37,71 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        guard let tree = file.syntaxTree else {
-            return []
-        }
+        guard let tree = file.syntaxTree else { return [] }
+
         let visitor = SyntacticSugarRuleVisitor()
         visitor.walk(tree)
 
-        var context = CorrectingContex(rule: self, file: file, contents: file.contents)
+        var context = CorrectingContext(rule: self, file: file, contents: file.contents)
         context.correctViolations(visitor.violations)
 
         file.write(context.contents)
 
         return context.corrections
     }
+}
 
-    private func message(for originalType: String) -> String {
-        let typeString: String
-        let sugaredType: String
+// MARK: - Private
 
-        switch originalType {
-        case "Optional":
-            typeString = "Optional<Int>"
-            sugaredType = "Int?"
-        case "ImplicitlyUnwrappedOptional":
-            typeString = "ImplicitlyUnwrappedOptional<Int>"
-            sugaredType = "Int!"
-        case "Array":
-            typeString = "Array<Int>"
-            sugaredType = "[Int]"
-        case "Dictionary":
-            typeString = "Dictionary<String, Int>"
-            sugaredType = "[String: Int]"
-        default:
-            return Self.description.description
+private enum SugaredType: String, CaseIterable {
+    case optional = "Optional"
+    case implicitlyUnwrappedOptional = "ImplicitlyUnwrappedOptional"
+    case array = "Array"
+    case dictionary = "Dictionary"
+
+    init?(typeName: String) {
+        var typeName = typeName
+        if typeName.hasPrefix("Swift.") {
+            typeName.removeFirst("Swift.".count)
         }
 
-        return "Shorthand syntactic sugar should be used, i.e. \(sugaredType) instead of \(typeString)."
+        self.init(rawValue: typeName)
+    }
+
+    var sugaredExample: String {
+        switch self {
+        case .optional:
+            return "Int?"
+        case .implicitlyUnwrappedOptional:
+            return "Int!"
+        case .array:
+            return "[Int]"
+        case .dictionary:
+            return "[String: Int]"
+        }
+    }
+
+    var desugaredExample: String {
+        switch self {
+        case .optional, .implicitlyUnwrappedOptional, .array:
+            return "\(rawValue)<Int>"
+        case .dictionary:
+            return "\(rawValue)<String, Int>"
+        }
+    }
+
+    var violationReason: String {
+        "Shorthand syntactic sugar should be used, i.e. \(sugaredExample) instead of \(desugaredExample)."
+    }
+}
+
+private extension Collection where Element == SugaredType {
+    func contains(_ typeName: String) -> Bool {
+        guard let type = SugaredType(typeName: typeName) else {
+            return false
+        }
+
+        return contains(type)
     }
 }
 
@@ -96,7 +124,7 @@ private struct SyntacticSugarRuleViolation {
     }
 
     let position: AbsolutePosition
-    let type: String
+    let type: SugaredType
 
     let correction: Correction
 
@@ -104,7 +132,7 @@ private struct SyntacticSugarRuleViolation {
 }
 
 private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
-    private let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
+    private let types = SugaredType.allCases
 
     var violations: [SyntacticSugarRuleViolation] = []
 
@@ -163,14 +191,6 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: SpecializeExprSyntax) {
         // let x = ↓Array<String>.array(of: object)
-        let tokens = Array(node.expression.tokens)
-
-        // Remove Swift. module prefix if needed
-        var tokensText = tokens.map { $0.text }.joined()
-        if tokensText.starts(with: "Swift.") {
-            tokensText.removeFirst("Swift.".count)
-        }
-
         // Skip checks for 'self' or \T Dictionary<Key, Value>.self
         if let parent = node.parent?.as(MemberAccessExprSyntax.self),
            let lastToken = Array(parent.tokens).last?.tokenKind,
@@ -178,16 +198,17 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             return
         }
 
-        if types.contains(tokensText) {
+        if types.contains(node.expression.description) {
             if let violation = violation(from: node) {
                 violations.append(violation)
             }
             return
         }
 
-        // If there's no type let's check all inner generics like in case of Box<Array<T>>
+        // If there's no type let's check all inner generics like in the case of 'Box<Array<T>>'
         node.genericArgumentClause.arguments
-            .compactMap { violation(in: $0.argumentType) }
+            .lazy
+            .compactMap { self.violation(in: $0.argumentType) }
             .first
             .map { violations.append($0) }
     }
@@ -202,7 +223,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
                 return violation(from: simpleType)
             }
 
-            // If there's no type let's check all inner generics like in case of Box<Array<T>>
+            // If there's no type let's check all inner generics like in the case of 'Box<Array<T>>'
             guard let genericArguments = simpleType.genericArgumentClause else { return nil }
             let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argumentType) }
             return innerTypes.first
@@ -223,24 +244,22 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             let generic = node.genericArguments,
             let firstGenericType = generic.arguments.first,
             let lastGenericType = generic.arguments.last,
-            var typeName = node.typeName
+            let typeName = node.typeName,
+            let type = SugaredType(typeName: typeName)
         else { return nil }
 
-        if typeName.hasPrefix("Swift.") {
-            typeName.removeFirst("Swift.".count)
-        }
-
-        var type = SyntacticSugarRuleViolation.CorrectionType.array
-        if typeName.isEqualTo("Dictionary") {
+        let correctionType: SyntacticSugarRuleViolation.CorrectionType
+        switch type {
+        case .optional:
+            correctionType = .optional
+        case .implicitlyUnwrappedOptional:
+            correctionType = .implicitlyUnwrappedOptional
+        case .array:
+            correctionType = .array
+        case .dictionary:
             guard let comma = firstGenericType.trailingComma else { return nil }
             let lastArgumentEnd = firstGenericType.argumentType.endPositionBeforeTrailingTrivia
-            type = .dictionary(commaStart: lastArgumentEnd, commaEnd: comma.endPosition)
-        }
-        if typeName.isEqualTo("Optional") {
-            type = .optional
-        }
-        if typeName.isEqualTo("ImplicitlyUnwrappedOptional") {
-            type = .implicitlyUnwrappedOptional
+            correctionType = .dictionary(commaStart: lastArgumentEnd, commaEnd: comma.endPosition)
         }
 
         let firstInnerViolation = violation(in: firstGenericType.argumentType)
@@ -248,21 +267,19 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
 
         return SyntacticSugarRuleViolation(
             position: node.positionAfterSkippingLeadingTrivia,
-            type: typeName,
+            type: type,
             correction: .init(typeStart: node.position,
-                              correction: type,
+                              correction: correctionType,
                               leftStart: generic.leftAngleBracket.position,
                               leftEnd: generic.leftAngleBracket.endPosition,
                               rightStart: lastGenericType.endPositionBeforeTrailingTrivia,
                               rightEnd: generic.rightAngleBracket.endPositionBeforeTrailingTrivia),
-            children: [ firstInnerViolation, secondInnerViolation].compactMap { $0 }
+            children: [firstInnerViolation, secondInnerViolation].compactMap { $0 }
         )
     }
 }
 
-// MARK: - Private
-
-private struct CorrectingContex {
+private struct CorrectingContext {
     let rule: Rule
     let file: SwiftLintFile
     var contents: String
@@ -270,7 +287,7 @@ private struct CorrectingContex {
 
     mutating func correctViolations(_ violations: [SyntacticSugarRuleViolation]) {
         let sortedVolations = violations.sorted(by: { $0.correction.typeStart > $1.correction.typeStart })
-        sortedVolations.forEach { violation in
+        for violation in sortedVolations {
             correctViolation(violation)
         }
     }
@@ -345,7 +362,7 @@ extension SimpleTypeIdentifierSyntax: SyntaxWithGenericClause {
 extension SpecializeExprSyntax: SyntaxWithGenericClause {
     var typeName: String? {
         expression.as(IdentifierExprSyntax.self)?.firstToken?.text ??
-        expression.as(MemberAccessExprSyntax.self)?.name.text
+            expression.as(MemberAccessExprSyntax.self)?.name.text
     }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }
 }

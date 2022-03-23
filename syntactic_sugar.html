@@ -354,9 +354,19 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">unsafeBitCast</span><span class="p">(</span><span class="n">nonOptionalT</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="k">self</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="nf">unsafeBitCast</span><span class="p">(</span><span class="n">someType</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">Swift</span><span class="o">.</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="k">self</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">IndexingIterator</span><span class="o">&lt;</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">AnyObject</span><span class="o">&gt;&gt;&gt;.</span><span class="k">self</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;.</span><span class="k">Type</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="n">type</span> <span class="k">is</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;.</span><span class="k">Type</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span><span class="p">:</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="k">case</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">Any</span><span class="o">&gt;.</span><span class="k">none</span> <span class="o">=</span> <span class="n">obj</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="kt">Swift</span><span class="o">.</span><span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">?</span><span class="o">&gt;.</span><span class="k">none</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span>
@@ -367,15 +377,36 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span><span class="p">:</span> <span class="err">↓</span><span class="kt">ImplicitlyUnwrappedOptional</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Swift</span><span class="o">.</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">b</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Int</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Swift</span><span class="o">.</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">b</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Int</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">],</span> <span class="nv">b</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">b</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">as?</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span><span class="o">&gt;</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="kt">Box</span><span class="o">&lt;</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;&gt;</span><span class="p">()</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Box</span><span class="o">&lt;</span><span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;&gt;</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Any</span><span class="o">&gt;</span><span class="p">?</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">Document</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">T</span><span class="p">?</span><span class="o">&gt;</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">(</span><span class="n">_</span> <span class="nv">y</span><span class="p">:</span> <span class="k">inout</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span><span class="p">:</span><span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="o">&gt;&gt;</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">x</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Any</span> <span class="p">{</span> <span class="k">return</span> <span class="err">↓</span><span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span><span class="p">()}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;.</span><span class="nf">array</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="n">object</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Swift</span><span class="o">.</span><span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Swift</span><span class="o">.</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;.</span><span class="nf">array</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="n">object</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">@_specialize</span><span class="p">(</span><span class="k">where</span> <span class="kt">S</span> <span class="o">==</span> <span class="err">↓</span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Character</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">S</span><span class="p">:</span> <span class="kt">Sequence</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">elements</span><span class="p">:</span> <span class="kt">S</span><span class="p">)</span>
 </code></pre>
 
           </div>

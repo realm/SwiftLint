@@ -1,14 +1,6 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-private let warnSyntaxParserFailureOnceImpl: Void = {
-    queuedPrintError("The force_cast rule is disabled because the Swift Syntax tree could not be parsed")
-}()
-
-private func warnSyntaxParserFailureOnce() {
-    _ = warnSyntaxParserFailureOnceImpl
-}
-
 public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
@@ -26,10 +18,8 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
-            warnSyntaxParserFailureOnce()
-            return []
-        }
+        guard let tree = file.syntaxTree else { return [] }
+
         let visitor = ForceCastRuleVisitor()
         visitor.walk(tree)
         return visitor.positions.map { position in

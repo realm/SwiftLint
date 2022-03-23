@@ -3,14 +3,6 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-private let warnSyntaxParserFailureOnceImpl: Void = {
-    queuedPrintError("The syntactic_sugar rule is disabled because the Swift Syntax tree could not be parsed")
-}()
-
-private func warnSyntaxParserFailureOnce() {
-    _ = warnSyntaxParserFailureOnceImpl
-}
-
 public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -103,7 +95,6 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let tree = file.syntaxTree else {
-            warnSyntaxParserFailureOnce()
             return []
         }
         let visitor = SyntacticSugarRuleVisitor()
@@ -124,7 +115,6 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
 
     public func correct(file: SwiftLintFile) -> [Correction] {
         guard let tree = file.syntaxTree else {
-            warnSyntaxParserFailureOnce()
             return []
         }
         let visitor = SyntacticSugarRuleVisitor()

@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives in `unused_closure_parameter` when using parameters with
+  backticks.  
+  [JP Simard](https://github.com/jpsim)
+  [#3628](https://github.com/realm/SwiftLint/issues/3628)
 
 ## 0.47.0: Smart Appliance
 

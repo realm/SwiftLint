@@ -5,6 +5,14 @@ import SwiftSyntax
 import SwiftSyntaxParser
 #endif
 
+private let warnSyntaxParserFailureOnceImpl: Void = {
+    queuedPrintError("Could not parse the syntax tree for at least one file. Results may be invalid.")
+}()
+
+private func warnSyntaxParserFailureOnce() {
+    _ = warnSyntaxParserFailureOnceImpl
+}
+
 private typealias FileCacheKey = UUID
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
@@ -28,8 +36,13 @@ private var structureDictionaryCache = Cache({ file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
 })
 
-private var syntaxTreeCache = Cache({ file in
-    return try? SyntaxParser.parse(source: file.contents)
+private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
+    do {
+        return try SyntaxParser.parse(source: file.contents)
+    } catch {
+        warnSyntaxParserFailureOnce()
+        return nil
+    }
 })
 
 private var commandsCache = Cache({ file -> [Command] in

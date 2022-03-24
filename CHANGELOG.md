@@ -23,6 +23,11 @@
   [JP Simard](https://github.com/jpsim)
   [#3628](https://github.com/realm/SwiftLint/issues/3628)
 
+* Improved the `syntactic_sugar` rule's detection accuracy and fixed some
+  corrections leading to invalid code.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [#3866](https://github.com/realm/SwiftLint/issues/3866)
+
 ## 0.47.0: Smart Appliance
 
 #### Breaking
@@ -133,9 +138,6 @@
 #### Experimental
 
 * None.
-* Fix incorrect autocorrection in `syntactic_sugar` rule 
-  [Paul Taykalo](https://github.com/PaulTaykalo)
-  [#3866](https://github.com/realm/SwiftLint/issues/3866)
 
 #### Enhancements
 

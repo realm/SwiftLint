@@ -1,15 +1,6 @@
-// swiftlint:disable file_length
 import Foundation
 import SourceKittenFramework
 import SwiftSyntax
-
-private let warnSyntaxParserFailureOnceImpl: Void = {
-    queuedPrintError("The syntactic_sugar rule is disabled because the Swift Syntax tree could not be parsed")
-}()
-
-private func warnSyntaxParserFailureOnce() {
-    _ = warnSyntaxParserFailureOnceImpl
-}
 
 public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
@@ -21,91 +12,14 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
         name: "Syntactic Sugar",
         description: "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("let x: [Int]"),
-            Example("let x: [Int: String]"),
-            Example("let x: Int?"),
-            Example("func x(a: [Int], b: Int) -> [Int: Any]"),
-            Example("let x: Int!"),
-            Example("""
-            extension Array {
-              func x() { }
-            }
-            """),
-            Example("""
-            extension Dictionary {
-              func x() { }
-            }
-            """),
-            Example("let x: CustomArray<String>"),
-            Example("var currentIndex: Array<OnboardingPage>.Index?"),
-            Example("func x(a: [Int], b: Int) -> Array<Int>.Index"),
-            Example("unsafeBitCast(nonOptionalT, to: Optional<T>.self)"),
-            Example("unsafeBitCast(someType, to: Swift.Array<T>.self)"),
-            Example("IndexingIterator<Array<Dictionary<String, AnyObject>>>.self"),
-            Example("let y = Optional<String>.Type"),
-
-            Example("type is Optional<String>.Type"),
-            Example("let x: Foo.Optional<String>"),
-
-            Example("let x = case Optional<Any>.none = obj"),
-            Example("let a = Swift.Optional<String?>.none")
-        ],
-        triggeringExamples: [
-            Example("let x: ↓Array<String>"),
-            Example("let x: ↓Dictionary<Int, String>"),
-            Example("let x: ↓Optional<Int>"),
-            Example("let x: ↓ImplicitlyUnwrappedOptional<Int>"),
-            Example("let x: ↓Swift.Array<String>"),
-
-            Example("func x(a: ↓Array<Int>, b: Int) -> [Int: Any]"),
-            Example("func x(a: ↓Swift.Array<Int>, b: Int) -> [Int: Any]"),
-
-            Example("func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>"),
-            Example("let x = y as? ↓Array<[String: Any]>"),
-            Example("let x = Box<Array<T>>()"),
-            Example("func x() -> Box<↓Array<T>>"),
-            Example("func x() -> ↓Dictionary<String, Any>?"),
-
-            Example("typealias Document = ↓Dictionary<String, T?>"),
-            Example("func x(_ y: inout ↓Array<T>)"),
-            Example("let x:↓Dictionary<String, ↓Dictionary<Int, Int>>"),
-            Example("func x() -> Any { return ↓Dictionary<Int, String>()}"),
-
-            Example("let x = ↓Array<String>.array(of: object)"),
-            Example("let x = ↓Swift.Array<String>.array(of: object)"),
-
-            Example("""
-            @_specialize(where S == ↓Array<Character>)
-            public init<S: Sequence>(_ elements: S)
-            """)
-        ],
-        corrections: [
-            Example("let x: Array<String>"): Example("let x: [String]"),
-            Example("let x: Array< String >"): Example("let x: [String]"),
-            Example("let x: Dictionary<Int, String>"): Example("let x: [Int: String]"),
-            Example("let x: Optional<Int>"): Example("let x: Int?"),
-            Example("let x: Optional< Int >"): Example("let x: Int?"),
-            Example("let x: ImplicitlyUnwrappedOptional<Int>"): Example("let x: Int!"),
-            Example("let x: ImplicitlyUnwrappedOptional< Int >"): Example("let x: Int!"),
-
-            Example("let x: Dictionary<Int , String>"): Example("let x: [Int: String]"),
-            Example("let x: Swift.Optional<String>"): Example("let x: String?"),
-            Example("let x:↓Dictionary<String, ↓Dictionary<Int, Int>>"): Example("let x:[String: [Int: Int]]"),
-            Example("let x:↓Dictionary<↓Dictionary<Int, Int>, String>"): Example("let x:[[Int: Int]: String]"),
-            Example("let x:↓Dictionary<↓Dictionary<↓Dictionary<Int, Int>, Int>, String>"):
-                Example("let x:[[[Int: Int]: Int]: String]"),
-            Example("let x:↓Array<↓Dictionary<Int, Int>>"): Example("let x:[[Int: Int]]"),
-            Example("let x:↓Optional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]?"),
-            Example("let x:↓ImplicitlyUnwrappedOptional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]!")
-        ]
+        nonTriggeringExamples: SyntacticSugarRuleExamples.nonTriggering,
+        triggeringExamples: SyntacticSugarRuleExamples.triggering,
+        corrections: SyntacticSugarRuleExamples.corrections
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
-            warnSyntaxParserFailureOnce()
-            return []
-        }
+        guard let tree = file.syntaxTree else { return [] }
+
         let visitor = SyntacticSugarRuleVisitor()
         visitor.walk(tree)
 
@@ -113,8 +27,8 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
         return allViolations.map { violation in
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: ByteCount(violation.position.utf8Offset)),
-                                  reason: message(for: violation.type))
+                                  location: Location(file: file, byteOffset: ByteCount(violation.position)),
+                                  reason: violation.type.violationReason)
         }
     }
 
@@ -123,43 +37,61 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        guard let tree = file.syntaxTree else {
-            warnSyntaxParserFailureOnce()
-            return []
-        }
+        guard let tree = file.syntaxTree else { return [] }
+
         let visitor = SyntacticSugarRuleVisitor()
         visitor.walk(tree)
 
-        var context = CorrectingContex(rule: self, file: file, contents: file.contents)
+        var context = CorrectingContext(rule: self, file: file, contents: file.contents)
         context.correctViolations(visitor.violations)
 
         file.write(context.contents)
 
         return context.corrections
     }
+}
 
-    private func message(for originalType: String) -> String {
-        let typeString: String
-        let sugaredType: String
+// MARK: - Private
 
-        switch originalType {
-        case "Optional":
-            typeString = "Optional<Int>"
-            sugaredType = "Int?"
-        case "ImplicitlyUnwrappedOptional":
-            typeString = "ImplicitlyUnwrappedOptional<Int>"
-            sugaredType = "Int!"
-        case "Array":
-            typeString = "Array<Int>"
-            sugaredType = "[Int]"
-        case "Dictionary":
-            typeString = "Dictionary<String, Int>"
-            sugaredType = "[String: Int]"
-        default:
-            return Self.description.description
+private enum SugaredType: String {
+    case optional = "Optional"
+    case implicitlyUnwrappedOptional = "ImplicitlyUnwrappedOptional"
+    case array = "Array"
+    case dictionary = "Dictionary"
+
+    init?(typeName: String) {
+        var typeName = typeName
+        if typeName.hasPrefix("Swift.") {
+            typeName.removeFirst("Swift.".count)
         }
 
-        return "Shorthand syntactic sugar should be used, i.e. \(sugaredType) instead of \(typeString)."
+        self.init(rawValue: typeName)
+    }
+
+    var sugaredExample: String {
+        switch self {
+        case .optional:
+            return "Int?"
+        case .implicitlyUnwrappedOptional:
+            return "Int!"
+        case .array:
+            return "[Int]"
+        case .dictionary:
+            return "[String: Int]"
+        }
+    }
+
+    var desugaredExample: String {
+        switch self {
+        case .optional, .implicitlyUnwrappedOptional, .array:
+            return "\(rawValue)<Int>"
+        case .dictionary:
+            return "\(rawValue)<String, Int>"
+        }
+    }
+
+    var violationReason: String {
+        "Shorthand syntactic sugar should be used, i.e. \(sugaredExample) instead of \(desugaredExample)."
     }
 }
 
@@ -182,16 +114,14 @@ private struct SyntacticSugarRuleViolation {
     }
 
     let position: AbsolutePosition
-    let type: String
+    let type: SugaredType
 
     let correction: Correction
 
     var children: [SyntacticSugarRuleViolation] = []
 }
 
-private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
-    private let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
-
+private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
     var violations: [SyntacticSugarRuleViolation] = []
 
     override func visitPost(_ node: TypeAnnotationSyntax) {
@@ -249,14 +179,6 @@ private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
 
     override func visitPost(_ node: SpecializeExprSyntax) {
         // let x = ↓Array<String>.array(of: object)
-        let tokens = Array(node.expression.tokens)
-
-        // Remove Swift. module prefix if needed
-        var tokensText = tokens.map { $0.text }.joined()
-        if tokensText.starts(with: "Swift.") {
-            tokensText.removeFirst("Swift.".count)
-        }
-
         // Skip checks for 'self' or \T Dictionary<Key, Value>.self
         if let parent = node.parent?.as(MemberAccessExprSyntax.self),
            let lastToken = Array(parent.tokens).last?.tokenKind,
@@ -264,16 +186,19 @@ private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
             return
         }
 
-        if types.contains(tokensText) {
+        let typeName = node.expression.withoutTrivia().description
+
+        if SugaredType(typeName: typeName) != nil {
             if let violation = violation(from: node) {
                 violations.append(violation)
             }
             return
         }
 
-        // If there's no type let's check all inner generics like in case of Box<Array<T>>
+        // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
         node.genericArgumentClause.arguments
-            .compactMap { violation(in: $0.argumentType) }
+            .lazy
+            .compactMap { self.violation(in: $0.argumentType) }
             .first
             .map { violations.append($0) }
     }
@@ -284,11 +209,11 @@ private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
         }
 
         if let simpleType = typeSyntax?.as(SimpleTypeIdentifierSyntax.self) {
-            if types.contains(simpleType.name.text) {
+            if SugaredType(typeName: simpleType.name.text) != nil {
                 return violation(from: simpleType)
             }
 
-            // If there's no type let's check all inner generics like in case of Box<Array<T>>
+            // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
             guard let genericArguments = simpleType.genericArgumentClause else { return nil }
             let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argumentType) }
             return innerTypes.first
@@ -298,7 +223,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
         if let memberType = typeSyntax?.as(MemberTypeIdentifierSyntax.self),
            let baseType = memberType.baseType.as(SimpleTypeIdentifierSyntax.self),
            baseType.name.text == "Swift" {
-            guard types.contains(memberType.name.text) else { return nil }
+            guard SugaredType(typeName: memberType.name.text) != nil else { return nil }
             return violation(from: memberType)
         }
         return nil
@@ -309,24 +234,22 @@ private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
             let generic = node.genericArguments,
             let firstGenericType = generic.arguments.first,
             let lastGenericType = generic.arguments.last,
-            var typeName = node.typeName
+            let typeName = node.typeName,
+            let type = SugaredType(typeName: typeName)
         else { return nil }
 
-        if typeName.hasPrefix("Swift.") {
-            typeName.removeFirst("Swift.".count)
-        }
-
-        var type = SyntacticSugarRuleViolation.CorrectionType.array
-        if typeName.isEqualTo("Dictionary") {
+        let correctionType: SyntacticSugarRuleViolation.CorrectionType
+        switch type {
+        case .optional:
+            correctionType = .optional
+        case .implicitlyUnwrappedOptional:
+            correctionType = .implicitlyUnwrappedOptional
+        case .array:
+            correctionType = .array
+        case .dictionary:
             guard let comma = firstGenericType.trailingComma else { return nil }
             let lastArgumentEnd = firstGenericType.argumentType.endPositionBeforeTrailingTrivia
-            type = .dictionary(commaStart: lastArgumentEnd, commaEnd: comma.endPosition)
-        }
-        if typeName.isEqualTo("Optional") {
-            type = .optional
-        }
-        if typeName.isEqualTo("ImplicitlyUnwrappedOptional") {
-            type = .implicitlyUnwrappedOptional
+            correctionType = .dictionary(commaStart: lastArgumentEnd, commaEnd: comma.endPosition)
         }
 
         let firstInnerViolation = violation(in: firstGenericType.argumentType)
@@ -334,21 +257,19 @@ private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
 
         return SyntacticSugarRuleViolation(
             position: node.positionAfterSkippingLeadingTrivia,
-            type: typeName,
+            type: type,
             correction: .init(typeStart: node.position,
-                              correction: type,
+                              correction: correctionType,
                               leftStart: generic.leftAngleBracket.position,
                               leftEnd: generic.leftAngleBracket.endPosition,
                               rightStart: lastGenericType.endPositionBeforeTrailingTrivia,
                               rightEnd: generic.rightAngleBracket.endPositionBeforeTrailingTrivia),
-            children: [ firstInnerViolation, secondInnerViolation].compactMap { $0 }
+            children: [firstInnerViolation, secondInnerViolation].compactMap { $0 }
         )
     }
 }
 
-// MARK: - Private
-
-private struct CorrectingContex {
+private struct CorrectingContext {
     let rule: Rule
     let file: SwiftLintFile
     var contents: String
@@ -356,7 +277,7 @@ private struct CorrectingContex {
 
     mutating func correctViolations(_ violations: [SyntacticSugarRuleViolation]) {
         let sortedVolations = violations.sorted(by: { $0.correction.typeStart > $1.correction.typeStart })
-        sortedVolations.forEach { violation in
+        for violation in sortedVolations {
             correctViolation(violation)
         }
     }
@@ -384,12 +305,12 @@ private struct CorrectingContex {
             replaceCharacters(in: rightRange, with: "]")
             guard let commaRange = stringView.NSRange(start: commaStart, end: commaEnd) else { return }
 
-            let violationsAfterComma = violation.children.filter { $0.position.utf8Offset > commaStart.utf8Offset }
+            let violationsAfterComma = violation.children.filter { $0.position > commaStart }
             correctViolations(violationsAfterComma)
 
             replaceCharacters(in: commaRange, with: ": ")
 
-            let violationsBeforeComma = violation.children.filter { $0.position.utf8Offset < commaStart.utf8Offset }
+            let violationsBeforeComma = violation.children.filter { $0.position < commaStart }
             correctViolations(violationsBeforeComma)
             replaceCharacters(in: leftRange, with: "[")
 
@@ -404,7 +325,7 @@ private struct CorrectingContex {
             replaceCharacters(in: leftRange, with: "")
         }
 
-        let location = Location(file: file, byteOffset: ByteCount(correction.typeStart.utf8Offset))
+        let location = Location(file: file, byteOffset: ByteCount(correction.typeStart))
         corrections.append(Correction(ruleDescription: type(of: rule).description, location: location))
     }
 
@@ -431,7 +352,7 @@ extension SimpleTypeIdentifierSyntax: SyntaxWithGenericClause {
 extension SpecializeExprSyntax: SyntaxWithGenericClause {
     var typeName: String? {
         expression.as(IdentifierExprSyntax.self)?.firstToken?.text ??
-        expression.as(MemberAccessExprSyntax.self)?.name.text
+            expression.as(MemberAccessExprSyntax.self)?.name.text
     }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }
 }

@@ -1,5 +1,5 @@
 steps:
   - label: "Danger"
     commands:
-      - "bundle install --path vendor/bundle"
-      - "bundle exec danger --verbose"
+      - bundle install
+      - bundle exec danger --verbose

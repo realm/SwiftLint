@@ -95,16 +95,6 @@ private enum SugaredType: String, CaseIterable {
     }
 }
 
-private extension Collection where Element == SugaredType {
-    func contains(_ typeName: String) -> Bool {
-        guard let type = SugaredType(typeName: typeName) else {
-            return false
-        }
-
-        return contains(type)
-    }
-}
-
 private struct SyntacticSugarRuleViolation {
     struct Correction {
         let typeStart: AbsolutePosition
@@ -198,14 +188,16 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             return
         }
 
-        if types.contains(node.expression.description) {
+        let typeName = node.expression.withoutTrivia().description
+
+        if SugaredType(typeName: typeName) != nil {
             if let violation = violation(from: node) {
                 violations.append(violation)
             }
             return
         }
 
-        // If there's no type let's check all inner generics like in the case of 'Box<Array<T>>'
+        // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
         node.genericArgumentClause.arguments
             .lazy
             .compactMap { self.violation(in: $0.argumentType) }
@@ -219,11 +211,11 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         }
 
         if let simpleType = typeSyntax?.as(SimpleTypeIdentifierSyntax.self) {
-            if types.contains(simpleType.name.text) {
+            if SugaredType(typeName: simpleType.name.text) != nil {
                 return violation(from: simpleType)
             }
 
-            // If there's no type let's check all inner generics like in the case of 'Box<Array<T>>'
+            // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
             guard let genericArguments = simpleType.genericArgumentClause else { return nil }
             let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argumentType) }
             return innerTypes.first
@@ -233,7 +225,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         if let memberType = typeSyntax?.as(MemberTypeIdentifierSyntax.self),
            let baseType = memberType.baseType.as(SimpleTypeIdentifierSyntax.self),
            baseType.name.text == "Swift" {
-            guard types.contains(memberType.name.text) else { return nil }
+            guard SugaredType(typeName: memberType.name.text) != nil else { return nil }
             return violation(from: memberType)
         }
         return nil

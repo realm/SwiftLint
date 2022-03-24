@@ -131,7 +131,7 @@ private struct SyntacticSugarRuleViolation {
     var children: [SyntacticSugarRuleViolation] = []
 }
 
-private final class SyntacticSugarRuleVisitor: SyntaxAnyVisitor {
+private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
     private let types = SugaredType.allCases
 
     var violations: [SyntacticSugarRuleViolation] = []

@@ -53,7 +53,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
 
 // MARK: - Private
 
-private enum SugaredType: String, CaseIterable {
+private enum SugaredType: String {
     case optional = "Optional"
     case implicitlyUnwrappedOptional = "ImplicitlyUnwrappedOptional"
     case array = "Array"
@@ -122,8 +122,6 @@ private struct SyntacticSugarRuleViolation {
 }
 
 private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
-    private let types = SugaredType.allCases
-
     var violations: [SyntacticSugarRuleViolation] = []
 
     override func visitPost(_ node: TypeAnnotationSyntax) {

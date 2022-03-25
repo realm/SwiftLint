@@ -28,6 +28,11 @@
   [Paul Taykalo](https://github.com/PaulTaykalo)
   [#3866](https://github.com/realm/SwiftLint/issues/3866)
 
+* Fix analyzer rules with Xcode 13.3 / Swift 5.6. Note that we've measured
+  performance regressions compared to Swift 5.5 on the order of about 2x.   
+  [JP Simard](https://github.com/jpsim)
+  [#3920](https://github.com/realm/SwiftLint/issues/3920)
+
 ## 0.47.0: Smart Appliance
 
 #### Breaking

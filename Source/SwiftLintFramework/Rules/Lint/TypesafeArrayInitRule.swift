@@ -72,10 +72,10 @@ public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule, Au
         let index = buildIndex(for: filePath, using: compilerArguments)
         return index.traverseEntitiesDepthFirst { substructure -> [StyleViolation]? in
             guard substructure.kind == "source.lang.swift.ref.function.method.instance",
-                  let line = substructure.line, let column = substructure.column else {
+                  let line = substructure.line, let column = substructure.column,
+                  let offset = file.stringView.byteOffset(forLine: line, bytePosition: column) else {
                 return nil
             }
-            let offset = file.stringView.byteOffset(forLine: Int(line), column: Int(column))
             let cursorInfoRequest = Request.cursorInfo(file: filePath, offset: offset, arguments: compilerArguments)
             guard let cursorInfo = try? cursorInfoRequest.sendIfNotDisabled(),
                   let isSystem = cursorInfo["key.is_system"], isSystem.isEqualTo(true),
@@ -114,12 +114,5 @@ public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule, Au
             return [substructure]
         }
         return substructures.count == 1 ? substructures.first : nil
-    }
-}
-
-private extension StringView {
-    func byteOffset(forLine line: Int, column: Int) -> ByteCount {
-        guard line > 0 else { return ByteCount(column - 1) }
-        return lines[line - 1].byteRange.location + ByteCount(column - 1)
     }
 }

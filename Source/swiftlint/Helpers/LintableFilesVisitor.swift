@@ -112,11 +112,15 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.useExcludingByPrefix = useExcludingByPrefix
         self.cache = cache
-        self.parallel = true
         if let compilerInvocations = compilerInvocations {
             self.mode = .analyze(allCompilerInvocations: compilerInvocations)
+            // SourceKit had some changes in 5.6 that makes it ~100x more expensive
+            // to process files concurrently. By processing files serially, it's
+            // only 2x slower than before.
+            self.parallel = SwiftVersion.current < .fiveDotSix
         } else {
             self.mode = .lint
+            self.parallel = true
         }
         self.block = block
         self.allowZeroLintableFiles = allowZeroLintableFiles

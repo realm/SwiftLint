@@ -87,6 +87,12 @@
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3911](https://github.com/realm/SwiftLint/issues/3911)
 
+* Add opt-in `structured_function_doc` rule to enforce markup
+  documentation for functions with a short summary and parameters
+  section matching function declaration.
+  [Maxim Grabarnik](https://github.com/arangato)
+  [#3801](https://github.com/realm/SwiftLint/issues/3801)
+
 #### Bug Fixes
 
 * Extend `class_delegate_protocol` to correctly identify cases with the protocol

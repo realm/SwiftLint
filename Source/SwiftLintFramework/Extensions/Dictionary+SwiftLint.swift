@@ -211,19 +211,9 @@ extension SourceKittenDictionary {
     ///
     /// - returns: The list of substructure dictionaries with updated values from the traverse block.
     func traverseDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
-        var result: [T] = []
-        traverseDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
-        return result
-    }
-
-    private func traverseDepthFirst<T>(collectingValuesInto array: inout [T],
-                                       traverseBlock: (SourceKittenDictionary) -> [T]?) {
-        substructure.forEach { subDict in
-            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
-
-            if let collectedValues = traverseBlock(subDict) {
-                array += collectedValues
-            }
+        substructure.flatMap { subDict -> [T] in
+            subDict.traverseDepthFirst(traverseBlock: traverseBlock) +
+                (traverseBlock(subDict).flatMap({ $0 }) ?? [])
         }
     }
 
@@ -235,21 +225,10 @@ extension SourceKittenDictionary {
     /// - returns: The list of substructure dictionaries with updated values from the traverse block.
     func traverseWithParentDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?)
         -> [T] {
-        var result: [T] = []
-        traverseWithParentDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
-        return result
-    }
-
-    private func traverseWithParentDepthFirst<T>(
-        collectingValuesInto array: inout [T],
-        traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
-        substructure.forEach { subDict in
-            subDict.traverseWithParentDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
-
-            if let collectedValues = traverseBlock(self, subDict) {
-                array += collectedValues
+            substructure.flatMap { subDict -> [T] in
+                subDict.traverseWithParentDepthFirst(traverseBlock: traverseBlock) +
+                    (traverseBlock(self, subDict).flatMap({ $0 }) ?? [])
             }
-        }
     }
 
     /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
@@ -259,18 +238,9 @@ extension SourceKittenDictionary {
     ///
     /// - returns: The list of substructure dictionaries with updated values from the traverse block.
     func traverseBreadthFirst<T>(traverseBlock: (SourceKittenDictionary) -> [T]?) -> [T] {
-        var result: [T] = []
-        traverseBreadthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
-        return result
-    }
-
-    private func traverseBreadthFirst<T>(collectingValuesInto array: inout [T],
-                                         traverseBlock: (SourceKittenDictionary) -> [T]?) {
-        substructure.forEach { subDict in
-            if let collectedValues = traverseBlock(subDict) {
-                array += collectedValues
-            }
-            subDict.traverseDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
+        substructure.flatMap { subDict -> [T] in
+            (traverseBlock(subDict).flatMap({ $0 }) ?? []) +
+                subDict.traverseDepthFirst(traverseBlock: traverseBlock)
         }
     }
 
@@ -281,19 +251,9 @@ extension SourceKittenDictionary {
     ///
     /// - returns: The list of entity dictionaries with updated values from the traverse block.
     func traverseEntitiesDepthFirst<T>(traverseBlock: (SourceKittenDictionary) -> T?) -> [T] {
-        var result: [T] = []
-        traverseEntitiesDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
-        return result
-    }
-
-    private func traverseEntitiesDepthFirst<T>(collectingValuesInto array: inout [T],
-                                               traverseBlock: (SourceKittenDictionary) -> T?) {
-        entities.forEach { subDict in
-            subDict.traverseEntitiesDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
-
-            if let collectedValue = traverseBlock(subDict) {
-                array.append(collectedValue)
-            }
+        entities.flatMap { subDict -> [T] in
+            subDict.traverseEntitiesDepthFirst(traverseBlock: traverseBlock) +
+                (traverseBlock(subDict).flatMap({ [$0] }) ?? [])
         }
     }
 }

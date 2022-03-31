@@ -28,7 +28,7 @@ enum LintOrAnalyzeMode {
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) -> Result<(), SwiftLintError> {
         if options.inProcessSourcekit {
-            SourceKittenConfiguration.preferInProcessSourceKit
+            SourceKittenConfiguration.preferInProcessSourceKit = true
         }
         return Signposts.record(name: "LintOrAnalyzeCommand.run") {
             options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)

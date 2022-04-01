@@ -85,7 +85,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
             }
         }
 
-        return configurations.flatMap { configuration -> [StyleViolation] in
+        return configurations.parallelFlatMap { configuration -> [StyleViolation] in
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
             let excludingKinds = configuration.excludedMatchKinds

@@ -4,8 +4,9 @@ struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowForAsFilter = false
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", allow_for_as_filter: \(allowForAsFilter)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "allow_for_as_filter" => .flag(allowForAsFilter)
     }
 
     mutating func apply(configuration: Any) throws {

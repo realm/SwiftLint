@@ -21,7 +21,7 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
 
 class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock1: Rule {
-        var configurationDescription: String { return "N/A" }
+        var configurationDescription: RuleConfigurationDescription { RuleConfigurationOption.noOptions }
         static let description = RuleDescription(identifier: "RuleMock1", name: "",
                                                  description: "", kind: .style)
 
@@ -34,7 +34,7 @@ class RuleTests: SwiftLintTestCase {
     }
 
     fileprivate struct RuleMock2: Rule {
-        var configurationDescription: String { return "N/A" }
+        var configurationDescription: RuleConfigurationDescription { RuleConfigurationOption.noOptions }
         static let description = RuleDescription(identifier: "RuleMock2", name: "",
                                                  description: "", kind: .style)
 

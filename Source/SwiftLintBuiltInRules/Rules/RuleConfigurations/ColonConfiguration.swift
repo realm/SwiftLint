@@ -5,10 +5,10 @@ struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var flexibleRightSpacing = false
     private(set) var applyToDictionaries = true
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", flexible_right_spacing: \(flexibleRightSpacing)" +
-            ", apply_to_dictionaries: \(applyToDictionaries)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "flexible_right_spacing" => .flag(flexibleRightSpacing)
+        "apply_to_dictionaries" => .flag(applyToDictionaries)
     }
 
     mutating func apply(configuration: Any) throws {

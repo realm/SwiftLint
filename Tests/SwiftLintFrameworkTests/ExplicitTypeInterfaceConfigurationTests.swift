@@ -44,7 +44,7 @@ class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
         try config.apply(configuration: ["excluded": ["class", "instance"]])
         XCTAssertEqual(
             config.consoleDescription,
-            "severity: warning, excluded: [\"class\", \"instance\"], allow_redundancy: false"
+            "severity: warning; excluded: [class, instance]; allow_redundancy: false"
         )
     }
 }

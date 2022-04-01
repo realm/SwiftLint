@@ -18,9 +18,9 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         .owned
     ]
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", preferred_modifier_order: \(preferredModifierOrder)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "preferred_modifier_order" => .list(preferredModifierOrder.map { .symbol($0.rawValue) })
     }
 
     mutating func apply(configuration: Any) throws {

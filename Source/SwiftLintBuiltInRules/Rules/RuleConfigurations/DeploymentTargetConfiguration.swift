@@ -109,10 +109,11 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
     private let targets: [String: Version]
 
-    var consoleDescription: String {
-        "severity: \(severityConfiguration.consoleDescription)" + targets
-            .sorted { $0.key < $1.key }
-            .map { ", \($0): \($1.stringValue)" }.joined()
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        for (platform, target) in targets.sorted(by: { $0.key < $1.key }) {
+            platform => .symbol(target.stringValue)
+        }
     }
 
     init() {

@@ -9,9 +9,9 @@ struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var bindIdentifier = "self"
 
-    var consoleDescription: String {
-        return ["severity: \(severityConfiguration.consoleDescription)",
-                "\(ConfigurationKey.bindIdentifier): \(bindIdentifier)"].joined(separator: ", ")
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.bindIdentifier.rawValue => .symbol(bindIdentifier)
     }
 
     mutating func apply(configuration: Any) throws {

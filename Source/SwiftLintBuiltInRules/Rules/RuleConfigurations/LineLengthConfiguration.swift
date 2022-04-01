@@ -10,14 +10,6 @@ private enum ConfigurationKey: String {
 struct LineLengthConfiguration: RuleConfiguration, Equatable {
     typealias Parent = LineLengthRule
 
-    var consoleDescription: String {
-        return length.consoleDescription +
-               ", ignores_urls: \(ignoresURLs)" +
-               ", ignores_function_declarations: \(ignoresFunctionDeclarations)" +
-               ", ignores_comments: \(ignoresComments)" +
-               ", ignores_interpolated_strings: \(ignoresInterpolatedStrings)"
-    }
-
     private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 120, error: 200)
     private(set) var ignoresURLs = false
     private(set) var ignoresFunctionDeclarations = false
@@ -26,6 +18,14 @@ struct LineLengthConfiguration: RuleConfiguration, Equatable {
 
     var params: [RuleParameter<Int>] {
         return length.params
+    }
+
+    var parameterDescription: RuleConfigurationDescription {
+        length
+        "ignores_urls" => .flag(ignoresURLs)
+        "ignores_function_declarations" => .flag(ignoresFunctionDeclarations)
+        "ignores_comments" => .flag(ignoresComments)
+        "ignores_interpolated_strings" => .flag(ignoresInterpolatedStrings)
     }
 
     mutating func apply(configuration: Any) throws {

@@ -4,8 +4,9 @@ struct VerticalWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatabl
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var maxEmptyLines = 1
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", max_empty_lines: \(maxEmptyLines)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "max_empty_lines" => .integer(maxEmptyLines)
     }
 
     mutating func apply(configuration: Any) throws {

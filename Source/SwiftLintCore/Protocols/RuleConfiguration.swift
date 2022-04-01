@@ -1,9 +1,12 @@
 /// A configuration value for a rule to allow users to modify its behavior.
-public protocol RuleConfiguration<Parent> {
+public protocol RuleConfiguration {
     /// The type of the rule that's using this configuration.
     associatedtype Parent: Rule
 
-    /// A human-readable description for this configuration and its applied values.
+    /// A description for this configuration's parameters. It can be built using the annotated result builder.
+    @RuleConfigurationDescriptionBuilder
+    var parameterDescription: RuleConfigurationDescription { get }
+
     var consoleDescription: String { get }
 
     /// Apply an untyped configuration to the current value.
@@ -38,4 +41,8 @@ public extension RuleConfiguration where Self: Equatable {
     func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self
     }
+}
+
+public extension RuleConfiguration {
+    var consoleDescription: String { parameterDescription.oneLiner() }
 }

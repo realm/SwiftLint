@@ -14,8 +14,8 @@ public struct ChildOptionSeverityConfiguration<Parent: Rule>: RuleConfiguration,
 
     private var optionSeverity: ChildOptionSeverity
 
-    public var consoleDescription: String {
-        optionSeverity.rawValue
+    public var parameterDescription: RuleConfigurationDescription {
+        "severity" => .symbol(optionSeverity.rawValue)
     }
 
     /// The `ChildOptionSeverityConfiguration` mapped to a usually used `ViolationSeverity`. It's `nil` if the option

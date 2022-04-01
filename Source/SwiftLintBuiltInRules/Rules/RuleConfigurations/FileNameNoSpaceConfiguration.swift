@@ -1,13 +1,13 @@
 struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameNoSpaceRule
 
-    var consoleDescription: String {
-        return "(severity) \(severityConfiguration.consoleDescription), " +
-            "excluded: \(excluded.sorted())"
-    }
-
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var excluded = Set<String>()
+
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "excluded" => .list(excluded.sorted().map { .string($0) })
+    }
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

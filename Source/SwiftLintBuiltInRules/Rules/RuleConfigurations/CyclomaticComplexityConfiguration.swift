@@ -9,11 +9,6 @@ private enum ConfigurationKey: String {
 struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
     typealias Parent = CyclomaticComplexityRule
 
-    var consoleDescription: String {
-        return length.consoleDescription +
-            ", \(ConfigurationKey.ignoresCaseStatements.rawValue): \(ignoresCaseStatements)"
-    }
-
     private static let defaultComplexityStatements: Set<StatementKind> = [
         .forEach,
         .if,
@@ -35,6 +30,11 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
                 complexityStatements.insert(.case)
             }
         }
+    }
+
+    var parameterDescription: RuleConfigurationDescription {
+        length
+        ConfigurationKey.ignoresCaseStatements.rawValue => .flag(ignoresCaseStatements)
     }
 
     var params: [RuleParameter<Int>] {

@@ -57,6 +57,7 @@ disabled_rules:
 attributes:
   always_on_line_above:
     - "@OptionGroup"
+    - "@RuleConfigurationDescriptionBuilder"
 identifier_name:
   excluded:
     - id

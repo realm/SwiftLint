@@ -12,9 +12,9 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
     private(set) var grouping = SortedImportsGroupingConfiguration.names
 
-    var consoleDescription: String {
-        return "severity: \(severity.consoleDescription)"
-            + ", grouping: \(grouping)"
+    var parameterDescription: RuleConfigurationDescription {
+        severity
+        "grouping" => .symbol(grouping.rawValue)
     }
 
     mutating func apply(configuration: Any) throws {

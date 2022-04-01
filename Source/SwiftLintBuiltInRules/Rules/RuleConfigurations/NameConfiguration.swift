@@ -5,13 +5,13 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
 
-    var consoleDescription: String {
-        "(min_length) \(minLength.shortConsoleDescription), " +
-            "(max_length) \(maxLength.shortConsoleDescription), " +
-            "excluded: \(excludedRegularExpressions.map { $0.pattern }.sorted()), " +
-            "allowed_symbols: \(allowedSymbols.sorted()), " +
-            "unallowed_symbols_severity: \(unallowedSymbolsSeverity.consoleDescription), " +
-            "validates_start_with_lowercase: \(validatesStartWithLowercase.consoleDescription)"
+    var parameterDescription: RuleConfigurationDescription {
+        "(min_length)" => .nested(minLength.parameterDescription)
+        "(max_length)" => .nested(maxLength.parameterDescription)
+        "excluded" => .list(excludedRegularExpressions.map(\.pattern).sorted().map { .symbol($0) })
+        "allowed_symbols" => .list(allowedSymbols.sorted().map { .string($0) })
+        "unallowed_symbols_severity" => .severity(unallowedSymbolsSeverity.severity)
+        "validates_start_with_lowercase" => .symbol(validatesStartWithLowercase.severity?.rawValue ?? "off")
     }
 
     private(set) var minLength: SeverityLevels

@@ -9,17 +9,17 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         fileprivate(set) var closing: String
     }
 
-    var consoleDescription: String {
-        let descriptions = [
-            "approaching_expiry_severity: \(approachingExpirySeverity.consoleDescription)",
-            "expired_severity: \(expiredSeverity.consoleDescription)",
-            "bad_formatting_severity: \(badFormattingSeverity.consoleDescription)",
-            "approaching_expiry_threshold: \(approachingExpiryThreshold)",
-            "date_format: \(dateFormat)",
-            "date_delimiters: { opening: \(dateDelimiters.opening)", "closing: \(dateDelimiters.closing) }",
-            "date_separator: \(dateSeparator)"
-        ]
-        return descriptions.joined(separator: ", ")
+    var parameterDescription: RuleConfigurationDescription {
+        "approaching_expiry_severity" => .severity(approachingExpirySeverity.severity)
+        "expired_severity" => .severity(expiredSeverity.severity)
+        "bad_formatting_severity" => .severity(badFormattingSeverity.severity)
+        "approaching_expiry_threshold" => .integer(approachingExpiryThreshold)
+        "date_format" => .string(dateFormat)
+        "date_delimiters" => .nest {
+            "opening" => .string(dateDelimiters.opening)
+            "closing" => .string(dateDelimiters.closing)
+        }
+        "date_separator" => .string(dateSeparator)
     }
 
     private(set) var approachingExpirySeverity: Severity

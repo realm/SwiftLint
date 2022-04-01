@@ -9,27 +9,17 @@ struct MissingDocsConfiguration: RuleConfiguration, Equatable {
     private(set) var excludesInheritedTypes = true
     private(set) var excludesTrivialInit = false
 
-    var consoleDescription: String {
-        let parametersDescription = parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
-            "\($0.rawValue): \($1.map { $0.value.description }.sorted(by: <).joined(separator: ", "))"
-        }.joined(separator: ", ")
-
-        if parametersDescription.isEmpty {
-            return [
-                "excludes_extensions: \(excludesExtensions)",
-                "excludes_inherited_types: \(excludesInheritedTypes)",
-                "excludes_trivial_init: \(excludesTrivialInit)"
-            ]
-            .joined(separator: ", ")
-        } else {
-            return [
-                parametersDescription,
-                "excludes_extensions: \(excludesExtensions)",
-                "excludes_inherited_types: \(excludesInheritedTypes)",
-                "excludes_trivial_init: \(excludesTrivialInit)"
-            ]
-            .joined(separator: ", ")
+    var parameterDescription: RuleConfigurationDescription {
+        let parametersDescription = parameters.group { $0.severity }
+            .sorted { $0.key.rawValue < $1.key.rawValue }
+        if parametersDescription.isNotEmpty {
+            for (severity, values) in parametersDescription {
+                severity.rawValue => .list(values.map(\.value.description).sorted().map { .symbol($0) })
+            }
         }
+        "excludes_extensions" => .flag(excludesExtensions)
+        "excludes_inherited_types" => .flag(excludesInheritedTypes)
+        "excludes_trivial_init" => .flag(excludesTrivialInit)
     }
 
     mutating func apply(configuration: Any) throws {

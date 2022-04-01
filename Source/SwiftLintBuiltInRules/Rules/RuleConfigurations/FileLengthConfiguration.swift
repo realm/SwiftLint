@@ -10,9 +10,9 @@ struct FileLengthConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)
     private(set) var ignoreCommentOnlyLines = false
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", \(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.ignoreCommentOnlyLines.rawValue => .flag(ignoreCommentOnlyLines)
     }
 
     mutating func apply(configuration: Any) throws {

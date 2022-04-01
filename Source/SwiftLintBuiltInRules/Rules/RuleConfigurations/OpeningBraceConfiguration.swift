@@ -9,9 +9,9 @@ struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowMultilineFunc = false
 
-    var consoleDescription: String {
-        return ["severity: \(severityConfiguration.consoleDescription)",
-                "\(ConfigurationKey.allowMultilineFunc): \(allowMultilineFunc)"].joined(separator: ", ")
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.allowMultilineFunc.rawValue => .flag(allowMultilineFunc)
     }
 
     mutating func apply(configuration: Any) throws {

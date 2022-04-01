@@ -6,16 +6,14 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var minimumFractionLength: Int?
     private(set) var excludeRanges = [Range<Double>]()
 
-    var consoleDescription: String {
-        let minimumFractionLengthDescription: String
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "minimum_length" => .integer(minimumLength)
         if let minimumFractionLength {
-            minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
+            "minimum_fraction_length" => .integer(minimumFractionLength)
         } else {
-            minimumFractionLengthDescription = ", minimum_fraction_length: none"
+            "minimum_fraction_length" => .string("none")
         }
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", minimum_length: \(minimumLength)"
-            + minimumFractionLengthDescription
     }
 
     mutating func apply(configuration: Any) throws {

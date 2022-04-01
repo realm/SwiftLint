@@ -13,23 +13,21 @@ struct RequiredEnumCaseConfiguration: RuleConfiguration, Equatable {
 
     var protocols: [String: Set<RequiredCase>] = [:]
 
-    var consoleDescription: String {
-        let protocols = self.protocols.sorted(by: { $0.key < $1.key }) .compactMap { name, required in
-            let caseNames: [String] = required.sorted(by: { $0.name < $1.name }).map {
-                "[name: \"\($0.name)\", severity: \"\($0.severity.rawValue)\"]"
+    var parameterDescription: RuleConfigurationDescription {
+        if protocols.isEmpty {
+            "{Protocol Name}" => .nest {
+                "{Case Name 1}" => .symbol("{warning|error}")
+                "{Case Name 2}" => .symbol("{warning|error}")
             }
-
-            return "[protocol: \"\(name)\", cases: [\(caseNames.joined(separator: ", "))]]"
-        }.joined(separator: ", ")
-
-        let instructions = "No protocols configured.  In config add 'required_enum_case' to 'opt_in_rules' and " +
-            "config using :\n\n" +
-            "'required_enum_case:\n" +
-            "  {Protocol Name}:\n" +
-            "    {Case Name}:{warning|error}\n" +
-            "    {Case Name}:{warning|error}\n"
-
-        return protocols.isEmpty ? instructions : protocols
+        } else {
+            for (protocolName, requiredCases) in protocols.sorted(by: { $0.key < $1.key }) {
+                protocolName => .nest {
+                    for requiredCase in requiredCases.sorted(by: { $0.name < $1.name }) {
+                        requiredCase.name => .symbol(requiredCase.severity.rawValue)
+                    }
+                }
+            }
+        }
     }
 
     mutating func apply(configuration: Any) throws {

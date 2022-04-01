@@ -41,10 +41,10 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
         resolvedMethodNames = defaultIncluded
     }
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", excluded: \(excluded)" +
-            ", included: \(included)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "excluded" => .list(excluded.map { .string($0) })
+        "included" => .list(included.map { .string($0) })
     }
 
     mutating func apply(configuration: Any) throws {

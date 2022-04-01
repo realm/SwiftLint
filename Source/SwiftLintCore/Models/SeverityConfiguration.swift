@@ -5,9 +5,9 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
     /// Configuration with an error severity.
     public static var warning: Self { Self(.warning) }
 
-    public var consoleDescription: String {
-        return severity.rawValue
-    }
+    public var parameterDescription: RuleConfigurationDescription {
+         "severity" => .symbol(severity.rawValue)
+     }
 
     var severity: ViolationSeverity
 

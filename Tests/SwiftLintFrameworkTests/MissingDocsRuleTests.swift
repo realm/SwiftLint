@@ -6,8 +6,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
         let configuration = MissingDocsConfiguration()
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, " +
-            "excludes_inherited_types: true, excludes_trivial_init: false"
+            "warning: [open, public]; excludes_extensions: true; " +
+            "excludes_inherited_types: true; excludes_trivial_init: false"
         )
     }
 
@@ -15,8 +15,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
         let configuration = MissingDocsConfiguration(excludesExtensions: false, excludesInheritedTypes: false)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: false, " +
-            "excludes_inherited_types: false, excludes_trivial_init: false"
+            "warning: [open, public]; excludes_extensions: false; " +
+            "excludes_inherited_types: false; excludes_trivial_init: false"
         )
     }
 
@@ -24,8 +24,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
         let configuration = MissingDocsConfiguration(excludesExtensions: false, excludesInheritedTypes: true)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: false, " +
-            "excludes_inherited_types: true, excludes_trivial_init: false"
+            "warning: [open, public]; excludes_extensions: false; " +
+            "excludes_inherited_types: true; excludes_trivial_init: false"
         )
     }
 
@@ -33,8 +33,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
         let configuration = MissingDocsConfiguration(excludesExtensions: true, excludesInheritedTypes: false)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, " +
-            "excludes_inherited_types: false, excludes_trivial_init: false"
+            "warning: [open, public]; excludes_extensions: true; " +
+            "excludes_inherited_types: false; excludes_trivial_init: false"
         )
     }
 
@@ -43,8 +43,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
             parameters: [RuleParameter<AccessControlLevel>(severity: .error, value: .open)])
         XCTAssertEqual(
             configuration.consoleDescription,
-            "error: open, excludes_extensions: true, " +
-            "excludes_inherited_types: true, excludes_trivial_init: false"
+            "error: [open]; excludes_extensions: true; " +
+            "excludes_inherited_types: true; excludes_trivial_init: false"
         )
     }
 
@@ -54,8 +54,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
                          RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
         XCTAssertEqual(
             configuration.consoleDescription,
-            "error: open, warning: public, excludes_extensions: true, " +
-            "excludes_inherited_types: true, excludes_trivial_init: false"
+            "error: [open]; warning: [public]; excludes_extensions: true; " +
+            "excludes_inherited_types: true; excludes_trivial_init: false"
         )
     }
 
@@ -65,8 +65,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
                          RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, " +
-            "excludes_inherited_types: true, excludes_trivial_init: false"
+            "warning: [open, public]; excludes_extensions: true; " +
+            "excludes_inherited_types: true; excludes_trivial_init: false"
         )
     }
 
@@ -74,8 +74,8 @@ class MissingDocsRuleTests: SwiftLintTestCase {
         let configuration = MissingDocsConfiguration(excludesTrivialInit: true)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, " +
-            "excludes_inherited_types: true, excludes_trivial_init: true"
+            "warning: [open, public]; excludes_extensions: true; " +
+            "excludes_inherited_types: true; excludes_trivial_init: true"
         )
     }
 

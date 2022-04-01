@@ -10,9 +10,9 @@ struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
     private(set) var ignoresDefaultParameters = true
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 5, error: 8)
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-        ", \(ConfigurationKey.ignoresDefaultParameters.rawValue): \(ignoresDefaultParameters)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.ignoresDefaultParameters.rawValue => .flag(ignoresDefaultParameters)
     }
 
     mutating func apply(configuration: Any) throws {

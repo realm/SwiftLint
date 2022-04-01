@@ -162,9 +162,7 @@ public extension ConfigurationProviderRule {
         return false
     }
 
-    var configurationDescription: String {
-        return configuration.consoleDescription
-    }
+    var configurationDescription: RuleConfigurationDescription { configuration.parameterDescription }
 }
 
 // MARK: - == Implementations

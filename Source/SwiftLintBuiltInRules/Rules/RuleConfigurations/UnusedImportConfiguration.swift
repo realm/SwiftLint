@@ -22,20 +22,22 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable {
 struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedImportRule
 
-    var consoleDescription: String {
-        return [
-            "severity: \(severityConfiguration.consoleDescription)",
-            "require_explicit_imports: \(requireExplicitImports)",
-            "allowed_transitive_imports: \(allowedTransitiveImports)",
-            "always_keep_imports: \(alwaysKeepImports)"
-        ].joined(separator: ", ")
-    }
-
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var requireExplicitImports = false
     private(set) var allowedTransitiveImports = [TransitiveModuleConfiguration<Parent>]()
     /// A set of modules to never remove the imports of.
     private(set) var alwaysKeepImports = [String]()
+
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "require_explicit_imports" => .flag(requireExplicitImports)
+        "allowed_transitive_imports" => .nest {
+            for module in allowedTransitiveImports {
+                module.importedModule => .list(module.transitivelyImportedModules.map { .string($0) })
+            }
+        }
+        "always_keep_imports" => .list(alwaysKeepImports.map { .string($0) })
+    }
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

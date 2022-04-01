@@ -11,10 +11,10 @@ struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable
     private(set) var includePublicAndOpen = false
     private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
 
-    var consoleDescription: String {
-        return "\(ConfigurationKey.severity.rawValue): \(severityConfiguration.severity.rawValue), " +
-            "\(ConfigurationKey.includePublicAndOpen.rawValue): \(includePublicAndOpen), " +
-            "\(ConfigurationKey.relatedUSRsToSkip.rawValue): \(relatedUSRsToSkip.sorted())"
+    var parameterDescription: RuleConfigurationDescription {
+        severity
+        ConfigurationKey.includePublicAndOpen.rawValue => .flag(includePublicAndOpen)
+        ConfigurationKey.relatedUSRsToSkip.rawValue => .list(relatedUSRsToSkip.sorted().map { .string($0) })
     }
 
     mutating func apply(configuration: Any) throws {

@@ -6,8 +6,9 @@ struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     init() {}
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", indented_cases: \(indentedCases)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "indented_cases" => .flag(indentedCases)
     }
 
     mutating func apply(configuration: Any) throws {

@@ -11,10 +11,10 @@ struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equat
     ]
     private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []
 
-    var consoleDescription: String {
-        "severity: \(severityConfiguration.consoleDescription)" +
-        ", allowed_rules: \(allowedRuleIdentifiers.sorted())" +
-        ", always_blanket_disable: \(alwaysBlanketDisableRuleIdentifiers.sorted())"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "allowed_rules" => .list(allowedRuleIdentifiers.sorted().map { .symbol($0) })
+        "always_blanket_disable" => .list(alwaysBlanketDisableRuleIdentifiers.sorted().map { .symbol($0) })
     }
 
     mutating func apply(configuration: Any) throws {

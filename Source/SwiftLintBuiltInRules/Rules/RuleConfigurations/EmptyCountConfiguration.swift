@@ -9,9 +9,9 @@ struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
     private(set) var onlyAfterDot = false
 
-    var consoleDescription: String {
-        return ["severity: \(severityConfiguration.consoleDescription)",
-                "\(ConfigurationKey.onlyAfterDot.rawValue): \(onlyAfterDot)"].joined(separator: ", ")
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.onlyAfterDot.rawValue => .flag(onlyAfterDot)
     }
 
     mutating func apply(configuration: Any) throws {

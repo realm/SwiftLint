@@ -22,8 +22,9 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
 
-    public var consoleDescription: String {
-        return "\(severity.rawValue): \(regex.pattern)"
+    public var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "regex" => .string(regex.pattern)
     }
 
     public var cacheDescription: String {
@@ -36,7 +37,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
-            severityConfiguration.consoleDescription
+            severity.rawValue
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {

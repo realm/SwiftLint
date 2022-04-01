@@ -5,10 +5,10 @@ struct ObjectLiteralConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration,
     private(set) var imageLiteral = true
     private(set) var colorLiteral = true
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", image_literal: \(imageLiteral)"
-            + ", color_literal: \(colorLiteral)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "image_literal" => .flag(imageLiteral)
+        "color_literal" => .flag(colorLiteral)
     }
 
     mutating func apply(configuration: Any) throws {

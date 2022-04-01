@@ -10,9 +10,9 @@ struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfigurat
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var onlyEnforceBeforeTrivialLines = false
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", \(ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue): \(onlyEnforceBeforeTrivialLines)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue => .flag(onlyEnforceBeforeTrivialLines)
     }
 
     mutating func apply(configuration: Any) throws {

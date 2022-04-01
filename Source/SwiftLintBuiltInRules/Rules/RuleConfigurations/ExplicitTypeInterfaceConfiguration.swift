@@ -16,14 +16,12 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
 
     private(set) var allowRedundancy = false
 
-    var consoleDescription: String {
+    var parameterDescription: RuleConfigurationDescription {
         let excludedKinds = VariableKind.all.subtracting(allowedKinds).map(\.rawValue).sorted()
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", excluded: \(excludedKinds)" +
-            ", allow_redundancy: \(allowRedundancy)"
+        severityConfiguration
+        "excluded" => .list(excludedKinds.map { .symbol($0) })
+        "allow_redundancy" => .flag(allowRedundancy)
     }
-
-    init() {}
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

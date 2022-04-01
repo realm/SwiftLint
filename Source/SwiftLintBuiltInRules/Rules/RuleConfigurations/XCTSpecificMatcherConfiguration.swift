@@ -14,11 +14,9 @@ struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatabl
         case matchers
     }
 
-    var consoleDescription: String {
-        return [
-            "severity: \(severityConfiguration.consoleDescription)",
-            "\(ConfigurationKey.matchers): \(matchers.map(\.rawValue).sorted().joined(separator: ", "))"
-        ].joined(separator: ", ")
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        ConfigurationKey.matchers.rawValue => .list(matchers.map(\.rawValue).sorted().map { .symbol($0) })
     }
 
     mutating func apply(configuration: Any) throws {

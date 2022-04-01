@@ -4,9 +4,9 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatab
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowsSingleLine = true
 
-    var consoleDescription: String {
-        "severity: \(severityConfiguration.consoleDescription)"
-            + ", allowsSingleLine: \(allowsSingleLine)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "allowsSingleLine" => .flag(allowsSingleLine)
     }
 
     mutating func apply(configuration: Any) throws {

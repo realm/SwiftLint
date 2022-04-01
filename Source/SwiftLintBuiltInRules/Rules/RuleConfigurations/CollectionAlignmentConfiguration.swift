@@ -6,8 +6,9 @@ struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     init() {}
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", align_colons: \(alignColons)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "align_colons" => .flag(alignColons)
     }
 
     mutating func apply(configuration: Any) throws {

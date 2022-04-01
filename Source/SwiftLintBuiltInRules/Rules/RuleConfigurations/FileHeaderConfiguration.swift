@@ -20,20 +20,13 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
-    var consoleDescription: String {
-        let requiredStringDescription = requiredString ?? "None"
-        let requiredPatternDescription = requiredPattern ?? "None"
-        let forbiddenStringDescription = forbiddenString ?? "None"
-        let forbiddenPatternDescription = forbiddenPattern ?? "None"
-
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", required_string: \(requiredStringDescription)" +
-            ", required_pattern: \(requiredPatternDescription)" +
-            ", forbidden_string: \(forbiddenStringDescription)" +
-            ", forbidden_pattern: \(forbiddenPatternDescription)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "required_string" => .string(requiredString ?? "None")
+        "required_pattern" => .string(requiredPattern ?? "None")
+        "forbidden_string" => .string(forbiddenString ?? "None")
+        "forbidden_pattern" => .string(forbiddenPattern ?? "None")
     }
-
-    init() {}
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {

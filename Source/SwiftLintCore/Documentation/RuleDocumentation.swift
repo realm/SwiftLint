@@ -59,6 +59,9 @@ private func h1(_ text: String) -> String { "# \(text)" }
 private func h2(_ text: String) -> String { "## \(text)" }
 
 private func detailsSummary(_ rule: Rule) -> String {
+    let configurationTable = rule.configurationDescription.markdown()
+        .split(separator: "\n")
+        .joined(separator: "\n  ")
     return """
         * **Identifier:** \(type(of: rule).description.identifier)
         * **Enabled by default:** \(rule is OptInRule ? "No" : "Yes")
@@ -66,7 +69,8 @@ private func detailsSummary(_ rule: Rule) -> String {
         * **Kind:** \(type(of: rule).description.kind)
         * **Analyzer rule:** \(rule is AnalyzerRule ? "Yes" : "No")
         * **Minimum Swift compiler version:** \(type(of: rule).description.minSwiftVersion.rawValue)
-        * **Default configuration:** \(rule.configurationDescription)
+        * **Default configuration:**
+          \(configurationTable)
         """
 }
 

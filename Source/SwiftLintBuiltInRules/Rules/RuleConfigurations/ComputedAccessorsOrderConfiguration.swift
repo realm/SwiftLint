@@ -9,9 +9,9 @@ struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equa
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var order = Order.getSet
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", order: \(order.rawValue)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "order" => .symbol(order.rawValue)
     }
 
     mutating func apply(configuration: Any) throws {

@@ -5,10 +5,10 @@ struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatabl
     private(set) var ignoresEmptyLines = false
     private(set) var ignoresComments = true
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", ignores_empty_lines: \(ignoresEmptyLines)" +
-            ", ignores_comments: \(ignoresComments)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "ignores_empty_lines" => .flag(ignoresEmptyLines)
+        "ignores_comments" => .flag(ignoresComments)
     }
 
     mutating func apply(configuration: Any) throws {

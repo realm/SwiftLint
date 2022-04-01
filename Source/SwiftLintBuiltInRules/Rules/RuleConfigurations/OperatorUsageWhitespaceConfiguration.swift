@@ -6,11 +6,11 @@ struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equ
     private(set) var skipAlignedConstants = true
     private(set) var allowedNoSpaceOperators: [String] = ["...", "..<"]
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)"
-            + ", lines_look_around: \(linesLookAround)"
-            + ", skip_aligned_constants: \(skipAlignedConstants)"
-            + ", allowed_no_space_operators: \(allowedNoSpaceOperators)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "lines_look_around" => .integer(linesLookAround)
+        "skip_aligned_constants" => .flag(skipAlignedConstants)
+        "allowed_no_space_operators" => .list(allowedNoSpaceOperators.map { .string($0) })
     }
 
     mutating func apply(configuration: Any) throws {

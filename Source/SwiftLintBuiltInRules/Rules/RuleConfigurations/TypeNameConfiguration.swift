@@ -7,8 +7,9 @@ struct TypeNameConfiguration: RuleConfiguration, Equatable {
                                                                    maxLengthError: 1000)
     private(set) var validateProtocols = true
 
-    var consoleDescription: String {
-        return nameConfiguration.consoleDescription + ", validate_protocols: \(validateProtocols)"
+    var parameterDescription: RuleConfigurationDescription {
+        nameConfiguration
+        "validate_protocols" => .flag(validateProtocols)
     }
 
     mutating func apply(configuration: Any) throws {

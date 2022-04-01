@@ -1,19 +1,19 @@
 struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileNameRule
 
-    var consoleDescription: String {
-        return "(severity) \(severityConfiguration.consoleDescription), " +
-            "excluded: \(excluded.sorted()), " +
-            "prefix_pattern: \(prefixPattern), " +
-            "suffix_pattern: \(suffixPattern), " +
-            "nested_type_separator: \(nestedTypeSeparator)"
-    }
-
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var excluded = Set<String>(["main.swift", "LinuxMain.swift"])
     private(set) var prefixPattern = ""
     private(set) var suffixPattern = "\\+.*"
     private(set) var nestedTypeSeparator = "."
+
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "excluded" => .list(excluded.sorted().map { .string($0) })
+        "prefix_pattern" => .string(prefixPattern)
+        "suffix_pattern" => .string(suffixPattern)
+        "nested_type_separator" => .string(nestedTypeSeparator)
+    }
 
     mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {

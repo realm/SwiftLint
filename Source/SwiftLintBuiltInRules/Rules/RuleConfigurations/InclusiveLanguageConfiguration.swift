@@ -15,11 +15,11 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable
     private(set) var allTerms: [String]
     private(set) var allAllowedTerms: Set<String>
 
-    var consoleDescription: String {
-        "severity: \(severityConfiguration.consoleDescription)"
-            + ", additional_terms: \(additionalTerms?.sorted() ?? [])"
-            + ", override_terms: \(overrideTerms?.sorted() ?? [])"
-            + ", override_allowed_terms: \(overrideAllowedTerms?.sorted() ?? [])"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "additional_terms" => .list(additionalTerms?.sorted().map { .string($0) } ?? [])
+        "override_terms" => .list(overrideTerms?.sorted().map { .string($0) } ?? [])
+        "override_allowed_terms" => .list(overrideAllowedTerms?.sorted().map { .string($0) } ?? [])
     }
 
     private let defaultTerms: Set<String> = [

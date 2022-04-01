@@ -18,9 +18,9 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         [.libraryContentProvider]
     ]
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", order: \(String(describing: order))"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "order" => .list(order.map { .list($0.map(\.rawValue).map { .symbol($0) }) })
     }
 
     mutating func apply(configuration: Any) throws {

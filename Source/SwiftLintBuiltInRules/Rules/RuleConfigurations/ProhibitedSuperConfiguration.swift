@@ -18,10 +18,10 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     init() {}
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", excluded: [\(excluded)]" +
-            ", included: [\(included)]"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "excluded" => .list(excluded.map { .string($0) })
+        "included" => .list(included.map { .string($0) })
     }
 
     mutating func apply(configuration: Any) throws {

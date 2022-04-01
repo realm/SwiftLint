@@ -10,8 +10,9 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
     private(set) var included: NSRegularExpression?
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    var consoleDescription: String {
-        return "\(severity.rawValue): \(regex.pattern)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "regex" => .string(regex.pattern)
     }
 
     var cacheDescription: String {

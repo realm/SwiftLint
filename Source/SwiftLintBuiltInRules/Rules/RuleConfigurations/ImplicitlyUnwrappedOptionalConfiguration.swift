@@ -19,9 +19,9 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
     private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", mode: \(mode.rawValue)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "mode" => .symbol(mode.rawValue)
     }
 
     mutating func apply(configuration: Any) throws {

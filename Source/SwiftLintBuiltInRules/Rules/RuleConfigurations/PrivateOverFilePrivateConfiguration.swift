@@ -4,8 +4,9 @@ struct PrivateOverFilePrivateConfiguration: SeverityBasedRuleConfiguration, Equa
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     var validateExtensions = false
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", validate_extensions: \(validateExtensions)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "validate_extensions" => .flag(validateExtensions)
     }
 
     // MARK: - RuleConfiguration

@@ -13,10 +13,10 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     private(set) var includedKinds = Self.defaultIncludedKinds
 
-    var consoleDescription: String {
+    var parameterDescription: RuleConfigurationDescription {
         let includedKinds = self.includedKinds.map { $0.rawValue }
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", included: [\(includedKinds.sorted().joined(separator: ", "))]"
+        severityConfiguration
+        "included" => .list(includedKinds.sorted().map { .symbol($0) })
     }
 
     init(includedKinds: Set<ReturnKind> = Self.defaultIncludedKinds) {

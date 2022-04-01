@@ -4,8 +4,9 @@ struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equat
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var ignoreOptionalTry = false
 
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" + ", ignore_optional_try: \(ignoreOptionalTry)"
+    var parameterDescription: RuleConfigurationDescription {
+        severityConfiguration
+        "ignore_optional_try" => .flag(ignoreOptionalTry)
     }
 
     mutating func apply(configuration: Any) throws {

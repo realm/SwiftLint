@@ -111,6 +111,11 @@
   x86 & arm64 macOS.  
   [Juozas Valancius](https://github.com/juozasvalancius)
   [#3840](https://github.com/realm/SwiftLint/issues/3840)
+  
+* Add `TypeACLOrderRule` to enforce ordering of type contents by ACL.
+  [jd014](https://github.com/jd014)
+  [#2410](https://github.com/realm/SwiftLint/issues/2410)
+  [#3672](https://github.com/realm/SwiftLint/issues/3672)
 
 * Add back `return_value_from_void_function` opt-in rule to warn against using
   `return <expression>` in a function that returns `Void`.  

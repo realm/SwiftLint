@@ -70,6 +70,13 @@ extension String {
         return fromIndex..<toIndex
     }
 
+    internal func prependingArticle(separator: String = " ", capitalized: Bool = false) -> String {
+        let trimmed = self.trimmingCharacters(in: .alphanumerics.inverted)
+        var article = ["a", "e", "i", "o", "u"].contains(trimmed.prefix(1)) ? "an" : "a"
+        article = capitalized ? article.capitalized : article
+        return article + separator + self
+    }
+
     internal var fullNSRange: NSRange {
         return NSRange(location: 0, length: utf16.count)
     }

@@ -71,73 +71,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
 
     private func typeContentOffsets(in typeStructure: SourceKittenDictionary) -> [TypeContentOffset] {
         return typeStructure.substructure.compactMap { typeContentStructure in
-            guard let typeContent = self.typeContent(for: typeContentStructure) else { return nil }
+            guard let typeContent = TypeContent(structure: typeContentStructure) else { return nil }
             return (typeContent, typeContentStructure.offset!)
-        }
-    }
-
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
-    private func typeContent(for typeContentStructure: SourceKittenDictionary) -> TypeContent? {
-        guard let typeContentKind = typeContentStructure.declarationKind else { return nil }
-
-        switch typeContentKind {
-        case .enumcase, .enumelement:
-            return .case
-
-        case .typealias:
-            return .typeAlias
-
-        case .associatedtype:
-            return .associatedType
-
-        case .class, .enum, .extension, .protocol, .struct:
-            return .subtype
-
-        case .varClass, .varStatic:
-            return .typeProperty
-
-        case .varInstance:
-            if typeContentStructure.enclosedSwiftAttributes.contains(.iboutlet) {
-                return .ibOutlet
-            } else if typeContentStructure.enclosedSwiftAttributes.contains(.ibinspectable) {
-                return .ibInspectable
-            } else {
-                return .instanceProperty
-            }
-
-        case .functionMethodClass, .functionMethodStatic:
-            return .typeMethod
-
-        case .functionMethodInstance:
-            let viewLifecycleMethodNames = [
-                "loadView(",
-                "loadViewIfNeeded(",
-                "viewDidLoad(",
-                "viewWillAppear(",
-                "viewWillLayoutSubviews(",
-                "viewDidLayoutSubviews(",
-                "viewDidAppear(",
-                "viewWillDisappear(",
-                "viewDidDisappear("
-            ]
-
-            if typeContentStructure.name!.starts(with: "init(") {
-                return .initializer
-            } else if typeContentStructure.name!.starts(with: "deinit") {
-                return .deinitializer
-            } else if viewLifecycleMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
-                return .viewLifeCycleMethod
-            } else if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
-                return .ibAction
-            } else {
-                return .otherMethod
-            }
-
-        case .functionSubscript:
-            return .subscript
-
-        default:
-            return nil
         }
     }
 }

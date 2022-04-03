@@ -7,8 +7,6 @@ public protocol RuleConfiguration {
     @RuleConfigurationDescriptionBuilder
     var parameterDescription: RuleConfigurationDescription { get }
 
-    var consoleDescription: String { get }
-
     /// Apply an untyped configuration to the current value.
     ///
     /// - parameter configuration: The untyped configuration value to apply.
@@ -41,8 +39,4 @@ public extension RuleConfiguration where Self: Equatable {
     func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self
     }
-}
-
-public extension RuleConfiguration {
-    var consoleDescription: String { parameterDescription.oneLiner() }
 }

@@ -38,14 +38,14 @@ class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
 
     func testConsoleDescriptionReturnsAllConfiguredProtocols() {
         let expected = "NetworkResults: error: warning; RequiredProtocol: error: warning; success: warning"
-        XCTAssertEqual(config.consoleDescription, expected)
+        XCTAssertEqual(config.parameterDescription.oneLiner(), expected)
     }
 
     func testConsoleDescriptionReturnsNoConfiguredProtocols() {
         let expected = "{Protocol Name}: {Case Name 1}: {warning|error}; {Case Name 2}: {warning|error}"
 
         config.protocols.removeAll()
-        XCTAssertEqual(config.consoleDescription, expected)
+        XCTAssertEqual(config.parameterDescription.oneLiner(), expected)
     }
 
     private func validateRulesExistForProtocol1() {

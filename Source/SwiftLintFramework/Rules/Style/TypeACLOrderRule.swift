@@ -7,7 +7,7 @@ public struct TypeACLOrderRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "type_acl_order",
         name: "Type ACL Order",
-        description: "Specifies the access control level within a type.",
+        description: "Specifies the access control level order within a type.",
         kind: .style,
         nonTriggeringExamples: TypeACLOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeACLOrderRuleExamples.triggeringExamples
@@ -46,7 +46,7 @@ public struct TypeACLOrderRule: ConfigurationProviderRule, OptInRule {
 
     private func validateTypeStructure(_ typeStructure: TypeStructure, with order: [AccessControlLevel],
                                        in file: SwiftLintFile) -> [StyleViolation] {
-        typeStructure.flatMap { (type, declarations) -> [StyleViolation] in
+        typeStructure.flatMap { type, declarations -> [StyleViolation] in
             var lastValidACLIndex = order.startIndex
 
             return declarations.compactMap { declaration in

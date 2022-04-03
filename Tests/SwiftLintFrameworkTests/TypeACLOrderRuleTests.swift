@@ -35,7 +35,7 @@ class TypeACLOrderRuleTests: XCTestCase {
                 private ↓func makeMoney() { }
                 internal ↓func drink() { }
             }
-            """),
+            """)
         ]
 
         let customOrderDescription = TypeACLOrderRule.description

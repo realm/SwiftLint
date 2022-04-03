@@ -1,5 +1,6 @@
 import Foundation
 
+// swiftlint:disable:next type_body_length
 internal struct TypeACLOrderRuleExamples {
     static var nonTriggeringExamples: [Example] {
         return [

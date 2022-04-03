@@ -16,8 +16,8 @@ class TypeACLOrderRuleTests: XCTestCase {
                 public let owners = ["Mac", "Dennis", "Charlie"]
                 open let location = "Philedelphia"
 
+                internal func drink() { } // Ignore excluded ACL
                 private func makeMoney() { }
-                internal func drink() { }
                 open func charlieWork() { }
             }
             """)
@@ -33,7 +33,7 @@ class TypeACLOrderRuleTests: XCTestCase {
 
                 open func charlieWork() { }
                 private ↓func makeMoney() { }
-                internal ↓func drink() { }
+                internal func drink() { } // Ignore excluded ACL
             }
             """)
         ]
@@ -48,7 +48,7 @@ class TypeACLOrderRuleTests: XCTestCase {
                 "order": [
                     "private",
                     "fileprivate",
-                    "internal",
+                    "Chardee MacDennis", // Ignore non-ACL keywords
                     "public",
                     "open"
                 ]

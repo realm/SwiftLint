@@ -112,7 +112,8 @@
   [Juozas Valancius](https://github.com/juozasvalancius)
   [#3840](https://github.com/realm/SwiftLint/issues/3840)
   
-* Add `TypeACLOrderRule` to enforce ordering of type contents by ACL.
+* Add `TypeACLOrderRule` with identifier `type_acl_order` to enforce ordering of 
+  type contents by ACL.
   [jd014](https://github.com/jd014)
   [#2410](https://github.com/realm/SwiftLint/issues/2410)
   [#3672](https://github.com/realm/SwiftLint/issues/3672)

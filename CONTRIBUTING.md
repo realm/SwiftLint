@@ -173,5 +173,6 @@ To bring up a new Buildkite worker from MacStadium:
 1. Install Buildkite agent and other tools via Homebrew: `brew install buildkite/buildkite/buildkite-agent aria2 htop`
 1. Install the xcodes CLI by downloading the zip and moving it to `/usr/local/bin`: https://github.com/RobotsAndPencils/xcodes/releases
 1. Install latest Xcode version: `xcodes install --latest`
+1. Install bundler: `sudo gem install bundler`
 1. Add `DANGER_GITHUB_API_TOKEN` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
 1. Configure and launch buildkite agent: `brew info buildkite-agent` / https://buildkite.com/organizations/swiftlint/agents#setup-macos

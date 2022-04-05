@@ -27,7 +27,7 @@
   [#3840](https://github.com/realm/SwiftLint/issues/3840)
 
 * Don't skip autocorrect on files that have parser warnings. Only files with
-  errors reported by the Swift parser will be skipped.
+  errors reported by the Swift parser will be skipped.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3343](https://github.com/realm/SwiftLint/issues/3343)
 

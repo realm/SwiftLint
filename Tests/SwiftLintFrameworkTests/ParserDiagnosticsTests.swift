@@ -24,22 +24,13 @@ final class ParserDiagnosticsTests: XCTestCase {
 
     func testFileWithParserWarningDiagnostics() throws {
         parserDiagnosticsDisabledForTests = false
+        // extraneous duplicate parameter name; 'bar' already has an argument label
         let original = """
-        @_functionBuilder // @_functionBuilder' has been renamed to '@resultBuilder'
-        struct StringCharacterCounterBuilder {
-          static func buildBlock(_ strings: String...) ->  [Int] {
-            return strings.map { $0.count }
-          }
-        }
+        func foo(bar bar: String) ->   Int { 0 }
         """
 
         let corrected = """
-        @_functionBuilder // @_functionBuilder' has been renamed to '@resultBuilder'
-        struct StringCharacterCounterBuilder {
-          static func buildBlock(_ strings: String...) -> [Int] {
-            return strings.map { $0.count }
-          }
-        }
+        func foo(bar bar: String) -> Int { 0 }
         """
 
         XCTAssertNotNil(SwiftLintFile(contents: original).parserDiagnostics)

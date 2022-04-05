@@ -5,3 +5,5 @@ steps:
       - bundle exec danger --verbose
   - label: "Analyze"
     command: make analyze
+  - label: "TSan Unit Tests"
+    command: make test_tsan

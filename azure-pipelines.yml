@@ -83,8 +83,6 @@ jobs:
       displayName: Pre-cache SwiftLint Run
     - script: swift run --configuration release --sanitize thread swiftlint lint --lenient
       displayName: Post-cache SwiftLint Run
-    - script: make test_tsan
-      displayName: Test With TSan
 
 - job: jazzy
   pool:

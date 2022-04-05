@@ -26,6 +26,11 @@
   [Juozas Valancius](https://github.com/juozasvalancius)
   [#3840](https://github.com/realm/SwiftLint/issues/3840)
 
+* Don't skip autocorrect on files that have parser warnings. Only files with
+  errors reported by the Swift parser will be skipped.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3343](https://github.com/realm/SwiftLint/issues/3343)
+
 #### Bug Fixes
 
 * Fix false positives in `unused_closure_parameter` when using parameters with

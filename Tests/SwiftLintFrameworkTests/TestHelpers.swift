@@ -400,10 +400,11 @@ extension XCTestCase {
     }
 
     func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
-                           disableCommands: [String], testMultiByteOffsets: Bool) {
+                           disableCommands: [String], testMultiByteOffsets: Bool,
+                           parserDiagnosticsDisabledForTests: Bool = true) {
         let ruleDescription = ruleDescription.focused()
 
-        parserDiagnosticsDisabledForTests = true
+        SwiftLintFramework.parserDiagnosticsDisabledForTests = parserDiagnosticsDisabledForTests
 
         // corrections
         ruleDescription.corrections.forEach {

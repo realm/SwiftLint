@@ -115,8 +115,77 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead")
     }
 
+    func testAssertEqual() {
+        let example = Example("XCTAssert(foo == bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertEqual' instead")
+    }
+
+    func testAssertFalseNotEqual() {
+        let example = Example("XCTAssertFalse(bar != foo)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertEqual' instead")
+    }
+
+    func testAssertTrueEqual() {
+        let example = Example("XCTAssertTrue(foo == 1)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertEqual' instead")
+    }
+
+    func testAssertNotEqual() {
+        let example = Example("XCTAssert(foo != bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotEqual' instead")
+    }
+
+    func testAssertFalseEqual() {
+        let example = Example("XCTAssertFalse(bar == foo)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotEqual' instead")
+    }
+
+    func testAssertTrueNotEqual() {
+        let example = Example("XCTAssertTrue(foo != 1)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotEqual' instead")
+    }
+
+    func testMultipleComparisons() {
+        let example = Example("XCTAssert(foo == (bar == baz))")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertEqual' instead")
+    }
+
+    func testEqualInCommentNotConsidered() {
+        XCTAssert(noViolation(in: "XCTAssert(foo, \"a == b\")"))
+    }
+
+    func testEqualInFunctionCall() {
+        XCTAssert(noViolation(in: "XCTAssert(foo(bar == baz))"))
+        XCTAssert(noViolation(in: "XCTAssertTrue(foo(bar == baz), \"toto\")"))
+    }
+
     private func violations(_ example: Example) -> [StyleViolation] {
         guard let config = makeConfig(nil, XCTSpecificMatcherRule.description.identifier) else { return [] }
         return SwiftLintFrameworkTests.violations(example, config: config)
+    }
+
+    private func noViolation(in example: String) -> Bool {
+        violations(Example(example)).isEmpty
     }
 }

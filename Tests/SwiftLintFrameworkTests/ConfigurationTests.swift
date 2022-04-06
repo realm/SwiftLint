@@ -26,10 +26,14 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: Tests
     func testInit() {
-        XCTAssert((try? Configuration(dict: [:])) != nil,
-                  "initializing Configuration with empty Dictionary should succeed")
-        XCTAssert((try? Configuration(dict: ["a": 1, "b": 2])) != nil,
-                  "initializing Configuration with valid Dictionary should succeed")
+        XCTAssertNotNil(
+            try? Configuration(dict: [:]),
+            "initializing Configuration with empty Dictionary should succeed"
+        )
+        XCTAssertNotNil(
+            try? Configuration(dict: ["a": 1, "b": 2]),
+            "initializing Configuration with valid Dictionary should succeed"
+        )
     }
 
     func testNoConfiguration() {
@@ -371,12 +375,14 @@ class ConfigurationTests: XCTestCase {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
         let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
+        // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
         let rules = try testRuleList.allRulesWrapped(configurationDict: config).map { $0.rule }
+        // swiftlint:disable:next xct_specific_matcher
         XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }
 

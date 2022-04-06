@@ -19,8 +19,8 @@ class ImplicitReturnConfigurationTests: XCTestCase {
             .function,
             .getter
         ])
-        XCTAssert(configuration.severityConfiguration.severity == .error)
-        XCTAssertTrue(configuration.includedKinds == expectedKinds)
+        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.includedKinds, expectedKinds)
     }
 
     func testImplicitReturnConfigurationThrowsOnUnrecognizedModifierGroup() {

@@ -177,21 +177,21 @@ class LineLengthConfigurationTests: XCTestCase {
                                                      error: 100,
                                                      options: [.ignoreFunctionDeclarations,
                                                                .ignoreComments])
-        XCTAssertFalse(configuration1 == configuration2)
+        XCTAssertNotEqual(configuration1, configuration2)
 
         let configuration3 = LineLengthConfiguration(warning: 100, error: 200)
-        XCTAssertFalse(configuration1 == configuration3)
+        XCTAssertNotEqual(configuration1, configuration3)
 
         let configuration4 = LineLengthConfiguration(warning: 200, error: 100)
-        XCTAssertFalse(configuration1 == configuration4)
+        XCTAssertNotEqual(configuration1, configuration4)
 
         let configuration5 = LineLengthConfiguration(warning: 100, error: 100)
-        XCTAssertTrue(configuration1 == configuration5)
+        XCTAssertEqual(configuration1, configuration5)
 
         let configuration6 = LineLengthConfiguration(warning: 100,
                                                      error: 100,
                                                      options: [.ignoreFunctionDeclarations,
                                                                .ignoreComments])
-        XCTAssertTrue(configuration2 == configuration6)
+        XCTAssertEqual(configuration2, configuration6)
     }
 }

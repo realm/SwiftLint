@@ -7,7 +7,7 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
 
     static let description = RuleDescription(
         identifier: "lower_acl_than_parent",
-        name: "Lower ACL than parent",
+        name: "Lower ACL than Parent",
         description: "Ensure declarations have a lower access control level than their enclosing parent",
         kind: .lint,
         nonTriggeringExamples: [

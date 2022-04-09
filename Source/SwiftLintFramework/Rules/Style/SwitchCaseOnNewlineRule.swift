@@ -15,7 +15,7 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
 
     static let description = RuleDescription(
         identifier: "switch_case_on_newline",
-        name: "Switch Case on Newline",
+        name: "Cases on Newline",
         description: "Cases inside a switch should always be on a newline",
         kind: .style,
         nonTriggeringExamples: [

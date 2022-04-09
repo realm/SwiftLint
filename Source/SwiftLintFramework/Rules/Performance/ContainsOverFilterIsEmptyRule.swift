@@ -7,7 +7,7 @@ struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationP
 
     static let description = RuleDescription(
         identifier: "contains_over_filter_is_empty",
-        name: "Contains Over Filter Is Empty",
+        name: "Contains over Filter is Empty",
         description: "Prefer `contains` over using `filter(where:).isEmpty`",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in

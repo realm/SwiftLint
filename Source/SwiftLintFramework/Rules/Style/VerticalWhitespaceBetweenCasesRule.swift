@@ -140,7 +140,7 @@ struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 extension VerticalWhitespaceBetweenCasesRule: OptInRule {
     static let description = RuleDescription(
         identifier: "vertical_whitespace_between_cases",
-        name: "Vertical Whitespace Between Cases",
+        name: "Vertical Whitespace between Cases",
         description: "Include a single empty line between switch cases.",
         kind: .style,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),

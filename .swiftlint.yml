@@ -4,6 +4,7 @@ included:
 excluded:
   - Tests/SwiftLintFrameworkTests/Resources
 analyzer_rules:
+  - typesafe_array_init
   - unused_declaration
   - unused_import
 opt_in_rules:

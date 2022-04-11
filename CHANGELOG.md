@@ -51,6 +51,11 @@
 * Error by default on bad expiring todo date formatting.  
   [Christopher Hale](https://github.com/chrispomeroyhale)
   [#3636](https://github.com/realm/SwiftLint/pull/3626)
+  
+* Avoid false-positive in `let_var_whitespace` rule by allowing custom
+  attributes on lines directly before let/var declarations.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#2980](https://github.com/realm/SwiftLint/issues/2980)
 
 ## 0.47.0: Smart Appliance
 

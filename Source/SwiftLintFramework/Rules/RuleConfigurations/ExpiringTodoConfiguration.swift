@@ -12,13 +12,23 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     }
 
     public var consoleDescription: String {
-        return "(approaching_expiry_severity) \(approachingExpirySeverity.consoleDescription), " +
-        "(reached_or_passed_expiry_severity) \(expiredSeverity.consoleDescription)"
+        let descriptions = [
+            "approaching_expiry_severity: \(approachingExpirySeverity.consoleDescription)",
+            "expired_severity: \(expiredSeverity.consoleDescription)",
+            "bad_formatting_severity: \(badFormattingSeverity.consoleDescription)",
+            "approaching_expiry_threshold: \(approachingExpiryThreshold)",
+            "date_format: \(dateFormat)",
+            "date_delimiters: { opening: \(dateDelimiters.opening)", "closing: \(dateDelimiters.closing) }",
+            "date_separator: \(dateSeparator)"
+        ]
+        return descriptions.joined(separator: ", ")
     }
 
     private(set) var approachingExpirySeverity: SeverityConfiguration
 
     private(set) var expiredSeverity: SeverityConfiguration
+
+    private(set) var badFormattingSeverity: SeverityConfiguration
 
     // swiftlint:disable:next todo
     /// The number of days prior to expiry before the TODO emits a violation
@@ -33,12 +43,14 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     public init(
         approachingExpirySeverity: SeverityConfiguration = .init(.warning),
         expiredSeverity: SeverityConfiguration = .init(.error),
+        badFormattingSeverity: SeverityConfiguration = .init(.error),
         approachingExpiryThreshold: Int = 15,
         dateFormat: String = "MM/dd/yyyy",
         dateDelimiters: DelimiterConfiguration = .default,
         dateSeparator: String = "/") {
         self.approachingExpirySeverity = approachingExpirySeverity
         self.expiredSeverity = expiredSeverity
+        self.badFormattingSeverity = badFormattingSeverity
         self.approachingExpiryThreshold = approachingExpiryThreshold
         self.dateDelimiters = dateDelimiters
         self.dateFormat = dateFormat
@@ -55,6 +67,9 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         }
         if let expiredConfiguration = configurationDict["expired_severity"] {
             try expiredSeverity.apply(configuration: expiredConfiguration)
+        }
+        if let badFormattingConfiguration = configurationDict["bad_formatting_severity"] {
+            try badFormattingSeverity.apply(configuration: badFormattingConfiguration)
         }
         if let approachingExpiryThreshold = configurationDict["approaching_expiry_threshold"] as? Int {
             self.approachingExpiryThreshold = approachingExpiryThreshold

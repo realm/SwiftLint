@@ -48,6 +48,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3920](https://github.com/realm/SwiftLint/issues/3920)
 
+* Error by default on bad expiring todo date formatting.  
+  [Christopher Hale](https://github.com/chrispomeroyhale)
+  [#3636](https://github.com/realm/SwiftLint/pull/3626)
+
 ## 0.47.0: Smart Appliance
 
 #### Breaking

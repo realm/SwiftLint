@@ -314,7 +314,7 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='expiringtodo' class='heading'>ExpiringTodo</h1>
+            <h1 id='expiring-todo' class='heading'>Expiring Todo</h1>
 
 <p>TODOs and FIXMEs should be resolved prior to their expiry date.</p>
 
@@ -325,7 +325,7 @@
 <li><strong>Kind:</strong> lint</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> (approaching_expiry_severity) warning, (reached_or_passed_expiry_severity) error</li>
+<li><strong>Default configuration:</strong> approaching_expiry_severity: warning, expired_severity: error, bad_formatting_severity: error, approaching_expiry_threshold: 15, date_format: MM/dd/yyyy, date_delimiters: { opening: [, closing: ] }, date_separator: /</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="c1">// notaTODO:</span>
@@ -365,7 +365,10 @@
 <pre class="highlight swift"><code><span class="c1">// FIXME: [1/14/2019]</span>
 
 </code></pre>
-<pre class="highlight swift"><code><span class="c1">// FIXME: [10/4/2019]</span>
+<pre class="highlight swift"><code><span class="c1">// FIXME: [10/14/2019]</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// TODO: [9999/14/10]</span>
 
 </code></pre>
 

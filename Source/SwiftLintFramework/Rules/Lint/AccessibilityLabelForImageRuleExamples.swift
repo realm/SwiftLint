@@ -18,6 +18,13 @@ internal struct AccessibilityLabelForImageRuleExamples {
         Example("""
         struct MyView: View {
             var body: some View {
+                Image("my-image", label: Text("Alt text for my image")
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
                 Image("my-image")
                     .accessibility(hidden: true)
             }

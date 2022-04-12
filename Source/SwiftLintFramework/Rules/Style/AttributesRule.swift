@@ -285,7 +285,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func isAttribute(_ name: String) -> Bool {
-        if name == "@escaping" || name == "@autoclosure" {
+        let ignoredAttributes: Set<String> = ["@escaping", "@autoclosure", "@Sendable"]
+        if ignoredAttributes.contains(name) {
             return false
         }
 

@@ -68,6 +68,12 @@ internal struct AttributesRuleExamples {
           )
           static func foo(first: String) {}
         }
+        """),
+        Example("""
+        @available(iOS, introduced: 14, obsoleted: 15)
+        func refreshable(action: @escaping @Sendable () async -> Void) -> some View {
+            modifier(RefreshableModifier(action: action))
+        }
         """)
     ]
 

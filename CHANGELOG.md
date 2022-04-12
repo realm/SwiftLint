@@ -52,6 +52,10 @@
   [Christopher Hale](https://github.com/chrispomeroyhale)
   [#3636](https://github.com/realm/SwiftLint/pull/3626)
 
+* Don't trigger `attributes` violations when using `@Sendable`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3945](https://github.com/realm/SwiftLint/issues/3945)
+
 ## 0.47.0: Smart Appliance
 
 #### Breaking

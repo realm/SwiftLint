@@ -24,7 +24,7 @@ extension SwiftLint {
         mutating func run() throws {
             let allPaths: [String]
             if let path = path {
-                allPaths = [path]
+                allPaths = [path] + paths
             } else if !paths.isEmpty {
                 allPaths = paths
             } else {

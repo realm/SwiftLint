@@ -74,6 +74,21 @@ internal struct AttributesRuleExamples {
         func refreshable(action: @escaping @Sendable () async -> Void) -> some View {
             modifier(RefreshableModifier(action: action))
         }
+        """),
+        Example("@Sendable func cancel() {}"),
+        Example("""
+        class Foo: NSObject {
+            @objc
+            init() {}
+        }
+        """),
+        Example("""
+        @objc
+        private enum OperationState: Int {
+            case ready
+            case executing
+            case finished
+        }
         """)
     ]
 
@@ -108,6 +123,18 @@ internal struct AttributesRuleExamples {
         Example("@GKInspectable\n ↓var maxSpeed: Float"),
         Example("@discardableResult ↓func a() -> Int"),
         Example("@objc\n @discardableResult ↓func a() -> Int"),
-        Example("@objc\n\n @discardableResult\n ↓func a() -> Int")
+        Example("@objc\n\n @discardableResult\n ↓func a() -> Int"),
+        Example("""
+        @objc private ↓enum OperationState: Int {
+            case ready
+            case executing
+            case finished
+        }
+        """),
+        Example("""
+        class Foo: NSObject {
+            @objc ↓init() {}
+        }
+        """)
     ]
 }

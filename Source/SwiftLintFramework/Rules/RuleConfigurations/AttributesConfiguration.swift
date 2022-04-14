@@ -9,7 +9,7 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
             ", always_on_line_above: \(alwaysOnNewLine.sorted())"
     }
 
-    public init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged"],
+    public init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged", "@Sendable"],
                 alwaysInNewLine: [String] = []) {
         self.alwaysOnSameLine = Set(alwaysOnSameLine)
         self.alwaysOnNewLine = Set(alwaysOnNewLine)

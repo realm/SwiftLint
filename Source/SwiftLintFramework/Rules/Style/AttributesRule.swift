@@ -1,12 +1,13 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 private enum AttributesRuleError: Error {
     case unexpectedBlankLine
     case moreThanOneAttributeInSameLine
 }
 
-public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct AttributesRule: Rule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
@@ -25,312 +26,188 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validateTestableImport(file: file) +
-            validate(file: file, dictionary: file.structureDictionary)
-    }
+        guard let tree = file.syntaxTree else { return [] }
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let attributeShouldBeOnSameLine: Bool?
-        if SwiftDeclarationKind.variableKinds.contains(kind) {
-            attributeShouldBeOnSameLine = true
-        } else if SwiftDeclarationKind.typeKinds.contains(kind) {
-            attributeShouldBeOnSameLine = false
-        } else if SwiftDeclarationKind.functionKinds.contains(kind) {
-            attributeShouldBeOnSameLine = false
-        } else {
-            attributeShouldBeOnSameLine = nil
-        }
-
-        if let attributeShouldBeOnSameLine = attributeShouldBeOnSameLine {
-            return validateKind(file: file,
-                                attributeShouldBeOnSameLine: attributeShouldBeOnSameLine,
-                                dictionary: dictionary)
-        }
-
-        return []
-    }
-
-    private func validateTestableImport(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "@testable[\n]+\\s*import"
-        return file.match(pattern: pattern).compactMap { range, kinds -> StyleViolation? in
-            guard kinds == [.attributeBuiltin, .keyword] else {
-                return nil
-            }
-
-            let contents = file.stringView
-            let match = contents.substring(with: range)
-            let idx = match.lastIndex(of: "import") ?? 0
-            let location = idx + range.location
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, characterOffset: location))
-        }
-    }
-
-    private func validateKind(file: SwiftLintFile,
-                              attributeShouldBeOnSameLine: Bool,
-                              dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let attributes = parseAttributes(dictionary: dictionary)
-
-        guard attributes.isNotEmpty,
-            let offset = dictionary.offset,
-            let (line, _) = file.stringView.lineAndCharacter(forByteOffset: offset) else {
-            return []
-        }
-
-        guard isViolation(lineNumber: line, file: file,
-                          attributeShouldBeOnSameLine: attributeShouldBeOnSameLine) else {
-            return []
-        }
-
-        // Violation found!
-        return violation(dictionary: dictionary, file: file)
-    }
-
-    private func isViolation(lineNumber: Int, file: SwiftLintFile,
-                             attributeShouldBeOnSameLine: Bool) -> Bool {
-        let line = file.lines[lineNumber - 1]
-
-        let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
-        let attributesTokensWithRanges = tokens.compactMap { attributeName(token: $0, file: file) }
-
-        let attributesTokens = Set(
-            attributesTokensWithRanges.map { tokenString, _ in
-                // Some attributes are parameterized, such as `@objc(name)`, so discard anything from an opening
-                // parenthesis onward.
-                String(tokenString.prefix(while: { $0 != "(" }))
-            }
-        )
-
-        do {
-            let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber: lineNumber - 1,
-                                                                                   file: file)
-            let previousAttributes = Set(previousAttributesWithParameters.map { $0.0 })
-
-            if previousAttributes.isEmpty && attributesTokens.isEmpty {
-                return false
-            }
-
-            let alwaysOnSameLineAttributes = configuration.alwaysOnSameLine
-            let alwaysOnNewLineAttributes =
-                createAlwaysOnNewLineAttributes(previousAttributes: previousAttributesWithParameters,
-                                                attributesTokens: attributesTokensWithRanges,
-                                                line: line, file: file)
-
-            guard attributesTokens.isDisjoint(with: alwaysOnNewLineAttributes) &&
-                previousAttributes.isDisjoint(with: alwaysOnSameLineAttributes) else {
-                return true
-            }
-
-            // ignore attributes that are explicitly allowed
-            let attributesAfterAllowed: Set<String>
-            let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
-            let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
-
-            if attributeShouldBeOnSameLine {
-                attributesAfterAllowed = attributesTokens
-                    .union(newLineExceptions)
-                    .union(sameLineExceptions)
-            } else {
-                attributesAfterAllowed = attributesTokens
-                    .subtracting(newLineExceptions)
-                    .subtracting(sameLineExceptions)
-            }
-
-            return attributesAfterAllowed.isEmpty == attributeShouldBeOnSameLine
-        } catch {
-            return true
-        }
-    }
-
-    private func createAlwaysOnNewLineAttributes(previousAttributes: [(String, Bool)],
-                                                 attributesTokens: [(String, ByteRange)],
-                                                 line: Line, file: SwiftLintFile) -> Set<String> {
-        let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
-            let hasParameter = attributeContainsParameter(attributeRange: $1,
-                                                          line: line, file: file)
-            return ($0, hasParameter)
-        }
-        let allAttributes = previousAttributes + attributesTokensWithParameters
-
-        return Set(allAttributes.compactMap { token, hasParameter -> String? in
-            // an attribute should be on a new line if one of these is true:
-            // 1. it's a parameterized attribute
-            //      a. the parameter is on the token (i.e. warn_unused_result)
-            //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
-            // 2. it's an allowed attribute, according to the current configuration
-            let isParameterized = hasParameter || token.bridge().contains("(")
-            if isParameterized || configuration.alwaysOnNewLine.contains(token) {
-                return token
-            }
-
-            return nil
-        })
-    }
-
-    private func violation(dictionary: SourceKittenDictionary,
-                           file: SwiftLintFile) -> [StyleViolation] {
-        let location: Location
-        if let offset = dictionary.offset {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
-        }
-
-        return [
+        let visitor = AttributesRuleVisitor(file: file, configuration: configuration)
+        visitor.walk(tree)
+        return visitor.positions.map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
-                           location: location)
-        ]
+                           location: Location(file: file, byteOffset: position))
+        }
+    }
+}
+
+private final class AttributesRuleVisitor: SyntaxVisitor {
+    var positions: [ByteCount] = []
+    private let file: SwiftLintFile
+    private let configuration: AttributesConfiguration
+
+    init(file: SwiftLintFile, configuration: AttributesConfiguration) {
+        self.file = file
+        self.configuration = configuration
+        super.init()
     }
 
-    // returns an array with the token itself (i.e. "@objc") and whether it's parameterized
-    // note: the parameter is not contained in the token
-    private func attributesFromPreviousLines(lineNumber: Int,
-                                             file: SwiftLintFile) throws -> [(String, Bool)] {
-        var currentLine = lineNumber - 1
-        var allTokens = [(String, Bool)]()
-        var foundEmptyLine = false
+    override func visitPost(_ node: ImportDeclSyntax) {
+        guard let attributes = node.attributes else {
+            return
+        }
 
-        while currentLine >= 0 {
-            defer {
-                currentLine -= 1
-            }
+        let importOffset = ByteCount(node.importTok.positionAfterSkippingLeadingTrivia)
+        guard let (importLine, _) = file.stringView.lineAndCharacter(forByteOffset: importOffset) else {
+            return
+        }
 
-            let line = file.lines[currentLine]
-            let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
-
-            if tokens.isEmpty {
-                foundEmptyLine = true
+        for attr in attributes {
+            let attributeOffset = ByteCount(attr.positionAfterSkippingLeadingTrivia)
+            guard let (attributeLine, _) = file.stringView.lineAndCharacter(forByteOffset: attributeOffset),
+                  attributeLine != importLine else {
                 continue
             }
 
-            // check if it's a line with other declaration which could have its own attributes
-            let nonAttributeTokens = tokens.filter { token in
-                guard token.kind == .keyword,
-                    let keyword = file.contents(for: token) else {
-                    return false
-                }
 
-                let keywords: Set = ["func", "var", "let", "class", "struct",
-                                     "enum", "protocol", "import"]
-                return keywords.contains(keyword)
-            }
-
-            guard nonAttributeTokens.isEmpty else {
-                break
-            }
-
-            let attributesTokens = tokens.compactMap { attributeName(token: $0, file: file) }
-            guard let firstTokenRange = attributesTokens.first?.1 else {
-                // found a line that does not contain an attribute token - we can stop looking
-                break
-            }
-
-            if attributesTokens.count > 1 {
-                // we don't allow multiple attributes in the same line if it's a previous line
-                throw AttributesRuleError.moreThanOneAttributeInSameLine
-            }
-
-            if foundEmptyLine {
-                // we don't allow attributes with empty lines between them
-                throw AttributesRuleError.unexpectedBlankLine
-            }
-
-            let hasParameter = attributeContainsParameter(attributeRange: firstTokenRange,
-                                                          line: line, file: file)
-
-            allTokens.insert(contentsOf: attributesTokens.map { ($0.0, hasParameter) }, at: 0)
+            positions.append(importOffset)
+            return
         }
-
-        return allTokens
     }
 
-    private func attributeContainsParameter(attributeRange: ByteRange,
-                                            line: Line, file: SwiftLintFile) -> Bool {
-        let restOfLineOffset = attributeRange.upperBound
-        let restOfLineLength = line.byteRange.upperBound - restOfLineOffset
-        if restOfLineLength < 0 {
-            // If attribute spans multiple lines, it must have a parameter.
-            return true
+    override func visitPost(_ node: FunctionDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.funcKeyword, fallbackValue: false) else {
+            return
         }
 
-        let regex = Self.regularExpression
-        let contents = file.stringView
-
-        // check if after the token is a `(` with only spaces allowed between the token and `(`
-        let restOfLineByteRange = ByteRange(location: restOfLineOffset, length: restOfLineLength)
-        guard let restOfLine = contents.substringWithByteRange(restOfLineByteRange),
-            case let range = restOfLine.fullNSRange,
-            regex.firstMatch(in: restOfLine, options: [], range: range) != nil else {
-            return false
-        }
-
-        return true
+        positions.append(position)
     }
 
-    private func attributeName(token: SwiftLintSyntaxToken, file: SwiftLintFile) -> (String, ByteRange)? {
-        guard token.kind == .attributeBuiltin else {
+    override func visitPost(_ node: InitializerDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.initKeyword, fallbackValue: false) else {
+            return
+        }
+
+        positions.append(position)
+    }
+
+    override func visitPost(_ node: VariableDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.letOrVarKeyword, fallbackValue: true) else {
+            return
+        }
+
+        positions.append(position)
+    }
+
+    override func visitPost(_ node: ClassDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.classOrActorKeyword, fallbackValue: false) else {
+            return
+        }
+
+        positions.append(position)
+    }
+
+    override func visitPost(_ node: StructDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.structKeyword, fallbackValue: false) else {
+            return
+        }
+
+        positions.append(position)
+    }
+
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.protocolKeyword, fallbackValue: false) else {
+            return
+        }
+
+        positions.append(position)
+    }
+
+    override func visitPost(_ node: EnumDeclSyntax) {
+        guard let attributes = node.attributes,
+              let position = validate(attributes: attributes, token: node.enumKeyword, fallbackValue: false) else {
+            return
+        }
+
+        positions.append(position)
+    }
+
+    private func validate(attributes: AttributeListSyntax,
+                          token: TokenSyntax,
+                          fallbackValue: Bool) -> ByteCount? {
+        let tokenOffset = ByteCount(token.positionAfterSkippingLeadingTrivia)
+        guard let (tokenLine, _) = file.stringView.lineAndCharacter(forByteOffset: tokenOffset) else {
             return nil
         }
 
-        let maybeName = file.contents(for: token)
-        if let name = maybeName, isAttribute(name) {
-            return (name, token.range)
+        var lines: [(line: Int, sameLine: Bool)] = []
+
+        for attr in attributes {
+            let attributeOffset = ByteCount(attr.endPositionBeforeTrailingTrivia)
+            guard let (attributeLine, _) = file.stringView.lineAndCharacter(forByteOffset: attributeOffset) else {
+                continue
+            }
+
+            let attributeShouldBeOnSameLine: Bool = {
+                let attributeTokensBeforeParams = attr.withoutTrivia().tokens.split { $0.tokenKind == .leftParen }[0]
+                let attributeWithoutParams = attributeTokensBeforeParams.map(\.text).joined()
+                if configuration.alwaysOnNewLine.contains(attributeWithoutParams) {
+                    return false
+                }
+
+                if configuration.alwaysOnSameLine.contains(attributeWithoutParams) {
+                    return true
+                }
+
+                if attr.hasParameters {
+                    return false
+                }
+
+                return fallbackValue
+            }()
+
+            let isLinePositionViolation: Bool
+            switch attributeShouldBeOnSameLine {
+            case true:
+                isLinePositionViolation = attributeLine != tokenLine
+            case false:
+                isLinePositionViolation = attributeLine == tokenLine
+            }
+
+            if isLinePositionViolation {
+                return tokenOffset
+            }
+
+            lines.append((attributeLine, attributeShouldBeOnSameLine))
+        }
+
+        // check if there're two or more attributes on the same line when one of them requires to be on its own line
+        let violatesLineExclusivity = zip(lines.dropFirst(), lines).contains { lhs, rhs in
+            return lhs.line == rhs.line && (!lhs.sameLine || !rhs.sameLine)
+        }
+        if violatesLineExclusivity {
+            return tokenOffset
+        }
+
+        lines.append((tokenLine, false))
+
+        // check if there's one of more blank lines between attributes or between attributes and the declaration
+        let containsBlankLine = zip(lines.dropFirst().map(\.line), lines.map(\.line)).map(-).contains { $0 > 1 }
+        if containsBlankLine {
+            return tokenOffset
         }
 
         return nil
     }
-
-    private func isAttribute(_ name: String) -> Bool {
-        let ignoredAttributes: Set<String> = ["@escaping", "@autoclosure", "@Sendable"]
-        if ignoredAttributes.contains(name) {
-            return false
-        }
-
-        // all attributes *should* start with @
-        if name.hasPrefix("@") {
-            return true
-        }
-
-        // for some reason, `@` is not included if @warn_unused_result has parameters
-        if name.hasPrefix("warn_unused_result(") {
-            return true
-        }
-
-        return false
-    }
-
-    private func parseAttributes(dictionary: SourceKittenDictionary) -> [SwiftDeclarationAttributeKind] {
-        let attributes = dictionary.enclosedSwiftAttributes
-        return attributes.filter { !kIgnoredAttributes.contains($0) }
-    }
 }
 
-private let kIgnoredAttributes: Set<SwiftDeclarationAttributeKind> = [
-    .dynamic,
-    .fileprivate,
-    .final,
-    .infix,
-    .internal,
-    .lazy,
-    .mutating,
-    .nonmutating,
-    .open,
-    .optional,
-    .override,
-    .postfix,
-    .prefix,
-    .private,
-    .public,
-    .required,
-    .rethrows,
-    .setterFilePrivate,
-    .setterInternal,
-    .setterOpen,
-    .setterPrivate,
-    .setterPublic,
-    .weak
-]
+private extension AttributeListSyntax.Element {
+    var hasParameters: Bool {
+        var kinds = tokens.map(\.tokenKind)
+        kinds.removeAll(where: { $0 == .atSign })
+        return kinds.count > 1
+    }
+}

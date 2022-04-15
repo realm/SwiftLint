@@ -7,8 +7,9 @@ import SourceKittenFramework
 /// a poor experience when VoiceOver reads things like "close icon white".
 ///
 /// Known false negatives for Images declared as instance variables and containers that provide a label but are
-/// not accessibility elements.
-public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+/// not accessibility elements. Known false positives for Images created in a separate function from where they
+/// have accessibility properties applied.
+public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -28,7 +29,7 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        // only proceed to check View structs
+        // Only proceed to check View structs.
         guard kind == .struct,
             dictionary.inheritedTypes.contains("View"),
             dictionary.substructure.isNotEmpty else {
@@ -38,33 +39,38 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
         return findImageViolations(file: file, substructure: dictionary.substructure)
     }
 
-    /// recursively check a file for image violations, and return all such violations
+    /// Recursively check a file for image violations, and return all such violations.
     private func findImageViolations(file: SwiftLintFile, substructure: [SourceKittenDictionary]) -> [StyleViolation] {
-        var violations: [StyleViolation] = []
+        var violations = [StyleViolation]()
         for dictionary in substructure {
             guard let offset: ByteCount = dictionary.offset else {
                 continue
             }
 
-            // if it's image, and does not hide from accessibility or provide a label, it's a violation
+            // If it's image, and does not hide from accessibility or provide a label, it's a violation.
             if dictionary.isImage {
-                if !(dictionary.isDecorativeOrLabeledOrSystemImage ||
+                if dictionary.isDecorativeOrLabeledOrSystemImage ||
                   dictionary.hasAccessibilityHiddenModifier(in: file) ||
-                  dictionary.hasAccessibilityLabelModifier) {
-                    violations.append(
-                        StyleViolation(ruleDescription: Self.description,
-                                       severity: configuration.severity,
-                                       location: Location(file: file, byteOffset: offset))
-                    )
+                  dictionary.hasAccessibilityLabelModifier {
+                    continue
                 }
+                
+                violations.append(
+                    StyleViolation(ruleDescription: Self.description,
+                                   severity: configuration.severity,
+                                   location: Location(file: file, byteOffset: offset))
+                )
             }
 
-            // if dictionary did not represent an Image, recursively check substructure
-            // unless it's a container that hides its children from accessibility or is labeled
-            else if dictionary.substructure.isNotEmpty,
-                        !(dictionary.hasAccessibilityHiddenModifier(in: file) ||
-                          dictionary.hasAccessibilityElementChildrenIgnoreModifier(in: file) ||
-                          dictionary.hasAccessibilityLabelModifier) {
+            // If dictionary did not represent an Image, recursively check substructure,
+            // unless it's a container that hides its children from accessibility or is labeled.
+            else if dictionary.substructure.isNotEmpty {
+                if dictionary.hasAccessibilityHiddenModifier(in: file) ||
+                    dictionary.hasAccessibilityElementChildrenIgnoreModifier(in: file) ||
+                    dictionary.hasAccessibilityLabelModifier {
+                    continue
+                }
+                
                 violations.append(contentsOf: findImageViolations(file: file, substructure: dictionary.substructure))
             }
         }
@@ -79,7 +85,7 @@ private extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI Image.
     /// Currently only accounts for SwiftUI image literals and not instance variables.
     var isImage: Bool {
-        // image literals will be reported as calls to the initializer
+        // Image literals will be reported as calls to the initializer.
         guard expressionKind == .call else {
             return false
         }
@@ -88,16 +94,12 @@ private extension SourceKittenDictionary {
             return true
         }
 
-        // recursively check substructure
+        // Recursively check substructure.
         // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
         // Image(decorative: "myImage").resizable().frame
         //     '--> Image(decorative: "myImage").resizable
         //         '--> Image
-        if substructure.contains(where: { $0.isImage }) {
-            return true
-        }
-
-        return false
+        return substructure.contains(where: { $0.isImage })
     }
 
     /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor (hides
@@ -107,124 +109,108 @@ private extension SourceKittenDictionary {
             return false
         }
 
-        // check for Image(decorative:), Image(_:label:), or Image(systemName:) constructor
+        // Check for Image(decorative:), Image(_:label:), or Image(systemName:) constructor.
         if expressionKind == .call &&
             enclosedArguments.contains(where: { ["decorative", "label", "systemName"].contains($0.name) }) {
             return true
         }
 
-        // recursively check substructure
+        // Recursively check substructure.
         // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
         // Image(decorative: "myImage").resizable().frame
         //     '--> Image(decorative: "myImage").resizable
         //         '--> Image
-        if substructure.contains(where: { $0.isDecorativeOrLabeledOrSystemImage }) {
-            return true
-        }
-
-        return false
+        return substructure.contains(where: { $0.isDecorativeOrLabeledOrSystemImage })
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityHidden(true)`
     /// or `accessibility(hidden: true)` modifier.
     func hasAccessibilityHiddenModifier(in file: SwiftLintFile) -> Bool {
-        guard expressionKind == .call, let name: String = name else {
+        guard expressionKind == .call, let name = name else {
             return false
         }
 
-        // check for iOS 14+ version of modifier
+        // Check for iOS 14+ version of modifier
         if name.hasSuffix("accessibilityHidden") && getSingleUnnamedArgumentValue(in: file) == "true" {
             return true
         }
 
-        // check for iOS 13 version of modifier
+        // Check for iOS 13 version of modifier
         if name.hasSuffix("accessibility"),
-            let hiddenArg: SourceKittenDictionary = enclosedArguments.first(where: { $0.name == "hidden" }),
+            let hiddenArg = enclosedArguments.first(where: { $0.name == "hidden" }),
             hiddenArg.getArgumentValue(in: file) == "true" {
             return true
         }
 
-        // recursively check substructure
+        // Recursively check substructure.
         // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
         // Image("myImage").resizable().accessibility(hidden: true).frame
         //     '--> Image("myImage").resizable().accessibility
-        if substructure.contains(where: { $0.hasAccessibilityHiddenModifier(in: file) }) {
-            return true
-        }
-
-        return false
+        return substructure.contains(where: { $0.hasAccessibilityHiddenModifier(in: file) })
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`
     /// or `accessibility(label:)` modifier.
     var hasAccessibilityLabelModifier: Bool {
-        guard expressionKind == .call, let name: String = name else {
+        guard expressionKind == .call, let name = name else {
             return false
         }
 
-        // check for iOS 14+ version of modifier
+        // Check for iOS 14+ version of modifier.
         if name.hasSuffix("accessibilityLabel") {
             return true
         }
 
-        // check for iOS 13 version of modifier
+        // Check for iOS 13 version of modifier.
         if name.hasSuffix("accessibility"), enclosedArguments.contains(where: { $0.name == "label" }) {
             return true
         }
 
-        // recursively check substructure
+        // Recursively check substructure.
         // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
         // Image("myImage").resizable().accessibilityLabel(Text("Label")).frame
         //     '--> Image("myImage").resizable().accessibilityLabel
-        if substructure.contains(where: { $0.hasAccessibilityLabelModifier }) {
-            return true
-        }
-
-        return false
+        return substructure.contains(where: { $0.hasAccessibilityLabelModifier })
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accessibilityElement()` or
     /// `accessibilityElement(children: .ignore)` modifier (`.ignore` is the default parameter value).
     func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool {
-        guard expressionKind == .call, let name: String = name else {
+        guard expressionKind == .call, let name = name else {
             return false
         }
 
-        // check for modifier
+        // Check for modifier.
         if name.hasSuffix("accessibilityElement") {
             if enclosedArguments.isEmpty {
                 return true
             }
 
-            if let childrenArg: SourceKittenDictionary = enclosedArguments.first(where: { $0.name == "children" }),
+            if let childrenArg = enclosedArguments.first(where: { $0.name == "children" }),
                 childrenArg.getArgumentValue(in: file) == ".ignore" {
                 return true
             }
         }
 
-        // recursively check substructure
+        // Recursively check substructure.
         // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
         // VStack { ... }.accessibilityElement().padding
         //     '--> VStack { ... }.accessibilityElement
-        if substructure.contains(where: { $0.hasAccessibilityElementChildrenIgnoreModifier(in: file) }) {
-            return true
-        }
-
-        return false
+        return substructure.contains(where: { $0.hasAccessibilityElementChildrenIgnoreModifier(in: file) })
     }
 
-    /// Helper to get the value of an argument
+    /// Helper to get the value of an argument.
     func getArgumentValue(in file: SwiftLintFile) -> String? {
-        guard expressionKind == .argument, let bodyByteRange: ByteRange = bodyByteRange else {
+        guard expressionKind == .argument, let bodyByteRange = bodyByteRange else {
             return nil
         }
 
         return file.stringView.substringWithByteRange(bodyByteRange)
     }
 
-    /// Helper to get the value of a single unnamed argument to a function call
+    /// Helper to get the value of a single unnamed argument to a function call.
     func getSingleUnnamedArgumentValue(in file: SwiftLintFile) -> String? {
-        guard expressionKind == .call, let bodyByteRange: ByteRange = bodyByteRange else {
+        guard expressionKind == .call, let bodyByteRange = bodyByteRange else {
             return nil
         }
 

@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* Deprecate the `--path` options for `lint`/`analyze` commands. Prefer the
+  positional paths that can be added last to both commands.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Experimental
 

@@ -47,7 +47,7 @@ struct LintOrAnalyzeArguments: ParsableArguments {
 // `LintOrAnalyzeArguments`.
 
 func pathOptionDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
-    "The path to the file or directory to \(mode.imperative)."
+    ArgumentHelp(shouldDisplay: false)
 }
 
 func pathsArgumentDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {

@@ -52,7 +52,8 @@
   [Christopher Hale](https://github.com/chrispomeroyhale)
   [#3636](https://github.com/realm/SwiftLint/pull/3626)
 
-* Lint all files listed in the command even if the `--path` option is used.  
+* Lint/analyze all files listed in the command even if the `--path` option is
+  used.  
   [coffmark](https://github.com/coffmark)
 
 ## 0.47.0: Smart Appliance

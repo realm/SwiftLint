@@ -54,7 +54,7 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
                   dictionary.hasAccessibilityLabelModifier {
                     continue
                 }
-                
+
                 violations.append(
                     StyleViolation(ruleDescription: Self.description,
                                    severity: configuration.severity,
@@ -70,7 +70,7 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
                     dictionary.hasAccessibilityLabelModifier {
                     continue
                 }
-                
+
                 violations.append(contentsOf: findImageViolations(file: file, substructure: dictionary.substructure))
             }
         }

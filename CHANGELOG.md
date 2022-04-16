@@ -31,6 +31,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3343](https://github.com/realm/SwiftLint/issues/3343)
 
+* Add `unavailable_condition` rule to prefer using `if #unavailable` instead of
+  `if #available` with an empty body and an `else` condition when using
+  Swift 5.6 or later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3897](https://github.com/realm/SwiftLint/issues/3897)
+
 #### Bug Fixes
 
 * Fix false positives in `unused_closure_parameter` when using parameters with

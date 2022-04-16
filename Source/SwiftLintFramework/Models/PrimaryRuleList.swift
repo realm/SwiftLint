@@ -186,6 +186,7 @@ public let primaryRuleList = RuleList(rules: [
     TypeContentsOrderRule.self,
     TypeNameRule.self,
     TypesafeArrayInitRule.self,
+    UnavailableConditionRule.self,
     UnavailableFunctionRule.self,
     UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,

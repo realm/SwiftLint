@@ -791,6 +791,12 @@ class TypesafeArrayInitRuleTests: XCTestCase {
     }
 }
 
+class UnavailableConditionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnavailableConditionRule.description)
+    }
+}
+
 class UnavailableFunctionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableFunctionRule.description)

@@ -41,6 +41,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3897](https://github.com/realm/SwiftLint/issues/3897)
 
+* Add `comma_inheritance` rule to validate that inheritance clauses use commas
+  instead of `&`.    
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3950](https://github.com/realm/SwiftLint/issues/3950)
+
 #### Bug Fixes
 
 * Fix false positives in `unused_closure_parameter` when using parameters with

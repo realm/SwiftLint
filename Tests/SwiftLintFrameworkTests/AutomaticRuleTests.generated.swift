@@ -701,6 +701,12 @@ class ReturnArrowWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class ReturnValueFromVoidFunctionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReturnValueFromVoidFunctionRule.description)
+    }
+}
+
 class SelfInPropertyInitializationRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)

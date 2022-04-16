@@ -26,6 +26,10 @@
   [Juozas Valancius](https://github.com/juozasvalancius)
   [#3840](https://github.com/realm/SwiftLint/issues/3840)
 
+* Add back `return_value_from_void_function` opt-in rule to warn against using
+  `return <expression>` in a function that returns `Void`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Don't skip autocorrect on files that have parser warnings. Only files with
   errors reported by the Swift parser will be skipped.  
   [Marcelo Fabri](https://github.com/marcelofabri)

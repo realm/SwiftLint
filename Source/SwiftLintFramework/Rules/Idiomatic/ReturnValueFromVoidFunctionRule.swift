@@ -18,26 +18,24 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let tree = file.syntaxTree else {
-            warnSyntaxParserFailureOnce()
             return []
         }
 
-        let visitor = ReturnVisitor()
+        let visitor = ReturnValueFromVoidFunctionVisitor()
         visitor.walk(tree)
         return visitor.violations(for: self, in: file)
     }
 }
 
-private final class ReturnVisitor: SyntaxVisitor {
+private final class ReturnValueFromVoidFunctionVisitor: SyntaxVisitor {
     private var positions = [AbsolutePosition]()
 
-    override func visit(_ node: ReturnStmtSyntax) -> SyntaxVisitorContinueKind {
+    override func visitPost(_ node: ReturnStmtSyntax) {
         if node.expression != nil,
            let functionNode = Syntax(node).enclosingFunction(),
             functionNode.returnsVoid {
             positions.append(node.positionAfterSkippingLeadingTrivia)
         }
-        return .visitChildren
     }
 
     func violations(for rule: ReturnValueFromVoidFunctionRule, in file: SwiftLintFile) -> [StyleViolation] {
@@ -71,14 +69,4 @@ private extension FunctionDeclSyntax {
 
         return signature.output?.returnType == nil
     }
-}
-
-private let warnSyntaxParserFailureOnceImpl: Void = {
-    queuedPrintError(
-        "The return_value_from_void_function rule is disabled because the Swift Syntax tree could not be parsed"
-    )
-}()
-
-private func warnSyntaxParserFailureOnce() {
-    _ = warnSyntaxParserFailureOnceImpl
 }

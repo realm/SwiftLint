@@ -1,3 +1,4 @@
+// swiftlint:disable all
 // Extracted from https://github.com/apple/swift-format/blob/f327c649efbcd7c43c2170f5c2bc7ff360f2e99b/Sources/SwiftFormatPrettyPrint/TokenStreamCreator.swift
 
 //===----------------------------------------------------------------------===//

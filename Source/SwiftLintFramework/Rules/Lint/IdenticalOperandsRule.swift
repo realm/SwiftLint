@@ -75,8 +75,30 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
         }
         let rewriter = SequenceExprFoldingRewriter(operatorContext: .makeBuiltinOperatorContext())
         let folded = rewriter.visit(tree)
+
         let visitor = IdenticalOperandsVisitor()
+        #if DEBUG
+        let lock = NSLock()
+
+        // https://bugs.swift.org/browse/SR-11170
+        let work = DispatchWorkItem {
+            lock.lock()
+            visitor.walk(folded)
+            lock.unlock()
+        }
+        let thread = Thread {
+            work.perform()
+        }
+        thread.stackSize = 8 << 20 // 8 MB.
+        thread.start()
+        work.wait()
+
+        lock.lock()
+        defer { lock.unlock() }
+        #else
         visitor.walk(folded)
+        #endif
+
         return visitor.positions.map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,

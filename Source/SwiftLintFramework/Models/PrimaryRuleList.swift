@@ -183,6 +183,7 @@ public let primaryRuleList = RuleList(rules: [
     TrailingNewlineRule.self,
     TrailingSemicolonRule.self,
     TrailingWhitespaceRule.self,
+    TuplePatternRule.self,
     TypeBodyLengthRule.self,
     TypeContentsOrderRule.self,
     TypeNameRule.self,

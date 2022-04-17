@@ -30,6 +30,12 @@
   `return <expression>` in a function that returns `Void`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add back `tuple_pattern` rule to warn against assigning variables
+  through a tuple pattern when the left side of the assignment
+  contains labels.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3466](https://github.com/realm/SwiftLint/issues/3466)
+
 * Don't skip autocorrect on files that have parser warnings. Only files with
   errors reported by the Swift parser will be skipped.  
   [Marcelo Fabri](https://github.com/marcelofabri)

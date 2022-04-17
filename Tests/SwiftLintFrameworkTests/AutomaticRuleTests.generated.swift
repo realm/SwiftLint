@@ -77,6 +77,12 @@ class ClosureSpacingRuleTests: XCTestCase {
     }
 }
 
+class CommaInheritanceRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CommaInheritanceRule.description)
+    }
+}
+
 class CommaRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaRule.description)

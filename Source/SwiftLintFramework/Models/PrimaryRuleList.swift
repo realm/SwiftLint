@@ -17,6 +17,7 @@ public let primaryRuleList = RuleList(rules: [
     ClosureSpacingRule.self,
     CollectionAlignmentRule.self,
     ColonRule.self,
+    CommaInheritanceRule.self,
     CommaRule.self,
     CommentSpacingRule.self,
     CompilerProtocolInitRule.self,

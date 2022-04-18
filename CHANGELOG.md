@@ -34,6 +34,11 @@
   errors reported by the Swift parser will be skipped.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3343](https://github.com/realm/SwiftLint/issues/3343)
+  
+* Add `accessibility_label_for_image` rule to warn if a SwiftUI
+  Image does not have an accessibility label and is not hidden from
+  accessibility.  
+  [Ryan Cole](https://github.com/rcole34)
 
 * Add `unavailable_condition` rule to prefer using `if #unavailable` instead of
   `if #available` with an empty body and an `else` condition when using

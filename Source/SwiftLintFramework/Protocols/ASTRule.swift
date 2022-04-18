@@ -11,7 +11,7 @@ public protocol ASTRule: Rule {
     ///
     /// - parameter file:       The file for which to execute the rule.
     /// - parameter kind:       The kind of token being recursed over.
-    /// - parameter dictionary: The dicttionary for an AST subset to validate.
+    /// - parameter dictionary: The dictionary for an AST subset to validate.
     ///
     /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, kind: KindType, dictionary: SourceKittenDictionary) -> [StyleViolation]

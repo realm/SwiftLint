@@ -178,6 +178,7 @@ public let primaryRuleList = RuleList(rules: [
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
     TestCaseAccessibilityRule.self,
+    TestableImportRule.self,
     TodoRule.self,
     ToggleBoolRule.self,
     TrailingClosureRule.self,

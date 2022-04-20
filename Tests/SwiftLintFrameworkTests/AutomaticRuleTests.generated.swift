@@ -785,6 +785,12 @@ class TestCaseAccessibilityRuleTests: XCTestCase {
     }
 }
 
+class TestableImportRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TestableImportRule.description)
+    }
+}
+
 class ToggleBoolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ToggleBoolRule.description)

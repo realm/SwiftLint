@@ -100,7 +100,8 @@ class ConfigurationTests: XCTestCase {
         let config = try! Configuration(dict: ["only_rules": only, "custom_rules": customRules])
         guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertTrue(
             resultingCustomRules.configuration.customRuleConfigurations.contains {

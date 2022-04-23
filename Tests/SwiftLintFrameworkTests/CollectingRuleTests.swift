@@ -37,7 +37,7 @@ class CollectingRuleTests: XCTestCase {
     }
 
     func testCollectsAnalyzerFiles() {
-        struct Spec: MockCollectingRule & AnalyzerRule {
+        struct Spec: MockCollectingRule, AnalyzerRule {
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> [String] {
                 return compilerArguments
             }
@@ -53,7 +53,7 @@ class CollectingRuleTests: XCTestCase {
     }
 
     func testCorrects() {
-        struct Spec: MockCollectingRule & CollectingCorrectableRule {
+        struct Spec: MockCollectingRule, CollectingCorrectableRule {
             func collectInfo(for file: SwiftLintFile) -> String {
                 return file.contents
             }
@@ -77,7 +77,7 @@ class CollectingRuleTests: XCTestCase {
             }
         }
 
-        struct AnalyzerSpec: MockCollectingRule & AnalyzerRule & CollectingCorrectableRule {
+        struct AnalyzerSpec: MockCollectingRule, AnalyzerRule, CollectingCorrectableRule {
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> String {
                 return file.contents
             }

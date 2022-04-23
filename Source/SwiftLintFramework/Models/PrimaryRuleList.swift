@@ -2,6 +2,7 @@
 // DO NOT EDIT
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
+    AccessibilityLabelForImageRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,
@@ -17,6 +18,7 @@ public let primaryRuleList = RuleList(rules: [
     ClosureSpacingRule.self,
     CollectionAlignmentRule.self,
     ColonRule.self,
+    CommaInheritanceRule.self,
     CommaRule.self,
     CommentSpacingRule.self,
     CompilerProtocolInitRule.self,
@@ -161,6 +163,7 @@ public let primaryRuleList = RuleList(rules: [
     RequiredDeinitRule.self,
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,
+    ReturnValueFromVoidFunctionRule.self,
     SelfInPropertyInitializationRule.self,
     ShorthandOperatorRule.self,
     SingleTestClassRule.self,
@@ -187,6 +190,7 @@ public let primaryRuleList = RuleList(rules: [
     TypeContentsOrderRule.self,
     TypeNameRule.self,
     TypesafeArrayInitRule.self,
+    UnavailableConditionRule.self,
     UnavailableFunctionRule.self,
     UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,

@@ -5,6 +5,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired
+        case badFormatting
 
         var reason: String {
             switch self {
@@ -12,13 +13,15 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
                 return "TODO/FIXME is approaching its expiry and should be resolved soon."
             case .expired:
                 return "TODO/FIXME has expired and must be resolved."
+            case .badFormatting:
+                return "Expiring TODO/FIXME is incorrectly formatted."
             }
         }
     }
 
     public static let description = RuleDescription(
         identifier: "expiring_todo",
-        name: "ExpiringTodo",
+        name: "Expiring Todo",
         description: "TODOs and FIXMEs should be resolved prior to their expiry date.",
         kind: .lint,
         nonTriggeringExamples: [
@@ -36,7 +39,8 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
             Example("// TODO: [10/14/2019]\n"),
             Example("// FIXME: [10/14/2019]\n"),
             Example("// FIXME: [1/14/2019]\n"),
-            Example("// FIXME: [10/4/2019]\n")
+            Example("// FIXME: [10/14/2019]\n"),
+            Example("// TODO: [9999/14/10]\n")
         ]
     )
 
@@ -48,7 +52,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         let regex = #"""
         \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
         \\#(configuration.dateDelimiters.opening)\#
-        (\d{1,4}\\#(configuration.dateSeparator)\d{1,2}\\#(configuration.dateSeparator)\d{1,4})\#
+        (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
         \\#(configuration.dateDelimiters.closing)
         """#
 
@@ -57,8 +61,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
                 syntaxKinds.allSatisfy({ $0.isCommentLike }),
                 checkingResult.numberOfRanges > 1,
                 case let range = checkingResult.range(at: 1),
-                let date = expiryDate(file: file, range: range),
-                let violationLevel = self.violationLevel(for: date),
+                let violationLevel = self.violationLevel(for: expiryDate(file: file, range: range)),
                 let severity = self.severity(for: violationLevel) else {
                 return nil
             }
@@ -90,10 +93,15 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
             return configuration.approachingExpirySeverity.severity
         case .expired:
             return configuration.expiredSeverity.severity
+        case .badFormatting:
+            return configuration.badFormattingSeverity.severity
         }
     }
 
-    private func violationLevel(for expiryDate: Date) -> ExpiryViolationLevel? {
+    private func violationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
+        guard let expiryDate = expiryDate else {
+            return .badFormatting
+        }
         guard expiryDate.isAfterToday else {
             return .expired
         }

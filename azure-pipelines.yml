@@ -71,15 +71,6 @@ jobs:
     - script: bundle exec pod lib lint --verbose
       displayName: pod lib lint
 
-- job: Analyze
-  pool:
-    vmImage: 'macOS-11'
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
-  steps:
-    - script: make analyze
-      displayName: Run SwiftLint Analyze
-
 - job: TSan
   pool:
     vmImage: 'macOS-11'

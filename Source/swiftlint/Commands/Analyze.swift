@@ -20,7 +20,7 @@ extension SwiftLint {
         mutating func run() throws {
             let allPaths: [String]
             if let path = path {
-                allPaths = [path]
+                allPaths = [path] + paths
             } else if !paths.isEmpty {
                 allPaths = paths
             } else {
@@ -45,7 +45,8 @@ extension SwiftLint {
                 autocorrect: common.fix,
                 format: common.format,
                 compilerLogPath: compilerLogPath,
-                compileCommands: compileCommands
+                compileCommands: compileCommands,
+                inProcessSourcekit: common.inProcessSourcekit
             )
 
             let result = LintOrAnalyzeCommand.run(options)

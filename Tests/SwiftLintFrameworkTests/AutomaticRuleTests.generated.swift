@@ -5,6 +5,12 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
+class AccessibilityLabelForImageRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AccessibilityLabelForImageRule.description)
+    }
+}
+
 class AnonymousArgumentInMultilineClosureRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnonymousArgumentInMultilineClosureRule.description)
@@ -74,6 +80,12 @@ class ClosureParameterPositionRuleTests: XCTestCase {
 class ClosureSpacingRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureSpacingRule.description)
+    }
+}
+
+class CommaInheritanceRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CommaInheritanceRule.description)
     }
 }
 
@@ -701,6 +713,12 @@ class ReturnArrowWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class ReturnValueFromVoidFunctionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReturnValueFromVoidFunctionRule.description)
+    }
+}
+
 class SelfInPropertyInitializationRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)
@@ -794,6 +812,12 @@ class TypeBodyLengthRuleTests: XCTestCase {
 class TypesafeArrayInitRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypesafeArrayInitRule.description)
+    }
+}
+
+class UnavailableConditionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnavailableConditionRule.description)
     }
 }
 

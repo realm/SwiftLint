@@ -134,6 +134,18 @@ class ExpiringTodoRuleTests: XCTestCase {
         XCTAssertEqual(violations[0].location.line, 2)
     }
 
+    func testBadExpiryTodoFormat() throws {
+        let ruleConfig: ExpiringTodoConfiguration = .init(
+            dateFormat: "dd/yyyy/MM"
+        )
+        config = makeConfiguration(with: ruleConfig)
+
+        let example = Example("fatalError() // TODO: [31/01/2020] Implement")
+        let violations = self.violations(example)
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Expiring TODO/FIXME is incorrectly formatted.")
+    }
+
     private func violations(_ example: Example) -> [StyleViolation] {
         return SwiftLintFrameworkTests.violations(example, config: config)
     }
@@ -155,7 +167,7 @@ class ExpiringTodoRuleTests: XCTestCase {
             daysToAdvance = ruleConfiguration.approachingExpiryThreshold
         case .expired?:
             daysToAdvance = 0
-        case nil:
+        case .badFormatting?, nil:
             daysToAdvance = ruleConfiguration.approachingExpiryThreshold + 1
         }
 
@@ -174,6 +186,7 @@ class ExpiringTodoRuleTests: XCTestCase {
             serializedConfig = [
                 "expired_severity": config.expiredSeverity.severity.rawValue,
                 "approaching_expiry_severity": config.approachingExpirySeverity.severity.rawValue,
+                "bad_formatting_severity": config.badFormattingSeverity.severity.rawValue,
                 "approaching_expiry_threshold": config.approachingExpiryThreshold,
                 "date_format": config.dateFormat,
                 "date_delimiters": [

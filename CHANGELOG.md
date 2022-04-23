@@ -16,6 +16,47 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3749](https://github.com/realm/SwiftLint/issues/3749)
 
+* Add the `--in-process-sourcekit` command line flag to `lint` and `analyze`
+  commands, which has the same effect as setting the `IN_PROCESS_SOURCEKIT`
+  environment variable.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+
+* Add a new `artifactbundle` release asset containing `swiftlint` binaries for
+  x86 & arm64 macOS.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+  [#3840](https://github.com/realm/SwiftLint/issues/3840)
+
+* Add back `return_value_from_void_function` opt-in rule to warn against using
+  `return <expression>` in a function that returns `Void`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Don't skip autocorrect on files that have parser warnings. Only files with
+  errors reported by the Swift parser will be skipped.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3343](https://github.com/realm/SwiftLint/issues/3343)
+  
+* Add `accessibility_label_for_image` rule to warn if a SwiftUI
+  Image does not have an accessibility label and is not hidden from
+  accessibility.  
+  [Ryan Cole](https://github.com/rcole34)
+
+* Add `unavailable_condition` rule to prefer using `if #unavailable` instead of
+  `if #available` with an empty body and an `else` condition when using
+  Swift 5.6 or later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3897](https://github.com/realm/SwiftLint/issues/3897)
+
+* Add `comma_inheritance` rule to validate that inheritance clauses use commas
+  instead of `&`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3950](https://github.com/realm/SwiftLint/issues/3950)
+
+* Add opt-in `structured_function_doc` rule to enforce markup
+  documentation for functions with a short summary and parameters
+  section matching function declaration.
+  [Maxim Grabarnik](https://github.com/arangato)
+  [#3801](https://github.com/realm/SwiftLint/issues/3801)
+
 #### Bug Fixes
 
 * Fix false positives in `unused_closure_parameter` when using parameters with
@@ -32,6 +73,14 @@
   performance regressions compared to Swift 5.5 on the order of about 2x.   
   [JP Simard](https://github.com/jpsim)
   [#3920](https://github.com/realm/SwiftLint/issues/3920)
+
+* Error by default on bad expiring todo date formatting.  
+  [Christopher Hale](https://github.com/chrispomeroyhale)
+  [#3636](https://github.com/realm/SwiftLint/pull/3626)
+
+* Lint/analyze all files listed in the command even if the `--path` option is
+  used.  
+  [coffmark](https://github.com/coffmark)
 
 ## 0.47.0: Smart Appliance
 
@@ -86,12 +135,6 @@
 * Add ability to run only one (focused) example.  
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3911](https://github.com/realm/SwiftLint/issues/3911)
-
-* Add opt-in `structured_function_doc` rule to enforce markup
-  documentation for functions with a short summary and parameters
-  section matching function declaration.
-  [Maxim Grabarnik](https://github.com/arangato)
-  [#3801](https://github.com/realm/SwiftLint/issues/3801)
 
 #### Bug Fixes
 

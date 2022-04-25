@@ -1,4 +1,4 @@
-## Master
+## 0.47.1: Smarter Appliance
 
 #### Breaking
 

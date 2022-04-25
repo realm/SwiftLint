@@ -217,16 +217,17 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     private func attributeLineNumbers(file: SwiftLintFile) -> Set<Int> {
         return Set(file.syntaxMap.tokens.compactMap({ token in
             switch token.kind {
-                case .attributeBuiltin:
-                    return file.line(byteOffset: token.offset)
-                case .typeidentifier:
-                    // Skip type identifiers marked with `@` because it could be
-                    // a global actor, property wrapper, etc.
-                    guard token.offset > 0 else { return nil }
-                    let maybeAt = file.stringView.substringWithByteRange(.init(location: token.offset-1, length: 1)) ?? ""
-                    return maybeAt == "@" ? file.line(byteOffset: token.offset) : nil
-                default:
-                    return nil
+            case .attributeBuiltin:
+                return file.line(byteOffset: token.offset)
+            case .typeidentifier:
+                // Skip type identifiers marked with `@` because it could be a
+                // global actor, property wrapper, etc.
+                guard token.offset > 0 else { return nil }
+                let atRange = ByteRange(location: token.offset - 1, length: 1)
+                let maybeAt = file.stringView.substringWithByteRange(atRange) ?? ""
+                return maybeAt == "@" ? file.line(byteOffset: token.offset) : nil
+            default:
+                return nil
             }
         }))
     }

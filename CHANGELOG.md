@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fixed `let_var_whitespace` wanting blank lines between properties and their
+  property wrapper or global actor annotations.
+  [Uncommon](https://github.com/Uncommon)
 
 ## 0.47.1: Smarter Appliance
 

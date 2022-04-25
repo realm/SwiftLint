@@ -32,7 +32,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
 
             let x = bar as! Bar
             """),
-            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n") // don't trigger on local vars
+            Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n"), // don't trigger on local vars
+            Example("@MainActor\nvar x: Int { 1 }")
         ],
         triggeringExamples: [
             Example("var x = 1\n↓x = 2\n"),
@@ -215,10 +216,18 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     // other than let/var
     private func attributeLineNumbers(file: SwiftLintFile) -> Set<Int> {
         return Set(file.syntaxMap.tokens.compactMap({ token in
-            if token.kind == .attributeBuiltin {
-                return file.line(byteOffset: token.offset)
+            switch token.kind {
+                case .attributeBuiltin:
+                    return file.line(byteOffset: token.offset)
+                case .typeidentifier:
+                    // Skip type identifiers marked with `@` because it could be
+                    // a global actor, property wrapper, etc.
+                    guard token.offset > 0 else { return nil }
+                    let maybeAt = file.stringView.substringWithByteRange(.init(location: token.offset-1, length: 1)) ?? ""
+                    return maybeAt == "@" ? file.line(byteOffset: token.offset) : nil
+                default:
+                    return nil
             }
-            return nil
         }))
     }
 }

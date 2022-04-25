@@ -1,3 +1,21 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.47.1: Smarter Appliance
 
 #### Breaking

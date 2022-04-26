@@ -32,6 +32,14 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
 
             let x = bar as! Bar
             """),
+            Example("""
+                @available(swift 4)
+                @UserDefault("param", defaultValue: true)
+                var isEnabled = true
+
+                @Attribute
+                func f() {}
+            """),
             Example("var x: Int {\n\tlet a = 0\n\treturn a\n}\n") // don't trigger on local vars
         ],
         triggeringExamples: [
@@ -40,7 +48,17 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
             Example("struct X {\n\tlet a\n\t↓func x() {}\n}\n"),
             Example("var x = 0\n↓@objc func f() {}\n"),
             Example("var x = 0\n↓@objc\n\tfunc f() {}\n"),
-            Example("@objc func f() {\n}\n↓var x = 0\n")
+            Example("@objc func f() {\n}\n↓var x = 0\n"),
+            Example("""
+                struct S {
+                    func f() {}
+                    ↓@Wapper
+                    let isNumber = false
+                    @Wapper
+                    var isEnabled = true
+                    ↓func g() {}
+                }
+            """)
         ]
     )
 
@@ -214,12 +232,22 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, Automa
     // Collects all the line numbers containing attributes but not declarations
     // other than let/var
     private func attributeLineNumbers(file: SwiftLintFile) -> Set<Int> {
-        return Set(file.syntaxMap.tokens.compactMap({ token in
-            if token.kind == .attributeBuiltin {
-                return file.line(byteOffset: token.offset)
-            }
-            return nil
-        }))
+        let lineNumbers = file.syntaxMap.tokens
+            .filter { isAttribute(token: $0, in: file) }
+            .map(\.offset)
+            .compactMap(file.line)
+        return Set(lineNumbers)
+    }
+
+    private func isAttribute(token: SwiftLintSyntaxToken, in file: SwiftLintFile) -> Bool {
+        let kind = token.kind
+        if kind == .attributeBuiltin {
+            return true
+        }
+        if kind == .typeidentifier, let symbol = file.stringView.substringStartingLinesWithByteRange(token.range) {
+            return symbol.trimmingCharacters(in: .whitespaces).starts(with: "@")
+        }
+        return false
     }
 }
 

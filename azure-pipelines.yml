@@ -19,14 +19,14 @@ jobs:
 
 - job: Xcode
   pool:
-    vmImage: 'macOS-11'
+    vmImage: 'macOS-12'
   strategy:
     maxParallel: 10
     matrix:
-      xcode13:
-        DEVELOPER_DIR: /Applications/Xcode_13.0.app
       xcode1321:
         DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+      xcode1331:
+        DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
     - script: |
         sw_vers
@@ -37,14 +37,14 @@ jobs:
 
 - job: SwiftPM
   pool:
-    vmImage: 'macOS-11'
+    vmImage: 'macOS-12'
   strategy:
     maxParallel: 10
     matrix:
-      xcode13:
-        DEVELOPER_DIR: /Applications/Xcode_13.0.app
       xcode1321:
         DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+      xcode1331:
+        DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
     - script: |
         sw_vers
@@ -60,9 +60,9 @@ jobs:
 
 - job: CocoaPods
   pool:
-    vmImage: 'macOS-11'
+    vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install
@@ -73,9 +73,9 @@ jobs:
 
 - job: TSan
   pool:
-    vmImage: 'macOS-11'
+    vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
     - script: swift build --configuration release --sanitize thread
       displayName: Build SwiftLint
@@ -88,9 +88,9 @@ jobs:
 
 - job: jazzy
   pool:
-    vmImage: 'macOS-11'
+    vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

@@ -18,7 +18,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             Example("func abc() -> (Int, Int) {}\n"),
             Example("var abc = {(param: Int) -> Void in }\n"),
             Example("func abc() ->\n    Int {}\n"),
-            Example("func abc()\n    -> Int {}\n")
+            Example("func abc()\n    -> Int {}\n"),
+            Example("typealias SuccessBlock = ((Data) -> Void)")
         ],
         triggeringExamples: [
             Example("func abc()↓->Int {}\n"),
@@ -28,7 +29,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             Example("func abc()↓ ->Int {}\n"),
             Example("func abc()↓  ->  Int {}\n"),
             Example("var abc = {(param: Int)↓ ->Bool in }\n"),
-            Example("var abc = {(param: Int)↓->Bool in }\n")
+            Example("var abc = {(param: Int)↓->Bool in }\n"),
+            Example("typealias SuccessBlock = ((Data)↓->Void)")
         ],
         corrections: [
             Example("func abc()↓->Int {}\n"): Example("func abc() -> Int {}\n"),

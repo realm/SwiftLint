@@ -70,7 +70,15 @@ internal enum OperatorUsageWhitespaceRuleExamples {
             associatedtype B = C
         }
         """),
-        Example("tabbedViewController.title = nil")
+        Example("tabbedViewController.title = nil"),
+        Example(#"""
+        return deferMaybe(lastTimestamp)
+              >>== uploadDeleted
+              >>== uploadModified
+               >>> effect({ log.debug("Done syncing. Work was done? \(workWasDone)") })
+               >>> { workWasDone ? storage.doneUpdatingMetadataAfterUpload() : succeed() }    // A closure
+               >>> effect({ log.debug("Done.") })
+        """#, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [

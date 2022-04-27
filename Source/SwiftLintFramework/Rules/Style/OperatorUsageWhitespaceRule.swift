@@ -11,7 +11,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     public static let description = RuleDescription(
         identifier: "operator_usage_whitespace",
         name: "Operator Usage Whitespace",
-        description: "Operators should be surrounded by a single whitespace " + "when they are being used.",
+        description: "Operators should be surrounded by a single whitespace when they are being used.",
         kind: .style,
         nonTriggeringExamples: OperatorUsageWhitespaceRuleExamples.nonTriggeringExamples,
         triggeringExamples: OperatorUsageWhitespaceRuleExamples.triggeringExamples,
@@ -173,8 +173,9 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
 
         let tooMuchSpacingBefore = previousToken.trailingTrivia.containsTooMuchWhitespacing
         let tooMuchSpacingAfter = operatorToken.trailingTrivia.containsTooMuchWhitespacing
-        let tooMuchSpacing = (tooMuchSpacingBefore || tooMuchSpacingAfter) &&
-                             !nextToken.leadingTrivia.containsComments
+
+        let tooMuchSpacing = (tooMuchSpacingBefore || tooMuchSpacingAfter) && !operatorToken.leadingTrivia.containsComments &&
+            !nextToken.leadingTrivia.containsComments
 
         guard noSpacing || tooMuchSpacing else {
             return nil

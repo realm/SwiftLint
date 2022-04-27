@@ -71,66 +71,93 @@ class ModifierOrderTests: XCTestCase {
     func testAtPrefixedGroup() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
-                Example("class Foo { \n"                                        +
-                "   @objc \n"                                           +
-                "   internal var bar: String {\n"                       +
-                "       return \"foo\"\n"                               +
-                "   }\n"                                                +
-                "} \n"                                                  +
-                "class Bar: Foo { \n"                                   +
-                "   @objc \n"                                           +
-                "   override internal var bar: String { \n"             +
-                "       return \"bar\"\n"                               +
-                "   }\n"                                                +
-                "}"),
-                Example("@objcMembers \n"                                       +
-                "public final class Bar {} \n"),
-                Example("class Foo { \n"                                        +
-                "   @IBOutlet internal weak var bar: UIView!\n"         +
-                "}"),
-                Example("class Foo { \n"                                        +
-                "   @IBAction internal func bar() {}\n"                 +
-                "}\n"                                                   +
-                "class Bar: Foo { \n"                                   +
-                "   @IBAction override internal func bar() {}\n"        +
-                "}"),
-                Example("public class Foo {\n"                                  +
-                "   @NSCopying public final var foo:NSString = \"s\"\n" +
-                "}"),
-                Example("public class Bar {\n"                                  +
-                "   @NSManaged public final var foo: NSString \n"       +
-                "}\n")
+                Example(#"""
+                class Foo {
+                    @objc
+                    internal var bar: String {
+                       return "foo"
+                    }
+                }
+                class Bar: Foo {
+                   @objc
+                   override internal var bar: String {
+                       return "bar"
+                   }
+                }
+                """#),
+                Example("""
+                @objcMembers
+                public final class Bar {}
+                """),
+                Example("""
+                class Foo {
+                    @IBOutlet internal weak var bar: UIView!
+                }
+                """),
+                Example("""
+                class Foo {
+                    @IBAction internal func bar() {}
+                }
+                """),
+                Example("""
+                class Bar: Foo {
+                    @IBAction override internal func bar() {}
+                }
+                """),
+                Example(#"""
+                public class Foo {
+                   @NSCopying public final var foo:NSString = "s"
+                }
+                """#),
+                Example(#"""
+                public class Foo {
+                   @NSCopying public final var foo: NSString
+                }
+                """#)
             ])
             .with(triggeringExamples: [
-                Example("class Foo { \n"                                        +
-                "   @objc \n"                                           +
-                "   internal var bar: String {\n"                       +
-                "       return \"foo\"\n"                               +
-                "   }\n"                                                +
-                "} \n"                                                  +
-                "class Bar: Foo { \n"                                   +
-                "   @objc \n"                                           +
-                "   internal override var bar: String { \n"             +
-                "       return \"bar\"\n"                               +
-                "   }\n"                                                +
-                "}"),
-                Example("@objcMembers \n"                                       +
-                "final public class Bar {} \n"),
-                Example("class Foo { \n"                                        +
-                "   @IBOutlet weak internal var bar: UIView!\n"         +
-                "}"),
-                Example("class Foo { \n"                                        +
-                "   @IBAction internal func bar() {}\n"                 +
-                "}\n"                                                   +
-                "class Bar: Foo { \n"                                   +
-                "   @IBAction internal override func bar() {}\n"        +
-                "}"),
-                Example("public class Foo {\n"                                  +
-                "   @NSCopying final public var foo:NSString = \"s\"\n" +
-                "}"),
-                Example("public class Bar {\n"                                  +
-                "   @NSManaged final public var foo: NSString \n"       +
-                "}\n")
+                Example(#"""
+                class Foo {
+                    @objc
+                    internal var bar: String {
+                       return "foo"
+                    }
+                }
+                class Bar: Foo {
+                   @objc
+                    internal override var bar: String {
+                       return "bar"
+                   }
+                }
+                """#),
+                Example("""
+                @objcMembers
+                final public class Bar {}
+                """),
+                Example("""
+                class Foo {
+                    @IBOutlet weak internal var bar: UIView!
+                }
+                """),
+                Example("""
+                class Foo {
+                    @IBAction internal func bar() {}
+                }
+
+                class Bar: Foo {
+                    @IBAction internal override func bar() {}
+                }
+                """),
+                Example(#"""
+                public class Foo {
+                    @NSCopying final public var foo:NSString = "s"
+                }
+                """#),
+                Example("""
+                public class Foo {
+                    @NSManaged final public var foo: NSString
+                }
+                """)
             ])
             .with(corrections: [:])
 

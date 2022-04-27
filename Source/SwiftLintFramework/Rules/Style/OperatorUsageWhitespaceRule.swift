@@ -13,125 +13,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         name: "Operator Usage Whitespace",
         description: "Operators should be surrounded by a single whitespace " + "when they are being used.",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let foo = 1 + 2\n"),
-            Example("let foo = 1 > 2\n"),
-            Example("let foo = !false\n"),
-            Example("let foo: Int?\n"),
-            Example("let foo: Array<String>\n"),
-            Example("let model = CustomView<Container<Button>, NSAttributedString>()\n"),
-            Example("let foo: [String]\n"),
-            Example("let foo = 1 + \n  2\n"),
-            Example("let range = 1...3\n"),
-            Example("let range = 1 ... 3\n"),
-            Example("let range = 1..<3\n"),
-            Example("#if swift(>=3.0)\n    foo()\n#endif\n"),
-            Example("array.removeAtIndex(-200)\n"),
-            Example("let name = \"image-1\"\n"),
-            Example("button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n"),
-            Example("let doubleValue = -9e-11\n"),
-            Example("let foo = GenericType<(UIViewController) -> Void>()\n"),
-            Example("let foo = Foo<Bar<T>, Baz>()\n"),
-            Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"),
-            Example("\"let foo =  1\""),
-            Example("""
-              enum Enum {
-              case hello   = 1
-              case hello2  = 1
-              }
-            """),
-            Example("""
-            let something = Something<GenericParameter1,
-                                      GenericParameter2>()
-            """ ),
-            Example("""
-            return path.flatMap { path in
-                return compileCommands[path] ??
-                    compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
-            }
-            """),
-            Example("""
-            internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
-                return lhs.filePath == rhs.filePath
-                    && lhs.originalRemoteString == rhs.originalRemoteString
-                    && lhs.rootDirectory == rhs.rootDirectory
-            }
-            """),
-            Example("""
-            internal static func == (lhs: Vertix, rhs: Vertix) -> Bool {
-                return lhs.filePath == rhs.filePath &&
-                    lhs.originalRemoteString == rhs.originalRemoteString &&
-                    lhs.rootDirectory == rhs.rootDirectory
-            }
-            """),
-            Example(#"""
-            private static let pattern =
-                "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
-                "|" +                       // or
-                "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
-            """#),
-            Example(#"""
-            private static let pattern =
-                "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
-                "|"                       + // or
-                "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
-            """#)
-        ],
-        triggeringExamples: [
-            Example("let foo = 1↓+2\n"),
-            Example("let foo = 1↓   + 2\n"),
-            Example("let foo = 1↓   +    2\n"),
-            Example("let foo = 1↓ +    2\n"),
-            Example("let foo↓=1↓+2\n"),
-            Example("let foo↓=1 + 2\n"),
-            Example("let foo↓=bar\n"),
-            Example("let range = 1↓ ..<  3\n"),
-            Example("let foo = bar↓   ?? 0\n"),
-            Example("let foo = bar↓ !=  0\n"),
-            Example("let foo = bar↓ !==  bar2\n"),
-            Example("let v8 = Int8(1)↓  << 6\n"),
-            Example("let v8 = 1↓ <<  (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"),
-            Example("let foo↓  = [1]\n"),
-            Example("let foo↓  = \"1\"\n"),
-            Example("let foo↓ =  \"1\"\n"),
-            Example("""
-              enum Enum {
-              case one↓  =  1
-              case two  = 1
-              }
-            """),
-            Example("""
-              enum Enum {
-              case one  = 1
-              case two↓  =  1
-              }
-            """),
-            Example("""
-              enum Enum {
-              case one↓   = 1
-              case two↓  = 1
-              }
-            """)
-        ],
-        corrections: [
-            Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓   + 2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓   +    2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓ +    2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=1↓+2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=1 + 2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=bar\n"): Example("let foo = bar\n"),
-            Example("let range = 1↓ ..<  3\n"): Example("let range = 1..<3\n"),
-            Example("let foo = bar↓   ?? 0\n"): Example("let foo = bar ?? 0\n"),
-            Example("let foo = bar↓ !=  0\n"): Example("let foo = bar != 0\n"),
-            Example("let foo = bar↓ !==  bar2\n"): Example("let foo = bar !== bar2\n"),
-            Example("let v8 = Int8(1)↓  << 6\n"): Example("let v8 = Int8(1) << 6\n"),
-            Example("let v8 = 1↓ <<  (6)\n"): Example("let v8 = 1 << (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n"),
-            Example("let foo↓  = \"1\"\n"): Example("let foo = \"1\"\n"),
-            Example("let foo↓ =  \"1\"\n"): Example("let foo = \"1\"\n")
-        ]
+        nonTriggeringExamples: OperatorUsageWhitespaceRuleExamples.nonTriggeringExamples,
+        triggeringExamples: OperatorUsageWhitespaceRuleExamples.triggeringExamples,
+        corrections: OperatorUsageWhitespaceRuleExamples.corrections
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -247,34 +131,35 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     private(set) var violationRanges: [(ByteRange, String)] = []
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
-        guard let previousToken = node.previousToken,
-              let nextToken = node.nextToken,
-              let violation = violation(previousToken: previousToken,
-                                        nextToken: nextToken,
-                                        operatorToken: node.operatorToken) else {
-            return
+        if let violation = violation(operatorToken: node.operatorToken) {
+            violationRanges.append(violation)
         }
-
-        violationRanges.append(violation)
     }
 
     override func visitPost(_ node: InitializerClauseSyntax) {
-        guard let previousToken = node.equal.previousToken,
-              let nextToken = node.equal.nextToken,
-              let violation = violation(previousToken: previousToken,
-                                        nextToken: nextToken,
-                                        operatorToken: node.equal) else {
-            return
+        if let violation = violation(operatorToken: node.equal) {
+            violationRanges.append(violation)
         }
-
-        violationRanges.append(violation)
     }
 
-    private func violation(
-        previousToken: TokenSyntax,
-        nextToken: TokenSyntax,
-        operatorToken: TokenSyntax
-    ) -> (ByteRange, String)? {
+    override func visitPost(_ node: TypeInitializerClauseSyntax) {
+        if let violation = violation(operatorToken: node.equal) {
+            violationRanges.append(violation)
+        }
+    }
+
+    override func visitPost(_ node: AssignmentExprSyntax) {
+        if let violation = violation(operatorToken: node.assignToken) {
+            violationRanges.append(violation)
+        }
+    }
+
+    private func violation(operatorToken: TokenSyntax) -> (ByteRange, String)? {
+        guard let previousToken = operatorToken.previousToken,
+              let nextToken = operatorToken.nextToken else {
+            return nil
+        }
+
         let noSpacingBefore = previousToken.trailingTrivia.isEmpty && operatorToken.leadingTrivia.isEmpty
         let noSpacingAfter = operatorToken.trailingTrivia.isEmpty && nextToken.leadingTrivia.isEmpty
         let noSpacing = noSpacingBefore || noSpacingAfter

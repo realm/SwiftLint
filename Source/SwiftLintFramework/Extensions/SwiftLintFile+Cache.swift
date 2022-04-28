@@ -50,9 +50,15 @@ private var commandsCache = Cache({ file -> [Command] in
         return []
     }
     let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)
+
+    let commandsLock = NSLock()
     let visitor = CommandVisitor(locationConverter: locationConverter)
-    visitor.walk(tree)
-    return visitor.commands
+    visitor.safeWalk(tree: tree, lock: commandsLock)
+
+    commandsLock.lock()
+    let commands = visitor.commands
+    commandsLock.unlock()
+    return commands
 })
 
 private var syntaxMapCache = Cache({ file in

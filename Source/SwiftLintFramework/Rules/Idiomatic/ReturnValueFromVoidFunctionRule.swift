@@ -17,12 +17,8 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
-            return []
-        }
-
         let visitor = ReturnValueFromVoidFunctionVisitor()
-        visitor.walk(tree)
+        visitor.walk(file: file)
         return visitor.violations(for: self, in: file)
     }
 }

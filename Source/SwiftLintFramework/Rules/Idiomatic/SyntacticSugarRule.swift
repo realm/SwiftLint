@@ -18,10 +18,8 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else { return [] }
-
         let visitor = SyntacticSugarRuleVisitor()
-        visitor.walk(tree)
+        visitor.walk(file: file)
 
         let allViolations = flattenViolations(visitor.violations)
         return allViolations.map { violation in
@@ -37,10 +35,8 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, Au
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        guard let tree = file.syntaxTree else { return [] }
-
         let visitor = SyntacticSugarRuleVisitor()
-        visitor.walk(tree)
+        visitor.walk(file: file)
 
         var context = CorrectingContext(rule: self, file: file, contents: file.contents)
         context.correctViolations(visitor.violations)

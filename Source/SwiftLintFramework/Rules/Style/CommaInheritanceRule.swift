@@ -76,12 +76,8 @@ public struct CommaInheritanceRule: SubstitutionCorrectableRule, ConfigurationPr
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        guard let tree = file.syntaxTree else {
-            return []
-        }
-
         let visitor = CommaInheritanceRuleVisitor()
-        visitor.walk(tree)
+        visitor.walk(file: file)
         return visitor.violationRanges.compactMap {
             file.stringView.byteRangeToNSRange($0)
         }

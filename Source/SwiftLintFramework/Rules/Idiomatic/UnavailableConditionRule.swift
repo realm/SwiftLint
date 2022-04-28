@@ -50,12 +50,8 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTest
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
-            return []
-        }
-
         let visitor = UnavailableConditionRuleVisitor()
-        visitor.walk(tree)
+        visitor.walk(file: file)
         return visitor.positions.map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,

@@ -78,7 +78,12 @@ internal enum OperatorUsageWhitespaceRuleExamples {
                >>> effect({ log.debug("Done syncing. Work was done? \(workWasDone)") })
                >>> { workWasDone ? storage.doneUpdatingMetadataAfterUpload() : succeed() }    // A closure
                >>> effect({ log.debug("Done.") })
-        """#, excludeFromDocumentation: true)
+        """#, excludeFromDocumentation: true),
+        Example("""
+        func success(for item: Item) {
+            item.successHandler??()
+        }
+        """, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [

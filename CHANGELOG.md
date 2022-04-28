@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Rewrite `operator_usage_whitespace` rule using SwiftSyntax, fixing
+  false positives and false negatives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3668](https://github.com/realm/SwiftLint/issues/3668)
+  [#2728](https://github.com/realm/SwiftLint/issues/2728)
 
 #### Bug Fixes
 

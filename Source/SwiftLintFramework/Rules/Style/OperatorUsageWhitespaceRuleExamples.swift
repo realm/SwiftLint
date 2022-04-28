@@ -1,5 +1,3 @@
-import Foundation
-
 internal enum OperatorUsageWhitespaceRuleExamples {
     static let nonTriggeringExamples = [
         Example("let foo = 1 + 2\n"),

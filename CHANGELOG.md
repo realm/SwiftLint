@@ -12,6 +12,8 @@
 
 * Rewrite `operator_usage_whitespace` rule using SwiftSyntax, fixing
   false positives and false negatives.  
+  Note that this rule doesn't catch violations around return arrows (`->`)
+  anymore - they are already handled by `return_arrow_whitespace`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3668](https://github.com/realm/SwiftLint/issues/3668)
   [#2728](https://github.com/realm/SwiftLint/issues/2728)

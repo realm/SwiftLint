@@ -174,7 +174,8 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         let tooMuchSpacingBefore = previousToken.trailingTrivia.containsTooMuchWhitespacing
         let tooMuchSpacingAfter = operatorToken.trailingTrivia.containsTooMuchWhitespacing
 
-        let tooMuchSpacing = (tooMuchSpacingBefore || tooMuchSpacingAfter) && !operatorToken.leadingTrivia.containsComments &&
+        let tooMuchSpacing = (tooMuchSpacingBefore || tooMuchSpacingAfter) &&
+            !operatorToken.leadingTrivia.containsComments &&
             !nextToken.leadingTrivia.containsComments
 
         guard noSpacing || tooMuchSpacing else {

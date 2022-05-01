@@ -35,7 +35,7 @@ public struct CodeClimateReporter: Reporter {
                     "end": violation.location.line ?? NSNull() as Any
                 ]
             ],
-            "severity": violation.severity == .error ? "MAJOR": "MINOR",
+            "severity": violation.severity == .error ? "MAJOR" : "MINOR",
             "type": "issue"
         ]
     }

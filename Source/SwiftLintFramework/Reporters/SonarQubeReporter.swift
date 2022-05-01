@@ -30,7 +30,7 @@ public struct SonarQubeReporter: Reporter {
                 ]
             ],
             "type": "CODE_SMELL",
-            "severity": violation.severity == .error ? "MAJOR": "MINOR"
+            "severity": violation.severity == .error ? "MAJOR" : "MINOR"
         ]
     }
 }

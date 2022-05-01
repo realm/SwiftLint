@@ -18,11 +18,8 @@ public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else { return [] }
-
         let visitor = ForceCastRuleVisitor()
-        visitor.walk(tree)
-        return visitor.positions.map { position in
+        return visitor.walk(file: file, handler: \.positions).map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: ByteCount(position)))

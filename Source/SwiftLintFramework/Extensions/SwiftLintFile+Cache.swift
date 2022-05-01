@@ -50,9 +50,9 @@ private var commandsCache = Cache({ file -> [Command] in
         return []
     }
     let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)
+
     let visitor = CommandVisitor(locationConverter: locationConverter)
-    visitor.walk(tree)
-    return visitor.commands
+    return visitor.walk(tree: tree, handler: \.commands)
 })
 
 private var syntaxMapCache = Cache({ file in

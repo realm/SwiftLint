@@ -51,8 +51,9 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTest
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let visitor = UnavailableConditionRuleVisitor()
-        visitor.walk(file: file)
-        return visitor.positions.map { position in
+        return visitor.walk(file: file) {
+            $0.positions
+        }.map { position in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))

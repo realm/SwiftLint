@@ -102,7 +102,7 @@ fi
 or you can create a symbolic link in `/usr/local/bin` pointing to the actual binary:
 
 ```bash
-ln -s /opt/homebrew/bin/swiftlint /usr/local/bin
+ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 ```
 
 You might want to move your SwiftLint phase directly before the 'Compile Sources'

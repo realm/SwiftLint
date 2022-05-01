@@ -126,7 +126,9 @@ internal enum OperatorUsageWhitespaceRuleExamples {
             associatedtype B↓  = C
         }
         """),
-        Example("tabbedViewController.title↓  = nil")
+        Example("tabbedViewController.title↓  = nil"),
+        Example("let foo = bar ? 0↓:1"),
+        Example("let foo = bar↓ ?   0 : 1")
     ]
 
     static let corrections = [
@@ -145,6 +147,8 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         Example("let v8 = 1↓ <<  (6)\n"): Example("let v8 = 1 << (6)\n"),
         Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n"),
         Example("let foo↓  = \"1\"\n"): Example("let foo = \"1\"\n"),
-        Example("let foo↓ =  \"1\"\n"): Example("let foo = \"1\"\n")
+        Example("let foo↓ =  \"1\"\n"): Example("let foo = \"1\"\n"),
+        Example("let foo = bar ? 0↓:1"): Example("let foo = bar ? 0 : 1"),
+        Example("let foo = bar↓ ?   0 : 1"): Example("let foo = bar ? 0 : 1")
     ]
 }

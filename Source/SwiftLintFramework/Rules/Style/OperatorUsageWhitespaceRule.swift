@@ -154,6 +154,16 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         }
     }
 
+    override func visitPost(_ node: TernaryExprSyntax) {
+        if let violation = violation(operatorToken: node.colonMark) {
+            violationRanges.append(violation)
+        }
+
+        if let violation = violation(operatorToken: node.questionMark) {
+            violationRanges.append(violation)
+        }
+    }
+
     private func violation(operatorToken: TokenSyntax) -> (ByteRange, String)? {
         guard let previousToken = operatorToken.previousToken,
               let nextToken = operatorToken.nextToken else {

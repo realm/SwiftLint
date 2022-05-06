@@ -1279,6 +1279,9 @@ macOS < 12.
 * Add `duplicated_key_in_dictionary_literal` rule to warn against duplicated
   keys in dictionary literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* Add `GroupedReporter` command line reporter to get a summary report in console
+  [Ágúst Rafnsson](https://github.com/agustr)
 
 * Fix the rule name from "Colon" to "Colon Spacing" to improve phrasing.  
   [Radu](https://github.com/raduciobanu002)

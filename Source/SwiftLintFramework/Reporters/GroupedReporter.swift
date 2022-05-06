@@ -1,24 +1,4 @@
-import Foundation
-import SourceKittenFramework
 import SwiftyTextTable
-
-/// Reports how numerous violations for each rule violated is.
-class ViolationTally: CustomStringConvertible {
-    let ruleIdentifier: String
-    var count: Int
-    var styleViolations: [StyleViolation]
-    var description: String {
-        get{
-            return ""
-        }
-    }
-    
-    init(ruleIdentifier: String, count: Int, styleViolations: [StyleViolation]) {
-        self.ruleIdentifier = ruleIdentifier
-        self.count = count
-        self.styleViolations = styleViolations
-    }
-}
 
 public struct GroupedReporter: Reporter {
     // MARK: - Reporter Conformance

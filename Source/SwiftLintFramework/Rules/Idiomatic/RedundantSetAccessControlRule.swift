@@ -11,7 +11,6 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, Automati
         description: "Property setter access level shouldn't be explicit if " +
                      "it's the same as the variable access level.",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             Example("private(set) public var foo: Int"),
             Example("public let foo: Int"),

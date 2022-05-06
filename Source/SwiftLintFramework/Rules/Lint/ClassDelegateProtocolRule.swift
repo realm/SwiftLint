@@ -20,7 +20,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
             Example("@objc(MyFooDelegate)\n protocol FooDelegate {}\n"),
             Example("protocol FooDelegate: BarDelegate {}\n"),
             Example("protocol FooDelegate: AnyObject {}\n"),
-            Example("protocol FooDelegate: NSObjectProtocol {}\n")
+            Example("protocol FooDelegate: NSObjectProtocol {}\n"),
+            Example("protocol FooDelegate where Self: BarDelegate {}\n"),
+            Example("protocol FooDelegate where Self: AnyObject {}\n"),
+            Example("protocol FooDelegate where Self: NSObjectProtocol {}\n")
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}\n"),
@@ -48,17 +51,8 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
             return []
         }
 
-        // Check if inherits from another Delegate protocol
-        guard !dictionary.inheritedTypes.contains(where: isDelegateProtocol) else {
-            return []
-        }
-
-        // Check if inherits from a known reference type protocol
-        guard !dictionary.inheritedTypes.contains(where: isReferenceTypeProtocol) else {
-            return []
-        }
-
-        // Check if : class
+        // Check in direct inheritance and `where` constraints for:
+        // reference type protocol, another Delegate protocol, or `class`.
         guard let offset = dictionary.offset,
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
@@ -80,14 +74,18 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
     }
 
     private func isClassProtocol(file: SwiftLintFile, range: NSRange) -> Bool {
-        return file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isNotEmpty
+        let characterSet = Set(" {:&,\n")
+        return file.stringView.substring(with: range)
+            .split(whereSeparator: characterSet.contains)
+            // Check if it inherits from a delegate or if its reference bound
+            .contains { isDelegateProtocol($0) || isReferenceTypeProtocol($0) }
     }
 
-    private func isDelegateProtocol(_ name: String) -> Bool {
+    private func isDelegateProtocol<S: StringProtocol>(_ name: S) -> Bool {
         return name.hasSuffix("Delegate")
     }
 
-    private func isReferenceTypeProtocol(_ name: String) -> Bool {
-        return referenceTypeProtocols.contains(name)
+    private func isReferenceTypeProtocol<S: StringProtocol>(_ name: S) -> Bool {
+        return referenceTypeProtocols.contains(String(name))
     }
 }

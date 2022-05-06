@@ -1,9 +1,21 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
+
+class AccessibilityLabelForImageRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AccessibilityLabelForImageRule.description)
+    }
+}
+
+class AnonymousArgumentInMultilineClosureRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AnonymousArgumentInMultilineClosureRule.description)
+    }
+}
 
 class AnyObjectProtocolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
@@ -71,6 +83,12 @@ class ClosureSpacingRuleTests: XCTestCase {
     }
 }
 
+class CommaInheritanceRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CommaInheritanceRule.description)
+    }
+}
+
 class CommaRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaRule.description)
@@ -122,6 +140,12 @@ class DiscardedNotificationCenterObserverRuleTests: XCTestCase {
 class DiscouragedAssertRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
+    }
+}
+
+class DiscouragedNoneNameRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DiscouragedNoneNameRule.description)
     }
 }
 
@@ -407,12 +431,6 @@ class LowerACLThanParentRuleTests: XCTestCase {
     }
 }
 
-class MissingDocsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MissingDocsRule.description)
-    }
-}
-
 class MultilineArgumentsBracketsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsBracketsRule.description)
@@ -542,6 +560,12 @@ class PatternMatchingKeywordsRuleTests: XCTestCase {
 class PreferNimbleRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
+    }
+}
+
+class PreferSelfInStaticReferencesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 
@@ -689,6 +713,18 @@ class ReturnArrowWhitespaceRuleTests: XCTestCase {
     }
 }
 
+class ReturnValueFromVoidFunctionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReturnValueFromVoidFunctionRule.description)
+    }
+}
+
+class SelfInPropertyInitializationRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SelfInPropertyInitializationRule.description)
+    }
+}
+
 class ShorthandOperatorRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)
@@ -764,6 +800,18 @@ class TrailingSemicolonRuleTests: XCTestCase {
 class TypeBodyLengthRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)
+    }
+}
+
+class TypesafeArrayInitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TypesafeArrayInitRule.description)
+    }
+}
+
+class UnavailableConditionRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnavailableConditionRule.description)
     }
 }
 

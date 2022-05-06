@@ -252,8 +252,12 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                                             line: Line, file: SwiftLintFile) -> Bool {
         let restOfLineOffset = attributeRange.upperBound
         let restOfLineLength = line.byteRange.upperBound - restOfLineOffset
+        if restOfLineLength < 0 {
+            // If attribute spans multiple lines, it must have a parameter.
+            return true
+        }
 
-        let regex = AttributesRule.regularExpression
+        let regex = Self.regularExpression
         let contents = file.stringView
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`

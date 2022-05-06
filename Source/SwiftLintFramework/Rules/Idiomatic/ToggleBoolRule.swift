@@ -11,7 +11,6 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
         name: "Toggle Bool",
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`.",
         kind: .idiomatic,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("isHidden.toggle()\n"),
             Example("view.clipsToBounds.toggle()\n"),
@@ -34,7 +33,7 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: ToggleBoolRule.description,
+            StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location)
             )

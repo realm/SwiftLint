@@ -14,7 +14,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     public static let description = RuleDescription(
         identifier: "colon",
-        name: "Colon",
+        name: "Colon Spacing",
         description: "Colons should be next to the identifier when specifying a type " +
                      "and next to the key in dictionary literals.",
         kind: .style,

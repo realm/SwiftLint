@@ -5,7 +5,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     public var configuration = NameConfiguration(minLengthWarning: 3,
                                                  minLengthError: 2,
                                                  maxLengthWarning: 40,
-                                                 maxLengthError: 60)
+                                                 maxLengthError: 60,
+                                                 excluded: ["id"])
 
     public init() {}
 
@@ -23,8 +24,11 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    public func validate(
+        file: SwiftLintFile,
+        kind: SwiftDeclarationKind,
+        dictionary: SourceKittenDictionary
+    ) -> [StyleViolation] {
         guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
             return []
         }
@@ -84,19 +88,22 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         } ?? []
     }
 
-    private func validateName(dictionary: SourceKittenDictionary,
-                              kind: SwiftDeclarationKind) -> (name: String, offset: ByteCount)? {
-        guard var name = dictionary.name,
+    private func validateName(
+        dictionary: SourceKittenDictionary,
+        kind: SwiftDeclarationKind
+    ) -> (name: String, offset: ByteCount)? {
+        guard
+            var name = dictionary.name,
             let offset = dictionary.offset,
             kinds.contains(kind),
-            !name.hasPrefix("$") else {
-                return nil
-        }
+            !name.hasPrefix("$")
+        else { return nil }
 
-        if kind == .enumelement,
-            SwiftVersion.current > .fourDotOne,
+        if
+            kind == .enumelement,
             let parenIndex = name.firstIndex(of: "("),
-            parenIndex > name.startIndex {
+            parenIndex > name.startIndex
+        {
             let index = name.index(before: parenIndex)
             name = String(name[...index])
         }

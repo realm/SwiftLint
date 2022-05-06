@@ -90,12 +90,12 @@ extension Configuration {
         guard !basedOnCustomConfigurationFiles else { return self }
 
         let directoryNSString = directory.bridge()
-        let configurationSearchPath = directoryNSString.appendingPathComponent(Configuration.defaultFileName)
+        let configurationSearchPath = directoryNSString.appendingPathComponent(Self.defaultFileName)
         let cacheIdentifier = "nestedPath" + rootDirectory + configurationSearchPath
 
-        if Configuration.getIsNestedConfigurationSelf(forIdentifier: cacheIdentifier) == true {
+        if Self.getIsNestedConfigurationSelf(forIdentifier: cacheIdentifier) == true {
             return self
-        } else if let cached = Configuration.getCached(forIdentifier: cacheIdentifier) {
+        } else if let cached = Self.getCached(forIdentifier: cacheIdentifier) {
             return cached
         } else {
             var config: Configuration
@@ -130,7 +130,7 @@ extension Configuration {
 
             if config == self {
                 // Cache that for this path, the config equals self
-                Configuration.setIsNestedConfigurationSelf(forIdentifier: cacheIdentifier, value: true)
+                Self.setIsNestedConfigurationSelf(forIdentifier: cacheIdentifier, value: true)
             }
 
             return config

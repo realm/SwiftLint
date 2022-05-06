@@ -72,6 +72,19 @@ over time. This way adding a unit test for your new Rule is just a matter of
 adding a test case in `RulesTests.swift` which simply calls
 `verifyRule(YourNewRule.description)`.
 
+For debugging purposes examples can be marked as `focused`. If there are any
+focused examples found, then only those will be run when running tests for that rule.
+```
+nonTriggeringExamples: [
+    Example("let x: [Int]"),
+    Example("let x: [Int: String]").focused()   // only this one will be run in tests
+],
+triggeringExamples: [
+    Example("let x: ↓Array<String>"),
+    Example("let x: ↓Dictionary<Int, String>")
+]
+```
+
 ### `ConfigurationProviderRule`
 
 If your rule supports user-configurable options via `.swiftlint.yml`, you can
@@ -139,3 +152,27 @@ We follow the same syntax as CocoaPods' CHANGELOG.md:
    per line. Usually just one. If there was no issue tracking this change,
    you may instead link to the change's pull request.
 5. All CHANGELOG.md content is hard-wrapped at 80 characters.
+
+## CI
+
+SwiftLint uses Azure Pipelines for most of its CI jobs, primarily because
+they're the only CI provider to have a free tier with 10x concurrency on macOS.
+
+Some CI jobs run in GitHub Actions (e.g. Docker).
+
+Some CI jobs run on Buildkite using Mac Minis from MacStadium. These are jobs
+that benefit from being run on the latest Xcode & macOS versions on bare metal.
+
+### Buildkite Setup
+
+To bring up a new Buildkite worker from MacStadium:
+
+1. Change account password
+1. Update macOS to the latest version
+1. Install Homebrew: https://brew.sh
+1. Install Buildkite agent and other tools via Homebrew: `brew install buildkite/buildkite/buildkite-agent aria2 htop`
+1. Install the xcodes CLI by downloading the zip and moving it to `/usr/local/bin`: https://github.com/RobotsAndPencils/xcodes/releases
+1. Install latest Xcode version: `xcodes install --latest`
+1. Install bundler: `sudo gem install bundler`
+1. Add `DANGER_GITHUB_API_TOKEN` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
+1. Configure and launch buildkite agent: `brew info buildkite-agent` / https://buildkite.com/organizations/swiftlint/agents#setup-macos

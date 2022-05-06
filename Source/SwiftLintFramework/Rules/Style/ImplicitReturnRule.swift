@@ -36,7 +36,8 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
             let range = result.range
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                let outerKindString = file.structureDictionary.kinds(forByteOffset: byteRange.location).last?.kind
+                case let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.location),
+                let outerKindString = kinds.lastExcludingBrace()?.kind
             else {
                 return nil
             }
@@ -59,5 +60,28 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
 
             return nil
         }
+    }
+}
+
+private extension Array where Element == (kind: String, byteRange: ByteRange) {
+    func lastExcludingBrace() -> Element? {
+        guard SwiftVersion.current >= .fiveDotFour else {
+            return last
+        }
+
+        guard let last = last else {
+            return nil
+        }
+
+        guard last.kind == "source.lang.swift.stmt.brace", count > 1 else {
+            return last
+        }
+
+        let secondLast = self[endIndex - 2]
+        if SwiftExpressionKind(rawValue: secondLast.kind) == .closure {
+            return secondLast
+        }
+
+        return last
     }
 }

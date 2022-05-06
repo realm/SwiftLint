@@ -32,12 +32,24 @@ public struct RuleListDocumentation {
     // MARK: - Private
 
     private var indexContents: String {
+        let defaultRuleDocumentations = ruleDocumentations.filter { !$0.isOptInRule }
+        let optInRuleDocumentations = ruleDocumentations.filter { $0.isOptInRule }
+
         return """
             # Rule Directory
 
-            \(ruleDocumentations
-                .map { "* [\($0.ruleName)](\($0.urlFragment))" }
+            ## Default Rules
+
+            \(defaultRuleDocumentations
+                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
+
+            ## Opt-In Rules
+
+            \(optInRuleDocumentations
+                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
+                .joined(separator: "\n"))
+
             """
     }
 }

@@ -2,6 +2,10 @@
 struct RuleDocumentation {
     private let ruleType: Rule.Type
 
+    var isOptInRule: Bool {
+        return ruleType is OptInRule.Type
+    }
+
     /// Creates a RuleDocumentation instance from a Rule type.
     ///
     /// - parameter ruleType: A subtype of the `Rule` protocol to document.
@@ -14,9 +18,9 @@ struct RuleDocumentation {
         return ruleType.description.name
     }
 
-    /// The web URL fragment for this documentation.
-    var urlFragment: String {
-        return "\(ruleType.description.identifier).html"
+    /// The identifier of the documented rule.
+    var ruleIdentifier: String {
+        return ruleType.description.identifier
     }
 
     /// The name of the file on disk for this rule documentation.
@@ -28,13 +32,15 @@ struct RuleDocumentation {
     var fileContents: String {
         let description = ruleType.description
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
-        if description.nonTriggeringExamples.isNotEmpty {
+        let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
+        if nonTriggeringExamples.isNotEmpty {
             content += [h2("Non Triggering Examples")]
-            content += description.nonTriggeringExamples.map(formattedCode)
+            content += nonTriggeringExamples.map(formattedCode)
         }
-        if description.triggeringExamples.isNotEmpty {
+        let triggeringExamples = description.triggeringExamples.filter { !$0.excludeFromDocumentation }
+        if triggeringExamples.isNotEmpty {
             content += [h2("Triggering Examples")]
-            content += description.triggeringExamples.map(formattedCode)
+            content += triggeringExamples.map(formattedCode)
         }
         return content.joined(separator: "\n\n")
     }
@@ -51,7 +57,7 @@ private func h2(_ text: String) -> String {
 private func detailsSummary(_ rule: Rule) -> String {
     return """
         * **Identifier:** \(type(of: rule).description.identifier)
-        * **Enabled by default:** \(rule is OptInRule ? "Disabled" : "Enabled")
+        * **Enabled by default:** \(rule is OptInRule ? "No" : "Yes")
         * **Supports autocorrection:** \(rule is CorrectableRule ? "Yes" : "No")
         * **Kind:** \(type(of: rule).description.kind)
         * **Analyzer rule:** \(rule is AnalyzerRule ? "Yes" : "No")

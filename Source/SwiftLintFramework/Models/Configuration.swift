@@ -179,16 +179,16 @@ public struct Configuration {
         useDefaultConfigOnFailure: Bool? = nil
     ) {
         // Handle mocked network results if needed
-        Configuration.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults
+        Self.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults
         defer {
             if !mockedNetworkResults.isEmpty {
-                Configuration.FileGraph.FilePath.deleteGitignoreAndSwiftlintCache()
+                Self.FileGraph.FilePath.deleteGitignoreAndSwiftlintCache()
             }
         }
 
         // Store whether there are custom configuration files; use default config file name if there are none
         let hasCustomConfigurationFiles: Bool = configurationFiles.isNotEmpty
-        let configurationFiles = configurationFiles.isEmpty ? [Configuration.defaultFileName] : configurationFiles
+        let configurationFiles = configurationFiles.isEmpty ? [Self.defaultFileName] : configurationFiles
         defer { basedOnCustomConfigurationFiles = hasCustomConfigurationFiles }
 
         let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
@@ -196,7 +196,7 @@ public struct Configuration {
 
         // Try obtaining cached config
         let cacheIdentifier = "\(currentWorkingDirectory) - \(configurationFiles)"
-        if let cachedConfig = Configuration.getCached(forIdentifier: cacheIdentifier) {
+        if let cachedConfig = Self.getCached(forIdentifier: cacheIdentifier) {
             self.init(copying: cachedConfig)
             return
         }
@@ -208,7 +208,10 @@ public struct Configuration {
                 rootDirectory: currentWorkingDirectory,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )
-            let resultingConfiguration = try fileGraph.resultingConfiguration(enableAllRules: enableAllRules)
+            let resultingConfiguration = try fileGraph.resultingConfiguration(
+                enableAllRules: enableAllRules,
+                cachePath: cachePath
+            )
 
             self.init(copying: resultingConfiguration)
             self.fileGraph = fileGraph

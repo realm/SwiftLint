@@ -11,7 +11,6 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
         name: "Unused Capture List",
         description: "Unused reference in a capture list should be removed.",
         kind: .lint,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("""
             [1, 2].map {
@@ -138,7 +137,7 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
             let closureRange = contents.byteRangeToNSRange(closureByteRange)
             else { return [] }
 
-        let firstSubstructureOffset = dictionary.substructure.first?.offset ?? (offset + length)
+        let firstSubstructureOffset = dictionary.substructure.firstFlatteningBrace()?.offset ?? (offset + length)
         let captureListSearchLength = firstSubstructureOffset - offset
         let captureListSearchByteRange = ByteRange(location: offset, length: captureListSearchLength)
         guard let captureListSearchRange = contents.byteRangeToNSRange(captureListSearchByteRange),
@@ -215,5 +214,20 @@ public struct UnusedCaptureListRule: ASTRule, ConfigurationProviderRule, Automat
                 reason: reason
             )
         }
+    }
+}
+
+private extension Array where Element == SourceKittenDictionary {
+    func firstFlatteningBrace() -> Element? {
+        guard SwiftVersion.current >= .fiveDotFour else {
+            return first
+        }
+
+        return flatMap { dict -> [SourceKittenDictionary] in
+            guard dict.kind == "source.lang.swift.stmt.brace" else {
+                return [dict]
+            }
+            return dict.substructure
+        }.first
     }
 }

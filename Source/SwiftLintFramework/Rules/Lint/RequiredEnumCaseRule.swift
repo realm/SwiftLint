@@ -77,9 +77,9 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         let cases: [String]
 
         init(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) {
-            location = Enum.location(from: dictionary, in: file)
+            location = Self.location(from: dictionary, in: file)
             inheritedTypes = dictionary.inheritedTypes
-            cases = Enum.cases(from: dictionary)
+            cases = Self.cases(from: dictionary)
         }
 
         /// Determines the location of where the enum declaration starts.
@@ -102,8 +102,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
             }.flatMap { $0.substructure }
 
             return caseSubstructures.compactMap { $0.name }.map { name in
-                if SwiftVersion.current > .fourDotOne,
-                    let parenIndex = name.firstIndex(of: "("),
+                if let parenIndex = name.firstIndex(of: "("),
                     parenIndex > name.startIndex {
                     let index = name.index(before: parenIndex)
                     return String(name[...index])

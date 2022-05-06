@@ -17,14 +17,6 @@ public struct SwiftVersion: RawRepresentable, Codable, Comparable {
 }
 
 public extension SwiftVersion {
-    /// Swift 3.x - https://swift.org/download/#swift-30
-    static let three = SwiftVersion(rawValue: "3.0.0")
-    /// Swift 4.0.x - https://swift.org/download/#swift-40
-    static let four = SwiftVersion(rawValue: "4.0.0")
-    /// Swift 4.1.x - https://swift.org/download/#swift-41
-    static let fourDotOne = SwiftVersion(rawValue: "4.1.0")
-    /// Swift 4.2.x - https://swift.org/download/#swift-42
-    static let fourDotTwo = SwiftVersion(rawValue: "4.2.0")
     /// Swift 5.0.x - https://swift.org/download/#swift-50
     static let five = SwiftVersion(rawValue: "5.0.0")
     /// Swift 5.1.x - https://swift.org/download/#swift-51
@@ -33,6 +25,12 @@ public extension SwiftVersion {
     static let fiveDotTwo = SwiftVersion(rawValue: "5.2.0")
     /// Swift 5.3.x - https://swift.org/download/#swift-53
     static let fiveDotThree = SwiftVersion(rawValue: "5.3.0")
+    /// Swift 5.4.x - https://swift.org/download/#swift-54
+    static let fiveDotFour = SwiftVersion(rawValue: "5.4.0")
+    /// Swift 5.5.x - https://swift.org/download/#swift-55
+    static let fiveDotFive = SwiftVersion(rawValue: "5.5.0")
+    /// Swift 5.6.x - https://swift.org/download/#swift-56
+    static let fiveDotSix = SwiftVersion(rawValue: "5.6.0")
 
     /// The current detected Swift compiler version, based on the currently accessible SourceKit version.
     ///
@@ -43,10 +41,8 @@ public extension SwiftVersion {
             switch envVersion {
             case "5":
                 return .five
-            case "4":
-                return .four
             default:
-                return .three
+                return .five
             }
         }
 
@@ -59,68 +55,7 @@ public extension SwiftVersion {
             }
         }
 
-        if !Request.disableSourceKit,
-            case let dynamicCallableFile = SwiftLintFile(contents: "@dynamicCallable"),
-            dynamicCallableFile.syntaxMap.tokens.compactMap({ $0.kind }) == [.attributeID] {
-            return .five
-        }
-
-        let file = SwiftLintFile(contents: """
-            #if swift(>=4.2.0)
-                let version = "4.2.0"
-            #elseif swift(>=4.1.50)
-                let version = "4.1.50"
-            #elseif swift(>=4.1.2)
-                let version = "4.1.2"
-            #elseif swift(>=4.1.1)
-                let version = "4.1.1"
-            #elseif swift(>=4.1.0)
-                let version = "4.1.0"
-            #elseif swift(>=4.0.3)
-                let version = "4.0.3"
-            #elseif swift(>=4.0.2)
-                let version = "4.0.2"
-            #elseif swift(>=4.0.1)
-                let version = "4.0.1"
-            #elseif swift(>=4.0.0)
-                let version = "4.0.0"
-            #elseif swift(>=3.4.0)
-                let version = "3.4.0"
-            #elseif swift(>=3.3.2)
-                let version = "3.3.2"
-            #elseif swift(>=3.3.1)
-                let version = "3.3.1"
-            #elseif swift(>=3.3.0)
-                let version = "3.3.0"
-            #elseif swift(>=3.2.3)
-                let version = "3.2.3"
-            #elseif swift(>=3.2.2)
-                let version = "3.2.2"
-            #elseif swift(>=3.2.1)
-                let version = "3.2.1"
-            #elseif swift(>=3.2.0)
-                let version = "3.2.0"
-            #elseif swift(>=3.1.1)
-                let version = "3.1.1"
-            #elseif swift(>=3.1.0)
-                let version = "3.1.0"
-            #elseif swift(>=3.0.2)
-                let version = "3.0.2"
-            #elseif swift(>=3.0.1)
-                let version = "3.0.1"
-            #elseif swift(>=3.0.0)
-                let version = "3.0.0"
-            #endif
-            """)
-        if !Request.disableSourceKit,
-            let decl = file.structureDictionary.kinds()
-                .first(where: { $0.kind == SwiftDeclarationKind.varGlobal.rawValue }),
-            let token = file.syntaxMap.tokens(inByteRange: decl.byteRange).first(where: { $0.kind == .string }) {
-            let offsetRange = ByteRange(location: token.offset + 1, length: token.length - 2)
-            return .init(rawValue: file.stringView.substringWithByteRange(offsetRange)!)
-        }
-
-        return .three
+        return .five
     }()
 }
 

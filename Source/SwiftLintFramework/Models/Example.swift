@@ -24,6 +24,17 @@ public struct Example {
     public private(set) var file: StaticString
     /// The line in the file where the example was created
     public var line: UInt
+    /// Specifies whether the example should be excluded from the rule documentation.
+    ///
+    /// It can be set to `true` if an example has mainly been added as another test case, but is not suitable
+    /// as a user example. User examples should be easy to understand. They should clearly show where and
+    /// why a rule is applied and where not. Complex examples with rarely used language constructs or
+    /// pathological use cases which are indeed important to test but not helpful for understanding can be
+    /// hidden from the documentation with this option.
+    let excludeFromDocumentation: Bool
+
+    /// Specifies whether the test example should be the only example run during the current test case execution.
+    var isFocused: Bool
 }
 
 public extension Example {
@@ -39,13 +50,15 @@ public extension Example {
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
     init(_ code: String, configuration: Any? = nil, testMultiByteOffsets: Bool = true, testOnLinux: Bool = true,
-         file: StaticString = #file, line: UInt = #line) {
+         file: StaticString = #file, line: UInt = #line, excludeFromDocumentation: Bool = false) {
         self.code = code
         self.configuration = configuration
         self.testMultiByteOffsets = testMultiByteOffsets
         self.testOnLinux = testOnLinux
         self.file = file
         self.line = line
+        self.excludeFromDocumentation = excludeFromDocumentation
+        self.isFocused = false
     }
 
     /// Returns the same example, but with the `code` that is passed in
@@ -59,6 +72,13 @@ public extension Example {
     /// Returns a copy of the Example with all instances of the "↓" character removed.
     func removingViolationMarkers() -> Example {
         return with(code: code.replacingOccurrences(of: "↓", with: ""))
+    }
+
+    /// Makes the current example focused.
+    func focused() -> Example {
+        var new = self
+        new.isFocused = true
+        return new
     }
 }
 

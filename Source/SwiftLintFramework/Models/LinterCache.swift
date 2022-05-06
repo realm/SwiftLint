@@ -109,7 +109,7 @@ public final class LinterCache {
             let fileCacheEntries = readCache[description]?.entries.merging(writeFileCache.entries) { _, write in write }
             let fileCache = fileCacheEntries.map(FileCache.init) ?? writeFileCache
             let data = try encoder.encode(fileCache)
-            let file = url.appendingPathComponent(description).appendingPathExtension(LinterCache.fileExtension)
+            let file = url.appendingPathComponent(description).appendingPathExtension(Self.fileExtension)
             try data.write(to: file, options: .atomic)
         }
     }
@@ -133,7 +133,7 @@ public final class LinterCache {
             return .empty
         }
 
-        let file = location.appendingPathComponent(cacheDescription).appendingPathExtension(LinterCache.fileExtension)
+        let file = location.appendingPathComponent(cacheDescription).appendingPathExtension(Self.fileExtension)
         let data = try? Data(contentsOf: file)
         let fileCache = data.flatMap { try? Decoder().decode(FileCache.self, from: $0) } ?? .empty
         lazyReadCache[cacheDescription] = fileCache

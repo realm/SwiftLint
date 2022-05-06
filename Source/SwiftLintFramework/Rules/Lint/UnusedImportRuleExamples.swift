@@ -56,6 +56,11 @@ struct UnusedImportRuleExamples {
         ↓import Foundation
         import UnknownModule
         func foo(error: Swift.Error) {}
+        """),
+        Example("""
+        ↓import Swift
+        ↓import SwiftShims
+        func foo(error: Swift.Error) {}
         """)
     ]
 
@@ -215,6 +220,14 @@ struct UnusedImportRuleExamples {
             Example("""
             import Foundation
             func bar() {}
+            """),
+        Example("""
+        ↓import Swift
+        ↓import SwiftShims
+        func foo(error: Swift.Error) {}
+        """):
+            Example("""
+            func foo(error: Swift.Error) {}
             """)
     ]
 }

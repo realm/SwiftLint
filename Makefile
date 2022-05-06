@@ -6,21 +6,15 @@ XCODEFLAGS=-scheme 'swiftlint' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
-SWIFT_BUILD_FLAGS=--configuration release
+SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
 UNAME=$(shell uname)
-ifeq ($(UNAME), Darwin)
-USE_SWIFT_STATIC_STDLIB:=$(shell test -d $$(dirname $$(xcrun --find swift))/../lib/swift_static/macosx && echo yes)
-ifeq ($(USE_SWIFT_STATIC_STDLIB), yes)
-SWIFT_BUILD_FLAGS+= -Xswiftc -static-stdlib
-endif
-# SwiftPM 5.3 uses the `XCBuild.framework` to generate a universal binary when it receives multiple `--arch` options.
-SWIFT_BUILD_ARCHS:= arm64 x86_64
-# If SwiftPM supports `--arch $(1)` and `swiftc` succeeds in building with `-target $(1)-apple-macos10.9`, then produce `--arch $(1)`.
-ARCH_OPTION=$(shell swift build --show-bin-path --arch $(1) &>/dev/null && echo ''|swiftc -target $(1)-apple-macos10.9 - -o /dev/null &>/dev/null && echo "--arch" $(1))
-SWIFT_BUILD_FLAGS+=$(foreach arch,$(SWIFT_BUILD_ARCHS),$(call ARCH_OPTION,$(arch)))
-endif # Darwin
 
-SWIFTLINT_EXECUTABLE=$(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/swiftlint
+SWIFTLINT_EXECUTABLE_X86=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch x86_64 --show-bin-path)/swiftlint
+SWIFTLINT_EXECUTABLE_ARM64=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch arm64 --show-bin-path)/swiftlint
+SWIFTLINT_EXECUTABLE_PARENT=.build/universal
+SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
+
+ARTIFACT_BUNDLE_PATH=$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle
 
 TSAN_LIB=$(subst bin/swift,lib/swift/clang/lib/darwin/libclang_rt.tsan_osx_dynamic.dylib,$(shell xcrun --find swift))
 TSAN_SWIFT_BUILD_FLAGS=-Xswiftc -sanitize=thread
@@ -33,17 +27,13 @@ LICENSE_PATH="$(shell pwd)/LICENSE"
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-VERSION_STRING="$(shell ./script/get-version)"
+VERSION_STRING=$(shell ./script/get-version)
 
 .PHONY: all clean build install package test uninstall docs
 
 all: build
 
-sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift Tests/LinuxMain.swift
-
-Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
-	sourcery --sources Tests --exclude-sources Tests/SwiftLintFrameworkTests/Resources --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated
-	mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
+sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
 
 Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/PrimaryRuleList.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
@@ -61,7 +51,7 @@ test_tsan:
 	DYLD_INSERT_LIBRARIES=$(TSAN_LIB) $(TSAN_XCTEST) $(TSAN_TEST_BUNDLE)
 
 write_xcodebuild_log:
-	xcodebuild -scheme swiftlint clean build-for-testing > xcodebuild.log
+	xcodebuild -scheme swiftlint clean build-for-testing -destination "platform=macOS" > xcodebuild.log
 
 analyze: write_xcodebuild_log
 	swift run -c release swiftlint analyze --strict --compiler-log-path xcodebuild.log
@@ -72,14 +62,26 @@ analyze_autocorrect: write_xcodebuild_log
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	rm -f "./portable_swiftlint.zip"
+	rm -f "./*.zip"
 	swift package clean
 
 clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-build:
-	swift build $(SWIFT_BUILD_FLAGS)
+build_x86_64:
+	swift build $(SWIFT_BUILD_FLAGS) --arch x86_64
+
+build_arm64:
+	swift build $(SWIFT_BUILD_FLAGS) --arch arm64
+
+build: clean build_x86_64 build_arm64
+	# Need to build for each arch independently to work around https://bugs.swift.org/browse/SR-15802
+	mkdir -p $(SWIFTLINT_EXECUTABLE_PARENT)
+	lipo -create -output \
+		"$(SWIFTLINT_EXECUTABLE)" \
+		"$(SWIFTLINT_EXECUTABLE_X86)" \
+		"$(SWIFTLINT_EXECUTABLE_ARM64)"
+	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
 
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)
@@ -105,6 +107,13 @@ portable_zip: installables
 	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
+spm_artifactbundle_macos: installables
+	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
+	sed 's/__VERSION__/$(VERSION_STRING)/g' script/info-macos.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
+	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
+	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
+	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary-macos.artifactbundle.zip"
+
 zip_linux: docker_image
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	docker run swiftlint cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
@@ -112,24 +121,40 @@ zip_linux: docker_image
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-package: installables
+zip_linux_release:
+	$(eval TMP_FOLDER := $(shell mktemp -d))
+	docker run "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
+	chmod +x "$(TMP_FOLDER)/swiftlint"
+	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
+
+zip_linux_release_5_5:
+	$(eval TMP_FOLDER := $(shell mktemp -d))
+	docker run "ghcr.io/realm/swiftlint:5.5-$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
+	chmod +x "$(TMP_FOLDER)/swiftlint"
+	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_swift_5_5.zip"
+
+package: build
+	$(eval PACKAGE_ROOT := $(shell mktemp -d))
+	cp "$(SWIFTLINT_EXECUTABLE)" "$(PACKAGE_ROOT)"
 	pkgbuild \
 		--identifier "io.realm.swiftlint" \
-		--install-location "/" \
-		--root "$(TEMPORARY_FOLDER)" \
+		--install-location "/usr/local/bin" \
+		--root "$(PACKAGE_ROOT)" \
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
-release: package portable_zip zip_linux
+release: package portable_zip spm_artifactbundle_macos zip_linux_release zip_linux_release_5_5
 
 docker_image:
-	docker build --force-rm --tag swiftlint .
+	docker build --platform linux/amd64 --force-rm --tag swiftlint .
 
 docker_test:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.3 swift test --parallel
+	docker run --platform linux/amd64 -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.5 swift test --parallel
 
 docker_htop:
-	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
+	docker run --platform linux/amd64 -it --rm --pid=container:swiftlint terencewestphal/htop || reset
 
 # https://irace.me/swift-profiling
 display_compilation_time:
@@ -137,8 +162,8 @@ display_compilation_time:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push SwiftLintFramework.podspec
-	pod trunk push SwiftLint.podspec
+	# Workaround for https://github.com/CocoaPods/CocoaPods/issues/11185
+	arch -arch x86_64 pod trunk push SwiftLint.podspec
 
 docs:
 	swift run swiftlint generate-docs
@@ -146,7 +171,7 @@ docs:
 	bundle exec jazzy
 
 get_version:
-	@echo $(VERSION_STRING)
+	@echo "$(VERSION_STRING)"
 
 push_version:
 ifneq ($(strip $(shell git status --untracked-files=no --porcelain 2>/dev/null)),)
@@ -158,7 +183,7 @@ endif
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
-	git push origin master
+	git push origin HEAD
 	git push origin $(NEW_VERSION)
 
 %:

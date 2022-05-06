@@ -10,7 +10,6 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
         name: "Last Where",
         description: "Prefer using `.last(where:)` over `.filter { }.last` in collections.",
         kind: .performance,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             Example("kinds.filter(excludingKinds.contains).isEmpty && kinds.last == .identifier\n"),
             Example("myList.last(where: { $0 % 2 == 0 })\n"),
@@ -35,7 +34,19 @@ public struct LastWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule,
                         patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter",
                         severity: configuration.severity) { dictionary in
-            if dictionary.substructure.isNotEmpty {
+            let substructure: [SourceKittenDictionary] = {
+                if SwiftVersion.current >= .fiveDotSix {
+                    return dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
+                        if dict.expressionKind == .argument {
+                            return dict.substructure
+                        }
+                        return [dict]
+                    }
+                }
+
+                return dictionary.substructure
+            }()
+            if substructure.isNotEmpty {
                 return true // has a substructure, like a closure
             }
 

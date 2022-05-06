@@ -112,18 +112,25 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, 
             return []
         }
 
-        guard let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let bodyLength = dictionary.bodyLength,
+        guard let bodyLength = dictionary.bodyLength,
             bodyLength > 0
         else {
             return []
         }
 
-        let parameters = dictionary.enclosedVarParameters +
-            dictionary.substructure.filter { $0.declarationKind == .varLocal } // capture lists
+        let nameOffset = dictionary.nameOffset ?? 0
+        let nameLength = dictionary.nameLength ?? 0
+
+        let captureLists = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
+            if SwiftVersion.current >= .fiveDotSix, dict.expressionKind == .argument {
+                return dict.substructure.filter { $0.declarationKind == .varLocal }
+            }
+
+            return dict.declarationKind == .varLocal ? [dict] : []
+        }
+        let parameters = dictionary.enclosedVarParameters + captureLists
         let rangeStart = nameOffset + nameLength
-        let regex = ClosureParameterPositionRule.openBraceRegex
+        let regex = Self.openBraceRegex
 
         // parameters from inner closures are reported on the top-level one, so we can't just
         // use the first and last parameters to check, we need to check all of them

@@ -8,10 +8,17 @@ extension Configuration {
     private static var cachedConfigurationsByIdentifier = [String: Configuration]()
     private static var cachedConfigurationsByIdentifierLock = NSLock()
 
+    /// Since the cache is stored in a static var, this function is used to reset the cache during tests
+    internal static func resetCache() {
+        Self.cachedConfigurationsByIdentifierLock.lock()
+        Self.cachedConfigurationsByIdentifier = [:]
+        Self.cachedConfigurationsByIdentifierLock.unlock()
+    }
+
     internal func setCached(forIdentifier identifier: String) {
-        Configuration.cachedConfigurationsByIdentifierLock.lock()
-        Configuration.cachedConfigurationsByIdentifier[identifier] = self
-        Configuration.cachedConfigurationsByIdentifierLock.unlock()
+        Self.cachedConfigurationsByIdentifierLock.lock()
+        Self.cachedConfigurationsByIdentifier[identifier] = self
+        Self.cachedConfigurationsByIdentifierLock.unlock()
     }
 
     internal static func getCached(forIdentifier identifier: String) -> Configuration? {
@@ -35,15 +42,15 @@ extension Configuration {
     private static var nestedConfigIsSelfByIdentifierLock = NSLock()
 
     internal static func setIsNestedConfigurationSelf(forIdentifier identifier: String, value: Bool) {
-        Configuration.nestedConfigIsSelfByIdentifierLock.lock()
-        Configuration.nestedConfigIsSelfByIdentifier[identifier] = value
-        Configuration.nestedConfigIsSelfByIdentifierLock.unlock()
+        Self.nestedConfigIsSelfByIdentifierLock.lock()
+        Self.nestedConfigIsSelfByIdentifier[identifier] = value
+        Self.nestedConfigIsSelfByIdentifierLock.unlock()
     }
 
     internal static func getIsNestedConfigurationSelf(forIdentifier identifier: String) -> Bool? {
-        Configuration.nestedConfigIsSelfByIdentifierLock.lock()
-        defer { Configuration.nestedConfigIsSelfByIdentifierLock.unlock() }
-        return Configuration.nestedConfigIsSelfByIdentifier[identifier]
+        Self.nestedConfigIsSelfByIdentifierLock.lock()
+        defer { Self.nestedConfigIsSelfByIdentifierLock.unlock() }
+        return Self.nestedConfigIsSelfByIdentifier[identifier]
     }
 
     // MARK: SwiftLint Cache (On-Disk)

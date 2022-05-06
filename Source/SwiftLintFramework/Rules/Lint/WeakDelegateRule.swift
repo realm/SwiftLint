@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct WeakDelegateRule: ASTRule, SubstitutionCorrectableASTRule, ConfigurationProviderRule,
+public struct WeakDelegateRule: OptInRule, ASTRule, SubstitutionCorrectableASTRule, ConfigurationProviderRule,
     AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 

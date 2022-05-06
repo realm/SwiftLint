@@ -27,7 +27,20 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
             embedInSwitch("break", case: "default"),
             embedInSwitch("for i in [0, 1, 2] { break }"),
             embedInSwitch("if true { break }"),
-            embedInSwitch("something()")
+            embedInSwitch("something()"),
+            Example("""
+            let items = [Int]()
+            for item in items {
+                if bar() {
+                    do {
+                        try foo()
+                    } catch {
+                        bar()
+                        break
+                    }
+                }
+            }
+            """)
         ],
         triggeringExamples: [
             embedInSwitch("something()\n    ↓break"),
@@ -40,11 +53,14 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "break", with: [.keyword]).compactMap { range in
             let contents = file.stringView
+            let structureDict = file.structureDictionary
+
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                let innerStructure = file.structureDictionary.structures(forByteOffset: byteRange.location).last,
-                innerStructure.statementKind == .case,
-                let caseRange = innerStructure.byteRange,
-                let lastPatternEnd = patternEnd(dictionary: innerStructure) else {
+                  case let lastStructures = structureDict.structures(forByteOffset: byteRange.location).suffix(2),
+                  lastStructures.compactMap(\.statementKind) == [.switch, .case],
+                  let innerStructure = lastStructures.last,
+                  let caseRange = innerStructure.byteRange,
+                  let lastPatternEnd = patternEnd(dictionary: innerStructure) else {
                     return nil
             }
 

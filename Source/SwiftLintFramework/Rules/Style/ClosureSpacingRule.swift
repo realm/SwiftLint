@@ -75,7 +75,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         let linesTokens = file.syntaxTokensByLines
         let kindsToExclude = SyntaxKind.commentAndStringKinds
 
-        // find all lines and occurences of open { and closed } braces
+        // find all lines and occurrences of open { and closed } braces
         var linesWithBraces = [[NSRange]]()
         for eachLine in file.lines {
             guard let nsrange = lineContainsBraces(in: eachLine.range, content: nsstring) else {

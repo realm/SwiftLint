@@ -1,4 +1,3 @@
-import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
@@ -50,12 +49,11 @@ final class GlobTests: XCTestCase {
     func testMatchesMultipleFiles() {
         let expectedFiles: Set = [
             mockPath.stringByAppendingPathComponent("Level0.swift"),
-            mockPath.stringByAppendingPathComponent("Directory.swift").appending("/")
+            mockPath.stringByAppendingPathComponent("Directory.swift")
         ]
 
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("*.swift"))
-        XCTAssertEqual(files.count, 2)
-        XCTAssertEqual(Set(files), expectedFiles)
+        XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
 
     func testMatchesNestedDirectory() {
@@ -63,14 +61,21 @@ final class GlobTests: XCTestCase {
         XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level1/Level1.swift")])
     }
 
-    func testNoGlobstarSupport() {
-        let expectedFiles: Set = [
-            mockPath.stringByAppendingPathComponent("Directory.swift/DirectoryLevel1.swift"),
-            mockPath.stringByAppendingPathComponent("Level1/Level1.swift")
-        ]
+    func testGlobstarSupport() {
+        let expectedFiles = Set(
+            [
+                "Directory.swift",
+                "Directory.swift/DirectoryLevel1.swift",
+                "Level0.swift",
+                "Level1/Level1.swift",
+                "Level1/Level2/Level2.swift",
+                "Level1/Level2/Level3/Level3.swift",
+                "NestedConfig/Test/Main.swift",
+                "NestedConfig/Test/Sub/Sub.swift"
+            ].map(mockPath.stringByAppendingPathComponent)
+        )
 
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("**/*.swift"))
-        XCTAssertEqual(files.count, 2)
-        XCTAssertEqual(Set(files), expectedFiles)
+        XCTAssertEqual(files.sorted(), expectedFiles.sorted())
     }
 }

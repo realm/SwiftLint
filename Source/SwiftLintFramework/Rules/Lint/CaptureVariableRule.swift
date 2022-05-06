@@ -117,28 +117,10 @@ public struct CaptureVariableRule: AutomaticTestableRule, ConfigurationProviderR
             """),
             Example("""
             class C {
-                class var iClass: Int {
-                    get { iStatic }
-                    set { iStatic = newValue }
-                }
-                static var iStatic: Int = 0
-
-                func callTest() {
-                    test { [iClass=C.iClass] j in
-                        print(iClass, j)
-                    }
-                }
-
-                func test(_ completionHandler: @escaping (Int) -> Void) {
-                }
-            }
-            """),
-            Example("""
-            class C {
                 static var iStatic: Int = 0
 
                 static func callTest() {
-                    test { [iStatic] j in
+                    test { [↓iStatic] j in
                         print(iStatic, j)
                     }
                 }
@@ -232,9 +214,9 @@ private extension SwiftLintFile {
                 kind.hasPrefix("source.lang.swift.ref.var."),
                 let usr = $0.usr,
                 let line = $0.line,
-                let column = $0.column
+                let column = $0.column,
+                let offset = stringView.byteOffset(forLine: line, bytePosition: column)
             else { return nil }
-            let offset = stringView.byteOffset(forLine: Int(line), column: Int(column))
             return offsets.contains(offset) ? CaptureVariableRule.Variable(usr: usr, offset: offset) : nil
         })
     }
@@ -271,7 +253,8 @@ private extension SwiftLintFile {
                 Self.checkedDeclarationKinds.contains(declarationKind),
                 let line = $0.line,
                 let column = $0.column,
-                offsets.contains(stringView.byteOffset(forLine: Int(line), column: Int(column)))
+                let offset = stringView.byteOffset(forLine: line, bytePosition: column),
+                offsets.contains(offset)
             else { return nil }
             return $0.usr
         })
@@ -295,11 +278,4 @@ private extension SwiftLintFile {
 
 private extension SourceKittenDictionary {
     var usr: String? { value["key.usr"] as? String }
-}
-
-private extension StringView {
-    func byteOffset(forLine line: Int, column: Int) -> ByteCount {
-        guard line > 0 else { return ByteCount(column - 1) }
-        return lines[line - 1].byteRange.location + ByteCount(column - 1)
-    }
 }

@@ -5,20 +5,51 @@ import SwiftLintFramework
 typealias File = String
 typealias Arguments = [String]
 
-enum CompilerInvocations {
-    case buildLog(compilerInvocations: [[String]])
-    case compilationDatabase(compileCommands: [File: Arguments])
+class CompilerInvocations {
+    static func buildLog(compilerInvocations: [[String]]) -> CompilerInvocations {
+        return ArrayCompilerInvocations(invocations: compilerInvocations)
+    }
 
-    func arguments(forFile path: String?) -> [String] {
-        return path.flatMap { path in
-            switch self {
-            case let .buildLog(compilerInvocations):
-                return compilerInvocations.first(where: { $0.contains(path) })
-            case let .compilationDatabase(compileCommands):
-                return compileCommands[path] ??
-                    compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
+    static func compilationDatabase(compileCommands: [File: Arguments]) -> CompilerInvocations {
+        return CompilationDatabaseInvocations(compileCommands: compileCommands)
+    }
+
+    /// Default implementation
+    func arguments(forFile path: String?) -> Arguments { [] }
+
+    // MARK: - Private
+
+    private class ArrayCompilerInvocations: CompilerInvocations {
+        private let invocationsByArgument: [String: [Arguments]]
+
+        init(invocations: [Arguments]) {
+            // Store invocations by the path, so next when we'll be asked for arguments,
+            // we'll be able to return them faster
+            self.invocationsByArgument = invocations.reduce(into: [:]) { result, arguments in
+                arguments.forEach { result[$0, default: []].append(arguments) }
             }
-        } ?? []
+        }
+
+        override func arguments(forFile path: String?) -> Arguments {
+            return path.flatMap { path in
+                return invocationsByArgument[path]?.first
+            } ?? []
+        }
+    }
+
+    private class CompilationDatabaseInvocations: CompilerInvocations {
+        private let compileCommands: [File: Arguments]
+
+        init(compileCommands: [File: Arguments]) {
+            self.compileCommands = compileCommands
+        }
+
+        override func arguments(forFile path: String?) -> Arguments {
+            return path.flatMap { path in
+                return compileCommands[path] ??
+                compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
+            } ?? []
+        }
     }
 }
 
@@ -81,11 +112,15 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.useExcludingByPrefix = useExcludingByPrefix
         self.cache = cache
-        self.parallel = true
         if let compilerInvocations = compilerInvocations {
             self.mode = .analyze(allCompilerInvocations: compilerInvocations)
+            // SourceKit had some changes in 5.6 that makes it ~100x more expensive
+            // to process files concurrently. By processing files serially, it's
+            // only 2x slower than before.
+            self.parallel = SwiftVersion.current < .fiveDotSix
         } else {
             self.mode = .lint
+            self.parallel = true
         }
         self.block = block
         self.allowZeroLintableFiles = allowZeroLintableFiles

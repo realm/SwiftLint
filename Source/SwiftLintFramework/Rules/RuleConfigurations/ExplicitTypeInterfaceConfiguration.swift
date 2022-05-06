@@ -45,12 +45,12 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
 
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
-    private(set) var allowedKinds = ExplicitTypeInterfaceConfiguration.variableKinds
+    private(set) var allowedKinds = Self.variableKinds
 
     private(set) var allowRedundancy = false
 
     public var consoleDescription: String {
-        let excludedKinds = ExplicitTypeInterfaceConfiguration.variableKinds.subtracting(allowedKinds)
+        let excludedKinds = Self.variableKinds.subtracting(allowedKinds)
         let simplifiedExcludedKinds = excludedKinds.compactMap { $0.variableKind?.rawValue }.sorted()
         return severityConfiguration.consoleDescription +
             ", excluded: \(simplifiedExcludedKinds)" +

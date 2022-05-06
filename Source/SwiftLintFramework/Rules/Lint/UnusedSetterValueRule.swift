@@ -41,6 +41,14 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = value
                 }
             }
+            """),
+            Example("""
+            override var aValue: String {
+             get {
+                 return Persister.shared.aValue
+             }
+             set() { }
+            }
             """)
         ],
         triggeringExamples: [
@@ -94,6 +102,16 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
                     Persister.shared.aValue = aValue
                 }
             }
+            """),
+            Example("""
+            override var aValue: String {
+                get {
+                    return Persister.shared.aValue
+                }
+                ↓set {
+                    Persister.shared.aValue = aValue
+                }
+            }
             """)
         ]
     )
@@ -117,25 +135,16 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
             let propertyEndOffset = bodyByteRange.upperBound
             let setterByteRange: ByteRange
-            if setToken.offset > getToken.offset { // get {} set {}
-                let startOfBody: ByteCount
-                if let argumentToken = argument?.token {
-                    startOfBody = argumentToken.offset + argumentToken.length
-                } else {
-                    startOfBody = setToken.offset
-                }
-                setterByteRange = ByteRange(location: startOfBody,
-                                            length: propertyEndOffset - startOfBody)
-            } else { // set {} get {}
-                let startOfBody: ByteCount
-                if let argumentToken = argument?.token {
-                    startOfBody = argumentToken.offset + argumentToken.length
-                } else {
-                    startOfBody = setToken.offset
-                }
-                setterByteRange = ByteRange(location: startOfBody,
-                                            length: getToken.offset - startOfBody)
+
+            let startOfBody: ByteCount
+            if let argumentToken = argument?.token {
+                startOfBody = argumentToken.offset + argumentToken.length
+            } else {
+                startOfBody = setToken.offset + setToken.length
             }
+            let endOfBody = setToken.offset > getToken.offset ? propertyEndOffset : getToken.offset
+            setterByteRange = ByteRange(location: startOfBody,
+                                        length: endOfBody - startOfBody)
 
             guard let setterRange = contents.byteRangeToNSRange(setterByteRange) else {
                 return nil
@@ -143,6 +152,11 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestabl
 
             let argumentName = argument?.name ?? "newValue"
             guard file.match(pattern: "\\b\(argumentName)\\b", with: [.identifier], range: setterRange).isEmpty else {
+                return nil
+            }
+
+            if dict.enclosedSwiftAttributes.contains(.override) &&
+                !file.syntaxMap.kinds(inByteRange: setterByteRange).contains(where: { !$0.isCommentLike }) {
                 return nil
             }
 

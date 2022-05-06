@@ -25,7 +25,6 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, 
         name: "Modifier Order",
         description: "Modifier order should be consistent.",
         kind: .style,
-        minSwiftVersion: .fourDotOne ,
         nonTriggeringExamples: ModifierOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: ModifierOrderRuleExamples.triggeringExamples
     )

@@ -13,6 +13,7 @@ class ConfigurationTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        Configuration.resetCache()
         previousWorkingDir = FileManager.default.currentDirectoryPath
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
     }
@@ -99,7 +100,8 @@ class ConfigurationTests: XCTestCase {
         let config = try! Configuration(dict: ["only_rules": only, "custom_rules": customRules])
         guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
             else {
-            return XCTFail("Custom rules are expected to be present")
+            XCTFail("Custom rules are expected to be present")
+            return
         }
         XCTAssertTrue(
             resultingCustomRules.configuration.customRuleConfigurations.contains {
@@ -442,11 +444,57 @@ extension ConfigurationTests {
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             includedPaths: ["Level1"],
-            excludedPaths: ["Level1/**/*.swift", "Level1/**/**/*.swift"])
+            excludedPaths: ["Level1/*/*.swift", "Level1/*/*/*.swift"])
         let paths = configuration.lintablePaths(inPath: "Level1",
                                                 forceExclude: false,
                                                 excludeByPrefix: true)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         XCTAssertEqual(filenames, ["Level1.swift"])
+    }
+
+    func testDictInitWithCachePath() throws {
+        let configuration = try Configuration(
+            dict: ["cache_path": "cache/path/1"]
+        )
+
+        XCTAssertEqual(configuration.cachePath, "cache/path/1")
+    }
+
+    func testDictInitWithCachePathFromCommandLine() throws {
+        let configuration = try Configuration(
+            dict: ["cache_path": "cache/path/1"],
+            cachePath: "cache/path/2"
+        )
+
+        XCTAssertEqual(configuration.cachePath, "cache/path/2")
+    }
+
+    func testMainInitWithCachePath() {
+        let configuration = Configuration(
+            configurationFiles: [],
+            cachePath: "cache/path/1"
+        )
+
+        XCTAssertEqual(configuration.cachePath, "cache/path/1")
+    }
+
+    // This test demonstrates an existing bug: when the Configuration is obtained from the in-memory cache, the
+    // cachePath is not taken into account
+    //
+    // This issue may not be reproducible under normal execution: the cache is in memory, so when a user changes
+    // the cachePath from command line and re-runs swiftlint, cache is not reused leading to the correct behavior
+    func testMainInitWithCachePathAndCachedConfig() {
+        let configuration1 = Configuration(
+            configurationFiles: [],
+            cachePath: "cache/path/1"
+        )
+
+        let configuration2 = Configuration(
+            configurationFiles: [],
+            cachePath: "cache/path/2"
+        )
+
+        XCTAssertEqual(configuration1.cachePath, "cache/path/1")
+        XCTAssertEqual(configuration2.cachePath, "cache/path/1")
     }
 }

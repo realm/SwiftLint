@@ -52,8 +52,8 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
             Example("let example = [ 1,\n 2\n // 3,\n]"),
             Example("foo([1: \"\\(error)\"])\n")
         ],
-        triggeringExamples: TrailingCommaRule.triggeringExamples,
-        corrections: TrailingCommaRule.corrections
+        triggeringExamples: Self.triggeringExamples,
+        corrections: Self.corrections
     )
 
     private static let commaRegex = regex(",", options: [.ignoreMetacharacters])
@@ -142,7 +142,7 @@ public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationPr
 
     private func trailingCommaIndex(contents: String, file: SwiftLintFile, offset: ByteCount) -> ByteCount? {
         // skip commas in comments
-        return TrailingCommaRule.commaRegex
+        return Self.commaRegex
             .matches(in: contents, options: [], range: contents.fullNSRange)
             .map { $0.range }
             .last { nsRange in

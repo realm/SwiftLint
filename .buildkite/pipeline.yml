@@ -1,0 +1,7 @@
+steps:
+  - label: "Danger"
+    commands:
+      - bundle install
+      - bundle exec danger --verbose
+  - label: "Analyze"
+    command: make analyze

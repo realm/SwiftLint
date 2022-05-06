@@ -296,7 +296,7 @@ class LinterCacheTests: XCTestCase {
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
         let thisSwiftVersionCache = cache
 
-        let differentSwiftVersion: SwiftVersion = (SwiftVersion.current >= .four) ? .three : .four
+        let differentSwiftVersion: SwiftVersion = .five
         cache = LinterCache(fileManager: fileManager, swiftVersion: differentSwiftVersion)
 
         XCTAssertNotNil(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration))

@@ -12,6 +12,8 @@ extension ColonRule {
     internal func functionCallColonViolationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                                    dictionary: SourceKittenDictionary) -> [ByteRange] {
         guard kind == .argument,
+              let argumentRange = dictionary.byteRange,
+              !file.syntaxMap.tokens(inByteRange: argumentRange).kinds.contains(where: { $0.isCommentLike }),
             let ranges = functionCallColonRanges(dictionary: dictionary)
         else {
             return []

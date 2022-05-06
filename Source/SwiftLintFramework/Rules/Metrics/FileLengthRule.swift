@@ -15,7 +15,8 @@ public struct FileLengthRule: ConfigurationProviderRule {
         ],
         triggeringExamples: [
             Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined()),
-            Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined())
+            Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
+            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined())
         ]
     )
 
@@ -38,11 +39,12 @@ public struct FileLengthRule: ConfigurationProviderRule {
         }
 
         for parameter in configuration.severityConfiguration.params where lineCount > parameter.value {
-            let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less: " +
-                         "currently contains \(lineCount)"
+            let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less" +
+                         (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespaces" : "") +
+                         ": currently contains \(lineCount)"
             return [StyleViolation(ruleDescription: Self.description,
                                    severity: parameter.severity,
-                                   location: Location(file: file.path, line: lineCount),
+                                   location: Location(file: file.path, line: file.lines.count),
                                    reason: reason)]
         }
 

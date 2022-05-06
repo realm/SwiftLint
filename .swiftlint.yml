@@ -17,6 +17,7 @@ opt_in_rules:
   - contains_over_filter_is_empty
   - contains_over_first_not_nil
   - contains_over_range_nil_comparison
+  - discouraged_none_name
   - discouraged_object_literal
   - empty_collection_literal
   - empty_count
@@ -35,7 +36,6 @@ opt_in_rules:
   - joined_default_parameter
   - last_where
   - legacy_multiple
-  - legacy_random
   - literal_expression_end_indentation
   - lower_acl_than_parent
   - modifier_order
@@ -47,6 +47,7 @@ opt_in_rules:
   - overridden_super_call
   - override_in_extension
   - pattern_matching_keywords
+  - prefer_self_in_static_references
   - prefer_self_type_over_type_of_self
   - private_action
   - private_outlet
@@ -58,6 +59,7 @@ opt_in_rules:
   - reduce_into
   - redundant_nil_coalescing
   - redundant_type_annotation
+  - return_value_from_void_function
   - single_test_class
   - sorted_first_last
   - sorted_imports

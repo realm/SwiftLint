@@ -129,24 +129,10 @@ private extension SourceKittenDictionary {
 
 private extension Array where Element == SourceKittenDictionary {
     func filterClosures(file: SwiftLintFile) -> [SourceKittenDictionary] {
-        if SwiftVersion.current < .fourDotTwo {
-            return filter { argument in
-                guard let bodyByteRange = argument.bodyByteRange,
-                    let range = file.stringView.byteRangeToNSRange(bodyByteRange),
-                    let match = regex("^\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
-                    match.location == range.location
-                else {
-                    return false
-                }
-
-                return true
-            }
-        } else {
-            return filter { argument in
-                return argument.substructure.contains(where: { dictionary in
-                    dictionary.expressionKind == .closure
-                })
-            }
+        return filter { argument in
+            return argument.substructure.contains(where: { dictionary in
+                dictionary.expressionKind == .closure
+            })
         }
     }
 }

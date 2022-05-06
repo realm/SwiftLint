@@ -9,7 +9,7 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
         if let minimumFractionLength = minimumFractionLength {
             minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
         } else {
-            minimumFractionLengthDescription = ""
+            minimumFractionLengthDescription = ", minimum_fraction_length: none"
         }
         return severityConfiguration.consoleDescription
             + ", minimum_length: \(minimumLength)"

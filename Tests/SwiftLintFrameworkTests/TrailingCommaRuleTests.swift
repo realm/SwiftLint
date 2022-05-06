@@ -4,13 +4,9 @@ import XCTest
 class TrailingCommaRuleTests: XCTestCase {
     func testTrailingCommaRuleWithDefaultConfiguration() {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
-        if SwiftVersion.current >= .fourDotOne {
-            let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
-                [Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}")]
-            verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
-        } else {
-            verifyRule(TrailingCommaRule.description)
-        }
+        let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
+        [Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}")]
+        verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
 
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2,\n]\n")

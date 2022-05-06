@@ -54,7 +54,14 @@ private extension Rule {
               configuration: Configuration,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
+        // Empty files shouldn't trigger violations
+        if file.isEmpty { return nil }
+
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+            return nil
+        }
+
+        if SwiftVersion.current < Self.description.minSwiftVersion {
             return nil
         }
 
@@ -195,6 +202,11 @@ public struct CollectedLinter {
 
     private func getStyleViolations(using storage: RuleStorage,
                                     benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+        guard !file.isEmpty else {
+            // Empty files shouldn't trigger violations
+            return ([], [])
+        }
+
         if let cached = cachedStyleViolations(benchmark: benchmark) {
             return cached
         }
@@ -268,11 +280,17 @@ public struct CollectedLinter {
         }
 
         if let parserDiagnostics = file.parserDiagnostics {
-            queuedPrintError(
-                "Skipping correcting file because it produced Swift parser diagnostics: \(file.path ?? "<nopath>")"
-            )
-            queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
-            return []
+            let errorDiagnostics = parserDiagnostics.filter { diagnostic in
+                diagnostic["key.severity"] as? String == "source.diagnostic.severity.error"
+            }
+
+            if errorDiagnostics.isNotEmpty {
+                queuedPrintError(
+                    "Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
+                )
+                queuedPrintError(toJSON(["diagnostics": errorDiagnostics]))
+                return []
+            }
         }
 
         var corrections = [Correction]()
@@ -323,5 +341,11 @@ public struct CollectedLinter {
                 )
             }
         }
+    }
+}
+
+private extension SwiftLintFile {
+    var isEmpty: Bool {
+        contents.isEmpty || contents == "\n"
     }
 }

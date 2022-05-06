@@ -52,6 +52,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         corrections: [
             Example("call(arg: { ↓(bar) in })\n"): Example("call(arg: { bar in })\n"),
             Example("call(arg: { ↓(bar, _) in })\n"): Example("call(arg: { bar, _ in })\n"),
+            Example("call(arg: { ↓(bar, _)in })\n"): Example("call(arg: { bar, _ in })\n"),
             Example("let foo = { ↓(bar) -> Bool in return true }\n"):
                 Example("let foo = { bar -> Bool in return true }\n"),
             Example("method { ↓(foo, bar) in }\n"): Example("method { foo, bar in }\n"),
@@ -111,7 +112,13 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                                           length: violatingRange.length - 2)
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange),
                 let updatedRange = correctedContents.nsrangeToIndexRange(correctingRange) {
-                let updatedArguments = correctedContents[updatedRange]
+                var updatedArguments = correctedContents[updatedRange]
+                if let whiteSpaceIndex = correctedContents.index(indexRange.upperBound,
+                                                                 offsetBy: 0,
+                                                                 limitedBy: correctedContents.endIndex),
+                   !String(correctedContents[whiteSpaceIndex]).hasTrailingWhitespace() {
+                    updatedArguments += " "
+                }
                 correctedContents = correctedContents.replacingCharacters(in: indexRange,
                                                                           with: String(updatedArguments))
                 adjustedLocations.insert(violatingRange.location, at: 0)

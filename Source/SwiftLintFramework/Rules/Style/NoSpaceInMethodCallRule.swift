@@ -12,7 +12,6 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         name: "No Space in Method Call",
         description: "Don't add a space between the method name and the parentheses.",
         kind: .style,
-        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: nonTriggeringExamples,
         triggeringExamples: [
             Example("foo↓ ()"),
@@ -33,33 +32,22 @@ public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, Configura
         ]
     )
 
-    private static var nonTriggeringExamples: [Example] {
-        let commonExamples = [
-            Example("foo()"),
-            Example("object.foo()"),
-            Example("object.foo(1)"),
-            Example("object.foo(value: 1)"),
-            Example("object.foo { print($0 }"),
-            Example("list.sorted { $0.0 < $1.0 }.map { $0.value }"),
-            Example("self.init(rgb: (Int) (colorInt))")
-        ]
-
-        guard SwiftVersion.current >= .fiveDotThree else {
-            return commonExamples
+    private static let nonTriggeringExamples: [Example] = [
+        Example("foo()"),
+        Example("object.foo()"),
+        Example("object.foo(1)"),
+        Example("object.foo(value: 1)"),
+        Example("object.foo { print($0 }"),
+        Example("list.sorted { $0.0 < $1.0 }.map { $0.value }"),
+        Example("self.init(rgb: (Int) (colorInt))"),
+        Example("""
+        Button {
+            print("Button tapped")
+        } label: {
+            Text("Button")
         }
-
-        let swiftFiveDot3Examples = [
-            Example("""
-            Button {
-                print("Button tapped")
-            } label: {
-                Text("Button")
-            }
-            """)
-        ]
-
-        return commonExamples + swiftFiveDot3Examples
-    }
+        """)
+    ]
 
     // MARK: - ASTRule
 

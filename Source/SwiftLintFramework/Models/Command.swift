@@ -81,7 +81,7 @@ public struct Command: Equatable {
     /// - parameter character:       The character offset within the line in the source file where this command is
     ///                              defined.
     /// - parameter modifier:        This command's modifier, if any.
-    /// - parameter trailingComment: The comment following this command's `-` delimeter, if any.
+    /// - parameter trailingComment: The comment following this command's `-` delimiter, if any.
     public init(action: Action, ruleIdentifiers: Set<RuleIdentifier>, line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil, trailingComment: String? = nil) {
         self.action = action
@@ -115,13 +115,13 @@ public struct Command: Equatable {
         self.line = line
         self.character = character
 
-        let rawRuleTexts = scanner.scanUpToString(Command.commentDelimiter) ?? ""
+        let rawRuleTexts = scanner.scanUpToString(Self.commentDelimiter) ?? ""
         if scanner.isAtEnd {
             trailingComment = nil
         } else {
             // Store any text after the comment delimiter as the trailingComment.
             // The addition to scanLocation is to move past the delimiter
-            let startOfCommentPastDelimiter = scanner.scanLocation + Command.commentDelimiter.count
+            let startOfCommentPastDelimiter = scanner.scanLocation + Self.commentDelimiter.count
             trailingComment = scanner.string.bridge().substring(from: startOfCommentPastDelimiter)
         }
         let ruleTexts = rawRuleTexts.components(separatedBy: .whitespacesAndNewlines).filter {

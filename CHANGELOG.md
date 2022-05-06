@@ -2,6 +2,449 @@
 
 #### Breaking
 
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
+## 0.47.1: Smarter Appliance
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add type-checked analyzer rule version of `ArrayInitRule` named
+  `TypesafeArrayInitRule` with identifier `typesafe_array_init` that
+  avoids the false positives present in the lint rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3749](https://github.com/realm/SwiftLint/issues/3749)
+
+* Add the `--in-process-sourcekit` command line flag to `lint` and `analyze`
+  commands, which has the same effect as setting the `IN_PROCESS_SOURCEKIT`
+  environment variable.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+
+* Add a new `artifactbundle` release asset containing `swiftlint` binaries for
+  x86 & arm64 macOS.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+  [#3840](https://github.com/realm/SwiftLint/issues/3840)
+
+* Add back `return_value_from_void_function` opt-in rule to warn against using
+  `return <expression>` in a function that returns `Void`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Don't skip autocorrect on files that have parser warnings. Only files with
+  errors reported by the Swift parser will be skipped.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3343](https://github.com/realm/SwiftLint/issues/3343)
+  
+* Add `accessibility_label_for_image` rule to warn if a SwiftUI
+  Image does not have an accessibility label and is not hidden from
+  accessibility.  
+  [Ryan Cole](https://github.com/rcole34)
+
+* Add `unavailable_condition` rule to prefer using `if #unavailable` instead of
+  `if #available` with an empty body and an `else` condition when using
+  Swift 5.6 or later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3897](https://github.com/realm/SwiftLint/issues/3897)
+
+* Add `comma_inheritance` rule to validate that inheritance clauses use commas
+  instead of `&`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3950](https://github.com/realm/SwiftLint/issues/3950)
+
+#### Bug Fixes
+
+* Fix false positives in `unused_closure_parameter` when using parameters with
+  backticks.  
+  [JP Simard](https://github.com/jpsim)
+  [#3628](https://github.com/realm/SwiftLint/issues/3628)
+
+* Improved the `syntactic_sugar` rule's detection accuracy and fixed some
+  corrections leading to invalid code.  
+  [Paul Taykalo](https://github.com/PaulTaykalo)
+  [#3866](https://github.com/realm/SwiftLint/issues/3866)
+
+* Fix analyzer rules with Xcode 13.3 / Swift 5.6. Note that we've measured
+  performance regressions compared to Swift 5.5 on the order of about 2x.  
+  [JP Simard](https://github.com/jpsim)
+  [#3920](https://github.com/realm/SwiftLint/issues/3920)
+
+* Error by default on bad expiring todo date formatting.  
+  [Christopher Hale](https://github.com/chrispomeroyhale)
+  [#3636](https://github.com/realm/SwiftLint/pull/3626)
+  
+* Avoid false-positive in `let_var_whitespace` rule by allowing custom
+  attributes on lines directly before let/var declarations.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#2980](https://github.com/realm/SwiftLint/issues/2980)
+
+* Lint/analyze all files listed in the command even if the `--path` option is
+  used.  
+  [coffmark](https://github.com/coffmark)
+
+## 0.47.0: Smart Appliance
+
+#### Breaking
+
+* SwiftLint now requires Swift 5.5 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
+* The `SwiftLintFramework` podspec has been removed. To our knowledge, this was
+  completely unused by other projects and was not worth the complexity needed
+  to justify its continued maintenance, especially in light of the integration
+  of SwiftSyntax. The `SwiftLint` podspec is still supported.  
+  [JP Simard](https://github.com/jpsim)
+
+* SwiftLint now requires at least Swift 5.0 installed in order to lint files.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+#### Experimental
+
+* The `force_cast` rule and the comment command parsing mechanism have been
+  updated to use SwiftSyntax instead of SourceKit. Please report any problems
+  you encounter by opening a GitHub issue. If this is successful, more rules may
+  use Swift Syntax in the future.  
+  [JP Simard](https://github.com/jpsim)
+
+#### Enhancements
+
+* Empty files no longer trigger any violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#3854](https://github.com/realm/SwiftLint/issues/3854)
+
+* Support recursive globs.  
+  [funzin](https://github.com/funzin)
+  [JP Simard](https://github.com/jpsim)
+  [#3789](https://github.com/realm/SwiftLint/issues/3789)
+  [#3891](https://github.com/realm/SwiftLint/issues/3891)
+
+* The `legacy_random` rule is now enabled by default.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* The `deployment_target` rule now supports the `#unavailable` syntax
+  added in Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3896](https://github.com/realm/SwiftLint/issues/3896)
+
+* Set the `IN_PROCESS_SOURCEKIT` environment variable, which will use
+  the in-process version of sourcekitd on macOS when Xcode 13 or later is
+  selected. This avoids the use of XPC, which is prohibited in some sandboxed
+  environments, such as in Swift Package Manager plugins.  
+  [Juozas Valancius](https://github.com/juozasvalancius)
+
+* Add ability to run only one (focused) example.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3911](https://github.com/realm/SwiftLint/issues/3911)
+
+#### Bug Fixes
+
+* Extend `class_delegate_protocol` to correctly identify cases with the protocol
+  body opening brace on a new line.  
+  [Tobisaninfo](https://github.com/Tobisaninfo)
+
+* Fix SwiftLint.pkg installer installing multiple copies of SwiftLint.  
+  [JP Simard](https://github.com/jpsim)
+  [#3815](https://github.com/realm/SwiftLint/issues/3815)
+  [#3887](https://github.com/realm/SwiftLint/issues/3887)
+
+## 0.46.5: Laundry Studio
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix `empty_parentheses_with_trailing_closure` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3846](https://github.com/realm/SwiftLint/issues/3846)
+
+* Fix false negatives in `closure_parameter_position` rule with Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3845](https://github.com/realm/SwiftLint/issues/3845)
+
+* Fix regression in `last_where` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3847](https://github.com/realm/SwiftLint/issues/3847)
+
+* Fix regression in `unused_import` rule when using Swift 5.6.  
+  [JP Simard](https://github.com/jpsim)
+  [#3849](https://github.com/realm/SwiftLint/issues/3849)
+
+* Fix regression in `trailing_closure` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3848](https://github.com/realm/SwiftLint/issues/3848)
+
+## 0.46.4: Detergent Tray
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Ignore meta class types in `prefer_self_in_static_references` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3804](https://github.com/realm/SwiftLint/issues/3804)
+
+* Ignore MARK in multiline comment, fixing cases that would previously crash or
+  produce invalid results when correcting.  
+  [goranche](https://github.com/goranche)
+  [#1749](https://github.com/realm/SwiftLint/issues/1749)
+  [#3841](https://github.com/realm/SwiftLint/issues/3841)
+
+* Fix false positive in `EmptyEnumArgumentsRule` rule when using Swift 5.6.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3850](https://github.com/realm/SwiftLint/issues/3850)
+
+## 0.46.3: Detergent Spill
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Change fingerprint generation in `CodeClimateReporter.swift` to use
+  the relative file path to better support CI/CD on multiple machines.  
+  [HA Pors](https://github.com/hpors)
+
+#### Bug Fixes
+
+* Fix crash in the `closure_end_indentation` rule when linting with
+  Swift 5.6.  
+  [JP Simard](https://github.com/jpsim)
+  [#3830](https://github.com/realm/SwiftLint/issues/3830)
+  
+* Fix default rules section in documentation.  
+  [Natan Rolnik](https://github.com/natanrolnik)
+  [#3857](https://github.com/realm/SwiftLint/pull/3857)
+
+## 0.46.2: Detergent Package
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix SwiftLint.pkg installer on macOS 11 or later.  
+  [JP Simard](https://github.com/jpsim)
+  [#3815](https://github.com/realm/SwiftLint/issues/3815)
+
+* Ignore `prefer_self_in_static_references` rule in extensions
+  generally.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3775](https://github.com/realm/SwiftLint/issues/3775)
+
+* Fix `class_delegate_protocol` false positives when using `where`
+  clause.  
+  [Steven Magdy](https://github.com/StevenMagdy)
+
+## 0.46.1: Detergent Container
+
+#### Breaking
+
+* The `weak_delegate` rule has been opt-in due to its high false
+  positive rate.  
+  [JP Simard](https://github.com/jpsim)
+  [#2786](https://github.com/realm/SwiftLint/issues/2786)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Official Docker images are now available. See the
+  [Docker section of the README](README.md#docker) for usage
+  instructions.  
+  [Francisco Javier Trujillo Mata](https://github.com/fjtrujy)
+
+* Allow `unused_setter_value` for overrides.  
+  [Adrian Debbeler](https://github.com/grosem)
+  [#2585](https://github.com/realm/SwiftLint/issues/2585)
+
+#### Bug Fixes
+
+* Fix `convenience_type` false positives when using actors.  
+  [JP Simard](https://github.com/jpsim)
+  [#3770](https://github.com/realm/SwiftLint/issues/3770)
+
+* Fix false positives in the `prefer_self_in_static_references` rule.  
+  [SimplyDanny](https://github.com/simplydanny)
+  [#3768](https://github.com/realm/SwiftLint/issues/3768)
+
+* Fix the regex for expiring TODO comments.  
+  [Sergei Shirokov](https://github.com/serges147)
+  [#3767](https://github.com/realm/SwiftLint/issues/3767)
+
+* Fix crash when parsing multi-line attributes with the `attributes`
+  rule.  
+  [JP Simard](https://github.com/jpsim)
+  [#3761](https://github.com/realm/SwiftLint/issues/3761)
+
+* Fix false positives in `unused_closure_parameter` when using
+  list element bindings in SwiftUI.  
+  [Paul Williamson](https://github.com/squarefrog)
+  [#3790](https://github.com/realm/SwiftLint/issues/3790)
+
+* Fix the cache path not being properly set when using nested
+  configurations.  
+  [Andrés Cecilia Luque](https://github.com/acecilia)
+
+## 0.45.1: Clothes Drying Hooks
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Update Rule list documentation to distinguish between opt-in and
+  on-by-default rules.  
+  [Benny Wong](https://github.com/bdotdub)
+
+* Add opt-in `prefer_self_in_static_references` rule to warn if the
+  type name is used to reference static members the same type.
+  Prefer using `Self` instead which is not affected by renamings.  
+  [SimplyDanny](https://github.com/simplydanny)
+
+* Add support for running SwiftLint as a
+  [pre-commit](https://pre-commit.com/) hook.  
+  [Jesse Crocker](https://github.com/JesseCrocker)
+  [Hannes Ljungberg](https://github.com/hannseman)
+
+#### Bug Fixes
+
+* Fix `unused_import` rule incorrectly considering `SwiftShims` as a
+  used import.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix false positives on `large_tuple` rule when using `async` closures.  
+  [Kaitlin Mahar](https://github.com/kmahar)
+  [#3753](https://github.com/realm/SwiftLint/issues/3753)
+
+* Fix false positive on `legacy_objc_type` rule when using
+  types with names that start with a legacy type name.  
+  [Isaac Ressler](https://github.com/iressler)
+  [#3555](https://github.com/realm/SwiftLint/issues/3555)
+
+## 0.45.0: Effectful Apparel
+
+#### Breaking
+
+* SwiftLint now requires Swift 5.4 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add `self_in_property_initialization` rule to catch uses of `self`
+  inside an inline closure used for initializing a variable. In this case, 
+  `self` refers to the `NSObject.self` method and likely won't be what you
+  expect. You can make the variable `lazy` to be able to refer to the current
+  instance with `self` or use `MyClass.self` if you really want to reference 
+  the method.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Exclude `id` from `identifier_name` by default.  
+  [Artem Garmash](https://github.com/agarmash)
+  [#3651](https://github.com/realm/SwiftLint/issues/3651)
+
+* Handle `get async` and `get throws` (introduced in Swift 5.5) in the
+  `implicit_getter` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3684](https://github.com/realm/SwiftLint/issues/3684)
+
+* Speed up explicit type interface rule.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3745](https://github.com/realm/SwiftLint/issues/3745)
+
+* Speed up analyzer rules.  
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3747](https://github.com/realm/SwiftLint/issues/3747)
+
+#### Bug Fixes
+
+* Fix a bug with the `missing_docs` rule where
+  `excludes_inherited_types` would not be set.  
+  [Ben Fox](https://github.com/bdfox325)
+
+* Fix redundant_optional_initialization autocorrect broken
+  in case observer's brace exists.
+  [Naruki Chigira](https://github.com/naru-jpn)
+  [#3718](https://github.com/realm/SwiftLint/issues/3718)
+
+* Fix a false positive in the `unneeded_break_in_switch` rule when
+  using `do/catch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3724](https://github.com/realm/SwiftLint/issues/3724)
+
+* Speed up Computed Accessors Order rule.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3727](https://github.com/realm/SwiftLint/issues/3727)
+
+* [Colon Rule] Fix case when comment is used in function call.
+  [PaulTaykalo](https://github.com/PaulTaykalo)
+  [#3740](https://github.com/realm/SwiftLint/issues/3740)
+
+## 0.44.0: Travel Size Lint Roller
+
+#### Breaking
+
 * SwiftLint now requires Swift 5.3 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
@@ -10,6 +453,18 @@
 * None.
 
 #### Enhancements
+
+* Add configuration options to `missing_docs` rule:
+  * `excludes_extensions` defaults to `true` to skip reporting violations
+     for extensions with missing documentation comments.
+  * `excludes_inherited_types` defaults to `true` to skip reporting
+     violations for inherited declarations, like subclass overrides.  
+  [Ben Fox](https://github.com/bdfox325)
+
+* Fix false negative on `redundant_optional_initialization` rule when variable
+  has observers.  
+  [Isaac Ressler](https://github.com/iressler)
+  [#3621](https://github.com/realm/SwiftLint/issues/3621)
 
 * Make `test_case_accessibility` rule identify invalid test functions
   with parameters.  
@@ -20,18 +475,52 @@
   keys in dictionary literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix the rule name from "Colon" to "Colon Spacing" to improve phrasing.  
+  [Radu](https://github.com/raduciobanu002)
+  [#3587](https://github.com/realm/SwiftLint/issues/3587)
+
+* Add `discouraged_none_name` opt-in rule to discourage naming cases and
+  static/class members "none", which can conflict with Swift's
+  `Optional<T>.none` when checking equality.  
+  [Kane Cheshire](https://github.com/kanecheshire)
+  [#3624](https://github.com/realm/SwiftLint/issues/3624)
+
+* Improve language and positioning of `file_length` warnings when
+  `ignore_comment_only_lines: true`.  
+  [Steven Grosmark](https://github.com/g-mark)
+  [#3654](https://github.com/realm/SwiftLint/pull/3654)
+
+* Add `anonymous_argument_in_multiline_closure` opt-in rule to validate that
+  named arguments are used in closures that span multiple lines.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Fix false positives in `empty_enum_arguments` rule when comparing values
   with a static member (e.g. `if number == .zero`).  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#3562](https://github.com/realm/SwiftLint/issues/3562)
-* Fix the regex for expiring-todos  
+
+* Fix the regex for expiring-todos.  
   [namolnad](https://github.com/namolnad)
   [#3597](https://github.com/realm/SwiftLint/pull/3597)
 
 * Fix `type_contents_order` initializer detection.  
   [StevenMagdy](https://github.com/StevenMagdy)
+
+* Fix autocorrect when there's no space between the tuple the `in` keyword
+  on `unneeded_parentheses_in_closure_argument` rule.  
+  [p-x9](https://github.com/p-x9)
+  [#3633](https://github.com/realm/SwiftLint/issues/3633)
+
+* Fix `unused_capture_list`, `empty_enum_arguments`, `implicit_return` and
+  `explicit_type_interface` rules when using Swift 5.4.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3615](https://github.com/realm/SwiftLint/issues/3615)
+  [#3685](https://github.com/realm/SwiftLint/issues/3685)
+
+* Fix Xcode build logs with spaces in paths preventing `analyze` from running.  
+  [adamawolf](https://github.com/adamawolf)
 
 ## 0.43.1: Laundroformat
 
@@ -173,15 +662,15 @@
   being available (when using multiple configurations).  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3472](https://github.com/realm/SwiftLint/issues/3472)
-  
+
 * Fix bug that prevented the reconfiguration of a custom rule in a child
   config.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#3477](https://github.com/realm/SwiftLint/issues/3477)
-  
+
 * Fix typos in configuration options for `file_name` rule.  
   [advantis](https://github.com/advantis)
-  
+
 * Fix issue that prevented the inclusion of a configuration file from a
   parent folder.  
   [Frederick Pietschmann](https://github.com/fredpi)
@@ -210,7 +699,7 @@
   [JP Simard](https://github.com/jpsim)
 
 * SwiftLintFramework can no longer be integrated as a Carthage
-  depdendency.  
+  dependency.  
   [JP Simard](https://github.com/jpsim)
   [#3412](https://github.com/realm/SwiftLint/issues/3412)
 
@@ -263,7 +752,7 @@
   within a function even if breaking the maximum `type_level`.  
   [Skoti](https://github.com/Skoti)
   [#1151](https://github.com/realm/SwiftLint/issues/1151)
-  
+
 * Add option to specify a `child_config` / `parent_config` file
   (local or remote) in any SwiftLint configuration file.
   Allow passing multiple configuration files via the command line.

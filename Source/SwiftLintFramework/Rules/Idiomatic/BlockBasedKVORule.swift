@@ -38,7 +38,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTe
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftVersion.current >= .four, kind == .functionMethodInstance,
+        guard kind == .functionMethodInstance,
             dictionary.enclosedSwiftAttributes.contains(.override),
             dictionary.name == "observeValue(forKeyPath:of:change:context:)",
             hasExpectedParamTypes(types: dictionary.enclosedVarParameters.parameterTypes),

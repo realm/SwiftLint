@@ -1,6 +1,6 @@
-# Explicitly specify `bionic` because `swift:latest` does not use `ubuntu:latest`.
-ARG BUILDER_IMAGE=swift:bionic
-ARG RUNTIME_IMAGE=ubuntu:bionic
+# Explicitly specify `focal` because `swift:latest` does not use `ubuntu:latest`.
+ARG BUILDER_IMAGE=swift:focal
+ARG RUNTIME_IMAGE=ubuntu:focal
 
 # builder image
 FROM ${BUILDER_IMAGE} AS builder
@@ -13,7 +13,9 @@ COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib"
+RUN ln -s /usr/lib/swift/_InternalSwiftSyntaxParser .
+
+ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
 RUN swift build $SWIFT_FLAGS
 RUN mkdir -p /executables
 RUN for executable in $(swift package completion-tool list-executables); do \
@@ -30,6 +32,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libBlocksRuntime.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/lib_InternalSwiftSyntaxParser.so /usr/lib
 COPY --from=builder /executables/* /usr/bin
 
 RUN swiftlint version

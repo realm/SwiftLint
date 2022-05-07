@@ -21,7 +21,10 @@
 
 #### Bug Fixes
 
-* None.
+* Ignore array types in `syntactic_sugar` rule if their associated `Index` is
+  accessed.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3502](https://github.com/realm/SwiftLint/issues/3502)
 
 ## 0.47.1: Smarter Appliance
 

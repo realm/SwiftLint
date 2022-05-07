@@ -177,7 +177,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         // Skip checks for 'self' or \T Dictionary<Key, Value>.self
         if let parent = node.parent?.as(MemberAccessExprSyntax.self),
            let lastToken = Array(parent.tokens).last?.tokenKind,
-           lastToken == .selfKeyword || lastToken == .identifier("Type") || lastToken == .identifier("none") {
+           [.selfKeyword, .identifier("Type"), .identifier("none"), .identifier("Index")].contains(lastToken) {
             return
         }
 

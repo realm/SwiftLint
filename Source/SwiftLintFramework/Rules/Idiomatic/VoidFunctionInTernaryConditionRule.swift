@@ -34,6 +34,40 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Aut
             array.map { elem in
                 elem.isEmpty() ? .emptyValue() : .number(elem)
             }
+            """),
+            Example("""
+            func compute(data: [Int]) -> Int {
+                data.isEmpty ? 0 : expensiveComputation(data)
+            }
+            """),
+            Example("""
+            func get() -> Int { 1 }
+            func get(from elements: [Int]) -> Int { elements[0] }
+            func f(elements: [Int]) -> Int {
+                elements.isEmpty ? get() : get(from: elements)
+            }
+            """),
+            Example("""
+            var value: Int {
+                mode == .fast ? fastComputation() : expensiveComputation()
+            }
+            """),
+            Example("""
+            var value: Int {
+                get {
+                    mode == .fast ? fastComputation() : expensiveComputation()
+                }
+            }
+            """),
+            Example("""
+            subscript(index: Int) -> Int {
+                get {
+                    index == 0 ? defaultValue() : compute(index)
+                }
+            """),
+            Example("""
+            subscript(index: Int) -> Int {
+                index == 0 ? defaultValue() : compute(index)
             """)
         ],
         triggeringExamples: [
@@ -52,18 +86,41 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Aut
                     : self.tableView.insertRows(at: [IndexPath(row: 0, section: section)], with: .automatic)
                 self.tableView.scrollToRow(at: IndexPath(row: NSNotFound, section: section), at: .top, animated: true)
             }
+            """),
+            Example("""
+            subscript(index: Int) -> Int {
+                index == 0 ↓? something() : somethingElse(index)
+                return index
+            """),
+            Example("""
+            var value: Int {
+                mode == .fast ↓? something() : somethingElse()
+                return 0
+            }
+            """),
+            Example("""
+            var value: Int {
+                get {
+                    mode == .fast ↓? something() : somethingElse()
+                    return 0
+                }
+            }
+            """),
+            Example("""
+            subscript(index: Int) -> Int {
+                get {
+                    index == 0 ↓? something() : somethingElse(index)
+                    return index
+                }
             """)
         ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let syntaxTree = file.syntaxTree else {
-            return []
-        }
-
         let visitor = VoidFunctionInTernaryConditionVisitor()
-        visitor.walk(syntaxTree)
-        return visitor.violations(for: self, in: file)
+        return visitor.walk(file: file) { visitor in
+            visitor.violations(for: self, in: file)
+        }
     }
 }
 
@@ -78,7 +135,7 @@ private class VoidFunctionInTernaryConditionVisitor: SyntaxVisitor {
               let grandparent = parent.parent,
               grandparent.is(SequenceExprSyntax.self),
               let blockItem = grandparent.parent?.as(CodeBlockItemSyntax.self),
-              !blockItem.isClosureImplictReturn else {
+              !blockItem.isImplicitReturn else {
             return
         }
 
@@ -101,6 +158,12 @@ private extension ExprListSyntax {
 }
 
 private extension CodeBlockItemSyntax {
+    var isImplicitReturn: Bool {
+        isClosureImplictReturn || isFunctionImplicitReturn ||
+        isVariableImplicitReturn || isSubscriptImplicitReturn ||
+        isAcessorImplicitReturn
+    }
+
     var isClosureImplictReturn: Bool {
         guard let parent = parent?.as(CodeBlockItemListSyntax.self),
               let grandparent = parent.parent else {
@@ -108,5 +171,65 @@ private extension CodeBlockItemSyntax {
         }
 
         return parent.children.count == 1 && grandparent.is(ClosureExprSyntax.self)
+    }
+
+    var isFunctionImplicitReturn: Bool {
+        guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+              let functionDecl = parent.parent?.parent?.as(FunctionDeclSyntax.self) else {
+            return false
+        }
+
+        return parent.children.count == 1 && functionDecl.signature.allowsImplicitReturns
+    }
+
+    var isVariableImplicitReturn: Bool {
+        guard let parent = parent?.as(CodeBlockItemListSyntax.self) else {
+            return false
+        }
+
+        let isVariableDecl = parent.parent?.parent?.as(PatternBindingSyntax.self) != nil
+        return parent.children.count == 1 && isVariableDecl
+    }
+
+    var isSubscriptImplicitReturn: Bool {
+        guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+              let subscriptDecl = parent.parent?.parent?.as(SubscriptDeclSyntax.self) else {
+            return false
+        }
+
+        return parent.children.count == 1 && subscriptDecl.allowsImplicitReturns
+    }
+
+    var isAcessorImplicitReturn: Bool {
+        guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+              parent.parent?.parent?.as(AccessorDeclSyntax.self) != nil else {
+            return false
+        }
+
+        return parent.children.count == 1
+    }
+}
+
+private extension FunctionSignatureSyntax {
+     var allowsImplicitReturns: Bool {
+         output?.allowsImplicitReturns ?? false
+     }
+}
+
+private extension SubscriptDeclSyntax {
+    var allowsImplicitReturns: Bool {
+        result.allowsImplicitReturns
+    }
+}
+
+private extension ReturnClauseSyntax {
+    var allowsImplicitReturns: Bool {
+        if let simpleType = returnType.as(SimpleTypeIdentifierSyntax.self) {
+            return simpleType.name.text != "Void" && simpleType.name.text != "Never"
+        } else if let tupleType = returnType.as(TupleTypeSyntax.self) {
+            return !tupleType.elements.isEmpty
+        } else {
+            return true
+        }
     }
 }

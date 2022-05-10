@@ -36,6 +36,7 @@ internal struct TypeNameRuleExamples {
                 Example("\(type) ↓myType {}"),
                 Example("\(type) ↓_MyType {}"),
                 Example("private \(type) ↓MyType_ {}"),
+                Example("private \(type) ↓`_` {}", excludeFromDocumentation: true),
                 Example("\(type) ↓My {}"),
                 Example("\(type) ↓\(repeatElement("A", count: 41).joined()) {}"),
                 Example("\(type) ↓MyView_Previews"),

@@ -26,6 +26,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3502](https://github.com/realm/SwiftLint/issues/3502)
 
+* Prevent crash for private types named `_` in `type_name` rules.
+  [sinoru](https://github.com/sinoru)
+  [#3971](https://github.com/realm/SwiftLint/issues/3971)
+
 ## 0.47.1: Smarter Appliance
 
 #### Breaking

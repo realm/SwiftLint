@@ -3,7 +3,7 @@ import XCTest
 
 enum TestResources {
     static var path: String {
-        URL(fileURLWithPath: #file)
+        URL(fileURLWithPath: #file, isDirectory: false)
             .deletingLastPathComponent()
             .appendingPathComponent("Resources")
             .path

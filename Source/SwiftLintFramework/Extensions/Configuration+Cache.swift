@@ -73,10 +73,10 @@ extension Configuration {
     internal var cacheURL: URL {
         let baseURL: URL
         if let path = cachePath {
-            baseURL = URL(fileURLWithPath: path)
+            baseURL = URL(fileURLWithPath: path, isDirectory: true)
         } else {
 #if os(Linux)
-            baseURL = URL(fileURLWithPath: "/var/tmp/")
+            baseURL = URL(fileURLWithPath: "/var/tmp/", isDirectory: true)
 #else
             baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
 #endif

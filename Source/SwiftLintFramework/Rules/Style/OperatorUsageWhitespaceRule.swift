@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule,
                                            AutomaticTestableRule {
@@ -10,202 +11,84 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     public static let description = RuleDescription(
         identifier: "operator_usage_whitespace",
         name: "Operator Usage Whitespace",
-        description: "Operators should be surrounded by a single whitespace " +
-                     "when they are being used.",
+        description: "Operators should be surrounded by a single whitespace when they are being used.",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let foo = 1 + 2\n"),
-            Example("let foo = 1 > 2\n"),
-            Example("let foo = !false\n"),
-            Example("let foo: Int?\n"),
-            Example("let foo: Array<String>\n"),
-            Example("let model = CustomView<Container<Button>, NSAttributedString>()\n"),
-            Example("let foo: [String]\n"),
-            Example("let foo = 1 + \n  2\n"),
-            Example("let range = 1...3\n"),
-            Example("let range = 1 ... 3\n"),
-            Example("let range = 1..<3\n"),
-            Example("#if swift(>=3.0)\n    foo()\n#endif\n"),
-            Example("array.removeAtIndex(-200)\n"),
-            Example("let name = \"image-1\"\n"),
-            Example("button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n"),
-            Example("let doubleValue = -9e-11\n"),
-            Example("let foo = GenericType<(UIViewController) -> Void>()\n"),
-            Example("let foo = Foo<Bar<T>, Baz>()\n"),
-            Example("let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"),
-            Example("\"let foo =  1\""),
-            Example("""
-              enum Enum {
-              case hello   = 1
-              case hello2  = 1
-              }
-            """)
-        ],
-        triggeringExamples: [
-            Example("let foo = 1↓+2\n"),
-            Example("let foo = 1↓   + 2\n"),
-            Example("let foo = 1↓   +    2\n"),
-            Example("let foo = 1↓ +    2\n"),
-            Example("let foo↓=1↓+2\n"),
-            Example("let foo↓=1 + 2\n"),
-            Example("let foo↓=bar\n"),
-            Example("let range = 1↓ ..<  3\n"),
-            Example("let foo = bar↓   ?? 0\n"),
-            Example("let foo = bar↓??0\n"),
-            Example("let foo = bar↓ !=  0\n"),
-            Example("let foo = bar↓ !==  bar2\n"),
-            Example("let v8 = Int8(1)↓  << 6\n"),
-            Example("let v8 = 1↓ <<  (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"),
-            Example("let foo↓  = [1]\n"),
-            Example("let foo↓  = \"1\"\n"),
-            Example("let foo↓ =  \"1\"\n"),
-            Example("""
-              enum Enum {
-              case one↓  =  1
-              case two  = 1
-              }
-            """),
-            Example("""
-              enum Enum {
-              case one  = 1
-              case two↓  =  1
-              }
-            """),
-            Example("""
-              enum Enum {
-              case one↓   = 1
-              case two↓  = 1
-              }
-            """)
-        ],
-        corrections: [
-            Example("let foo = 1↓+2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓   + 2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓   +    2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo = 1↓ +    2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=1↓+2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=1 + 2\n"): Example("let foo = 1 + 2\n"),
-            Example("let foo↓=bar\n"): Example("let foo = bar\n"),
-            Example("let range = 1↓ ..<  3\n"): Example("let range = 1..<3\n"),
-            Example("let foo = bar↓   ?? 0\n"): Example("let foo = bar ?? 0\n"),
-            Example("let foo = bar↓??0\n"): Example("let foo = bar ?? 0\n"),
-            Example("let foo = bar↓ !=  0\n"): Example("let foo = bar != 0\n"),
-            Example("let foo = bar↓ !==  bar2\n"): Example("let foo = bar !== bar2\n"),
-            Example("let v8 = Int8(1)↓  << 6\n"): Example("let v8 = Int8(1) << 6\n"),
-            Example("let v8 = 1↓ <<  (6)\n"): Example("let v8 = 1 << (6)\n"),
-            Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"): Example("let v8 = 1 << (6)\n let foo = 1 > 2\n"),
-            Example("let foo↓  = \"1\"\n"): Example("let foo = \"1\"\n"),
-            Example("let foo↓ =  \"1\"\n"): Example("let foo = \"1\"\n")
-        ]
+        nonTriggeringExamples: OperatorUsageWhitespaceRuleExamples.nonTriggeringExamples,
+        triggeringExamples: OperatorUsageWhitespaceRuleExamples.triggeringExamples,
+        corrections: OperatorUsageWhitespaceRuleExamples.corrections
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: range.location))
+                           location: Location(file: file, byteOffset: range.location))
         }
     }
 
-    private func violationRanges(file: SwiftLintFile) -> [(NSRange, String)] {
-        let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
-        let notEqualsPattern = "\\!\\=\\=?" // != or !==
-        let coalescingPattern = "\\?{2}"
+    private func violationRanges(file: SwiftLintFile) -> [(ByteRange, String)] {
+        let visitor = OperatorUsageWhitespaceVisitor()
+        return visitor.walk(file: file, handler: \.violationRanges)
+            .filter { byteRange, _ in
+                if configuration.skipAlignedConstants && isAlignedConstant(in: byteRange, file: file) {
+                    return false
+                }
 
-        let operators = "(?:[%<>&=*+|^/~-]+|\(rangePattern)|\(coalescingPattern)|" + "\(notEqualsPattern))"
-
-        let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
-        let zeroSpaces = oneSpace + "{0}"
-        let manySpaces = oneSpace + "{2,}"
-        let leadingExpression = "(?:\\b|\\)|\\]|\")"
-        let trailingExpression = "(?:\\b|\\(|\\[|\")"
-
-        let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
-                      (manySpaces, oneSpace), (manySpaces, manySpaces)]
-        let patterns = spaces.map { first, second in
-            leadingExpression + first + operators + second + trailingExpression
-        }
-        let pattern = "(?:\(patterns.joined(separator: "|")))"
-
-        let genericPattern = "<(?:\(oneSpace)|\\S)*>" // not using dot to avoid matching new line
-        let validRangePattern = leadingExpression + zeroSpaces + rangePattern + zeroSpaces + trailingExpression
-        let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
-
-        let excludingKinds = SyntaxKind.commentKinds.union([.objectLiteral])
-
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
-                          excludingPattern: excludingPattern).compactMap { range in
-            // if it's only a number (i.e. -9e-11), it shouldn't trigger
-            guard kinds(in: range, file: file) != [.number] else {
-                return nil
+                return true
+            }.sorted { lhs, rhs in
+                lhs.0.location < rhs.0.location
             }
+    }
 
-            let spacesPattern = oneSpace + "*"
-            let rangeRegex = regex(spacesPattern + rangePattern + spacesPattern)
-
-            // if it's a range operator, the correction shouldn't have spaces
-            if let matchRange = rangeRegex.firstMatch(in: file.contents, options: [], range: range)?.range {
-                let correction = operatorInRange(file: file, range: matchRange)
-                // Make sure that the match is not within the string i.e `let a = "12...123"`
-                guard kinds(in: matchRange, file: file) != [.string] else {
+    public func correct(file: SwiftLintFile) -> [Correction] {
+        let violatingRanges = violationRanges(file: file)
+            .compactMap { byteRange, correction -> (NSRange, String)? in
+                guard let range = file.stringView.byteRangeToNSRange(byteRange) else {
                     return nil
                 }
-                return (matchRange, correction)
+
+                return (range, correction)
+            }
+            .filter { range, _ in
+                return file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
             }
 
-            let operatorsRegex = regex(spacesPattern + operators + spacesPattern)
+        var correctedContents = file.contents
+        var adjustedLocations = [Int]()
 
-            guard let matchRange = operatorsRegex.firstMatch(in: file.contents,
-                                                             options: [], range: range)?.range else {
-                return nil
+        for (violatingRange, correction) in violatingRanges.reversed() {
+            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
+                correctedContents = correctedContents
+                    .replacingCharacters(in: indexRange, with: correction)
+                adjustedLocations.insert(violatingRange.location, at: 0)
             }
+        }
 
-            // Make sure that the match is not within the string i.e `let a = "12 == 123"`
-            guard kinds(in: matchRange, file: file) != [.string] else {
-                return nil
-            }
+        file.write(correctedContents)
 
-            let operatorContent = operatorInRange(file: file, range: matchRange)
-            let correction = " " + operatorContent + " "
-
-            if configuration.skipAlignedConstants && isAlignedConstant(in: matchRange, file: file) {
-                return nil
-            }
-
-            return (matchRange, correction)
+        return adjustedLocations.map {
+            Correction(ruleDescription: Self.description,
+                       location: Location(file: file, characterOffset: $0))
         }
     }
 
-    private func kinds(in range: NSRange, file: SwiftLintFile) -> [SyntaxKind] {
-        let contents = file.stringView
-        guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
-            return []
+    private func isAlignedConstant(in byteRange: ByteRange, file: SwiftLintFile) -> Bool {
+        // Make sure we have match with assignment operator and with spaces before it
+        guard let matchedString = file.stringView.substringWithByteRange(byteRange) else {
+            return false
         }
-
-        return file.syntaxMap.kinds(inByteRange: byteRange)
-    }
-
-    private func operatorInRange(file: SwiftLintFile, range: NSRange) -> String {
-        return file.stringView.substring(with: range).trimmingCharacters(in: .whitespaces)
-    }
-
-    private func isAlignedConstant(in range: NSRange, file: SwiftLintFile) -> Bool {
-        /// Make sure we have match with assignment operator and with spaces before it
-        let matchedString = file.stringView.substring(with: range)
         let equalityOperatorRegex = regex("\\s+=\\s")
 
-        let fullRange = NSRange(location: 0, length: range.length)
         guard let match = equalityOperatorRegex.firstMatch(
-                in: matchedString,
-                options: [],
-                range: fullRange),
-              match.range == fullRange
+            in: matchedString,
+            options: [],
+            range: matchedString.fullNSRange),
+              match.range == matchedString.fullNSRange
         else {
             return false
         }
 
-        guard let (lineNumber, _) = file.stringView.lineAndCharacter(forCharacterOffset: NSMaxRange(range)),
+        guard let (lineNumber, _) = file.stringView.lineAndCharacter(forByteOffset: byteRange.upperBound),
               case let lineIndex = lineNumber - 1, lineIndex >= 0 else {
             return false
         }
@@ -238,28 +121,105 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
         return false
     }
+}
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = violationRanges(file: file).filter { range, _ in
-            return file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
+private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
+    private(set) var violationRanges: [(ByteRange, String)] = []
+
+    override func visitPost(_ node: BinaryOperatorExprSyntax) {
+        if let violation = violation(operatorToken: node.operatorToken) {
+            violationRanges.append(violation)
+        }
+    }
+
+    override func visitPost(_ node: InitializerClauseSyntax) {
+        if let violation = violation(operatorToken: node.equal) {
+            violationRanges.append(violation)
+        }
+    }
+
+    override func visitPost(_ node: TypeInitializerClauseSyntax) {
+        if let violation = violation(operatorToken: node.equal) {
+            violationRanges.append(violation)
+        }
+    }
+
+    override func visitPost(_ node: AssignmentExprSyntax) {
+        if let violation = violation(operatorToken: node.assignToken) {
+            violationRanges.append(violation)
+        }
+    }
+
+    override func visitPost(_ node: TernaryExprSyntax) {
+        if let violation = violation(operatorToken: node.colonMark) {
+            violationRanges.append(violation)
         }
 
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
+        if let violation = violation(operatorToken: node.questionMark) {
+            violationRanges.append(violation)
+        }
+    }
 
-        for (violatingRange, correction) in violatingRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: correction)
-                adjustedLocations.insert(violatingRange.location, at: 0)
+    private func violation(operatorToken: TokenSyntax) -> (ByteRange, String)? {
+        guard let previousToken = operatorToken.previousToken,
+              let nextToken = operatorToken.nextToken else {
+            return nil
+        }
+
+        let noSpacingBefore = previousToken.trailingTrivia.isEmpty && operatorToken.leadingTrivia.isEmpty
+        let noSpacingAfter = operatorToken.trailingTrivia.isEmpty && nextToken.leadingTrivia.isEmpty
+        let noSpacing = noSpacingBefore || noSpacingAfter
+
+        let allowedNoSpacingOperators: Set = ["...", "..<"]
+
+        let operatorText = operatorToken.withoutTrivia().text
+        if noSpacing && allowedNoSpacingOperators.contains(operatorText) {
+            return nil
+        }
+
+        let tooMuchSpacingBefore = previousToken.trailingTrivia.containsTooMuchWhitespacing
+        let tooMuchSpacingAfter = operatorToken.trailingTrivia.containsTooMuchWhitespacing
+
+        let tooMuchSpacing = (tooMuchSpacingBefore || tooMuchSpacingAfter) &&
+            !operatorToken.leadingTrivia.containsComments &&
+            !nextToken.leadingTrivia.containsComments
+
+        guard noSpacing || tooMuchSpacing else {
+            return nil
+        }
+
+        let location = ByteCount(previousToken.endPositionBeforeTrailingTrivia)
+        let endPosition = ByteCount(nextToken.positionAfterSkippingLeadingTrivia)
+        let range = ByteRange(
+            location: location,
+            length: endPosition - location
+        )
+
+        let correction = allowedNoSpacingOperators.contains(operatorText) ? operatorText : " \(operatorText) "
+        return (range, correction)
+    }
+}
+
+private extension Trivia {
+    var containsTooMuchWhitespacing: Bool {
+        return contains { element in
+            guard case let .spaces(spaces) = element, spaces > 1 else {
+                return false
             }
+
+            return true
         }
+    }
 
-        file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: Location(file: file, characterOffset: $0))
+    var containsComments: Bool {
+        return contains { element in
+            switch element {
+            case .blockComment, .docLineComment, .docBlockComment, .lineComment:
+                return true
+            case .carriageReturnLineFeeds, .carriageReturns, .formfeeds,
+                 .garbageText, .newlines, .spaces, .verticalTabs, .tabs:
+                return false
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ public struct ContainsOverFilterIsEmptyRule: CallPairRule, OptInRule, Configurat
                 Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n"),
                 Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n")
             ]
-        } +  [
+        } + [
             Example("let result = myList.contains(where: { $0 % 2 == 0 })\n"),
             Example("let result = !myList.contains(where: { $0 % 2 == 0 })\n"),
             Example("let result = myList.contains(10)\n")

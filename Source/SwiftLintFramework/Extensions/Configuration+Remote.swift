@@ -183,7 +183,7 @@ internal extension Configuration.FileGraph.FilePath {
     // MARK: Caching
     private func getCachedFilePath(urlString: String, rootDirectory: String) -> String? {
         let path = filePath(for: urlString, rootDirectory: rootDirectory)
-        return FileManager.default.fileExists(atPath: path) ? path: nil
+        return FileManager.default.fileExists(atPath: path) ? path : nil
     }
 
     private func cache(configString: String, from urlString: String, rootDirectory: String) -> String? {
@@ -209,7 +209,7 @@ internal extension Configuration.FileGraph.FilePath {
             atPath: path,
             contents: Data(configString.utf8),
             attributes: [:]
-        ) ? path: nil
+        ) ? path : nil
     }
 
     private func filePath(for urlString: String, rootDirectory: String) -> String {

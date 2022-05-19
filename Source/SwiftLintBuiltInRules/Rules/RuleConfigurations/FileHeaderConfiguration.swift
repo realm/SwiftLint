@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = FileHeaderRule
@@ -9,24 +10,21 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private static let patternRegexOptions: NSRegularExpression.Options =
         [.anchorsMatchLines, .dotMatchesLineSeparators]
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private var requiredString: String?
-    private var requiredPattern: String?
-    private var forbiddenString: String?
-    private var forbiddenPattern: String?
+    @ConfigurationElement("required_string")
+    private var requiredString: String? = nil
+    @ConfigurationElement("required_pattern")
+    private var requiredPattern: String? = nil
+    @ConfigurationElement("forbidden_string")
+    private var forbiddenString: String? = nil
+    @ConfigurationElement("forbidden_pattern")
+    private var forbiddenPattern: String? = nil
 
     private var _forbiddenRegex: NSRegularExpression?
     private var _requiredRegex: NSRegularExpression?
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "required_string" => .string(requiredString ?? "None")
-        "required_pattern" => .string(requiredPattern ?? "None")
-        "forbidden_string" => .string(forbiddenString ?? "None")
-        "forbidden_pattern" => .string(forbiddenPattern ?? "None")
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {

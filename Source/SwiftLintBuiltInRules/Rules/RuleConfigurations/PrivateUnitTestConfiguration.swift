@@ -6,8 +6,10 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
 
     private(set) var name: String?
     private(set) var message = "Unit test marked `private` will not be run by XCTest."
+    @ConfigurationElement("regex")
     private(set) var regex = SwiftLintCore.regex("XCTestCase")
     private(set) var included: NSRegularExpression?
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
     var parameterDescription: RuleConfigurationDescription? {

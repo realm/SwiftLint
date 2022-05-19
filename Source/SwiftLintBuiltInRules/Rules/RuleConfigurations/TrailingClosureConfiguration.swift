@@ -1,17 +1,12 @@
+import SwiftLintCore
+
 struct TrailingClosureConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TrailingClosureRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private(set) var onlySingleMutedParameter: Bool
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "only_single_muted_parameter" => .flag(onlySingleMutedParameter)
-    }
-
-    init(onlySingleMutedParameter: Bool = false) {
-        self.onlySingleMutedParameter = onlySingleMutedParameter
-    }
+    @ConfigurationElement("only_single_muted_parameter")
+    private(set) var onlySingleMutedParameter = false
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

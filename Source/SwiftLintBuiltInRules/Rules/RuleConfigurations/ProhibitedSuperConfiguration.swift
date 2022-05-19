@@ -1,9 +1,14 @@
+import SwiftLintCore
+
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ProhibitedSuperRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    var excluded = [String]()
-    var included = ["*"]
+    @ConfigurationElement("excluded")
+    private(set) var excluded = [String]()
+    @ConfigurationElement("included")
+    private(set) var included = ["*"]
 
     private(set) var resolvedMethodNames = [
         // NSFileProviderExtension
@@ -15,14 +20,6 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
         // UIViewController
         "loadView()"
     ]
-
-    init() {}
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "excluded" => .list(excluded.map { .string($0) })
-        "included" => .list(included.map { .string($0) })
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

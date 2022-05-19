@@ -5,7 +5,9 @@ struct MissingDocsConfiguration: RuleConfiguration, Equatable {
         RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
     ]
+    @ConfigurationElement("excludes_extensions")
     private(set) var excludesExtensions = true
+    @ConfigurationElement("excludes_inherited_types")
     private(set) var excludesInheritedTypes = true
     private(set) var excludesTrivialInit = false
 

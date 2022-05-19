@@ -1,15 +1,12 @@
+import SwiftLintCore
+
 struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = SwitchCaseAlignmentRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("indented_cases")
     private(set) var indentedCases = false
-
-    init() {}
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "indented_cases" => .flag(indentedCases)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

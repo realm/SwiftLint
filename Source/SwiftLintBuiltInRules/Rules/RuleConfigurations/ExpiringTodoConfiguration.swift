@@ -1,42 +1,43 @@
+import SwiftLintCore
+
 struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     typealias Parent = ExpiringTodoRule
     typealias Severity = SeverityConfiguration<Parent>
 
-    struct DelimiterConfiguration: Equatable {
+    struct DelimiterConfiguration: Equatable, AcceptableByConfigurationElement {
         static let `default`: DelimiterConfiguration = .init(opening: "[", closing: "]")
 
         fileprivate(set) var opening: String
         fileprivate(set) var closing: String
-    }
 
-    var parameterDescription: RuleConfigurationDescription? {
-        "approaching_expiry_severity" => .severity(approachingExpirySeverity.severity)
-        "expired_severity" => .severity(expiredSeverity.severity)
-        "bad_formatting_severity" => .severity(badFormattingSeverity.severity)
-        "approaching_expiry_threshold" => .integer(approachingExpiryThreshold)
-        "date_format" => .string(dateFormat)
-        "date_delimiters" => .nest {
-            "opening" => .string(dateDelimiters.opening)
-            "closing" => .string(dateDelimiters.closing)
+        func asOption() -> OptionType {
+            .nest {
+                "opening" => .string(opening)
+                "closing" => .string(closing)
+            }
         }
-        "date_separator" => .string(dateSeparator)
     }
 
-    private(set) var approachingExpirySeverity: Severity
-
-    private(set) var expiredSeverity: Severity
-
-    private(set) var badFormattingSeverity: Severity
+    @ConfigurationElement("approaching_expiry_severity")
+    private(set) var approachingExpirySeverity = Severity(.warning)
+    @ConfigurationElement("expired_severity")
+    private(set) var expiredSeverity = Severity(.error)
+    @ConfigurationElement("bad_formatting_severity")
+    private(set) var badFormattingSeverity = Severity(.error)
 
     // swiftlint:disable:next todo
     /// The number of days prior to expiry before the TODO emits a violation
-    private(set) var approachingExpiryThreshold: Int
+    @ConfigurationElement("approaching_expiry_threshold")
+    private(set) var approachingExpiryThreshold = 15
     /// The opening/closing characters used to surround the expiry-date string
-    private(set) var dateDelimiters: DelimiterConfiguration
+    @ConfigurationElement("date_delimiters")
+    private(set) var dateDelimiters = DelimiterConfiguration.default
     /// The format which should be used to the expiry-date string into a `Date` object
-    private(set) var dateFormat: String
+    @ConfigurationElement("date_format")
+    private(set) var dateFormat = "MM/dd/yyyy"
     /// The separator used for regex detection of the expiry-date string
-    private(set) var dateSeparator: String
+    @ConfigurationElement("date_separator")
+    private(set) var dateSeparator = "/"
 
     init(
         approachingExpirySeverity: Severity = .init(.warning),

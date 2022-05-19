@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case warning = "warning"
     case error = "error"
@@ -7,13 +9,10 @@ private enum ConfigurationKey: String {
 struct FileLengthConfiguration: RuleConfiguration, Equatable {
     typealias Parent = FileLengthRule
 
+    @ConfigurationElement
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)
+    @ConfigurationElement(ConfigurationKey.ignoreCommentOnlyLines.rawValue)
     private(set) var ignoreCommentOnlyLines = false
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        ConfigurationKey.ignoreCommentOnlyLines.rawValue => .flag(ignoreCommentOnlyLines)
-    }
 
     mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),

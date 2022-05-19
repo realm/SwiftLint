@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OverriddenSuperCallRule
 
@@ -31,20 +33,17 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
         "viewWillDisappear(_:)"
     ]
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    var excluded: [String] = []
-    var included: [String] = ["*"]
+    @ConfigurationElement("excluded")
+    private(set) var excluded = [String]()
+    @ConfigurationElement("included")
+    private(set) var included = ["*"]
 
     private(set) var resolvedMethodNames: [String]
 
     init() {
         resolvedMethodNames = defaultIncluded
-    }
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "excluded" => .list(excluded.map { .string($0) })
-        "included" => .list(included.map { .string($0) })
     }
 
     mutating func apply(configuration: Any) throws {

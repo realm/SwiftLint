@@ -1,13 +1,12 @@
+import SwiftLintCore
+
 struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = MultilineParametersRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("allows_single_line")
     private(set) var allowsSingleLine = true
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "allowsSingleLine" => .flag(allowsSingleLine)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

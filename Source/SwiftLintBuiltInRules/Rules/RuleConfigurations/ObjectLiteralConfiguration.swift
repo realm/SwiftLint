@@ -1,15 +1,14 @@
+import SwiftLintCore
+
 typealias DiscouragedObjectLiteralConfiguration = ObjectLiteralConfiguration<DiscouragedObjectLiteralRule>
 
 struct ObjectLiteralConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equatable {
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("image_literal")
     private(set) var imageLiteral = true
+    @ConfigurationElement("color_literal")
     private(set) var colorLiteral = true
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "image_literal" => .flag(imageLiteral)
-        "color_literal" => .flag(colorLiteral)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

@@ -1,15 +1,12 @@
+import SwiftLintCore
+
 struct PrivateOverFilePrivateConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrivateOverFilePrivateRule
 
+    @ConfigurationElement("severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("validate_extensions")
     var validateExtensions = false
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "validate_extensions" => .flag(validateExtensions)
-    }
-
-    // MARK: - RuleConfiguration
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

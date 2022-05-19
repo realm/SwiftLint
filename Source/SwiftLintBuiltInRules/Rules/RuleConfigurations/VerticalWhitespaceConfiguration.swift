@@ -1,13 +1,12 @@
+import SwiftLintCore
+
 struct VerticalWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = VerticalWhitespaceRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("max_empty_lines")
     private(set) var maxEmptyLines = 1
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "max_empty_lines" => .integer(maxEmptyLines)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

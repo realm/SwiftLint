@@ -1,15 +1,14 @@
+import SwiftLintCore
+
 struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ColonRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("flexible_right_spacing")
     private(set) var flexibleRightSpacing = false
+    @ConfigurationElement("apply_to_dictionaries")
     private(set) var applyToDictionaries = true
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "flexible_right_spacing" => .flag(flexibleRightSpacing)
-        "apply_to_dictionaries" => .flag(applyToDictionaries)
-    }
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

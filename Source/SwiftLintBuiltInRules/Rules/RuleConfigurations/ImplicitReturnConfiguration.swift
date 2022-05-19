@@ -1,23 +1,28 @@
-struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
+import SwiftLintCore
+
+struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
     typealias Parent = ImplicitReturnRule
 
-    enum ReturnKind: String, CaseIterable {
+    enum ReturnKind: String, CaseIterable, AcceptableByConfigurationElement, Comparable {
         case closure
         case function
         case getter
+
+        func asOption() -> OptionType {
+            .symbol(rawValue)
+        }
+
+        static func < (lhs: Self, rhs: Self) -> Bool {
+            lhs.rawValue < rhs.rawValue
+        }
     }
 
     static let defaultIncludedKinds = Set(ReturnKind.allCases)
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-
+    @ConfigurationElement("included")
     private(set) var includedKinds = Self.defaultIncludedKinds
-
-    var parameterDescription: RuleConfigurationDescription? {
-        let includedKinds = self.includedKinds.map { $0.rawValue }
-        severityConfiguration
-        "included" => .list(includedKinds.sorted().map { .symbol($0) })
-    }
 
     init(includedKinds: Set<ReturnKind> = Self.defaultIncludedKinds) {
         self.includedKinds = includedKinds

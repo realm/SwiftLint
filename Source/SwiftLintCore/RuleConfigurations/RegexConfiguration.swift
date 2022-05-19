@@ -8,9 +8,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The name for this custom rule.
     public var name: String?
     /// The message to be presented when producing violations.
-    public var message = "Regex matched"
+    public var message = "Regex matched."
     /// The regular expression to apply to trigger violations for this custom rule.
-    public var regex: NSRegularExpression!
+    @ConfigurationElement("regex")
+    var regex: NSRegularExpression! = nil
     /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
     /// Regular expressions to exclude when matching the file path.
@@ -18,14 +19,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
+    @ConfigurationElement("severity")
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
-
-    public var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "regex" => .string(regex.pattern)
-    }
 
     public var cacheDescription: String {
         let jsonObject: [String] = [

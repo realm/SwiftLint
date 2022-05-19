@@ -1,25 +1,23 @@
 import Foundation
+import SwiftLintCore
 
 struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     typealias Severity = SeverityConfiguration<Parent>
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
 
-    var parameterDescription: RuleConfigurationDescription? {
-        "(min_length)" => .nested(minLength.parameterDescription!)
-        "(max_length)" => .nested(maxLength.parameterDescription!)
-        "excluded" => .list(excludedRegularExpressions.map(\.pattern).sorted().map { .symbol($0) })
-        "allowed_symbols" => .list(allowedSymbols.sorted().map { .string($0) })
-        "unallowed_symbols_severity" => .severity(unallowedSymbolsSeverity.severity)
-        "validates_start_with_lowercase" => .symbol(validatesStartWithLowercase.severity?.rawValue ?? "off")
-    }
-
-    private(set) var minLength: SeverityLevels
-    private(set) var maxLength: SeverityLevels
-    private(set) var excludedRegularExpressions: Set<NSRegularExpression>
-    private(set) var allowedSymbols: Set<String>
-    private(set) var unallowedSymbolsSeverity: Severity
-    private(set) var validatesStartWithLowercase: StartWithLowercaseConfiguration
+    @ConfigurationElement("min_length")
+    private(set) var minLength = SeverityLevels(warning: 0, error: 0)
+    @ConfigurationElement("max_length")
+    private(set) var maxLength = SeverityLevels(warning: 0, error: 0)
+    @ConfigurationElement("excluded")
+    private(set) var excludedRegularExpressions = Set<NSRegularExpression>()
+    @ConfigurationElement("allowed_symbols")
+    private(set) var allowedSymbols = Set<String>()
+    @ConfigurationElement("unallowed_symbols_severity")
+    private(set) var unallowedSymbolsSeverity = Severity.error
+    @ConfigurationElement("validates_start_with_lowercase")
+    private(set) var validatesStartWithLowercase = StartWithLowercaseConfiguration.error
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)

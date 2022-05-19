@@ -1,17 +1,16 @@
+import SwiftLintCore
+
 struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OperatorUsageWhitespaceRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("lines_look_around")
     private(set) var linesLookAround = 2
+    @ConfigurationElement("skip_aligned_constants")
     private(set) var skipAlignedConstants = true
-    private(set) var allowedNoSpaceOperators: [String] = ["...", "..<"]
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "lines_look_around" => .integer(linesLookAround)
-        "skip_aligned_constants" => .flag(skipAlignedConstants)
-        "allowed_no_space_operators" => .list(allowedNoSpaceOperators.map { .string($0) })
-    }
+    @ConfigurationElement("allowed_no_space_operators")
+    private(set) var allowedNoSpaceOperators = ["...", "..<"]
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

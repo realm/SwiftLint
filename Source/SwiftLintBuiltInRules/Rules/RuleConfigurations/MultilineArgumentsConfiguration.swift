@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case severity = "severity"
     case firstArgumentLocation = "first_argument_location"
@@ -7,7 +9,7 @@ private enum ConfigurationKey: String {
 struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = MultilineArgumentsRule
 
-    enum FirstArgumentLocation: String {
+    enum FirstArgumentLocation: String, AcceptableByConfigurationElement {
         case anyLine = "any_line"
         case sameLine = "same_line"
         case nextLine = "next_line"
@@ -21,18 +23,18 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
 
             self = value
         }
+
+        func asOption() -> OptionType {
+            .symbol(rawValue)
+        }
     }
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(ConfigurationKey.firstArgumentLocation.rawValue)
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
+    @ConfigurationElement(ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue)
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        ConfigurationKey.firstArgumentLocation.rawValue => .string(firstArgumentLocation.rawValue)
-        ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue => .flag(onlyEnforceAfterFirstClosureOnFirstLine)
-        // swiftlint:disable:previous line_length
-    }
 
     mutating func apply(configuration: Any) throws {
         let error = Issue.unknownConfiguration(ruleID: Parent.identifier)

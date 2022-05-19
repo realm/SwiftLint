@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 private enum ConfigurationKey: String {
     case severity
     case additionalTerms = "additional_terms"
@@ -8,19 +10,16 @@ private enum ConfigurationKey: String {
 struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = InclusiveLanguageRule
 
-    var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    private var additionalTerms: Set<String>?
-    private var overrideTerms: Set<String>?
-    private var overrideAllowedTerms: Set<String>?
+    @ConfigurationElement("severity")
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("additional_terms")
+    private(set) var additionalTerms: Set<String>? = nil
+    @ConfigurationElement("override_terms")
+    private(set) var overrideTerms: Set<String>? = nil
+    @ConfigurationElement("override_allowed_terms")
+    private(set) var overrideAllowedTerms: Set<String>? = nil
     private(set) var allTerms: [String]
     private(set) var allAllowedTerms: Set<String>
-
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "additional_terms" => .list(additionalTerms?.sorted().map { .string($0) } ?? [])
-        "override_terms" => .list(overrideTerms?.sorted().map { .string($0) } ?? [])
-        "override_allowed_terms" => .list(overrideAllowedTerms?.sorted().map { .string($0) } ?? [])
-    }
 
     private let defaultTerms: Set<String> = [
         "whitelist",

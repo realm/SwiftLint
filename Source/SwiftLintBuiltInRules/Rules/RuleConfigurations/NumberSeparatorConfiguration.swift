@@ -1,20 +1,16 @@
+import SwiftLintCore
+
 struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = NumberSeparatorRule
 
+    @ConfigurationElement("severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement("minimum_length")
     private(set) var minimumLength = 0
-    private(set) var minimumFractionLength: Int?
-    private(set) var excludeRanges = [Range<Double>]()
+    @ConfigurationElement("minimum_fraction_length")
+    private(set) var minimumFractionLength: Int? = nil
 
-    var parameterDescription: RuleConfigurationDescription? {
-        severityConfiguration
-        "minimum_length" => .integer(minimumLength)
-        if let minimumFractionLength {
-            "minimum_fraction_length" => .integer(minimumFractionLength)
-        } else {
-            "minimum_fraction_length" => .string("none")
-        }
-    }
+    private(set) var excludeRanges = [Range<Double>]()
 
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {

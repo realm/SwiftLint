@@ -175,7 +175,8 @@ private func prepareSandbox() -> (testSwiftURL: URL, seatbeltURL: URL)? {
     //    ├── AADA6B05-2E06-4E7F-BA48-8B3AF44415E3.sb
     do {
         // `/private/tmp` is standardized to `/tmp` that is symbolic link to `/private/tmp`.
-        let temporaryDirectoryURL = URL(fileURLWithPath: "/tmp").appendingPathComponent(UUID().uuidString)
+        let temporaryDirectoryURL = URL(fileURLWithPath: "/tmp", isDirectory: true)
+            .appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true)
 
         let seatbeltURL = temporaryDirectoryURL.appendingPathExtension("sb")

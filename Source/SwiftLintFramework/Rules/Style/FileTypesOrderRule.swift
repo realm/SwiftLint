@@ -132,7 +132,8 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             return self.mainTypeSubstructure(in: dict)
         }
 
-        let fileName = URL(fileURLWithPath: filePath).lastPathComponent.replacingOccurrences(of: ".swift", with: "")
+        let fileName = URL(fileURLWithPath: filePath, isDirectory: false)
+            .lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
             return self.mainTypeSubstructure(in: file.structureDictionary)
         }

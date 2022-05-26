@@ -247,7 +247,7 @@ extension SwiftLintFile {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
-            try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)
+            try stringData.write(to: URL(fileURLWithPath: path, isDirectory: false), options: .atomic)
         } catch {
             queuedFatalError("can't write file to \(path)")
         }

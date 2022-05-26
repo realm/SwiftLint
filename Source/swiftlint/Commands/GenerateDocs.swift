@@ -11,7 +11,7 @@ extension SwiftLint {
 
         mutating func run() throws {
             try RuleListDocumentation(primaryRuleList)
-                .write(to: URL(fileURLWithPath: path))
+                .write(to: URL(fileURLWithPath: path, isDirectory: true))
         }
     }
 }

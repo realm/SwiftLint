@@ -9,7 +9,7 @@ private let violationMarker = "↓"
 
 private extension SwiftLintFile {
     static func temporary(withContents contents: String) -> SwiftLintFile {
-        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+        let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("swift")
         _ = try? contents.data(using: .utf8)!.write(to: url)
@@ -18,7 +18,7 @@ private extension SwiftLintFile {
 
     func makeCompilerArguments() -> [String] {
         let sdk = sdkPath()
-        let frameworks = URL(fileURLWithPath: sdk)
+        let frameworks = URL(fileURLWithPath: sdk, isDirectory: true)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .appendingPathComponent("Library")

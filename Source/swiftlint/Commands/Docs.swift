@@ -16,7 +16,7 @@ extension SwiftLint {
 private func open(_ url: URL) {
     let process = Process()
 #if os(Linux)
-    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env", isDirectory: false)
     let command = "xdg-open"
     process.arguments = [command, url.absoluteString]
     try? process.run()

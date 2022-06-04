@@ -11,6 +11,12 @@ class AccessibilityLabelForImageRuleGeneratedTests: XCTestCase {
     }
 }
 
+class AccessibilityTraitForButtonRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(AccessibilityTraitForButtonRule.description)
+    }
+}
+
 class AnonymousArgumentInMultilineClosureRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnonymousArgumentInMultilineClosureRule.description)

@@ -41,7 +41,8 @@ public struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRul
     /// Recursively check a file for image violations, and return all such violations.
     private func findButtonTraitViolations(
         file: SwiftLintFile,
-        substructure: [SourceKittenDictionary]) -> [StyleViolation] {
+        substructure: [SourceKittenDictionary]
+    ) -> [StyleViolation] {
         var violations = [StyleViolation]()
         for dictionary in substructure {
             guard let offset: ByteCount = dictionary.offset else {
@@ -72,8 +73,8 @@ public struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRul
                     continue
                 }
 
-                violations.append(contentsOf:
-                    findButtonTraitViolations(file: file, substructure: dictionary.substructure)
+                violations.append(
+                    contentsOf: findButtonTraitViolations(file: file, substructure: dictionary.substructure)
                 )
             }
         }

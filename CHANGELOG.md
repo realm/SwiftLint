@@ -29,6 +29,12 @@
 * Prevent crash for private types named `_` in `type_name` rules.
   [sinoru](https://github.com/sinoru)
   [#3971](https://github.com/realm/SwiftLint/issues/3971)
+  
+* Make `for_where` rule implementation independent of order in structure
+  dictionary. This fixes the rule in Xcode 13.3 where some violation were 
+  no longer reported.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3975](https://github.com/realm/SwiftLint/issues/3975)
 
 ## 0.47.1: Smarter Appliance
 

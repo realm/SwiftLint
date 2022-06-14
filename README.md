@@ -634,7 +634,7 @@ specifications of nested configurations are getting ignored because there's no s
 If one (or more) SwiftLint file(s) are explicitly specified via the `--config` parameter,
 that configuration will be treated as an override, no matter whether there exist
 other `.swiftlint.yml` files somewhere within the directory. **So if you want to use
- nested configurations, you can't use the `-- config` parameter.**
+ nested configurations, you can't use the `--config` parameter.**
 
 ## License
 

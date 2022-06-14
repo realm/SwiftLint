@@ -352,7 +352,7 @@ in your Script Build Phases.</p>
 <p>This is the recommended way to install a specific version of SwiftLint since it supports
 installing a pinned version rather than simply the latest (which is the case with Homebrew).</p>
 
-<p>Note that this will add the SwiftLint binaries, its dependencies&rsquo; binaries and the Swift binary
+<p>Note that this will add the SwiftLint binaries, its dependencies&rsquo; binaries, and the Swift binary
 library distribution to the <code>Pods/</code> directory, so checking in this directory to SCM such as
 git is discouraged.</p>
 <h3 id='using-a-href-https-github-com-yonaskolb-mint-mint-a' class='heading'>Using <a href="https://github.com/yonaskolb/mint">Mint</a>:</h3>
@@ -415,7 +415,7 @@ results.</p>
 
 <p>If you wish to fix violations as well, your script could run
 <code>swiftlint --fix &amp;&amp; swiftlint</code> instead of just <code>swiftlint</code>. This will mean
-that all correctable violations are fixed, while ensuring warnings show up in
+that all correctable violations are fixed while ensuring warnings show up in
 your project for remaining violations.</p>
 
 <p>If you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
@@ -648,7 +648,7 @@ run SwiftLint from. The following parameters can be configured:</p>
 
 <ul>
 <li><code>disabled_rules</code>: Disable rules from the default enabled set.</li>
-<li><code>opt_in_rules</code>: Enable rules not from the default set.</li>
+<li><code>opt_in_rules</code>: Enable rules that are not part of the default set.</li>
 <li><code>only_rules</code>: Only the rules specified in this list will be enabled.
 Cannot be specified alongside <code>disabled_rules</code> or <code>opt_in_rules</code>.</li>
 <li><code>analyzer_rules</code>: This is an entirely separate list of rules that are only
@@ -894,7 +894,7 @@ specifications of nested configurations are getting ignored because there&rsquo;
 <p>If one (or more) SwiftLint file(s) are explicitly specified via the <code>--config</code> parameter,
 that configuration will be treated as an override, no matter whether there exist
 other <code>.swiftlint.yml</code> files somewhere within the directory. <strong>So if you want to use
-use nested configurations, you can&rsquo;t use the <code>-- config</code> parameter.</strong></p>
+ nested configurations, you can&rsquo;t use the <code>--config</code> parameter.</strong></p>
 <h2 id='license' class='heading'>License</h2>
 
 <p><a href="LICENSE">MIT licensed.</a></p>

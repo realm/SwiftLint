@@ -1,4 +1,5 @@
 import ArgumentParser
+import SwiftLintFramework
 
 extension SwiftLint {
     struct Lint: ParsableCommand {
@@ -24,6 +25,9 @@ extension SwiftLint {
         mutating func run() throws {
             let allPaths: [String]
             if let path = path {
+                queuedPrintError("""
+                    warning: The --path option is deprecated. Pass the path(s) to lint last to the swiftlint command.
+                    """)
                 allPaths = [path] + paths
             } else if !paths.isEmpty {
                 allPaths = paths

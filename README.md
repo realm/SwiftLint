@@ -122,14 +122,6 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 "${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
-#### Format on Save Xcode Plugin
-
-To run `swiftlint --fix` on save in Xcode, install the
-[SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
-
-⚠️This plugin will not work with Xcode 8 or later without disabling SIP.
-This is not recommended.
-
 ### AppCode
 
 To integrate SwiftLint with AppCode, install

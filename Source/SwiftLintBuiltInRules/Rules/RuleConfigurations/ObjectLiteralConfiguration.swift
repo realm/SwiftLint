@@ -5,7 +5,7 @@ struct ObjectLiteralConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration,
     private(set) var imageLiteral = true
     private(set) var colorLiteral = true
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "image_literal" => .flag(imageLiteral)
         "color_literal" => .flag(colorLiteral)

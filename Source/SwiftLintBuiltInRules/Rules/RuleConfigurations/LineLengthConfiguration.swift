@@ -20,7 +20,7 @@ struct LineLengthConfiguration: RuleConfiguration, Equatable {
         return length.params
     }
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         length
         "ignores_urls" => .flag(ignoresURLs)
         "ignores_function_declarations" => .flag(ignoresFunctionDeclarations)

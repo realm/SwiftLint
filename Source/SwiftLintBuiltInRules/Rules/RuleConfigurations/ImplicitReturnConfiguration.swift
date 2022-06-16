@@ -13,7 +13,7 @@ struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     private(set) var includedKinds = Self.defaultIncludedKinds
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         let includedKinds = self.includedKinds.map { $0.rawValue }
         severityConfiguration
         "included" => .list(includedKinds.sorted().map { .symbol($0) })

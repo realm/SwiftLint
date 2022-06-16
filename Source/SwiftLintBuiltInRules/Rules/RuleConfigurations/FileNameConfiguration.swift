@@ -7,7 +7,7 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var suffixPattern = "\\+.*"
     private(set) var nestedTypeSeparator = "."
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "excluded" => .list(excluded.sorted().map { .string($0) })
         "prefix_pattern" => .string(prefixPattern)

@@ -156,7 +156,7 @@ public struct RuleConfigurationDescriptionBuilder {
     }
 
     public static func buildExpression(_ expression: any RuleConfiguration) -> Description {
-        expression.parameterDescription
+        expression.parameterDescription ?? Description(options: [])
     }
 
     public static func buildArray(_ components: [Description]) -> Description {

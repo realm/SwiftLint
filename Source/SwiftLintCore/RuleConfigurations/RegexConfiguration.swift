@@ -22,7 +22,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0
 
-    public var parameterDescription: RuleConfigurationDescription {
+    public var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "regex" => .string(regex.pattern)
     }

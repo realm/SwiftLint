@@ -18,7 +18,7 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     init() {}
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "excluded" => .list(excluded.map { .string($0) })
         "included" => .list(included.map { .string($0) })

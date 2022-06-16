@@ -4,7 +4,7 @@ struct FileNameNoSpaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     private(set) var excluded = Set<String>()
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "excluded" => .list(excluded.sorted().map { .string($0) })
     }

@@ -4,7 +4,7 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatab
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowsSingleLine = true
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "allowsSingleLine" => .flag(allowsSingleLine)
     }

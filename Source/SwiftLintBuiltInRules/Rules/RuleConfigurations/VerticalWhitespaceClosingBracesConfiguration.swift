@@ -10,7 +10,7 @@ struct VerticalWhitespaceClosingBracesConfiguration: SeverityBasedRuleConfigurat
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var onlyEnforceBeforeTrivialLines = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue => .flag(onlyEnforceBeforeTrivialLines)
     }

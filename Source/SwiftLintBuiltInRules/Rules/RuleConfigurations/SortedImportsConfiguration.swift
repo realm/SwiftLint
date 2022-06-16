@@ -12,7 +12,7 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
     private(set) var severity = SeverityConfiguration<Parent>(.warning)
     private(set) var grouping = SortedImportsGroupingConfiguration.names
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severity
         "grouping" => .symbol(grouping.rawValue)
     }

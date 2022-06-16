@@ -4,7 +4,7 @@ struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var mandatoryComma: Bool
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "mandatory_comma" => .flag(mandatoryComma)
     }

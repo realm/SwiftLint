@@ -32,7 +32,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         length
         ConfigurationKey.ignoresCaseStatements.rawValue => .flag(ignoresCaseStatements)
     }

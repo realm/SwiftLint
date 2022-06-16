@@ -5,7 +5,7 @@ struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equat
     private(set) var allowedPrefixes: Set<String> = []
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "allowed_prefixes" => .list(allowedPrefixes.sorted().map { .string($0) })
         "test_parent_classes" => .list(testParentClasses.sorted().map { .symbol($0) })

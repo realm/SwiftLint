@@ -4,7 +4,7 @@ struct PrivateOutletConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowPrivateSet = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "allow_private_set" => .flag(allowPrivateSet)
     }

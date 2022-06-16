@@ -5,7 +5,7 @@ public protocol RuleConfiguration {
 
     /// A description for this configuration's parameters. It can be built using the annotated result builder.
     @RuleConfigurationDescriptionBuilder
-    var parameterDescription: RuleConfigurationDescription { get }
+    var parameterDescription: RuleConfigurationDescription? { get }
 
     /// Apply an untyped configuration to the current value.
     ///
@@ -39,4 +39,8 @@ public extension RuleConfiguration where Self: Equatable {
     func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self
     }
+}
+
+public extension RuleConfiguration {
+    var parameterDescription: RuleConfigurationDescription? { nil }
 }

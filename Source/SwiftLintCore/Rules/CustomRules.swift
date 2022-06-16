@@ -5,7 +5,7 @@ import Foundation
 struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     typealias Parent = CustomRules
 
-    var parameterDescription: RuleConfigurationDescription { RuleConfigurationOption.noOptions }
+    var parameterDescription: RuleConfigurationDescription? { RuleConfigurationOption.noOptions }
     var cacheDescription: String {
         customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }

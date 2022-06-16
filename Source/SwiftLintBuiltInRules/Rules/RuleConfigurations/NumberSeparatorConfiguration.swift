@@ -6,7 +6,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var minimumFractionLength: Int?
     private(set) var excludeRanges = [Range<Double>]()
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "minimum_length" => .integer(minimumLength)
         if let minimumFractionLength {

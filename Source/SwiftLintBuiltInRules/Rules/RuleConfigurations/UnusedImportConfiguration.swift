@@ -28,7 +28,7 @@ struct UnusedImportConfiguration: SeverityBasedRuleConfiguration, Equatable {
     /// A set of modules to never remove the imports of.
     private(set) var alwaysKeepImports = [String]()
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "require_explicit_imports" => .flag(requireExplicitImports)
         "allowed_transitive_imports" => .nest {

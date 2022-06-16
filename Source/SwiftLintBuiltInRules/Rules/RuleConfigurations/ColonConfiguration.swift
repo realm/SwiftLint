@@ -5,7 +5,7 @@ struct ColonConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var flexibleRightSpacing = false
     private(set) var applyToDictionaries = true
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "flexible_right_spacing" => .flag(flexibleRightSpacing)
         "apply_to_dictionaries" => .flag(applyToDictionaries)

@@ -4,7 +4,7 @@ struct PrefixedTopLevelConstantConfiguration: SeverityBasedRuleConfiguration, Eq
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var onlyPrivateMembers = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "only_private" => .flag(onlyPrivateMembers)
     }

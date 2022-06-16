@@ -11,7 +11,7 @@ struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable
     private(set) var includePublicAndOpen = false
     private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severity
         ConfigurationKey.includePublicAndOpen.rawValue => .flag(includePublicAndOpen)
         ConfigurationKey.relatedUSRsToSkip.rawValue => .list(relatedUSRsToSkip.sorted().map { .string($0) })

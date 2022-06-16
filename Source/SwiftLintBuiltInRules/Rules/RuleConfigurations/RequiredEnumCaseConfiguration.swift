@@ -13,7 +13,7 @@ struct RequiredEnumCaseConfiguration: RuleConfiguration, Equatable {
 
     var protocols: [String: Set<RequiredCase>] = [:]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         if protocols.isEmpty {
             "{Protocol Name}" => .nest {
                 "{Case Name 1}" => .symbol("{warning|error}")

@@ -10,7 +10,7 @@ struct FileLengthConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)
     private(set) var ignoreCommentOnlyLines = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.ignoreCommentOnlyLines.rawValue => .flag(ignoreCommentOnlyLines)
     }

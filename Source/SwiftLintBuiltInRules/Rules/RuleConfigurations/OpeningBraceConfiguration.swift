@@ -9,7 +9,7 @@ struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowMultilineFunc = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.allowMultilineFunc.rawValue => .flag(allowMultilineFunc)
     }

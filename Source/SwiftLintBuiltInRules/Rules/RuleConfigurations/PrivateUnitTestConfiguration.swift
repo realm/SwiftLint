@@ -10,7 +10,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
     private(set) var included: NSRegularExpression?
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "regex" => .string(regex.pattern)
     }
@@ -22,7 +22,7 @@ struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, 
             message,
             regex.pattern,
             included?.pattern ?? "",
-            severityConfiguration.consoleDescription
+            severityConfiguration.severity.rawValue
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {

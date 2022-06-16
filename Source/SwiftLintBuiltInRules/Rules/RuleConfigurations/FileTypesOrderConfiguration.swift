@@ -18,7 +18,7 @@ struct FileTypesOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         [.libraryContentProvider]
     ]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "order" => .list(order.map { .list($0.map(\.rawValue).map { .symbol($0) }) })
     }

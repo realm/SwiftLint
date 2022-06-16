@@ -37,7 +37,7 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
         [.deinitializer]
     ]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "order" => .list(order.map { .list($0.map(\.rawValue).map { .symbol($0) }) })
     }

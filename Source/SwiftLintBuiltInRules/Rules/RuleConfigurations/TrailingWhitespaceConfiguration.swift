@@ -5,7 +5,7 @@ struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatabl
     private(set) var ignoresEmptyLines = false
     private(set) var ignoresComments = true
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "ignores_empty_lines" => .flag(ignoresEmptyLines)
         "ignores_comments" => .flag(ignoresComments)

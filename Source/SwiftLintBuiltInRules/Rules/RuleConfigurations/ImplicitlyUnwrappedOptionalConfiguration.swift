@@ -19,7 +19,7 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
     private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "mode" => .symbol(mode.rawValue)
     }

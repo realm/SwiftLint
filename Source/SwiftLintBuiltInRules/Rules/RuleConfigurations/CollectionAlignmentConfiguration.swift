@@ -6,7 +6,7 @@ struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     init() {}
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "align_colons" => .flag(alignColons)
     }

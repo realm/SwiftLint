@@ -4,7 +4,7 @@ struct ForWhereConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var allowForAsFilter = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "allow_for_as_filter" => .flag(allowForAsFilter)
     }

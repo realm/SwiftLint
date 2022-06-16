@@ -7,7 +7,7 @@ struct TypeNameConfiguration: RuleConfiguration, Equatable {
                                                                    maxLengthError: 1000)
     private(set) var validateProtocols = true
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         nameConfiguration
         "validate_protocols" => .flag(validateProtocols)
     }

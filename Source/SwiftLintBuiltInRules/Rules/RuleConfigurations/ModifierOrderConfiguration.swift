@@ -18,7 +18,7 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
         .owned
     ]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "preferred_modifier_order" => .list(preferredModifierOrder.map { .symbol($0.rawValue) })
     }

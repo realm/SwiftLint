@@ -6,7 +6,7 @@ struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatab
 
     init() {}
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "indented_cases" => .flag(indentedCases)
     }

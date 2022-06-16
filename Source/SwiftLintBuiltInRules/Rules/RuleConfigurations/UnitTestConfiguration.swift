@@ -7,7 +7,7 @@ struct UnitTestConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Equa
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "test_parent_classes" => .list(testParentClasses.sorted().map { .symbol($0) })
     }

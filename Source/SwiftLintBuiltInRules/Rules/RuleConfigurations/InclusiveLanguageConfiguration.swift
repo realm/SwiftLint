@@ -15,7 +15,7 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable
     private(set) var allTerms: [String]
     private(set) var allAllowedTerms: Set<String>
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "additional_terms" => .list(additionalTerms?.sorted().map { .string($0) } ?? [])
         "override_terms" => .list(overrideTerms?.sorted().map { .string($0) } ?? [])

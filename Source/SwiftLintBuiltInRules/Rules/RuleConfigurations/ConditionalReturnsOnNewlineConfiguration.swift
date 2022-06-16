@@ -4,7 +4,7 @@ struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration,
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var ifOnly = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "if_only" => .flag(ifOnly)
     }

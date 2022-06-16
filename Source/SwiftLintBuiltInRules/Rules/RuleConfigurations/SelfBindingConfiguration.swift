@@ -9,7 +9,7 @@ struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var bindIdentifier = "self"
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.bindIdentifier.rawValue => .symbol(bindIdentifier)
     }

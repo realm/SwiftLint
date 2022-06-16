@@ -9,7 +9,7 @@ struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
     private(set) var onlyAfterDot = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.onlyAfterDot.rawValue => .flag(onlyAfterDot)
     }

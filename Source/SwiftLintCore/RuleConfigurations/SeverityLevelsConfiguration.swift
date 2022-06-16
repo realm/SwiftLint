@@ -1,6 +1,6 @@
 /// A rule configuration that allows specifying thresholds for `warning` and `error` severities.
 public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
-    public var parameterDescription: RuleConfigurationDescription {
+    public var parameterDescription: RuleConfigurationDescription? {
         "warning" => .integer(warning)
         if let error {
             "error" => .integer(error)

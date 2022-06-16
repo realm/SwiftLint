@@ -9,7 +9,7 @@ struct ComputedAccessorsOrderConfiguration: SeverityBasedRuleConfiguration, Equa
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     private(set) var order = Order.getSet
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "order" => .symbol(order.rawValue)
     }

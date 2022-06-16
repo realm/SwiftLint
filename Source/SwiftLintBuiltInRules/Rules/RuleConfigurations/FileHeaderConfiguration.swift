@@ -20,7 +20,7 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "required_string" => .string(requiredString ?? "None")
         "required_pattern" => .string(requiredPattern ?? "None")

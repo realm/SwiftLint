@@ -9,7 +9,7 @@ struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         fileprivate(set) var closing: String
     }
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         "approaching_expiry_severity" => .severity(approachingExpirySeverity.severity)
         "expired_severity" => .severity(expiredSeverity.severity)
         "bad_formatting_severity" => .severity(badFormattingSeverity.severity)

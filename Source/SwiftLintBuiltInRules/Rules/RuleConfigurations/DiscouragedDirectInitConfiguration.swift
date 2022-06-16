@@ -7,7 +7,7 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equat
 
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "types" => .list(discouragedInits.sorted(by: <).map { .symbol($0) })
     }

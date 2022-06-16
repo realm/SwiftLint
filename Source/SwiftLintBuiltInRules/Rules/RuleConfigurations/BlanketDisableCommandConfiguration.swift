@@ -11,7 +11,7 @@ struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration, Equat
     ]
     private(set) var alwaysBlanketDisableRuleIdentifiers: Set<String> = []
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "allowed_rules" => .list(allowedRuleIdentifiers.sorted().map { .symbol($0) })
         "always_blanket_disable" => .list(alwaysBlanketDisableRuleIdentifiers.sorted().map { .symbol($0) })

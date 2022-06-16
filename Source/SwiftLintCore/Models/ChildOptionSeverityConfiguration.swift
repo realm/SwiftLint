@@ -14,7 +14,7 @@ public struct ChildOptionSeverityConfiguration<Parent: Rule>: RuleConfiguration,
 
     private var optionSeverity: ChildOptionSeverity
 
-    public var parameterDescription: RuleConfigurationDescription {
+    public var parameterDescription: RuleConfigurationDescription? {
         "severity" => .symbol(optionSeverity.rawValue)
     }
 

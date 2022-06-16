@@ -7,7 +7,7 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration, Equatable 
     private(set) var includeCompilerDirectives = true
     private(set) var includeMultilineStrings = true
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "indentation_width" => .integer(indentationWidth)
         "include_comments" => .flag(includeComments)

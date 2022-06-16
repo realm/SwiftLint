@@ -15,7 +15,7 @@ struct StatementPositionConfiguration: SeverityBasedRuleConfiguration, Equatable
         }
     }
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "statement_mode" => .symbol(statementMode.rawValue)
     }

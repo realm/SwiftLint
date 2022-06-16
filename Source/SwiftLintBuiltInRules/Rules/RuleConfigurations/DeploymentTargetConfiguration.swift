@@ -109,7 +109,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
     private let targets: [String: Version]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         for (platform, target) in targets.sorted(by: { $0.key < $1.key }) {
             platform => .symbol(target.stringValue)

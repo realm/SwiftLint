@@ -14,7 +14,7 @@ struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration, Equatabl
         case matchers
     }
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.matchers.rawValue => .list(matchers.map(\.rawValue).sorted().map { .symbol($0) })
     }

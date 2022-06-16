@@ -6,7 +6,7 @@ struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equ
     private(set) var skipAlignedConstants = true
     private(set) var allowedNoSpaceOperators: [String] = ["...", "..<"]
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "lines_look_around" => .integer(linesLookAround)
         "skip_aligned_constants" => .flag(skipAlignedConstants)

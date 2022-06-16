@@ -9,7 +9,7 @@ struct MissingDocsConfiguration: RuleConfiguration, Equatable {
     private(set) var excludesInheritedTypes = true
     private(set) var excludesTrivialInit = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         let parametersDescription = parameters.group { $0.severity }
             .sorted { $0.key.rawValue < $1.key.rawValue }
         if parametersDescription.isNotEmpty {

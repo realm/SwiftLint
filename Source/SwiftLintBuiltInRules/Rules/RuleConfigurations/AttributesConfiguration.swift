@@ -6,7 +6,7 @@ struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var alwaysOnSameLine = Set<String>()
     private(set) var alwaysOnNewLine = Set<String>()
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         "always_on_same_line" => .list(alwaysOnSameLine.sorted().map { .string($0) })
         "always_on_line_above" => .list(alwaysOnNewLine.sorted().map { .string($0) })

@@ -27,7 +27,7 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
 
-    var parameterDescription: RuleConfigurationDescription {
+    var parameterDescription: RuleConfigurationDescription? {
         severityConfiguration
         ConfigurationKey.firstArgumentLocation.rawValue => .string(firstArgumentLocation.rawValue)
         ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue => .flag(onlyEnforceAfterFirstClosureOnFirstLine)

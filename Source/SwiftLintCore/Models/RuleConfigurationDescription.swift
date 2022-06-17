@@ -62,14 +62,6 @@ public struct RuleConfigurationDescription: HumanReadable, Equatable {
     }
 }
 
-/// A type that can be converted into a configuration option.
-public protocol RuleConfigurationOptionConvertible {
-    /// Convert an object to a configuration option.
-    ///
-    /// - Returns: A configuration option for the object.
-    func makeOption() -> RuleConfigurationOption
-}
-
 /// Type of an option.
 public enum OptionType: Equatable {
     case empty
@@ -84,16 +76,12 @@ public enum OptionType: Equatable {
 }
 
 /// A single option of a `RuleConfigurationDescription`.
-public struct RuleConfigurationOption: RuleConfigurationOptionConvertible, HumanReadable, Equatable {
+public struct RuleConfigurationOption: HumanReadable, Equatable {
     /// An option serving as a marker for an empty configuration description.
     public static let noOptions = Self(key: "<nothing>", value: .empty)
 
     fileprivate let key: String
     fileprivate let value: OptionType
-
-    public func makeOption() -> RuleConfigurationOption {
-        self
-    }
 
     public func markdown() -> String {
         """
@@ -182,8 +170,8 @@ public struct RuleConfigurationDescriptionBuilder {
         component
     }
 
-    public static func buildExpression(_ expression: RuleConfigurationOptionConvertible) -> Description {
-        Description(options: [expression.makeOption()])
+    public static func buildExpression(_ expression: RuleConfigurationOption) -> Description {
+        Description(options: [expression])
     }
 
     public static func buildExpression(_ expression: any RuleConfiguration) -> Description {
@@ -217,12 +205,6 @@ public extension OptionType {
     /// - Returns: A configuration option with a value being another configuration description.
     static func nest(@RuleConfigurationDescriptionBuilder _ description: () -> RuleConfigurationDescription) -> Self {
         .nested(description())
-    }
-}
-
-extension ViolationSeverity: RuleConfigurationOptionConvertible {
-    public func makeOption() -> RuleConfigurationOption {
-        "severity" => .symbol(rawValue)
     }
 }
 
@@ -355,12 +337,12 @@ extension ViolationSeverity: AcceptableByConfigurationElement {
 
 public extension RuleConfiguration {
     func asOption() -> OptionType {
-        .nested(RuleConfigurationDescription.from(configuration: self))
+        .nested(.from(configuration: self))
     }
 
     func asDescription(with key: String) -> RuleConfigurationDescription {
         if key.isEmpty {
-            return RuleConfigurationDescription.from(configuration: self)
+            return .from(configuration: self)
         }
         return RuleConfigurationDescription(options: [key => asOption()])
     }

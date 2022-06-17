@@ -14,28 +14,8 @@ public protocol HumanReadable {
 }
 
 /// Description of a rule configuration.
-public struct RuleConfigurationDescription: HumanReadable, Equatable {
+public struct RuleConfigurationDescription: Equatable {
     fileprivate let options: [RuleConfigurationOption]
-
-    public func oneLiner() -> String {
-        options.first == .noOptions ? "" : options.map { $0.oneLiner() }.joined(separator: "; ")
-    }
-
-    public func markdown() -> String {
-        guard options.isNotEmpty, options.first != .noOptions else {
-            return ""
-        }
-        return """
-            <table>
-            <thead>
-            <tr><th>Key</th><th>Value</th></tr>
-            </thead>
-            <tbody>
-            \(options.map { $0.markdown() }.joined(separator: "\n"))
-            </tbody>
-            </table>
-            """
-    }
 
     public static func from(configuration: any RuleConfiguration) -> Self {
         // Prefer custom descriptions.
@@ -62,27 +42,38 @@ public struct RuleConfigurationDescription: HumanReadable, Equatable {
     }
 }
 
-/// Type of an option.
-public enum OptionType: Equatable {
-    case empty
-    case flag(Bool)
-    case string(String)
-    case symbol(String)
-    case integer(Int)
-    case float(Double)
-    case severity(ViolationSeverity)
-    case list([OptionType])
-    case nested(RuleConfigurationDescription)
+extension RuleConfigurationDescription: HumanReadable {
+    public func oneLiner() -> String {
+        options.first == .noOptions ? "" : options.map { $0.oneLiner() }.joined(separator: "; ")
+    }
+
+    public func markdown() -> String {
+        guard options.isNotEmpty, options.first != .noOptions else {
+            return ""
+        }
+        return """
+            <table>
+            <thead>
+            <tr><th>Key</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+            \(options.map { $0.markdown() }.joined(separator: "\n"))
+            </tbody>
+            </table>
+            """
+    }
 }
 
 /// A single option of a `RuleConfigurationDescription`.
-public struct RuleConfigurationOption: HumanReadable, Equatable {
+public struct RuleConfigurationOption: Equatable {
     /// An option serving as a marker for an empty configuration description.
     public static let noOptions = Self(key: "<nothing>", value: .empty)
 
     fileprivate let key: String
     fileprivate let value: OptionType
+}
 
+extension RuleConfigurationOption: HumanReadable {
     public func markdown() -> String {
         """
         <tr>
@@ -99,6 +90,19 @@ public struct RuleConfigurationOption: HumanReadable, Equatable {
     public func oneLiner() -> String {
         "\(key): \(value.oneLiner())"
     }
+}
+
+/// Type of an option.
+public enum OptionType: Equatable {
+    case empty
+    case flag(Bool)
+    case string(String)
+    case symbol(String)
+    case integer(Int)
+    case float(Double)
+    case severity(ViolationSeverity)
+    case list([OptionType])
+    case nested(RuleConfigurationDescription)
 }
 
 extension OptionType: HumanReadable {

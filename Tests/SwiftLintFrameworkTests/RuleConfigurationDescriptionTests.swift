@@ -13,6 +13,8 @@ class RuleConfigurationDescriptionTests: XCTestCase {
         var symbol = Symbol(value: "value")
         @ConfigurationElement("integer")
         var integer = 2
+        @ConfigurationElement("nil")
+        var `nil`: Int? = nil
         @ConfigurationElement("double")
         var double = 2.1
         @ConfigurationElement("severity")

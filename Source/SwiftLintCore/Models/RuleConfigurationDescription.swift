@@ -19,6 +19,23 @@ public protocol Documentable {
 public struct RuleConfigurationDescription: Equatable {
     fileprivate let options: [RuleConfigurationOption]
 
+    fileprivate init(options: [RuleConfigurationOption]) {
+        if options.contains(.noOptions) {
+            if options.count > 1 {
+                queuedFatalError(
+                    """
+                    Cannot create a configuration description with a mixture of `noOption`
+                    and other options or multiple `noOptions`s. If any, descriptions must only
+                    contain one single no-documentation marker.
+                    """
+                )
+            }
+            self.options = []
+        } else {
+            self.options = options.filter { $0.value != .empty }
+        }
+    }
+
     public static func from(configuration: any RuleConfiguration) -> Self {
         // Prefer custom descriptions.
         if let customDescription = configuration.parameterDescription {
@@ -37,20 +54,24 @@ public struct RuleConfigurationDescription: Equatable {
             }.flatMap(\.options)
         guard options.isNotEmpty else {
             queuedFatalError(
-                "Rule configuration '\(configuration)' does not have any parameters. " +
-                "A custom description must be created.")
+                """
+                Rule configuration '\(configuration)' does not have any parameters.
+                A custom description must be provided. If really no documentation is
+                required, define the description as `{ RuleConfigurationOption.noOptions }`.
+                """
+            )
         }
-        return Self(options: options.filter { $0.value != .empty })
+        return Self(options: options)
     }
 }
 
 extension RuleConfigurationDescription: Documentable {
     public func oneLiner() -> String {
-        options.first == .noOptions ? "" : options.map { $0.oneLiner() }.joined(separator: "; ")
+        options.map { $0.oneLiner() }.joined(separator: "; ")
     }
 
     public func markdown() -> String {
-        guard options.isNotEmpty, options.first != .noOptions else {
+        guard options.isNotEmpty else {
             return ""
         }
         return """
@@ -120,7 +141,7 @@ extension OptionType: Documentable {
     public func markdown() -> String {
         switch self {
         case .empty:
-            return ""
+            queuedFatalError("Empty options shall not be serialized.")
         case let .flag(value):
             return String(describing: value)
         case let .string(value):
@@ -143,7 +164,7 @@ extension OptionType: Documentable {
     public func oneLiner() -> String {
         switch self {
         case .empty:
-            return ""
+            queuedFatalError("Empty options shall not be serialized.")
         case let .flag(value):
             return String(describing: value)
         case let .string(value):

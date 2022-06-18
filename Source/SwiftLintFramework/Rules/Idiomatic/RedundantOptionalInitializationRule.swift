@@ -46,6 +46,12 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
             func funcName() {
               let myVar: String? = nil
             }
+            """),
+            Example("""
+            struct S {
+                @Wrapped
+                var flag: Bool? = nil
+            }
             """)
         ],
         triggeringExamples: triggeringExamples,
@@ -128,7 +134,7 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
         guard SwiftDeclarationKind.variableKinds.contains(kind),
             let type = dictionary.typeName,
             typeIsOptional(type),
-            !dictionary.enclosedSwiftAttributes.contains(.lazy),
+            !mightRequireExclicitInitialization(attributes: dictionary.enclosedSwiftAttributes),
             dictionary.isMutableVariable(file: file),
             let range = range(for: dictionary, file: file) else {
             return []
@@ -164,6 +170,10 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
 
     private func typeIsOptional(_ type: String) -> Bool {
         return type.hasSuffix("?") || type.hasPrefix("Optional<")
+    }
+
+    private func mightRequireExclicitInitialization(attributes: [SwiftDeclarationAttributeKind]) -> Bool {
+        attributes.contains(.lazy) || attributes.contains(._custom)
     }
 }
 

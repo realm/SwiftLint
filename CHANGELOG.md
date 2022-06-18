@@ -42,6 +42,11 @@
   false-positives.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Skip `redundant_optional_initialization` rule on properties being custom
+  annotated.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3998](https://github.com/realm/SwiftLint/issues/3998)
+
 ## 0.47.1: Smarter Appliance
 
 #### Breaking

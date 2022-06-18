@@ -8,7 +8,7 @@ public protocol Rule {
 
     /// A description of how this rule has been configured to run. It can be built using the annotated result builder.
     @RuleConfigurationDescriptionBuilder
-    var configurationDescription: RuleConfigurationDescription { get }
+    var configurationDescription: Documentable { get }
 
     /// A default initializer for rules. All rules need to be trivially initializable.
     init()

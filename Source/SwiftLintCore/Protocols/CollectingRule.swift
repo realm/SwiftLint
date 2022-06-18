@@ -162,7 +162,7 @@ public extension ConfigurationProviderRule {
         return false
     }
 
-    var configurationDescription: RuleConfigurationDescription {
+    var configurationDescription: Documentable {
         RuleConfigurationDescription.from(configuration: configuration)
     }
 }

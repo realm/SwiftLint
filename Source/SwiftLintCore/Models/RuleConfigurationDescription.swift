@@ -3,7 +3,7 @@ import Foundation
 // swiftlint:disable file_length
 
 /// A type that can be converted into a human-readable representation.
-public protocol HumanReadable {
+public protocol Documentable {
     /// Convert an object to Markdown.
     ///
     /// - Returns: A Markdown string describing the object.
@@ -44,7 +44,7 @@ public struct RuleConfigurationDescription: Equatable {
     }
 }
 
-extension RuleConfigurationDescription: HumanReadable {
+extension RuleConfigurationDescription: Documentable {
     public func oneLiner() -> String {
         options.first == .noOptions ? "" : options.map { $0.oneLiner() }.joined(separator: "; ")
     }
@@ -75,7 +75,7 @@ public struct RuleConfigurationOption: Equatable {
     fileprivate let value: OptionType
 }
 
-extension RuleConfigurationOption: HumanReadable {
+extension RuleConfigurationOption: Documentable {
     public func markdown() -> String {
         """
         <tr>
@@ -116,7 +116,7 @@ public enum OptionType: Equatable {
     case nested(RuleConfigurationDescription)
 }
 
-extension OptionType: HumanReadable {
+extension OptionType: Documentable {
     public func markdown() -> String {
         switch self {
         case .empty:

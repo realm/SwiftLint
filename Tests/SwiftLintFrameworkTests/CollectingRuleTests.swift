@@ -115,7 +115,7 @@ class CollectingRuleTests: SwiftLintTestCase {
 private protocol MockCollectingRule: CollectingRule {}
 extension MockCollectingRule {
     @RuleConfigurationDescriptionBuilder
-    var configurationDescription: RuleConfigurationDescription { RuleConfigurationOption.noOptions }
+    var configurationDescription: Documentable { RuleConfigurationOption.noOptions }
     static var description: RuleDescription {
         return RuleDescription(identifier: "test_rule", name: "", description: "", kind: .lint)
     }

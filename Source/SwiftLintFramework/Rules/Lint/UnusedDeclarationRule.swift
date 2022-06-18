@@ -295,13 +295,13 @@ private extension SourceKittenDictionary {
         // https://github.com/apple/swift-evolution/blob/main/proposals/0289-result-builders.md#result-building-methods
         let resultBuilderStaticMethods = [
             "buildBlock(_:)",
-            "buildIf(_:)",
-            "buildOptional(_:)",
-            "buildEither(_:)",
-            "buildArray(_:)",
             "buildExpression(_:)",
-            "buildFinalResult(_:)",
-            "buildLimitedAvailability(_:)"
+            "buildOptional(_:)",
+            "buildEither(first:)",
+            "buildEither(second:)",
+            "buildArray(_:)",
+            "buildLimitedAvailability(_:)",
+            "buildFinalResult(_:)"
         ]
 
         return resultBuilderStaticMethods.contains(name)

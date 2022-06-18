@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable file_length
+
 /// A type that can be converted into a human-readable representation.
 public protocol HumanReadable {
     /// Convert an object to Markdown.
@@ -64,7 +66,7 @@ extension RuleConfigurationDescription: HumanReadable {
     }
 }
 
-/// A single option of a `RuleConfigurationDescription`.
+/// A single option of a ``RuleConfigurationDescription``.
 public struct RuleConfigurationOption: Equatable {
     /// An option serving as a marker for an empty configuration description.
     public static let noOptions = Self(key: "<nothing>", value: .empty)
@@ -94,14 +96,23 @@ extension RuleConfigurationOption: HumanReadable {
 
 /// Type of an option.
 public enum OptionType: Equatable {
+    /// An irrelevant option. It will be ignored in documentation serialization.
     case empty
+    /// A boolean flag.
     case flag(Bool)
+    /// A string option.
     case string(String)
+    /// Like a string option but without quotes in the serialized output.
     case symbol(String)
+    /// An integer option.
     case integer(Int)
+    /// A floating point number option.
     case float(Double)
+    /// Special option for a ``ViolationSeverity``.
     case severity(ViolationSeverity)
+    /// A list of options.
     case list([OptionType])
+    /// An option which is another set of configuration options to be nested in the serialized output.
     case nested(RuleConfigurationDescription)
 }
 
@@ -153,6 +164,8 @@ extension OptionType: HumanReadable {
     }
 }
 
+// MARK: Result builder
+
 /// A result builder creating configuration descriptions.
 @resultBuilder
 public struct RuleConfigurationDescriptionBuilder {
@@ -203,8 +216,7 @@ public extension OptionType {
 
     /// Create an option defined by nested configuration description.
     ///
-    /// - Parameters:
-    ///   - description: A configuration description buildable by applying the result builder syntax.
+    /// - Parameter description: A configuration description buildable by applying the result builder syntax.
     ///
     /// - Returns: A configuration option with a value being another configuration description.
     static func nest(@RuleConfigurationDescriptionBuilder _ description: () -> RuleConfigurationDescription) -> Self {
@@ -212,21 +224,72 @@ public extension OptionType {
     }
 }
 
+// MARK: Property wrapper
+
+/// Type of a configuration parameter wrapper.
 protocol AnyConfigurationElement {
     var description: RuleConfigurationDescription { get }
 }
 
+/// Type of an object that can be used as a configuration element.
 public protocol AcceptableByConfigurationElement {
+    /// Make the object an option.
+    ///
+    /// - Returns: Option representing the object.
     func asOption() -> OptionType
-    func asDescription(with: String) -> RuleConfigurationDescription
+
+    /// Make the object a description.
+    ///
+    /// - Parameter key: Name of the option to be put into the description.
+    ///
+    /// - Returns: Configuration description of this object.
+    func asDescription(with key: String) -> RuleConfigurationDescription
 }
 
 public extension AcceptableByConfigurationElement {
     func asDescription(with key: String) -> RuleConfigurationDescription {
+        // By default, this method is just a shortcut applicable for most of the types conforming to the protocol.
         RuleConfigurationDescription(options: [key => asOption()])
     }
 }
 
+/// A single parameter of a rule configuration.
+///
+/// Apply it to a simple (e.g. boolean) property like
+/// ```swift
+/// @ConfigurationElement("name")
+/// var property = true
+/// ```
+/// If the wrapped element is itself a ``RuleConfiguration`` there are three options for its representation
+/// in the documentation:
+///
+/// 1. It can be inlined into the parent configuration. For that, do not provide a name as an argument. E.g.
+///    ```swift
+///    @ConfigurationElement("name")
+///    var property = true
+///    @ConfigurationElement
+///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
+///    ```
+///    will be documented as a linear list:
+///    ```
+///    name: true
+///    warning: 1
+///    error: 2
+///    ```
+/// 2. It can be represented as a separate nested configuration. In this case, it must have a name. E.g.
+///    ```swift
+///    @ConfigurationElement("name")
+///    var property = true
+///    @ConfigurationElement("levels")
+///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
+///    ```
+///    will have a nested configuration section:
+///    ```
+///    name: true
+///    levels: warning: 1
+///            error: 2
+///    ```
+/// 3. A ``SeverityConfiguration`` is always inlined.
 @propertyWrapper
 public struct ConfigurationElement<T: AcceptableByConfigurationElement>: AnyConfigurationElement {
     var value: T
@@ -263,6 +326,8 @@ public extension ConfigurationElement where T: RuleConfiguration {
         self.init(wrappedValue: value, "")
     }
 }
+
+// MARK: AcceptableByConfigurationElement conformances
 
 extension Optional: AcceptableByConfigurationElement where Wrapped: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {

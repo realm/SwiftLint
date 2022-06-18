@@ -11,7 +11,7 @@ struct FileLengthConfiguration: RuleConfiguration, Equatable {
 
     @ConfigurationElement
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 400, error: 1000)
-    @ConfigurationElement(ConfigurationKey.ignoreCommentOnlyLines.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.ignoreCommentOnlyLines.rawValue)
     private(set) var ignoreCommentOnlyLines = false
 
     mutating func apply(configuration: Any) throws {

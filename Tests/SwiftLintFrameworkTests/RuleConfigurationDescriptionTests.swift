@@ -5,27 +5,27 @@ class RuleConfigurationDescriptionTests: XCTestCase {
     private struct TestConfiguration: RuleConfiguration {
         typealias Parent = RuleMock // swiftlint:disable:this nesting
 
-        @ConfigurationElement("flag")
+        @ConfigurationElement(key: "flag")
         var flag = true
-        @ConfigurationElement("string")
+        @ConfigurationElement(key: "string")
         var string = "value"
-        @ConfigurationElement("symbol")
+        @ConfigurationElement(key: "symbol")
         var symbol = Symbol(value: "value")
-        @ConfigurationElement("integer")
+        @ConfigurationElement(key: "integer")
         var integer = 2
-        @ConfigurationElement("nil")
-        var `nil`: Int? = nil
-        @ConfigurationElement("double")
+        @ConfigurationElement(key: "nil")
+        var `nil`: Int?
+        @ConfigurationElement(key: "double")
         var double = 2.1
-        @ConfigurationElement("severity")
+        @ConfigurationElement(key: "severity")
         var severity = ViolationSeverity.warning
-        @ConfigurationElement("list")
+        @ConfigurationElement(key: "list")
         var list: [OptionType?] = [.flag(true), .string("value")]
-        @ConfigurationElement("SEVERITY")
+        @ConfigurationElement(key: "SEVERITY")
         var renamedSeverity = SeverityConfiguration<Parent>(.warning)
         @ConfigurationElement
         var inlinedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 1, error: 2)
-        @ConfigurationElement("levels")
+        @ConfigurationElement(key: "levels")
         var nestedSeverityLevels = SeverityLevelsConfiguration<Parent>(warning: 3, error: nil)
 
         mutating func apply(configuration: Any) throws {}
@@ -172,7 +172,7 @@ class RuleConfigurationDescriptionTests: XCTestCase {
                 "visible" => .flag(true)
             }
 
-            @ConfigurationElement("invisible")
+            @ConfigurationElement(key: "invisible")
             var invisible = true
 
             mutating func apply(configuration: Any) throws {}

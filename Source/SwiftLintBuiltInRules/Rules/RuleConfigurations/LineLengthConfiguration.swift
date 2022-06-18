@@ -14,13 +14,13 @@ struct LineLengthConfiguration: RuleConfiguration, Equatable {
 
     @ConfigurationElement
     private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 120, error: 200)
-    @ConfigurationElement(ConfigurationKey.ignoresURLs.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.ignoresURLs.rawValue)
     private(set) var ignoresURLs = false
-    @ConfigurationElement(ConfigurationKey.ignoresFunctionDeclarations.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.ignoresFunctionDeclarations.rawValue)
     private(set) var ignoresFunctionDeclarations = false
-    @ConfigurationElement(ConfigurationKey.ignoresComments.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.ignoresComments.rawValue)
     private(set) var ignoresComments = false
-    @ConfigurationElement(ConfigurationKey.ignoresInterpolatedStrings.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.ignoresInterpolatedStrings.rawValue)
     private(set) var ignoresInterpolatedStrings = false
 
     var params: [RuleParameter<Int>] {

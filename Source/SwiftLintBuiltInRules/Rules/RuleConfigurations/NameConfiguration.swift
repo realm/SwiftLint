@@ -6,17 +6,17 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, Equatable {
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
 
-    @ConfigurationElement("min_length")
+    @ConfigurationElement(key: "min_length")
     private(set) var minLength = SeverityLevels(warning: 0, error: 0)
-    @ConfigurationElement("max_length")
+    @ConfigurationElement(key: "max_length")
     private(set) var maxLength = SeverityLevels(warning: 0, error: 0)
-    @ConfigurationElement("excluded")
+    @ConfigurationElement(key: "excluded")
     private(set) var excludedRegularExpressions = Set<NSRegularExpression>()
-    @ConfigurationElement("allowed_symbols")
+    @ConfigurationElement(key: "allowed_symbols")
     private(set) var allowedSymbols = Set<String>()
-    @ConfigurationElement("unallowed_symbols_severity")
+    @ConfigurationElement(key: "unallowed_symbols_severity")
     private(set) var unallowedSymbolsSeverity = Severity.error
-    @ConfigurationElement("validates_start_with_lowercase")
+    @ConfigurationElement(key: "validates_start_with_lowercase")
     private(set) var validatesStartWithLowercase = StartWithLowercaseConfiguration.error
 
     var minLengthThreshold: Int {

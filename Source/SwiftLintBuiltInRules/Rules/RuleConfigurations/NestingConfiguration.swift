@@ -4,13 +4,13 @@ struct NestingConfiguration: RuleConfiguration, Equatable {
     typealias Parent = NestingRule
     typealias Severity = SeverityLevelsConfiguration<Parent>
 
-    @ConfigurationElement("type_level")
+    @ConfigurationElement(key: "type_level")
     private(set) var typeLevel = Severity(warning: 1)
-    @ConfigurationElement("function_level")
+    @ConfigurationElement(key: "function_level")
     private(set) var functionLevel = Severity(warning: 2)
-    @ConfigurationElement("check_nesting_in_closures_and_statements")
+    @ConfigurationElement(key: "check_nesting_in_closures_and_statements")
     private(set) var checkNestingInClosuresAndStatements = true
-    @ConfigurationElement("always_allow_one_type_in_functions")
+    @ConfigurationElement(key: "always_allow_one_type_in_functions")
     private(set) var alwaysAllowOneTypeInFunctions = false
 
     mutating func apply(configuration: Any) throws {

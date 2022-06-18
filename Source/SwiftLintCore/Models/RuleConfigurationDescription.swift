@@ -248,7 +248,7 @@ public extension OptionType {
 // MARK: Property wrapper
 
 /// Type of a configuration parameter wrapper.
-protocol AnyConfigurationElement {
+private protocol AnyConfigurationElement {
     var description: RuleConfigurationDescription { get }
 }
 
@@ -278,7 +278,7 @@ public extension AcceptableByConfigurationElement {
 ///
 /// Apply it to a simple (e.g. boolean) property like
 /// ```swift
-/// @ConfigurationElement("name")
+/// @ConfigurationElement(key: "name")
 /// var property = true
 /// ```
 /// If the wrapped element is itself a ``RuleConfiguration`` there are three options for its representation
@@ -286,7 +286,7 @@ public extension AcceptableByConfigurationElement {
 ///
 /// 1. It can be inlined into the parent configuration. For that, do not provide a name as an argument. E.g.
 ///    ```swift
-///    @ConfigurationElement("name")
+///    @ConfigurationElement(key: "name")
 ///    var property = true
 ///    @ConfigurationElement
 ///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
@@ -299,9 +299,9 @@ public extension AcceptableByConfigurationElement {
 ///    ```
 /// 2. It can be represented as a separate nested configuration. In this case, it must have a name. E.g.
 ///    ```swift
-///    @ConfigurationElement("name")
+///    @ConfigurationElement(key: "name")
 ///    var property = true
-///    @ConfigurationElement("levels")
+///    @ConfigurationElement(key: "levels")
 ///    var levels = SeverityLevelsConfiguration(warning: 1, error: 2)
 ///    ```
 ///    will have a nested configuration section:
@@ -312,39 +312,33 @@ public extension AcceptableByConfigurationElement {
 ///    ```
 /// 3. A ``SeverityConfiguration`` is always inlined.
 @propertyWrapper
-public struct ConfigurationElement<T: AcceptableByConfigurationElement>: AnyConfigurationElement {
-    var value: T
+public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatable>: AnyConfigurationElement,
+                                                                                     Equatable {
+    public var wrappedValue: T
     let key: String
-    var description: RuleConfigurationDescription
 
-    public var wrappedValue: T {
-        get { value }
-        set {
-            value = newValue
-            description = value.asDescription(with: key)
-        }
+    fileprivate var description: RuleConfigurationDescription {
+        wrappedValue.asDescription(with: key)
     }
 
-    public init(wrappedValue value: T, _ key: String) {
-        self.value = value
+    public init(wrappedValue value: T, key: String) {
+        self.wrappedValue = value
         self.key = key
-        self.description = value.asDescription(with: key)
     }
-}
 
-extension ConfigurationElement: Equatable where T: Equatable {
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.value == rhs.value && lhs.description == rhs.description
+    /// Constructor for optional values.
+    ///
+    /// It allows to skip explicit initialization with `nil` of the property.
+    public init<Wrapped>(key: String) where T == Wrapped? {
+        self.init(wrappedValue: nil, key: key)
     }
-}
 
-public extension ConfigurationElement where T: RuleConfiguration {
     /// Constructor for a `ConfigurationElement` without a key.
     ///
     /// Only `RuleConfiguration`s are allowed to have an empty key. The configuration will be inlined into its
     /// parent configuration in this specific case.
-    init(wrappedValue value: T) {
-        self.init(wrappedValue: value, "")
+    public init(wrappedValue value: T) where T: RuleConfiguration {
+        self.init(wrappedValue: value, key: "")
     }
 }
 

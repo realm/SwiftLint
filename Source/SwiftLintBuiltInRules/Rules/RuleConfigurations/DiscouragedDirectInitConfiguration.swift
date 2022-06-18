@@ -7,7 +7,7 @@ private func toExplicitInitMethod(typeName: String) -> String {
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = DiscouragedDirectInitRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
     private static let defaultDiscouragedInits = [
@@ -16,7 +16,7 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equat
         "UIDevice"
     ]
 
-    @ConfigurationElement("types")
+    @ConfigurationElement(key: "types")
     private(set) var discouragedInits = Set(
         Self.defaultDiscouragedInits + Self.defaultDiscouragedInits.map(toExplicitInitMethod)
     )

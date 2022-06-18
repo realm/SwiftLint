@@ -29,11 +29,11 @@ struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration, Equatabl
         }
     }
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(ConfigurationKey.firstArgumentLocation.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.firstArgumentLocation.rawValue)
     private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
-    @ConfigurationElement(ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue)
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
 
     mutating func apply(configuration: Any) throws {

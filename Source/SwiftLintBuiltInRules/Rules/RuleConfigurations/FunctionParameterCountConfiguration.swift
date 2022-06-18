@@ -11,7 +11,7 @@ struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
 
     @ConfigurationElement
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 5, error: 8)
-    @ConfigurationElement("ignores_default_parameters")
+    @ConfigurationElement(key: "ignores_default_parameters")
     private(set) var ignoresDefaultParameters = true
 
     mutating func apply(configuration: Any) throws {

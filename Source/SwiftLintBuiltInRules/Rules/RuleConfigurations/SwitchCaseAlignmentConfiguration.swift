@@ -3,9 +3,9 @@ import SwiftLintCore
 struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = SwitchCaseAlignmentRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("indented_cases")
+    @ConfigurationElement(key: "indented_cases")
     private(set) var indentedCases = false
 
     mutating func apply(configuration: Any) throws {

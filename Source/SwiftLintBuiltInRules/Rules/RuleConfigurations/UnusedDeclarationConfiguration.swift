@@ -9,11 +9,11 @@ private enum ConfigurationKey: String {
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = UnusedDeclarationRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
-    @ConfigurationElement(ConfigurationKey.includePublicAndOpen.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.includePublicAndOpen.rawValue)
     private(set) var includePublicAndOpen = false
-    @ConfigurationElement(ConfigurationKey.relatedUSRsToSkip.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.relatedUSRsToSkip.rawValue)
     private(set) var relatedUSRsToSkip = Set(["s:7SwiftUI15PreviewProviderP"])
 
     mutating func apply(configuration: Any) throws {

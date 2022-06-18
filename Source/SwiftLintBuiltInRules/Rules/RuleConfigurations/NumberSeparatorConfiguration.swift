@@ -3,11 +3,11 @@ import SwiftLintCore
 struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = NumberSeparatorRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("minimum_length")
+    @ConfigurationElement(key: "minimum_length")
     private(set) var minimumLength = 0
-    @ConfigurationElement("minimum_fraction_length")
+    @ConfigurationElement(key: "minimum_fraction_length")
     private(set) var minimumFractionLength: Int? = nil
 
     private(set) var excludeRanges = [Range<Double>]()

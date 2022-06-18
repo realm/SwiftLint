@@ -3,9 +3,9 @@ import SwiftLintCore
 struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TrailingCommaRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("mandatory_comma")
+    @ConfigurationElement(key: "mandatory_comma")
     private(set) var mandatoryComma = false
 
     mutating func apply(configuration: Any) throws {

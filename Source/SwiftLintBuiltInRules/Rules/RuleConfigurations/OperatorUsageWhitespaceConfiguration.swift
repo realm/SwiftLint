@@ -3,13 +3,13 @@ import SwiftLintCore
 struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OperatorUsageWhitespaceRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("lines_look_around")
+    @ConfigurationElement(key: "lines_look_around")
     private(set) var linesLookAround = 2
-    @ConfigurationElement("skip_aligned_constants")
+    @ConfigurationElement(key: "skip_aligned_constants")
     private(set) var skipAlignedConstants = true
-    @ConfigurationElement("allowed_no_space_operators")
+    @ConfigurationElement(key: "allowed_no_space_operators")
     private(set) var allowedNoSpaceOperators = ["...", "..<"]
 
     mutating func apply(configuration: Any) throws {

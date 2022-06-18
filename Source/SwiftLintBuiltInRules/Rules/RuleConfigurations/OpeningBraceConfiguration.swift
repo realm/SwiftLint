@@ -8,9 +8,9 @@ private enum ConfigurationKey: String {
 struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = OpeningBraceRule
 
-    @ConfigurationElement(ConfigurationKey.severity.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.severity.rawValue)
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(ConfigurationKey.allowMultilineFunc.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.allowMultilineFunc.rawValue)
     private(set) var allowMultilineFunc = false
 
     mutating func apply(configuration: Any) throws {

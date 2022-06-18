@@ -24,7 +24,7 @@ struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
     private(set) var length = SeverityLevelsConfiguration<Parent>(warning: 10, error: 20)
     private(set) var complexityStatements = Self.defaultComplexityStatements
 
-    @ConfigurationElement(ConfigurationKey.ignoresCaseStatements.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.ignoresCaseStatements.rawValue)
     private(set) var ignoresCaseStatements = false {
         didSet {
             if ignoresCaseStatements {

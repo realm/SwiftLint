@@ -25,9 +25,9 @@ enum TypeContent: String, AcceptableByConfigurationElement {
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = TypeContentsOrderRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("order")
+    @ConfigurationElement(key: "order")
     private(set) var order: [[TypeContent]] = [
         [.case],
         [.typeAlias, .associatedType],

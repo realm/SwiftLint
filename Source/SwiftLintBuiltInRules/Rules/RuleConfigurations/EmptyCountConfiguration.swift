@@ -8,9 +8,9 @@ private enum ConfigurationKey: String {
 struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = EmptyCountRule
 
-    @ConfigurationElement(ConfigurationKey.severity.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.severity.rawValue)
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
-    @ConfigurationElement(ConfigurationKey.onlyAfterDot.rawValue)
+    @ConfigurationElement(key: ConfigurationKey.onlyAfterDot.rawValue)
     private(set) var onlyAfterDot = false
 
     mutating func apply(configuration: Any) throws {

@@ -10,13 +10,13 @@ private enum ConfigurationKey: String {
 struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = InclusiveLanguageRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("additional_terms")
+    @ConfigurationElement(key: "additional_terms")
     private(set) var additionalTerms: Set<String>? = nil
-    @ConfigurationElement("override_terms")
+    @ConfigurationElement(key: "override_terms")
     private(set) var overrideTerms: Set<String>? = nil
-    @ConfigurationElement("override_allowed_terms")
+    @ConfigurationElement(key: "override_allowed_terms")
     private(set) var overrideAllowedTerms: Set<String>? = nil
     private(set) var allTerms: [String]
     private(set) var allAllowedTerms: Set<String>

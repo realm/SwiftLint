@@ -3,9 +3,9 @@ import SwiftLintCore
 struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = CollectionAlignmentRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("align_colons")
+    @ConfigurationElement(key: "align_colons")
     private(set) var alignColons = false
 
     mutating func apply(configuration: Any) throws {

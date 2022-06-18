@@ -10,7 +10,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The message to be presented when producing violations.
     public var message = "Regex matched."
     /// The regular expression to apply to trigger violations for this custom rule.
-    @ConfigurationElement("regex")
+    @ConfigurationElement(key: "regex")
     var regex: NSRegularExpression! = nil
     /// Regular expressions to include when matching the file path.
     public var included: [NSRegularExpression] = []
@@ -19,7 +19,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup: Int = 0

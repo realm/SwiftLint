@@ -10,15 +10,15 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private static let patternRegexOptions: NSRegularExpression.Options =
         [.anchorsMatchLines, .dotMatchesLineSeparators]
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("required_string")
+    @ConfigurationElement(key: "required_string")
     private var requiredString: String? = nil
-    @ConfigurationElement("required_pattern")
+    @ConfigurationElement(key: "required_pattern")
     private var requiredPattern: String? = nil
-    @ConfigurationElement("forbidden_string")
+    @ConfigurationElement(key: "forbidden_string")
     private var forbiddenString: String? = nil
-    @ConfigurationElement("forbidden_pattern")
+    @ConfigurationElement(key: "forbidden_pattern")
     private var forbiddenPattern: String? = nil
 
     private var _forbiddenRegex: NSRegularExpression?

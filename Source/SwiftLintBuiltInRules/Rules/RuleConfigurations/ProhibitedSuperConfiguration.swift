@@ -3,11 +3,11 @@ import SwiftLintCore
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ProhibitedSuperRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("excluded")
+    @ConfigurationElement(key: "excluded")
     private(set) var excluded = [String]()
-    @ConfigurationElement("included")
+    @ConfigurationElement(key: "included")
     private(set) var included = ["*"]
 
     private(set) var resolvedMethodNames = [

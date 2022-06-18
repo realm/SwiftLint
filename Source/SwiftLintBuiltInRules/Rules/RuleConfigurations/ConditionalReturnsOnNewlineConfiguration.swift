@@ -3,9 +3,9 @@ import SwiftLintCore
 struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = ConditionalReturnsOnNewlineRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("if_only")
+    @ConfigurationElement(key: "if_only")
     private(set) var ifOnly = false
 
     var parameterDescription: RuleConfigurationDescription? {

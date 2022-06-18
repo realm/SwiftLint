@@ -3,9 +3,9 @@ import SwiftLintCore
 struct PrivateOverFilePrivateConfiguration: SeverityBasedRuleConfiguration, Equatable {
     typealias Parent = PrivateOverFilePrivateRule
 
-    @ConfigurationElement("severity")
+    @ConfigurationElement(key: "severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement("validate_extensions")
+    @ConfigurationElement(key: "validate_extensions")
     var validateExtensions = false
 
     mutating func apply(configuration: Any) throws {

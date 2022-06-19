@@ -398,16 +398,36 @@
 
 <span class="kd">@resultBuilder</span>
 <span class="kd">struct</span> <span class="kt">ComponentBuilder</span> <span class="p">{</span>
-  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildExpression</span><span class="p">(</span><span class="n">_</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">StaticString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-  <span class="p">}</span>
-
   <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildBlock</span><span class="p">(</span><span class="n">_</span> <span class="nv">components</span><span class="p">:</span> <span class="kt">Component</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
   <span class="p">}</span>
 
-  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildIf</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Component</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">.</span><span class="nf">optional</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildExpression</span><span class="p">(</span><span class="n">_</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">StaticString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildOptional</span><span class="p">(</span><span class="n">_</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">optional</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildEither</span><span class="p">(</span><span class="n">first</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">component</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildEither</span><span class="p">(</span><span class="n">second</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">component</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildArray</span><span class="p">(</span><span class="n">_</span> <span class="nv">components</span><span class="p">:</span> <span class="p">[</span><span class="kt">Component</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">.</span><span class="nf">array</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildLimitedAvailability</span><span class="p">(</span><span class="n">_</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">component</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildFinalResult</span><span class="p">(</span><span class="n">_</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">component</span>
   <span class="p">}</span>
 <span class="p">}</span>
 

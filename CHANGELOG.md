@@ -37,6 +37,10 @@
   no longer reported.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3975](https://github.com/realm/SwiftLint/issues/3975)
+  
+* Update result builder methods in `unused_declaration` rule fixing some
+  false-positives.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ## 0.47.1: Smarter Appliance
 

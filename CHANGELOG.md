@@ -41,6 +41,12 @@
 * Update result builder methods in `unused_declaration` rule fixing some
   false-positives.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Look for call expressions which are not wrapped into an argument when
+  checking for nested (possibly multiline) arguments fixing some
+  false-negatives in (at least) Xcode 13.2.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3975](https://github.com/realm/SwiftLint/issues/3975)
 
 ## 0.47.1: Smarter Appliance
 

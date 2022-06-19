@@ -46,6 +46,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             }
             """),
             Example("""
+            views.append(ViewModel(title: "MacBook", subtitle: "M1", action: { [weak self] in
+                print("action tapped")
+            }))
+            """, excludeFromDocumentation: true),
+            Example("""
             public final class Logger {
                 public static let shared = Logger(outputs: [
                     OSLoggerOutput(),
@@ -100,7 +105,13 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                     1, 2, 3
                 ],
                 b: "two"↓)
-            """)
+            """),
+            Example("""
+            views.append(ViewModel(
+                title: "MacBook", subtitle: "M1", action: { [weak self] in
+                print("action tapped")
+            }↓))
+            """, excludeFromDocumentation: true)
         ]
     )
 
@@ -119,7 +130,7 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
 
         let parameters = dictionary.substructure.filter {
             // Argument expression types that can contain newlines
-            [.argument, .array, .dictionary, .closure].contains($0.expressionKind)
+            [.argument, .array, .dictionary, .closure, .call].contains($0.expressionKind)
         }
         let parameterBodies = parameters.compactMap { $0.content(in: file) }
         let parametersNewlineCount = parameterBodies.map { body in

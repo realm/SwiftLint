@@ -51,6 +51,7 @@ let package = Package(
         .target(
             name: "SwiftLintFramework",
             dependencies: frameworkDependencies,
+            swiftSettings: swiftSyntaxFiveDotSix ? [.define("SWIFT_SYNTAX_FIVE_DOT_SIX")] : [],
             // Pass `-dead_strip_dylibs` to ignore the dynamic version of `lib_InternalSwiftSyntaxParser`
             // that ships with SwiftSyntax because we want the static version from
             // `StaticInternalSwiftSyntaxParser`.

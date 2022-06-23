@@ -12,5 +12,6 @@ final class StringExtensionTests: XCTestCase {
         XCTAssertEqual("../MyFolder123", "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder"))
         XCTAssertEqual("../MyFolder123", "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder/"))
         XCTAssertEqual("Test", "Root////Folder///Test/".path(relativeTo: "Root//Folder////"))
+        XCTAssertEqual("Root/Folder/Test", "Root/Folder/Test/".path(relativeTo: ""))
     }
 }

@@ -103,14 +103,15 @@ extension String {
 
     /// If self is a path, this method can be used to get a path expression relative to a root directory
     public func path(relativeTo rootDirectory: String) -> String {
-        var rootDirComps = rootDirectory.components(separatedBy: "/")
+        var rootDirComps = rootDirectory.bridge().standardizingPath.components(separatedBy: "/")
         let rootDirCompsCount = rootDirComps.count
+        let normalizedSelf = bridge().standardizingPath
 
         while true {
             let sharedRootDir = rootDirComps.joined(separator: "/")
-            if self == sharedRootDir || hasPrefix(sharedRootDir + "/") {
+            if normalizedSelf == sharedRootDir || normalizedSelf.hasPrefix(sharedRootDir + "/") {
                 let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap { $0 }
-                    + String(dropFirst(sharedRootDir.count))
+                    + String(normalizedSelf.dropFirst(sharedRootDir.count))
                 return String(path.dropFirst()) // Remove leading '/'
             } else {
                 rootDirComps = rootDirComps.dropLast()

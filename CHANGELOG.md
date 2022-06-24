@@ -48,6 +48,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3975](https://github.com/realm/SwiftLint/issues/3975)
 
+* Make sure that include paths prefixed with the name of the original path
+  are included in the analysis.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3705](https://github.com/realm/SwiftLint/issues/3705)
+
 ## 0.47.1: Smarter Appliance
 
 #### Breaking

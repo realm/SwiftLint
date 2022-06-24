@@ -69,19 +69,16 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         if let path = file.path {
             let pathRange = path.fullNSRange
             configurations = configurations.filter { config in
-                let included: Bool
-                if let includedRegex = config.included {
-                    included = includedRegex.matches(in: path, options: [], range: pathRange).isNotEmpty
-                } else {
-                    included = true
+                let included = config.included.isEmpty || config.included.contains { regex in
+                    regex.firstMatch(in: path, range: pathRange) != nil
                 }
                 guard included else {
                     return false
                 }
-                guard let excludedRegex = config.excluded else {
-                    return true
+
+                return config.excluded.allSatisfy { regex in
+                    regex.firstMatch(in: path, range: pathRange) == nil
                 }
-                return excludedRegex.matches(in: path, options: [], range: pathRange).isEmpty
             }
         }
 

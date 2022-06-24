@@ -161,14 +161,14 @@ class RuleConfigurationTests: XCTestCase {
 
     func testRegexConfigurationThrows() {
         let config = 17
-        var regexConfig = RegexConfiguration(identifier: "")
+        var regexConfig = CustomMatcherConfiguration(identifier: "")
         checkError(ConfigurationError.unknownConfiguration) {
             try regexConfig.apply(configuration: config)
         }
     }
 
     func testRegexRuleDescription() {
-        var regexConfig = RegexConfiguration(identifier: "regex")
+        var regexConfig = CustomMatcherConfiguration(identifier: "regex")
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "regex",
                                                                 description: "", kind: .style))

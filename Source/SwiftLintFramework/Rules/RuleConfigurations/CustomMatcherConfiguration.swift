@@ -1,23 +1,22 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionProvider {
+public struct CustomMatcherConfiguration: RuleConfiguration, Hashable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
-    public var message = "Regex matched."
-    public var regex: NSRegularExpression!
+    public var message = "Content matched."
+    public var matcher: ContentMatcher!
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
     public var excludedMatchKinds = Set<SyntaxKind>()
     public var severityConfiguration = SeverityConfiguration(.warning)
-    public var captureGroup: Int = 0
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }
 
     public var consoleDescription: String {
-        return "\(severity.rawValue): \(regex.pattern)"
+        return "\(severity.rawValue): \(matcher.consoleDescription)"
     }
 
     internal var cacheDescription: String {
@@ -25,7 +24,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
             identifier,
             name ?? "",
             message,
-            regex.pattern,
+            matcher.cacheDescription,
             included?.pattern ?? "",
             excluded?.pattern ?? "",
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
@@ -36,7 +35,7 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
           let jsonString = String(data: jsonData, encoding: .utf8) {
               return jsonString
         }
-        queuedFatalError("Could not serialize regex configuration for cache")
+        queuedFatalError("Could not serialize custom configuration for cache")
     }
 
     public var description: RuleDescription {
@@ -49,12 +48,11 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     }
 
     public mutating func apply(configuration: Any) throws {
-        guard let configurationDict = configuration as? [String: Any],
-            let regexString = configurationDict["regex"] as? String else {
-                throw ConfigurationError.unknownConfiguration
+        guard let configurationDict = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
-        regex = try .cached(pattern: regexString)
+        matcher = try ContentMatcher(configuration: configurationDict)
 
         if let includedString = configurationDict["included"] as? String {
             included = try .cached(pattern: includedString)
@@ -72,12 +70,6 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
-        }
-        if let captureGroup = configurationDict["capture_group"] as? Int {
-            guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
-                throw ConfigurationError.unknownConfiguration
-            }
-            self.captureGroup = captureGroup
         }
 
         self.excludedMatchKinds = try self.excludedMatchKinds(from: configurationDict)

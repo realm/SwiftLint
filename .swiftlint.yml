@@ -111,3 +111,19 @@ custom_rules:
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
+  ast_error:
+    name: Rule Test AST
+    message: Rule Test AST is parsed message - Avoid joined(separator:)
+    # TODO: how should we represent '_' parameter labels and wildcards
+    ast: >
+      {
+      "expressionKind": "call",
+      "name": "_joined",
+      "subcomponents": [
+        {
+          "expressionKind": "argument",
+          "name": "separator"
+        }
+      ]
+      }
+    severity: error

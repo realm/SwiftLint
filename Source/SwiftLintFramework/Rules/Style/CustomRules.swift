@@ -16,7 +16,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
             .map { $0.cacheDescription }
             .joined(separator: "\n")
     }
-    public var customRuleConfigurations = [RegexConfiguration]()
+    public var customRuleConfigurations = [CustomMatcherConfiguration]()
 
     public init() {}
 
@@ -26,7 +26,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
         }
 
         for (key, value) in configurationDict {
-            var ruleConfiguration = RegexConfiguration(identifier: key)
+            var ruleConfiguration = CustomMatcherConfiguration(identifier: key)
 
             do {
                 try ruleConfiguration.apply(configuration: value)
@@ -86,10 +86,9 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         }
 
         return configurations.flatMap { configuration -> [StyleViolation] in
-            let pattern = configuration.regex.pattern
-            let captureGroup = configuration.captureGroup
+            let matcher = configuration.matcher!
             let excludingKinds = configuration.excludedMatchKinds
-            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup).map({
+            return file.match(matcher: matcher, excludingSyntaxKinds: excludingKinds).map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),

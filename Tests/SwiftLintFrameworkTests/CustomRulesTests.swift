@@ -3,7 +3,7 @@ import SourceKittenFramework
 import XCTest
 
 class CustomRulesTests: XCTestCase {
-    func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
+    func testCustomRegexRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [
                 "name": "MyCustomRule",
@@ -13,10 +13,10 @@ class CustomRulesTests: XCTestCase {
                 "severity": "error"
             ]
         ]
-        var comp = RegexConfiguration(identifier: "my_custom_rule")
+        var comp = CustomMatcherConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = regex("regex")
+        comp.matcher = ContentMatcher.regex(regex: regex("regex"), captureGroup: 0)
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = SyntaxKind.allKinds.subtracting([.comment])
         var compRules = CustomRulesConfiguration()
@@ -30,7 +30,7 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
-    func testCustomRuleConfigurationSetsCorrectlyWithExcludedMatchKinds() {
+    func testCustomRegexRuleConfigurationSetsCorrectlyWithExcludedMatchKinds() {
         let configDict = [
             "my_custom_rule": [
                 "name": "MyCustomRule",
@@ -40,10 +40,10 @@ class CustomRulesTests: XCTestCase {
                 "severity": "error"
             ]
         ]
-        var comp = RegexConfiguration(identifier: "my_custom_rule")
+        var comp = CustomMatcherConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = regex("regex")
+        comp.matcher = ContentMatcher.regex(regex: regex("regex"), captureGroup: 0)
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = Set<SyntaxKind>([.comment])
         var compRules = CustomRulesConfiguration()
@@ -57,7 +57,7 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
-    func testCustomRuleConfigurationThrows() {
+    func testCustomRegexRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
         checkError(ConfigurationError.unknownConfiguration) {
@@ -65,7 +65,7 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
-    func testCustomRuleConfigurationMatchKindAmbiguity() {
+    func testCustomRegexRuleConfigurationMatchKindAmbiguity() {
         let configDict = [
             "name": "MyCustomRule",
             "message": "Message",
@@ -75,13 +75,13 @@ class CustomRulesTests: XCTestCase {
             "severity": "error"
         ]
 
-        var configuration = RegexConfiguration(identifier: "my_custom_rule")
+        var configuration = CustomMatcherConfiguration(identifier: "my_custom_rule")
         checkError(ConfigurationError.ambiguousMatchKindParameters) {
             try configuration.apply(configuration: configDict)
         }
     }
 
-    func testCustomRuleConfigurationIgnoreInvalidRules() throws {
+    func testCustomRegexRuleConfigurationIgnoreInvalidRules() throws {
         let configDict = [
             "my_custom_rule": ["name": "MyCustomRule",
                                "message": "Message",
@@ -99,7 +99,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(identifier, "my_custom_rule")
     }
 
-    func testCustomRules() {
+    func testCustomRegexRules() {
         let (regexConfig, customRules) = getCustomRules()
 
         let file = SwiftLintFile(contents: "// My file with\n// a pattern")
@@ -117,23 +117,39 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testLocalDisableCustomRuleWithMultipleRules() {
-        let (configs, customRules) = getCustomRulesWithTwoRules()
-        let file = SwiftLintFile(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
-        XCTAssertEqual(customRules.validate(file: file),
-                       [StyleViolation(ruleDescription: configs.0.description,
+        let (regexConfig, regexCustomRules) = getCustomRulesWithTwoRules()
+        let regexFile = SwiftLintFile(contents:
+                                        """
+                                        //swiftlint:disable \(regexConfig.1.identifier)
+                                        //file with a pattern
+                                        """)
+        XCTAssertEqual(regexCustomRules.validate(file: regexFile),
+                       [StyleViolation(ruleDescription: regexConfig.0.description,
                                        severity: .warning,
                                        location: Location(file: nil, line: 2, character: 16),
-                                       reason: configs.0.message)])
+                                       reason: regexConfig.0.message)])
+
+        let (astConfigs, astCustomRules) = getCustomRulesWithTwoASTRules()
+        let astFile = SwiftLintFile(contents:
+                                    """
+                                    //swiftlint:disable \(astConfigs.1.identifier)
+                                    let foo = 1
+                                    """)
+        XCTAssertEqual(astCustomRules.validate(file: astFile),
+                       [StyleViolation(ruleDescription: astConfigs.0.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 2, character: 1),
+                                       reason: astConfigs.0.message)])
     }
 
-    func testCustomRulesIncludedDefault() {
+    func testCustomRegexRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
         let violations = customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 1)
     }
 
-    func testCustomRulesIncludedExcludesFile() {
+    func testCustomRegexRulesIncludedExcludesFile() {
         var (regexConfig, customRules) = getCustomRules(["included": "\\.yml$"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
@@ -144,7 +160,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesExcludedExcludesFile() {
+    func testCustomRegexRulesExcludedExcludesFile() {
         var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
@@ -155,7 +171,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testCustomRulesCaptureGroup() {
+    func testCustomRegexRulesCaptureGroup() {
         let (_, customRules) = getCustomRules(["regex": #"\ba\s+(\w+)"#,
                                                "capture_group": 1])
         let violations = customRules.validate(file: getTestTextFile())
@@ -164,12 +180,12 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations[0].location.character, 6)
     }
 
-    private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (RegexConfiguration, CustomRules) {
+    private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (CustomMatcherConfiguration, CustomRules) {
         var config: [String: Any] = ["regex": "pattern",
                                      "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }
 
-        var regexConfig = RegexConfiguration(identifier: "custom")
+        var regexConfig = CustomMatcherConfiguration(identifier: "custom")
         do {
             try regexConfig.apply(configuration: config)
         } catch {
@@ -184,11 +200,52 @@ class CustomRulesTests: XCTestCase {
         return (regexConfig, customRules)
     }
 
-    private func getCustomRulesWithTwoRules() -> ((RegexConfiguration, RegexConfiguration), CustomRules) {
+    private func getCustomRulesWithTwoASTRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration),
+                                                     CustomRules) {
+        // TODO: The Current AST Query requires domain knowlege of expresson vs declaration vs sstatement kinds.
+        let config1 = ["ast":
+                       """
+                       {
+                        "declarationKind": "global",
+                        "name": "foo"
+                       }
+                       """]
+
+        var regexConfig1 = CustomMatcherConfiguration(identifier: "custom1")
+        do {
+            try regexConfig1.apply(configuration: config1)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+
+        let config2 = ["ast":
+                       """
+                       {
+                        "declarationKind": "global",
+                        "name": "bar"
+                       }
+                       """]
+        var regexConfig2 = CustomMatcherConfiguration(identifier: "custom2")
+        do {
+            try regexConfig2.apply(configuration: config2)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig1, regexConfig2]
+
+        var customRules = CustomRules()
+        customRules.configuration = customRuleConfiguration
+        return ((regexConfig1, regexConfig2), customRules)
+    }
+
+    private func getCustomRulesWithTwoRules() -> ((CustomMatcherConfiguration, CustomMatcherConfiguration),
+                                                  CustomRules) {
         let config1 = ["regex": "pattern",
                        "match_kinds": "comment"]
 
-        var regexConfig1 = RegexConfiguration(identifier: "custom1")
+        var regexConfig1 = CustomMatcherConfiguration(identifier: "custom1")
         do {
             try regexConfig1.apply(configuration: config1)
         } catch {
@@ -198,7 +255,7 @@ class CustomRulesTests: XCTestCase {
         let config2 = ["regex": "something",
                        "match_kinds": "comment"]
 
-        var regexConfig2 = RegexConfiguration(identifier: "custom2")
+        var regexConfig2 = CustomMatcherConfiguration(identifier: "custom2")
         do {
             try regexConfig2.apply(configuration: config2)
         } catch {

@@ -316,7 +316,7 @@
             
             <h1 id='unavailable-condition' class='heading'>Unavailable Condition</h1>
 
-<p>Use #unavailable instead of #available with an empty body.</p>
+<p>Use #unavailable/#available instead of #available/#unavailable with an empty body.</p>
 
 <ul>
 <li><strong>Identifier:</strong> unavailable_condition</li>
@@ -338,6 +338,12 @@
   <span class="nf">legacyDoSomething</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="kd">#available(macOS 11.0, *)</span> <span class="p">{</span>
+   <span class="c1">// Do nothing</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="kd">#available(macOS 10.15, *)</span> <span class="p">{</span>
+   <span class="nf">print</span><span class="p">(</span><span class="s">"do some stuff"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="kd">#available(iOS 14.0)</span> <span class="p">{</span>
 
@@ -352,6 +358,12 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓</span><span class="kd">#available(iOS 13, *)</span> <span class="p">{}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="nf">loadMainWindow</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">if</span> <span class="err">↓#</span><span class="nf">unavailable</span><span class="p">(</span><span class="n">iOS</span> <span class="mi">13</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Do nothing</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="p">{</span>
   <span class="nf">loadMainWindow</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>

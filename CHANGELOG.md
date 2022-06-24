@@ -53,6 +53,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3705](https://github.com/realm/SwiftLint/issues/3705)
 
+* Do not trigger `unavailable_condition` rule if other `#(un)available`
+  checks are involved.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3985](https://github.com/realm/SwiftLint/issues/3985)
+
 ## 0.47.1: Smarter Appliance
 
 #### Breaking

@@ -41,13 +41,6 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Aut
             }
             """),
             Example("""
-            func get() -> Int { 1 }
-            func get(from elements: [Int]) -> Int { elements[0] }
-            func f(elements: [Int]) -> Int {
-                elements.isEmpty ? get() : get(from: elements)
-            }
-            """),
-            Example("""
             var value: Int {
                 mode == .fast ? fastComputation() : expensiveComputation()
             }

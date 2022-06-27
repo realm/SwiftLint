@@ -716,8 +716,10 @@ by using <code>${SOME_VARIABLE}</code> in a string.</p>
 following syntax:</p>
 <pre class="highlight yaml"><code><span class="na">custom_rules</span><span class="pi">:</span>
   <span class="na">pirates_beat_ninjas</span><span class="pi">:</span> <span class="c1"># rule identifier</span>
-    <span class="na">included</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.*</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to include during linting. optional.</span>
-    <span class="na">excluded</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.*Test</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to exclude during linting. optional</span>
+    <span class="na">included</span><span class="pi">:</span> 
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">.*</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to include during linting. optional.</span>
+    <span class="na">excluded</span><span class="pi">:</span> 
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">.*Test</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to exclude during linting. optional</span>
     <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">Beat</span><span class="nv"> </span><span class="s">Ninjas"</span> <span class="c1"># rule name. optional.</span>
     <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span> <span class="c1"># matching pattern</span>
     <span class="na">capture_group</span><span class="pi">:</span> <span class="m">0</span> <span class="c1"># number of regex capture group to highlight the rule violation at. optional.</span>

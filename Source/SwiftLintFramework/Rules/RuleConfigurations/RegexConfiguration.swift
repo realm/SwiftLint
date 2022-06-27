@@ -95,6 +95,21 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
         hasher.combine(identifier)
     }
 
+    func shouldValidate(filePath: String) -> Bool {
+        let pathRange = filePath.fullNSRange
+        let isIncluded = included.isEmpty || included.contains { regex in
+            regex.firstMatch(in: filePath, range: pathRange) != nil
+        }
+
+        guard isIncluded else {
+            return false
+        }
+
+        return excluded.allSatisfy { regex in
+            regex.firstMatch(in: filePath, range: pathRange) == nil
+        }
+    }
+
     private func excludedMatchKinds(from configurationDict: [String: Any]) throws -> Set<SyntaxKind> {
         let matchKinds = [String].array(of: configurationDict["match_kinds"])
         let excludedMatchKinds = [String].array(of: configurationDict["excluded_match_kinds"])

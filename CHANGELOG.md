@@ -23,6 +23,8 @@
 
 * Support arrays for the `included` and `excluded` options when defining
   a custom rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Add back `void_function_in_ternary` opt-in rule to warn against using
   a ternary operator to call `Void` functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)

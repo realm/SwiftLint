@@ -25,6 +25,10 @@
   a custom rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add back `void_function_in_ternary` opt-in rule to warn against using
+  a ternary operator to call `Void` functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Ignore array types in `syntactic_sugar` rule if their associated `Index` is

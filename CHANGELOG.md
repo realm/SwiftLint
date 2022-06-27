@@ -21,6 +21,10 @@
   [#3668](https://github.com/realm/SwiftLint/issues/3668)
   [#2728](https://github.com/realm/SwiftLint/issues/2728)
 
+* Support arrays for the `included` and `excluded` options when defining
+  a custom rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * Ignore array types in `syntactic_sugar` rule if their associated `Index` is

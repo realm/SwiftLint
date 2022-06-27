@@ -67,21 +67,8 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         }
 
         if let path = file.path {
-            let pathRange = path.fullNSRange
             configurations = configurations.filter { config in
-                let included: Bool
-                if let includedRegex = config.included {
-                    included = includedRegex.matches(in: path, options: [], range: pathRange).isNotEmpty
-                } else {
-                    included = true
-                }
-                guard included else {
-                    return false
-                }
-                guard let excludedRegex = config.excluded else {
-                    return true
-                }
-                return excludedRegex.matches(in: path, options: [], range: pathRange).isEmpty
+                config.shouldValidate(filePath: path)
             }
         }
 

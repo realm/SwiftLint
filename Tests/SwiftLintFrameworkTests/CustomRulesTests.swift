@@ -155,6 +155,17 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testCustomRulesExcludedArrayExcludesFile() {
+        var (regexConfig, customRules) = getCustomRules(["excluded": ["\\.pdf$", "\\.txt$"]])
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let violations = customRules.validate(file: getTestTextFile())
+        XCTAssertEqual(violations.count, 0)
+    }
+
     func testCustomRulesCaptureGroup() {
         let (_, customRules) = getCustomRules(["regex": #"\ba\s+(\w+)"#,
                                                "capture_group": 1])

@@ -29,6 +29,10 @@
   a ternary operator to call `Void` functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix regex pattern of PreferZeroOverExplicitInitRule to support for UIEdgeInsets
+  [KokiHirokawa](https://github.com/KokiHirokawa)
+  [#3986](https://github.com/realm/SwiftLint/issues/3986)
+
 #### Bug Fixes
 
 * Ignore array types in `syntactic_sugar` rule if their associated `Index` is

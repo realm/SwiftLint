@@ -29,7 +29,7 @@
   a ternary operator to call `Void` functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Fix regex pattern of PreferZeroOverExplicitInitRule to support for UIEdgeInsets
+* Support `UIEdgeInsets` type in `prefer_zero_over_explicit_init` rule.  
   [KokiHirokawa](https://github.com/KokiHirokawa)
   [#3986](https://github.com/realm/SwiftLint/issues/3986)
 

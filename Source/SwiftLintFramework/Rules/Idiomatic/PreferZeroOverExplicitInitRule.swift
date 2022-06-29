@@ -6,10 +6,14 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
     public var configuration = SeverityConfiguration(.warning)
     private var pattern: String {
         let zero = "\\s*:\\s*0(\\.0*)?\\s*"
-        let type = "(\(["CGPoint", "CGSize", "CGVector", "CGRect"].joined(separator: "|")))"
-        let firstArg = "(\(["x", "dx", "width"].joined(separator: "|")))"
-        let secondArg = "(\(["y", "dy", "height"].joined(separator: "|")))"
-        let thirdAndFourthArg = "(\\,\\s*width\(zero)\\,\\s*height\(zero))?"
+        let type = "(\(["CGPoint", "CGSize", "CGVector", "CGRect", "UIEdgeInsets"].joined(separator: "|")))"
+        let firstArg = "(\(["x", "dx", "width", "top"].joined(separator: "|")))"
+        let secondArg = "(\(["y", "dy", "height", "left"].joined(separator: "|")))"
+        let thirdAndFourthArg: String = {
+            let thirdArg = "(\(["width", "bottom"].joined(separator: "|")))"
+            let fourthArg = "(\(["height", "right"].joined(separator: "|")))"
+            return "(\\,\\s*\(thirdArg)\(zero)\\,\\s*\(fourthArg)\(zero))?"
+        }()
         return "\(type)\\(\\s*\(firstArg)\(zero)\\,\\s*\(secondArg)\(zero)\(thirdAndFourthArg)\\)"
     }
 
@@ -22,7 +26,8 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
             Example("CGRect(x: 0, y: 0, width: 0, height: 1)"),
             Example("CGPoint(x: 0, y: -1)"),
             Example("CGSize(width: 2, height: 4)"),
-            Example("CGVector(dx: -5, dy: 0)")
+            Example("CGVector(dx: -5, dy: 0)"),
+            Example("UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)")
         ],
         triggeringExamples: [
             Example("↓CGPoint(x: 0, y: 0)"),
@@ -30,14 +35,16 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
             Example("↓CGPoint(x: 0.000000, y: 0.000)"),
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"),
             Example("↓CGSize(width: 0, height: 0)"),
-            Example("↓CGVector(dx: 0, dy: 0)")
+            Example("↓CGVector(dx: 0, dy: 0)"),
+            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)")
         ],
         corrections: [
             Example("↓CGPoint(x: 0, y: 0)"): Example("CGPoint.zero"),
             Example("(↓CGPoint(x: 0, y: 0))"): Example("(CGPoint.zero)"),
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"): Example("CGRect.zero"),
             Example("↓CGSize(width: 0, height: 0.000)"): Example("CGSize.zero"),
-            Example("↓CGVector(dx: 0, dy: 0)"): Example("CGVector.zero")
+            Example("↓CGVector(dx: 0, dy: 0)"): Example("CGVector.zero"),
+            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero")
         ]
     )
 

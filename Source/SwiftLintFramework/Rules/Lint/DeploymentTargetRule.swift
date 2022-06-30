@@ -111,10 +111,14 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     private var platformToConfiguredMinVersion: [String: Version] {
         return [
             "iOS": configuration.iOSDeploymentTarget,
+            "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
             "macOS": configuration.macOSDeploymentTarget,
+            "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
             "OSX": configuration.macOSDeploymentTarget,
             "tvOS": configuration.tvOSDeploymentTarget,
-            "watchOS": configuration.watchOSDeploymentTarget
+            "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
+            "watchOS": configuration.watchOSDeploymentTarget,
+            "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
         ]
     }
 

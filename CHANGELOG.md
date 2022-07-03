@@ -18,7 +18,8 @@
   you need to use the keys `iOSApplicationExtension_deployment_target`,
   `macOSApplicationExtension_deployment_target`,
   `watchOSApplicationExtension_deployment_target`, and
-  `tvOSApplicationExtension_deployment_target`.  
+  `tvOSApplicationExtension_deployment_target`. Extentions default to
+  their counterparts unless they are explicitly defined.  
   [tahabebek](https://github.com/tahabebek)
   [#4004](https://github.com/realm/SwiftLint/issues/4004)
   

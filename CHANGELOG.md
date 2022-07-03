@@ -12,7 +12,13 @@
 
 #### Enhancements
 
-* Support iOSApplicationExtension, macOSApplicationExtension, watchOSApplicationExtension, and tvOSApplicationExtension identifiers in `deployment_target` rule. To configure the rule for these identidiers, you need to use these keys: `iOSApplicationExtension_deployment_target`, `macOSApplicationExtension_deployment_target`, `watchOSApplicationExtension_deployment_target`, `tvOSApplicationExtension_deployment_target`.
+* Support `iOSApplicationExtension`, `macOSApplicationExtension`,
+  `watchOSApplicationExtension`, and `tvOSApplicationExtension` identifiers
+  in the `deployment_target` rule. To configure the rule for these identifiers,
+  you need to use the keys `iOSApplicationExtension_deployment_target`,
+  `macOSApplicationExtension_deployment_target`,
+  `watchOSApplicationExtension_deployment_target`, and
+  `tvOSApplicationExtension_deployment_target`.  
   [tahabebek](https://github.com/tahabebek)
   [#4004](https://github.com/realm/SwiftLint/issues/4004)
   

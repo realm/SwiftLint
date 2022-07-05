@@ -12,6 +12,17 @@
 
 #### Enhancements
 
+* Support `iOSApplicationExtension`, `macOSApplicationExtension`,
+  `watchOSApplicationExtension`, and `tvOSApplicationExtension` identifiers
+  in the `deployment_target` rule. To configure the rule for these identifiers,
+  you need to use the keys `iOSApplicationExtension_deployment_target`,
+  `macOSApplicationExtension_deployment_target`,
+  `watchOSApplicationExtension_deployment_target`, and
+  `tvOSApplicationExtension_deployment_target`. Extentions default to
+  their counterparts unless they are explicitly defined.  
+  [tahabebek](https://github.com/tahabebek)
+  [#4004](https://github.com/realm/SwiftLint/issues/4004)
+  
 * Rewrite `operator_usage_whitespace` rule using SwiftSyntax, fixing
   false positives and false negatives.  
   Note that this rule doesn't catch violations around return arrows (`->`)

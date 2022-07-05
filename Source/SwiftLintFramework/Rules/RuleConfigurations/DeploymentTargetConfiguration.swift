@@ -66,18 +66,26 @@ public struct DeploymentTargetConfiguration: RuleConfiguration, Equatable {
     }
 
     private(set) var iOSDeploymentTarget = Version(major: 7)
+    private(set) var iOSAppExtensionDeploymentTarget = Version(major: 7)
     private(set) var macOSDeploymentTarget = Version(major: 10, minor: 9)
+    private(set) var macOSAppExtensionDeploymentTarget = Version(major: 10, minor: 9)
     private(set) var watchOSDeploymentTarget = Version(major: 1)
+    private(set) var watchOSAppExtensionDeploymentTarget = Version(major: 1)
     private(set) var tvOSDeploymentTarget = Version(major: 9)
+    private(set) var tvOSAppExtensionDeploymentTarget = Version(major: 9)
 
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", iOS_deployment_target: \(iOSDeploymentTarget.stringValue)" +
+            ", iOSApplicationExtension_deployment_target: \(iOSAppExtensionDeploymentTarget.stringValue)" +
             ", macOS_deployment_target: \(macOSDeploymentTarget.stringValue)" +
+            ", macOSApplicationExtension_deployment_target: \(macOSAppExtensionDeploymentTarget.stringValue)" +
             ", watchOS_deployment_target: \(watchOSDeploymentTarget.stringValue)" +
-            ", tvOS_deployment_target: \(tvOSDeploymentTarget.stringValue)"
+            ", watchOSApplicationExtension_deployment_target: \(watchOSAppExtensionDeploymentTarget.stringValue)" +
+            ", tvOS_deployment_target: \(tvOSDeploymentTarget.stringValue)" +
+            ", tvOSApplicationExtension_deployment_target: \(tvOSAppExtensionDeploymentTarget.stringValue)"
     }
 
     public init() {}
@@ -87,20 +95,80 @@ public struct DeploymentTargetConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
         for (key, value) in configuration {
-            switch (key, value) {
-            case ("severity", let severityString as String):
-                try severityConfiguration.apply(configuration: severityString)
-            case ("iOS_deployment_target", let deploymentTarget):
-                self.iOSDeploymentTarget = try Version(value: deploymentTarget)
-            case ("macOS_deployment_target", let deploymentTarget):
-                self.macOSDeploymentTarget = try Version(value: deploymentTarget)
-            case ("watchOS_deployment_target", let deploymentTarget):
-                self.watchOSDeploymentTarget = try Version(value: deploymentTarget)
-            case ("tvOS_deployment_target", let deploymentTarget):
-                self.tvOSDeploymentTarget = try Version(value: deploymentTarget)
-            default:
-                throw ConfigurationError.unknownConfiguration
-            }
+          try self.appyConfiguration(configuration, for: key, value: value)
         }
+    }
+
+  private mutating func appyConfiguration(_ configuration: [String: Any], for key: String, value: Any) throws {
+      switch (key, value) {
+      case ("severity", let severityString as String):
+          try severityConfiguration.apply(configuration: severityString)
+      case ("iOS_deployment_target", let deploymentTarget),
+        ("iOSApplicationExtension_deployment_target", let deploymentTarget):
+          try applyPlatformConfigurationForIOS(configuration, for: key, deploymentTarget: deploymentTarget)
+      case ("macOS_deployment_target", let deploymentTarget),
+        ("macOSApplicationExtension_deployment_target", let deploymentTarget):
+        try applyPlatformConfigurationForMacOS(configuration, for: key, deploymentTarget: deploymentTarget)
+      case ("watchOS_deployment_target", let deploymentTarget),
+        ("watchOSApplicationExtension_deployment_target", let deploymentTarget):
+        try applyPlatformConfigurationForWatchOS(configuration, for: key, deploymentTarget: deploymentTarget)
+      case ("tvOS_deployment_target", let deploymentTarget),
+        ("tvOSApplicationExtension_deployment_target", let deploymentTarget):
+        try applyPlatformConfigurationForTvOS(configuration, for: key, deploymentTarget: deploymentTarget)
+      default:
+          throw ConfigurationError.unknownConfiguration
+      }
+    }
+
+    private mutating func applyPlatformConfigurationForIOS(_ configuration: [String: Any],
+                                                           for key: String,
+                                                           deploymentTarget: Any) throws {
+      if key == "iOS_deployment_target" {
+        self.iOSDeploymentTarget = try Version(value: deploymentTarget)
+        if configuration["iOSApplicationExtension_deployment_target"] == nil {
+          self.iOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+        }
+      } else if key == "iOSApplicationExtension_deployment_target"{
+        self.iOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+      }
+    }
+
+    private mutating func applyPlatformConfigurationForMacOS(_ configuration: [String: Any],
+                                                             for key: String,
+                                                             deploymentTarget: Any) throws {
+      if key == "macOS_deployment_target" {
+        self.macOSDeploymentTarget = try Version(value: deploymentTarget)
+        if configuration["macOSApplicationExtension_deployment_target"] == nil {
+          self.macOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+        }
+      } else if key == "macOSApplicationExtension_deployment_target"{
+        self.macOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+      }
+    }
+
+    private mutating func applyPlatformConfigurationForWatchOS(_ configuration: [String: Any],
+                                                               for key: String,
+                                                               deploymentTarget: Any) throws {
+      if key == "watchOS_deployment_target" {
+        self.watchOSDeploymentTarget = try Version(value: deploymentTarget)
+        if configuration["watchOSApplicationExtension_deployment_target"] == nil {
+          self.watchOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+        }
+      } else if key == "watchOSApplicationExtension_deployment_target"{
+        self.watchOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+      }
+    }
+
+    private mutating func applyPlatformConfigurationForTvOS(_ configuration: [String: Any],
+                                                            for key: String,
+                                                            deploymentTarget: Any) throws {
+      if key == "tvOS_deployment_target" {
+        self.tvOSDeploymentTarget = try Version(value: deploymentTarget)
+        if configuration["tvOSApplicationExtension_deployment_target"] == nil {
+          self.tvOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+        }
+      } else if key == "tvOSApplicationExtension_deployment_target"{
+        self.tvOSAppExtensionDeploymentTarget = try Version(value: deploymentTarget)
+      }
     }
 }

@@ -529,7 +529,7 @@ just as a single configuration file would get applied.
 
 There are quite a lot of use cases where using multiple configuration files could be helpful:
 
-For instance, one could use a team-wide shared SwiftLint configuration while allowing overrrides
+For instance, one could use a team-wide shared SwiftLint configuration while allowing overrides
 in each project via a child configuration file.
 
 Team-Wide Configuration:

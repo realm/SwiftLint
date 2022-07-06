@@ -86,20 +86,21 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
         return file.rangesAndTokens(matching: pattern, range: range).compactMap { _, tokens -> StyleViolation? in
             guard tokens.count == 2,
                 tokens.kinds == [.keyword, .number],
-                let platform = file.contents(for: tokens[0]),
-                let minVersion = platformToConfiguredMinVersion[platform],
+                let platformString = file.contents(for: tokens[0]),
+                let platform = DeploymentTargetConfiguration.Platform(rawValue: platformString),
+                let minVersion = platformToConfiguredMinVersion[platformString],
                 let versionString = file.contents(for: tokens[1]) else {
                     return nil
             }
 
-            guard let version = try? Version(rawValue: versionString),
+            guard let version = try? Version(platform: platform, rawValue: versionString),
                 version <= minVersion else {
                     return nil
             }
 
             let reason = """
             Availability \(violationType.displayString) is using a version (\(versionString)) that is \
-            satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platform).
+            satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platformString).
             """
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severityConfiguration.severity,

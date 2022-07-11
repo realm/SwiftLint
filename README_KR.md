@@ -68,7 +68,7 @@ fi
 
 ![](assets/runscript.png)
 
-만약 당신이 Homebrew를 통해 SwiftLint를 설치했다면, 다음과 같은 경고를 겪었을 것입니다.
+만약, 애플 실리콘 환경에서 Homebrew를 통해 SwiftLint를 설치했다면, 아마도 다음과 같은 경고를 겪었을 것입니다.
 
 > warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
 

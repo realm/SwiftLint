@@ -123,7 +123,7 @@ final class DeclVisitorTests: XCTestCase {
         }
         let visitor = DeclVisitor(objectType: .struct)
         let violations = visitor.findViolations(node)
-        XCTAssertTrue(violations.count == 4)
+        XCTAssertEqual(violations.count, 4)
     }
 
     func testVisitAllPublicClassesThatInheritFromClass() {
@@ -141,7 +141,7 @@ final class DeclVisitorTests: XCTestCase {
         let attributes = DeclVisitor.Attributes(accessControl: .public, inheritsFrom: ["Parent"])
         let visitor = DeclVisitor(objectType: .class, attributes: attributes)
         let violations = visitor.findViolations(node)
-        XCTAssertTrue(violations.count == 1)
+        XCTAssertEqual(violations.count, 1)
     }
 
     func testVisitChildVisitors() {
@@ -170,7 +170,7 @@ final class DeclVisitorTests: XCTestCase {
         let attributes = DeclVisitor.Attributes(accessControl: .public, inheritsFrom: ["Parent"])
         let visitor = DeclVisitor(objectType: .class, attributes: attributes, childVisitors: [childVisitor])
         let violations = visitor.findViolations(node)
-        XCTAssertTrue(violations.count == 5)
+        XCTAssertEqual(violations.count, 5)
     }
 }
 
@@ -184,7 +184,7 @@ private extension DeclVisitorTests {
                 let node = try SyntaxParser.parse(source: source)
                 let visitor = DeclVisitor(objectType: type, attributes: attributes)
                 let violations = visitor.findViolations(node)
-                XCTAssertTrue(violations.count == expectedViolationCount)
+                XCTAssertEqual(violations.count, expectedViolationCount)
             }
         }())
     }

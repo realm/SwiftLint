@@ -48,25 +48,31 @@ public class DeclVisitor: ViolationSyntaxVisitor {
         self.childVisitors = childVisitors
     }
 
-    override public func visitPost(_ node: EnumDeclSyntax) {
+    override public func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
         guard objectType == .enum else {
-            return
+            return .visitChildren
         }
         process(node)
+        
+        return .visitChildren
     }
 
-    override public func visitPost(_ node: ClassDeclSyntax) {
+    override public func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
         guard objectType == .class else {
-            return
+            return .visitChildren
         }
         process(node)
+        
+        return .visitChildren
     }
 
-    override public func visitPost(_ node: StructDeclSyntax) {
+    override public func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
         guard objectType == .struct else {
-            return
+            return .visitChildren
         }
         process(node)
+        
+        return .visitChildren
     }
 }
 

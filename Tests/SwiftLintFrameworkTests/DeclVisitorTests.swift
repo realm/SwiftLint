@@ -1,6 +1,8 @@
 @testable import SwiftLintFramework
 import SwiftSyntax
+#if canImport(SwiftSyntaxParser)
 import SwiftSyntaxParser
+#endif
 import XCTest
 
 final class DeclVisitorTests: XCTestCase {

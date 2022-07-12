@@ -53,7 +53,7 @@ public class DeclVisitor: ViolationSyntaxVisitor {
             return .visitChildren
         }
         process(node)
-        
+
         return .visitChildren
     }
 
@@ -62,7 +62,7 @@ public class DeclVisitor: ViolationSyntaxVisitor {
             return .visitChildren
         }
         process(node)
-        
+
         return .visitChildren
     }
 
@@ -71,7 +71,7 @@ public class DeclVisitor: ViolationSyntaxVisitor {
             return .visitChildren
         }
         process(node)
-        
+
         return .visitChildren
     }
 }

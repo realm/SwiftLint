@@ -15,16 +15,18 @@ public typealias ViolationSyntaxVisiting = ViolationCollecting & SyntaxVisitor
 /// Defines the shared behavior among all visitors that look for lint violations.
 ///
 /// Subclass this class if you want to create a lint rule that traverses the Swift AST using SwiftSyntax.
-/// To implement your subclass, you can override any of the visitPost(node:)
+/// /// /// To implement your subclass, you can override any of the visit(node:)
 /// functions given by the SyntaxVisitor parent class and check if the node
-/// violates the lint rule. If it does, call addViolations(node:).
-///
+/// violate the lint rule. If it does, call addViolations(node:).
 /// If the object does not have any childVisitors, it adds the violations to the file.
 /// Otherwise, it creates a new instance of each child visitor
 /// and recrusively adds the violations found by the child visitors.
 ///
 /// To use this class, call findViolations(node:) in order to start walking the AST
 /// starting at the given node.
+/// - Warning:
+///  - You **must** always return .visitChildren within your override of visit(nodel).
+///  If you don't, some nodes may be missed and not collected by the linter.
 open class ViolationSyntaxVisitor: ViolationSyntaxVisiting {
     /// A collection of ViolationSyntaxVisiting classes that will be used to visit the
     /// children of the node IF addViolations is called on the node.

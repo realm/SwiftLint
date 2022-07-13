@@ -13,6 +13,7 @@
   AST of the source file. This includes a declarative DSL to match specific 
   syntax nodes. As a first example, a `Class` matcher is introduced to find 
   all class declarations and filter them by attributes.
+  [ryanaveo]
 
 #### Enhancements
 

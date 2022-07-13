@@ -4,14 +4,14 @@ import SwiftSyntax
 public protocol ViolationCollecting: AnyObject {
     /// The AbsolutePositions of the syntax nodes that caused lint violations
     var positionsOfViolations: [AbsolutePosition] { get }
-    
+
     /// A collection of ViolationSyntaxVisiting classes that will be used to visit the
     /// children of the node IF addViolations is called on the node.
     var childVisitors: [ViolationSyntaxVisiting] { get }
-    
+
     /// Walks the AST starting at `tree`
     func findViolations<SyntaxType: SyntaxProtocol>(_ tree: SyntaxType) -> [AbsolutePosition]
-    
+
     /// If there are no childVisitors, adds the position of `node` to `positionsOfViolations`.
     /// If there are childVisitors, do not add the positions of this `node`. Instead, run all `childVisitors`
     /// on the node's children.

@@ -2,10 +2,10 @@
 public enum ObjectType: String, CaseIterable {
     /// Represents Swift Classes
     case `class`
-    
+
     /// Represents Swift Enums
     case `enum`
-    
+
     /// Represents Swift Structs
     case `struct`
 }

@@ -17,7 +17,7 @@ public class DeclVisitor: ViolationSyntaxVisitor {
 
         /// Nodes with names that end with the given suffix will be considered a violation.
         public var suffix: String?
-        
+
         /// Creates a DeclVisitor.Attributes to filter DeclSyntax nodes
         ///
         /// - parameter accessControl Filter by the access control of the node i.e. public
@@ -42,8 +42,8 @@ public class DeclVisitor: ViolationSyntaxVisitor {
 
     /// The attributes that determine whether a node is violating.
     let attributes: Attributes
-    
-    /// Creates a DeclVisitor
+
+    /// Creates a DeclVisitor.
     public init(
         objectType: ObjectType,
         attributes: Attributes = Attributes(),

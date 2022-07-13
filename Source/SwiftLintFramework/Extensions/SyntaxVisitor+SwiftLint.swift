@@ -2,18 +2,18 @@ import Foundation
 import SwiftSyntax
 
 // workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
-protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
+public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
 extension SwiftLintSyntaxVisitor {
-    func walk<T>(tree: SourceFileSyntax, handler: (Self) -> T) -> T {
+    func walk<SyntaxType: SyntaxProtocol, T>(node: SyntaxType, handler: (Self) -> T) -> T {
         #if DEBUG
         // workaround for stack overflow when running in debug
         // https://bugs.swift.org/browse/SR-11170
         let lock = NSLock()
         let work = DispatchWorkItem {
             lock.lock()
-            self.walk(tree)
+            self.walk(node)
             lock.unlock()
         }
         let thread = Thread {
@@ -41,6 +41,6 @@ extension SwiftLintSyntaxVisitor {
             return []
         }
 
-        return walk(tree: syntaxTree, handler: handler)
+        return walk(node: syntaxTree, handler: handler)
     }
 }

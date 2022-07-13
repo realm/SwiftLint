@@ -53,8 +53,7 @@ open class ViolationSyntaxVisitor: ViolationSyntaxVisiting {
     /// restart the search for violations starting at the given node.
     public func findViolations<SyntaxType: SyntaxProtocol>(_ node: SyntaxType) -> [AbsolutePosition] {
         positionsOfViolations = []
-        walk(node)
-        return positionsOfViolations
+        return walk(node: node, handler: \.positionsOfViolations)
     }
 
     /// Add the node's position after any leading trivia to positionsOfViolations.

@@ -18,7 +18,6 @@ public protocol SyntaxVisitorRule: Rule {
 public extension SyntaxVisitorRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let tree = file.syntaxTree else {
-            warnSwiftSyntaxParserFailure(for: Self.description.identifier, in: file.path)
             return []
         }
 

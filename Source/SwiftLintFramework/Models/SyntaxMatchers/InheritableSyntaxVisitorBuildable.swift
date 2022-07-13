@@ -10,6 +10,7 @@ public protocol InheritableSyntaxVisitorBuildable: SyntaxVisitorBuildable {
 }
 
 public extension InheritableSyntaxVisitorBuildable {
+    /// Creates a DeclVisitor which will visit all DeclSyntax nodes in the AST.
     func makeVisitor() -> ViolationSyntaxVisiting {
         DeclVisitor(
             objectType: objectType,

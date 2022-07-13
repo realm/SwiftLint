@@ -1,3 +1,5 @@
+// swiftlint:disable unused_import
+
 @testable import SwiftLintFramework
 import SwiftSyntax
 #if canImport(SwiftSyntaxParser)

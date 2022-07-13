@@ -4,5 +4,6 @@
 /// These builders create a mapping to the appropriate ViolationSyntaxVisiting class.
 /// It will also handle creating the parent-child relationships of visitors.
 public protocol SyntaxVisitorBuildable {
+    /// Creates the corresponding ViolationSyntaxVisitor that visits the nodes specified by the matcher.
     func makeVisitor() -> ViolationSyntaxVisiting
 }

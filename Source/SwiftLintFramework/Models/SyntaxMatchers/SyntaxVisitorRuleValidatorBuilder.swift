@@ -1,3 +1,5 @@
+// swiftlint:disable unused_declaration
+
 /// This result builder enables us to write lint rules that traverse
 /// the source file's AST using SwiftSyntax with a convenient DSL.
 ///

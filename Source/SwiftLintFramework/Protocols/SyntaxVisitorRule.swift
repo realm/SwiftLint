@@ -36,7 +36,10 @@ public extension SyntaxVisitorRule {
 /// A collection of SyntaxVisitors to find lint violations
 public struct SyntaxVisitorRuleValidator {
     var visitors: [ViolationSyntaxVisiting]
-
+    
+    /// Creates a `SyntaxVisitorRuleValidator`
+    ///
+    /// - parameter visitors The collection of visitors to run
     public init(visitors: [ViolationSyntaxVisiting]) {
         self.visitors = visitors
     }

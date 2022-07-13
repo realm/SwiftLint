@@ -18,7 +18,8 @@ public final class AsExprVisitor: ViolationSyntaxVisitor {
     public struct Attributes {
         /// The operator used in the downcast
         var form: Form?
-
+        
+        /// Creates the AsExprVisitor's Attributes.
         public init(form: Form? = nil) {
             self.form = form
         }

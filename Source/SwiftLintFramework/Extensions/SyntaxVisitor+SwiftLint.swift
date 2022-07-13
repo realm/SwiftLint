@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-// workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
+/// Workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
 public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
 
@@ -31,7 +31,7 @@ extension SwiftLintSyntaxVisitor {
 
         return handler(self)
         #else
-        walk(tree)
+        walk(node)
         return handler(self)
         #endif
     }

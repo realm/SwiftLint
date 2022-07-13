@@ -5,7 +5,9 @@
 /// Where you believe this is the case, you can try to
 /// downcast to the subclass type with a type cast operator (as? or as!).
 public struct DownCast: SyntaxVisitorBuildable {
+    /// Filters to apply to downcast expressions.
     public var attributes = AsExprVisitor.Attributes()
+    /// The validator to run on children of as expression syntax nodes.
     public let childValidator: SyntaxVisitorRuleValidator
 
     /// Creates a Class matcher.

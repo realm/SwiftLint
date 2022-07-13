@@ -1,6 +1,3 @@
-import SourceKittenFramework
-import SwiftSyntax
-
 public struct ForceCastRule: SyntaxVisitorRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 

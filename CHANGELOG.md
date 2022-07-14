@@ -81,6 +81,9 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3985](https://github.com/realm/SwiftLint/issues/3985)
 
+* Update `nimble_operator` to support the operators for `beNil()`.  
+  [CraigSiemens](https://github.com/CraigSiemens)
+
 ## 0.47.1: Smarter Appliance
 
 #### Breaking

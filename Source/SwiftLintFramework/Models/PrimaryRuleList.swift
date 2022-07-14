@@ -216,4 +216,4 @@ public let primaryRuleList = RuleList(rules: [
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self
-])
+] + extraRules())

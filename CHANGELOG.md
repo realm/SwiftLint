@@ -19,6 +19,11 @@
 * Support for building SwiftLint with bazel.  
   [JP Simard](https://github.com/jpsim)
 
+* Support for writing custom private native rules when building with
+  bazel.  
+  [JP Simard](https://github.com/jpsim)
+  [#3516](https://github.com/realm/SwiftLint/issues/3516)
+
 #### Bug Fixes
 
 * None.

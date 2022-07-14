@@ -6,7 +6,10 @@ load(
 
 swift_library(
     name = "SwiftLintFramework",
-    srcs = glob(["Source/SwiftLintFramework/**/*.swift"]),
+    srcs = glob(
+        ["Source/SwiftLintFramework/**/*.swift"],
+        exclude = ["Source/SwiftLintFramework/Rules/ExcludedFromBazel/ExtraRules.swift"],
+    ) + ["@swiftlint_extra_rules//:extra_rules"],
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [

@@ -352,6 +352,10 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">expect</span><span class="p">(</span><span class="n">success</span><span class="p">)</span> <span class="o">==</span> <span class="kc">true</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="nf">expect</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="kc">nil</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">expect</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">nil</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="nf">expect</span><span class="p">(</span><span class="n">object</span><span class="o">.</span><span class="nf">asyncFunction</span><span class="p">())</span><span class="o">.</span><span class="nf">toEventually</span><span class="p">(</span><span class="nf">equal</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
 </code></pre>
@@ -395,6 +399,12 @@
 
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="nf">expect</span><span class="p">(</span><span class="n">success</span><span class="p">)</span><span class="o">.</span><span class="nf">to</span><span class="p">(</span><span class="nf">beFalse</span><span class="p">())</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="nf">expect</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="nf">to</span><span class="p">(</span><span class="nf">beNil</span><span class="p">())</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="nf">expect</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="nf">toNot</span><span class="p">(</span><span class="nf">beNil</span><span class="p">())</span>
 
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">expect</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span>

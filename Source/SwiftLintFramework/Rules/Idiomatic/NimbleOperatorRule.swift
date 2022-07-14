@@ -21,6 +21,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             Example("expect(x) === x"),
             Example("expect(10) == 10"),
             Example("expect(success) == true"),
+            Example("expect(value) == nil"),
+            Example("expect(value) != nil"),
             Example("expect(object.asyncFunction()).toEventually(equal(1))\n"),
             Example("expect(actual).to(haveCount(expected))\n"),
             Example("""
@@ -42,6 +44,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             Example("↓expect(x).to(beIdenticalTo(x))\n"),
             Example("↓expect(success).to(beTrue())\n"),
             Example("↓expect(success).to(beFalse())\n"),
+            Example("↓expect(value).to(beNil())\n"),
+            Example("↓expect(value).toNot(beNil())\n"),
             Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n")
         ],
         corrections: [
@@ -60,6 +64,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             Example("↓expect(success).to(beFalse())\n"): Example("expect(success) == false\n"),
             Example("↓expect(success).toNot(beFalse())\n"): Example("expect(success) != false\n"),
             Example("↓expect(success).toNot(beTrue())\n"): Example("expect(success) != true\n"),
+            Example("↓expect(value).to(beNil())\n"): Example("expect(value) == nil\n"),
+            Example("↓expect(value).toNot(beNil())\n"): Example("expect(value) != nil\n"),
             Example("expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n"): Example("expect(10) > 2\n expect(10) > 2\n")
         ]
     )
@@ -88,7 +94,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         "beLessThan": (to: "<", toNot: nil, .withArguments),
         "beLessThanOrEqualTo": (to: "<=", toNot: nil, .withArguments),
         "beTrue": (to: "==", toNot: "!=", .nullary(analogueValue: "true")),
-        "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: "false"))
+        "beFalse": (to: "==", toNot: "!=", .nullary(analogueValue: "false")),
+        "beNil": (to: "==", toNot: "!=", .nullary(analogueValue: "nil"))
     ]
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {

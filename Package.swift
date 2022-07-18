@@ -28,7 +28,7 @@ let package = Package(
     name: "SwiftLint",
     platforms: [.macOS(.v10_12)],
     products: [
-        .executable(name: "swiftlint", targets: ["swiftlint"]),
+        .library(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
@@ -40,14 +40,19 @@ let package = Package(
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),
     targets: [
-        .executableTarget(
+        .binaryTarget(
             name: "swiftlint",
-            dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "SwiftLintFramework",
-                "SwiftyTextTable",
-            ]
+            url: "https://github.com/realm/SwiftLint/releases/download/0.47.1/portable_swiftlint.zip",
+            checksum: "61d335766a39ba8fa499017a560950bd9fa0b0e5bc318559a9c1c7f4da679256"
         ),
+//        .executableTarget(
+//            name: "swiftlint",
+//            dependencies: [
+//                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+//                "SwiftLintFramework",
+//                "SwiftyTextTable",
+//            ]
+//        ),
         .target(
             name: "SwiftLintFramework",
             dependencies: frameworkDependencies,

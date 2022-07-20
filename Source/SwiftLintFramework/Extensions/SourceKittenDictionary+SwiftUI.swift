@@ -2,29 +2,13 @@ import SourceKittenFramework
 
 /// Struct to represent SwiftUI ViewModifiers for the purpose of finding modifiers in a substructure.
 struct SwiftUIModifier {
+    /// Name of the modifier.
+    let name: String
+
+    /// List of arguments to check for in the modifier.
+    let arguments: [Argument]
+
     struct Argument {
-        enum MatchType {
-            case prefix, suffix, substring, exactMatch, none
-
-            /// Compares the parsed argument value to a target value for the given match type
-            /// and returns true is a match is found.
-            func matches(argumentValue: String, targetValue: String) -> Bool {
-                switch self {
-                case .prefix:
-                    return argumentValue.hasPrefix(targetValue)
-                case .suffix:
-                    return argumentValue.hasSuffix(targetValue)
-                case .substring:
-                    return argumentValue.contains(targetValue)
-                case .exactMatch:
-                    return argumentValue == targetValue
-                case .none:
-                    // No matching is required for this type; we only care about the presence of the argument.
-                    return true
-                }
-            }
-        }
-
         /// Name of the argument we want to find. For single unnamed arguments, use the empty string.
         let name: String
 
@@ -35,7 +19,7 @@ struct SwiftUIModifier {
 
         /// List of possible values for the argument. Typically should just be a list with a single element,
         /// but allows for the flexibility of checking for multiple possible values. To only check for the presence
-        /// of the modifier and not enforce any certain values, use the `.none` match type. All values are parsed as
+        /// of the modifier and not enforce any certain values, pass an empty array. All values are parsed as
         /// Strings; for other types (boolean, numeric, optional, etc) types you can check for "true", "5", "nil", etc.
         let values: [String]
 
@@ -50,11 +34,24 @@ struct SwiftUIModifier {
         }
     }
 
-    /// Name of the modifier.
-    let name: String
+    enum MatchType {
+        case prefix, suffix, substring, exactMatch
 
-    /// List of arguments to check for in the modifier.
-    let arguments: [Argument]
+        /// Compares the parsed argument value to a target value for the given match type
+        /// and returns true is a match is found.
+        func matches(argumentValue: String, targetValue: String) -> Bool {
+            switch self {
+            case .prefix:
+                return argumentValue.hasPrefix(targetValue)
+            case .suffix:
+                return argumentValue.hasSuffix(targetValue)
+            case .substring:
+                return argumentValue.contains(targetValue)
+            case .exactMatch:
+                return argumentValue == targetValue
+            }
+        }
+    }
 }
 
 /// Extensions for recursively checking SwiftUI code for certain modifiers.
@@ -87,7 +84,7 @@ extension SourceKittenDictionary {
                 var argValue: String?
 
                 // Check for single unnamed argument.
-                if argument.name == "" {
+                if argument.name.isEmpty {
                     foundArg = true
                     argValue = getSingleUnnamedArgumentValue(in: file)
                 } else if let parsedArgument = enclosedArguments.first(where: { $0.name == argument.name }) {
@@ -107,7 +104,7 @@ extension SourceKittenDictionary {
                 }
 
                 // Argument value can match any of the options given in the argument struct.
-                if argument.matchType == .none || argument.values.contains(where: {
+                if argument.values.isEmpty || argument.values.contains(where: {
                     argument.matchType.matches(argumentValue: argumentValue, targetValue: $0)
                 }) {
                     // Found a match, continue to next argument.

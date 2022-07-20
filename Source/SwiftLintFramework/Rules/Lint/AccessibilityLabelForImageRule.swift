@@ -130,11 +130,11 @@ private extension SourceKittenDictionary {
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityLabel",
-                    arguments: [.init(name: "", values: [], matchType: .none)]
+                    arguments: [.init(name: "", values: [])]
                 ),
                 SwiftUIModifier(
                     name: "accessibility",
-                    arguments: [.init(name: "label", values: [], matchType: .none)]
+                    arguments: [.init(name: "label", values: [])]
                 )
             ],
             in: file

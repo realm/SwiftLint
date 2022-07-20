@@ -86,142 +86,55 @@ public struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRul
 // MARK: SourceKittenDictionary extensions
 
 private extension SourceKittenDictionary {
-    /// Whether or not the dictionary represents a SwiftUI View with a tap gesture
-    /// modifier where the `count` argument is 1.
+    /// Whether or not the dictionary represents a SwiftUI View with a tap gesture where the `count` argument is 1.
+    /// A single tap can be represented by an `onTapGesture` modifier with a count of 1 (default value is 1),
+    /// or by a `gesture`, `simultaneousGesture`, or `highPriorityGesture` modifier with an argument
+    /// starting with a `TapGesture` object with a count of 1 (default value is 1).
     func hasOnSingleTapModifier(in file: SwiftLintFile) -> Bool {
-        guard expressionKind == .call, let name = name else {
-            return false
-        }
-
-        // Check for onTapGesture modifier.
-        if name.hasSuffix("onTapGesture") {
-            // If there's a count argument, the value must be 1 for these purposes.
-            if let countArg = enclosedArguments.first(where: { $0.name == "count" }) {
-                if countArg.getArgumentValue(in: file) == "1" {
-                    return true
-                }
-            } else {
-                // If there is no count argument specified, the default value is 1.
-                return true
-            }
-        }
-
-        // Check for gesture, simultaneousGesture, or highPriorityGesture modifiers with TapGesture
-        if name.hasSuffix("gesture") ||
-            name.hasSuffix("simultaneousGesture") ||
-            name.hasSuffix("highPriorityGesture") {
-            // Single unnamed argument will start with the gesture literal.
-            // We only care about TapGestures that have count 1 (1 is default) if not specified).
-            if let gestureArg = getSingleUnnamedArgumentValue(in: file),
-               gestureArg.hasPrefix("TapGesture()") || gestureArg.hasPrefix("TapGesture(count: 1)") {
-                return true
-            }
-        }
-
-        // Recursively check substructure.
-        // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
-        // Image("myImage").onTapGesture { }.accessibilityAddTraits
-        //     '--> Image("myImage").onTapGesture
-        return substructure.contains(where: { $0.hasOnSingleTapModifier(in: file) })
+        return hasModifier(
+            anyOf: [
+                SwiftUIModifier(
+                    name: "onTapGesture",
+                    arguments: [.init(name: "count", required: false, values: ["1"])]
+                ),
+                SwiftUIModifier(
+                    name: "gesture",
+                    arguments: [
+                        .init(name: "", values: ["TapGesture()", "TapGesture(count: 1)"], matchType: .prefix)
+                    ]
+                ),
+                SwiftUIModifier(
+                    name: "simultaneousGesture",
+                    arguments: [
+                        .init(name: "", values: ["TapGesture()", "TapGesture(count: 1)"], matchType: .prefix)
+                    ]
+                ),
+                SwiftUIModifier(
+                    name: "highPriorityGesture",
+                    arguments: [
+                        .init(name: "", values: ["TapGesture()", "TapGesture(count: 1)"], matchType: .prefix)
+                    ]
+                )
+            ],
+            in: file
+        )
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accessibilityAddTraits()` or
     /// `accessibility(addTraits:)` modifier with the specified trait (specify trait as a String).
     func hasAccessibilityTrait(_ trait: String, in file: SwiftLintFile) -> Bool {
-        guard expressionKind == .call, let name = name else {
-            return false
-        }
-
-        // Check for iOS 14+ version of modifier
-        if name.hasSuffix("accessibilityAddTraits") &&
-            getSingleUnnamedArgumentValue(in: file)?.contains(trait) == true {
-            return true
-        }
-
-        // Check for iOS 13 version of modifier
-        if name.hasSuffix("accessibility"),
-           let addTraitsArg = enclosedArguments.first(where: { $0.name == "addTraits" }),
-           addTraitsArg.getArgumentValue(in: file)?.contains(trait) == true {
-            return true
-        }
-
-        // Recursively check substructure.
-        // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
-        // Image("myImage").resizable().accessibility(addTraits: .isButton).frame
-        //     '--> Image("myImage").resizable().accessibility
-        return substructure.contains(where: { $0.hasAccessibilityTrait(trait, in: file) })
-    }
-
-    // MARK: Below four functions are also defined in AccessibilityLabelForImageRule and could be extracted
-    // to some common file for extensions to help with parsing SwiftUI AST
-
-    /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityHidden(true)`
-    /// or `accessibility(hidden: true)` modifier.
-    func hasAccessibilityHiddenModifier(in file: SwiftLintFile) -> Bool {
-        guard expressionKind == .call, let name = name else {
-            return false
-        }
-
-        // Check for iOS 14+ version of modifier
-        if name.hasSuffix("accessibilityHidden") && getSingleUnnamedArgumentValue(in: file) == "true" {
-            return true
-        }
-
-        // Check for iOS 13 version of modifier
-        if name.hasSuffix("accessibility"),
-            let hiddenArg = enclosedArguments.first(where: { $0.name == "hidden" }),
-            hiddenArg.getArgumentValue(in: file) == "true" {
-            return true
-        }
-
-        // Recursively check substructure.
-        // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
-        // Image("myImage").resizable().accessibility(hidden: true).frame
-        //     '--> Image("myImage").resizable().accessibility
-        return substructure.contains(where: { $0.hasAccessibilityHiddenModifier(in: file) })
-    }
-
-    /// Whether or not the dictionary represents a SwiftUI View with an `accessibilityElement()` or
-    /// `accessibilityElement(children: .ignore)` modifier (`.ignore` is the default parameter value).
-    func hasAccessibilityElementChildrenIgnoreModifier(in file: SwiftLintFile) -> Bool {
-        guard expressionKind == .call, let name = name else {
-            return false
-        }
-
-        // Check for modifier.
-        if name.hasSuffix("accessibilityElement") {
-            if enclosedArguments.isEmpty {
-                return true
-            }
-
-            if let childrenArg = enclosedArguments.first(where: { $0.name == "children" }),
-                childrenArg.getArgumentValue(in: file) == ".ignore" {
-                return true
-            }
-        }
-
-        // Recursively check substructure.
-        // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
-        // VStack { ... }.accessibilityElement().padding
-        //     '--> VStack { ... }.accessibilityElement
-        return substructure.contains(where: { $0.hasAccessibilityElementChildrenIgnoreModifier(in: file) })
-    }
-
-    /// Helper to get the value of an argument.
-    func getArgumentValue(in file: SwiftLintFile) -> String? {
-        guard expressionKind == .argument, let bodyByteRange = bodyByteRange else {
-            return nil
-        }
-
-        return file.stringView.substringWithByteRange(bodyByteRange)
-    }
-
-    /// Helper to get the value of a single unnamed argument to a function call.
-    func getSingleUnnamedArgumentValue(in file: SwiftLintFile) -> String? {
-        guard expressionKind == .call, let bodyByteRange = bodyByteRange else {
-            return nil
-        }
-
-        return file.stringView.substringWithByteRange(bodyByteRange)
+        return hasModifier(
+            anyOf: [
+                SwiftUIModifier(
+                    name: "accessibilityAddTraits",
+                    arguments: [.init(name: "", values: [trait], matchType: .substring)]
+                ),
+                SwiftUIModifier(
+                    name: "accessibility",
+                    arguments: [.init(name: "addTraits", values: [trait], matchType: .substring)]
+                )
+            ],
+            in: file
+        )
     }
 }

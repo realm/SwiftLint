@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.8.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import XCTest
@@ -428,6 +428,12 @@ class LiteralExpressionEndIdentationRuleTests: XCTestCase {
 class LowerACLThanParentRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LowerACLThanParentRule.description)
+    }
+}
+
+class ModifierOrderRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ModifierOrderRule.description)
     }
 }
 

@@ -41,6 +41,13 @@ internal struct TypeACLOrderRuleExamples {
             }
             """),
             Example("""
+            public extension {
+                func makeMoney() { } // Inherits public ACL from extension declaration
+                public func drink() { }
+                internal func charlieWork() { }
+            }
+            """),
+            Example("""
             // Ignore ACL ordering outside of types
             fileprivate let doorLabel = "Pirate"
             public let employees = ["Dee"]

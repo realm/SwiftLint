@@ -50,6 +50,6 @@ public struct CodeClimateReporter: Reporter {
         return [
             "\(fingerprintLocation)",
             "\(violation.ruleIdentifier)"
-        ].joined().md5()
+        ].joined().sha256()
     }
 }

@@ -90,10 +90,8 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTest
         switch check {
         case is AvailabilityConditionSyntax:
             return "Use #unavailable instead of #available with an empty body."
-        #if SWIFT_SYNTAX_FIVE_DOT_SIX
         case is UnavailabilityConditionSyntax:
             return "Use #available instead of #unavailable with an empty body."
-        #endif
         default:
             queuedFatalError("Unknown availability check type.")
         }
@@ -123,12 +121,8 @@ private final class UnavailableConditionRuleVisitor: SyntaxVisitor {
     }
 
     private func asAvailabilityCondition(_ condition: Syntax) -> SyntaxProtocol? {
-        let availability = condition.as(AvailabilityConditionSyntax.self)
-        #if SWIFT_SYNTAX_FIVE_DOT_SIX
-        return availability ?? condition.as(UnavailabilityConditionSyntax.self)
-        #else
-        return availability
-        #endif
+        condition.as(AvailabilityConditionSyntax.self) ??
+            condition.as(UnavailabilityConditionSyntax.self)
     }
 
     private func otherAvailabilityCheckInvolved(ifStmt: IfStmtSyntax) -> Bool {

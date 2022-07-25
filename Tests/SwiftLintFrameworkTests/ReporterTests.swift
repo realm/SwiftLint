@@ -42,7 +42,7 @@ class ReporterTests: XCTestCase {
                            severity: .error,
                            location: location,
                            reason: "Shorthand syntactic sugar should be used" +
-                ", i.e. [Int] instead of Array<Int>."),
+                                   ", i.e. [Int] instead of Array<Int>."),
             StyleViolation(ruleDescription: ColonRule.description,
                            severity: .error,
                            location: Location(file: nil),
@@ -118,9 +118,9 @@ class ReporterTests: XCTestCase {
     func testHTMLReporter() {
         let expectedOutput = stringFromFile("CannedHTMLReporterOutput.html")
         let result = HTMLReporter.generateReport(
-                generateViolations(),
-                swiftlintVersion: "1.2.3",
-                dateString: "13/12/2016"
+            generateViolations(),
+            swiftlintVersion: "1.2.3",
+            dateString: "13/12/2016"
         )
         XCTAssertEqual(result, expectedOutput)
     }

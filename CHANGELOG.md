@@ -6,6 +6,14 @@
   positional paths that can be added last to both commands.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* SwiftLint now requires Swift 5.6 or higher to build, and macOS 12
+  or higher to run.  
+  [JP Simard](https://github.com/jpsim)
+
+* Code Climate reports now use SHA256 strings as the issue fingerprint
+  values.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

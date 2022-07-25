@@ -121,7 +121,7 @@ swiftlint_deps()
 Then you can run SwiftLint in the current directory with this command:
 
 ```console
-bazel run -c opt @com_github_realm_swiftlint//:swiftlint --run_under="cd $PWD && "
+bazel run -c opt @com_github_realm_swiftlint//:swiftlint
 ```
 
 ## Usage

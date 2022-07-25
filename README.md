@@ -101,17 +101,17 @@ load(
 swift_rules_extra_dependencies()
 
 http_archive(
-    name = "com_github_realm_swiftlint",
+    name = "SwiftLint",
     sha256 = "1067cda5f77f31031f4f480fb80430e3f028720daf4b39ba483e2c09710a7dff",
     strip_prefix = "SwiftLint-93a69de005fcfdbda78cf79f1fc65756d938621c",
     url = "https://github.com/realm/SwiftLint/archive/93a69de005fcfdbda78cf79f1fc65756d938621c.tar.gz",
 )
 
-load("@com_github_realm_swiftlint//bazel:repos.bzl", "swiftlint_repos")
+load("@SwiftLint//bazel:repos.bzl", "swiftlint_repos")
 
 swiftlint_repos()
 
-load("@com_github_realm_swiftlint//bazel:deps.bzl", "swiftlint_deps")
+load("@SwiftLint//bazel:deps.bzl", "swiftlint_deps")
 
 swiftlint_deps()
 ```
@@ -121,7 +121,7 @@ swiftlint_deps()
 Then you can run SwiftLint in the current directory with this command:
 
 ```console
-bazel run -c opt @com_github_realm_swiftlint//:swiftlint
+bazel run -c opt @SwiftLint//:swiftlint
 ```
 
 ## Usage

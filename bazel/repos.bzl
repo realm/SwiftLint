@@ -12,7 +12,7 @@ def swiftlint_repos():
     http_archive(
         name = "swiftlint_com_github_scottrhoyt_swifty_text_table",
         sha256 = "b77d403db9f33686caeb2a12986997fb02a0819e029e669c6b9554617c4fd6ae",
-        build_file = "@com_github_realm_swiftlint//bazel:SwiftyTextTable.BUILD",
+        build_file = "@SwiftLint//bazel:SwiftyTextTable.BUILD",
         strip_prefix = "SwiftyTextTable-0.9.0",
         url = "https://github.com/scottrhoyt/SwiftyTextTable/archive/refs/tags/0.9.0.tar.gz",
     )
@@ -27,7 +27,7 @@ def swiftlint_repos():
     http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",
         sha256 = "8460b44f8378c4201d15bd2617b2d8d1dbf5fef28cb8886ced4b72ad201e2361",
-        build_file = "@com_github_realm_swiftlint//bazel:CryptoSwift.BUILD",
+        build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
         strip_prefix = "CryptoSwift-1.5.1",
         url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.5.1.tar.gz",
     )

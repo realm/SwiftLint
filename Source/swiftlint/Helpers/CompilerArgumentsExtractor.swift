@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 struct CompilerArgumentsExtractor {
     static func allCompilerInvocations(compilerLogs: String) -> [[String]] {

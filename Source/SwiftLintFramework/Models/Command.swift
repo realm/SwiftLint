@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 /// A SwiftLint-interpretable command to modify SwiftLint's behavior embedded as comments in source code.
 public struct Command: Equatable {

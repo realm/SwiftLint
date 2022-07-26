@@ -68,7 +68,7 @@ Put this in your `WORKSPACE`:
 
 <details>
 
-<summary>`WORKSPACE`</summary>
+<summary>WORKSPACE</summary>
 
 ```python
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")

@@ -128,13 +128,6 @@ zip_linux_release:
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-zip_linux_release_5_5:
-	$(eval TMP_FOLDER := $(shell mktemp -d))
-	docker run "ghcr.io/realm/swiftlint:5.5-$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(TMP_FOLDER)/swiftlint"
-	chmod +x "$(TMP_FOLDER)/swiftlint"
-	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_swift_5_5.zip"
-
 package: build
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))
 	cp "$(SWIFTLINT_EXECUTABLE)" "$(PACKAGE_ROOT)"
@@ -145,13 +138,13 @@ package: build
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
-release: package portable_zip spm_artifactbundle_macos zip_linux_release zip_linux_release_5_5
+release: package portable_zip spm_artifactbundle_macos zip_linux_release
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .
 
 docker_test:
-	docker run --platform linux/amd64 -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.5 swift test --parallel
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.6-focal swift test --parallel
 
 docker_htop:
 	docker run --platform linux/amd64 -it --rm --pid=container:swiftlint terencewestphal/htop || reset

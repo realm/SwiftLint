@@ -1,4 +1,5 @@
 import ArgumentParser
+import Foundation
 import SwiftLintFramework
 
 struct SwiftLint: ParsableCommand {
@@ -19,6 +20,10 @@ struct SwiftLint: ParsableCommand {
 
     // Temporary convenience to help migrate users to the new command.
     static func mainHandlingDeprecatedCommands(_ arguments: [String]? = nil) {
+        if let directory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
+            FileManager.default.changeCurrentDirectoryPath(directory)
+        }
+
         let argumentsToCheck = arguments ?? Array(CommandLine.arguments.dropFirst())
         guard argumentsToCheck.first == "autocorrect" else {
             main(arguments)

@@ -10,7 +10,8 @@
 
 #### Enhancements
 
-* None.
+* Support for building SwiftLint with bazel.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes
 

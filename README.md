@@ -62,6 +62,68 @@ running it.
 You can also build and install from source by cloning this project and running
 `make install` (Xcode 13.3 or later).
 
+### Using Bazel
+
+Put this in your `WORKSPACE`:
+
+<details>
+
+<summary>`WORKSPACE`</summary>
+
+```python
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "build_bazel_rules_apple",
+    sha256 = "36072d4f3614d309d6a703da0dfe48684ec4c65a89611aeb9590b45af7a3e592",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.0.1/rules_apple.1.0.1.tar.gz",
+)
+
+load(
+    "@build_bazel_rules_apple//apple:repositories.bzl",
+    "apple_rules_dependencies",
+)
+
+apple_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:repositories.bzl",
+    "swift_rules_dependencies",
+)
+
+swift_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:extras.bzl",
+    "swift_rules_extra_dependencies",
+)
+
+swift_rules_extra_dependencies()
+
+http_archive(
+    name = "SwiftLint",
+    sha256 = "1067cda5f77f31031f4f480fb80430e3f028720daf4b39ba483e2c09710a7dff",
+    strip_prefix = "SwiftLint-93a69de005fcfdbda78cf79f1fc65756d938621c",
+    url = "https://github.com/realm/SwiftLint/archive/93a69de005fcfdbda78cf79f1fc65756d938621c.tar.gz",
+)
+
+load("@SwiftLint//bazel:repos.bzl", "swiftlint_repos")
+
+swiftlint_repos()
+
+load("@SwiftLint//bazel:deps.bzl", "swiftlint_deps")
+
+swiftlint_deps()
+```
+
+</details>
+
+Then you can run SwiftLint in the current directory with this command:
+
+```console
+bazel run -c opt @SwiftLint//:swiftlint
+```
+
 ## Usage
 
 ### Presentation

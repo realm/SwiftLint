@@ -22,7 +22,7 @@
   their counterparts unless they are explicitly defined.  
   [tahabebek](https://github.com/tahabebek)
   [#4004](https://github.com/realm/SwiftLint/issues/4004)
-  
+
 * Rewrite `operator_usage_whitespace` rule using SwiftSyntax, fixing
   false positives and false negatives.  
   Note that this rule doesn't catch violations around return arrows (`->`)
@@ -54,17 +54,17 @@
 * Prevent crash for private types named `_` in `type_name` rules.
   [sinoru](https://github.com/sinoru)
   [#3971](https://github.com/realm/SwiftLint/issues/3971)
-  
+
 * Make `for_where` rule implementation independent of order in structure
-  dictionary. This fixes the rule in Xcode 13.3 where some violation were 
+  dictionary. This fixes the rule in Xcode 13.3 where some violation were
   no longer reported.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3975](https://github.com/realm/SwiftLint/issues/3975)
-  
+
 * Update result builder methods in `unused_declaration` rule fixing some
   false-positives.  
   [SimplyDanny](https://github.com/SimplyDanny)
-  
+
 * Look for call expressions which are not wrapped into an argument when
   checking for nested (possibly multiline) arguments fixing some
   false-negatives in (at least) Xcode 13.2.  
@@ -83,6 +83,11 @@
 
 * Update `nimble_operator` to support the operators for `beNil()`.  
   [CraigSiemens](https://github.com/CraigSiemens)
+
+* Avoid false-positive in `let_var_whitespace` rule by allowing custom
+  attributes on lines directly before let/var declarations.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#2980](https://github.com/realm/SwiftLint/issues/2980)
 
 ## 0.47.1: Smarter Appliance
 
@@ -157,11 +162,6 @@
 * Error by default on bad expiring todo date formatting.  
   [Christopher Hale](https://github.com/chrispomeroyhale)
   [#3636](https://github.com/realm/SwiftLint/pull/3626)
-  
-* Avoid false-positive in `let_var_whitespace` rule by allowing custom
-  attributes on lines directly before let/var declarations.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#2980](https://github.com/realm/SwiftLint/issues/2980)
 
 * Lint/analyze all files listed in the command even if the `--path` option is
   used.  

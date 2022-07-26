@@ -367,6 +367,65 @@ running it.</p>
 
 <p>You can also build and install from source by cloning this project and running
 <code>make install</code> (Xcode 13.3 or later).</p>
+<h3 id='using-bazel' class='heading'>Using Bazel</h3>
+
+<p>Put this in your <code>WORKSPACE</code>:</p>
+
+<details>
+
+<summary>`WORKSPACE`</summary>
+
+&ldquo;`python
+load(&rdquo;@bazel_tools//tools/build_defs/repo:http.bzl&quot;, &ldquo;http_archive&rdquo;)
+
+http_archive(
+    name = &ldquo;build_bazel_rules_apple&rdquo;,
+    sha256 = &ldquo;36072d4f3614d309d6a703da0dfe48684ec4c65a89611aeb9590b45af7a3e592&rdquo;,
+    url = &ldquo;https://github.com/bazelbuild/rules_apple/releases/download/1.0.1/rules_apple.1.0.1.tar.gz&rdquo;,
+)
+
+load(
+    &ldquo;@build_bazel_rules_apple//apple:repositories.bzl&rdquo;,
+    &ldquo;apple_rules_dependencies&rdquo;,
+)
+
+apple_rules_dependencies()
+
+load(
+    &ldquo;@build_bazel_rules_swift//swift:repositories.bzl&rdquo;,
+    &ldquo;swift_rules_dependencies&rdquo;,
+)
+
+swift_rules_dependencies()
+
+load(
+    &ldquo;@build_bazel_rules_swift//swift:extras.bzl&rdquo;,
+    &ldquo;swift_rules_extra_dependencies&rdquo;,
+)
+
+swift_rules_extra_dependencies()
+
+http_archive(
+    name = &ldquo;SwiftLint&rdquo;,
+    sha256 = &ldquo;1067cda5f77f31031f4f480fb80430e3f028720daf4b39ba483e2c09710a7dff&rdquo;,
+    strip_prefix = &ldquo;SwiftLint-93a69de005fcfdbda78cf79f1fc65756d938621c&rdquo;,
+    url = &ldquo;https://github.com/realm/SwiftLint/archive/93a69de005fcfdbda78cf79f1fc65756d938621c.tar.gz&rdquo;,
+)
+
+load(&ldquo;@SwiftLint//bazel:repos.bzl&rdquo;, &ldquo;swiftlint_repos&rdquo;)
+
+swiftlint_repos()
+
+load(&ldquo;@SwiftLint//bazel:deps.bzl&rdquo;, &ldquo;swiftlint_deps&rdquo;)
+
+swiftlint_deps()
+&ldquo;`
+
+</details>
+
+<p>Then you can run SwiftLint in the current directory with this command:</p>
+<pre class="highlight console"><code><span class="go">bazel run -c opt @SwiftLint//:swiftlint
+</span></code></pre>
 <h2 id='usage' class='heading'>Usage</h2>
 <h3 id='presentation' class='heading'>Presentation</h3>
 
@@ -380,7 +439,7 @@ we encourage you to watch this presentation or read the transcript:</p>
 in the issue navigator.</p>
 
 <p>To do this select the project in the file navigator, then select the primary app
-target, and go to Build Phases. Click the + and select &ldquo;New Run Script Phase&rdquo;.
+target, and go to Build Phases. Click the + and select &quot;New Run Script Phase&rdquo;.
 Insert the following as the script:</p>
 
 <p><img src="assets/runscript.png" alt=""></p>

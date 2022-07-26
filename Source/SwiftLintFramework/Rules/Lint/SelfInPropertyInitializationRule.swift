@@ -47,7 +47,28 @@ public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRu
                     return collectionView
                 }()
             }
-            """)
+            """),
+            Example("""
+            class Foo {
+                var bar: Bool = false {
+                    didSet {
+                        value = {
+                            if bar {
+                                return self.calculateA()
+                            } else {
+                                return self.calculateB()
+                            }
+                        }()
+                        print(value)
+                    }
+                }
+
+                var value: String?
+
+                func calculateA() -> String { "A" }
+                func calculateB() -> String { "B" }
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -104,6 +125,11 @@ public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRu
             return lastStructure.flatMap { lastStructure -> ByteCount? in
                 guard lastStructure.declarationKind == .varInstance,
                       !lastStructure.enclosedSwiftAttributes.contains(.lazy) else {
+                    return nil
+                }
+
+                if let bodyRange = lastStructure.bodyByteRange,
+                   bodyRange.contains(closureOffset) {
                     return nil
                 }
 

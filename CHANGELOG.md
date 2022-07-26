@@ -22,6 +22,7 @@
 * Support for writing custom private native rules when building with
   bazel.  
   [JP Simard](https://github.com/jpsim)
+  [Keith Smiley](https://github.com/keith)
   [#3516](https://github.com/realm/SwiftLint/issues/3516)
 
 #### Bug Fixes

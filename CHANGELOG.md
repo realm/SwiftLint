@@ -1,4 +1,4 @@
-## Master
+## 0.48.0: Rechargeable Defuzzer
 
 This is the last release to support building with Swift 5.5.x and running on
 macOS < 12.

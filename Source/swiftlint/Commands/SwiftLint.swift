@@ -20,6 +20,7 @@ struct SwiftLint: ParsableCommand {
 
     // Temporary convenience to help migrate users to the new command.
     static func mainHandlingDeprecatedCommands(_ arguments: [String]? = nil) {
+        Thread.sleep(forTimeInterval: 1.0)
         if let directory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
             FileManager.default.changeCurrentDirectoryPath(directory)
         }

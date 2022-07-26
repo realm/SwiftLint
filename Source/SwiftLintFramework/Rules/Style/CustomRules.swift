@@ -1,5 +1,29 @@
 import Foundation
 
+public final class CustomRuleTimer {
+    private let lock = NSLock()
+    private var ruleIDForTimes = [String: [TimeInterval]]()
+    fileprivate var shouldRecord = false
+
+    public static let shared = CustomRuleTimer()
+
+    public func activate() {
+        shouldRecord = true
+    }
+
+    func register(time: TimeInterval, forRuleID ruleID: String) {
+        guard shouldRecord else { return }
+
+        lock.lock()
+        defer { lock.unlock() }
+        ruleIDForTimes[ruleID, default: []].append(time)
+    }
+
+    public func dump() -> [String: TimeInterval] {
+        ruleIDForTimes.mapValues { $0.reduce(0, +) }
+    }
+}
+
 private extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
@@ -73,6 +97,11 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         }
 
         return configurations.flatMap { configuration -> [StyleViolation] in
+            let start = Date()
+            defer {
+                CustomRuleTimer.shared.register(time: -start.timeIntervalSinceNow, forRuleID: configuration.identifier)
+            }
+
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
             let excludingKinds = configuration.excludedMatchKinds

@@ -164,7 +164,7 @@ def generate_reports(branch)
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = "../builds/.build/release/swiftlint lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter xcode"
+      command = "../builds/bazel-bin/swiftlint lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter xcode"
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
         puts "\n#{command}" if @options[:verbose]
         Open3.popen2(command) do |_, stdout, wait_thr|
@@ -208,11 +208,7 @@ def build(branch)
     perform("git worktree add --detach #{dir} #{target}")
   end
 
-  Dir.chdir(dir) do
-    FileUtils.rm_rf %w[Packages .build]
-  end
-
-  build_command = "cd #{dir}; swift build -c release"
+  build_command = "cd #{dir}; bazel build -c opt @SwiftLint//:swiftlint"
 
   perform(build_command)
   return if $?.success?

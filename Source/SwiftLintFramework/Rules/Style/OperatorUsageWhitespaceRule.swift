@@ -27,14 +27,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func violationRanges(file: SwiftLintFile) -> [(ByteRange, String)] {
-        let visitor = OperatorUsageWhitespaceVisitor()
-        return visitor.walk(file: file, handler: \.violationRanges)
+        OperatorUsageWhitespaceVisitor()
+            .walk(file: file, handler: \.violationRanges)
             .filter { byteRange, _ in
-                if configuration.skipAlignedConstants && isAlignedConstant(in: byteRange, file: file) {
-                    return false
-                }
-
-                return true
+                !configuration.skipAlignedConstants || !isAlignedConstant(in: byteRange, file: file)
             }.sorted { lhs, rhs in
                 lhs.0.location < rhs.0.location
             }

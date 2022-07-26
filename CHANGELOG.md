@@ -22,7 +22,7 @@
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using
-closures inside `didSet` and other accessors.  
+  closures inside `didSet` and other accessors.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4041](https://github.com/realm/SwiftLint/issues/4041)
 

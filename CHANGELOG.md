@@ -1,5 +1,8 @@
 ## Master
 
+This is the last release to support building with Swift 5.5.x and running on
+macOS < 12.
+
 #### Breaking
 
 * Deprecate the `--path` options for `lint`/`analyze` commands. Prefer the

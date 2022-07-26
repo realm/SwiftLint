@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 struct CompilerArgumentsExtractor {
     static func allCompilerInvocations(compilerLogs: String) -> [[String]] {
@@ -17,28 +16,6 @@ struct CompilerArgumentsExtractor {
 }
 
 // MARK: - Private
-
-#if !os(Linux)
-private extension Scanner {
-    func scanUpToString(_ string: String) -> String? {
-        var result: NSString?
-        let success = scanUpTo(string, into: &result)
-        if success {
-            return result?.bridge()
-        }
-        return nil
-    }
-
-    func scanString(_ string: String) -> String? {
-        var result: NSString?
-        let success = scanString(string, into: &result)
-        if success {
-            return result?.bridge()
-        }
-        return nil
-    }
-}
-#endif
 
 private func parseCLIArguments(_ string: String) -> [String] {
     let escapedSpacePlaceholder = "\u{0}"

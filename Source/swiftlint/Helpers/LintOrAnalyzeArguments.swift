@@ -47,7 +47,7 @@ struct LintOrAnalyzeArguments: ParsableArguments {
 // `LintOrAnalyzeArguments`.
 
 func pathOptionDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
-    ArgumentHelp(shouldDisplay: false)
+    ArgumentHelp(visibility: .hidden)
 }
 
 func pathsArgumentDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {

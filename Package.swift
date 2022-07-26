@@ -9,36 +9,29 @@ private let addCryptoSwift = true
 private let staticSwiftSyntax = false
 #endif
 
-#if os(Linux) && compiler(<5.6)
-private let swiftSyntaxFiveDotSix = false
-#else
-private let swiftSyntaxFiveDotSix = true
-#endif
-
 let frameworkDependencies: [Target.Dependency] = [
     .product(name: "SourceKittenFramework", package: "SourceKitten"),
     .product(name: "SwiftSyntax", package: "SwiftSyntax"),
+    .product(name: "SwiftSyntaxParser", package: "SwiftSyntax"),
     "Yams",
 ]
 + (addCryptoSwift ? ["CryptoSwift"] : [])
 + (staticSwiftSyntax ? ["lib_InternalSwiftSyntaxParser"] : [])
-+ (swiftSyntaxFiveDotSix ? [.product(name: "SwiftSyntaxParser", package: "SwiftSyntax")] : [])
 
 let package = Package(
     name: "SwiftLint",
-    platforms: [.macOS(.v10_12)],
+    platforms: [.macOS(.v12)],
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.0.3")),
-        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git",
-                 .exact(swiftSyntaxFiveDotSix ? "0.50600.1" : "0.50500.0")),
+        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.1.3")),
+        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .exact("0.50600.1")),
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.32.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
-    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.4.3"))] : []),
+    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.5.1"))] : []),
     targets: [
         .executableTarget(
             name: "swiftlint",
@@ -51,7 +44,6 @@ let package = Package(
         .target(
             name: "SwiftLintFramework",
             dependencies: frameworkDependencies,
-            swiftSettings: swiftSyntaxFiveDotSix ? [.define("SWIFT_SYNTAX_FIVE_DOT_SIX")] : [],
             // Pass `-dead_strip_dylibs` to ignore the dynamic version of `lib_InternalSwiftSyntaxParser`
             // that ships with SwiftSyntax because we want the static version from
             // `StaticInternalSwiftSyntaxParser`.

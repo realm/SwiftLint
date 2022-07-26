@@ -65,7 +65,7 @@ extension Configuration {
         let jsonObject: [Any] = [rootDirectory, cacheRulesDescriptions]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
             let jsonString = String(data: jsonData, encoding: .utf8) {
-            return jsonString.md5()
+            return jsonString.sha256()
         }
         queuedFatalError("Could not serialize configuration for cache")
     }

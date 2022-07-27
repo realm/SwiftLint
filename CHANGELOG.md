@@ -10,6 +10,10 @@
   values.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `comma_inheritance` an opt-in rule.  
+  [Steve Madsen](https://github.com/sjmadsen)
+  [#4027](https://github.com/realm/SwiftLint/issues/4027)
+
 #### Experimental
 
 * None.
@@ -31,10 +35,6 @@
   closures inside `didSet` and other accessors.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4041](https://github.com/realm/SwiftLint/issues/4041)
-
-* Make `comma_inheritance` an opt-in rule.  
-  [Steve Madsen](https://github.com/sjmadsen)
-  [#4027](https://github.com/realm/SwiftLint/issues/4027)
 
 ## 0.48.0: Rechargeable Defuzzer
 

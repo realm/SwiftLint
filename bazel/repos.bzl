@@ -4,9 +4,9 @@ def swiftlint_repos():
     """Fetches SwiftLint repositories"""
     http_archive(
         name = "com_github_jpsim_sourcekitten",
-        sha256 = "2e79dde69433880bcf366b5328bde08a86eb446ccfde1e455702d62c436c07b9",
-        strip_prefix = "SourceKitten-d5b430416ad2df92adfe7649fea949d10357d2d4",
-        url = "https://github.com/jpsim/SourceKitten/archive/d5b430416ad2df92adfe7649fea949d10357d2d4.tar.gz",
+        sha256 = "a9fe53349102748e969704b2bab896b5cdac26ac012d2f21058262f98dbc6888",
+        strip_prefix = "SourceKitten-aa5011140de6b5e4876fc934fe7721163b104bd0",
+        url = "https://github.com/jpsim/SourceKitten/archive/aa5011140de6b5e4876fc934fe7721163b104bd0.tar.gz",
     )
 
     http_archive(

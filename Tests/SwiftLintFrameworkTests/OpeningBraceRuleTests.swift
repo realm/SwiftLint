@@ -6,8 +6,35 @@ class OpeningBraceRuleTests: XCTestCase {
         verifyRule(OpeningBraceRule.description)
     }
 
+    func testWithAllowMultilineClassStructTrue() {
+        // Test with `same_line` set to false
+
+        let nonTriggeringExamples = [
+            Example("class Abc {\n}"),
+            Example("struct Abc {\n}"),
+            Example("class Abc: ProtocolA,\n\tProtocolB\n{"),
+            Example("struct Abc: ProtocolA,\n\tProtocolB\n{")
+        ]
+        let triggeringExamples = [
+            Example("class Abc\n↓{"),
+            Example("struct Abc\n↓{")
+        ]
+
+        let corrections = [
+            Example("class Abc\n↓{"): Example("class Abc {"),
+			Example("struct Abc\n↓{"): Example("struct Abc {")
+        ]
+
+        let description = OpeningBraceRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(corrections: corrections)
+
+        verifyRule(description, ruleConfiguration: ["allow_multiline_class_struct": true])
+    }
+
     // swiftlint:disable function_body_length
-    func testWithAllowMultilineTrue() {
+    func testWithAllowMultilineFuncTrue() {
         // Test with `same_line` set to false
 
         let nonTriggeringExamples = [

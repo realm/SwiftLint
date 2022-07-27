@@ -4,12 +4,30 @@ import SourceKittenFramework
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 private extension SwiftLintFile {
-    func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
+    func violatingOpeningBraceRanges(
+        allowMultilineClassStruct: Bool,
+        allowMultilineFunc: Bool
+    ) -> [(range: NSRange, location: Int)] {
+        let mainExcludingPattern = #"(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*)"#
         let excludingPattern: String
-        if allowMultilineFunc {
-            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
+        if allowMultilineClassStruct || allowMultilineFunc {
+            var excludeKeywords = [String]()
+
+            if allowMultilineClassStruct {
+                excludeKeywords.append("class")
+                excludeKeywords.append("struct")
+            }
+
+            if allowMultilineFunc {
+                excludeKeywords.append("func")
+            }
+
+            let excludeKeywordsPattern = excludeKeywords.joined(separator: "|")
+
+            // swiftlint:disable:next line_length
+            excludingPattern = #"(?:(?:\#(excludeKeywordsPattern))[^\{\n]*\n[^\{\n]*\n[^\{]*|\#(mainExcludingPattern))\{"#
         } else {
-            excludingPattern = #"(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
+            excludingPattern = #"\#(mainExcludingPattern)\{"#
         }
 
         return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
@@ -163,7 +181,10 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
+        return file.violatingOpeningBraceRanges(
+            allowMultilineClassStruct: configuration.allowMultilineClassStruct,
+            allowMultilineFunc: configuration.allowMultilineFunc
+        ).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -171,7 +192,10 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc)
+        let violatingRanges = file.violatingOpeningBraceRanges(
+            allowMultilineClassStruct: configuration.allowMultilineClassStruct,
+            allowMultilineFunc: configuration.allowMultilineFunc
+        )
             .filter {
                 file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty
             }

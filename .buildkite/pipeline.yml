@@ -1,4 +1,6 @@
 steps:
+  - label: "Bazel Tests"
+    command: bazel test --spawn_strategy=standalone //Tests/...
   - label: "Danger"
     commands:
       - bundle install

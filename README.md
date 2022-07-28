@@ -102,9 +102,9 @@ swift_rules_extra_dependencies()
 
 http_archive(
     name = "SwiftLint",
-    sha256 = "1067cda5f77f31031f4f480fb80430e3f028720daf4b39ba483e2c09710a7dff",
-    strip_prefix = "SwiftLint-93a69de005fcfdbda78cf79f1fc65756d938621c",
-    url = "https://github.com/realm/SwiftLint/archive/93a69de005fcfdbda78cf79f1fc65756d938621c.tar.gz",
+    sha256 = "574c43473643203be6691173f771899656a0928c875e2f547aab17bebb5403f5",
+    strip_prefix = "SwiftLint-949ab6289a6e9d52b84c8cc43817703c3bf68f77",
+    url = "https://github.com/realm/SwiftLint/archive/949ab6289a6e9d52b84c8cc43817703c3bf68f77.tar.gz",
 )
 
 load("@SwiftLint//bazel:repos.bzl", "swiftlint_repos")

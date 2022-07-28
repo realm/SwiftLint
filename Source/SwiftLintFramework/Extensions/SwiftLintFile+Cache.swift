@@ -46,7 +46,7 @@ private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
 })
 
 private var commandsCache = Cache({ file -> [Command] in
-    guard let tree = syntaxTreeCache.get(file) else {
+    guard file.contents.contains("swiftlint:"), let tree = syntaxTreeCache.get(file) else {
         return []
     }
     let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)

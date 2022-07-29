@@ -38,13 +38,26 @@ swift_test(
     ],
 )
 
+genrule(
+    name = "ExtraRulesLinuxMain",
+    outs = ["main.swift"],
+    cmd = """
+echo "import XCTest
+
+XCTMain([testCase(ExtraRulesTests.allTests)])" >> $(OUTS)
+""",
+)
+
 swift_library(
     name = "ExtraRulesTests.library",
     testonly = True,
     srcs = [
         "SwiftLintFrameworkTests/ExtraRulesTests.swift",
         "SwiftLintFrameworkTests/TestHelpers.swift",
-    ],
+    ] + select({
+        "@platforms//os:linux": [":ExtraRulesLinuxMain"],
+        "//conditions:default": [],
+    }),
     module_name = "ExtraRulesTests",
     deps = [
         "//:SwiftLintFramework",

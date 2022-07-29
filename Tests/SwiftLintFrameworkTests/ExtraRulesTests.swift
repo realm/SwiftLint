@@ -8,3 +8,9 @@ final class ExtraRulesTests: XCTestCase {
         }
     }
 }
+
+extension ExtraRulesTests {
+    static var allTests: [(String, (ExtraRulesTests) -> () throws -> Void)] {
+        [("testWithDefaultConfiguration", testWithDefaultConfiguration)]
+    }
+}

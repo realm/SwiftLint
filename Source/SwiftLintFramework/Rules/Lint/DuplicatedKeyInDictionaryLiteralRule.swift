@@ -28,6 +28,18 @@ public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProvid
                     foo: "1",
                     bar: "2"
                 ]
+            """),
+            Example("""
+                [
+                    UUID(): "1",
+                    UUID(): "2"
+                ]
+            """),
+            Example("""
+                [
+                    #line: "1",
+                    #line: "2"
+                ]
             """)
         ],
         triggeringExamples: [
@@ -73,7 +85,7 @@ public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProvid
             return []
         }
 
-        let keys = dictionaryKeys(with: file, dictionary: dictionary)
+        let keys = nonGeneratedDictionaryKeys(with: file, dictionary: dictionary)
         guard keys.count >= 2 else {
             return []
         }
@@ -96,14 +108,17 @@ public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProvid
             }
     }
 
-    private func dictionaryKeys(with file: SwiftLintFile,
-                                dictionary: SourceKittenDictionary) -> [DictionaryKey] {
+    private func nonGeneratedDictionaryKeys(with file: SwiftLintFile,
+                                            dictionary: SourceKittenDictionary) -> [DictionaryKey] {
         let keys = dictionary.elements.enumerated().compactMap { index, element -> SourceKittenDictionary? in
             // in a dictionary, the even elements are keys, and the odd elements are values
             if index.isMultiple(of: 2) {
                 return element
             }
             return nil
+        }.filter {
+            guard let key = $0.content(in: file) else { return true }
+            return !isCodeGeneratedKey(keyExpression: key)
         }
 
         let contents = file.stringView
@@ -115,6 +130,19 @@ public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProvid
 
             return DictionaryKey(byteRange: range, content: substring)
         }
+    }
+
+    private func isCodeGeneratedKey(keyExpression: String) -> Bool {
+        if keyExpression == "#line" {
+            return true
+        }
+
+        guard let openingParenthesisIndex = keyExpression.firstIndex(of: "("),
+              let closingParenthesisIndex = keyExpression.lastIndex(of: Character(")")) else {
+                  return false
+              }
+
+        return openingParenthesisIndex < closingParenthesisIndex
     }
 
     private struct DictionaryKey {

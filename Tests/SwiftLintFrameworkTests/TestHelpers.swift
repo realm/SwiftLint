@@ -378,7 +378,7 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }).count,
                 commentDoesntViolate ? 0 : triggers.count,
-                "Violation(s) still triggered when code was nested inside comment",
+                "Violation(s) still triggered when code was nested inside a comment",
                 file: (file), line: line
             )
         }
@@ -388,13 +388,22 @@ extension XCTestCase {
             XCTAssertEqual(
                 triggers.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
                 stringDoesntViolate ? 0 : triggers.count,
+                "Violation(s) still triggered when code was nested inside a string literal",
                 file: (file), line: line
             )
         }
 
-        // "disable" commands doesn't violate
+        // Disabled rule doesn't violate and disable command isn't superfluous
         for command in disableCommands {
-            XCTAssert(triggers.flatMap({ makeViolations($0.with(code: command + $0.code)) }).isEmpty,
+            let violationsPartionedByType = triggers
+                .map { $0.with(code: command + $0.code) }
+                .flatMap { makeViolations($0) }
+                .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }
+            XCTAssert(violationsPartionedByType.first.isEmpty,
+                      "Violation(s) still triggered although rule was disabled",
+                      file: (file), line: line)
+            XCTAssert(violationsPartionedByType.second.isEmpty,
+                      "Disable command was superfluous since no violations(s) triggered",
                       file: (file), line: line)
         }
     }

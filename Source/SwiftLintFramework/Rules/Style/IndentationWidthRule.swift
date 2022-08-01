@@ -32,7 +32,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             Example("firstLine\n    secondLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine"),
-            Example("firstLine\n    secondLine\n        thirdLine\nfourthLine")
+            Example("firstLine\n    secondLine\n        thirdLine\nfourthLine"),
+            Example("firstLine\n\tsecondLine\n//\t\tthirdLine\n\t\tfourthLine")
         ],
         triggeringExamples: [
             Example("    firstLine"),
@@ -46,14 +47,27 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     public init() {}
 
     // MARK: - Methods: Validation
-    public func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let multilineCommentsPrefixes = ["/**", "/*"]
+        let multilineCommentsSuffixes = ["**/", "*/"]
+        let methodDocumentationPrefix = "///"
+        let commentsPrefixes = [methodDocumentationPrefix, "//"] + multilineCommentsPrefixes
+        let indentations = CharacterSet(charactersIn: " \t")
+
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
+        var isInsideHeaderComment = true
+        var isInsideMultilineComment = false
 
         for line in file.lines {
+            let initialContentWithoutIndentation = line.content.trimmingCharacters(in: indentations)
+
             // Skip line if it's a whitespace-only line
-            let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
-            if line.content.count == indentationCharacterCount { continue }
+            var indentationCharacterCount = line.content.countOfLeadingCharacters(in: indentations)
+            let contentIsOnlyIndentation = line.content.count == indentationCharacterCount
+
+            if contentIsOnlyIndentation { continue }
 
             if !configuration.includeComments {
                 // Skip line if it's part of a comment
@@ -62,8 +76,91 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
                     SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) { continue }
             }
 
+            var content = line.content
+            var commentBodyIsOnlyIndentation = false
+            var isCommentedLine = false
+            var skipLine = false
+
+            for commentPrefix in commentsPrefixes {
+                if initialContentWithoutIndentation.contains(commentPrefix) {
+                    isCommentedLine = true
+
+                    if multilineCommentsPrefixes.contains(commentPrefix) {
+                        isInsideMultilineComment = true
+                    }
+
+                    if commentPrefix == methodDocumentationPrefix {
+                        skipLine = true
+                        break
+                    }
+                }
+
+                guard content.hasPrefix(commentPrefix) else {
+                    continue
+                }
+
+                // Remove the comment start part from the beginning of the line
+                // so the real indentation of the line is taken into
+                // consideration.
+                let stripped = String(content.dropFirst(commentPrefix.count))
+
+                let strippedIndentationCharacterCount = stripped.countOfLeadingCharacters(in: indentations)
+                commentBodyIsOnlyIndentation = stripped.count == strippedIndentationCharacterCount
+
+                if commentBodyIsOnlyIndentation { break }
+
+                let prefix = String(stripped.prefix(strippedIndentationCharacterCount))
+                let tabCount = prefix.filter { $0 == "\t" }.count
+                let spaceCount = prefix.filter { $0 == " " }.count
+
+                if spaceCount != 0 && spaceCount % configuration.indentationWidth != 0 {
+                    // The spaces between the comment prefix and the body are
+                    // not an actual indentation, so it's probably not an
+                    // unindented comment.
+                    continue
+                }
+
+                if tabCount != 0 || spaceCount != 0 {
+                    // Found a line with unindented comment, so, use only the
+                    // comment's body as the content.
+                    content = stripped
+                    indentationCharacterCount = strippedIndentationCharacterCount
+                }
+
+                // Found a matching comment prefix, so there's no reason to
+                // check the rest of them.
+                break
+            }
+
+            if skipLine { continue }
+
+            let contentWithoutIndentation = content.trimmingCharacters(in: indentations)
+            let isPartOfDocumentationComment = contentWithoutIndentation.starts(with: "*")
+
+            if isInsideHeaderComment && !isInsideMultilineComment && !isCommentedLine {
+                isInsideHeaderComment = false
+            }
+
+            if commentBodyIsOnlyIndentation { continue }
+
+            if multilineCommentsSuffixes.contains(where: { content.hasSuffix($0) }) {
+                isInsideHeaderComment = false
+                isInsideMultilineComment = false
+
+                if isPartOfDocumentationComment { continue }
+
+                // Skip line if it contains only a multiline comment end part
+                if multilineCommentsSuffixes.contains(contentWithoutIndentation) { continue }
+            }
+
+            if isInsideHeaderComment { continue }
+
+            if isInsideMultilineComment {
+                if isPartOfDocumentationComment { continue }
+            }
+
             // Get space and tab count in prefix
-            let prefix = String(line.content.prefix(indentationCharacterCount))
+            let prefix = String(content.prefix(indentationCharacterCount))
             let tabCount = prefix.filter { $0 == "\t" }.count
             let spaceCount = prefix.filter { $0 == " " }.count
 

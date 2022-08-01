@@ -557,6 +557,10 @@ macOS < 12.
   [PaulTaykalo](https://github.com/PaulTaykalo)
   [#3740](https://github.com/realm/SwiftLint/issues/3740)
 
+* Fix false positives on `indentation_width` for unindented commented lines.
+  [revolter](https://github.com/revolter)
+  [#3513](https://github.com/realm/SwiftLint/pull/3513)
+
 ## 0.44.0: Travel Size Lint Roller
 
 #### Breaking

@@ -1,3 +1,5 @@
+// swiftlint:disable file_length type_body_length
+
 @testable import SwiftLintFramework
 import XCTest
 
@@ -109,7 +111,8 @@ class IndentationWidthRuleTests: XCTestCase {
         )
     }
 
-    /// It's okay to have comments not following the indentation pattern iff the configuration allows this.
+    /// It's okay to have comments not following the indentation pattern if the configuration allows this.
+    // swiftlint:disable:next function_body_length
     func testCommentLines() {
         assert1Violation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
@@ -126,6 +129,64 @@ class IndentationWidthRuleTests: XCTestCase {
             includeComments: true
         )
 
+        assert1Violation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t//\ttest\n\t\t\tfifthLine",
+            includeComments: true
+        )
+        assert1Violation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t/*\ttest */\n\t\t\tfifthLine",
+            includeComments: true
+        )
+        assert1Violation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t/**\ttest */\n\t\t\tfifthLine",
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//\t\ttest\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n///\t\ttest\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\n\t///\ttest\n\t\t\tfifthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\t\ttest */\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/**\t\ttest */\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\t\ttest\n*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\t\ttest\n\t\t*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n\t\t*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*\n\t\ttest\n\t*/\n\t\tfourthLine",
+            includeComments: true
+        )
+        assertNoViolation(
+            in: "firstLine\n// MARK: -\nthirdLine",
+            includeComments: true
+        )
+
         assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
             includeComments: false
@@ -137,6 +198,141 @@ class IndentationWidthRuleTests: XCTestCase {
         assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n/*test\n  bad indent...\n test*/\n\t\tfourthLine",
             includeComments: false
+        )
+
+        assertNoViolation(
+            in:
+                """
+                //
+                //  File.swift
+                //  App
+                //
+                //  Created by Name on date.
+                //  Copyright © year Name. All rights reserved.
+                //
+                import Foundation
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                /*
+                 * A method.
+                 */
+                func aMethod() {}
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                class AClass {
+                    /**
+                     * A method.
+                     */
+                    func aMethod() {}
+                }
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                // Prefix having a length that's not a multiple of 4: - First
+                //                                                    - Second
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+
+                // Prefix having a length that's not a multiple of 4: - First
+                //                                                    - Second
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                // Prefix having a length that's not a multiple of 4: - First
+                //                                                    - Second
+                import AModule
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                import AModule
+
+                /// Prefix having a length that's not a multiple of 4: - First
+                ///                                                    - Second
+                func aMethod()
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                /**
+                 A header comment.
+                 */
+                import AModule
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                /* A header. */
+
+                class AClass {
+                    /**
+                     * A method.
+                     */
+                    func aMethod() {}
+                }
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                /* A
+                 * header */
+
+                class AClass {
+                    /**
+                     * A method.
+                     */
+                    func aMethod() {}
+                }
+                """,
+            includeComments: true
+        )
+
+        assertNoViolation(
+            in:
+                """
+                class AClass {}
+
+                /**
+                 *Another class.
+                 */
+                class AnotherClass {}
+                """,
+            includeComments: true
         )
     }
 

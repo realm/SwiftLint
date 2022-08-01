@@ -1,0 +1,2 @@
+build --macos_minimum_os=12.0
+build --host_macos_minimum_os=12.0

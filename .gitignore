@@ -60,3 +60,4 @@ bundle/
 
 # Bazel
 bazel-*
+SwiftLint.xcodeproj

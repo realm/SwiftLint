@@ -36,3 +36,14 @@ swiftlint_repos()
 load("//bazel:deps.bzl", "swiftlint_deps")
 
 swiftlint_deps()
+
+http_archive(
+    name = "com_github_buildbuddy_io_rules_xcodeproj",
+    sha256 = "a526d0f001325f31ea011d64afec2b4e5df5a9e7cc4a1dde11f5b885ae19e2b0",
+    strip_prefix = "rules_xcodeproj-7cdff3362ea8fffae42097b9276ff8a6ffbee2fb",
+    url = "https://github.com/buildbuddy-io/rules_xcodeproj/archive/7cdff3362ea8fffae42097b9276ff8a6ffbee2fb.tar.gz",
+)
+
+load("@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:repositories.bzl", "xcodeproj_rules_dependencies")
+
+xcodeproj_rules_dependencies()

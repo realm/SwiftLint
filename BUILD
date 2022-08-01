@@ -3,6 +3,7 @@ load(
     "swift_binary",
     "swift_library",
 )
+load("@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
 
 swift_library(
     name = "SwiftLintFramework",
@@ -31,5 +32,17 @@ swift_binary(
         ":SwiftLintFramework",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
+    ],
+)
+
+xcodeproj(
+    name = "xcodeproj",
+    build_mode = "bazel",
+    project_name = "SwiftLint",
+    tags = ["manual"],
+    top_level_targets = [
+        ":swiftlint",
+        ":SwiftLintFramework",
+        "//Tests:ExtraRulesTests",
     ],
 )

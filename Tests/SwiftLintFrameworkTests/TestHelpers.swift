@@ -353,31 +353,32 @@ extension XCTestCase {
                     line: UInt = #line) {
         func verify(triggers: [Example], nonTriggers: [Example]) {
             verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config,
-                           requiresFileOnDisk: ruleDescription.requiresFileOnDisk,
-                           file: file, line: line)
+                           requiresFileOnDisk: ruleDescription.requiresFileOnDisk, file: file, line: line)
         }
         func makeViolations(_ example: Example) -> [StyleViolation] {
             return violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
 
         let ruleDescription = ruleDescription.focused()
-        let triggers = ruleDescription.triggeringExamples
-        let nonTriggers = ruleDescription.nonTriggeringExamples
+        let (triggers, nonTriggers) = (ruleDescription.triggeringExamples, ruleDescription.nonTriggeringExamples)
         verify(triggers: triggers, nonTriggers: nonTriggers)
 
         if testMultiByteOffsets {
-            verify(triggers: triggers.map(addEmoji), nonTriggers: nonTriggers.map(addEmoji))
+            verify(triggers: triggers.filter(\.testMultiByteOffsets).map(addEmoji),
+                   nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addEmoji))
         }
 
         if testShebang {
-            verify(triggers: triggers.map(addShebang), nonTriggers: nonTriggers.map(addShebang))
+            verify(triggers: triggers.filter(\.testMultiByteOffsets).map(addShebang),
+                   nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addShebang))
         }
 
         // Comment doesn't violate
         if !skipCommentTests {
+            let triggersToCheck = triggers.filter(\.testWrappingInComment)
             XCTAssertEqual(
-                triggers.flatMap({ makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }).count,
-                commentDoesntViolate ? 0 : triggers.count,
+                triggersToCheck.flatMap { makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }.count,
+                commentDoesntViolate ? 0 : triggersToCheck.count,
                 "Violation(s) still triggered when code was nested inside a comment",
                 file: (file), line: line
             )
@@ -385,9 +386,10 @@ extension XCTestCase {
 
         // String doesn't violate
         if !skipStringTests {
+            let triggersToCheck = triggers.filter(\.testWrappingInString)
             XCTAssertEqual(
-                triggers.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
-                stringDoesntViolate ? 0 : triggers.count,
+                triggersToCheck.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
+                stringDoesntViolate ? 0 : triggersToCheck.count,
                 "Violation(s) still triggered when code was nested inside a string literal",
                 file: (file), line: line
             )
@@ -396,6 +398,7 @@ extension XCTestCase {
         // Disabled rule doesn't violate and disable command isn't superfluous
         for command in disableCommands {
             let violationsPartionedByType = triggers
+                .filter { $0.testDisableCommand }
                 .map { $0.with(code: command + $0.code) }
                 .flatMap { makeViolations($0) }
                 .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.description.identifier }

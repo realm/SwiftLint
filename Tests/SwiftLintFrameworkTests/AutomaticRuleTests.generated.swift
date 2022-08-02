@@ -239,6 +239,12 @@ class EnumCaseAssociatedValuesLengthRuleTests: XCTestCase {
     }
 }
 
+class ExpiringTodoRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ExpiringTodoRule.description)
+    }
+}
+
 class ExplicitACLRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitACLRule.description)
@@ -284,6 +290,18 @@ class FallthroughRuleTests: XCTestCase {
 class FatalErrorMessageRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FatalErrorMessageRule.description)
+    }
+}
+
+class FileHeaderRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FileHeaderRule.description)
+    }
+}
+
+class FileLengthRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FileLengthRule.description)
     }
 }
 
@@ -347,6 +365,12 @@ class ImplicitGetterRuleTests: XCTestCase {
     }
 }
 
+class IndentationWidthRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IndentationWidthRule.description)
+    }
+}
+
 class InertDeferRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InertDeferRule.description)
@@ -374,6 +398,12 @@ class LargeTupleRuleTests: XCTestCase {
 class LastWhereRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
+    }
+}
+
+class LeadingWhitespaceRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LeadingWhitespaceRule.description)
     }
 }
 
@@ -428,6 +458,12 @@ class LegacyRandomRuleTests: XCTestCase {
 class LetVarWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
+    }
+}
+
+class LineLengthRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LineLengthRule.description)
     }
 }
 
@@ -737,6 +773,12 @@ class RequiredDeinitRuleTests: XCTestCase {
     }
 }
 
+class RequiredEnumCaseRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RequiredEnumCaseRule.description)
+    }
+}
+
 class ReturnArrowWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
@@ -815,6 +857,12 @@ class TestCaseAccessibilityRuleTests: XCTestCase {
     }
 }
 
+class TodoRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TodoRule.description)
+    }
+}
+
 class ToggleBoolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ToggleBoolRule.description)
@@ -824,6 +872,12 @@ class ToggleBoolRuleTests: XCTestCase {
 class TrailingCommaRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingCommaRule.description)
+    }
+}
+
+class TrailingNewlineRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TrailingNewlineRule.description)
     }
 }
 
@@ -914,6 +968,12 @@ class UnusedEnumeratedRuleTests: XCTestCase {
 class UnusedImportRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedImportRule.description)
+    }
+}
+
+class UnusedOptionalBindingRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedOptionalBindingRule.description)
     }
 }
 

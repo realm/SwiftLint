@@ -67,7 +67,7 @@ import SourceKittenFramework
 ///     case accountCreated
 /// }
 /// ````
-public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     private typealias RequiredCase = RequiredEnumCaseRuleConfiguration.RequiredCase
 
     /// Simple representation of parsed information from the SourceKitRepresentable dictionary.
@@ -117,6 +117,10 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
 
     public init() {}
 
+    private static let exampleConfiguration = [
+        "NetworkResponsable": ["success": "warning", "error": "warning", "notConnected": "warning"]
+    ]
+
     public static let description = RuleDescription(
         identifier: "required_enum_case",
         name: "Required Enum Case",
@@ -127,50 +131,50 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error, notConnected
             }
-            """),
+            """, configuration: exampleConfiguration),
             Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error, notConnected(error: Error)
             }
-            """),
+            """, configuration: exampleConfiguration),
             Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
                 case notConnected
             }
-            """),
+            """, configuration: exampleConfiguration),
             Example("""
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
                 case notConnected(error: Error)
             }
-            """)
+            """, configuration: exampleConfiguration)
         ],
         triggeringExamples: [
             Example("""
-            enum MyNetworkResponse: String, NetworkResponsable {
+            ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error
             }
-            """),
+            """, configuration: exampleConfiguration),
             Example("""
-            enum MyNetworkResponse: String, NetworkResponsable {
+            ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error
             }
-            """),
+            """, configuration: exampleConfiguration),
             Example("""
-            enum MyNetworkResponse: String, NetworkResponsable {
+            ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
             }
-            """),
+            """, configuration: exampleConfiguration),
             Example("""
-            enum MyNetworkResponse: String, NetworkResponsable {
+            ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
             }
-            """)
+            """, configuration: exampleConfiguration)
         ]
     )
 

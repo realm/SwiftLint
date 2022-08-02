@@ -6,7 +6,7 @@ private let fixturesDirectory = #file.bridge()
     .deletingLastPathComponent.bridge()
     .appendingPathComponent("Resources/FileHeaderRuleFixtures")
 
-class FileHeaderRuleTests: XCTestCase {
+class FileHeaderRuleConfigurationTests: XCTestCase {
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule = try FileHeaderRule(configuration: configuration)

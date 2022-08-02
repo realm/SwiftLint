@@ -1,7 +1,8 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class UnusedOptionalBindingRuleTests: XCTestCase {
+// swiftlint:disable:next type_name
+class UnusedOptionalBindingRuleConfigurationTests: XCTestCase {
     func testDefaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [

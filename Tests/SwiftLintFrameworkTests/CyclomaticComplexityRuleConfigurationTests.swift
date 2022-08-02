@@ -1,7 +1,8 @@
 import SwiftLintFramework
 import XCTest
 
-class CyclomaticComplexityRuleTests: XCTestCase {
+// swiftlint:disable:next type_name
+class CyclomaticComplexityRuleConfigurationTests: XCTestCase {
     private lazy var complexSwitchExample: Example = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"

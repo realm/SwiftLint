@@ -131,6 +131,12 @@ class ConvenienceTypeRuleTests: XCTestCase {
     }
 }
 
+class CyclomaticComplexityRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CyclomaticComplexityRule.description)
+    }
+}
+
 class DiscardedNotificationCenterObserverRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
@@ -140,6 +146,12 @@ class DiscardedNotificationCenterObserverRuleTests: XCTestCase {
 class DiscouragedAssertRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
+    }
+}
+
+class DiscouragedDirectInitRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DiscouragedDirectInitRule.description)
     }
 }
 
@@ -431,6 +443,12 @@ class LowerACLThanParentRuleTests: XCTestCase {
     }
 }
 
+class MarkRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MarkRule.description)
+    }
+}
+
 class ModifierOrderRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ModifierOrderRule.description)
@@ -542,6 +560,12 @@ class OperatorUsageWhitespaceRuleTests: XCTestCase {
 class OptionalEnumCaseMatchingRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OptionalEnumCaseMatchingRule.description)
+    }
+}
+
+class OrphanedDocCommentRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(OrphanedDocCommentRule.description)
     }
 }
 
@@ -794,6 +818,12 @@ class TestCaseAccessibilityRuleTests: XCTestCase {
 class ToggleBoolRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ToggleBoolRule.description)
+    }
+}
+
+class TrailingCommaRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(TrailingCommaRule.description)
     }
 }
 

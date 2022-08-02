@@ -1,4 +1,4 @@
-public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
+public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = DiscouragedDirectInitConfiguration()
 
     public init() {}

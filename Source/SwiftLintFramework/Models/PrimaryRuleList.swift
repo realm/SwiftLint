@@ -56,6 +56,7 @@ public let primaryRuleList = RuleList(rules: [
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
+    ExplicitReturnRule.self,
     ExplicitSelfRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,

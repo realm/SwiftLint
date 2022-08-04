@@ -350,6 +350,9 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="cp">#imageLiteral(resourceName: "foo,bar,baz")</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">kvcStringBuffer</span><span class="o">.</span><span class="nf">advanced</span><span class="p">(</span><span class="nv">by</span><span class="p">:</span> <span class="n">rootKVCLength</span><span class="p">)</span>
+  <span class="o">.</span><span class="nf">storeBytes</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="mh">0x2E</span> <span class="cm">/* '.' */</span><span class="p">,</span> <span class="nv">as</span><span class="p">:</span> <span class="kt">CChar</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">abc</span><span class="p">(</span><span class="nv">a</span><span class="p">:</span> <span class="kt">String</span><span class="err">↓</span> <span class="p">,</span><span class="nv">b</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
 </code></pre>
@@ -364,6 +367,18 @@
     <span class="nv">second</span><span class="p">:</span> <span class="mi">4</span>
 <span class="p">)</span>
 
+</code></pre>
+<pre class="highlight swift"><code><span class="kt">Foo</span><span class="p">(</span>
+  <span class="nv">parameter</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">c</span><span class="p">,</span>
+  <span class="nv">tag</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">d</span><span class="p">,</span>
+  <span class="nv">value</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">identifier</span><span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="kt">Int64</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span><span class="err">↓</span> <span class="p">,</span>
+  <span class="nv">reason</span><span class="p">:</span> <span class="k">Self</span><span class="o">.</span><span class="nf">abcd</span><span class="p">()</span>
+<span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">return</span> <span class="kt">Foo</span><span class="p">(</span><span class="nv">bar</span><span class="p">:</span> <span class="o">.</span><span class="n">baz</span><span class="p">,</span> <span class="nv">title</span><span class="p">:</span> <span class="n">fuzz</span><span class="p">,</span>
+          <span class="nv">message</span><span class="p">:</span> <span class="kt">My</span><span class="o">.</span><span class="kt">Custom</span><span class="o">.</span><span class="n">message</span><span class="err">↓</span> <span class="p">,</span>
+          <span class="nv">another</span><span class="p">:</span> <span class="n">parameter</span><span class="p">,</span> <span class="nv">doIt</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="nv">alignment</span><span class="p">:</span> <span class="o">.</span><span class="n">center</span><span class="p">)</span>
 </code></pre>
 
           </div>

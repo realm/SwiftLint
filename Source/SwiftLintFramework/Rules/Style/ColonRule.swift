@@ -38,6 +38,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
         visitor.walk(syntaxTree)
         let positionsToSkip = visitor.positionsToSkip
         let dictionaryPositions = visitor.dictionaryPositions
+        let caseStatementPositions = visitor.caseStatementPositions
 
         return Array(syntaxTree.tokens)
             .windows(ofCount: 3)
@@ -67,7 +68,9 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)
                 } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
-                    if configuration.flexibleRightSpacing && current.trailingTrivia.isNotEmpty {
+                    let flexibleRightSpacing = configuration.flexibleRightSpacing ||
+                        caseStatementPositions.contains(current.position)
+                    if flexibleRightSpacing && current.trailingTrivia.isNotEmpty {
                         return nil
                     }
 
@@ -96,6 +99,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
 private final class ColonRuleVisitor: SyntaxVisitor {
     var positionsToSkip: [AbsolutePosition] = []
     var dictionaryPositions: [AbsolutePosition] = []
+    var caseStatementPositions: [AbsolutePosition] = []
 
     override func visitPost(_ node: TernaryExprSyntax) {
         positionsToSkip.append(node.colonMark.position)
@@ -117,6 +121,14 @@ private final class ColonRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: DictionaryElementSyntax) {
         dictionaryPositions.append(node.colon.position)
+    }
+
+    override func visitPost(_ node: SwitchCaseLabelSyntax) {
+        caseStatementPositions.append(node.colon.position)
+    }
+
+    override func visitPost(_ node: SwitchDefaultLabelSyntax) {
+        caseStatementPositions.append(node.colon.position)
     }
 }
 

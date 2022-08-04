@@ -52,7 +52,14 @@ internal struct ColonRuleExamples {
         Example("""
         @objc(receiveReply:)
         public class func receiveReply(_ reply: bad_instruction_exception_reply_t) -> CInt { 0 }
-        """)
+        """),
+        Example(#"""
+        switch str {
+        case "adlm", "adlam":             return .adlam
+        case "aghb", "caucasianalbanian": return .caucasianAlbanian
+        default:                          return nil
+        }
+        """#)
     ]
 
     static let triggeringExamples = [

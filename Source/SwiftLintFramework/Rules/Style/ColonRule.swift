@@ -109,6 +109,12 @@ private final class ColonRuleVisitor: SyntaxVisitor {
         )
     }
 
+    override func visitPost(_ node: ObjCSelectorPieceSyntax) {
+        if let colon = node.colon {
+            positionsToSkip.append(colon.position)
+        }
+    }
+
     override func visitPost(_ node: DictionaryElementSyntax) {
         dictionaryPositions.append(node.colon.position)
     }

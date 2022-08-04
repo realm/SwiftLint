@@ -48,7 +48,11 @@ internal struct ColonRuleExamples {
         return nil
         Example("}
         """),
-        Example("range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []")
+        Example("range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []"),
+        Example("""
+        @objc(receiveReply:)
+        public class func receiveReply(_ reply: bad_instruction_exception_reply_t) -> CInt { 0 }
+        """)
     ]
 
     static let triggeringExamples = [

@@ -18,7 +18,11 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
             Example("enum a { case a, b, c }"),
             Example("func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}\n"),
             Example("func abc(\n  a: String,\n  bcd: String\n) {\n}\n"),
-            Example("#imageLiteral(resourceName: \"foo,bar,baz\")")
+            Example("#imageLiteral(resourceName: \"foo,bar,baz\")"),
+            Example("""
+            kvcStringBuffer.advanced(by: rootKVCLength)
+              .storeBytes(of: 0x2E /* '.' */, as: CChar.self)
+            """)
         ],
         triggeringExamples: [
             Example("func abc(a: String↓ ,b: String) { }"),
@@ -92,14 +96,14 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
 
         return Array(syntaxTree.tokens)
             .windows(ofCount: 3)
-            .compactMap { subsequence -> (ByteRange, shouldAddSpace: Bool)? in
-                let previous = subsequence[subsequence.startIndex]
-                let current = subsequence[subsequence.startIndex + 1]
-                let next = subsequence[subsequence.startIndex + 2]
+            .compactMap { tokens -> (ByteRange, shouldAddSpace: Bool)? in
+                let previous = tokens[tokens.startIndex]
+                let current = tokens[tokens.startIndex + 1]
+                let next = tokens[tokens.startIndex + 2]
 
                 if current.tokenKind != .comma {
                     return nil
-                } else if !previous.trailingTrivia.isEmpty {
+                } else if !previous.trailingTrivia.isEmpty && !current.leadingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     let nextIsNewline = next.leadingTrivia.containsNewlines()
@@ -142,12 +146,21 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
 }
 
 private extension Trivia {
+    func containsBlockComments() -> Bool {
+        contains { piece in
+            if case .blockComment = piece {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
     func containsNewlines() -> Bool {
         contains { piece in
-            switch piece {
-            case .newlines:
+            if case .newlines = piece {
                 return true
-            default:
+            } else {
                 return false
             }
         }

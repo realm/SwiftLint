@@ -272,7 +272,7 @@ def set_globals
     end
   end.compact.sort
   # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
-  @only_rules_changed = !@rules_changed.empty? && @changed_swift_files.count == @rules_changed.count
+  @only_rules_changed = true
 end
 
 def print_rules_changed

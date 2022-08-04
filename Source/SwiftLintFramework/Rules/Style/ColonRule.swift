@@ -1,13 +1,9 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
-private enum ColonKind {
-    case type
-    case dictionary
-    case functionCall
-}
-
-public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
+public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule,
+                         SourceKitFreeRule {
     public var configuration = ColonConfiguration()
 
     public init() {}
@@ -15,8 +11,9 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon Spacing",
-        description: "Colons should be next to the identifier when specifying a type " +
-                     "and next to the key in dictionary literals.",
+        description: """
+            Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.
+            """,
         kind: .style,
         nonTriggeringExamples: ColonRuleExamples.nonTriggeringExamples,
         triggeringExamples: ColonRuleExamples.triggeringExamples,
@@ -24,91 +21,117 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let violations = typeColonViolationRanges(in: file, matching: pattern).compactMap { range in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+        violationRanges(in: file).map { range in
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, characterOffset: range.location))
         }
-
-        let dictionaryViolations: [StyleViolation]
-        if configuration.applyToDictionaries {
-            dictionaryViolations = validate(file: file, dictionary: file.structureDictionary)
-        } else {
-            dictionaryViolations = []
-        }
-
-        return (violations + dictionaryViolations).sorted { $0.location < $1.location }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violations = correctionRanges(in: file)
-        let matches = violations.filter {
-            file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        guard let syntaxTree = file.syntaxTree else {
+            return []
         }
 
-        guard matches.isNotEmpty else { return [] }
-        let regularExpression = regex(pattern)
-        let description = Self.description
-        var corrections = [Correction]()
-        var contents = file.contents
-        for (range, kind) in matches.reversed() {
-            switch kind {
-            case .type:
-                contents = regularExpression.stringByReplacingMatches(in: contents,
-                                                                      options: [],
-                                                                      range: range,
-                                                                      withTemplate: "$1$2: $3")
-            case .dictionary, .functionCall:
-                contents = contents.bridge().replacingCharacters(in: range, with: ": ")
+        // Skip colons used for ternary expressions and function references
+        let visitor = ColonRuleVisitor()
+        visitor.walk(syntaxTree)
+        let positionsToSkip = visitor.positionsToSkip
+        let dictionaryPositions = visitor.dictionaryPositions
+
+        return Array(syntaxTree.tokens)
+            .windows(ofCount: 3)
+            .compactMap { tokens -> ByteRange? in
+                let previous = tokens[tokens.startIndex]
+                let current = tokens[tokens.startIndex + 1]
+                let next = tokens[tokens.startIndex + 2]
+
+                if current.tokenKind != .colon ||
+                    !configuration.applyToDictionaries && dictionaryPositions.contains(current.position) ||
+                    positionsToSkip.contains(current.position) {
+                    return nil
+                }
+
+                // [:]
+                if previous.tokenKind == .leftSquareBracket,
+                   next.tokenKind == .rightSquareBracket,
+                   previous.trailingTrivia.isEmpty,
+                   current.leadingTrivia.isEmpty,
+                   current.trailingTrivia.isEmpty,
+                   next.leadingTrivia.isEmpty {
+                    return nil
+                }
+
+                if previous.trailingTrivia.isNotEmpty && !current.leadingTrivia.containsBlockComments() {
+                    let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
+                    let end = ByteCount(current.endPosition)
+                    return ByteRange(location: start, length: end - start)
+                } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                    if configuration.flexibleRightSpacing && current.trailingTrivia.isNotEmpty {
+                        return nil
+                    }
+
+                    let length: ByteCount
+                    if case let .spaces(spaces) = current.trailingTrivia.first {
+                        length = ByteCount(spaces + 1)
+                    } else {
+                        length = 1
+                    }
+
+                    return ByteRange(location: ByteCount(current.position), length: length)
+                } else {
+                    return nil
+                }
             }
-
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-        file.write(contents)
-        return corrections
+            .compactMap { byteRange in
+                file.stringView.byteRangeToNSRange(byteRange)
+            }
     }
 
-    private typealias RangeWithKind = (range: NSRange, kind: ColonKind)
-
-    private func correctionRanges(in file: SwiftLintFile) -> [RangeWithKind] {
-        let violations: [RangeWithKind] = typeColonViolationRanges(in: file, matching: pattern).map {
-            (range: $0, kind: ColonKind.type)
-        }
-        let dictionary = file.structureDictionary
-        let contents = file.stringView
-        let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file,
-                                                                             dictionary: dictionary).compactMap {
-            return contents.byteRangeToNSRange($0).map { (range: $0, kind: .dictionary) }
-        }
-        let functionViolations: [RangeWithKind] = functionCallColonViolationRanges(in: file,
-                                                                                   dictionary: dictionary).compactMap {
-            return contents.byteRangeToNSRange($0).map { (range: $0, kind: .functionCall) }
-        }
-
-        return (violations + dictViolations + functionViolations).sorted {
-            $0.range.location < $1.range.location
-        }
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        (violationRange, ": ")
     }
 }
 
-extension ColonRule: ASTRule {
-    /// Only returns dictionary and function calls colon violations.
-    ///
-    /// - parameter file:       The file to validate.
-    /// - parameter kind:       The expression kind to parse.
-    /// - parameter dictionary: The substructure to validate.
-    ///
-    /// - returns: Colon rule style violations in dictionaries and function calls.
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let ranges = dictionaryColonViolationRanges(in: file, kind: kind, dictionary: dictionary) +
-            functionCallColonViolationRanges(in: file, kind: kind, dictionary: dictionary)
+private final class ColonRuleVisitor: SyntaxVisitor {
+    var positionsToSkip: [AbsolutePosition] = []
+    var dictionaryPositions: [AbsolutePosition] = []
 
-        return ranges.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, byteOffset: $0.location))
+    override func visitPost(_ node: TernaryExprSyntax) {
+        positionsToSkip.append(node.colonMark.position)
+    }
+
+    override func visitPost(_ node: DeclNameArgumentsSyntax) {
+        positionsToSkip.append(
+            contentsOf: node.tokens
+                .filter { $0.tokenKind == .colon }
+                .map(\.position)
+        )
+    }
+
+    override func visitPost(_ node: DictionaryElementSyntax) {
+        dictionaryPositions.append(node.colon.position)
+    }
+}
+
+private extension Trivia {
+    func containsBlockComments() -> Bool {
+        contains { piece in
+            if case .blockComment = piece {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    func containsNewlines() -> Bool {
+        contains { piece in
+            if case .newlines = piece {
+                return true
+            } else {
+                return false
+            }
         }
     }
 }

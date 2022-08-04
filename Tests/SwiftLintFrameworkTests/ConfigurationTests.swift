@@ -232,8 +232,8 @@ class ConfigurationTests: XCTestCase {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
                                       "directory/excluded/Excluded.swift",
                                       "directory/ExcludedFile.swift"]
-            case "directory/excluded" : return ["directory/excluded/Excluded.swift"]
-            case "directory/ExcludedFile.swift" : return ["directory/ExcludedFile.swift"]
+            case "directory/excluded": return ["directory/excluded/Excluded.swift"]
+            case "directory/ExcludedFile.swift": return ["directory/ExcludedFile.swift"]
             default: break
             }
             XCTFail("Should not be called with path \(path)")

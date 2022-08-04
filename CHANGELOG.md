@@ -29,6 +29,13 @@
   [Keith Smiley](https://github.com/keith)
   [#3516](https://github.com/realm/SwiftLint/issues/3516)
 
+* Make `comma` rule about 10x faster, finding some previously missed cases and
+  fixing some previously wrong corrections.  
+  [JP Simard](https://github.com/jpsim)
+
+* Make `colon` rule about 7x faster, finding some previously missed cases.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using
@@ -40,10 +47,6 @@
   when using keys that are generated at runtime with the same source code.  
   [OrEliyahu](https://github.com/OrEliyahu)
   [#4012](https://github.com/realm/SwiftLint/issues/4012)
-
-* Make `comma` rule about 10x faster, finding some previously missed cases and
-  fixing some previously wrong corrections.  
-  [JP Simard](https://github.com/jpsim)
 
 ## 0.48.0: Rechargeable Defuzzer
 

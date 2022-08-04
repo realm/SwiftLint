@@ -40,13 +40,9 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
         let dictionaryPositions = visitor.dictionaryPositions
         let caseStatementPositions = visitor.caseStatementPositions
 
-        return Array(syntaxTree.tokens)
-            .windows(ofCount: 3)
-            .compactMap { tokens -> ByteRange? in
-                let previous = tokens[tokens.startIndex]
-                let current = tokens[tokens.startIndex + 1]
-                let next = tokens[tokens.startIndex + 2]
-
+        return syntaxTree
+            .windowsOfThreeTokens()
+            .compactMap { previous, current, next -> ByteRange? in
                 if current.tokenKind != .colon ||
                     !configuration.applyToDictionaries && dictionaryPositions.contains(current.position) ||
                     positionsToSkip.contains(current.position) {

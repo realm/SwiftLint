@@ -41,6 +41,10 @@
   [OrEliyahu](https://github.com/OrEliyahu)
   [#4012](https://github.com/realm/SwiftLint/issues/4012)
 
+* Make `comma` rule about 10x faster, finding some previously missed cases and
+  fixing some previously wrong corrections.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.48.0: Rechargeable Defuzzer
 
 This is the last release to support building with Swift 5.5.x and running on

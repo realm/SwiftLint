@@ -65,7 +65,7 @@ internal struct ColonRuleExamples {
           associativity: left
         }
         infix operator |> : PipelinePrecedence
-        """).focused()
+        """)
     ]
 
     static let triggeringExamples = [

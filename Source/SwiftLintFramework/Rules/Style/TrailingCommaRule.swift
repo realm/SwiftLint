@@ -8,7 +8,7 @@ private enum TrailingCommaReason: String {
 
 private typealias CommaRuleViolation = (index: ByteCount, reason: TrailingCommaReason)
 
-public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
+public struct TrailingCommaRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = TrailingCommaConfiguration()
 
     public init() {}

@@ -1,12 +1,9 @@
 import SwiftLintFramework
 import XCTest
 
-class DiscouragedDirectInitRuleTests: XCTestCase {
+// swiftlint:disable:next type_name
+class DiscouragedDirectInitRuleConfigurationTests: XCTestCase {
     private let baseDescription = DiscouragedDirectInitRule.description
-
-    func testDiscouragedDirectInitWithDefaultConfiguration() {
-        verifyRule(baseDescription)
-    }
 
     func testDiscouragedDirectInitWithConfiguredSeverity() {
         verifyRule(baseDescription, ruleConfiguration: ["severity": "error"])

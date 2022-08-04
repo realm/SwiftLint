@@ -8,7 +8,7 @@ public extension SyntaxKind {
     }
 }
 
-public struct TodoRule: ConfigurationProviderRule {
+public struct TodoRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -31,7 +31,7 @@ public struct TodoRule: ConfigurationProviderRule {
             Example("/* ↓TODO: */\n"),
             Example("/** ↓FIXME: */\n"),
             Example("/** ↓TODO: */\n")
-        ]
+        ].skipWrappingInCommentTests()
     )
 
     private func customMessage(file: SwiftLintFile, range: NSRange) -> String {

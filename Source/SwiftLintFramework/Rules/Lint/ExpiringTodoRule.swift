@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
+public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired
@@ -36,12 +36,12 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
             Example("/** TODO: */\n")
         ],
         triggeringExamples: [
-            Example("// TODO: [10/14/2019]\n"),
-            Example("// FIXME: [10/14/2019]\n"),
-            Example("// FIXME: [1/14/2019]\n"),
-            Example("// FIXME: [10/14/2019]\n"),
-            Example("// TODO: [9999/14/10]\n")
-        ]
+            Example("// TODO: [↓10/14/2019]\n"),
+            Example("// FIXME: [↓10/14/2019]\n"),
+            Example("// FIXME: [↓1/14/2019]\n"),
+            Example("// FIXME: [↓10/14/2019]\n"),
+            Example("// TODO: [↓9999/14/10]\n")
+        ].skipWrappingInCommentTests()
     )
 
     public var configuration: ExpiringTodoConfiguration = .init()

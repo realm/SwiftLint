@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigurationProviderRule {
+public struct LineLengthRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
     public init() {}
@@ -24,7 +24,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
             Example(String(repeating: "/", count: 121) + "\n"),
             Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + "\n"),
             Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n")
-        ]
+        ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {

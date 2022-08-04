@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

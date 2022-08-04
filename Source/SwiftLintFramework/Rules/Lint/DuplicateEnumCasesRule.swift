@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
+public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}

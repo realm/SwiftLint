@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

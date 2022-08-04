@@ -142,7 +142,7 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }
 
-extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule {
+extension VerticalWhitespaceOpeningBracesRule: OptInRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}

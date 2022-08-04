@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

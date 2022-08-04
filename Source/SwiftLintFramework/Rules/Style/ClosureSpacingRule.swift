@@ -16,7 +16,7 @@ extension NSRange {
     }
 }
 
-public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

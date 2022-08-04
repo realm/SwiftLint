@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-                                       AutomaticTestableRule {
+public struct NoSpaceInMethodCallRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

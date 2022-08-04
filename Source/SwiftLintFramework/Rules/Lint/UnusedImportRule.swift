@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private let moduleToLog = ProcessInfo.processInfo.environment["SWIFTLINT_LOG_MODULE_USAGE"]
 
-public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
+public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
     public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
                                                          allowedTransitiveImports: [], alwaysKeepImports: [])
 

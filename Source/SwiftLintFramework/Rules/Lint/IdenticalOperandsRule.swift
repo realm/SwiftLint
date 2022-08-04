@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

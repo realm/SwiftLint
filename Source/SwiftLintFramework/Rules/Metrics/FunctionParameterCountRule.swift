@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
+public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
 
     public init() {}

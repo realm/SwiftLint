@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

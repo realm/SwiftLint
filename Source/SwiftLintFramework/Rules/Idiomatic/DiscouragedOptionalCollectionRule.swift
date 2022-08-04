@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

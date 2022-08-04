@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FileLengthRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct FileLengthRule: ConfigurationProviderRule {
     public var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
 
     public init() {}

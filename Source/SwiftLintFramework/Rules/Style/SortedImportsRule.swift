@@ -46,7 +46,7 @@ private extension Sequence where Element == Line {
     }
 }
 
-public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

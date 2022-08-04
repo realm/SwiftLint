@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

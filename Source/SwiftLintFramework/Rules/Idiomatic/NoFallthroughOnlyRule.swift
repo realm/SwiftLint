@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

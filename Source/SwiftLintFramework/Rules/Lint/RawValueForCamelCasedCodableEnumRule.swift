@@ -1,7 +1,6 @@
 import SourceKittenFramework
 
-public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, ConfigurationProviderRule,
-    AutomaticTestableRule {
+public struct RawValueForCamelCasedCodableEnumRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NSObjectPreferIsEqualRule: Rule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

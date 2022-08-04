@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

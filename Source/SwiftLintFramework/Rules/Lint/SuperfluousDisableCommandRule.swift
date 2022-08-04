@@ -1,4 +1,4 @@
-public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
+public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

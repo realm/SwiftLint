@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRule, AutomaticTestableRule {
+public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

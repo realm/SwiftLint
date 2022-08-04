@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
+public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule {
     public var configuration = ModifierOrderConfiguration(
         preferredModifierOrder: [
             .override,

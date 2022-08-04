@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

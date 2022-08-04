@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule,
-                                              AutomaticTestableRule {
+public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
     private var pattern: String {
         let zero = "\\s*:\\s*0(\\.0*)?\\s*"

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

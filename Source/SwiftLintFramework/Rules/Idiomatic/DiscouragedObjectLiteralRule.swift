@@ -1,4 +1,4 @@
-public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = ObjectLiteralConfiguration()
 
     public init() {}

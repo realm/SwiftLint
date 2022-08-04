@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct IsDisjointRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct IsDisjointRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

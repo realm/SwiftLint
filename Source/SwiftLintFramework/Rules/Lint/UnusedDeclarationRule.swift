@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
     public struct FileUSRs: Hashable {
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>

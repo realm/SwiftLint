@@ -6,7 +6,7 @@ private enum AttributesRuleError: Error {
     case moreThanOneAttributeInSameLine
 }
 
-public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

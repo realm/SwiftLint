@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = MultilineParametersConfiguration()
 
     public init() {}

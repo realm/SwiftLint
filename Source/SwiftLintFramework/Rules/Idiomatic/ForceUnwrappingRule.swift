@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

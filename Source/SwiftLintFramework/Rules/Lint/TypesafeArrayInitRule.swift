@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

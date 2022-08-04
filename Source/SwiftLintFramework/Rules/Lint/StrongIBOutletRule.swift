@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, SubstitutionCorrectableASTRule, OptInRule,
-    AutomaticTestableRule {
+public struct StrongIBOutletRule: ConfigurationProviderRule, ASTRule, SubstitutionCorrectableASTRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

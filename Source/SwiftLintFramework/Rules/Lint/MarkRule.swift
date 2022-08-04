@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MarkRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

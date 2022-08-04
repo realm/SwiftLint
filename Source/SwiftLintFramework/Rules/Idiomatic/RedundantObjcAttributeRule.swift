@@ -4,8 +4,7 @@ import SourceKittenFramework
 private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
     [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
 
-public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
-    AutomaticTestableRule {
+public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

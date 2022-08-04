@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DiscouragedAssertRule: ASTRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
     public var configuration = SeverityConfiguration(.warning)

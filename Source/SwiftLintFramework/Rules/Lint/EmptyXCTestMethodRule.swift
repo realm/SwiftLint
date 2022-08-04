@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

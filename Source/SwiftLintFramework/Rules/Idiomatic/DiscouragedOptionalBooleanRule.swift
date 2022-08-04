@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

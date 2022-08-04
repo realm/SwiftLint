@@ -29,7 +29,7 @@ private let legacyObjcTypes = [
     "NSUUID"
 ]
 
-public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

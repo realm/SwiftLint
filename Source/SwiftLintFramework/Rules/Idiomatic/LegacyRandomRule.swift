@@ -1,4 +1,4 @@
-public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

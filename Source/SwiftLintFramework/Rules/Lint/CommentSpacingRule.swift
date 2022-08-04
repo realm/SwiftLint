@@ -1,9 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CommentSpacingRule: ConfigurationProviderRule,
-                                  SubstitutionCorrectableRule,
-                                  AutomaticTestableRule {
+public struct CommentSpacingRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

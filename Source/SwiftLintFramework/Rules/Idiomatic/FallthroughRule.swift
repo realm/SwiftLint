@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct FallthroughRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -10,7 +10,7 @@ private func children(of dict: SourceKittenDictionary,
     }
 }
 
-public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

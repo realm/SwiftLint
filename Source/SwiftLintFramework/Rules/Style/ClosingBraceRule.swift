@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosingBraceRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ClosingBraceRule: SubstitutionCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

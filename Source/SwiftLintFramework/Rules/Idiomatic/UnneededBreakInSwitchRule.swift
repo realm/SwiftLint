@@ -12,7 +12,7 @@ private func embedInSwitch(
         }
         """, file: file, line: line)
 }
-public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnneededBreakInSwitchRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

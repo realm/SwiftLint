@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-                                          AutomaticTestableRule {
+public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

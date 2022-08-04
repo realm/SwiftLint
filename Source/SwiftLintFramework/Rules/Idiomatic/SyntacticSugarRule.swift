@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

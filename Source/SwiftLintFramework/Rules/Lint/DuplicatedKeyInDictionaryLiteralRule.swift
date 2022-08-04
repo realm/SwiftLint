@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct DuplicatedKeyInDictionaryLiteralRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

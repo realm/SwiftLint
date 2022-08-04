@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
 
     public init() {}

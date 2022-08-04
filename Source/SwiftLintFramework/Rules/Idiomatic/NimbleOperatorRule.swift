@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule, AutomaticTestableRule {
+public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -24,7 +24,7 @@ private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = 
     """, file: file, line: line)
 }
 
-public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

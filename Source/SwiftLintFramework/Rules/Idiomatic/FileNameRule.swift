@@ -14,7 +14,7 @@ private extension SourceKittenDictionary {
     }
 }
 
-public struct FileNameRule: ConfigurationProviderRule, OptInRule {
+public struct FileNameRule: ConfigurationProviderRule, OptInRule, ManuallyTestedExamplesRule {
     public var configuration = FileNameConfiguration(
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EnumCaseAssociatedValuesLengthRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct EnumCaseAssociatedValuesLengthRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
 
     public init() {}

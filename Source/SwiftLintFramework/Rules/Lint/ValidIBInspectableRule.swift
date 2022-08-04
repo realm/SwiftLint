@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     private static let supportedTypes = Self.createSupportedTypes()

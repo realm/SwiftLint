@@ -67,7 +67,7 @@ import SourceKittenFramework
 ///     case accountCreated
 /// }
 /// ````
-public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private typealias RequiredCase = RequiredEnumCaseRuleConfiguration.RequiredCase
 
     /// Simple representation of parsed information from the SourceKitRepresentable dictionary.

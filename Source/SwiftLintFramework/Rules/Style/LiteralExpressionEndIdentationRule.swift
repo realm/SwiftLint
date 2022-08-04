@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

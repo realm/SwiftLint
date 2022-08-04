@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
 
     public init() {}

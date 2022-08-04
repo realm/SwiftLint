@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
     public var configuration = SeverityConfiguration(.warning)

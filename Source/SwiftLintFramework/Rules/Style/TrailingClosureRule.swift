@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
+public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = TrailingClosureConfiguration()
 
     public init() {}

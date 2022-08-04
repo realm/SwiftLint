@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule,
+public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderRule,
                                          SubstitutionCorrectableRule {
     public var configuration = TestCaseAccessibilityConfiguration()
 

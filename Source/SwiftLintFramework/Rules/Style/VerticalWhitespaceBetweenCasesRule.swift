@@ -137,7 +137,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     }
 }
 
-extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
+extension VerticalWhitespaceBetweenCasesRule: OptInRule {
     public static let description = RuleDescription(
         identifier: "vertical_whitespace_between_cases",
         name: "Vertical Whitespace Between Cases",

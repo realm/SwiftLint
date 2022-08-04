@@ -1,12 +1,5 @@
 ## Master
 
-#### Bug Fixes
-
-* Fix false positive in `Duplicated Key in Dictionary Literal Violation` rule when using
-  keys that are generated at runtime with the same source code.  
-  [OrEliyahu](https://github.com/OrEliyahu)
-  [#4012](https://github.com/realm/SwiftLint/issues/4012)
-
 #### Breaking
 
 * SwiftLint now requires Swift 5.6 or higher to build, and macOS 12
@@ -42,6 +35,11 @@
   closures inside `didSet` and other accessors.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4041](https://github.com/realm/SwiftLint/issues/4041)
+
+* Fix false positive in `Duplicated Key in Dictionary Literal Violation` rule
+  when using keys that are generated at runtime with the same source code.  
+  [OrEliyahu](https://github.com/OrEliyahu)
+  [#4012](https://github.com/realm/SwiftLint/issues/4012)
 
 ## 0.48.0: Rechargeable Defuzzer
 

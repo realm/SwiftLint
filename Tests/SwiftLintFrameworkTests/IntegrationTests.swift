@@ -139,7 +139,6 @@ private extension String {
 private func execute(_ args: [String],
                      in directory: URL? = nil,
                      input: Data? = nil) -> (status: Int32, stdout: String, stderr: String) {
-    // swiftlint:disable:previous large_tuple
     let process = Process()
     process.launchPath = "/usr/bin/env"
     process.arguments = args

@@ -94,13 +94,9 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
             return []
         }
 
-        return Array(syntaxTree.tokens)
-            .windows(ofCount: 3)
-            .compactMap { tokens -> (ByteRange, shouldAddSpace: Bool)? in
-                let previous = tokens[tokens.startIndex]
-                let current = tokens[tokens.startIndex + 1]
-                let next = tokens[tokens.startIndex + 2]
-
+        return syntaxTree
+            .windowsOfThreeTokens()
+            .compactMap { previous, current, next -> (ByteRange, shouldAddSpace: Bool)? in
                 if current.tokenKind != .comma {
                     return nil
                 } else if !previous.trailingTrivia.isEmpty && !current.leadingTrivia.containsBlockComments() {

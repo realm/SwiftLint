@@ -33,7 +33,6 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
             return []
         }
 
-        // Skip colons used for ternary expressions and function references
         let visitor = ColonRuleVisitor()
         visitor.walk(syntaxTree)
         let positionsToSkip = visitor.positionsToSkip
@@ -113,6 +112,10 @@ private final class ColonRuleVisitor: SyntaxVisitor {
         if let colon = node.colon {
             positionsToSkip.append(colon.position)
         }
+    }
+
+    override func visitPost(_ node: OperatorPrecedenceAndTypesSyntax) {
+        positionsToSkip.append(node.colon.position)
     }
 
     override func visitPost(_ node: DictionaryElementSyntax) {

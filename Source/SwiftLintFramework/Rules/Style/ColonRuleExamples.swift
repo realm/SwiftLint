@@ -59,7 +59,13 @@ internal struct ColonRuleExamples {
         case "aghb", "caucasianalbanian": return .caucasianAlbanian
         default:                          return nil
         }
-        """#)
+        """#),
+        Example("""
+        precedencegroup PipelinePrecedence {
+          associativity: left
+        }
+        infix operator |> : PipelinePrecedence
+        """).focused()
     ]
 
     static let triggeringExamples = [

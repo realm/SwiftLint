@@ -12,6 +12,7 @@ struct SwiftLint: ParsableCommand {
             Docs.self,
             GenerateDocs.self,
             Lint.self,
+            ParseOSSCheckResults.self,
             Rules.self,
             Version.self
         ],

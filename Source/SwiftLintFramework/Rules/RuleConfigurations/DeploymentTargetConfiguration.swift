@@ -61,7 +61,6 @@ public struct DeploymentTargetConfiguration: RuleConfiguration, Equatable {
             self.patch = patch
         }
 
-        // swiftlint:disable:next large_tuple
         private static func parseVersion(string: String) throws -> (Int, Int, Int) {
             func parseNumber(_ string: String) throws -> Int {
                 guard let number = Int(string) else {

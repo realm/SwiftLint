@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
     public var configuration = ExplicitTypeInterfaceConfiguration()
 
     public init() {}

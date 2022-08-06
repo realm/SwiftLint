@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
 
     public init() {}

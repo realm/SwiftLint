@@ -61,7 +61,7 @@ private extension SwiftLintFile {
     }
 }
 
-public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = OpeningBraceConfiguration()
 
     public init() {}

@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule,
-                                               ManuallyTestedExamplesRule {
+public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
                                                                         severity: SeverityConfiguration(.warning))
 

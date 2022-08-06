@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = MultilineArgumentsConfiguration()
 
     public init() {}

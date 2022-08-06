@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct ComputedAccessorsOrderRule: ConfigurationProviderRule {
     public var configuration = ComputedAccessorsOrderRuleConfiguration()
 
     public init() {}

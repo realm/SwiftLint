@@ -1,7 +1,6 @@
 import SourceKittenFramework
 
-public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule,
-                                           ManuallyTestedExamplesRule {
+public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

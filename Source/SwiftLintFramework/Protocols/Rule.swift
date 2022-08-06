@@ -89,9 +89,6 @@ extension Rule {
 /// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
 
-/// A rule that does not automatically generate unit tests for its examples.
-public protocol ManuallyTestedExamplesRule: Rule {}
-
 /// A rule that is user-configurable.
 public protocol ConfigurationProviderRule: Rule {
     /// The type of configuration used to configure this rule.

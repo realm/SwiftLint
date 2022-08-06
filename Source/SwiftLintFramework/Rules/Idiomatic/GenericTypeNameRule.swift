@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     public var configuration = NameConfiguration(minLengthWarning: 1,
                                                  minLengthError: 0,
                                                  maxLengthWarning: 20,

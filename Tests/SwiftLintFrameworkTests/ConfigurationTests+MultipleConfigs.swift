@@ -1,6 +1,8 @@
 @testable import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length
+
 private extension Configuration {
     func contains<T: Rule>(rule: T.Type) -> Bool {
         return rules.contains { $0 is T }
@@ -224,6 +226,10 @@ extension ConfigurationTests {
 
     // MARK: - Child & Parent Configs
     func testValidChildConfig() {
+        guard !isRunningWithBazel else {
+            return
+        }
+
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
             FileManager.default.changeCurrentDirectoryPath(path)
 
@@ -246,6 +252,10 @@ extension ConfigurationTests {
     }
 
     func testCommandLineChildConfigs() {
+        guard !isRunningWithBazel else {
+            return
+        }
+
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
             FileManager.default.changeCurrentDirectoryPath(path)
 

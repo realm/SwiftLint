@@ -193,6 +193,10 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testIncludedExcludedRelativeLocationLevel1() {
+        guard !isRunningWithBazel else {
+            return
+        }
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level1)
 
         // The included path "File.swift" should be put relative to the configuration file

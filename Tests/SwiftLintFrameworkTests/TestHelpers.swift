@@ -302,6 +302,8 @@ private func addShebang(_ example: Example) -> Example {
 }
 
 extension XCTestCase {
+    var isRunningWithBazel: Bool { FileManager.default.currentDirectoryPath.contains("bazel-out") }
+
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,

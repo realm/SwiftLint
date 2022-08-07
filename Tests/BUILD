@@ -9,12 +9,6 @@ swift_library(
             "SwiftLintFrameworkTests/Resources/**",
             # Bazel doesn't support paths with spaces in them
             "SwiftLintFrameworkTests/FileNameNoSpaceRuleTests.swift",
-            # FIXME: Get these tests passing with Bazel
-            "SwiftLintFrameworkTests/ConfigurationTests+Mock.swift",
-            "SwiftLintFrameworkTests/ConfigurationTests+MultipleConfigs.swift",
-            "SwiftLintFrameworkTests/ConfigurationTests.swift",
-            "SwiftLintFrameworkTests/IntegrationTests.swift",
-            "SwiftLintFrameworkTests/SourceKitCrashTests.swift",
         ],
     ),
     module_name = "SwiftLintFrameworkTests",
@@ -25,17 +19,16 @@ swift_library(
 
 swift_test(
     name = "SwiftLintFrameworkTests",
-    data = glob(
-        ["SwiftLintFrameworkTests/Resources/**"],
+    data = [
+        "//:SwiftLintConfig",
+        "//:SourceFilesToLint",
+    ] + glob(
+        ["SwiftLintFrameworkTests/**"],
         # Bazel doesn't support paths with spaces in them
         exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),
-    visibility = [
-        "//Tests:__subpackages__",
-    ],
-    deps = [
-        ":SwiftLintFrameworkTests.library",
-    ],
+    visibility = ["//Tests:__subpackages__"],
+    deps = [":SwiftLintFrameworkTests.library"],
 )
 
 genrule(

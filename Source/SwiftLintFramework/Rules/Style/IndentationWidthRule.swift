@@ -19,7 +19,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     public var configuration = IndentationWidthConfiguration(
         severity: .warning,
         indentationWidth: 4,
-        includeComments: true
+        includeComments: true,
+        includeCompilerDirectives: true
     )
     public static let description = RuleDescription(
         identifier: "indentation_width",
@@ -51,6 +52,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         var previousLineIndentations: [Indentation] = []
 
         for line in file.lines {
+            if ignoreCompilerDirective(line: line, in: file) { continue }
+
             // Skip line if it's a whitespace-only line
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
             if line.content.count == indentationCharacterCount { continue }
@@ -146,6 +149,16 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
         }
 
         return violations
+    }
+
+    private func ignoreCompilerDirective(line: Line, in file: SwiftLintFile) -> Bool {
+        if configuration.includeCompilerDirectives {
+            return false
+        }
+        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds.first == .buildconfigKeyword {
+            return true
+        }
+        return false
     }
 
     /// Validates whether the indentation of a specific line is valid based on the indentation of the previous line.

@@ -1,6 +1,6 @@
 steps:
   - label: "Bazel Tests"
-    command: bazel test --spawn_strategy=standalone //Tests/...
+    command: bazel test --test_env IN_PROCESS_SOURCEKIT=1 //Tests/...
   - label: "Danger"
     commands:
       - bundle install

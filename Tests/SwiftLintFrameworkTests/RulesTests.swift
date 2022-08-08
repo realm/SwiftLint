@@ -2,26 +2,26 @@ import SwiftLintFramework
 import XCTest
 
 class RulesTests: XCTestCase {
-    func testLeadingWhitespace() async {
-        await verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
-                         testMultiByteOffsets: false, testShebang: false)
+    func testLeadingWhitespace() {
+        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
-    func testMark() async {
-        await verifyRule(MarkRule.description, skipCommentTests: true)
+    func testMark() {
+        verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
-    func testRequiredEnumCase() async {
+    func testRequiredEnumCase() {
         let configuration = ["NetworkResponsable": ["notConnected": "error"]]
-        await verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
+        verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
     }
 
-    func testTrailingNewline() async {
-        await verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
-                         stringDoesntViolate: false)
+    func testTrailingNewline() {
+        verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
+                   stringDoesntViolate: false)
     }
 
-    func testOrphanedDocComment() async {
-        await verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
+    func testOrphanedDocComment() {
+        verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
     }
 }

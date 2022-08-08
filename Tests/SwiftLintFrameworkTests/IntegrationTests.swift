@@ -22,8 +22,8 @@ class IntegrationTests: XCTestCase {
         )
 
         let storage = RuleStorage()
-        let violations = await swiftFiles.concurrentFlatMap {
-            await Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
+        let violations = swiftFiles.parallelFlatMap {
+            Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
             violation.location.file!.withStaticString {

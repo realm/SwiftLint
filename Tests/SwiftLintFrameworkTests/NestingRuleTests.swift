@@ -3,12 +3,12 @@ import XCTest
 
 // swiftlint:disable:next type_body_length
 class NestingRuleTests: XCTestCase {
-    func testNestingWithDefaultConfiguration() async {
-        await verifyRule(NestingRule.description)
+    func testNestingWithDefaultConfiguration() {
+        verifyRule(NestingRule.description)
     }
 
     // swiftlint:disable:next function_body_length
-    func testNestingWithAlwaysAllowOneTypeInFunctions() async {
+    func testNestingWithAlwaysAllowOneTypeInFunctions() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
@@ -208,11 +208,11 @@ class NestingRuleTests: XCTestCase {
             triggeringExamples: triggeringExamples
         )
 
-        await verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
+        verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
     }
 
     // swiftlint:disable:next function_body_length
-    func testNestingWithoutCheckNestingInClosuresAndStatements() async {
+    func testNestingWithoutCheckNestingInClosuresAndStatements() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: ["class", "struct", "enum"].flatMap { type -> [Example] in
             [
@@ -372,6 +372,6 @@ class NestingRuleTests: XCTestCase {
             triggeringExamples: triggeringExamples
         )
 
-        await verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
+        verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
     }
 }

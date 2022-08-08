@@ -2,14 +2,14 @@ import SwiftLintFramework
 import XCTest
 
 class ColonRuleTests: XCTestCase {
-    func testColonWithDefaultConfiguration() async {
+    func testColonWithDefaultConfiguration() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is false (default).
-        await verifyRule(ColonRule.description)
+        verifyRule(ColonRule.description)
     }
 
     // swiftlint:disable:next function_body_length
-    func testColonWithFlexibleRightSpace() async {
+    func testColonWithFlexibleRightSpace() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is true.
         let nonTriggeringExamples = ColonRule.description.nonTriggeringExamples + [
@@ -72,11 +72,11 @@ class ColonRuleTests: XCTestCase {
                                                .with(nonTriggeringExamples: nonTriggeringExamples)
                                                .with(corrections: corrections)
 
-        await verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
+        verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
 
     // swiftlint:disable:next function_body_length
-    func testColonWithoutApplyToDictionaries() async {
+    func testColonWithoutApplyToDictionaries() {
         let nonTriggeringExamples = ColonRule.description.nonTriggeringExamples + [
             Example("let abc = [Void:Void]()\n"),
             Example("let abc = [Void : Void]()\n"),
@@ -138,6 +138,6 @@ class ColonRuleTests: XCTestCase {
                                                .with(nonTriggeringExamples: nonTriggeringExamples)
                                                .with(corrections: corrections)
 
-        await verifyRule(description, ruleConfiguration: ["apply_to_dictionaries": false])
+        verifyRule(description, ruleConfiguration: ["apply_to_dictionaries": false])
     }
 }

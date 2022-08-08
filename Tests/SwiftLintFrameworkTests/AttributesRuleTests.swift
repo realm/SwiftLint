@@ -2,12 +2,12 @@
 import XCTest
 
 class AttributesRuleTests: XCTestCase {
-    func testAttributesWithDefaultConfiguration() async {
+    func testAttributesWithDefaultConfiguration() {
         // Test with default parameters
-        await verifyRule(AttributesRule.description)
+        verifyRule(AttributesRule.description)
     }
 
-    func testAttributesWithAlwaysOnSameLine() async {
+    func testAttributesWithAlwaysOnSameLine() {
         // Test with custom `always_on_same_line`
         let nonTriggeringExamples = [
             Example("@objc var x: String"),
@@ -33,11 +33,11 @@ class AttributesRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(alwaysOnSameLineDescription,
-                         ruleConfiguration: ["always_on_same_line": ["@objc"]])
+        verifyRule(alwaysOnSameLineDescription,
+                   ruleConfiguration: ["always_on_same_line": ["@objc"]])
     }
 
-    func testAttributesWithAlwaysOnLineAbove() async {
+    func testAttributesWithAlwaysOnLineAbove() {
         // Test with custom `always_on_line_above`
         let nonTriggeringExamples = [
             Example("@objc\n var x: String"),
@@ -54,11 +54,11 @@ class AttributesRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(alwaysOnNewLineDescription,
-                         ruleConfiguration: ["always_on_line_above": ["@objc"]])
+        verifyRule(alwaysOnNewLineDescription,
+                   ruleConfiguration: ["always_on_line_above": ["@objc"]])
     }
 
-    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() async {
+    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() {
         let nonTriggeringExamples = [
             Example("""
             @IBDesignable open class TagListView: UIView {
@@ -97,8 +97,8 @@ class AttributesRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(alwaysOnNewLineDescription,
-                         ruleConfiguration: ["always_on_same_line": ["@discardableResult", "@objc",
-                                                                     "@IBAction", "@IBDesignable"]])
+        verifyRule(alwaysOnNewLineDescription,
+                   ruleConfiguration: ["always_on_same_line": ["@discardableResult", "@objc",
+                                                               "@IBAction", "@IBDesignable"]])
     }
 }

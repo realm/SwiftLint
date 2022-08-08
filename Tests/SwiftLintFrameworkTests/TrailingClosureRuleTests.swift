@@ -2,11 +2,11 @@
 import XCTest
 
 class TrailingClosureRuleTests: XCTestCase {
-    func testDefaultConfiguration() async {
-        await verifyRule(TrailingClosureRule.description)
+    func testDefaultConfiguration() {
+        verifyRule(TrailingClosureRule.description)
     }
 
-    func testWithOnlySingleMutedParameterEnabled() async {
+    func testWithOnlySingleMutedParameterEnabled() {
         let originalDescription = TrailingClosureRule.description
         let description = originalDescription
             .with(nonTriggeringExamples: originalDescription.nonTriggeringExamples + [
@@ -16,6 +16,6 @@ class TrailingClosureRuleTests: XCTestCase {
             ])
             .with(triggeringExamples: [Example("foo.map({ $0 + 1 })")])
 
-        await verifyRule(description, ruleConfiguration: ["only_single_muted_parameter": true])
+        verifyRule(description, ruleConfiguration: ["only_single_muted_parameter": true])
     }
 }

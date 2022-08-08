@@ -1,19 +1,19 @@
 import SwiftLintFramework
 import XCTest
 
-class MissingDocsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() async {
-        await verifyRule(MissingDocsRule.description)
+ class MissingDocsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MissingDocsRule.description)
     }
 
-    func testWithExcludesExtensionsDisabled() async {
+    func testWithExcludesExtensionsDisabled() {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
         let triggeringComments = [
             Example("""
             public extension A {}
             """
-                   )
+            )
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
@@ -21,11 +21,11 @@ class MissingDocsRuleTests: XCTestCase {
         let description = baseDescription
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        await verifyRule(description,
-                         ruleConfiguration: ["excludes_extensions": false])
+        verifyRule(description,
+                   ruleConfiguration: ["excludes_extensions": false])
     }
 
-    func testWithExcludesInheritedTypesDisabled() async {
+    func testWithExcludesInheritedTypesDisabled() {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
         let triggeringComments = [
@@ -54,7 +54,7 @@ class MissingDocsRuleTests: XCTestCase {
         let description = baseDescription
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        await verifyRule(description,
-                         ruleConfiguration: ["excludes_inherited_types": false])
+        verifyRule(description,
+                   ruleConfiguration: ["excludes_inherited_types": false])
     }
-}
+ }

@@ -2,27 +2,27 @@
 import XCTest
 
 class CollectionAlignmentRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() async {
-        await verifyRule(CollectionAlignmentRule.description)
+    func testWithDefaultConfiguration() {
+        verifyRule(CollectionAlignmentRule.description)
     }
 
-    func testCollectionAlignmentWithAlignLeft() async {
+    func testCollectionAlignmentWithAlignLeft() {
         let baseDescription = CollectionAlignmentRule.description
         let examples = CollectionAlignmentRule.Examples(alignColons: false)
 
         let description = baseDescription.with(nonTriggeringExamples: examples.nonTriggeringExamples,
                                                triggeringExamples: examples.triggeringExamples)
 
-        await verifyRule(description)
+        verifyRule(description)
     }
 
-    func testCollectionAlignmentWithAlignColons() async {
+    func testCollectionAlignmentWithAlignColons() {
         let baseDescription = CollectionAlignmentRule.description
         let examples = CollectionAlignmentRule.Examples(alignColons: true)
 
         let description = baseDescription.with(nonTriggeringExamples: examples.nonTriggeringExamples,
                                                triggeringExamples: examples.triggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["align_colons": true])
+        verifyRule(description, ruleConfiguration: ["align_colons": true])
     }
 }

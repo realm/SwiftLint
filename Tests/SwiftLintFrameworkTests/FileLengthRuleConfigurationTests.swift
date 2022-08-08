@@ -2,12 +2,12 @@ import SwiftLintFramework
 import XCTest
 
 class FileLengthRuleConfigurationTests: XCTestCase {
-    func testFileLengthWithDefaultConfiguration() async {
-        await verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                         testMultiByteOffsets: false, testShebang: false)
+    func testFileLengthWithDefaultConfiguration() {
+        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
-    func testFileLengthIgnoringLinesWithOnlyComments() async {
+    func testFileLengthIgnoringLinesWithOnlyComments() {
         let triggeringExamples = [
             Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined())
         ]
@@ -21,7 +21,7 @@ class FileLengthRuleConfigurationTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["ignore_comment_only_lines": true],
-                         testMultiByteOffsets: false, testShebang: false)
+        verifyRule(description, ruleConfiguration: ["ignore_comment_only_lines": true],
+                   testMultiByteOffsets: false, testShebang: false)
     }
 }

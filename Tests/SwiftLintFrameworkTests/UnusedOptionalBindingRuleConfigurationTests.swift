@@ -3,17 +3,17 @@ import XCTest
 
 // swiftlint:disable:next type_name
 class UnusedOptionalBindingRuleConfigurationTests: XCTestCase {
-    func testDefaultConfiguration() async {
+    func testDefaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [
             Example("guard let _ = try? alwaysThrows() else { return }")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        await verifyRule(description)
+        verifyRule(description)
     }
 
-    func testIgnoreOptionalTryEnabled() async {
+    func testIgnoreOptionalTryEnabled() {
         // Perform additional tests with the ignore_optional_try settings enabled.
         let baseDescription = UnusedOptionalBindingRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
@@ -21,6 +21,6 @@ class UnusedOptionalBindingRuleConfigurationTests: XCTestCase {
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["ignore_optional_try": true])
+        verifyRule(description, ruleConfiguration: ["ignore_optional_try": true])
     }
 }

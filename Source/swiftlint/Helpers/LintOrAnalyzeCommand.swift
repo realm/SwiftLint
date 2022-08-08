@@ -51,7 +51,7 @@ struct LintOrAnalyzeCommand {
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
-                let (violationsBeforeLeniency, currentRuleTimes) = await linter
+                let (violationsBeforeLeniency, currentRuleTimes) = linter
                     .styleViolationsAndRuleTimes(using: builder.storage)
                 currentViolations = applyLeniency(options: options, violations: violationsBeforeLeniency)
                 visitorMutationQueue.sync {
@@ -60,8 +60,8 @@ struct LintOrAnalyzeCommand {
                     builder.violations += currentViolations
                 }
             } else {
-                currentViolations = await applyLeniency(options: options,
-                                                        violations: linter.styleViolations(using: builder.storage))
+                currentViolations = applyLeniency(options: options,
+                                                  violations: linter.styleViolations(using: builder.storage))
                 visitorMutationQueue.sync {
                     builder.violations += currentViolations
                 }

@@ -2,10 +2,11 @@
 import XCTest
 
 class LineEndingTests: XCTestCase {
-    func testCarriageReturnDoesNotCauseError() async {
-        let results = await violations(
-            Example("// swiftlint:disable all\r\nprint(123)\r\n")
+    func testCarriageReturnDoesNotCauseError() {
+        XCTAssert(
+            violations(
+                Example("// swiftlint:disable all\r\nprint(123)\r\n")
+            ).isEmpty
         )
-        XCTAssert(results.isEmpty)
     }
 }

@@ -2,11 +2,11 @@
 import XCTest
 
 final class PrefixedTopLevelConstantRuleTests: XCTestCase {
-    func testDefaultConfiguration() async {
-        await verifyRule(PrefixedTopLevelConstantRule.description)
+    func testDefaultConfiguration() {
+        verifyRule(PrefixedTopLevelConstantRule.description)
     }
 
-    func testPrivateOnly() async {
+    func testPrivateOnly() {
         let triggeringExamples = [
             Example("private let ↓Foo = 20.0"),
             Example("fileprivate let ↓foo = 20.0")
@@ -21,6 +21,6 @@ final class PrefixedTopLevelConstantRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["only_private": true])
+        verifyRule(description, ruleConfiguration: ["only_private": true])
     }
 }

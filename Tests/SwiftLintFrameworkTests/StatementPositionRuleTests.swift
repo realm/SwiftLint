@@ -2,12 +2,12 @@ import SwiftLintFramework
 import XCTest
 
 class StatementPositionRuleTests: XCTestCase {
-    func testStatementPosition() async {
-        await verifyRule(StatementPositionRule.description)
+    func testStatementPosition() {
+        verifyRule(StatementPositionRule.description)
     }
 
-    func testStatementPositionUncuddled() async {
+    func testStatementPositionUncuddled() {
         let configuration = ["statement_mode": "uncuddled_else"]
-        await verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
+        verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 }

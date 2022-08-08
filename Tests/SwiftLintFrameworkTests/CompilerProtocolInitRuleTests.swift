@@ -4,13 +4,13 @@ import XCTest
 class CompilerProtocolInitRuleTests: XCTestCase {
     private let ruleID = CompilerProtocolInitRule.description.identifier
 
-    func testWithDefaultConfiguration() async {
-        await verifyRule(CompilerProtocolInitRule.description)
+    func testWithDefaultConfiguration() {
+        verifyRule(CompilerProtocolInitRule.description)
     }
 
-    func testViolationMessageForExpressibleByIntegerLiteral() async throws {
+    func testViolationMessageForExpressibleByIntegerLiteral() throws {
         let config = try XCTUnwrap(makeConfig(nil, ruleID))
-        let allViolations = await violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
+        let allViolations = violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
 
         let compilerProtocolInitViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         let violation = try XCTUnwrap(

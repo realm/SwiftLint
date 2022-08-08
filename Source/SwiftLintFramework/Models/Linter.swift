@@ -186,8 +186,8 @@ public struct CollectedLinter {
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All style violations found by this linter.
-    public func styleViolations(using storage: RuleStorage) async -> [StyleViolation] {
-        return await getStyleViolations(using: storage).0
+    public func styleViolations(using storage: RuleStorage) -> [StyleViolation] {
+        return getStyleViolations(using: storage).0
     }
 
     /// Computes or retrieves style violations and the time spent executing each rule.
@@ -196,12 +196,12 @@ public struct CollectedLinter {
     ///
     /// - returns: All style violations found by this linter, and the time spent executing each rule.
     public func styleViolationsAndRuleTimes(using storage: RuleStorage)
-        async -> ([StyleViolation], [(id: String, time: Double)]) {
-            return await getStyleViolations(using: storage, benchmark: true)
+        -> ([StyleViolation], [(id: String, time: Double)]) {
+            return getStyleViolations(using: storage, benchmark: true)
     }
 
     private func getStyleViolations(using storage: RuleStorage,
-                                    benchmark: Bool = false) async -> ([StyleViolation], [(id: String, time: Double)]) {
+                                    benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         guard !file.isEmpty else {
             // Empty files shouldn't trigger violations
             return ([], [])
@@ -218,7 +218,8 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = await rules.concurrentCompactMap {
+        // Using Swift Concurrency for parallel computation here incurs significant overhead
+        let validationResults = rules.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     storage: storage,
                     configuration: self.configuration,

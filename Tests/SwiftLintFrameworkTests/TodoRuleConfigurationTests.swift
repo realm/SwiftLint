@@ -2,26 +2,26 @@ import SwiftLintFramework
 import XCTest
 
 class TodoRuleConfigurationTests: XCTestCase {
-    func testTodo() async {
-        await verifyRule(TodoRule.description, commentDoesntViolate: false)
+    func testTodo() {
+        verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
-    func testTodoMessage() async {
+    func testTodoMessage() {
         let example = Example("fatalError() // TODO: Implement")
-        let violations = await self.violations(example)
+        let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement).")
     }
 
-    func testFixMeMessage() async {
+    func testFixMeMessage() {
         let example = Example("fatalError() // FIXME: Implement")
-        let violations = await self.violations(example)
+        let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement).")
     }
 
-    private func violations(_ example: Example) async -> [StyleViolation] {
+    private func violations(_ example: Example) -> [StyleViolation] {
         let config = makeConfig(nil, TodoRule.description.identifier)!
-        return await SwiftLintFrameworkTests.violations(example, config: config)
+        return SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

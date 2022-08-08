@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class TypeNameRuleTests: XCTestCase {
-    func testTypeName() async {
-        await verifyRule(TypeNameRule.description)
+    func testTypeName() {
+        verifyRule(TypeNameRule.description)
     }
 
-    func testTypeNameWithAllowedSymbols() async {
+    func testTypeNameWithAllowedSymbols() {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class MyType$ {}"),
@@ -17,20 +17,20 @@ class TypeNameRuleTests: XCTestCase {
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
     }
 
-    func testTypeNameWithAllowedSymbolsAndViolation() async {
+    func testTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = TypeNameRule.description
         let triggeringExamples = [
             Example("class ↓My_Type$ {}")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testTypeNameWithIgnoreStartWithLowercase() async {
+    func testTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
             Example("private typealias ↓foo = Void"),
@@ -46,6 +46,6 @@ class TypeNameRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 }

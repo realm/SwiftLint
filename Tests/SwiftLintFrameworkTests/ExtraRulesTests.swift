@@ -2,16 +2,15 @@
 import XCTest
 
 final class ExtraRulesTests: XCTestCase {
-    func testWithDefaultConfiguration() async {
+    func testWithDefaultConfiguration() {
         for ruleType in extraRules() {
-            await verifyRule(ruleType.description)
+            verifyRule(ruleType.description)
         }
     }
 }
 
 extension ExtraRulesTests {
-    // swiftlint:disable:next void_return
-    static var allTests: [(String, (ExtraRulesTests) -> () async throws -> Void)] {
+    static var allTests: [(String, (ExtraRulesTests) -> () throws -> Void)] {
         [("testWithDefaultConfiguration", testWithDefaultConfiguration)]
     }
 }

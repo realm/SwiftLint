@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class PrivateOutletRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() async {
-        await verifyRule(PrivateOutletRule.description)
+    func testWithDefaultConfiguration() {
+        verifyRule(PrivateOutletRule.description)
     }
 
-    func testWithAllowPrivateSet() async {
+    func testWithAllowPrivateSet() {
         let baseDescription = PrivateOutletRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class Foo {\n  @IBOutlet private(set) var label: UILabel?\n}\n"),
@@ -16,6 +16,6 @@ class PrivateOutletRuleTests: XCTestCase {
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["allow_private_set": true])
+        verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 }

@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class MultilineArgumentsRuleTests: XCTestCase {
-    func testMultilineArgumentsWithDefaultConfiguration() async {
-        await verifyRule(MultilineArgumentsRule.description)
+    func testMultilineArgumentsWithDefaultConfiguration() {
+        verifyRule(MultilineArgumentsRule.description)
     }
 
-    func testMultilineArgumentsWithWithNextLine() async {
+    func testMultilineArgumentsWithWithNextLine() {
         let nonTriggeringExamples = [
             Example("foo()"),
             Example("foo(0)"),
@@ -28,10 +28,10 @@ class MultilineArgumentsRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["first_argument_location": "next_line"])
+        verifyRule(description, ruleConfiguration: ["first_argument_location": "next_line"])
     }
 
-    func testMultilineArgumentsWithWithSameLine() async {
+    func testMultilineArgumentsWithWithSameLine() {
         let nonTriggeringExamples = [
             Example("foo()"),
             Example("foo(0)"),
@@ -55,10 +55,10 @@ class MultilineArgumentsRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["first_argument_location": "same_line"])
+        verifyRule(description, ruleConfiguration: ["first_argument_location": "same_line"])
     }
 
-    func testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() async {
+    func testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
         let nonTriggeringExamples: [Example] = [
             Example("foo()"),
             Example("foo(0)"),
@@ -98,6 +98,6 @@ class MultilineArgumentsRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        await verifyRule(description, ruleConfiguration: ["only_enforce_after_first_closure_on_first_line": true])
+        verifyRule(description, ruleConfiguration: ["only_enforce_after_first_closure_on_first_line": true])
     }
 }

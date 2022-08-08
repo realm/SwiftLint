@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class GenericTypeNameRuleTests: XCTestCase {
-    func testGenericTypeName() async {
-        await verifyRule(GenericTypeNameRule.description)
+    func testGenericTypeName() {
+        verifyRule(GenericTypeNameRule.description)
     }
 
-    func testGenericTypeNameWithAllowedSymbols() async {
+    func testGenericTypeNameWithAllowedSymbols() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("func foo<T$>() {}\n"),
@@ -18,20 +18,20 @@ class GenericTypeNameRuleTests: XCTestCase {
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testGenericTypeNameWithAllowedSymbolsAndViolation() async {
+    func testGenericTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamples = [
             Example("func foo<↓T_$>() {}\n")
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testGenericTypeNameWithIgnoreStartWithLowercase() async {
+    func testGenericTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamplesToRemove = [
             Example("func foo<↓type>() {}\n"),
@@ -46,6 +46,6 @@ class GenericTypeNameRuleTests: XCTestCase {
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
-        await verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 }

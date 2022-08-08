@@ -9,7 +9,7 @@ struct Signposts {
         case timeline, file(String)
     }
 
-    static func record<R>(name: StaticString, span: Span = .timeline, body: () -> R) -> R {
+    static func record<R>(name: StaticString, span: Span = .timeline, body: () throws -> R) rethrows -> R {
 #if canImport(os)
         let log: OSLog
         let description: String?
@@ -28,7 +28,7 @@ struct Signposts {
             os_signpost(.begin, log: log, name: name, signpostID: signpostID)
         }
 
-        let result = body()
+        let result = try body()
         if let description = description {
             os_signpost(.end, log: log, name: name, signpostID: signpostID, "%{public}s", description)
         } else {

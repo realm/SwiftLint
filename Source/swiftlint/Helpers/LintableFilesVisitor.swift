@@ -130,29 +130,23 @@ struct LintableFilesVisitor {
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
                        block: @escaping (CollectedLinter) -> Void)
-        -> Result<LintableFilesVisitor, SwiftLintError> {
-        Signposts.record(name: "LintableFilesVisitor.Create") {
+        throws -> LintableFilesVisitor {
+        try Signposts.record(name: "LintableFilesVisitor.Create") {
             let compilerInvocations: CompilerInvocations?
             if options.mode == .lint {
                 compilerInvocations = nil
             } else {
-                switch loadCompilerInvocations(options) {
-                case let .success(invocations):
-                    compilerInvocations = invocations
-                case let .failure(error):
-                    return .failure(error)
-                }
+                compilerInvocations = try loadCompilerInvocations(options)
             }
 
-            let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
-                                               useSTDIN: options.useSTDIN, quiet: options.quiet,
-                                               useScriptInputFiles: options.useScriptInputFiles,
-                                               forceExclude: options.forceExclude,
-                                               useExcludingByPrefix: options.useExcludingByPrefix,
-                                               cache: cache,
-                                               compilerInvocations: compilerInvocations,
-                                               allowZeroLintableFiles: allowZeroLintableFiles, block: block)
-            return .success(visitor)
+            return LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
+                                        useSTDIN: options.useSTDIN, quiet: options.quiet,
+                                        useScriptInputFiles: options.useScriptInputFiles,
+                                        forceExclude: options.forceExclude,
+                                        useExcludingByPrefix: options.useExcludingByPrefix,
+                                        cache: cache,
+                                        compilerInvocations: compilerInvocations,
+                                        allowZeroLintableFiles: allowZeroLintableFiles, block: block)
         }
     }
 
@@ -176,28 +170,24 @@ struct LintableFilesVisitor {
         }
     }
 
-    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions)
-        -> Result<CompilerInvocations, SwiftLintError> {
+    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions) throws -> CompilerInvocations {
         if let path = options.compilerLogPath {
             guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
-                return .failure(
-                    .usageError(description: "Could not read compiler log at path: '\(path)'")
-                )
+                throw SwiftLintError.usageError(description: "Could not read compiler log at path: '\(path)'")
             }
 
-            return .success(.buildLog(compilerInvocations: compilerInvocations))
+            return .buildLog(compilerInvocations: compilerInvocations)
         } else if let path = options.compileCommands {
-            switch self.loadCompileCommands(path) {
-            case .success(let compileCommands):
-                return .success(.compilationDatabase(compileCommands: compileCommands))
-            case .failure(let error):
-                return .failure(.usageError(
+            do {
+                return .compilationDatabase(compileCommands: try self.loadCompileCommands(path))
+            } catch {
+                throw SwiftLintError.usageError(
                     description: "Could not read compilation database at path: '\(path)' \(error.localizedDescription)"
-                ))
+                )
             }
         }
 
-        return .failure(.usageError(description: "Could not read compiler invocations"))
+        throw SwiftLintError.usageError(description: "Could not read compiler invocations")
     }
 
     private static func loadLogCompilerInvocations(_ path: String) -> [[String]]? {
@@ -213,14 +203,14 @@ struct LintableFilesVisitor {
         return nil
     }
 
-    private static func loadCompileCommands(_ path: String) -> Result<[File: Arguments], CompileCommandsLoadError> {
+    private static func loadCompileCommands(_ path: String) throws -> [File: Arguments] {
         guard let jsonContents = FileManager.default.contents(atPath: path) else {
-            return .failure(.nonExistentFile(path))
+            throw CompileCommandsLoadError.nonExistentFile(path)
         }
 
         guard let object = try? JSONSerialization.jsonObject(with: jsonContents),
             let compileDB = object as? [[String: Any]] else {
-            return .failure(.malformedCommands(path))
+            throw CompileCommandsLoadError.malformedCommands(path)
         }
 
         // Convert the compilation database to a dictionary, with source files as keys and compiler arguments as values.
@@ -229,21 +219,21 @@ struct LintableFilesVisitor {
         var commands = [File: Arguments]()
         for (index, entry) in compileDB.enumerated() {
             guard let file = entry["file"] as? String else {
-                return .failure(.malformedFile(path, index))
+                throw CompileCommandsLoadError.malformedFile(path, index)
             }
 
             guard let arguments = entry["arguments"] as? [String] else {
-                return .failure(.malformedArguments(path, index))
+                throw CompileCommandsLoadError.malformedArguments(path, index)
             }
 
             guard arguments.contains(file) else {
-                return .failure(.missingFileInArguments(path, index, arguments))
+                throw CompileCommandsLoadError.missingFileInArguments(path, index, arguments)
             }
 
             commands[file] = arguments.filteringCompilerArguments
         }
 
-        return .success(commands)
+        return commands
     }
 }
 

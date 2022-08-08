@@ -5,39 +5,31 @@ import SwiftLintFramework
 
 private let indexIncrementerQueue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")
 
-private func scriptInputFiles() -> Result<[SwiftLintFile], SwiftLintError> {
-    func getEnvironmentVariable(_ variable: String) -> Result<String, SwiftLintError> {
-        let environment = ProcessInfo.processInfo.environment
-        if let value = environment[variable] {
-            return .success(value)
-        }
-        return .failure(.usageError(description: "Environment variable not set: \(variable)"))
+private func scriptInputFiles() throws -> [SwiftLintFile] {
+    let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
+    guard let countString = ProcessInfo.processInfo.environment[inputFileKey] else {
+        throw SwiftLintError.usageError(description: "\(inputFileKey) variable not set")
     }
 
-    let count: Result<Int, SwiftLintError> = {
-        let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
-        guard let countString = ProcessInfo.processInfo.environment[inputFileKey] else {
-            return .failure(.usageError(description: "\(inputFileKey) variable not set"))
-        }
-        if let count = Int(countString) {
-            return .success(count)
-        }
-        return .failure(.usageError(description: "\(inputFileKey) did not specify a number"))
-    }()
+    guard let count = Int(countString) else {
+        throw SwiftLintError.usageError(description: "\(inputFileKey) did not specify a number")
+    }
 
-    return count.flatMap { count in
-        return .success((0..<count).compactMap { fileNumber in
-            switch getEnvironmentVariable("SCRIPT_INPUT_FILE_\(fileNumber)") {
-            case let .success(path):
-                if path.bridge().isSwiftFile() {
-                    return SwiftLintFile(pathDeferringReading: path)
-                }
-                return nil
-            case let .failure(error):
-                queuedPrintError(String(describing: error))
-                return nil
+    return (0..<count).compactMap { fileNumber in
+        do {
+            let environment = ProcessInfo.processInfo.environment
+            let variable = "SCRIPT_INPUT_FILE_\(fileNumber)"
+            guard let path = environment[variable] else {
+                throw SwiftLintError.usageError(description: "Environment variable not set: \(variable)")
             }
-        })
+            if path.bridge().isSwiftFile() {
+                return SwiftLintFile(pathDeferringReading: path)
+            }
+            return nil
+        } catch {
+            queuedPrintError(String(describing: error))
+            return nil
+        }
     }
 }
 
@@ -46,44 +38,42 @@ private func autoreleasepool<T>(block: () -> T) -> T { return block() }
 #endif
 
 extension Configuration {
-    func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage)
-        -> Result<[SwiftLintFile], SwiftLintError> {
-        return Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
-            getFiles(with: visitor)
+    func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage) throws -> [SwiftLintFile] {
+        let files = try Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
+            try getFiles(with: visitor)
         }
-        .flatMap { files in
-            Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
-                groupFiles(files, visitor: visitor)
+        let groupedFiles = try Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
+            try groupFiles(files, visitor: visitor)
+        }
+        let lintersForFile = Signposts.record(name: "Configuration.VisitLintableFiles.LintersForFile") {
+            groupedFiles.map { file in
+                linters(for: [file.key: file.value], visitor: visitor)
             }
         }
-        .map { file in
-            Signposts.record(name: "Configuration.VisitLintableFiles.LintersForFile") {
-                linters(for: file, visitor: visitor)
+        let duplicateFileNames = Signposts.record(name: "Configuration.VisitLintableFiles.DuplicateFileNames") {
+            lintersForFile.map(\.duplicateFileNames)
+        }
+        let collected = Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
+            zip(lintersForFile, duplicateFileNames).map { linters, duplicateFileNames in
+                collect(linters: linters, visitor: visitor, storage: storage,
+                        duplicateFileNames: duplicateFileNames)
             }
         }
-        .map { linters in
-            Signposts.record(name: "Configuration.VisitLintableFiles.DuplicateFileNames") {
-                (linters, linters.duplicateFileNames)
+        let result = Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
+            collected.map { linters, duplicateFileNames in
+                visit(linters: linters, visitor: visitor, storage: storage,
+                      duplicateFileNames: duplicateFileNames)
             }
         }
-        .map { linters, duplicateFileNames in
-            Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
-                collect(linters: linters, visitor: visitor, storage: storage, duplicateFileNames: duplicateFileNames)
-            }
-        }
-        .map { linters, duplicateFileNames in
-            Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
-                visit(linters: linters, visitor: visitor, storage: storage, duplicateFileNames: duplicateFileNames)
-            }
-        }
+        return result.flatMap { $0 }
     }
 
-    private func groupFiles(_ files: [SwiftLintFile],
-                            visitor: LintableFilesVisitor)
-        -> Result<[Configuration: [SwiftLintFile]], SwiftLintError> {
+    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws
+        -> [Configuration: [SwiftLintFile]] {
         if files.isEmpty && !visitor.allowZeroLintableFiles {
-            let errorMessage = "No lintable files found at paths: '\(visitor.paths.joined(separator: ", "))'"
-            return .failure(.usageError(description: errorMessage))
+            throw SwiftLintError.usageError(
+                description: "No lintable files found at paths: '\(visitor.paths.joined(separator: ", "))'"
+            )
         }
 
         var groupedFiles = [Configuration: [SwiftLintFile]]()
@@ -104,7 +94,7 @@ extension Configuration {
             }
         }
 
-        return .success(groupedFiles)
+        return groupedFiles
     }
 
     private func outputFilename(for path: String, duplicateFileNames: Set<String>) -> String {
@@ -201,36 +191,34 @@ extension Configuration {
                 }
             }
 
-            autoreleasepool {
-                Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
-                    visitor.block(linter)
-                }
+            Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+                visitor.block(linter)
             }
             return linter.file
         }
-        return visitor.parallel ? linters.parallelMap(transform: visit) : linters.map(visit)
+        return visitor.parallel ?
+            linters.parallelMap(transform: visit) :
+            linters.map(visit)
     }
 
-    fileprivate func getFiles(with visitor: LintableFilesVisitor) -> Result<[SwiftLintFile], SwiftLintError> {
+    fileprivate func getFiles(with visitor: LintableFilesVisitor) throws -> [SwiftLintFile] {
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             if let stdinString = String(data: stdinData, encoding: .utf8) {
-                return .success([SwiftLintFile(contents: stdinString)])
+                return [SwiftLintFile(contents: stdinString)]
             }
-            return .failure(.usageError(description: "stdin isn't a UTF8-encoded string"))
+            throw SwiftLintError.usageError(description: "stdin isn't a UTF8-encoded string")
         } else if visitor.useScriptInputFiles {
-            return scriptInputFiles()
-                .map { files in
-                    guard visitor.forceExclude else {
-                        return files
-                    }
+            let files = try scriptInputFiles()
+            guard visitor.forceExclude else {
+                return files
+            }
 
-                    let scriptInputPaths = files.compactMap { $0.path }
-                    let filesToLint = visitor.useExcludingByPrefix
-                                      ? filterExcludedPathsByPrefix(in: scriptInputPaths)
-                                      : filterExcludedPaths(in: scriptInputPaths)
-                    return filesToLint.map(SwiftLintFile.init(pathDeferringReading:))
-                }
+            let scriptInputPaths = files.compactMap { $0.path }
+            let filesToLint = visitor.useExcludingByPrefix ?
+                filterExcludedPathsByPrefix(in: scriptInputPaths) :
+                filterExcludedPaths(in: scriptInputPaths)
+            return filesToLint.map(SwiftLintFile.init(pathDeferringReading:))
         }
         if !visitor.quiet {
             let filesInfo: String
@@ -242,21 +230,18 @@ extension Configuration {
 
             queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
         }
-        return .success(visitor.paths.flatMap {
+        return visitor.paths.flatMap {
             self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude,
                                excludeByPrefix: visitor.useExcludingByPrefix)
-        })
+        }
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) -> Void)
-        -> Result<[SwiftLintFile], SwiftLintError> {
-            return LintableFilesVisitor.create(options,
-                                               cache: cache,
-                                               allowZeroLintableFiles: allowZeroLintableFiles,
-                                               block: visitorBlock).flatMap({ visitor in
-            visitLintableFiles(with: visitor, storage: storage)
-        })
+                            visitorBlock: @escaping (CollectedLinter) -> Void) throws -> [SwiftLintFile] {
+        let visitor = try LintableFilesVisitor.create(options, cache: cache,
+                                                      allowZeroLintableFiles: allowZeroLintableFiles,
+                                                      block: visitorBlock)
+        return try visitLintableFiles(with: visitor, storage: storage)
     }
 
     // MARK: LintOrAnalyze Command

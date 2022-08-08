@@ -1,19 +1,19 @@
 import SwiftLintFramework
 import XCTest
 
- class MissingDocsRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MissingDocsRule.description)
+class MissingDocsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() async {
+        await verifyRule(MissingDocsRule.description)
     }
 
-    func testWithExcludesExtensionsDisabled() {
+    func testWithExcludesExtensionsDisabled() async {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
         let triggeringComments = [
             Example("""
             public extension A {}
             """
-            )
+                   )
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
@@ -21,11 +21,11 @@ import XCTest
         let description = baseDescription
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        verifyRule(description,
-                   ruleConfiguration: ["excludes_extensions": false])
+        await verifyRule(description,
+                         ruleConfiguration: ["excludes_extensions": false])
     }
 
-    func testWithExcludesInheritedTypesDisabled() {
+    func testWithExcludesInheritedTypesDisabled() async {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = MissingDocsRule.description
         let triggeringComments = [
@@ -54,7 +54,7 @@ import XCTest
         let description = baseDescription
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
-        verifyRule(description,
-                   ruleConfiguration: ["excludes_inherited_types": false])
+        await verifyRule(description,
+                         ruleConfiguration: ["excludes_inherited_types": false])
     }
- }
+}

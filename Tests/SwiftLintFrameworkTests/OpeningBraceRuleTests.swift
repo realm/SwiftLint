@@ -2,12 +2,12 @@
 import XCTest
 
 class OpeningBraceRuleTests: XCTestCase {
-    func testOpeningBraceWithDefaultConfiguration() {
-        verifyRule(OpeningBraceRule.description)
+    func testOpeningBraceWithDefaultConfiguration() async {
+        await verifyRule(OpeningBraceRule.description)
     }
 
     // swiftlint:disable function_body_length
-    func testWithAllowMultilineTrue() {
+    func testWithAllowMultilineTrue() async {
         // Test with `same_line` set to false
 
         let nonTriggeringExamples = [
@@ -92,6 +92,6 @@ class OpeningBraceRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
+        await verifyRule(description, ruleConfiguration: ["allow_multiline_func": true])
     }
 }

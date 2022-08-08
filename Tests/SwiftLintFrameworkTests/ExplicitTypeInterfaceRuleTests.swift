@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
-    func testExplicitTypeInterface() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
+    func testExplicitTypeInterface() async {
+        await verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
-    func testLocalVars() {
+    func testLocalVars() async {
         let nonTriggeringExamples = [
             Example("func foo() {\nlet intVal: Int = 1\n}"),
             Example("""
@@ -31,10 +31,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description)
+        await verifyRule(description)
     }
 
-    func testExcludeLocalVars() {
+    func testExcludeLocalVars() async {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("func foo() {\nlet intVal = 1\n}")
         ]
@@ -43,10 +43,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
+        await verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
     }
 
-    func testExcludeClassVars() {
+    func testExcludeClassVars() async {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("class Foo {\n  static var myStaticVar = 0\n}\n"),
             Example("class Foo {\n  static let myStaticLet = 0\n}\n")
@@ -60,10 +60,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
+        await verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
     }
 
-    func testAllowRedundancy() {
+    func testAllowRedundancy() async {
         let nonTriggeringExamples: [Example] = [
             Example("class Foo {\n  var myVar: Int? = 0\n}\n"),
             Example("class Foo {\n  let myVar: Int? = 0\n}\n"),
@@ -91,10 +91,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
+        await verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
     }
 
-    func testEmbededInStatements() {
+    func testEmbededInStatements() async {
         let nonTriggeringExamples = [
             Example("""
             func foo() {
@@ -118,10 +118,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description)
+        await verifyRule(description)
     }
 
-    func testCaptureGroup() {
+    func testCaptureGroup() async {
         let nonTriggeringExamples = [
             Example("""
             var k: Int = 0
@@ -151,10 +151,10 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description)
+        await verifyRule(description)
     }
 
-    func testFastEnumerationDeclaration() {
+    func testFastEnumerationDeclaration() async {
         let nonTriggeringExaples = [
             Example("""
             func foo() {
@@ -174,11 +174,11 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExaples)
-        verifyRule(description)
+        await verifyRule(description)
     }
 
     // swiftlint:disable function_body_length
-    func testSwitchCaseDeclarations() {
+    func testSwitchCaseDeclarations() async {
         let nonTriggeringExamples = [
             Example("""
             enum Foo {
@@ -238,6 +238,6 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
-        verifyRule(description)
+        await verifyRule(description)
     }
 }

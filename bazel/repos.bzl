@@ -25,6 +25,14 @@ def swiftlint_repos():
     )
 
     http_archive(
+        name = "com_github_johnsundell_collectionconcurrencykit",
+        sha256 = "9083fe6f8b4f820bfb5ef5c555b31953116f158ec113e94c6406686e78da34aa",
+        build_file = "@SwiftLint//bazel:CollectionConcurrencyKit.BUILD",
+        strip_prefix = "CollectionConcurrencyKit-0.2.0",
+        url = "https://github.com/JohnSundell/CollectionConcurrencyKit/archive/refs/tags/0.2.0.tar.gz",
+    )
+
+    http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",
         sha256 = "8460b44f8378c4201d15bd2617b2d8d1dbf5fef28cb8886ced4b72ad201e2361",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",

@@ -31,31 +31,31 @@ class CyclomaticComplexityRuleConfigurationTests: XCTestCase {
         return Example(example)
     }()
 
-    func testCyclomaticComplexity() {
-        verifyRule(CyclomaticComplexityRule.description, commentDoesntViolate: true, stringDoesntViolate: true)
+    func testCyclomaticComplexity() async {
+        await verifyRule(CyclomaticComplexityRule.description, commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testIgnoresCaseStatementsConfigurationEnabled() {
+    func testIgnoresCaseStatementsConfigurationEnabled() async {
         let baseDescription = CyclomaticComplexityRule.description
         let triggeringExamples = [complexIfExample]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [complexSwitchExample]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-                                         .with(triggeringExamples: triggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_case_statements": true],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
+        await verifyRule(description, ruleConfiguration: ["ignores_case_statements": true],
+                         commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testIgnoresCaseStatementsConfigurationDisabled() {
+    func testIgnoresCaseStatementsConfigurationDisabled() async {
         let baseDescription = CyclomaticComplexityRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [complexSwitchExample]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-                                         .with(triggeringExamples: triggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_case_statements": false],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
+        await verifyRule(description, ruleConfiguration: ["ignores_case_statements": false],
+                         commentDoesntViolate: true, stringDoesntViolate: true)
     }
 }

@@ -2,12 +2,12 @@
 import XCTest
 
 class EmptyCountRuleTests: XCTestCase {
-    func testEmptyCountWithDefaultConfiguration() {
+    func testEmptyCountWithDefaultConfiguration() async {
         // Test with default parameters
-        verifyRule(EmptyCountRule.description)
+        await verifyRule(EmptyCountRule.description)
     }
 
-    func testEmptyCountWithOnlyAfterDot() {
+    func testEmptyCountWithOnlyAfterDot() async {
         // Test with `only_after_dot` set to true
         let nonTriggeringExamples = [
             Example("var count = 0\n"),
@@ -35,6 +35,6 @@ class EmptyCountRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["only_after_dot": true])
+        await verifyRule(description, ruleConfiguration: ["only_after_dot": true])
     }
 }

@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class PrivateOverFilePrivateRuleTests: XCTestCase {
-    func testPrivateOverFilePrivateWithDefaultConfiguration() {
-        verifyRule(PrivateOverFilePrivateRule.description)
+    func testPrivateOverFilePrivateWithDefaultConfiguration() async {
+        await verifyRule(PrivateOverFilePrivateRule.description)
     }
 
-    func testPrivateOverFilePrivateValidatingExtensions() {
+    func testPrivateOverFilePrivateValidatingExtensions() async {
         let baseDescription = PrivateOverFilePrivateRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [
             Example("↓fileprivate extension String {}"),
@@ -21,16 +21,16 @@ class PrivateOverFilePrivateRuleTests: XCTestCase {
 
         let description = baseDescription.with(nonTriggeringExamples: [])
             .with(triggeringExamples: triggeringExamples).with(corrections: corrections)
-        verifyRule(description, ruleConfiguration: ["validate_extensions": true])
+        await verifyRule(description, ruleConfiguration: ["validate_extensions": true])
     }
 
-    func testPrivateOverFilePrivateNotValidatingExtensions() {
+    func testPrivateOverFilePrivateNotValidatingExtensions() async {
         let baseDescription = PrivateOverFilePrivateRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("fileprivate extension String {}")
         ]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
-        verifyRule(description, ruleConfiguration: ["validate_extensions": false])
+        await verifyRule(description, ruleConfiguration: ["validate_extensions": false])
     }
 }

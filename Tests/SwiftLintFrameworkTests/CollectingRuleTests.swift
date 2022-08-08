@@ -2,7 +2,7 @@
 import XCTest
 
 class CollectingRuleTests: XCTestCase {
-    func testCollectsIntoStorage() {
+    func testCollectsIntoStorage() async {
         struct Spec: MockCollectingRule {
             func collectInfo(for file: SwiftLintFile) -> Int {
                 return 42
@@ -14,10 +14,11 @@ class CollectingRuleTests: XCTestCase {
             }
         }
 
-        XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!).isEmpty)
+        let results = await violations(Example("_ = 0"), config: Spec.configuration!)
+        XCTAssertFalse(results.isEmpty)
     }
 
-    func testCollectsAllFiles() {
+    func testCollectsAllFiles() async {
         struct Spec: MockCollectingRule {
             func collectInfo(for file: SwiftLintFile) -> String {
                 return file.contents
@@ -33,10 +34,11 @@ class CollectingRuleTests: XCTestCase {
         }
 
         let inputs = ["foo", "bar", "baz"]
-        XCTAssertEqual(inputs.violations(config: Spec.configuration!).count, inputs.count)
+        let count = await inputs.violations(config: Spec.configuration!).count
+        XCTAssertEqual(count, inputs.count)
     }
 
-    func testCollectsAnalyzerFiles() {
+    func testCollectsAnalyzerFiles() async {
         struct Spec: MockCollectingRule, AnalyzerRule {
             func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> [String] {
                 return compilerArguments
@@ -49,7 +51,8 @@ class CollectingRuleTests: XCTestCase {
             }
         }
 
-        XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
+        let results = await violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true)
+        XCTAssertFalse(results.isEmpty)
     }
 
     func testCorrects() {

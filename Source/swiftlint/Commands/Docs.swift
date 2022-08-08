@@ -7,7 +7,7 @@ extension SwiftLint {
             abstract: "Open SwiftLint documentation website in the default web browser"
         )
 
-        mutating func run() throws {
+        func run() throws {
             open(URL(string: "https://realm.github.io/SwiftLint")!)
         }
     }

@@ -50,24 +50,6 @@ extension Array {
             let pivot = try copy.partition(by: belongsInSecondPartition)
             return (copy[0..<pivot], copy[pivot..<count])
     }
-
-    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
-        return parallelMap(transform: transform).flatMap { $0 }
-    }
-
-    func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
-        return parallelMap(transform: transform).compactMap { $0 }
-    }
-
-    func parallelMap<T>(transform: (Element) -> T) -> [T] {
-        var result = ContiguousArray<T?>(repeating: nil, count: count)
-        return result.withUnsafeMutableBufferPointer { buffer in
-            DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
-                buffer[idx] = transform(self[idx])
-            }
-            return buffer.map { $0! }
-        }
-    }
 }
 
 extension Collection {

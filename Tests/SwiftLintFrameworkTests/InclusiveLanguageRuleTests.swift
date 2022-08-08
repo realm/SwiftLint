@@ -2,25 +2,25 @@
 import XCTest
 
 class InclusiveLanguageRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(InclusiveLanguageRule.description)
+    func testWithDefaultConfiguration() async {
+        await verifyRule(InclusiveLanguageRule.description)
     }
 
-    func testNonTriggeringExamplesWithNonDefaultConfig() {
-        InclusiveLanguageRuleExamples.nonTriggeringExamplesWithConfig.forEach { example in
+    func testNonTriggeringExamplesWithNonDefaultConfig() async {
+        for example in InclusiveLanguageRuleExamples.nonTriggeringExamplesWithConfig {
             let description = InclusiveLanguageRule.description
                 .with(nonTriggeringExamples: [example])
                 .with(triggeringExamples: [])
-            verifyRule(description, ruleConfiguration: example.configuration)
+            await verifyRule(description, ruleConfiguration: example.configuration)
         }
     }
 
-    func testTriggeringExamplesWithNonDefaultConfig() {
-        InclusiveLanguageRuleExamples.triggeringExamplesWithConfig.forEach { example in
+    func testTriggeringExamplesWithNonDefaultConfig() async {
+        for example in InclusiveLanguageRuleExamples.triggeringExamplesWithConfig {
             let description = InclusiveLanguageRule.description
                 .with(nonTriggeringExamples: [])
                 .with(triggeringExamples: [example])
-            verifyRule(description, ruleConfiguration: example.configuration)
+            await verifyRule(description, ruleConfiguration: example.configuration)
         }
     }
 }

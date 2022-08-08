@@ -2,8 +2,8 @@
 import XCTest
 
 class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
+    func testWithDefaultConfiguration() async {
+        await verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 
     func testImplicitlyUnwrappedOptionalRuleDefaultConfiguration() {
@@ -12,7 +12,7 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
         XCTAssertEqual(rule.configuration.severity.severity, .warning)
     }
 
-    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
+    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() async {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
             Example("@IBOutlet private var label: UILabel!"),
@@ -24,7 +24,7 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["mode": "all"],
-                   commentDoesntViolate: true, stringDoesntViolate: true)
+        await verifyRule(description, ruleConfiguration: ["mode": "all"],
+                         commentDoesntViolate: true, stringDoesntViolate: true)
     }
 }

@@ -2,11 +2,11 @@
 import XCTest
 
 class ImplicitReturnRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ImplicitReturnRule.description)
+    func testWithDefaultConfiguration() async {
+        await verifyRule(ImplicitReturnRule.description)
     }
 
-    func testOnlyClosureKindIncluded() {
+    func testOnlyClosureKindIncluded() async {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.FunctionExamples.nonTriggeringExamples +
@@ -21,10 +21,10 @@ class ImplicitReturnRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .closure)
+        await self.verifyRule(description, returnKind: .closure)
     }
 
-    func testOnlyFunctionKindIncluded() {
+    func testOnlyFunctionKindIncluded() async {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples +
@@ -39,10 +39,10 @@ class ImplicitReturnRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .function)
+        await self.verifyRule(description, returnKind: .function)
     }
 
-    func testOnlyGetterKindIncluded() {
+    func testOnlyGetterKindIncluded() async {
         let nonTriggeringExamples = ImplicitReturnRuleExamples.GenericExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.nonTriggeringExamples +
             ImplicitReturnRuleExamples.ClosureExamples.triggeringExamples +
@@ -57,10 +57,11 @@ class ImplicitReturnRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .getter)
+        await self.verifyRule(description, returnKind: .getter)
     }
 
-    private func verifyRule(_ ruleDescription: RuleDescription, returnKind: ImplicitReturnConfiguration.ReturnKind) {
-        self.verifyRule(ruleDescription, ruleConfiguration: ["included": [returnKind.rawValue]])
+    private func verifyRule(_ ruleDescription: RuleDescription,
+                            returnKind: ImplicitReturnConfiguration.ReturnKind) async {
+        await self.verifyRule(ruleDescription, ruleConfiguration: ["included": [returnKind.rawValue]])
     }
 }

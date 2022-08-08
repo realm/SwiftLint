@@ -2,12 +2,12 @@
 import XCTest
 
 class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
-    func testConditionalReturnsOnNewlineWithDefaultConfiguration() {
+    func testConditionalReturnsOnNewlineWithDefaultConfiguration() async {
         // Test with default parameters
-        verifyRule(ConditionalReturnsOnNewlineRule.description)
+        await verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
-    func testConditionalReturnsOnNewlineWithIfOnly() {
+    func testConditionalReturnsOnNewlineWithIfOnly() async {
         // Test with `if_only` set to true
         let nonTriggeringExamples = [
             Example("guard true else {\n return true\n}"),
@@ -30,6 +30,6 @@ class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["if_only": true])
+        await verifyRule(description, ruleConfiguration: ["if_only": true])
     }
 }

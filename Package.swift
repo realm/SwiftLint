@@ -10,6 +10,7 @@ private let staticSwiftSyntax = false
 #endif
 
 let frameworkDependencies: [Target.Dependency] = [
+    "CollectionConcurrencyKit",
     .product(name: "SourceKittenFramework", package: "SourceKitten"),
     .product(name: "SwiftSyntax", package: "SwiftSyntax"),
     .product(name: "SwiftSyntaxParser", package: "SwiftSyntax"),
@@ -31,12 +32,14 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.32.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
+        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0")
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.5.1"))] : []),
     targets: [
         .executableTarget(
             name: "swiftlint",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                "CollectionConcurrencyKit",
                 "SwiftLintFramework",
                 "SwiftyTextTable",
             ]

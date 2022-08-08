@@ -3,7 +3,7 @@ import XCTest
 
 // swiftlint:disable:next type_body_length
 class ModifierOrderTests: XCTestCase {
-    func testAttributeTypeMethod() {
+    func testAttributeTypeMethod() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example("""
@@ -31,44 +31,44 @@ class ModifierOrderTests: XCTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["typeMethods", "acl"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["typeMethods", "acl"]])
     }
 
-    func testRightOrderedModifierGroups() {
+    func testRightOrderedModifierGroups() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example("public protocol Foo: class {}\n" +
-                "public weak internal(set) var bar: Foo? \n"),
+                        "public weak internal(set) var bar: Foo? \n"),
                 Example("open final class Foo {" +
-                "  fileprivate static  func bar() {} \n" +
-                "  open class func barFoo() {} }"),
+                        "  fileprivate static  func bar() {} \n" +
+                        "  open class func barFoo() {} }"),
                 Example("public struct Foo {" +
-                "  private mutating func bar() {} }")
+                        "  private mutating func bar() {} }")
             ])
             .with(triggeringExamples: [
                 Example("public protocol Foo: class {} \n" +
-                "public internal(set) weak var bar: Foo? \n"),
+                        "public internal(set) weak var bar: Foo? \n"),
                 Example("final public class Foo {" +
-                "  static fileprivate func bar() {} \n" +
-                "  class open func barFoo() {} }"),
+                        "  static fileprivate func bar() {} \n" +
+                        "  class open func barFoo() {} }"),
                 Example("public struct Foo {" +
-                "  mutating private func bar() {} }")
+                        "  mutating private func bar() {} }")
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["acl",
-                                                                    "typeMethods",
-                                                                    "owned",
-                                                                    "setterACL",
-                                                                    "final",
-                                                                    "mutators",
-                                                                    "override"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["acl",
+                                                                          "typeMethods",
+                                                                          "owned",
+                                                                          "setterACL",
+                                                                          "final",
+                                                                          "mutators",
+                                                                          "override"]])
     }
 
     // swiftlint:disable function_body_length
-    func testAtPrefixedGroup() {
+    func testAtPrefixedGroup() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example(#"""
@@ -161,11 +161,11 @@ class ModifierOrderTests: XCTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
     }
 
-    func testNonSpecifiedModifiersDontInterfere() {
+    func testNonSpecifiedModifiersDontInterfere() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
                 Example("""
@@ -213,11 +213,11 @@ class ModifierOrderTests: XCTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
     }
 
-    func testCorrectionsAreAppliedCorrectly() {
+    func testCorrectionsAreAppliedCorrectly() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
             .with(corrections: [
@@ -226,7 +226,7 @@ class ModifierOrderTests: XCTestCase {
                     private final override var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     final override private var bar: UIView?
                 }
@@ -236,7 +236,7 @@ class ModifierOrderTests: XCTestCase {
                     private final var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     final private var bar: UIView?
                 }
@@ -246,7 +246,7 @@ class ModifierOrderTests: XCTestCase {
                     class private final var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     final private class var bar: UIView?
                 }
@@ -261,7 +261,7 @@ class ModifierOrderTests: XCTestCase {
                     var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     @objc
                     final
@@ -274,16 +274,16 @@ class ModifierOrderTests: XCTestCase {
                 Example("""
                 private final class Foo {}
                 """):
-                Example("""
+                    Example("""
                 final private class Foo {}
                 """)
             ])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
-    func testCorrectionsAreNotAppliedToIrrelevantModifier() {
+    func testCorrectionsAreNotAppliedToIrrelevantModifier() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
             .with(corrections: [
@@ -292,7 +292,7 @@ class ModifierOrderTests: XCTestCase {
                     weak class final var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     weak final class var bar: UIView?
                 }
@@ -302,7 +302,7 @@ class ModifierOrderTests: XCTestCase {
                     static weak final var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     final weak static var bar: UIView?
                 }
@@ -312,7 +312,7 @@ class ModifierOrderTests: XCTestCase {
                     class final weak var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     final class weak var bar: UIView?
                 }
@@ -327,7 +327,7 @@ class ModifierOrderTests: XCTestCase {
                     var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     @objc
                     final
@@ -342,47 +342,47 @@ class ModifierOrderTests: XCTestCase {
                     var bar: UIView?
                 }
                 """):
-                Example("""
+                    Example("""
                 class Foo {
                     var bar: UIView?
                 }
                 """)
             ])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
-    func testTypeMethodClassCorrection() {
+    func testTypeMethodClassCorrection() async {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
             .with(corrections: [
                 Example("""
                 private final class Foo {}
                 """):
-                Example("""
+                    Example("""
                 final private class Foo {}
                 """),
                 Example("""
                 public protocol Foo: class {}\n
                 """):
-                Example("""
+                    Example("""
                 public protocol Foo: class {}\n
                 """)
             ])
 
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]])
+        await verifyRule(descriptionOverride,
+                         ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]])
     }
 
-    func testViolationMessage() {
+    func testViolationMessage() async {
         let ruleID = ModifierOrderRule.description.identifier
         guard let config = makeConfig(["preferred_modifier_order": ["acl", "final"]], ruleID) else {
             XCTFail("Failed to create configuration")
             return
         }
 
-        let allViolations = violations(Example("final public var foo: String"), config: config)
+        let allViolations = await violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {
             XCTAssertEqual(violation.reason, "public modifier should be before final.")

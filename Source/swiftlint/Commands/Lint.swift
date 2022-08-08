@@ -2,7 +2,7 @@ import ArgumentParser
 import SwiftLintFramework
 
 extension SwiftLint {
-    struct Lint: ParsableCommand {
+    struct Lint: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Print lint warnings and errors")
 
         @OptionGroup
@@ -22,7 +22,7 @@ extension SwiftLint {
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 
-        mutating func run() throws {
+        func run() async throws {
             let allPaths: [String]
             if let path = path {
                 queuedPrintError("""
@@ -56,13 +56,7 @@ extension SwiftLint {
                 compileCommands: nil,
                 inProcessSourcekit: common.inProcessSourcekit
             )
-            let result = LintOrAnalyzeCommand.run(options)
-            switch result {
-            case .success:
-                return
-            case .failure(let error):
-                throw error
-            }
+            try await LintOrAnalyzeCommand.run(options)
         }
     }
 }

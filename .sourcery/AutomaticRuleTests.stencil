@@ -5,8 +5,8 @@ import XCTest
 
 {% for rule in types.structs|based:"AutomaticTestableRule" %}
 class {{ rule.name }}Tests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule({{ rule.name }}.description)
+    func testWithDefaultConfiguration() async {
+        await verifyRule({{ rule.name }}.description)
     }
 }
 {% if not forloop.last %}

@@ -2,11 +2,11 @@ import SwiftLintFramework
 import XCTest
 
 class NumberSeparatorRuleTests: XCTestCase {
-    func testNumberSeparatorWithDefaultConfiguration() {
-        verifyRule(NumberSeparatorRule.description)
+    func testNumberSeparatorWithDefaultConfiguration() async {
+        await verifyRule(NumberSeparatorRule.description)
     }
 
-    func testNumberSeparatorWithMinimumLength() {
+    func testNumberSeparatorWithMinimumLength() async {
         let nonTriggeringExamples = [
             Example("let foo = 10_000"),
             Example("let foo = 1000"),
@@ -30,10 +30,10 @@ class NumberSeparatorRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["minimum_length": 5])
+        await verifyRule(description, ruleConfiguration: ["minimum_length": 5])
     }
 
-    func testNumberSeparatorWithMinimumFractionLength() {
+    func testNumberSeparatorWithMinimumFractionLength() async {
         let nonTriggeringExamples = [
             Example("let foo = 1_000.000_000_1"),
             Example("let foo = 1.000_001"),
@@ -56,10 +56,10 @@ class NumberSeparatorRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
+        await verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
     }
 
-    func testNumberSeparatorWithExcludeRanges() {
+    func testNumberSeparatorWithExcludeRanges() async {
         let nonTriggeringExamples = [
             Example("let foo = 1950"),
             Example("let foo = 1_950"),
@@ -90,7 +90,7 @@ class NumberSeparatorRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(corrections: corrections)
 
-        verifyRule(
+        await verifyRule(
             description,
             ruleConfiguration: [
                 "exclude_ranges": [

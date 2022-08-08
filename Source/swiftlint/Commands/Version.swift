@@ -7,7 +7,7 @@ extension SwiftLint {
 
         static var value: String { SwiftLintFramework.Version.current.value }
 
-        mutating func run() throws {
+        func run() throws {
             print(Self.value)
         }
     }

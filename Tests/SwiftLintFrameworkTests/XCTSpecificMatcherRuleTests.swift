@@ -2,55 +2,55 @@ import SwiftLintFramework
 import XCTest
 
 class XCTSpecificMatcherRuleTests: XCTestCase {
-    func testRule() {
-        verifyRule(XCTSpecificMatcherRule.description)
+    func testRule() async {
+        await verifyRule(XCTSpecificMatcherRule.description)
     }
 
     // MARK: - Reasons
 
-    func testEqualTrue() {
+    func testEqualTrue() async {
         let example = Example("XCTAssertEqual(a, true)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
-    func testEqualFalse() {
+    func testEqualFalse() async {
         let example = Example("XCTAssertEqual(a, false)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
-    func testEqualNil() {
+    func testEqualNil() async {
         let example = Example("XCTAssertEqual(a, nil)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
     }
 
-    func testNotEqualTrue() {
+    func testNotEqualTrue() async {
         let example = Example("XCTAssertNotEqual(a, true)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
-    func testNotEqualFalse() {
+    func testNotEqualFalse() async {
         let example = Example("XCTAssertNotEqual(a, false)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
-    func testNotEqualNil() {
+    func testNotEqualNil() async {
         let example = Example("XCTAssertNotEqual(a, nil)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
@@ -58,71 +58,71 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
 
     // MARK: - Additional Tests
 
-    func testEqualOptionalFalse() {
+    func testEqualOptionalFalse() async {
         let example = Example("XCTAssertEqual(a?.b, false)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 0)
     }
 
-    func testEqualUnwrappedOptionalFalse() {
+    func testEqualUnwrappedOptionalFalse() async {
         let example = Example("XCTAssertEqual(a!.b, false)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
-    func testEqualNilNil() {
+    func testEqualNilNil() async {
         let example = Example("XCTAssertEqual(nil, nil)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
     }
 
-    func testEqualTrueTrue() {
+    func testEqualTrueTrue() async {
         let example = Example("XCTAssertEqual(true, true)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
-    func testEqualFalseFalse() {
+    func testEqualFalseFalse() async {
         let example = Example("XCTAssertEqual(false, false)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
-    func testNotEqualNilNil() {
+    func testNotEqualNilNil() async {
         let example = Example("XCTAssertNotEqual(nil, nil)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
     }
 
-    func testNotEqualTrueTrue() {
+    func testNotEqualTrueTrue() async {
         let example = Example("XCTAssertNotEqual(true, true)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
-    func testNotEqualFalseFalse() {
+    func testNotEqualFalseFalse() async {
         let example = Example("XCTAssertNotEqual(false, false)")
-        let violations = self.violations(example)
+        let violations = await self.violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
-    private func violations(_ example: Example) -> [StyleViolation] {
+    private func violations(_ example: Example) async -> [StyleViolation] {
         guard let config = makeConfig(nil, XCTSpecificMatcherRule.description.identifier) else { return [] }
-        return SwiftLintFrameworkTests.violations(example, config: config)
+        return await SwiftLintFrameworkTests.violations(example, config: config)
     }
 }

@@ -13,11 +13,11 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
         return rule.validate(file: file)
     }
 
-    func testFileHeaderWithDefaultConfiguration() {
-        verifyRule(FileHeaderRule.description, skipCommentTests: true)
+    func testFileHeaderWithDefaultConfiguration() async {
+        await verifyRule(FileHeaderRule.description, skipCommentTests: true)
     }
 
-    func testFileHeaderWithRequiredString() {
+    func testFileHeaderWithRequiredString() async {
         let nonTriggeringExamples = [
             Example("// **Header"),
             Example("//\n// **Header")
@@ -33,12 +33,12 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["required_string": "**Header"],
-                   stringDoesntViolate: false, skipCommentTests: true,
-                   testMultiByteOffsets: false, testShebang: false)
+        await verifyRule(description, ruleConfiguration: ["required_string": "**Header"],
+                         stringDoesntViolate: false, skipCommentTests: true,
+                         testMultiByteOffsets: false, testShebang: false)
     }
 
-    func testFileHeaderWithRequiredPattern() {
+    func testFileHeaderWithRequiredPattern() async {
         let nonTriggeringExamples = [
             Example("// Copyright © 2016 Realm"),
             Example("//\n// Copyright © 2016 Realm)")
@@ -52,12 +52,12 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["required_pattern": "\\d{4} Realm"],
-                   stringDoesntViolate: false, skipCommentTests: true,
-                   testMultiByteOffsets: false)
+        await verifyRule(description, ruleConfiguration: ["required_pattern": "\\d{4} Realm"],
+                         stringDoesntViolate: false, skipCommentTests: true,
+                         testMultiByteOffsets: false)
     }
 
-    func testFileHeaderWithRequiredStringAndURLComment() {
+    func testFileHeaderWithRequiredStringAndURLComment() async {
         let nonTriggeringExamples = [
             Example("/* Check this url: https://github.com/realm/SwiftLint */")
         ]
@@ -69,12 +69,12 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         let config = ["required_string": "/* Check this url: https://github.com/realm/SwiftLint */"]
-        verifyRule(description, ruleConfiguration: config,
-                   stringDoesntViolate: false, skipCommentTests: true,
-                   testMultiByteOffsets: false)
+        await verifyRule(description, ruleConfiguration: config,
+                         stringDoesntViolate: false, skipCommentTests: true,
+                         testMultiByteOffsets: false)
     }
 
-    func testFileHeaderWithForbiddenString() {
+    func testFileHeaderWithForbiddenString() async {
         let nonTriggeringExamples = [
             Example("// Copyright\n"),
             Example("let foo = \"**All rights reserved.\""),
@@ -90,11 +90,11 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["forbidden_string": "**All rights reserved."],
-                   skipCommentTests: true)
+        await verifyRule(description, ruleConfiguration: ["forbidden_string": "**All rights reserved."],
+                         skipCommentTests: true)
     }
 
-    func testFileHeaderWithForbiddenPattern() {
+    func testFileHeaderWithForbiddenPattern() async {
         let nonTriggeringExamples = [
             Example("// Copyright\n"),
             Example("// FileHeaderRuleTests.m\n"),
@@ -110,11 +110,11 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["forbidden_pattern": "\\s\\w+\\.swift"],
-                   skipCommentTests: true)
+        await verifyRule(description, ruleConfiguration: ["forbidden_pattern": "\\s\\w+\\.swift"],
+                         skipCommentTests: true)
     }
 
-    func testFileHeaderWithForbiddenPatternAndDocComment() {
+    func testFileHeaderWithForbiddenPatternAndDocComment() async {
         let nonTriggeringExamples = [
             Example("/// This is great tool with tests.\nclass GreatTool {}"),
             Example("class GreatTool {}")
@@ -127,8 +127,8 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["forbidden_pattern": "[tT]ests"],
-                   skipCommentTests: true, testMultiByteOffsets: false)
+        await verifyRule(description, ruleConfiguration: ["forbidden_pattern": "[tT]ests"],
+                         skipCommentTests: true, testMultiByteOffsets: false)
     }
 
     func testFileHeaderWithRequiredStringUsingFilenamePlaceholder() {
@@ -158,7 +158,7 @@ class FileHeaderRuleConfigurationTests: XCTestCase {
     func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
         let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
         let configuration2 = ["required_pattern":
-            "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
+                                "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
 
         // Non triggering tests
         XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)

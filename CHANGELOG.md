@@ -65,7 +65,12 @@ macOS < 12.
 
 #### Experimental
 
-* None.
+* Adds a new rule protocol `SyntaxVisitorRule`. This provides a common
+  interface for all rules that want to use SwiftSyntax to traverse the
+  AST of the source file. This includes a declarative DSL to match specific 
+  syntax nodes. As a first example, a `Class` matcher is introduced to find 
+  all class declarations and filter them by attributes.
+  [ryanaveo]
 
 #### Enhancements
 

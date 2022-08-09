@@ -14,6 +14,10 @@
   [Steve Madsen](https://github.com/sjmadsen)
   [#4027](https://github.com/realm/SwiftLint/issues/4027)
 
+* The `autocorrect` command that was deprecated in 0.43.0 has now been
+  completely removed. Use `--fix` instead.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

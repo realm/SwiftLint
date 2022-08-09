@@ -37,7 +37,7 @@ extension SwiftLint {
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
-        mutating func run() throws {
+        func run() throws {
             if let ruleID = ruleID {
                 guard let rule = primaryRuleList.list[ruleID] else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")

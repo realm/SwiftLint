@@ -26,28 +26,28 @@ enum LintOrAnalyzeMode {
 }
 
 struct LintOrAnalyzeCommand {
-    static func run(_ options: LintOrAnalyzeOptions) throws {
+    static func run(_ options: LintOrAnalyzeOptions) async throws {
         if options.inProcessSourcekit {
             SourceKittenConfiguration.preferInProcessSourceKit = true
         }
-        try Signposts.record(name: "LintOrAnalyzeCommand.run") {
-            try options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+        try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
+            try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
     }
 
-    private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) throws {
+    private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
         let builder = LintOrAnalyzeResultBuilder(options)
-        let files = try collectViolations(builder: builder)
+        let files = try await collectViolations(builder: builder)
         try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
         }
     }
 
-    private static func collectViolations(builder: LintOrAnalyzeResultBuilder) throws -> [SwiftLintFile] {
+    private static func collectViolations(builder: LintOrAnalyzeResultBuilder) async throws -> [SwiftLintFile] {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        return try builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
-                                                            storage: builder.storage) { linter in
+        return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
+                                                                  storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
@@ -154,10 +154,10 @@ struct LintOrAnalyzeCommand {
         }
     }
 
-    private static func autocorrect(_ options: LintOrAnalyzeOptions) throws {
+    private static func autocorrect(_ options: LintOrAnalyzeOptions) async throws {
         let storage = RuleStorage()
         let configuration = Configuration(options: options)
-        let files = try configuration
+        let files = try await configuration
             .visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
                 if options.format {
                     switch configuration.indentation {

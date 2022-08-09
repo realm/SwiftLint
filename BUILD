@@ -30,6 +30,7 @@ swift_binary(
     deps = [
         ":SwiftLintFramework",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
+        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
 )

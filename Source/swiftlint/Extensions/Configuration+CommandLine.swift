@@ -1,9 +1,17 @@
+import CollectionConcurrencyKit
 import Dispatch
 import Foundation
 import SourceKittenFramework
 import SwiftLintFramework
 
-private let indexIncrementerQueue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")
+private actor CounterActor {
+    private var count = 0
+
+    func next() -> Int {
+        count += 1
+        return count
+    }
+}
 
 private func scriptInputFiles() throws -> [SwiftLintFile] {
     let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
@@ -38,9 +46,9 @@ private func autoreleasepool<T>(block: () -> T) -> T { return block() }
 #endif
 
 extension Configuration {
-    func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage) throws -> [SwiftLintFile] {
-        let files = try Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
-            try getFiles(with: visitor)
+    func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage) async throws -> [SwiftLintFile] {
+        let files = try await Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
+            try await getFiles(with: visitor)
         }
         let groupedFiles = try Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
             try groupFiles(files, visitor: visitor)
@@ -53,16 +61,16 @@ extension Configuration {
         let duplicateFileNames = Signposts.record(name: "Configuration.VisitLintableFiles.DuplicateFileNames") {
             lintersForFile.map(\.duplicateFileNames)
         }
-        let collected = Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
-            zip(lintersForFile, duplicateFileNames).map { linters, duplicateFileNames in
-                collect(linters: linters, visitor: visitor, storage: storage,
-                        duplicateFileNames: duplicateFileNames)
+        let collected = await Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
+            await zip(lintersForFile, duplicateFileNames).asyncMap { linters, duplicateFileNames in
+                await collect(linters: linters, visitor: visitor, storage: storage,
+                              duplicateFileNames: duplicateFileNames)
             }
         }
-        let result = Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
-            collected.map { linters, duplicateFileNames in
-                visit(linters: linters, visitor: visitor, storage: storage,
-                      duplicateFileNames: duplicateFileNames)
+        let result = await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
+            await collected.asyncMap { linters, duplicateFileNames in
+                await visit(linters: linters, visitor: visitor, storage: storage,
+                            duplicateFileNames: duplicateFileNames)
             }
         }
         return result.flatMap { $0 }
@@ -132,28 +140,21 @@ extension Configuration {
     private func collect(linters: [Linter],
                          visitor: LintableFilesVisitor,
                          storage: RuleStorage,
-                         duplicateFileNames: Set<String>) -> ([CollectedLinter], Set<String>) {
-        var collected = 0
+                         duplicateFileNames: Set<String>) async -> ([CollectedLinter], Set<String>) {
+        let counter = CounterActor()
         let total = linters.filter({ $0.isCollecting }).count
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
             if !visitor.quiet, linter.isCollecting, let filePath = linter.file.path {
                 let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
-                let increment = {
-                    collected += 1
-                    if skipFile {
-                        queuedPrintError("""
-                            Skipping '\(outputFilename)' (\(collected)/\(total)) \
-                            because its compiler arguments could not be found
-                            """)
-                    } else {
-                        queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
-                    }
-                }
-                if visitor.parallel {
-                    indexIncrementerQueue.sync(execute: increment)
+                let collected = await counter.next()
+                if skipFile {
+                    queuedPrintError("""
+                        Skipping '\(outputFilename)' (\(collected)/\(total)) \
+                        because its compiler arguments could not be found
+                        """)
                 } else {
-                    increment()
+                    queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
                 }
             }
 
@@ -166,29 +167,22 @@ extension Configuration {
             }
         }
 
-        let collectedLinters = visitor.parallel ?
-            linters.parallelCompactMap(transform: collect) :
-            linters.compactMap(collect)
+        let collectedLinters = await visitor.parallel ?
+            linters.concurrentCompactMap(collect) :
+            linters.asyncCompactMap(collect)
         return (collectedLinters, duplicateFileNames)
     }
 
     private func visit(linters: [CollectedLinter],
                        visitor: LintableFilesVisitor,
                        storage: RuleStorage,
-                       duplicateFileNames: Set<String>) -> [SwiftLintFile] {
-        var visited = 0
+                       duplicateFileNames: Set<String>) async -> [SwiftLintFile] {
+        let counter = CounterActor()
         let visit = { (linter: CollectedLinter) -> SwiftLintFile in
             if !visitor.quiet, let filePath = linter.file.path {
                 let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
-                let increment = {
-                    visited += 1
-                    queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
-                }
-                if visitor.parallel {
-                    indexIncrementerQueue.sync(execute: increment)
-                } else {
-                    increment()
-                }
+                let visited = await counter.next()
+                queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
             }
 
             Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
@@ -196,12 +190,12 @@ extension Configuration {
             }
             return linter.file
         }
-        return visitor.parallel ?
-            linters.parallelMap(transform: visit) :
-            linters.map(visit)
+        return await visitor.parallel ?
+            linters.concurrentMap(visit) :
+            linters.asyncMap(visit)
     }
 
-    fileprivate func getFiles(with visitor: LintableFilesVisitor) throws -> [SwiftLintFile] {
+    fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
         if visitor.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             if let stdinString = String(data: stdinData, encoding: .utf8) {
@@ -237,11 +231,11 @@ extension Configuration {
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) -> Void) throws -> [SwiftLintFile] {
+                            visitorBlock: @escaping (CollectedLinter) -> Void) async throws -> [SwiftLintFile] {
         let visitor = try LintableFilesVisitor.create(options, cache: cache,
                                                       allowZeroLintableFiles: allowZeroLintableFiles,
                                                       block: visitorBlock)
-        return try visitLintableFiles(with: visitor, storage: storage)
+        return try await visitLintableFiles(with: visitor, storage: storage)
     }
 
     // MARK: LintOrAnalyze Command

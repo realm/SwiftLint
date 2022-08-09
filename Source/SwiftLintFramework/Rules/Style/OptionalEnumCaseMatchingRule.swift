@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-                                            AutomaticTestableRule, OptInRule {
+public struct OptionalEnumCaseMatchingRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule {
+public struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, ManuallyTestedExamplesRule {
     public var configuration = FileNameNoSpaceConfiguration(
         severity: .warning,
         excluded: []

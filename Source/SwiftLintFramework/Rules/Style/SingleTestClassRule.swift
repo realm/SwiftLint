@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct RedundantSetAccessControlRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct RedundantSetAccessControlRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -3,7 +3,8 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
-{% for rule in types.structs|based:"AutomaticTestableRule" %}
+{% for rule in types.structs|!based:"ManuallyTestedExamplesRule" %}
+{% if rule.name|hasSuffix:"Rule" %}
 class {{ rule.name }}Tests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule({{ rule.name }}.description)
@@ -11,4 +12,6 @@ class {{ rule.name }}Tests: XCTestCase {
 }
 {% if not forloop.last %}
 
-{% endif %}{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}

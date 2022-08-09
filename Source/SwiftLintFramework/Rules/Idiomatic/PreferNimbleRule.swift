@@ -1,4 +1,4 @@
-public struct PreferNimbleRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct PreferNimbleRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

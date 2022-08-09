@@ -12,7 +12,7 @@ private func wrapExample(
         repeatElement(template, count: count).joined() + "\(add)}\n")
 }
 
-public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
 
     public init() {}

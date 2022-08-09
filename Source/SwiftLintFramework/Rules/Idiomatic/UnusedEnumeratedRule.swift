@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

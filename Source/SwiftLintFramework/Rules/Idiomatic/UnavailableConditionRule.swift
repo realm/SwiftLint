@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct UnavailableConditionRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnavailableConditionRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

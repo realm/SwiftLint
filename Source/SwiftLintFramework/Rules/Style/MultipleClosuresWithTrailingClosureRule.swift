@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

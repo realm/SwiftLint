@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

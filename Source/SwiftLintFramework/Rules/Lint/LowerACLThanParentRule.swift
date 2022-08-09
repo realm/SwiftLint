@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

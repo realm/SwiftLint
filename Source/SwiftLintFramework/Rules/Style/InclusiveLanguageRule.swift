@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
+public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = InclusiveLanguageConfiguration()
 
     public init() {}

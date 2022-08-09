@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-                                                       AutomaticTestableRule {
+public struct EmptyParenthesesWithTrailingClosureRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

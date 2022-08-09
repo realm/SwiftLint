@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DuplicateImportsRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct DuplicateImportsRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     // List of all possible import kinds

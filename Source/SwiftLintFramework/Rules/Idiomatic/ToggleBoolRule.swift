@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -6,7 +6,7 @@ import SourceKittenFramework
 /// of objects and the deinit should print a message or remove its instance from a
 /// list of allocations. Even having an empty deinit method is useful to provide
 /// a place to put a breakpoint when chasing down leaks.
-public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct RequiredDeinitRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(

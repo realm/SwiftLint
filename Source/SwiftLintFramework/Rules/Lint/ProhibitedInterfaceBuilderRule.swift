@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
+public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

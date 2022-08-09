@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ReduceBooleanRule: Rule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ReduceBooleanRule: Rule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

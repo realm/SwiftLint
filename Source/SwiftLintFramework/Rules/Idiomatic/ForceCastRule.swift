@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ForceCastRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct ForceCastRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}

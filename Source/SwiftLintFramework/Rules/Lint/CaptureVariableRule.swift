@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct CaptureVariableRule: AutomaticTestableRule, ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+public struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
     public struct Variable: Hashable {
         let usr: String
         let offset: ByteCount

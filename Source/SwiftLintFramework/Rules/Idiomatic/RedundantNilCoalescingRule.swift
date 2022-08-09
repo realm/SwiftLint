@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
-                                          AutomaticTestableRule {
+public struct RedundantNilCoalescingRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

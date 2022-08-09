@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule, OptInRule,
-                                                        AutomaticTestableRule {
+public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,4 +1,4 @@
-public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

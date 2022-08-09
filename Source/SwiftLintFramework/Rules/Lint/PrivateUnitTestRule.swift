@@ -19,7 +19,7 @@ private extension SourceKittenDictionary {
     }
 }
 
-public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider, AutomaticTestableRule {
+public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider {
     public var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
         configuration.message = "Unit test marked `private` will not be run by XCTest."

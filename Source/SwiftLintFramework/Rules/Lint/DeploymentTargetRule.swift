@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DeploymentTargetRule: ConfigurationProviderRule {
+public struct DeploymentTargetRule: ConfigurationProviderRule, ManuallyTestedExamplesRule {
     private typealias Version = DeploymentTargetConfiguration.Version
     public var configuration = DeploymentTargetConfiguration()
 

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, OptInRule, AutomaticTestableRule {
+public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "prefer_self_in_static_references",
         name: "Prefer Self in Static References",

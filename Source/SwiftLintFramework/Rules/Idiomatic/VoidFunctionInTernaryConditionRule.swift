@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

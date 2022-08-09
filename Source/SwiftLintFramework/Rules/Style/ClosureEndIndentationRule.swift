@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

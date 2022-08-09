@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
+public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = OverriddenSuperCallConfiguration()
 
     public init() {}

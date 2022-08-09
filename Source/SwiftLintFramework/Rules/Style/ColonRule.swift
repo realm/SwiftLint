@@ -2,8 +2,8 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, AutomaticTestableRule,
-                         SourceKitFreeRule {
+public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, SourceKitFreeRule,
+                         ManuallyTestedExamplesRule {
     public var configuration = ColonConfiguration()
 
     public init() {}

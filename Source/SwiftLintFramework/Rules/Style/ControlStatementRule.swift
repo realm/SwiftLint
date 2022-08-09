@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestableRule, SubstitutionCorrectableRule {
+public struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

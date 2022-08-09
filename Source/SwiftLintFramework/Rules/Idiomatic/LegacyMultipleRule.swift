@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

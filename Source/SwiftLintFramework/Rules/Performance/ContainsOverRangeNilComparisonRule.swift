@@ -1,7 +1,6 @@
 import SourceKittenFramework
 
-public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, ConfigurationProviderRule,
-                                                  AutomaticTestableRule {
+public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

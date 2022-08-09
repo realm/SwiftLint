@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule,
-                                                   AutomaticTestableRule {
+public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

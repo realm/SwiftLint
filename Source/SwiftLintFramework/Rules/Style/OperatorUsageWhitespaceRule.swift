@@ -2,8 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule,
-                                           AutomaticTestableRule {
+public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = OperatorUsageWhitespaceConfiguration()
 
     public init() {}

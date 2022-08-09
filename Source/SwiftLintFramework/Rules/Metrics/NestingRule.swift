@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct NestingRule: ConfigurationProviderRule {
+public struct NestingRule: ConfigurationProviderRule, ManuallyTestedExamplesRule {
     public var configuration = NestingConfiguration(typeLevelWarning: 1,
                                                     typeLevelError: nil,
                                                     functionLevelWarning: 2,

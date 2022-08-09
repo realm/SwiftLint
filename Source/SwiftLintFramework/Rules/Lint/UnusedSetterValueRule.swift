@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedSetterValueRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct UnusedSetterValueRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

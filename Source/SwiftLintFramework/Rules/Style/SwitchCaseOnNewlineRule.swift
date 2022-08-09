@@ -8,7 +8,7 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
     """, file: file, line: line)
 }
 
-public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

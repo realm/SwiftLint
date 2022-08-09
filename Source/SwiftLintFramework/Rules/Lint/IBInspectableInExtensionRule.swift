@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

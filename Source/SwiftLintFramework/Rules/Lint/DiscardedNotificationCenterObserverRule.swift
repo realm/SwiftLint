@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule,
+public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationProviderRule,
     OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 

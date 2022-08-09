@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SubstitutionCorrectableRule,
-                                                  AutomaticTestableRule {
+public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

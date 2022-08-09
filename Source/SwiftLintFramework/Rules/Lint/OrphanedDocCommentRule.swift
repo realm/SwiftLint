@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct OrphanedDocCommentRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct OrphanedDocCommentRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

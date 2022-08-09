@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
-                                           AutomaticTestableRule {
+public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

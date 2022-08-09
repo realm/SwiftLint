@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct InertDeferRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct InertDeferRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

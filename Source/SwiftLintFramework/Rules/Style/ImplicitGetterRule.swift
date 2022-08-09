@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRule {
+public struct ImplicitGetterRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

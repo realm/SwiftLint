@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct AnonymousArgumentInMultilineClosureRule: ASTRule, OptInRule, ConfigurationProviderRule,
-                                                       AutomaticTestableRule {
+public struct AnonymousArgumentInMultilineClosureRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

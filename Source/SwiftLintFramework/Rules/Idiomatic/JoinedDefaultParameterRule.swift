@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, OptInRule,
-                                          AutomaticTestableRule {
+public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule, AutomaticTestableRule {
+public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = ProhibitedSuperConfiguration()
 
     public init() {}

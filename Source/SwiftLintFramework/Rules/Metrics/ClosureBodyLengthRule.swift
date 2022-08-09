@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 20, error: 100)
 
     public init() {}

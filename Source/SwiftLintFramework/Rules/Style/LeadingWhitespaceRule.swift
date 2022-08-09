@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
-                                     SourceKitFreeRule, AutomaticTestableRule {
+public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

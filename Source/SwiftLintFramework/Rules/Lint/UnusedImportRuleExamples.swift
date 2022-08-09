@@ -152,19 +152,19 @@ struct UnusedImportRuleExamples {
             """),
         Example("""
         ↓↓import Foundation
-        typealias Foo = CGPoint
+        typealias Foo = CFArray
         """, configuration: [
             "require_explicit_imports": true,
             "allowed_transitive_imports": [
                 [
                     "module": "Foundation",
-                    "allowed_transitive_imports": ["CoreGraphics"]
+                    "allowed_transitive_imports": ["CoreFoundation"]
                 ]
             ]
         ], testMultiByteOffsets: false, testOnLinux: false):
             Example("""
-            import CoreGraphics
-            typealias Foo = CGPoint
+            import CoreFoundation
+            typealias Foo = CFArray
             """),
         Example("""
         ↓↓import Foundation

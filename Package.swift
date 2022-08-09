@@ -10,6 +10,7 @@ private let staticSwiftSyntax = false
 #endif
 
 let frameworkDependencies: [Target.Dependency] = [
+    "CollectionConcurrencyKit",
     .product(name: "SourceKittenFramework", package: "SourceKitten"),
     .product(name: "SwiftSyntax", package: "SwiftSyntax"),
     .product(name: "SwiftSyntaxParser", package: "SwiftSyntax"),

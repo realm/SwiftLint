@@ -1,3 +1,4 @@
+import CollectionConcurrencyKit
 import Foundation
 
 /// An interface for enumerating files that can be linted by SwiftLint.
@@ -10,7 +11,7 @@ public protocol LintableFileManager {
     ///                            directory will be used.
     ///
     /// - returns: Files to lint.
-    func filesToLint(inPath path: String, rootDirectory: String?) -> [String]
+    func filesToLint(inPath path: String, rootDirectory: String?) async -> [String]
 
     /// Returns the date when the file at the specified path was last modified. Returns `nil` if the file cannot be
     /// found or its last modification date cannot be determined.
@@ -22,7 +23,7 @@ public protocol LintableFileManager {
 }
 
 extension FileManager: LintableFileManager {
-    public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
+    public func filesToLint(inPath path: String, rootDirectory: String? = nil) async -> [String] {
         let absolutePath = path.bridge()
             .absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath).bridge()
             .standardizingPath
@@ -32,7 +33,7 @@ extension FileManager: LintableFileManager {
             return [absolutePath]
         }
 
-        return subpaths(atPath: absolutePath)?.parallelCompactMap { element -> String? in
+        return await subpaths(atPath: absolutePath)?.concurrentCompactMap { element -> String? in
             guard element.bridge().isSwiftFile() else { return nil }
             let absoluteElementPath = absolutePath.bridge().appendingPathComponent(element)
             return absoluteElementPath.isFile ? absoluteElementPath : nil

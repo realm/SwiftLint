@@ -6,7 +6,8 @@ accordingly._
 
 #### Breaking
 
-* None.
+* Some `SwiftLintFramework` public APIs have become `async`.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Experimental
 

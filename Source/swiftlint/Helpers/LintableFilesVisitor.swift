@@ -80,12 +80,12 @@ struct LintableFilesVisitor {
     let parallel: Bool
     let allowZeroLintableFiles: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
-    let block: (CollectedLinter) -> Void
+    let block: (CollectedLinter) async -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool,
          quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
          cache: LinterCache?, parallel: Bool,
-         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
+         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -103,7 +103,7 @@ struct LintableFilesVisitor {
     private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool,
                  useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
+                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
@@ -129,8 +129,8 @@ struct LintableFilesVisitor {
     static func create(_ options: LintOrAnalyzeOptions,
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
-                       block: @escaping (CollectedLinter) -> Void)
-        throws -> LintableFilesVisitor {
+                       block: @escaping (CollectedLinter) async -> Void)
+        async throws -> LintableFilesVisitor {
         try Signposts.record(name: "LintableFilesVisitor.Create") {
             let compilerInvocations: CompilerInvocations?
             if options.mode == .lint {

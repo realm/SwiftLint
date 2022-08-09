@@ -20,6 +20,7 @@ swift_library(
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
+        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
         "@com_github_keith_swift_syntax//:SwiftSyntax",
         "@com_github_keith_swift_syntax//:SwiftSyntaxParser",

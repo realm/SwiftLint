@@ -184,8 +184,8 @@ extension Configuration {
                 queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
             }
 
-            Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
-                visitor.block(linter)
+            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+                await visitor.block(linter)
             }
             return linter.file
         }
@@ -208,7 +208,7 @@ extension Configuration {
             }
 
             let scriptInputPaths = files.compactMap { $0.path }
-            let filesToLint = visitor.useExcludingByPrefix ?
+            let filesToLint = await visitor.useExcludingByPrefix ?
                 filterExcludedPathsByPrefix(in: scriptInputPaths) :
                 filterExcludedPaths(in: scriptInputPaths)
             return filesToLint.map(SwiftLintFile.init(pathDeferringReading:))
@@ -223,17 +223,17 @@ extension Configuration {
 
             queuedPrintError("\(visitor.action) Swift files \(filesInfo)")
         }
-        return visitor.paths.flatMap {
-            self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude,
-                               excludeByPrefix: visitor.useExcludingByPrefix)
+        return await visitor.paths.asyncFlatMap {
+            await self.lintableFiles(inPath: $0, forceExclude: visitor.forceExclude,
+                                     excludeByPrefix: visitor.useExcludingByPrefix)
         }
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) -> Void) async throws -> [SwiftLintFile] {
-        let visitor = try LintableFilesVisitor.create(options, cache: cache,
-                                                      allowZeroLintableFiles: allowZeroLintableFiles,
-                                                      block: visitorBlock)
+                            visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
+        let visitor = try await LintableFilesVisitor.create(options, cache: cache,
+                                                            allowZeroLintableFiles: allowZeroLintableFiles,
+                                                            block: visitorBlock)
         return try await visitLintableFiles(with: visitor, storage: storage)
     }
 

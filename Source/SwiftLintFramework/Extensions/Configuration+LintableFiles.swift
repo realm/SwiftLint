@@ -1,3 +1,4 @@
+import CollectionConcurrencyKit
 import Foundation
 
 extension Configuration {
@@ -12,8 +13,8 @@ extension Configuration {
     ///
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String, forceExclude: Bool,
-                              excludeByPrefix: Bool = false) -> [SwiftLintFile] {
-        return lintablePaths(inPath: path, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix)
+                              excludeByPrefix: Bool = false) async -> [SwiftLintFile] {
+        return await lintablePaths(inPath: path, forceExclude: forceExclude, excludeByPrefix: excludeByPrefix)
             .compactMap(SwiftLintFile.init(pathDeferringReading:))
     }
 
@@ -32,16 +33,18 @@ extension Configuration {
         forceExclude: Bool,
         excludeByPrefix: Bool = false,
         fileManager: LintableFileManager = FileManager.default
-    ) -> [String] {
+    ) async -> [String] {
         // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
         if path.isFile && !forceExclude { return [path] }
 
-        let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let includedPaths = self.includedPaths
+        let pathsForPath = await includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
+        let includedPaths = await self.includedPaths
             .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
+            .concurrentFlatMap {
+                await fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory)
+            }
 
-        return excludeByPrefix
+        return await excludeByPrefix
             ? filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)
             : filterExcludedPaths(fileManager: fileManager, in: pathsForPath, includedPaths)
     }
@@ -55,7 +58,7 @@ extension Configuration {
     public func filterExcludedPaths(
         fileManager: LintableFileManager = FileManager.default,
         in paths: [String]...
-    ) -> [String] {
+    ) async -> [String] {
         let allPaths = paths.flatMap { $0 }
         #if os(Linux)
         let result = NSMutableOrderedSet(capacity: allPaths.count)
@@ -64,7 +67,7 @@ extension Configuration {
         let result = NSMutableOrderedSet(array: allPaths)
         #endif
 
-        let excludedPaths = self.excludedPaths(fileManager: fileManager)
+        let excludedPaths = await self.excludedPaths(fileManager: fileManager)
         result.minusSet(Set(excludedPaths))
         // swiftlint:disable:next force_cast
         return result.map { $0 as! String }
@@ -76,10 +79,11 @@ extension Configuration {
     /// algorithm `filterExcludedPaths`.
     ///
     /// - returns: The input paths after removing the excluded paths.
-    public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
+    public func filterExcludedPathsByPrefix(in paths: [String]...) async -> [String] {
         let allPaths = paths.flatMap { $0 }
-        let excludedPaths = self.excludedPaths.parallelFlatMap(transform: Glob.resolveGlob)
-                                    .map { $0.absolutePathStandardized() }
+        let excludedPaths = await self.excludedPaths
+            .concurrentFlatMap { Glob.resolveGlob($0) }
+            .map { $0.absolutePathStandardized() }
         return allPaths.filter { path in
             !excludedPaths.contains { path.hasPrefix($0) }
         }
@@ -91,9 +95,9 @@ extension Configuration {
     /// - parameter fileManager: The file manager to get child paths in a given parent location.
     ///
     /// - returns: The expanded excluded file paths.
-    private func excludedPaths(fileManager: LintableFileManager) -> [String] {
-        return excludedPaths
+    private func excludedPaths(fileManager: LintableFileManager) async -> [String] {
+        return await excludedPaths
             .flatMap(Glob.resolveGlob)
-            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
+            .concurrentFlatMap { await fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
     }
 }

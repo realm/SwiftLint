@@ -222,6 +222,7 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
+        // Using Swift Concurrency for parallel computation here incurs significant overhead
         let validationResults = rules.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     storage: storage,

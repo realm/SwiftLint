@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "CollectionConcurrencyKit",
+        "repositoryURL": "https://github.com/JohnSundell/CollectionConcurrencyKit.git",
+        "state": {
+          "branch": null,
+          "revision": "b4f23e24b5a1bff301efc5e70871083ca029ff95",
+          "version": "0.2.0"
+        }
+      },
+      {
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {

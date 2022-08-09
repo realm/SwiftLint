@@ -47,7 +47,7 @@ struct LintOrAnalyzeCommand {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         return try builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
-                                                                  storage: builder.storage) { linter in
+                                                            storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()

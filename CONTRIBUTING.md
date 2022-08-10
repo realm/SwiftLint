@@ -139,8 +139,8 @@ If your rule is configurable, but does not fit the pattern of
 
 All changes should be made via pull requests on GitHub.
 
-When issuing a pull request, please add a summary of your changes to
-the `CHANGELOG.md` file.
+When issuing a pull request with user-facing changes, please add a
+summary of your changes to the `CHANGELOG.md` file.
 
 We follow the same syntax as CocoaPods' CHANGELOG.md:
 

@@ -8,7 +8,7 @@ swift_library(
         exclude = [
             "SwiftLintFrameworkTests/Resources/**",
             # Bazel doesn't support paths with spaces in them
-            "SwiftLintFrameworkTests/FileNameNoSpaceRuleConfigurationTests.swift",
+            "SwiftLintFrameworkTests/FileNameNoSpaceRuleTests.swift",
         ],
     ),
     module_name = "SwiftLintFrameworkTests",

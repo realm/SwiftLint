@@ -5,7 +5,7 @@ import XCTest
 
 {% for rule in types.structs %}
 {% if rule.name|hasSuffix:"Rule" %}
-class {{ rule.name }}Tests: XCTestCase {
+class {{ rule.name }}ExamplesTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule({{ rule.name }}.description)
     }

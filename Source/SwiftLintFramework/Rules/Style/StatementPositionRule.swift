@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = StatementConfiguration(statementMode: .default,
                                                       severity: SeverityConfiguration(.warning))
 

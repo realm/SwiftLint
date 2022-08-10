@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule,
-                                  ManuallyTestedExamplesRule {
+public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
     public var configuration = ImplicitReturnConfiguration()
 
     public init() {}

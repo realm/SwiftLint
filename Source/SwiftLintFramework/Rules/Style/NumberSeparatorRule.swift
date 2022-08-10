@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = NumberSeparatorConfiguration(
         minimumLength: 0,
         minimumFractionLength: nil,

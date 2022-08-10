@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SwitchCaseAlignmentConfiguration()
 
     public init() {}

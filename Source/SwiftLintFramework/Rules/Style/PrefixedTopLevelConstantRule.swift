@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule, ManuallyTestedExamplesRule {
+public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
 
     private let topLevelPrefix = "k"

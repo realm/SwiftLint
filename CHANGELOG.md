@@ -18,9 +18,8 @@
   completely removed. Use `--fix` instead.  
   [JP Simard](https://github.com/jpsim)
 
-* Verify examples in rule descriptions by default and enforce explicit exclusion.
-  In fact, the `AutomaticTestableRule` protocol has been removed. All rules not
-  conforming to the new `ManuallyTestedExamplesRule` will be tested automatically.  
+* Remove the `AutomaticTestableRule` protocol. All examples listed in rules are
+  now tested automatically to make sure they are correct.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 #### Experimental

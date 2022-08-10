@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, ManuallyTestedExamplesRule {
+public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
     public var configuration = EmptyCountConfiguration()
 
     public init() {}

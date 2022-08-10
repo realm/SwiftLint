@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SubstitutionCorrectableRule,
-                                          ManuallyTestedExamplesRule {
+public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = PrivateOverFilePrivateRuleConfiguration()
 
     public init() {}

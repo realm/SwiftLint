@@ -45,6 +45,14 @@
 * Make `colon` rule about 7x faster, finding some previously missed cases.  
   [JP Simard](https://github.com/jpsim)
 
+* Introduce new configuration option `include_compiler_directives` (`true` by
+  default) for the `indentation_width` rule that allows to ignore compiler
+  directives in the indentation analysis. This is especially useful if one (or
+  a formatter) prefers to have compiler directives always at the very beginning
+  of a line.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4030](https://github.com/realm/SwiftLint/issues/4030)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

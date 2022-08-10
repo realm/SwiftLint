@@ -29,10 +29,6 @@
 
 #### Enhancements
 
-* Fix typo on func  
-  [stavares843](https://github.com/stavares843)
-  [#4077](https://github.com/realm/SwiftLint/pull/4077)
-
 * Support for building SwiftLint with bazel.  
   [JP Simard](https://github.com/jpsim)
 
@@ -78,10 +74,6 @@ macOS < 12.
 
 #### Enhancements
 
-* Fix typo on test  
-  [stavares843](https://github.com/stavares843)
-  [#4078](https://github.com/realm/SwiftLint/pull/4078)
-  
 * Support `iOSApplicationExtension`, `macOSApplicationExtension`,
   `watchOSApplicationExtension`, and `tvOSApplicationExtension` identifiers
   in the `deployment_target` rule. To configure the rule for these identifiers,

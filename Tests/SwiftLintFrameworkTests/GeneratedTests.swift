@@ -5,1279 +5,1279 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
-class AccessibilityLabelForImageRuleExamplesTests: XCTestCase {
+class AccessibilityLabelForImageRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AccessibilityLabelForImageRule.description)
     }
 }
 
-class AnonymousArgumentInMultilineClosureRuleExamplesTests: XCTestCase {
+class AnonymousArgumentInMultilineClosureRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnonymousArgumentInMultilineClosureRule.description)
     }
 }
 
-class AnyObjectProtocolRuleExamplesTests: XCTestCase {
+class AnyObjectProtocolRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AnyObjectProtocolRule.description)
     }
 }
 
-class ArrayInitRuleExamplesTests: XCTestCase {
+class ArrayInitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
     }
 }
 
-class AttributesRuleExamplesTests: XCTestCase {
+class AttributesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(AttributesRule.description)
     }
 }
 
-class BalancedXCTestLifecycleRuleExamplesTests: XCTestCase {
+class BalancedXCTestLifecycleRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(BalancedXCTestLifecycleRule.description)
     }
 }
 
-class BlockBasedKVORuleExamplesTests: XCTestCase {
+class BlockBasedKVORuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(BlockBasedKVORule.description)
     }
 }
 
-class CaptureVariableRuleExamplesTests: XCTestCase {
+class CaptureVariableRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CaptureVariableRule.description)
     }
 }
 
-class ClassDelegateProtocolRuleExamplesTests: XCTestCase {
+class ClassDelegateProtocolRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClassDelegateProtocolRule.description)
     }
 }
 
-class ClosingBraceRuleExamplesTests: XCTestCase {
+class ClosingBraceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosingBraceRule.description)
     }
 }
 
-class ClosureBodyLengthRuleExamplesTests: XCTestCase {
+class ClosureBodyLengthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureBodyLengthRule.description)
     }
 }
 
-class ClosureEndIndentationRuleExamplesTests: XCTestCase {
+class ClosureEndIndentationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureEndIndentationRule.description)
     }
 }
 
-class ClosureParameterPositionRuleExamplesTests: XCTestCase {
+class ClosureParameterPositionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureParameterPositionRule.description)
     }
 }
 
-class ClosureSpacingRuleExamplesTests: XCTestCase {
+class ClosureSpacingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureSpacingRule.description)
     }
 }
 
-class CollectionAlignmentRuleExamplesTests: XCTestCase {
+class CollectionAlignmentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CollectionAlignmentRule.description)
     }
 }
 
-class ColonRuleExamplesTests: XCTestCase {
+class ColonRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ColonRule.description)
     }
 }
 
-class CommaInheritanceRuleExamplesTests: XCTestCase {
+class CommaInheritanceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaInheritanceRule.description)
     }
 }
 
-class CommaRuleExamplesTests: XCTestCase {
+class CommaRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaRule.description)
     }
 }
 
-class CommentSpacingRuleExamplesTests: XCTestCase {
+class CommentSpacingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommentSpacingRule.description)
     }
 }
 
-class CompilerProtocolInitRuleExamplesTests: XCTestCase {
+class CompilerProtocolInitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CompilerProtocolInitRule.description)
     }
 }
 
-class ComputedAccessorsOrderRuleExamplesTests: XCTestCase {
+class ComputedAccessorsOrderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ComputedAccessorsOrderRule.description)
     }
 }
 
-class ConditionalReturnsOnNewlineRuleExamplesTests: XCTestCase {
+class ConditionalReturnsOnNewlineRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 }
 
-class ContainsOverFilterCountRuleExamplesTests: XCTestCase {
+class ContainsOverFilterCountRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFilterCountRule.description)
     }
 }
 
-class ContainsOverFilterIsEmptyRuleExamplesTests: XCTestCase {
+class ContainsOverFilterIsEmptyRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFilterIsEmptyRule.description)
     }
 }
 
-class ContainsOverFirstNotNilRuleExamplesTests: XCTestCase {
+class ContainsOverFirstNotNilRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFirstNotNilRule.description)
     }
 }
 
-class ContainsOverRangeNilComparisonRuleExamplesTests: XCTestCase {
+class ContainsOverRangeNilComparisonRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverRangeNilComparisonRule.description)
     }
 }
 
-class ControlStatementRuleExamplesTests: XCTestCase {
+class ControlStatementRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)
     }
 }
 
-class ConvenienceTypeRuleExamplesTests: XCTestCase {
+class ConvenienceTypeRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ConvenienceTypeRule.description)
     }
 }
 
-class CyclomaticComplexityRuleExamplesTests: XCTestCase {
+class CyclomaticComplexityRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CyclomaticComplexityRule.description)
     }
 }
 
-class DeploymentTargetRuleExamplesTests: XCTestCase {
+class DeploymentTargetRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DeploymentTargetRule.description)
     }
 }
 
-class DiscardedNotificationCenterObserverRuleExamplesTests: XCTestCase {
+class DiscardedNotificationCenterObserverRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 }
 
-class DiscouragedAssertRuleExamplesTests: XCTestCase {
+class DiscouragedAssertRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
     }
 }
 
-class DiscouragedDirectInitRuleExamplesTests: XCTestCase {
+class DiscouragedDirectInitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedDirectInitRule.description)
     }
 }
 
-class DiscouragedNoneNameRuleExamplesTests: XCTestCase {
+class DiscouragedNoneNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedNoneNameRule.description)
     }
 }
 
-class DiscouragedObjectLiteralRuleExamplesTests: XCTestCase {
+class DiscouragedObjectLiteralRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedObjectLiteralRule.description)
     }
 }
 
-class DiscouragedOptionalBooleanRuleExamplesTests: XCTestCase {
+class DiscouragedOptionalBooleanRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalBooleanRule.description)
     }
 }
 
-class DiscouragedOptionalCollectionRuleExamplesTests: XCTestCase {
+class DiscouragedOptionalCollectionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedOptionalCollectionRule.description)
     }
 }
 
-class DuplicateEnumCasesRuleExamplesTests: XCTestCase {
+class DuplicateEnumCasesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateEnumCasesRule.description)
     }
 }
 
-class DuplicateImportsRuleExamplesTests: XCTestCase {
+class DuplicateImportsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicateImportsRule.description)
     }
 }
 
-class DuplicatedKeyInDictionaryLiteralRuleExamplesTests: XCTestCase {
+class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
     }
 }
 
-class DynamicInlineRuleExamplesTests: XCTestCase {
+class DynamicInlineRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DynamicInlineRule.description)
     }
 }
 
-class EmptyCollectionLiteralRuleExamplesTests: XCTestCase {
+class EmptyCollectionLiteralRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCollectionLiteralRule.description)
     }
 }
 
-class EmptyCountRuleExamplesTests: XCTestCase {
+class EmptyCountRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)
     }
 }
 
-class EmptyEnumArgumentsRuleExamplesTests: XCTestCase {
+class EmptyEnumArgumentsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyEnumArgumentsRule.description)
     }
 }
 
-class EmptyParametersRuleExamplesTests: XCTestCase {
+class EmptyParametersRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyParametersRule.description)
     }
 }
 
-class EmptyParenthesesWithTrailingClosureRuleExamplesTests: XCTestCase {
+class EmptyParenthesesWithTrailingClosureRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 }
 
-class EmptyStringRuleExamplesTests: XCTestCase {
+class EmptyStringRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyStringRule.description)
     }
 }
 
-class EmptyXCTestMethodRuleExamplesTests: XCTestCase {
+class EmptyXCTestMethodRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyXCTestMethodRule.description)
     }
 }
 
-class EnumCaseAssociatedValuesLengthRuleExamplesTests: XCTestCase {
+class EnumCaseAssociatedValuesLengthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EnumCaseAssociatedValuesLengthRule.description)
     }
 }
 
-class ExpiringTodoRuleExamplesTests: XCTestCase {
+class ExpiringTodoRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExpiringTodoRule.description)
     }
 }
 
-class ExplicitACLRuleExamplesTests: XCTestCase {
+class ExplicitACLRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitACLRule.description)
     }
 }
 
-class ExplicitEnumRawValueRuleExamplesTests: XCTestCase {
+class ExplicitEnumRawValueRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitEnumRawValueRule.description)
     }
 }
 
-class ExplicitInitRuleExamplesTests: XCTestCase {
+class ExplicitInitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitInitRule.description)
     }
 }
 
-class ExplicitSelfRuleExamplesTests: XCTestCase {
+class ExplicitSelfRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitSelfRule.description)
     }
 }
 
-class ExplicitTopLevelACLRuleExamplesTests: XCTestCase {
+class ExplicitTopLevelACLRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTopLevelACLRule.description)
     }
 }
 
-class ExplicitTypeInterfaceRuleExamplesTests: XCTestCase {
+class ExplicitTypeInterfaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 }
 
-class ExtensionAccessModifierRuleExamplesTests: XCTestCase {
+class ExtensionAccessModifierRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExtensionAccessModifierRule.description)
     }
 }
 
-class FallthroughRuleExamplesTests: XCTestCase {
+class FallthroughRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FallthroughRule.description)
     }
 }
 
-class FatalErrorMessageRuleExamplesTests: XCTestCase {
+class FatalErrorMessageRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FatalErrorMessageRule.description)
     }
 }
 
-class FileHeaderRuleExamplesTests: XCTestCase {
+class FileHeaderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileHeaderRule.description)
     }
 }
 
-class FileLengthRuleExamplesTests: XCTestCase {
+class FileLengthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileLengthRule.description)
     }
 }
 
-class FileNameNoSpaceRuleExamplesTests: XCTestCase {
+class FileNameNoSpaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileNameNoSpaceRule.description)
     }
 }
 
-class FileNameRuleExamplesTests: XCTestCase {
+class FileNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileNameRule.description)
     }
 }
 
-class FileTypesOrderRuleExamplesTests: XCTestCase {
+class FileTypesOrderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FileTypesOrderRule.description)
     }
 }
 
-class FirstWhereRuleExamplesTests: XCTestCase {
+class FirstWhereRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FirstWhereRule.description)
     }
 }
 
-class FlatMapOverMapReduceRuleExamplesTests: XCTestCase {
+class FlatMapOverMapReduceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)
     }
 }
 
-class ForWhereRuleExamplesTests: XCTestCase {
+class ForWhereRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForWhereRule.description)
     }
 }
 
-class ForceCastRuleExamplesTests: XCTestCase {
+class ForceCastRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceCastRule.description)
     }
 }
 
-class ForceTryRuleExamplesTests: XCTestCase {
+class ForceTryRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceTryRule.description)
     }
 }
 
-class ForceUnwrappingRuleExamplesTests: XCTestCase {
+class ForceUnwrappingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceUnwrappingRule.description)
     }
 }
 
-class FunctionBodyLengthRuleExamplesTests: XCTestCase {
+class FunctionBodyLengthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionBodyLengthRule.description)
     }
 }
 
-class FunctionDefaultParameterAtEndRuleExamplesTests: XCTestCase {
+class FunctionDefaultParameterAtEndRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionDefaultParameterAtEndRule.description)
     }
 }
 
-class FunctionParameterCountRuleExamplesTests: XCTestCase {
+class FunctionParameterCountRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionParameterCountRule.description)
     }
 }
 
-class GenericTypeNameRuleExamplesTests: XCTestCase {
+class GenericTypeNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(GenericTypeNameRule.description)
     }
 }
 
-class IBInspectableInExtensionRuleExamplesTests: XCTestCase {
+class IBInspectableInExtensionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IBInspectableInExtensionRule.description)
     }
 }
 
-class IdenticalOperandsRuleExamplesTests: XCTestCase {
+class IdenticalOperandsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)
     }
 }
 
-class IdentifierNameRuleExamplesTests: XCTestCase {
+class IdentifierNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdentifierNameRule.description)
     }
 }
 
-class ImplicitGetterRuleExamplesTests: XCTestCase {
+class ImplicitGetterRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitGetterRule.description)
     }
 }
 
-class ImplicitReturnRuleExamplesTests: XCTestCase {
+class ImplicitReturnRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitReturnRule.description)
     }
 }
 
-class ImplicitlyUnwrappedOptionalRuleExamplesTests: XCTestCase {
+class ImplicitlyUnwrappedOptionalRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 }
 
-class InclusiveLanguageRuleExamplesTests: XCTestCase {
+class InclusiveLanguageRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InclusiveLanguageRule.description)
     }
 }
 
-class IndentationWidthRuleExamplesTests: XCTestCase {
+class IndentationWidthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IndentationWidthRule.description)
     }
 }
 
-class InertDeferRuleExamplesTests: XCTestCase {
+class InertDeferRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(InertDeferRule.description)
     }
 }
 
-class IsDisjointRuleExamplesTests: XCTestCase {
+class IsDisjointRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)
     }
 }
 
-class JoinedDefaultParameterRuleExamplesTests: XCTestCase {
+class JoinedDefaultParameterRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(JoinedDefaultParameterRule.description)
     }
 }
 
-class LargeTupleRuleExamplesTests: XCTestCase {
+class LargeTupleRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LargeTupleRule.description)
     }
 }
 
-class LastWhereRuleExamplesTests: XCTestCase {
+class LastWhereRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
     }
 }
 
-class LeadingWhitespaceRuleExamplesTests: XCTestCase {
+class LeadingWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LeadingWhitespaceRule.description)
     }
 }
 
-class LegacyCGGeometryFunctionsRuleExamplesTests: XCTestCase {
+class LegacyCGGeometryFunctionsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
 }
 
-class LegacyConstantRuleExamplesTests: XCTestCase {
+class LegacyConstantRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstantRule.description)
     }
 }
 
-class LegacyConstructorRuleExamplesTests: XCTestCase {
+class LegacyConstructorRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstructorRule.description)
     }
 }
 
-class LegacyHashingRuleExamplesTests: XCTestCase {
+class LegacyHashingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyHashingRule.description)
     }
 }
 
-class LegacyMultipleRuleExamplesTests: XCTestCase {
+class LegacyMultipleRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyMultipleRule.description)
     }
 }
 
-class LegacyNSGeometryFunctionsRuleExamplesTests: XCTestCase {
+class LegacyNSGeometryFunctionsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyNSGeometryFunctionsRule.description)
     }
 }
 
-class LegacyObjcTypeRuleExamplesTests: XCTestCase {
+class LegacyObjcTypeRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyObjcTypeRule.description)
     }
 }
 
-class LegacyRandomRuleExamplesTests: XCTestCase {
+class LegacyRandomRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyRandomRule.description)
     }
 }
 
-class LetVarWhitespaceRuleExamplesTests: XCTestCase {
+class LetVarWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
     }
 }
 
-class LineLengthRuleExamplesTests: XCTestCase {
+class LineLengthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LineLengthRule.description)
     }
 }
 
-class LiteralExpressionEndIdentationRuleExamplesTests: XCTestCase {
+class LiteralExpressionEndIdentationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LiteralExpressionEndIdentationRule.description)
     }
 }
 
-class LowerACLThanParentRuleExamplesTests: XCTestCase {
+class LowerACLThanParentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LowerACLThanParentRule.description)
     }
 }
 
-class MarkRuleExamplesTests: XCTestCase {
+class MarkRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MarkRule.description)
     }
 }
 
-class MissingDocsRuleExamplesTests: XCTestCase {
+class MissingDocsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MissingDocsRule.description)
     }
 }
 
-class ModifierOrderRuleExamplesTests: XCTestCase {
+class ModifierOrderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ModifierOrderRule.description)
     }
 }
 
-class MultilineArgumentsBracketsRuleExamplesTests: XCTestCase {
+class MultilineArgumentsBracketsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsBracketsRule.description)
     }
 }
 
-class MultilineArgumentsRuleExamplesTests: XCTestCase {
+class MultilineArgumentsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineArgumentsRule.description)
     }
 }
 
-class MultilineFunctionChainsRuleExamplesTests: XCTestCase {
+class MultilineFunctionChainsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineFunctionChainsRule.description)
     }
 }
 
-class MultilineLiteralBracketsRuleExamplesTests: XCTestCase {
+class MultilineLiteralBracketsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineLiteralBracketsRule.description)
     }
 }
 
-class MultilineParametersBracketsRuleExamplesTests: XCTestCase {
+class MultilineParametersBracketsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineParametersBracketsRule.description)
     }
 }
 
-class MultilineParametersRuleExamplesTests: XCTestCase {
+class MultilineParametersRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineParametersRule.description)
     }
 }
 
-class MultipleClosuresWithTrailingClosureRuleExamplesTests: XCTestCase {
+class MultipleClosuresWithTrailingClosureRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultipleClosuresWithTrailingClosureRule.description)
     }
 }
 
-class NSLocalizedStringKeyRuleExamplesTests: XCTestCase {
+class NSLocalizedStringKeyRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringKeyRule.description)
     }
 }
 
-class NSLocalizedStringRequireBundleRuleExamplesTests: XCTestCase {
+class NSLocalizedStringRequireBundleRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringRequireBundleRule.description)
     }
 }
 
-class NSObjectPreferIsEqualRuleExamplesTests: XCTestCase {
+class NSObjectPreferIsEqualRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSObjectPreferIsEqualRule.description)
     }
 }
 
-class NestingRuleExamplesTests: XCTestCase {
+class NestingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)
     }
 }
 
-class NimbleOperatorRuleExamplesTests: XCTestCase {
+class NimbleOperatorRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)
     }
 }
 
-class NoExtensionAccessModifierRuleExamplesTests: XCTestCase {
+class NoExtensionAccessModifierRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 }
 
-class NoFallthroughOnlyRuleExamplesTests: XCTestCase {
+class NoFallthroughOnlyRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoFallthroughOnlyRule.description)
     }
 }
 
-class NoGroupingExtensionRuleExamplesTests: XCTestCase {
+class NoGroupingExtensionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoGroupingExtensionRule.description)
     }
 }
 
-class NoSpaceInMethodCallRuleExamplesTests: XCTestCase {
+class NoSpaceInMethodCallRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoSpaceInMethodCallRule.description)
     }
 }
 
-class NotificationCenterDetachmentRuleExamplesTests: XCTestCase {
+class NotificationCenterDetachmentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }
 }
 
-class NumberSeparatorRuleExamplesTests: XCTestCase {
+class NumberSeparatorRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NumberSeparatorRule.description)
     }
 }
 
-class ObjectLiteralRuleExamplesTests: XCTestCase {
+class ObjectLiteralRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ObjectLiteralRule.description)
     }
 }
 
-class OpeningBraceRuleExamplesTests: XCTestCase {
+class OpeningBraceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OpeningBraceRule.description)
     }
 }
 
-class OperatorFunctionWhitespaceRuleExamplesTests: XCTestCase {
+class OperatorFunctionWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 }
 
-class OperatorUsageWhitespaceRuleExamplesTests: XCTestCase {
+class OperatorUsageWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 }
 
-class OptionalEnumCaseMatchingRuleExamplesTests: XCTestCase {
+class OptionalEnumCaseMatchingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OptionalEnumCaseMatchingRule.description)
     }
 }
 
-class OrphanedDocCommentRuleExamplesTests: XCTestCase {
+class OrphanedDocCommentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OrphanedDocCommentRule.description)
     }
 }
 
-class OverriddenSuperCallRuleExamplesTests: XCTestCase {
+class OverriddenSuperCallRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OverriddenSuperCallRule.description)
     }
 }
 
-class OverrideInExtensionRuleExamplesTests: XCTestCase {
+class OverrideInExtensionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OverrideInExtensionRule.description)
     }
 }
 
-class PatternMatchingKeywordsRuleExamplesTests: XCTestCase {
+class PatternMatchingKeywordsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PatternMatchingKeywordsRule.description)
     }
 }
 
-class PreferNimbleRuleExamplesTests: XCTestCase {
+class PreferNimbleRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
     }
 }
 
-class PreferSelfInStaticReferencesRuleExamplesTests: XCTestCase {
+class PreferSelfInStaticReferencesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 
-class PreferSelfTypeOverTypeOfSelfRuleExamplesTests: XCTestCase {
+class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
     }
 }
 
-class PreferZeroOverExplicitInitRuleExamplesTests: XCTestCase {
+class PreferZeroOverExplicitInitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)
     }
 }
 
-class PrefixedTopLevelConstantRuleExamplesTests: XCTestCase {
+class PrefixedTopLevelConstantRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrefixedTopLevelConstantRule.description)
     }
 }
 
-class PrivateActionRuleExamplesTests: XCTestCase {
+class PrivateActionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)
     }
 }
 
-class PrivateOutletRuleExamplesTests: XCTestCase {
+class PrivateOutletRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateOutletRule.description)
     }
 }
 
-class PrivateOverFilePrivateRuleExamplesTests: XCTestCase {
+class PrivateOverFilePrivateRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateOverFilePrivateRule.description)
     }
 }
 
-class PrivateSubjectRuleExamplesTests: XCTestCase {
+class PrivateSubjectRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateSubjectRule.description)
     }
 }
 
-class PrivateUnitTestRuleExamplesTests: XCTestCase {
+class PrivateUnitTestRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateUnitTestRule.description)
     }
 }
 
-class ProhibitedInterfaceBuilderRuleExamplesTests: XCTestCase {
+class ProhibitedInterfaceBuilderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedInterfaceBuilderRule.description)
     }
 }
 
-class ProhibitedSuperRuleExamplesTests: XCTestCase {
+class ProhibitedSuperRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedSuperRule.description)
     }
 }
 
-class ProtocolPropertyAccessorsOrderRuleExamplesTests: XCTestCase {
+class ProtocolPropertyAccessorsOrderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 }
 
-class QuickDiscouragedCallRuleExamplesTests: XCTestCase {
+class QuickDiscouragedCallRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedCallRule.description)
     }
 }
 
-class QuickDiscouragedFocusedTestRuleExamplesTests: XCTestCase {
+class QuickDiscouragedFocusedTestRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedFocusedTestRule.description)
     }
 }
 
-class QuickDiscouragedPendingTestRuleExamplesTests: XCTestCase {
+class QuickDiscouragedPendingTestRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedPendingTestRule.description)
     }
 }
 
-class RawValueForCamelCasedCodableEnumRuleExamplesTests: XCTestCase {
+class RawValueForCamelCasedCodableEnumRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)
     }
 }
 
-class ReduceBooleanRuleExamplesTests: XCTestCase {
+class ReduceBooleanRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceBooleanRule.description)
     }
 }
 
-class ReduceIntoRuleExamplesTests: XCTestCase {
+class ReduceIntoRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceIntoRule.description)
     }
 }
 
-class RedundantDiscardableLetRuleExamplesTests: XCTestCase {
+class RedundantDiscardableLetRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)
     }
 }
 
-class RedundantNilCoalescingRuleExamplesTests: XCTestCase {
+class RedundantNilCoalescingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)
     }
 }
 
-class RedundantObjcAttributeRuleExamplesTests: XCTestCase {
+class RedundantObjcAttributeRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantObjcAttributeRule.description)
     }
 }
 
-class RedundantOptionalInitializationRuleExamplesTests: XCTestCase {
+class RedundantOptionalInitializationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantOptionalInitializationRule.description)
     }
 }
 
-class RedundantSetAccessControlRuleExamplesTests: XCTestCase {
+class RedundantSetAccessControlRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)
     }
 }
 
-class RedundantStringEnumValueRuleExamplesTests: XCTestCase {
+class RedundantStringEnumValueRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantStringEnumValueRule.description)
     }
 }
 
-class RedundantTypeAnnotationRuleExamplesTests: XCTestCase {
+class RedundantTypeAnnotationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantTypeAnnotationRule.description)
     }
 }
 
-class RedundantVoidReturnRuleExamplesTests: XCTestCase {
+class RedundantVoidReturnRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantVoidReturnRule.description)
     }
 }
 
-class RequiredDeinitRuleExamplesTests: XCTestCase {
+class RequiredDeinitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RequiredDeinitRule.description)
     }
 }
 
-class RequiredEnumCaseRuleExamplesTests: XCTestCase {
+class RequiredEnumCaseRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RequiredEnumCaseRule.description)
     }
 }
 
-class ReturnArrowWhitespaceRuleExamplesTests: XCTestCase {
+class ReturnArrowWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 }
 
-class ReturnValueFromVoidFunctionRuleExamplesTests: XCTestCase {
+class ReturnValueFromVoidFunctionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReturnValueFromVoidFunctionRule.description)
     }
 }
 
-class SelfInPropertyInitializationRuleExamplesTests: XCTestCase {
+class SelfInPropertyInitializationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)
     }
 }
 
-class ShorthandOperatorRuleExamplesTests: XCTestCase {
+class ShorthandOperatorRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)
     }
 }
 
-class SingleTestClassRuleExamplesTests: XCTestCase {
+class SingleTestClassRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SingleTestClassRule.description)
     }
 }
 
-class SortedFirstLastRuleExamplesTests: XCTestCase {
+class SortedFirstLastRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)
     }
 }
 
-class SortedImportsRuleExamplesTests: XCTestCase {
+class SortedImportsRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
     }
 }
 
-class StatementPositionRuleExamplesTests: XCTestCase {
+class StatementPositionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StatementPositionRule.description)
     }
 }
 
-class StaticOperatorRuleExamplesTests: XCTestCase {
+class StaticOperatorRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)
     }
 }
 
-class StrictFilePrivateRuleExamplesTests: XCTestCase {
+class StrictFilePrivateRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrictFilePrivateRule.description)
     }
 }
 
-class StrongIBOutletRuleExamplesTests: XCTestCase {
+class StrongIBOutletRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrongIBOutletRule.description)
     }
 }
 
-class SuperfluousDisableCommandRuleExamplesTests: XCTestCase {
+class SuperfluousDisableCommandRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SuperfluousDisableCommandRule.description)
     }
 }
 
-class SwitchCaseAlignmentRuleExamplesTests: XCTestCase {
+class SwitchCaseAlignmentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseAlignmentRule.description)
     }
 }
 
-class SwitchCaseOnNewlineRuleExamplesTests: XCTestCase {
+class SwitchCaseOnNewlineRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
 }
 
-class SyntacticSugarRuleExamplesTests: XCTestCase {
+class SyntacticSugarRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SyntacticSugarRule.description)
     }
 }
 
-class TestCaseAccessibilityRuleExamplesTests: XCTestCase {
+class TestCaseAccessibilityRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TestCaseAccessibilityRule.description)
     }
 }
 
-class TodoRuleExamplesTests: XCTestCase {
+class TodoRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TodoRule.description)
     }
 }
 
-class ToggleBoolRuleExamplesTests: XCTestCase {
+class ToggleBoolRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ToggleBoolRule.description)
     }
 }
 
-class TrailingClosureRuleExamplesTests: XCTestCase {
+class TrailingClosureRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingClosureRule.description)
     }
 }
 
-class TrailingCommaRuleExamplesTests: XCTestCase {
+class TrailingCommaRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingCommaRule.description)
     }
 }
 
-class TrailingNewlineRuleExamplesTests: XCTestCase {
+class TrailingNewlineRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingNewlineRule.description)
     }
 }
 
-class TrailingSemicolonRuleExamplesTests: XCTestCase {
+class TrailingSemicolonRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingSemicolonRule.description)
     }
 }
 
-class TrailingWhitespaceRuleExamplesTests: XCTestCase {
+class TrailingWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TrailingWhitespaceRule.description)
     }
 }
 
-class TypeBodyLengthRuleExamplesTests: XCTestCase {
+class TypeBodyLengthRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeBodyLengthRule.description)
     }
 }
 
-class TypeContentsOrderRuleExamplesTests: XCTestCase {
+class TypeContentsOrderRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeContentsOrderRule.description)
     }
 }
 
-class TypeNameRuleExamplesTests: XCTestCase {
+class TypeNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypeNameRule.description)
     }
 }
 
-class TypesafeArrayInitRuleExamplesTests: XCTestCase {
+class TypesafeArrayInitRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TypesafeArrayInitRule.description)
     }
 }
 
-class UnavailableConditionRuleExamplesTests: XCTestCase {
+class UnavailableConditionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableConditionRule.description)
     }
 }
 
-class UnavailableFunctionRuleExamplesTests: XCTestCase {
+class UnavailableFunctionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnavailableFunctionRule.description)
     }
 }
 
-class UnneededBreakInSwitchRuleExamplesTests: XCTestCase {
+class UnneededBreakInSwitchRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)
     }
 }
 
-class UnneededParenthesesInClosureArgumentRuleExamplesTests: XCTestCase {
+class UnneededParenthesesInClosureArgumentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }
 }
 
-class UnownedVariableCaptureRuleExamplesTests: XCTestCase {
+class UnownedVariableCaptureRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)
     }
 }
 
-class UntypedErrorInCatchRuleExamplesTests: XCTestCase {
+class UntypedErrorInCatchRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UntypedErrorInCatchRule.description)
     }
 }
 
-class UnusedCaptureListRuleExamplesTests: XCTestCase {
+class UnusedCaptureListRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedCaptureListRule.description)
     }
 }
 
-class UnusedClosureParameterRuleExamplesTests: XCTestCase {
+class UnusedClosureParameterRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedClosureParameterRule.description)
     }
 }
 
-class UnusedControlFlowLabelRuleExamplesTests: XCTestCase {
+class UnusedControlFlowLabelRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedControlFlowLabelRule.description)
     }
 }
 
-class UnusedDeclarationRuleExamplesTests: XCTestCase {
+class UnusedDeclarationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedDeclarationRule.description)
     }
 }
 
-class UnusedEnumeratedRuleExamplesTests: XCTestCase {
+class UnusedEnumeratedRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedEnumeratedRule.description)
     }
 }
 
-class UnusedImportRuleExamplesTests: XCTestCase {
+class UnusedImportRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedImportRule.description)
     }
 }
 
-class UnusedOptionalBindingRuleExamplesTests: XCTestCase {
+class UnusedOptionalBindingRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedOptionalBindingRule.description)
     }
 }
 
-class UnusedSetterValueRuleExamplesTests: XCTestCase {
+class UnusedSetterValueRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedSetterValueRule.description)
     }
 }
 
-class ValidIBInspectableRuleExamplesTests: XCTestCase {
+class ValidIBInspectableRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ValidIBInspectableRule.description)
     }
 }
 
-class VerticalParameterAlignmentOnCallRuleExamplesTests: XCTestCase {
+class VerticalParameterAlignmentOnCallRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalParameterAlignmentOnCallRule.description)
     }
 }
 
-class VerticalParameterAlignmentRuleExamplesTests: XCTestCase {
+class VerticalParameterAlignmentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
 }
 
-class VerticalWhitespaceBetweenCasesRuleExamplesTests: XCTestCase {
+class VerticalWhitespaceBetweenCasesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceBetweenCasesRule.description)
     }
 }
 
-class VerticalWhitespaceClosingBracesRuleExamplesTests: XCTestCase {
+class VerticalWhitespaceClosingBracesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceClosingBracesRule.description)
     }
 }
 
-class VerticalWhitespaceOpeningBracesRuleExamplesTests: XCTestCase {
+class VerticalWhitespaceOpeningBracesRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceOpeningBracesRule.description)
     }
 }
 
-class VerticalWhitespaceRuleExamplesTests: XCTestCase {
+class VerticalWhitespaceRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceRule.description)
     }
 }
 
-class VoidFunctionInTernaryConditionRuleExamplesTests: XCTestCase {
+class VoidFunctionInTernaryConditionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidFunctionInTernaryConditionRule.description)
     }
 }
 
-class VoidReturnRuleExamplesTests: XCTestCase {
+class VoidReturnRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)
     }
 }
 
-class WeakDelegateRuleExamplesTests: XCTestCase {
+class WeakDelegateRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(WeakDelegateRule.description)
     }
 }
 
-class XCTFailMessageRuleExamplesTests: XCTestCase {
+class XCTFailMessageRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTFailMessageRule.description)
     }
 }
 
-class XCTSpecificMatcherRuleExamplesTests: XCTestCase {
+class XCTSpecificMatcherRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTSpecificMatcherRule.description)
     }
 }
 
-class YodaConditionRuleExamplesTests: XCTestCase {
+class YodaConditionRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(YodaConditionRule.description)
     }

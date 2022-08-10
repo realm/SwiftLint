@@ -23,7 +23,7 @@ public struct YamlParser {
                              env: [String: String] = ProcessInfo.processInfo.environment) throws -> [String: Any] {
         do {
             return try Yams.load(yaml: yaml, .default,
-                                 .swiftlintContructor(env: env)) as? [String: Any] ?? [:]
+                                 .swiftlintConstructor(env: env)) as? [String: Any] ?? [:]
         } catch {
             throw YamlParserError.yamlParsing("\(error)")
         }
@@ -31,7 +31,7 @@ public struct YamlParser {
 }
 
 private extension Constructor {
-    static func swiftlintContructor(env: [String: String]) -> Constructor {
+    static func swiftlintConstructor(env: [String: String]) -> Constructor {
         return Constructor(customScalarMap(env: env))
     }
 

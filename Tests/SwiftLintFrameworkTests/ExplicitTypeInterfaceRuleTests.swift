@@ -94,7 +94,7 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
     }
 
-    func testEmbededInStatements() {
+    func testEmbeddedInStatements() {
         let nonTriggeringExamples = [
             Example("""
             func foo() {

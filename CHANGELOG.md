@@ -78,6 +78,10 @@ macOS < 12.
 
 #### Enhancements
 
+* Fix typo on test  
+  [stavares843](https://github.com/stavares843)
+  [#4078](https://github.com/realm/SwiftLint/pull/4078)
+  
 * Support `iOSApplicationExtension`, `macOSApplicationExtension`,
   `watchOSApplicationExtension`, and `tvOSApplicationExtension` identifiers
   in the `deployment_target` rule. To configure the rule for these identifiers,

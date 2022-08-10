@@ -29,6 +29,10 @@
 
 #### Enhancements
 
+* Fix typo on func  
+  [stavares843](https://github.com/stavares843)
+  [#4077](https://github.com/realm/SwiftLint/pull/4077)
+
 * Support for building SwiftLint with bazel.  
   [JP Simard](https://github.com/jpsim)
 

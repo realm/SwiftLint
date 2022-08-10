@@ -3,7 +3,7 @@ import XCTest
 
 // swiftlint:disable file_length single_test_class type_name
 
-{% for rule in types.structs|!based:"ManuallyTestedExamplesRule" %}
+{% for rule in types.structs %}
 {% if rule.name|hasSuffix:"Rule" %}
 class {{ rule.name }}Tests: XCTestCase {
     func testWithDefaultConfiguration() {

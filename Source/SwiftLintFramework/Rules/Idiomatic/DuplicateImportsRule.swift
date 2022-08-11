@@ -205,7 +205,7 @@ private extension Line {
                 subpath: importedSubpathParts[0..<importedSubpathParts.count],
                 type: .complete
             )
-        ] + stride(from: 1, to: importedSubpathParts.count, by: 1).map {
+        ] + (1..<importedSubpathParts.count).map {
             ImportSlice(
                 subpath: importedSubpathParts[0..<importedSubpathParts.count - $0],
                 type: .parent

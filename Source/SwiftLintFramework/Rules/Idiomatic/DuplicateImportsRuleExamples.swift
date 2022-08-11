@@ -1,6 +1,6 @@
 // swiftlint:disable type_body_length
 internal struct DuplicateImportsRuleExamples {
-    static let nonTriggeringExamples: [Example] = [
+    static let nonTriggeringExamples = [
         Example("""
         import A
         import B
@@ -36,7 +36,7 @@ internal struct DuplicateImportsRuleExamples {
         """)
     ]
 
-    static let triggeringExamples: [Example] = Array(corrections.keys)
+    static let triggeringExamples = Array(corrections.keys)
 
     static let corrections: [Example: Example] = {
         var corrections = [

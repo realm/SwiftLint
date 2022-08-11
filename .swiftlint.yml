@@ -85,11 +85,8 @@ number_separator:
   minimum_length: 5
 file_name:
   excluded:
-    - main.swift
-    - LinuxMain.swift
-    - TestHelpers.swift
-    - shim.swift
     - GeneratedTests.swift
+    - TestHelpers.swift
 
 custom_rules:
   rule_id:

@@ -46,3 +46,27 @@ filegroup(
     srcs = glob(["Source/**"]),
     visibility = ["//Tests:__subpackages__"],
 )
+
+filegroup(
+    name = "SourceAndTestFiles",
+    srcs = glob(["Source/**", "Tests/SwiftLintFrameworkTests/**"]),
+)
+
+genrule(
+    name = "write_swiftpm_yaml",
+    srcs = [":SourceAndTestFiles", "Package.swift", "Package.resolved"],
+    outs = ["swiftpm.yaml"],
+    cmd = """
+set -euo pipefail
+
+swift package clean
+swift build
+cp .build/debug.yaml $(OUTS)
+    """,
+)
+
+sh_test(
+    name = "analyze",
+    srcs = ["script/test-analyze.sh"],
+    data = [":swiftlint", ":SwiftLintConfig", ":SourceAndTestFiles", "swiftpm.yaml"],
+)

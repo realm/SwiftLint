@@ -22,7 +22,20 @@ struct SwiftPMCompilationDB: Codable {
 
     static func parse(yaml: Data) throws -> [File: Arguments] {
         let decoder = YAMLDecoder()
-        let compilationDB = try decoder.decode(Self.self, from: yaml)
+        let compilationDB: SwiftPMCompilationDB
+
+        if let testSrcDir = ProcessInfo.processInfo.environment["TEST_SRCDIR"],
+           let projectRoot = ProcessInfo.processInfo.environment["PROJECT_ROOT"] {
+            let bazelSourceRoot = testSrcDir.replacingOccurrences(
+                of: "/bazel-out/darwin_arm64-fastbuild/bin/analyze.runfiles",
+                with: ""
+            )
+            let stringFileContents = String(data: yaml, encoding: .utf8)!
+                .replacingOccurrences(of: bazelSourceRoot, with: projectRoot)
+            compilationDB = try decoder.decode(Self.self, from: stringFileContents)
+        } else {
+            compilationDB = try decoder.decode(Self.self, from: yaml)
+        }
 
         let swiftCompilerCommands = compilationDB.commands
             .filter { $0.value.tool == "swift-compiler" }

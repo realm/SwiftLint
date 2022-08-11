@@ -13,5 +13,7 @@ steps:
       - bundle exec danger --verbose
   - label: "Analyze"
     commands:
+      - echo "+++ Build"
+      - bazel build swiftlint
       - echo "+++ Analyze"
-      - make analyze
+      - bazel test --spawn_strategy=local --test_env=PROJECT_ROOT=$(bazel info workspace) analyze

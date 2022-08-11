@@ -1,9 +1,17 @@
 steps:
-  - label: "Bazel Tests"
-    command: bazel test --test_output=errors //Tests/...
+  - label: "Bazel"
+    commands:
+      - echo "+++ Build"
+      - bazel build :swiftlint
+      - echo "+++ Test"
+      - bazel test --test_output=errors //Tests/...
   - label: "Danger"
     commands:
+      - echo "--- Bundle Install"
       - bundle install
+      - echo "+++ Run Danger"
       - bundle exec danger --verbose
   - label: "Analyze"
-    command: make analyze
+    commands:
+      - echo "+++ Analyze"
+      - make analyze

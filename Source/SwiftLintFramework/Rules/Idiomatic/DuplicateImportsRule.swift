@@ -143,27 +143,26 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        var contents = file.stringView.nsString
-        var corrections = [Correction]()
-
-        duplicateImports(file: file).reversed().filter {
+        let duplicateImports = duplicateImports(file: file).reversed().filter {
             file.ruleEnabled(violatingRange: $0.range, for: self) != nil
-        }.forEach { duplicateImport in
-            contents = contents.replacingCharacters(
-                in: duplicateImport.range,
-                with: ""
-            ).bridge()
-            corrections.append(
-                Correction(
-                    ruleDescription: Self.description,
-                    location: duplicateImport.location
-                )
-            )
         }
 
-        file.write(contents.bridge())
+        let violatingRanges = duplicateImports.map(\.range)
+        let correctedFileContents = violatingRanges.reduce(file.stringView.nsString) { contents, range in
+            contents.replacingCharacters(
+                in: range,
+                with: ""
+            ).bridge()
+        }
 
-        return corrections
+        file.write(correctedFileContents.bridge())
+
+        return duplicateImports.map { duplicateImport in
+            Correction(
+                ruleDescription: Self.description,
+                location: duplicateImport.location
+            )
+        }
     }
 }
 

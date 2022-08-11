@@ -39,7 +39,7 @@ internal struct DuplicateImportsRuleExamples {
     static let triggeringExamples: [Example] = Array(corrections.keys)
 
     static let corrections: [Example: Example] = {
-        var corrections: [Example: Example] = [
+        var corrections = [
             Example("""
             import Foundation
             import Dispatch
@@ -50,8 +50,7 @@ internal struct DuplicateImportsRuleExamples {
                 import Foundation
                 import Dispatch
 
-                """
-                ),
+                """),
             Example("""
             import Foundation
             ↓import Foundation.NSString
@@ -193,7 +192,7 @@ internal struct DuplicateImportsRuleExamples {
                 import A
                 ↓import \(importKind) A.B.Foo
 
-                """)
+                """, excludeFromDocumentation: true)
         }.forEach {
             corrections[$0] = Example(
                 """
@@ -207,7 +206,7 @@ internal struct DuplicateImportsRuleExamples {
                 import A.B
                 ↓import \(importKind) A.B.Foo
 
-                """)
+                """, excludeFromDocumentation: true)
         }.forEach {
             corrections[$0] = Example(
                 """

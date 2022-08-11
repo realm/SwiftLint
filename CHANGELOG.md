@@ -27,6 +27,10 @@
 * None.
 
 #### Enhancements
+  
+* Make `duplicate_imports` rule correctable. Fix `duplicate_imports` rule 
+  reporting redundant violations when more than one duplicate is present.  
+  [Timofey Solonin](https://github.com/abdulowork)
 
 * Support for building SwiftLint with bazel.  
   [JP Simard](https://github.com/jpsim)

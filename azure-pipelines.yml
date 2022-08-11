@@ -8,7 +8,7 @@ jobs:
   steps:
     - script: brew install sourcery
       displayName: Install Sourcery
-    - script: make sourcery
+    - script: make --always-make sourcery
       displayName: Generate sources
     - script: "! git diff -U0 | grep '^[-+][^-+]' | grep --invert-match '// Generated using Sourcery'"
       displayName: Check changed files ignoring Sourcery's version

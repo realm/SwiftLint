@@ -1,6 +1,6 @@
 steps:
   - label: "Bazel Tests"
-    command: bazel test --test_output=errors --test_env IN_PROCESS_SOURCEKIT=1 //Tests/...
+    command: bazel test --test_output=errors //Tests/...
   - label: "Danger"
     commands:
       - bundle install

@@ -22,6 +22,10 @@
   now tested automatically to make sure they are correct.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Deprecate the `--in-process-sourcekit` command line flag. SwiftLint now always
+  uses an in-process SourceKit.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

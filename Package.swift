@@ -28,8 +28,8 @@ let package = Package(
     dependencies: [
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.1.3")),
         .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .exact("0.50600.1")),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.32.0"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.33.0"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.1"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0")
     ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.5.1"))] : []),

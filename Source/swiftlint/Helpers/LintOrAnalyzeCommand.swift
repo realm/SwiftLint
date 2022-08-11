@@ -1,6 +1,5 @@
 import Dispatch
 import Foundation
-import SourceKittenFramework
 import SwiftLintFramework
 
 enum LintOrAnalyzeMode {
@@ -28,7 +27,12 @@ enum LintOrAnalyzeMode {
 struct LintOrAnalyzeCommand {
     static func run(_ options: LintOrAnalyzeOptions) async throws {
         if options.inProcessSourcekit {
-            SourceKittenConfiguration.preferInProcessSourceKit = true
+            queuedPrintError(
+                """
+                warning: The --in-process-sourcekit option is deprecated. \
+                SwiftLint now always uses an in-process SourceKit.
+                """
+            )
         }
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)

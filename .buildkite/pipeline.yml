@@ -16,4 +16,4 @@ steps:
       - echo "+++ Build"
       - bazel build swiftlint
       - echo "+++ Analyze"
-      - bazel test --spawn_strategy=local --test_env=PROJECT_ROOT=$(bazel info workspace) analyze
+      - bazel test --test_output=streamed --test_timeout=1800 --spawn_strategy=local --test_env=PROJECT_ROOT=$(bazel info workspace) analyze

@@ -60,8 +60,8 @@ genrule(
 set -euo pipefail
 
 swift package clean
-swift build
-cp .build/debug.yaml $(OUTS)
+swift build -c release
+cp .build/release.yaml $(OUTS)
     """,
 )
 

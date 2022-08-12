@@ -109,3 +109,26 @@ xcodeproj(
         "//Tests:ExtraRulesTests",
     ],
 )
+
+filegroup(
+    name = "SourceAndTestFiles",
+    srcs = glob(["Source/**", "Tests/SwiftLintFrameworkTests/**"]),
+)
+
+genrule(
+    name = "write_swiftpm_yaml",
+    srcs = [":SourceAndTestFiles", "Package.swift", "Package.resolved"],
+    outs = ["swiftpm.yaml"],
+    cmd = """
+set -euo pipefail
+
+swift build
+cp .build/debug.yaml $(OUTS)
+    """,
+)
+
+sh_test(
+    name = "analyze",
+    srcs = ["script/test-analyze.sh"],
+    data = [":swiftlint", ":LintInputs", "swiftpm.yaml"],
+)

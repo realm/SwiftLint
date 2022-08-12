@@ -204,11 +204,16 @@ struct LintableFilesVisitor {
     }
 
     private static func loadCompileCommands(_ path: String) throws -> [File: Arguments] {
-        guard let jsonContents = FileManager.default.contents(atPath: path) else {
+        guard let fileContents = FileManager.default.contents(atPath: path) else {
             throw CompileCommandsLoadError.nonExistentFile(path)
         }
 
-        guard let object = try? JSONSerialization.jsonObject(with: jsonContents),
+        if path.hasSuffix(".yaml") || path.hasSuffix(".yml") {
+            // Assume this is a SwiftPM yaml file
+            return try SwiftPMCompilationDB.parse(yaml: fileContents)
+        }
+
+        guard let object = try? JSONSerialization.jsonObject(with: fileContents),
             let compileDB = object as? [[String: Any]] else {
             throw CompileCommandsLoadError.malformedCommands(path)
         }

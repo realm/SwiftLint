@@ -1,5 +1,9 @@
 ## Master
 
+_Note: The default branch for the SwiftLint git repository will be renamed from
+`master` to `main` on September 1st. Please update any code or automation
+accordingly._
+
 #### Breaking
 
 * SwiftLint now requires Swift 5.6 or higher to build, and macOS 12

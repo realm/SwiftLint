@@ -1,4 +1,4 @@
-## Master
+## 0.49.0-rc.1: Asynchronous Defuzzer
 
 _Note: The default branch for the SwiftLint git repository will be renamed from
 `master` to `main` on September 1st. Please update any code or automation

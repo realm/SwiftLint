@@ -60,6 +60,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4030](https://github.com/realm/SwiftLint/issues/4030)
 
+* The `--compile-commands` argument can now parse SwiftPM yaml files produced
+  when running `swift build` at `.build/{debug,release}.yaml`.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

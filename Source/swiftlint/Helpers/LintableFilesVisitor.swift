@@ -1,7 +1,6 @@
 import Foundation
 import SourceKittenFramework
 import SwiftLintFramework
-import Yams
 
 typealias File = String
 typealias Arguments = [String]

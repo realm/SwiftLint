@@ -50,17 +50,16 @@ struct SwiftPMCompilationDB: Codable {
             guard let command = command,
                   let module = command.module,
                   let sources = command.sources,
-                    let arguments = command.args else {
+                  let arguments = command.args,
+                  let importPaths = command.importPaths
+            else {
                 return (swiftSource, [])
             }
-
-            let importPathsArguments = (command.importPaths ?? [])
-                .flatMap { ["-I", $0] }
 
             let args = ["-module-name", module] +
                 sources +
                 arguments.filteringCompilerArguments +
-                importPathsArguments
+                ["-I"] + importPaths
 
             return (swiftSource, args)
         })

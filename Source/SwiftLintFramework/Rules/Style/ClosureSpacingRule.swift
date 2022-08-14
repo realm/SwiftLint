@@ -33,8 +33,7 @@ public struct ClosureSpacingRule: ConfigurationProviderRule, OptInRule, SourceKi
         }
 
         let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)
-        let visitor = MultilineClosureRuleVisitor(locationConverter: locationConverter)
-        return visitor
+        return MultilineClosureRuleVisitor(locationConverter: locationConverter)
             .walk(file: file, handler: \.sortedPositions)
             .map { position in
                 StyleViolation(ruleDescription: Self.description,
@@ -45,7 +44,7 @@ public struct ClosureSpacingRule: ConfigurationProviderRule, OptInRule, SourceKi
 }
 
 private final class MultilineClosureRuleVisitor: SyntaxVisitor {
-    var positions: [AbsolutePosition] = []
+    private var positions: [AbsolutePosition] = []
     var sortedPositions: [AbsolutePosition] { positions.sorted() }
     let locationConverter: SourceLocationConverter
 

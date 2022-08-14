@@ -76,6 +76,10 @@ accordingly._
   [OrEliyahu](https://github.com/OrEliyahu)
   [#4012](https://github.com/realm/SwiftLint/issues/4012)
 
+* Fix false positive in `yoda_condition` rule by basing it on SwiftSyntax.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4081](https://github.com/realm/SwiftLint/issues/4081)
+
 ## 0.48.0: Rechargeable Defuzzer
 
 This is the last release to support building with Swift 5.5.x and running on

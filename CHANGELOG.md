@@ -64,6 +64,10 @@ accordingly._
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4030](https://github.com/realm/SwiftLint/issues/4030)
 
+* Skip braces in regex literals to avoid false positive in `closure_spacing` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4090](https://github.com/realm/SwiftLint/issues/4090)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

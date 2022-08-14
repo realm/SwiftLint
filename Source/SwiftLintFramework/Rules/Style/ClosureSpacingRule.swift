@@ -30,7 +30,8 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             Example("[].map ({ $0.description })"),
             Example("[].filter { $0.contains(location) }"),
             Example("extension UITableViewCell: ReusableView { }"),
-            Example("extension UITableViewCell: ReusableView {}")
+            Example("extension UITableViewCell: ReusableView {}"),
+            Example(#"let r = /\{\}/"#, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("[].filter(↓{$0.contains(location)})"),
@@ -71,7 +72,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     // returns ranges of braces `{` or `}` in the same line
     private func validBraces(in file: SwiftLintFile) -> [NSRange] {
         let nsstring = file.contents.bridge()
-        let bracePattern = regex("\\{|\\}")
+        let bracePattern = regex(#"(?<!\\)\{|(?<!\\)\}"#)
         let linesTokens = file.syntaxTokensByLines
         let kindsToExclude = SyntaxKind.commentAndStringKinds
 

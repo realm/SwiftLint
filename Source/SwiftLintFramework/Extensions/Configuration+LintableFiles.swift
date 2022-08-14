@@ -37,9 +37,9 @@ extension Configuration {
         if path.isFile && !forceExclude { return [path] }
 
         let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let includedPaths = self.includedPaths.parallelFlatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory)
-        }
+        let includedPaths = self.includedPaths
+            .flatMap(Glob.resolveGlob)
+            .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
 
         return excludeByPrefix
             ? filterExcludedPathsByPrefix(in: pathsForPath, includedPaths)

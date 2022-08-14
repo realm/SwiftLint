@@ -297,6 +297,16 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }
 
+    func testGlobIncludePaths() {
+        FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
+        let configuration = Configuration(includedPaths: ["**/Level2"])
+        let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
+        let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
+        let expectedFilenames = ["Level2.swift", "Level3.swift"]
+
+        XCTAssertEqual(Set(expectedFilenames), Set(filenames))
+    }
+
     func testGlobExcludePaths() {
         let configuration = Configuration(
             includedPaths: [Mock.Dir.level3],

@@ -1,4 +1,3 @@
-import SourceKittenFramework
 import SwiftSyntax
 
 // MARK: - ClosureSpacingRule
@@ -49,7 +48,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             .map { position in
                 StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
-                               location: Location(file: file, byteOffset: ByteCount(position)))
+                               location: Location(file: file, position: position))
             }
     }
 
@@ -72,7 +71,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         return rewriter.sortedPositions.map { position in
             Correction(
                 ruleDescription: Self.description,
-                location: Location(file: file, byteOffset: ByteCount(position))
+                location: Location(file: file, position: position)
             )
         }
     }

@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ClosureSpacingRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -24,6 +24,16 @@ public struct ClosureSpacingRule: ConfigurationProviderRule, OptInRule, SourceKi
             Example("[].map(↓{$0})"),
             Example("(↓{each in return result.contains(where: ↓{e in return e}) }).count"),
             Example("filter ↓{ sorted ↓{ $0 < $1}}")
+        ],
+        corrections: [
+            Example("[].filter(↓{$0.contains(location) })"):
+                Example("[].filter({ $0.contains(location) })"),
+            Example("[].map(↓{$0})"):
+                Example("[].map({ $0 })"),
+            Example("filter ↓{sorted ↓{ $0 < $1}}"):
+                Example("filter { sorted { $0 < $1 } }"),
+            Example("(↓{each in return result.contains(where: ↓{e in return 0})}).count"):
+                Example("({ each in return result.contains(where: { e in return 0 }) }).count")
         ]
     )
 
@@ -40,6 +50,30 @@ public struct ClosureSpacingRule: ConfigurationProviderRule, OptInRule, SourceKi
                                location: Location(file: file, byteOffset: ByteCount(position)))
             }
     }
+
+    public func correct(file: SwiftLintFile) -> [Correction] {
+        guard let locationConverter = file.locationConverter else {
+            return []
+        }
+
+        let disabledRegions = file.regions()
+            .filter { $0.isRuleDisabled(self) }
+            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
+
+        let rewriter = MultilineClosureRuleRewriter(locationConverter: locationConverter,
+                                                    disabledRegions: disabledRegions)
+        let newTree = rewriter
+            .visit(file.syntaxTree!)
+        guard rewriter.sortedPositions.isNotEmpty else { return [] }
+
+        file.write(newTree.description)
+        return rewriter.sortedPositions.map { position in
+            Correction(
+                ruleDescription: Self.description,
+                location: Location(file: file, byteOffset: ByteCount(position))
+            )
+        }
+    }
 }
 
 private final class MultilineClosureRuleVisitor: SyntaxVisitor {
@@ -52,31 +86,43 @@ private final class MultilineClosureRuleVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: ClosureExprSyntax) {
-        guard node.parent?.is(PostfixUnaryExprSyntax.self) == false else {
-            // Workaround for Regex literals
-            return
+        if node.shouldCheckForMultilineClosureRule(locationConverter: locationConverter),
+           node.violations.hasViolations {
+            positions.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        guard let startLine = node.startLocation(converter: self.locationConverter).line,
-              let endLine = node.endLocation(converter: self.locationConverter).line,
+private extension ClosureExprSyntax {
+    var violations: MultilineClosureRuleClosureViolations {
+        var violations = MultilineClosureRuleClosureViolations()
+        if !leftBrace.hasSingleSpaceToItsLeft && !leftBrace.previousTokenIsAllowed && !leftBrace.hasLeadingNewline {
+            violations.leftBraceLeftSpace = true
+        }
+        if !leftBrace.hasSingleSpaceToItsRight {
+            violations.leftBraceRightSpace = true
+        }
+        if !rightBrace.hasSingleSpaceToItsLeft {
+            violations.rightBraceLeftSpace = true
+        }
+        if !rightBrace.hasSingleSpaceToItsRight && !rightBrace.nextTokenIsRightParenOrEOF &&
+            !rightBrace.hasAllowedNoSpaceToken && !rightBrace.hasTrailingLineComment {
+            violations.rightBraceRightSpace = true
+        }
+        return violations
+    }
+
+    func shouldCheckForMultilineClosureRule(locationConverter: SourceLocationConverter) -> Bool {
+        guard parent?.is(PostfixUnaryExprSyntax.self) == false, // Workaround for Regex literals
+              let startLine = startLocation(converter: locationConverter).line,
+              let endLine = endLocation(converter: locationConverter).line,
               startLine == endLine, // Only check single-line closures
-              (node.rightBrace.position.utf8Offset - node.leftBrace.position.utf8Offset) > 1 // That aren't '{}'
+              (rightBrace.position.utf8Offset - leftBrace.position.utf8Offset) > 1 // That aren't '{}'
         else {
-            return
+            return false
         }
 
-        let violationPosition = node.positionAfterSkippingLeadingTrivia
-        if !node.leftBrace.hasSingleSpaceToItsLeft && !node.leftBrace.previousTokenIsAllowed &&
-            !node.leftBrace.hasLeadingNewline {
-            positions.append(violationPosition)
-        } else if !node.leftBrace.hasSingleSpaceToItsRight {
-            positions.append(violationPosition)
-        } else if !node.rightBrace.hasSingleSpaceToItsLeft {
-            positions.append(violationPosition)
-        } else if !node.rightBrace.hasSingleSpaceToItsRight && !node.rightBrace.nextTokenIsRightParenOrEOF &&
-                    !node.rightBrace.hasAllowedNoSpaceToken && !node.rightBrace.hasTrailingLineComment {
-            positions.append(violationPosition)
-        }
+        return true
     }
 }
 
@@ -145,6 +191,115 @@ private extension TokenSyntax {
         } else if let nextToken = nextToken, allowedKinds.contains(nextToken.tokenKind) {
             return true
         } else {
+            return false
+        }
+    }
+}
+
+private final class MultilineClosureRuleRewriter: SyntaxRewriter {
+    private var positions: [AbsolutePosition] = []
+    var sortedPositions: [AbsolutePosition] { positions.sorted() }
+    let locationConverter: SourceLocationConverter
+    let disabledRegions: [SourceRange]
+
+    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
+    }
+
+    override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
+        guard node.shouldCheckForMultilineClosureRule(locationConverter: locationConverter) else {
+            return ExprSyntax(node)
+        }
+
+        var node = node
+        node.statements = visit(node.statements).as(CodeBlockItemListSyntax.self)!
+
+        let isInDisabledRegion = disabledRegions.contains { region in
+            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+        }
+        if isInDisabledRegion {
+            return ExprSyntax(node)
+        }
+
+        let violations = node.violations
+        if violations.leftBraceLeftSpace {
+            node.leftBrace = node.leftBrace.withLeadingTrivia(.spaces(1))
+        }
+        if violations.leftBraceRightSpace {
+            node.leftBrace = node.leftBrace.withTrailingTrivia(.spaces(1))
+        }
+        if violations.rightBraceLeftSpace {
+            node.rightBrace = node.rightBrace.withLeadingTrivia(.spaces(1))
+        }
+        if violations.rightBraceRightSpace {
+            node.rightBrace = node.rightBrace.withTrailingTrivia(.spaces(1))
+        }
+        if violations.hasViolations {
+            positions.append(node.positionAfterSkippingLeadingTrivia)
+        }
+
+        return ExprSyntax(node)
+    }
+}
+
+private struct MultilineClosureRuleClosureViolations {
+    var leftBraceLeftSpace = false
+    var leftBraceRightSpace = false
+    var rightBraceLeftSpace = false
+    var rightBraceRightSpace = false
+
+    var hasViolations: Bool {
+        leftBraceLeftSpace ||
+            leftBraceRightSpace ||
+            rightBraceLeftSpace ||
+            rightBraceRightSpace
+    }
+}
+
+private extension Region {
+    func toSourceRange(locationConverter: SourceLocationConverter) -> SourceRange? {
+        guard let startLine = start.line, let endLine = end.line else {
+            return nil
+        }
+        let startPosition = locationConverter.position(ofLine: startLine, column: start.character ?? 1)
+        let endPosition = locationConverter.position(ofLine: endLine, column: end.character ?? 1)
+        let startLocation = locationConverter.location(for: startPosition)
+        let endLocation = locationConverter.location(for: endPosition)
+        return SourceRange(start: startLocation, end: endLocation)
+    }
+}
+
+private extension SourceRange {
+    func contains(_ position: AbsolutePosition, locationConverter: SourceLocationConverter) -> Bool {
+        contains(locationConverter.location(for: position))
+    }
+
+    func contains(_ location: SwiftSyntax.SourceLocation) -> Bool {
+        start <= location && location <= end
+    }
+}
+
+extension SwiftSyntax.SourceLocation: Comparable {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        if lhs.file != rhs.file {
+            return lhs.file < rhs.file
+        }
+        if lhs.line != rhs.line {
+            return lhs.line < rhs.line
+        }
+        return lhs.column < rhs.column
+    }
+}
+
+private extension Optional where Wrapped: Comparable {
+    static func < (lhs: Optional, rhs: Optional) -> Bool {
+        switch (lhs, rhs) {
+        case let (lhs?, rhs?):
+            return lhs < rhs
+        case (nil, _?):
+            return true
+        default:
             return false
         }
     }

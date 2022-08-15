@@ -116,11 +116,8 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter {
         let isInDisabledRegion = disabledRegions.contains { region in
             region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
         }
-        if isInDisabledRegion {
-            return ExprSyntax(node)
-        }
 
-        guard node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter) else {
+        guard !isInDisabledRegion, node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter) else {
             return ExprSyntax(node)
         }
 
@@ -257,41 +254,6 @@ private extension TokenSyntax {
         } else if let nextToken = nextToken, allowedKinds.contains(nextToken.tokenKind) {
             return true
         } else {
-            return false
-        }
-    }
-}
-
-private extension SourceRange {
-    func contains(_ position: AbsolutePosition, locationConverter: SourceLocationConverter) -> Bool {
-        contains(locationConverter.location(for: position))
-    }
-
-    func contains(_ location: SwiftSyntax.SourceLocation) -> Bool {
-        start < location && location < end
-    }
-}
-
-private extension SwiftSyntax.SourceLocation {
-    static func < (lhs: Self, rhs: Self) -> Bool {
-        if lhs.file != rhs.file {
-            return lhs.file < rhs.file
-        }
-        if lhs.line != rhs.line {
-            return lhs.line < rhs.line
-        }
-        return lhs.column < rhs.column
-    }
-}
-
-private extension Optional where Wrapped: Comparable {
-    static func < (lhs: Optional, rhs: Optional) -> Bool {
-        switch (lhs, rhs) {
-        case let (lhs?, rhs?):
-            return lhs < rhs
-        case (nil, _?):
-            return true
-        default:
             return false
         }
     }

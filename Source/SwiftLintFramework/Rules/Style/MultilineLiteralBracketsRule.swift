@@ -14,7 +14,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         nonTriggeringExamples: [
             Example("""
             let trio = ["harry", "ronald", "hermione"]
-            let houseCup = ["gryffinder": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
+            let houseCup = ["gryffindor": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
             """),
             Example("""
             let trio = [
@@ -23,7 +23,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "hermione"
             ]
             let houseCup = [
-                "gryffinder": 460,
+                "gryffindor": 460,
                 "hufflepuff": 370,
                 "ravenclaw": 410,
                 "slytherin": 450
@@ -34,7 +34,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "harry", "ronald", "hermione"
             ]
             let houseCup = [
-                "gryffinder": 460, "hufflepuff": 370,
+                "gryffindor": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450
             ]
             """),
@@ -57,9 +57,15 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             ]
             """),
             Example("""
-            let houseCup = [↓"gryffinder": 460, "hufflepuff": 370,
+            let houseCup = [↓"gryffindor": 460, "hufflepuff": 370,
                             "ravenclaw": 410, "slytherin": 450
             ]
+            """),
+            Example("""
+            let houseCup = [↓"gryffindor": 460,
+                            "hufflepuff": 370,
+                            "ravenclaw": 410,
+                            "slytherin": 450↓]
             """),
             Example("""
             let trio = [
@@ -69,13 +75,13 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             """),
             Example("""
             let houseCup = [
-                "gryffinder": 460, "hufflepuff": 370,
+                "gryffindor": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450↓]
             """),
             Example("""
             class Hogwarts {
                 let houseCup = [
-                    "gryffinder": 460, "hufflepuff": 370,
+                    "gryffindor": 460, "hufflepuff": 370,
                     "ravenclaw": 410, "slytherin": 450↓]
             }
             """),

@@ -1,6 +1,8 @@
 import SourceKittenFramework
 import SwiftSyntax
 
+// MARK: - ClosureSpacingRule
+
 public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -76,6 +78,8 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 }
 
+// MARK: - MultilineClosureRuleVisitor
+
 private final class MultilineClosureRuleVisitor: SyntaxVisitor {
     private var positions: [AbsolutePosition] = []
     var sortedPositions: [AbsolutePosition] { positions.sorted() }
@@ -93,108 +97,7 @@ private final class MultilineClosureRuleVisitor: SyntaxVisitor {
     }
 }
 
-private extension ClosureExprSyntax {
-    var violations: MultilineClosureRuleClosureViolations {
-        var violations = MultilineClosureRuleClosureViolations()
-        if !leftBrace.hasSingleSpaceToItsLeft && !leftBrace.previousTokenIsAllowed && !leftBrace.hasLeadingNewline {
-            violations.leftBraceLeftSpace = true
-        }
-        if !leftBrace.hasSingleSpaceToItsRight {
-            violations.leftBraceRightSpace = true
-        }
-        if !rightBrace.hasSingleSpaceToItsLeft {
-            violations.rightBraceLeftSpace = true
-        }
-        if !rightBrace.hasSingleSpaceToItsRight && !rightBrace.nextTokenIsRightParenOrEOF &&
-            !rightBrace.hasAllowedNoSpaceToken && !rightBrace.hasTrailingLineComment {
-            violations.rightBraceRightSpace = true
-        }
-        return violations
-    }
-
-    func shouldCheckForMultilineClosureRule(locationConverter: SourceLocationConverter) -> Bool {
-        guard parent?.is(PostfixUnaryExprSyntax.self) == false, // Workaround for Regex literals
-              let startLine = startLocation(converter: locationConverter).line,
-              let endLine = endLocation(converter: locationConverter).line,
-              startLine == endLine, // Only check single-line closures
-              (rightBrace.position.utf8Offset - leftBrace.position.utf8Offset) > 1 // That aren't '{}'
-        else {
-            return false
-        }
-
-        return true
-    }
-}
-
-private extension TokenSyntax {
-    var previousTokenIsAllowed: Bool {
-        parent?.previousToken?.tokenKind == .leftParen || parent?.previousToken?.tokenKind == .leftSquareBracket
-    }
-
-    var nextTokenIsRightParenOrEOF: Bool {
-        (parent?.nextToken?.tokenKind == .rightParen) ||
-            (parent?.nextToken?.tokenKind == .eof)
-    }
-
-    var hasSingleSpaceToItsLeft: Bool {
-        leadingTriviaLength.utf8Length +
-            (previousToken?.trailingTriviaLength.utf8Length ?? 0) == 1
-    }
-
-    var hasSingleSpaceToItsRight: Bool {
-        if case let .spaces(spaces) = trailingTrivia.first, spaces == 1 {
-            return true
-        }
-
-        return trailingTriviaLength.utf8Length +
-            (nextToken?.leadingTriviaLength.utf8Length ?? 0) == 1
-    }
-
-    var hasLeadingNewline: Bool {
-        leadingTrivia.contains { piece in
-            if case .newlines = piece {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-
-    var hasTrailingLineComment: Bool {
-        trailingTrivia.contains { piece in
-            if case .lineComment = piece {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-
-    var hasAllowedNoSpaceToken: Bool {
-        let allowedKinds = [
-            TokenKind.colon,
-            .comma,
-            .exclamationMark,
-            .leftParen,
-            .leftSquareBracket,
-            .period,
-            .postfixQuestionMark,
-            .rightParen,
-            .rightSquareBracket,
-            .semicolon,
-            .stringInterpolationAnchor
-        ]
-        if case .newlines = trailingTrivia.first {
-            return true
-        } else if case .newlines = nextToken?.leadingTrivia.first {
-            return true
-        } else if let nextToken = nextToken, allowedKinds.contains(nextToken.tokenKind) {
-            return true
-        } else {
-            return false
-        }
-    }
-}
+// MARK: - MultilineClosureRuleRewriter
 
 private final class MultilineClosureRuleRewriter: SyntaxRewriter {
     private var positions: [AbsolutePosition] = []
@@ -243,11 +146,13 @@ private final class MultilineClosureRuleRewriter: SyntaxRewriter {
     }
 }
 
+// MARK: - Private Helpers
+
 private struct MultilineClosureRuleClosureViolations {
-    var leftBraceLeftSpace = false
-    var leftBraceRightSpace = false
-    var rightBraceLeftSpace = false
-    var rightBraceRightSpace = false
+    let leftBraceLeftSpace: Bool
+    let leftBraceRightSpace: Bool
+    let rightBraceLeftSpace: Bool
+    let rightBraceRightSpace: Bool
 
     var hasViolations: Bool {
         leftBraceLeftSpace ||
@@ -257,11 +162,110 @@ private struct MultilineClosureRuleClosureViolations {
     }
 }
 
+private extension ClosureExprSyntax {
+    var violations: MultilineClosureRuleClosureViolations {
+        MultilineClosureRuleClosureViolations(
+            leftBraceLeftSpace: !leftBrace.hasSingleSpaceToItsLeft &&
+                !leftBrace.hasAllowedNoSpaceLeftToken &&
+                !leftBrace.hasLeadingNewline,
+            leftBraceRightSpace: !leftBrace.hasSingleSpaceToItsRight,
+            rightBraceLeftSpace: !rightBrace.hasSingleSpaceToItsLeft,
+            rightBraceRightSpace: !rightBrace.hasSingleSpaceToItsRight &&
+                !rightBrace.hasAllowedNoSpaceRightToken &&
+                !rightBrace.hasTrailingLineComment
+        )
+    }
+
+    func shouldCheckForMultilineClosureRule(locationConverter: SourceLocationConverter) -> Bool {
+        guard parent?.is(PostfixUnaryExprSyntax.self) == false, // Workaround for Regex literals
+              (rightBrace.position.utf8Offset - leftBrace.position.utf8Offset) > 1, // Allow '{}'
+              let startLine = startLocation(converter: locationConverter).line,
+              let endLine = endLocation(converter: locationConverter).line,
+              startLine == endLine // Only check single-line closures
+        else {
+            return false
+        }
+
+        return true
+    }
+}
+
+private extension TokenSyntax {
+    var hasSingleSpaceToItsLeft: Bool {
+        if case let .spaces(spaces) = Array(leadingTrivia).last, spaces == 1 {
+            return true
+        }
+
+        return leadingTriviaLength.utf8Length +
+            (previousToken?.trailingTriviaLength.utf8Length ?? 0) == 1
+    }
+
+    var hasSingleSpaceToItsRight: Bool {
+        if case let .spaces(spaces) = trailingTrivia.first, spaces == 1 {
+            return true
+        }
+
+        return trailingTriviaLength.utf8Length +
+            (nextToken?.leadingTriviaLength.utf8Length ?? 0) == 1
+    }
+
+    var hasLeadingNewline: Bool {
+        leadingTrivia.contains { piece in
+            if case .newlines = piece {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    var hasTrailingLineComment: Bool {
+        trailingTrivia.contains { piece in
+            if case .lineComment = piece {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    var hasAllowedNoSpaceLeftToken: Bool {
+        parent?.previousToken?.tokenKind == .leftParen || parent?.previousToken?.tokenKind == .leftSquareBracket
+    }
+
+    var hasAllowedNoSpaceRightToken: Bool {
+        let allowedKinds = [
+            TokenKind.colon,
+            .comma,
+            .eof,
+            .exclamationMark,
+            .leftParen,
+            .leftSquareBracket,
+            .period,
+            .postfixQuestionMark,
+            .rightParen,
+            .rightSquareBracket,
+            .semicolon,
+            .stringInterpolationAnchor
+        ]
+        if case .newlines = trailingTrivia.first {
+            return true
+        } else if case .newlines = nextToken?.leadingTrivia.first {
+            return true
+        } else if let nextToken = nextToken, allowedKinds.contains(nextToken.tokenKind) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
 private extension Region {
     func toSourceRange(locationConverter: SourceLocationConverter) -> SourceRange? {
         guard let startLine = start.line, let endLine = end.line else {
             return nil
         }
+
         let startPosition = locationConverter.position(ofLine: startLine, column: start.character ?? 1)
         let endPosition = locationConverter.position(ofLine: endLine, column: end.character ?? 1)
         let startLocation = locationConverter.location(for: startPosition)
@@ -276,12 +280,12 @@ private extension SourceRange {
     }
 
     func contains(_ location: SwiftSyntax.SourceLocation) -> Bool {
-        start <= location && location <= end
+        start < location && location < end
     }
 }
 
-extension SwiftSyntax.SourceLocation: Comparable {
-    public static func < (lhs: Self, rhs: Self) -> Bool {
+private extension SwiftSyntax.SourceLocation {
+    static func < (lhs: Self, rhs: Self) -> Bool {
         if lhs.file != rhs.file {
             return lhs.file < rhs.file
         }

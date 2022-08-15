@@ -3,6 +3,11 @@ load(
     "swift_binary",
     "swift_library",
 )
+load(
+    "@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:xcodeproj.bzl",
+    "xcode_schemes",
+    "xcodeproj",
+)
 
 swift_library(
     name = "SwiftLintFramework",
@@ -45,4 +50,16 @@ filegroup(
     name = "SourceFilesToLint",
     srcs = glob(["Source/**"]),
     visibility = ["//Tests:__subpackages__"],
+)
+
+xcodeproj(
+    name = "xcodeproj",
+    build_mode = "bazel",
+    project_name = "SwiftLint",
+    top_level_targets = [
+        "//:swiftlint",
+        "//:SwiftLintFramework",
+        "//Tests:SwiftLintFrameworkTests",
+        "//Tests:ExtraRulesTests",
+    ],
 )

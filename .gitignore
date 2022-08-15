@@ -37,6 +37,7 @@ xcuserdata
 
 # SwiftLint
 
+SwiftLint.xcodeproj
 SwiftLint.pkg
 *.zip
 benchmark_*

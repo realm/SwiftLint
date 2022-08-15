@@ -1,4 +1,4 @@
-public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
+public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -21,8 +21,9 @@ public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
     }
 
     public func reason(for rule: String) -> String {
-        return "SwiftLint rule '\(rule)' did not trigger a violation " +
-        "in the disabled region. Please remove the disable command."
+        """
+        SwiftLint rule '\(rule)' did not trigger a violation in the disabled region. Please remove the disable command.
+        """
     }
 
     public func reason(forNonExistentRule rule: String) -> String {

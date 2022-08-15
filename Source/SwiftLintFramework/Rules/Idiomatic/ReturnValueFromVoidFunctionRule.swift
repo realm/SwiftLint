@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule {
+public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -17,10 +17,10 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = ReturnValueFromVoidFunctionVisitor()
-        return visitor.walk(file: file) { visitor in
-            visitor.violations(for: self, in: file)
-        }
+        ReturnValueFromVoidFunctionVisitor()
+            .walk(file: file) { visitor in
+                visitor.violations(for: self, in: file)
+            }
     }
 }
 

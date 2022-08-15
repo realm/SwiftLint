@@ -2,7 +2,8 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
+public struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
+                                    SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

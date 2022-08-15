@@ -3,6 +3,11 @@ load(
     "swift_binary",
     "swift_library",
 )
+load(
+    "@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:xcodeproj.bzl",
+    "xcode_schemes",
+    "xcodeproj",
+)
 
 swift_library(
     name = "SwiftLintFramework",
@@ -29,8 +34,8 @@ swift_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
-        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
+        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
 )
@@ -45,4 +50,25 @@ filegroup(
     name = "SourceFilesToLint",
     srcs = glob(["Source/**"]),
     visibility = ["//Tests:__subpackages__"],
+)
+
+xcodeproj(
+    name = "xcodeproj",
+    build_mode = "bazel",
+    project_name = "SwiftLint",
+    schemes = [
+        xcode_schemes.scheme(
+            name = "SwiftLint",
+            launch_action = xcode_schemes.launch_action("//:swiftlint"),
+            test_action = xcode_schemes.test_action([
+                "//Tests:SwiftLintFrameworkTests",
+                "//Tests:ExtraRulesTests",
+            ]),
+        ),
+    ],
+    top_level_targets = [
+        "//:swiftlint",
+        "//Tests:SwiftLintFrameworkTests",
+        "//Tests:ExtraRulesTests",
+    ],
 )

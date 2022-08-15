@@ -27,7 +27,7 @@ swift_test(
         # Bazel doesn't support paths with spaces in them
         exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),
-    visibility = ["//Tests:__subpackages__"],
+    visibility = ["//visibility:public"],
     deps = [":SwiftLintFrameworkTests.library"],
 )
 

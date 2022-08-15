@@ -44,7 +44,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             return []
         }
 
-        return MultilineClosureRuleVisitor(locationConverter: locationConverter)
+        return ClosureSpacingRuleVisitor(locationConverter: locationConverter)
             .walk(file: file, handler: \.sortedPositions)
             .map { position in
                 StyleViolation(ruleDescription: Self.description,
@@ -62,8 +62,8 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
             .filter { $0.isRuleDisabled(self) }
             .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
 
-        let rewriter = MultilineClosureRuleRewriter(locationConverter: locationConverter,
-                                                    disabledRegions: disabledRegions)
+        let rewriter = ClosureSpacingRuleRewriter(locationConverter: locationConverter,
+                                                  disabledRegions: disabledRegions)
         let newTree = rewriter
             .visit(file.syntaxTree!)
         guard rewriter.sortedPositions.isNotEmpty else { return [] }
@@ -78,9 +78,9 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 }
 
-// MARK: - MultilineClosureRuleVisitor
+// MARK: - ClosureSpacingRuleVisitor
 
-private final class MultilineClosureRuleVisitor: SyntaxVisitor {
+private final class ClosureSpacingRuleVisitor: SyntaxVisitor {
     private var positions: [AbsolutePosition] = []
     var sortedPositions: [AbsolutePosition] { positions.sorted() }
     let locationConverter: SourceLocationConverter
@@ -90,16 +90,16 @@ private final class MultilineClosureRuleVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: ClosureExprSyntax) {
-        if node.shouldCheckForMultilineClosureRule(locationConverter: locationConverter),
+        if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
            node.violations.hasViolations {
             positions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
-// MARK: - MultilineClosureRuleRewriter
+// MARK: - ClosureSpacingRuleRewriter
 
-private final class MultilineClosureRuleRewriter: SyntaxRewriter {
+private final class ClosureSpacingRuleRewriter: SyntaxRewriter {
     private var positions: [AbsolutePosition] = []
     var sortedPositions: [AbsolutePosition] { positions.sorted() }
     let locationConverter: SourceLocationConverter
@@ -111,10 +111,6 @@ private final class MultilineClosureRuleRewriter: SyntaxRewriter {
     }
 
     override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
-        guard node.shouldCheckForMultilineClosureRule(locationConverter: locationConverter) else {
-            return ExprSyntax(node)
-        }
-
         var node = node
         node.statements = visit(node.statements).as(CodeBlockItemListSyntax.self)!
 
@@ -122,6 +118,10 @@ private final class MultilineClosureRuleRewriter: SyntaxRewriter {
             region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
         }
         if isInDisabledRegion {
+            return ExprSyntax(node)
+        }
+
+        guard node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter) else {
             return ExprSyntax(node)
         }
 
@@ -148,7 +148,7 @@ private final class MultilineClosureRuleRewriter: SyntaxRewriter {
 
 // MARK: - Private Helpers
 
-private struct MultilineClosureRuleClosureViolations {
+private struct ClosureSpacingRuleClosureViolations {
     let leftBraceLeftSpace: Bool
     let leftBraceRightSpace: Bool
     let rightBraceLeftSpace: Bool
@@ -163,8 +163,8 @@ private struct MultilineClosureRuleClosureViolations {
 }
 
 private extension ClosureExprSyntax {
-    var violations: MultilineClosureRuleClosureViolations {
-        MultilineClosureRuleClosureViolations(
+    var violations: ClosureSpacingRuleClosureViolations {
+        ClosureSpacingRuleClosureViolations(
             leftBraceLeftSpace: !leftBrace.hasSingleSpaceToItsLeft &&
                 !leftBrace.hasAllowedNoSpaceLeftToken &&
                 !leftBrace.hasLeadingNewline,
@@ -176,7 +176,7 @@ private extension ClosureExprSyntax {
         )
     }
 
-    func shouldCheckForMultilineClosureRule(locationConverter: SourceLocationConverter) -> Bool {
+    func shouldCheckForClosureSpacingRule(locationConverter: SourceLocationConverter) -> Bool {
         guard parent?.is(PostfixUnaryExprSyntax.self) == false, // Workaround for Regex literals
               (rightBrace.position.utf8Offset - leftBrace.position.utf8Offset) > 1, // Allow '{}'
               let startLine = startLocation(converter: locationConverter).line,
@@ -269,8 +269,8 @@ private extension Region {
             return nil
         }
 
-        let startPosition = locationConverter.position(ofLine: startLine, column: start.character ?? 1)
-        let endPosition = locationConverter.position(ofLine: endLine, column: end.character ?? 1)
+        let startPosition = locationConverter.position(ofLine: startLine, column: min(1_000, start.character ?? 1))
+        let endPosition = locationConverter.position(ofLine: endLine, column: min(1_000, end.character ?? 1))
         let startLocation = locationConverter.location(for: startPosition)
         let endLocation = locationConverter.location(for: endPosition)
         return SourceRange(start: startLocation, end: endLocation)

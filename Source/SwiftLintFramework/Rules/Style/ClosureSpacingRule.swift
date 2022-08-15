@@ -196,8 +196,9 @@ private extension TokenSyntax {
             return true
         }
 
-        return leadingTriviaLength.utf8Length +
-            (previousToken?.trailingTriviaLength.utf8Length ?? 0) == 1
+        let combinedLeadingTriviaLength = leadingTriviaLength.utf8Length +
+            (previousToken?.trailingTriviaLength.utf8Length ?? 0)
+        return combinedLeadingTriviaLength == 1
     }
 
     var hasSingleSpaceToItsRight: Bool {
@@ -205,8 +206,9 @@ private extension TokenSyntax {
             return true
         }
 
-        return trailingTriviaLength.utf8Length +
-            (nextToken?.leadingTriviaLength.utf8Length ?? 0) == 1
+        let combinedTrailingTriviaLength = trailingTriviaLength.utf8Length +
+            (nextToken?.leadingTriviaLength.utf8Length ?? 0)
+        return combinedTrailingTriviaLength == 1
     }
 
     var hasLeadingNewline: Bool {
@@ -230,7 +232,8 @@ private extension TokenSyntax {
     }
 
     var hasAllowedNoSpaceLeftToken: Bool {
-        parent?.previousToken?.tokenKind == .leftParen || parent?.previousToken?.tokenKind == .leftSquareBracket
+        let previousTokenKind = parent?.previousToken?.tokenKind
+        return previousTokenKind == .leftParen || previousTokenKind == .leftSquareBracket
     }
 
     var hasAllowedNoSpaceRightToken: Bool {

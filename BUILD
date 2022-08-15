@@ -56,10 +56,12 @@ xcodeproj(
     name = "xcodeproj",
     build_mode = "bazel",
     project_name = "SwiftLint",
-    top_level_targets = [
-        "//:swiftlint",
-        "//:SwiftLintFramework",
-        "//Tests:SwiftLintFrameworkTests",
-        "//Tests:ExtraRulesTests",
-    ],
+    schemes = [
+        xcode_schemes.scheme(
+            name = "SwiftLint",
+            launch_action = xcode_schemes.launch_action("//:swiftlint"),
+            build_action = xcode_schemes.build_action(["//:swiftlint"]),
+            test_action = xcode_schemes.test_action(["//Tests:SwiftLintFrameworkTests"]),
+        ),
+    ]
 )

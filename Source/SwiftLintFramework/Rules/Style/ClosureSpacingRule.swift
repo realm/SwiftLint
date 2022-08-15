@@ -131,12 +131,13 @@ private extension TokenSyntax {
             .comma,
             .exclamationMark,
             .leftParen,
+            .leftSquareBracket,
             .period,
             .postfixQuestionMark,
             .rightParen,
             .rightSquareBracket,
-            .stringInterpolationAnchor,
-            .leftSquareBracket
+            .semicolon,
+            .stringInterpolationAnchor
         ]
         if case .newlines = trailingTrivia.first {
             return true

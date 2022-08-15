@@ -56,6 +56,12 @@ accordingly._
 * Make `colon` rule about 7x faster, finding some previously missed cases.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `closure_spacing` rule about 9x faster, finding some previously missed
+  cases and fixing some previously wrong corrections.  
+  [JP Simard](https://github.com/jpsim)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4090](https://github.com/realm/SwiftLint/issues/4090)
+
 * Introduce new configuration option `include_compiler_directives` (`true` by
   default) for the `indentation_width` rule that allows to ignore compiler
   directives in the indentation analysis. This is especially useful if one (or

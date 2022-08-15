@@ -269,8 +269,8 @@ private extension Region {
             return nil
         }
 
-        let startPosition = locationConverter.position(ofLine: startLine, column: min(1_000, start.character ?? 1))
-        let endPosition = locationConverter.position(ofLine: endLine, column: min(1_000, end.character ?? 1))
+        let startPosition = locationConverter.position(ofLine: startLine, column: min(1000, start.character ?? 1))
+        let endPosition = locationConverter.position(ofLine: endLine, column: min(1000, end.character ?? 1))
         let startLocation = locationConverter.location(for: startPosition)
         let endLocation = locationConverter.location(for: endPosition)
         return SourceRange(start: startLocation, end: endLocation)

@@ -135,7 +135,8 @@ private extension TokenSyntax {
             .postfixQuestionMark,
             .rightParen,
             .rightSquareBracket,
-            .stringInterpolationAnchor
+            .stringInterpolationAnchor,
+            .leftSquareBracket
         ]
         if case .newlines = trailingTrivia.first {
             return true

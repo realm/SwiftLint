@@ -28,11 +28,10 @@ public struct ClosureSpacingRule: ConfigurationProviderRule, OptInRule, SourceKi
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
+        guard let locationConverter = file.locationConverter else {
             return []
         }
 
-        let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)
         return MultilineClosureRuleVisitor(locationConverter: locationConverter)
             .walk(file: file, handler: \.sortedPositions)
             .map { position in

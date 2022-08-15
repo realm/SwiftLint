@@ -1,4 +1,3 @@
-import SourceKittenFramework
 import SwiftSyntax
 
 public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule {
@@ -139,7 +138,7 @@ private class VoidFunctionInTernaryConditionVisitor: SyntaxVisitor {
         return positions.map { position in
             StyleViolation(ruleDescription: type(of: rule).description,
                            severity: rule.configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position)))
+                           location: Location(file: file, position: position))
         }
     }
 }

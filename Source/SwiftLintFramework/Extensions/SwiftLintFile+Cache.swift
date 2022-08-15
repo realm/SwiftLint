@@ -46,13 +46,11 @@ private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
 })
 
 private var commandsCache = Cache({ file -> [Command] in
-    guard file.contents.contains("swiftlint:"), let tree = syntaxTreeCache.get(file) else {
+    guard file.contents.contains("swiftlint:"), let locationConverter = file.locationConverter else {
         return []
     }
-    let locationConverter = SourceLocationConverter(file: file.path ?? "<nopath>", tree: tree)
-
-    let visitor = CommandVisitor(locationConverter: locationConverter)
-    return visitor.walk(tree: tree, handler: \.commands)
+    return CommandVisitor(locationConverter: locationConverter)
+        .walk(file: file, handler: \.commands)
 })
 
 private var syntaxMapCache = Cache({ file in
@@ -209,6 +207,10 @@ extension SwiftLintFile {
     }
 
     internal var syntaxTree: SourceFileSyntax? { syntaxTreeCache.get(self) }
+
+    internal var locationConverter: SourceLocationConverter? {
+        syntaxTree.map { SourceLocationConverter(file: path ?? "<nopath>", tree: $0) }
+    }
 
     internal var commands: [Command] { commandsCache.get(self) }
 

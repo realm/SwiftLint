@@ -1,4 +1,3 @@
-import SourceKittenFramework
 import SwiftSyntax
 
 public struct ForceCastRule: ConfigurationProviderRule {
@@ -18,12 +17,13 @@ public struct ForceCastRule: ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = ForceCastRuleVisitor()
-        return visitor.walk(file: file, handler: \.positions).map { position in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position)))
-        }
+        ForceCastRuleVisitor()
+            .walk(file: file, handler: \.positions)
+            .map { position in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, position: position))
+            }
     }
 }
 

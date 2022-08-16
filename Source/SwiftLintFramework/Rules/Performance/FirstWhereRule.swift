@@ -26,7 +26,8 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()\n"),
             Example("↓myList.filter(someFunction).first\n"),
             Example("↓myList.filter({ $0 % 2 == 0 })\n.first\n"),
-            Example("(↓myList.filter { $0 == 1 }).first\n")
+            Example("(↓myList.filter { $0 == 1 }).first\n"),
+            Example("↓myListOfDict.filter { $0[\"someString\"] }.first")
         ]
     )
 

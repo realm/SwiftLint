@@ -52,7 +52,7 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             }
 
             let syntaxKinds = file.syntaxMap.kinds(inByteRange: bodyRange)
-            return !syntaxKinds.contains(.string)
+            return syntaxKinds == [.identifier, .string] || !syntaxKinds.contains(.string)
         }
     }
 }

@@ -54,6 +54,7 @@ struct LintOrAnalyzeCommand {
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
+                CustomRuleTimer.shared.activate()
                 let start = Date()
                 let (violationsBeforeLeniency, currentRuleTimes) = linter
                     .styleViolationsAndRuleTimes(using: builder.storage)
@@ -93,6 +94,9 @@ struct LintOrAnalyzeCommand {
         }
         if options.benchmark {
             builder.fileBenchmark.save()
+            for (id, time) in CustomRuleTimer.shared.dump() {
+                builder.ruleBenchmark.record(id: id, time: time)
+            }
             builder.ruleBenchmark.save()
         }
         try builder.cache?.save()

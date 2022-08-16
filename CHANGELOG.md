@@ -73,6 +73,10 @@ accordingly._
 * Enable (recursive) globs in `included` file paths.  
   [sarastro-nl](https://github.com/sarastro-nl)
 
+* Custom rules are now broken down per rule instead of in aggregate in
+  `--benchmark`.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

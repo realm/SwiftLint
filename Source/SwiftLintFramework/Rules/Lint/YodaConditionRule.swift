@@ -1,15 +1,41 @@
+import Foundation
 import SourceKittenFramework
-import SwiftSyntax
 
-public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SourceKitFreeRule {
+public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
+    private static let regularExpression = regex(
+        "(?<!" +                      // Starting negative lookbehind
+        "(" +                         // First capturing group
+        "\\+|-|\\*|\\/|%|\\?" +       // One of the operators
+        ")" +                         // Ending negative lookbehind
+        ")" +                         // End first capturing group
+        "\\s+" +                      // Starting with whitespace
+        "(" +                         // Second capturing group
+        "(?:\\\"[\\\"\\w\\ ]+\")" +   // Multiple words between quotes
+        "|" +                         // OR
+        "(?:\\d+" +                   // Number of digits
+        "(?:\\.\\d*)?)" +             // Optionally followed by a dot and any number digits
+        "|" +                         // OR
+        "(nil)" +                     // `nil` value
+        ")" +                         // End second capturing group
+        "\\s+" +                      // Followed by whitespace
+        "(" +                         // Third capturing group
+        "==|!=|>|<|>=|<=" +           // One of comparison operators
+        ")" +                         // End third capturing group
+        "\\s+" +                      // Followed by whitespace
+        "(" +                         // Fourth capturing group
+        "\\w+" +                      // Number of words
+        ")"                           // End fourth capturing group
+    )
+    private let observedStatements: Set<StatementKind> = [.if, .guard, .repeatWhile, .while]
+
     public static let description = RuleDescription(
         identifier: "yoda_condition",
         name: "Yoda condition rule",
-        description: "The constant literal should be placed on the right-hand side of the comparison operator.",
+        description: "The variable should be placed on the left, the constant on the right of a comparison operator.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("if foo == 42 {}\n"),
@@ -20,102 +46,34 @@ public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SourceKit
             Example("while foo > 1 { }\n"),
             Example("while foo + 1 == 2 {}"),
             Example("if optionalValue?.property ?? 0 == 2 {}"),
-            Example("if foo == nil {}"),
-            Example("if flags & 1 == 1 {}"),
-            Example("if true {}", excludeFromDocumentation: true),
-            Example("if true == false || b, 2 != 3, {}", excludeFromDocumentation: true)
+            Example("if foo == nil {}")
         ],
         triggeringExamples: [
-            Example("if ↓42 == foo {}\n"),
-            Example("if ↓42.42 >= foo {}\n"),
-            Example("guard ↓42 <= foo else { return }\n"),
-            Example("guard ↓\"str str\" != foo else { return }"),
-            Example("while ↓10 > foo { }"),
-            Example("while ↓1 < foo { }"),
-            Example("if ↓nil == foo {}"),
-            Example("while ↓1 > i + 5 {}"),
-            Example("if ↓200 <= i && i <= 299 || ↓600 <= i {}")
+            Example("↓if 42 == foo {}\n"),
+            Example("↓if 42.42 >= foo {}\n"),
+            Example("↓guard 42 <= foo else { return }\n"),
+            Example("↓guard \"str str\" != foo else { return }"),
+            Example("↓while 10 > foo { }"),
+            Example("↓while 1 < foo { }"),
+            Example("↓if nil == foo {}")
         ])
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        YodaConditionRuleVisitor().walk(file: file, handler: \.positions).map { position in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position)))
+    public func validate(file: SwiftLintFile,
+                         kind: StatementKind,
+                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+        guard observedStatements.contains(kind), let offset = dictionary.offset else {
+            return []
         }
-    }
-}
 
-private final class YodaConditionRuleVisitor: SyntaxVisitor {
-    var positions: [AbsolutePosition] = []
-
-    override func visitPost(_ node: IfStmtSyntax) {
-        visit(conditions: node.conditions)
-    }
-
-    override func visitPost(_ node: GuardStmtSyntax) {
-        visit(conditions: node.conditions)
-    }
-
-    override func visitPost(_ node: RepeatWhileStmtSyntax) {
-        visit(condition: node.condition)
-    }
-
-    override func visitPost(_ node: WhileStmtSyntax) {
-        visit(conditions: node.conditions)
-    }
-
-    private func visit(conditions: ConditionElementListSyntax) {
-        conditions.map(\.condition).compactMap(ExprSyntax.init).forEach(visit(condition:))
-    }
-
-    private func visit(condition: ExprSyntax) {
-        guard let children = condition.as(SequenceExprSyntax.self)?.elements.children else {
-            return
+        let matches = file.lines.filter({ $0.byteRange.contains(offset) }).reduce(into: []) { matches, line in
+            let range = line.content.fullNSRange
+            let lineMatches = Self.regularExpression.matches(in: line.content, options: [], range: range)
+            matches.append(contentsOf: lineMatches)
         }
-        let comparisonOperators = children
-            .compactMap { $0.as(BinaryOperatorExprSyntax.self) }
-            .filter { ["==", "!=", ">", "<", ">=", "<="].contains($0.operatorToken.text) }
-        for comparisonOperator in comparisonOperators {
-            let rhsIdx = children.index(after: comparisonOperator.index)
-            if children[rhsIdx].isLiteral {
-                let afterRhsIndex = children.index(after: rhsIdx)
-                guard children.endIndex != rhsIdx, afterRhsIndex != nil else {
-                    // This is already the end of the expression.
-                    continue
-                }
-                if children[afterRhsIndex].isLogicalBinaryOperator {
-                    // Next token is an operator with weaker binding. Thus, the literal is unique on the
-                    // right-hand side of the comparison operator.
-                    continue
-                }
-            }
-            let lhsIdx = children.index(before: comparisonOperator.index)
-            let lhs = children[lhsIdx]
-            if lhs.isLiteral {
-                if children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
-                    // Literal is at the very beginning of the expression or the previous token is an operator with
-                    // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
-                    positions.append(lhs.positionAfterSkippingLeadingTrivia)
-                }
-            }
-        }
-    }
-}
 
-private extension Syntax {
-    var isLiteral: Bool {
-           `is`(IntegerLiteralExprSyntax.self)
-        || `is`(FloatLiteralExprSyntax.self)
-        || `is`(BooleanLiteralExprSyntax.self)
-        || `is`(StringLiteralExprSyntax.self)
-        || `is`(NilLiteralExprSyntax.self)
-    }
-
-    var isLogicalBinaryOperator: Bool {
-        guard let binaryOperator = `as`(BinaryOperatorExprSyntax.self) else {
-            return false
+        return matches.map { _ -> StyleViolation in
+            return StyleViolation(ruleDescription: Self.description, severity: configuration.severity,
+                                  location: Location(file: file, byteOffset: offset))
         }
-        return ["&&", "||"].contains(binaryOperator.operatorToken.text)
     }
 }

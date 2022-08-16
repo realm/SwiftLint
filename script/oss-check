@@ -164,7 +164,7 @@ def generate_reports(branch)
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = "../builds/bazel-bin/swiftlint lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter xcode"
+      command = "../builds/swiftlint-#{branch} lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter xcode"
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
         puts "\n#{command}" if @options[:verbose]
         Open3.popen2(command) do |_, stdout, wait_thr|
@@ -208,7 +208,7 @@ def build(branch)
     perform("git worktree add --detach #{dir} #{target}")
   end
 
-  build_command = "cd #{dir}; bazel build -c opt @SwiftLint//:swiftlint"
+  build_command = "cd #{dir}; bazel build -c opt @SwiftLint//:swiftlint && mv bazel-bin/swiftlint swiftlint-#{branch}"
 
   perform(build_command)
   return if $?.success?
@@ -311,12 +311,26 @@ validate_state_to_run
 fetch_origin
 set_globals
 print_rules_changed
-setup_repos
 make_directory_structure
 
 # Build & generate reports for branch & master
 %w[branch master].each do |branch|
   build(branch)
+end
+
+full_version_branch = `#{@working_dir}/builds/swiftlint-branch version --verbose`
+full_version_master = `#{@working_dir}/builds/swiftlint-master version --verbose`
+
+if full_version_branch == full_version_master
+  message "Skipping OSSCheck because SwiftLint hasn't changed compared to 'master'"
+  # Clean up
+  clean_up unless @options[:skip_clean]
+  exit
+end
+
+setup_repos
+
+%w[branch master].each do |branch|
   generate_reports(branch)
 end
 

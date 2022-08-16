@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule {
+public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

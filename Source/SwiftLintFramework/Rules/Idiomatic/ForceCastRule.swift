@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct ForceCastRule: ConfigurationProviderRule {
+public struct ForceCastRule: ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}

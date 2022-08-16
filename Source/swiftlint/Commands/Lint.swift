@@ -1,4 +1,5 @@
 import ArgumentParser
+import Darwin
 import SwiftLintFramework
 
 extension SwiftLint {
@@ -23,6 +24,7 @@ extension SwiftLint {
         var paths = [String]()
 
         func run() async throws {
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC)
             let allPaths: [String]
             if let path = path {
                 queuedPrintError("""

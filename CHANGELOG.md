@@ -77,6 +77,11 @@ accordingly._
   `--benchmark`.  
   [JP Simard](https://github.com/jpsim)
 
+* The `version` command now has an optional `--verbose` flag that prints out the
+  full version info, notably the build ID, which can be used to determine if two
+  `swiftlint` executables are identical.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

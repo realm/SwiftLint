@@ -1,6 +1,14 @@
 import Foundation
 import SourceKittenFramework
 
+private let warnSourceKitFailedOnceImpl: Void = {
+    queuedPrintError("SourceKit-based rules will be skipped because sourcekitd has failed.")
+}()
+
+private func warnSourceKitFailedOnce() {
+    _ = warnSourceKitFailedOnceImpl
+}
+
 private struct LintResult {
     let violations: [StyleViolation]
     let ruleTime: (id: String, time: Double)?
@@ -55,13 +63,12 @@ private extension Rule {
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
               compilerArguments: [String]) -> LintResult? {
         // Empty files shouldn't trigger violations
-        if file.isEmpty { return nil }
-
-        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+        guard !file.isEmpty, SwiftVersion.current >= Self.description.minSwiftVersion else {
             return nil
         }
 
-        if SwiftVersion.current < Self.description.minSwiftVersion {
+        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+            warnSourceKitFailedOnce()
             return nil
         }
 
@@ -211,9 +218,6 @@ public struct CollectedLinter {
             return cached
         }
 
-        if file.sourcekitdFailed {
-            queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
-        }
         let regions = file.regions()
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule

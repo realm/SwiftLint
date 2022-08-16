@@ -4,10 +4,11 @@
 # Requires
 ################################
 
+require 'erb'
 require 'fileutils'
+require 'json'
 require 'open3'
 require 'optparse'
-require 'erb'
 
 ################################
 # Options
@@ -135,8 +136,22 @@ end
 def setup_repos
   @repos.each do |repo|
     dir = "#{@working_dir}/#{repo.name}"
-    puts "Cloning #{repo}"
-    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
+    github_token = ENV["DANGER_GITHUB_API_TOKEN"]
+    if github_token
+      puts "Downloading #{repo}"
+      FileUtils.mkdir_p(dir)
+      repo.commit_hash = JSON.parse(`curl --silent -H "Authorization: token #{github_token}" "https://api.github.com/repos/#{repo.github_location}/commits?per_page=1"`)[0]["sha"]
+      tarball = "#{repo.commit_hash}.tar.gz"
+      perform("curl -O --silent https://github.com/#{repo.github_location}/archive/#{tarball}")
+      perform("tar -xzvf #{tarball} --directory #{dir}")
+      FileUtils.rm(tarball)
+    else
+      puts "Cloning #{repo}"
+      perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
+      Dir.chdir(dir) do
+        repo.commit_hash = `git rev-parse HEAD`.strip
+      end
+    end
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
     if repo.name == 'Swift'
@@ -149,9 +164,6 @@ def setup_repos
         file.puts('only_rules:')
         file.puts(@rules_changed.map { |rule| "  - #{rule}" })
       end
-    end
-    Dir.chdir(dir) do
-      repo.commit_hash = `git rev-parse HEAD`.strip
     end
   end
 end
@@ -295,7 +307,7 @@ end
   Repo.new('Moya', 'Moya/Moya'),
   Repo.new('Nimble', 'Quick/Nimble'),
   Repo.new('Quick', 'Quick/Quick'),
-  Repo.new('Realm', 'realm/realm-cocoa'),
+  Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('SourceKitten', 'jpsim/SourceKitten'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
   Repo.new('Swift', 'apple/swift'),

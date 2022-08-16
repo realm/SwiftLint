@@ -2,8 +2,10 @@
 import Foundation
 import MachO
 
-enum ExecutableInfo {
-    static let buildID: String? = {
+/// Information about this executable.
+public enum ExecutableInfo {
+    /// A stable identifier for this executable. Uses the Mach-O header UUID on macOS. Nil on Linux.
+    public static let buildID: String? = {
         if let handle = dlopen(nil, RTLD_LAZY) {
             defer { dlclose(handle) }
 
@@ -32,7 +34,9 @@ enum ExecutableInfo {
 }
 
 #else
-enum ExecutableInfo {
-    static let buildID: String? = nil
+/// Information about this executable.
+public enum ExecutableInfo {
+    /// A stable identifier for this executable. Uses the Mach-O header UUID on macOS. Nil on Linux.
+    public static let buildID: String? = nil
 }
 #endif

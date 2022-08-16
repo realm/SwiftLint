@@ -98,6 +98,10 @@ accordingly._
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4081](https://github.com/realm/SwiftLint/issues/4081)
 
+* Fix false negatives in `first_where` rule when filtering array of dictionaries with String keys
+  [KS1019](https://github.com/KS1019/)
+  [#4105](https://github.com/realm/SwiftLint/pull/4105)
+
 ## 0.48.0: Rechargeable Defuzzer
 
 This is the last release to support building with Swift 5.5.x and running on

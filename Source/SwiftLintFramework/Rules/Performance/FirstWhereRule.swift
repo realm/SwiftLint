@@ -53,7 +53,9 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             }
 
             let syntaxKinds = file.syntaxMap.kinds(inByteRange: bodyRange)
-            return syntaxKinds == [.identifier, .keyword, .identifier, .string] || syntaxKinds == [.identifier, .string] || !syntaxKinds.contains(.string)
+            let isStringKeyDict = syntaxKinds == [.identifier, .keyword, .identifier, .string]
+            let isStringKeyShortenedDict = syntaxKinds == [.identifier, .string]
+            return  isStringKeyDict || isStringKeyShortenedDict || !syntaxKinds.contains(.string)
         }
     }
 }

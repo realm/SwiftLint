@@ -47,14 +47,14 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             """),
             Example("""
             let int = Int
-            
-            
+
+
             .init(1.0)
             """),
             Example("""
             let int = Int
-            
-            
+
+
                   .init(1.0)
             """)
         ],
@@ -71,32 +71,32 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
                 Example("let int = Int(1.0)"),
             Example("""
             let int = Int
-            
-            
+
+
             .init(1.0)
             """):
                 Example("let int = Int(1.0)"),
             Example("""
             let int = Int
-            
-            
+
+
                   .init(1.0)
             """):
                 Example("let int = Int(1.0)"),
             Example("""
             let int = Int
-            
-            
+
+
                   .init(1.0)
-            
-            
-            
+
+
+
             """):
                 Example("""
                         let int = Int(1.0)
-                        
-                        
-                        
+
+
+
                         """)
         ]
     )

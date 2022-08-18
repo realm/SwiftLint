@@ -108,6 +108,10 @@ accordingly._
   [KS1019](https://github.com/KS1019/)
   [#4105](https://github.com/realm/SwiftLint/pull/4105)
 
+* Fix broken correction for `explicit_init` rule
+  [KS1019](https://github.com/KS1019/)
+
+
 ## 0.48.0: Rechargeable Defuzzer
 
 This is the last release to support building with Swift 5.5.x and running on

@@ -40,14 +40,64 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
               obs2,
               resultSelector: { MyType.init($0, $1) }
             ).asMaybe()
-            """)
+            """),
+            Example("""
+            let int = Int
+            .init(1.0)
+            """, excludeFromDocumentation: true),
+            Example("""
+            let int = Int
+
+
+            .init(1.0)
+            """, excludeFromDocumentation: true),
+            Example("""
+            let int = Int
+
+
+                  .init(1.0)
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("[1].flatMap{String↓.init($0)}"): Example("[1].flatMap{String($0)}"),
             Example("func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}"):
                 Example("func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}"),
             Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String.init($0)}\n}\n#endif\n}"):
-                Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String($0)}\n}\n#endif\n}")
+                Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String($0)}\n}\n#endif\n}"),
+            Example("""
+            let int = Int
+            .init(1.0)
+            """):
+                Example("let int = Int(1.0)"),
+            Example("""
+            let int = Int
+
+
+            .init(1.0)
+            """):
+                Example("let int = Int(1.0)"),
+            Example("""
+            let int = Int
+
+
+                  .init(1.0)
+            """):
+                Example("let int = Int(1.0)"),
+            Example("""
+            let int = Int
+
+
+                  .init(1.0)
+
+
+
+            """):
+                Example("""
+                        let int = Int(1.0)
+
+
+
+                        """)
         ]
     )
 
@@ -79,7 +129,13 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             let range = file.stringView
                 .byteRangeToNSRange(ByteRange(location: nameOffset + nameLength - length, length: length))
             else { return [] }
-        return [range]
+        var count = 0
+        while file.stringView.substring(with: NSRange(location: range.location - count - 1, length: 1))
+            .filter({ $0.isNewline || $0.isWhitespace }).count == 1 {
+            count += 1
+        }
+
+        return [NSRange(location: range.location - count, length: range.length + count)]
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {

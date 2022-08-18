@@ -41,9 +41,22 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
               resultSelector: { MyType.init($0, $1) }
             ).asMaybe()
             """),
-            Example("let int = Int\n.init(1.0)"),
-            Example("let int = Int\n\n\n.init(1.0)"),
-            Example("let int = Int\n\n\n      .init(1.0)")
+            Example("""
+            let int = Int
+            .init(1.0)
+            """),
+            Example("""
+            let int = Int
+            
+            
+            .init(1.0)
+            """),
+            Example("""
+            let int = Int
+            
+            
+                  .init(1.0)
+            """)
         ],
         corrections: [
             Example("[1].flatMap{String↓.init($0)}"): Example("[1].flatMap{String($0)}"),
@@ -51,10 +64,40 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
                 Example("func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}"),
             Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String.init($0)}\n}\n#endif\n}"):
                 Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String($0)}\n}\n#endif\n}"),
-            Example("let int = Int\n.init(1.0)"): Example("let int = Int(1.0)"),
-            Example("let int = Int\n\n\n.init(1.0)"): Example("let int = Int(1.0)"),
-            Example("let int = Int\n\n\n      .init(1.0)"): Example("let int = Int(1.0)"),
-            Example("let int = Int\n\n\n      .init(1.0)\n\n\n"): Example("let int = Int(1.0)\n\n\n")
+            Example("""
+            let int = Int
+            .init(1.0)
+            """):
+                Example("let int = Int(1.0)"),
+            Example("""
+            let int = Int
+            
+            
+            .init(1.0)
+            """):
+                Example("let int = Int(1.0)"),
+            Example("""
+            let int = Int
+            
+            
+                  .init(1.0)
+            """):
+                Example("let int = Int(1.0)"),
+            Example("""
+            let int = Int
+            
+            
+                  .init(1.0)
+            
+            
+            
+            """):
+                Example("""
+                        let int = Int(1.0)
+                        
+                        
+                        
+                        """)
         ]
     )
 

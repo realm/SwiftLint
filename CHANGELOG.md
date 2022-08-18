@@ -110,7 +110,7 @@ accordingly._
 
 * Fix broken correction for `explicit_init` rule
   [KS1019](https://github.com/KS1019/)
-  [#4109](https://github.com/realm/SwiftLint/pull/4109)
+
 
 ## 0.48.0: Rechargeable Defuzzer
 

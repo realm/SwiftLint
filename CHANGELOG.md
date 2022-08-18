@@ -82,6 +82,12 @@ accordingly._
   `swiftlint` executables are identical.  
   [JP Simard](https://github.com/jpsim)
 
+* Update documentation for `multiline_arguments_brackets` and 
+  `multiline_literal_brackets` to make it immediately obvious that common 
+  examples will trigger.  
+  [chrisjf](https://github.com/chrisjf)
+  [#4060](https://github.com/realm/SwiftLint/issues/4060)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

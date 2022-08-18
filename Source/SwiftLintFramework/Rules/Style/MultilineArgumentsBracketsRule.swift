@@ -87,6 +87,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                 param3: "Param3"↓)
             """),
             Example("""
+            foo(↓param1: "Param1",
+                param2: "Param2",
+                param3: "Param3"↓)
+            """),
+            Example("""
             foo(↓bar(
                 x: 5,
                 y: 7

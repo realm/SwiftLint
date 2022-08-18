@@ -332,7 +332,7 @@
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">trio</span> <span class="o">=</span> <span class="p">[</span><span class="s">"harry"</span><span class="p">,</span> <span class="s">"ronald"</span><span class="p">,</span> <span class="s">"hermione"</span><span class="p">]</span>
-<span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span><span class="s">"gryffinder"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span> <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span><span class="p">]</span>
+<span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span><span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span> <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span><span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">trio</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">"harry"</span><span class="p">,</span>
@@ -340,7 +340,7 @@
     <span class="s">"hermione"</span>
 <span class="p">]</span>
 <span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">"gryffinder"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span>
+    <span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span>
     <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
     <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span>
     <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span>
@@ -350,7 +350,7 @@
     <span class="s">"harry"</span><span class="p">,</span> <span class="s">"ronald"</span><span class="p">,</span> <span class="s">"hermione"</span>
 <span class="p">]</span>
 <span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">"gryffinder"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
+    <span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
     <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span>
 <span class="p">]</span>
 </code></pre>
@@ -369,9 +369,14 @@
             <span class="s">"hermione"</span>
 <span class="p">]</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span><span class="err">↓</span><span class="s">"gryffinder"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span><span class="err">↓</span><span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
                 <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span>
 <span class="p">]</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span><span class="err">↓</span><span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span>
+                <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
+                <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span>
+                <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span><span class="err">↓</span><span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">trio</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">"harry"</span><span class="p">,</span>
@@ -379,12 +384,12 @@
     <span class="s">"hermione"</span><span class="err">↓</span><span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">"gryffinder"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
+    <span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
     <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span><span class="err">↓</span><span class="p">]</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Hogwarts</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">houseCup</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s">"gryffinder"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
+        <span class="s">"gryffindor"</span><span class="p">:</span> <span class="mi">460</span><span class="p">,</span> <span class="s">"hufflepuff"</span><span class="p">:</span> <span class="mi">370</span><span class="p">,</span>
         <span class="s">"ravenclaw"</span><span class="p">:</span> <span class="mi">410</span><span class="p">,</span> <span class="s">"slytherin"</span><span class="p">:</span> <span class="mi">450</span><span class="err">↓</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre>

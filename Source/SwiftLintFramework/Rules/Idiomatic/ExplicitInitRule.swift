@@ -66,21 +66,21 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             Observable.zip(
               obs1,
               obs2,
-              resultSelector: { MyType.init($0, $1) }
+              resultSelector: { MyType↓.init($0, $1) }
             ).asMaybe()
             """),
             Example("""
-            let int = Int
+            let int = Int↓
             .init(1.0)
             """, excludeFromDocumentation: true),
             Example("""
-            let int = Int
+            let int = Int↓
 
 
             .init(1.0)
             """, excludeFromDocumentation: true),
             Example("""
-            let int = Int
+            let int = Int↓
 
 
                   .init(1.0)
@@ -107,7 +107,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             class C {
             #if true
                 func f() {
-                    [1].flatMap{String.init($0)}
+                    [1].flatMap{String↓.init($0)}
                 }
             #endif
             }
@@ -122,14 +122,14 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
                 }
                 """),
             Example("""
-            let int = Int
+            let int = Int↓
             .init(1.0)
             """):
                 Example("""
                 let int = Int(1.0)
                 """),
             Example("""
-            let int = Int
+            let int = Int↓
 
 
             .init(1.0)
@@ -138,7 +138,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
                 let int = Int(1.0)
                 """),
             Example("""
-            let int = Int
+            let int = Int↓
 
 
                   .init(1.0)
@@ -147,7 +147,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
                 let int = Int(1.0)
                 """),
             Example("""
-            let int = Int
+            let int = Int↓
 
 
                   .init(1.0)

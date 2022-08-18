@@ -35,8 +35,8 @@ accordingly._
 * None.
 
 #### Enhancements
-  
-* Make `duplicate_imports` rule correctable. Fix `duplicate_imports` rule 
+
+* Make `duplicate_imports` rule correctable. Fix `duplicate_imports` rule
   reporting redundant violations when more than one duplicate is present.  
   [Timofey Solonin](https://github.com/abdulowork)
 
@@ -82,8 +82,8 @@ accordingly._
   `swiftlint` executables are identical.  
   [JP Simard](https://github.com/jpsim)
 
-* Update documentation for `multiline_arguments_brackets` and 
-  `multiline_literal_brackets` to make it immediately obvious that common 
+* Update documentation for `multiline_arguments_brackets` and
+  `multiline_literal_brackets` to make it immediately obvious that common
   examples will trigger.  
   [chrisjf](https://github.com/chrisjf)
   [#4060](https://github.com/realm/SwiftLint/issues/4060)
@@ -104,13 +104,12 @@ accordingly._
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4081](https://github.com/realm/SwiftLint/issues/4081)
 
-* Fix false negatives in `first_where` rule when filtering array of dictionaries with String keys
-  [KS1019](https://github.com/KS1019/)
-  [#4105](https://github.com/realm/SwiftLint/pull/4105)
+* Fix false negatives in `first_where` rule when filtering array of dictionaries
+  with String keys.  
+  [KS1019](https://github.com/KS1019)
 
-* Fix broken correction for `explicit_init` rule
-  [KS1019](https://github.com/KS1019/)
-
+* Fix broken correction for `explicit_init` rule.  
+  [KS1019](https://github.com/KS1019)
 
 ## 0.48.0: Rechargeable Defuzzer
 

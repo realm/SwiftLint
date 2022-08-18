@@ -86,7 +86,13 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             let range = file.stringView
                 .byteRangeToNSRange(ByteRange(location: nameOffset + nameLength - length, length: length))
             else { return [] }
-        return [range]
+        var count = 0
+        while file.stringView.substring(with: NSRange(location: range.location - count - 1, length: 1))
+            .filter({ $0.isNewline || $0.isWhitespace }).count == 1 {
+            count += 1
+        }
+
+        return [NSRange(location: range.location - count, length: range.length + count)]
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {

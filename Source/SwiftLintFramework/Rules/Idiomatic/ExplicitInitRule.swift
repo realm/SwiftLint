@@ -12,12 +12,36 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
         description: "Explicitly calling .init() should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("import Foundation; class C: NSObject { override init() { super.init() }}"), // super
-            Example("struct S { let n: Int }; extension S { init() { self.init(n: 1) } }"),      // self
-            Example("[1].flatMap(String.init)"),                   // pass init as closure
-            Example("[String.self].map { $0.init(1) }"),           // initialize from a metatype value
-            Example("[String.self].map { type in type.init(1) }"),  // initialize from a metatype value
-            Example("Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()"),
+            Example("""
+            import Foundation
+            class C: NSObject {
+                override init() {
+                    super.init()
+                }
+            }
+            """), // super
+            Example("""
+            struct S {
+                let n: Int
+            }
+            extension S {
+                init() {
+                    self.init(n: 1)
+                }
+            }
+            """), // self
+            Example("""
+            [1].flatMap(String.init)
+            """), // pass init as closure
+            Example("""
+            [String.self].map { $0.init(1) }
+            """), // initialize from a metatype value
+            Example("""
+            [String.self].map { type in type.init(1) }
+            """), // initialize from a metatype value
+            Example("""
+            Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()
+            """),
             Example("""
             Observable.zip(
               obs1,
@@ -27,11 +51,15 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             """)
         ],
         triggeringExamples: [
-            Example("[1].flatMap{String↓.init($0)}"),
-            Example("[String.self].map { Type in Type↓.init(1) }"), // starting with capital assumes as type,
+            Example("""
+            [1].flatMap{String↓.init($0)}
+            """),
+            Example("""
+            [String.self].map { Type in Type↓.init(1) }
+            """),  // Starting with capital letter assumes a type
             Example("""
             func foo() -> [String] {
-              return [1].flatMap { String↓.init($0) }
+                return [1].flatMap { String↓.init($0) }
             }
             """),
             Example("""
@@ -59,30 +87,65 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             """, excludeFromDocumentation: true)
         ],
         corrections: [
-            Example("[1].flatMap{String↓.init($0)}"): Example("[1].flatMap{String($0)}"),
-            Example("func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}"):
-                Example("func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}"),
-            Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String.init($0)}\n}\n#endif\n}"):
-                Example("class C {\n#if true\nfunc f() {\n[1].flatMap{String($0)}\n}\n#endif\n}"),
+            Example("""
+            [1].flatMap{String↓.init($0)}
+            """):
+                Example("""
+                [1].flatMap{String($0)}
+                """),
+            Example("""
+            func foo() -> [String] {
+                return [1].flatMap { String↓.init($0) }
+            }
+            """):
+                Example("""
+                func foo() -> [String] {
+                    return [1].flatMap { String($0) }
+                }
+                """),
+            Example("""
+            class C {
+            #if true
+                func f() {
+                    [1].flatMap{String.init($0)}
+                }
+            #endif
+            }
+            """):
+                Example("""
+                class C {
+                #if true
+                    func f() {
+                        [1].flatMap{String($0)}
+                    }
+                #endif
+                }
+                """),
             Example("""
             let int = Int
             .init(1.0)
             """):
-                Example("let int = Int(1.0)"),
+                Example("""
+                let int = Int(1.0)
+                """),
             Example("""
             let int = Int
 
 
             .init(1.0)
             """):
-                Example("let int = Int(1.0)"),
+                Example("""
+                let int = Int(1.0)
+                """),
             Example("""
             let int = Int
 
 
                   .init(1.0)
             """):
-                Example("let int = Int(1.0)"),
+                Example("""
+                let int = Int(1.0)
+                """),
             Example("""
             let int = Int
 
@@ -93,11 +156,11 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
 
             """):
                 Example("""
-                        let int = Int(1.0)
+                let int = Int(1.0)
 
 
 
-                        """)
+                """)
         ]
     )
 

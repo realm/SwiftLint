@@ -44,19 +44,19 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             Example("""
             let int = Int
             .init(1.0)
-            """),
+            """, excludeFromDocumentation: true),
             Example("""
             let int = Int
 
 
             .init(1.0)
-            """),
+            """, excludeFromDocumentation: true),
             Example("""
             let int = Int
 
 
                   .init(1.0)
-            """)
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("[1].flatMap{String↓.init($0)}"): Example("[1].flatMap{String($0)}"),

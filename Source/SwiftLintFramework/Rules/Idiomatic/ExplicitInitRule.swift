@@ -70,7 +70,7 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
             ).asMaybe()
             """),
             Example("""
-            let int = Int↓
+            let int = In🤓t↓
             .init(1.0)
             """, excludeFromDocumentation: true),
             Example("""
@@ -173,32 +173,40 @@ public struct ExplicitInitRule: SubstitutionCorrectableASTRule, ConfigurationPro
         }
     }
 
-    private let initializerWithType = regex("^[A-Z][^(]*\\.init$")
+    private let initializerWithType = regex(#"^([A-Z][^(\s]*)\s*\.init$"#)
 
     public func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        func isExpected(_ name: String) -> Bool {
-            let range = NSRange(location: 0, length: name.utf16.count)
-            return !["super.init", "self.init"].contains(name)
-                && initializerWithType.numberOfMatches(in: name, options: [], range: range) != 0
-        }
-
-        let length = ByteCount(".init".utf8.count)
-
         guard kind == .call,
-            let name = dictionary.name, isExpected(name),
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let range = file.stringView
-                .byteRangeToNSRange(ByteRange(location: nameOffset + nameLength - length, length: length))
-            else { return [] }
-        var count = 0
-        while file.stringView.substring(with: NSRange(location: range.location - count - 1, length: 1))
-            .filter({ $0.isNewline || $0.isWhitespace }).count == 1 {
-            count += 1
+              let name = dictionary.name,
+              let typeRange = findTypeRange(in: name),
+              let nameByteRange = dictionary.nameByteRange else {
+            return []
         }
+        let content = file.stringView
+        guard let nameRange = content.byteRangeToNSRange(nameByteRange),
+              let typeByteRange = content.NSRangeToByteRange(start: nameRange.location, length: typeRange.length) else {
+            return []
+        }
+        let violationByteRange = ByteRange(
+            location: nameByteRange.location + typeByteRange.length,
+            length: nameByteRange.length - typeByteRange.length
+        )
+        guard let violationRange = content.byteRangeToNSRange(violationByteRange) else {
+            return []
+        }
+        return [violationRange]
+    }
 
-        return [NSRange(location: range.location - count, length: range.length + count)]
+    private func findTypeRange(in name: String) -> NSRange? {
+        if ["super.init", "self.init"].contains(name) {
+            return nil
+        }
+        let range = NSRange(location: 0, length: name.utf16.count)
+        if let match = initializerWithType.firstMatch(in: name, options: [], range: range) {
+            return match.range(at: 1)
+        }
+        return nil
     }
 
     public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {

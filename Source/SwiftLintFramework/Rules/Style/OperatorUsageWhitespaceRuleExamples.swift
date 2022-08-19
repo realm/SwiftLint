@@ -81,7 +81,12 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         func success(for item: Item) {
             item.successHandler??()
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
+        Example("""
+        func getAllowedTimeRange(startTime: TimeOfDay) -> TimeOfDayRange {
+            return (startTime)<..<(startTime + 3.hours)
+        }
+        """, configuration: ["additional_allowed_no_space_operators": ["⁝"]])
     ]
 
     static let triggeringExamples = [

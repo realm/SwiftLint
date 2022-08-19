@@ -26,13 +26,15 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     private func violationRanges(file: SwiftLintFile) -> [(ByteRange, String)] {
-        OperatorUsageWhitespaceVisitor()
-            .walk(file: file, handler: \.violationRanges)
-            .filter { byteRange, _ in
-                !configuration.skipAlignedConstants || !isAlignedConstant(in: byteRange, file: file)
-            }.sorted { lhs, rhs in
-                lhs.0.location < rhs.0.location
-            }
+        OperatorUsageWhitespaceVisitor(
+            additionalAllowedNoSpaceOperators: configuration.additionalAllowedNoSpaceOperators
+        )
+        .walk(file: file, handler: \.violationRanges)
+        .filter { byteRange, _ in
+            !configuration.skipAlignedConstants || !isAlignedConstant(in: byteRange, file: file)
+        }.sorted { lhs, rhs in
+            lhs.0.location < rhs.0.location
+        }
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
@@ -119,7 +121,12 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 }
 
 private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
+    private let additionalAllowedNoSpaceOperators: Set<String>
     private(set) var violationRanges: [(ByteRange, String)] = []
+
+    init(additionalAllowedNoSpaceOperators: [String]) {
+        self.additionalAllowedNoSpaceOperators = Set(additionalAllowedNoSpaceOperators)
+    }
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
         if let violation = violation(operatorToken: node.operatorToken) {
@@ -165,7 +172,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         let noSpacingAfter = operatorToken.trailingTrivia.isEmpty && nextToken.leadingTrivia.isEmpty
         let noSpacing = noSpacingBefore || noSpacingAfter
 
-        let allowedNoSpacingOperators: Set = ["...", "..<"]
+        let allowedNoSpacingOperators = additionalAllowedNoSpaceOperators.union(["...", "..<"])
 
         let operatorText = operatorToken.withoutTrivia().text
         if noSpacing && allowedNoSpacingOperators.contains(operatorText) {

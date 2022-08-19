@@ -3,6 +3,7 @@ steps:
     env:
       DEVELOPER_DIR: /Applications/Xcode-13.4.1.app/Contents/Developer
     commands:
+      - bazel clean --expunge
       - echo "+++ Build"
       - bazel build :swiftlint
       - echo "+++ Test"
@@ -11,6 +12,7 @@ steps:
     env:
       DEVELOPER_DIR: /Applications/Xcode-13.4.1.app/Contents/Developer
     commands:
+      - bazel clean --expunge
       - echo "--- Bundle Install"
       - bundle install
       - echo "+++ Run Danger"

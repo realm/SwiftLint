@@ -138,7 +138,12 @@ package: build
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
 
-release: package portable_zip spm_artifactbundle_macos zip_linux_release
+bazel_release:
+	bazel build :release
+	mv bazel-bin/bazel.tar.gz .
+	shasum -a 256 bazel.tar.gz > bazel.tar.gz.sha256
+
+release: bazel_release package portable_zip spm_artifactbundle_macos zip_linux_release
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .

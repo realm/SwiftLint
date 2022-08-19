@@ -9,6 +9,8 @@ load(
     "xcodeproj",
 )
 
+# Targets
+
 swift_library(
     name = "SwiftLintFramework",
     srcs = glob(
@@ -40,17 +42,37 @@ swift_binary(
     ],
 )
 
+# Linting
+
 filegroup(
-    name = "SwiftLintConfig",
-    srcs = [".swiftlint.yml"],
+    name = "LintInputs",
+    srcs = glob(["Source/**/*.swift"]) + [
+        ".swiftlint.yml",
+        "//Tests:SwiftLintFrameworkTestsData",
+    ],
     visibility = ["//Tests:__subpackages__"],
 )
 
-filegroup(
-    name = "SourceFilesToLint",
-    srcs = glob(["Source/**"]),
-    visibility = ["//Tests:__subpackages__"],
+# Release
+
+genrule(
+    name = "release",
+    srcs = [
+        "//:BUILD",
+        "//:LICENSE",
+        "//:LintInputs",
+        "//Tests:BUILD",
+        "//bazel:BazelDirectorySources",
+    ],
+    outs = ["bazel.tar.gz"],
+    cmd = """
+set -euo pipefail
+
+COPYFILE_DISABLE=1 tar czvfh $(OUTS) --exclude ^bazel-out/ --exclude ^external/ *
+    """,
 )
+
+# Xcode Integration
 
 xcodeproj(
     name = "xcodeproj",

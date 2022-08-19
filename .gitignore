@@ -44,6 +44,8 @@ benchmark_*
 osscheck/
 docs/
 rule_docs/
+bazel.tar.gz
+bazel.tar.gz.sha256
 
 # Swift Package Manager
 #

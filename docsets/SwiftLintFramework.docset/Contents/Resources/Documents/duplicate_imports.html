@@ -359,48 +359,35 @@
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kd">class</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kd">enum</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span><span class="o">.</span><span class="kt">NSString</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="kd">import</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span><span class="o">.</span><span class="kt">C</span>
-<span class="kd">import</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kd">typealias</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kd">protocol</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
 
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span>
 <span class="err">↓</span><span class="kd">import</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span><span class="o">.</span><span class="kt">C</span>
 
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="k">var</span> <span class="nv">A</span><span class="o">.</span><span class="kt">Foo</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">@testable</span> <span class="kd">import</span> <span class="kt">A</span>
+<span class="err">↓</span><span class="kd">@testable</span> <span class="kd">import</span> <span class="kt">A</span>
 
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
 <span class="err">↓</span><span class="kd">import</span> <span class="k">let</span> <span class="nv">A</span><span class="o">.</span><span class="kt">Foo</span>
 
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kd">typealias</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kd">import</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span><span class="o">.</span><span class="kt">C</span>
+<span class="kd">import</span> <span class="kt">A</span><span class="o">.</span><span class="kt">B</span>
+
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">@_implementationOnly</span> <span class="kd">import</span> <span class="kt">A</span>
 <span class="err">↓</span><span class="kd">@_implementationOnly</span> <span class="kd">import</span> <span class="kt">A</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="k">var</span> <span class="nv">A</span><span class="o">.</span><span class="kt">Foo</span>
-
-</code></pre>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kd">protocol</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
 
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span><span class="o">.</span><span class="kt">NSString</span>
@@ -408,7 +395,11 @@
 
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">import</span> <span class="kd">struct</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kd">enum</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kd">class</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
 
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
@@ -421,12 +412,21 @@
 
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span><span class="o">.</span><span class="kt">NSString</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
 <span class="kd">import</span> <span class="kt">Dispatch</span>
 <span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span>
 
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">@testable</span> <span class="kd">import</span> <span class="kt">A</span>
-<span class="err">↓</span><span class="kd">@testable</span> <span class="kd">import</span> <span class="kt">A</span>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Foundation</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kt">Foundation</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>
+<span class="err">↓</span><span class="kd">import</span> <span class="kd">struct</span> <span class="kt">A</span><span class="o">.</span><span class="kt">Foo</span>
 
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">A</span>

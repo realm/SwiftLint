@@ -1,8 +1,9 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 
-swift_library(
-    name = "SwiftLintFrameworkTests.library",
-    testonly = True,
+exports_files(["BUILD"])
+
+filegroup(
+    name = "SwiftLintFrameworkTestsSources",
     srcs = glob(
         ["SwiftLintFrameworkTests/**/*.swift"],
         exclude = [
@@ -11,6 +12,22 @@ swift_library(
             "SwiftLintFrameworkTests/FileNameNoSpaceRuleTests.swift",
         ],
     ),
+)
+
+filegroup(
+    name = "SwiftLintFrameworkTestsData",
+    srcs = glob(
+        ["SwiftLintFrameworkTests/**"],
+        # Bazel doesn't support paths with spaces in them
+        exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
+    ),
+    visibility = ["//visibility:public"],
+)
+
+swift_library(
+    name = "SwiftLintFrameworkTests.library",
+    testonly = True,
+    srcs = [":SwiftLintFrameworkTestsSources"],
     module_name = "SwiftLintFrameworkTests",
     deps = [
         "//:SwiftLintFramework",
@@ -19,14 +36,7 @@ swift_library(
 
 swift_test(
     name = "SwiftLintFrameworkTests",
-    data = [
-        "//:SwiftLintConfig",
-        "//:SourceFilesToLint",
-    ] + glob(
-        ["SwiftLintFrameworkTests/**"],
-        # Bazel doesn't support paths with spaces in them
-        exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
-    ),
+    data = ["//:LintInputs"],
     visibility = ["//visibility:public"],
     deps = [":SwiftLintFrameworkTests.library"],
 )

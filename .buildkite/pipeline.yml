@@ -15,3 +15,7 @@ steps:
     commands:
       - echo "+++ Analyze"
       - make analyze
+  - label: "TSan"
+    commands:
+      - echo "+++ Test"
+      - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=600 //Tests/...

@@ -8,6 +8,13 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_apple/releases/download/1.0.1/rules_apple.1.0.1.tar.gz",
 )
 
+http_archive(
+    name = "build_bazel_rules_swift",
+    sha256 = "7a25fa865205f96fe4924ed137fed02a1b9529afd82ffd14e52186a0aa222cad",
+    strip_prefix = "rules_swift-469db13330e94af864540d50acdfc742998ef292",
+    url = "https://github.com/bazelbuild/rules_swift/archive/469db13330e94af864540d50acdfc742998ef292.tar.gz",
+)
+
 load(
     "@build_bazel_rules_apple//apple:repositories.bzl",
     "apple_rules_dependencies",

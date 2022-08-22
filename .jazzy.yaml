@@ -3,7 +3,7 @@ author: JP Simard, SwiftLint Contributors
 author_url: https://jpsim.com
 root_url: https://realm.github.io/SwiftLint/
 github_url: https://github.com/realm/SwiftLint
-github_file_prefix: https://github.com/realm/SwiftLint/tree/master
+github_file_prefix: https://github.com/realm/SwiftLint/tree/main
 swift_build_tool: spm
 theme: fullwidth
 clean: true

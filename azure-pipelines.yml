@@ -1,5 +1,5 @@
 trigger:
-- master
+- main
 
 jobs:
 - job: Sourcery
@@ -121,9 +121,9 @@ jobs:
         artifactName: 'API Docs'
         targetPath: 'docs'
     - task: DownloadSecureFile@1
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
       inputs:
         secureFile: doc_deploy_key
     - script: ./tools/push-docs
       displayName: Publish
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')

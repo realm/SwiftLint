@@ -1,8 +1,8 @@
 ## Pull Requests
 
 All changes, no matter how trivial, must be done via pull request. Commits
-should never be made directly on the `master` branch. Prefer rebasing over
-merging `master` into your PR branch to update it and resolve conflicts.
+should never be made directly on the `main` branch. Prefer rebasing over
+merging `main` into your PR branch to update it and resolve conflicts.
 
 _If you have commit access to SwiftLint and believe your change to be trivial
 and not worth waiting for review, you may open a pull request and merge
@@ -98,11 +98,11 @@ configuration object via the `configuration` property:
 * If none of the provided `RuleConfiguration`s are applicable, you can create one
   specifically for your rule.
 
-See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/Idiomatic/ForceCastRule.swift)
+See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintFramework/Rules/Idiomatic/ForceCastRule.swift)
 for a rule that allows severity configuration,
-[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/Metrics/FileLengthRule.swift)
+[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintFramework/Rules/Metrics/FileLengthRule.swift)
 for a rule that has multiple severity levels,
-[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/Style/IdentifierNameRule.swift)
+[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/main/Source/SwiftLintFramework/Rules/Style/IdentifierNameRule.swift)
 for a rule that allows name evaluation configuration:
 
 ``` yaml

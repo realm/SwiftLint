@@ -4,8 +4,8 @@ SwiftLint는 스위프트 스타일 및 컨벤션을 강제하기 위한 도구�
 
 SwiftLint는 좀 더 정확한 결과를 위해 [Clang](http://clang.llvm.org)과 [SourceKit](http://www.jpsim.com/uncovering-sourcekit)에 연결하여 소스 파일의 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) 표현을 사용합니다.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=master)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=master)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
+[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
+[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
 
 ![](assets/screenshot.png)
 

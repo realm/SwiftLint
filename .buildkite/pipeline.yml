@@ -16,8 +16,6 @@ steps:
   #     - echo "+++ Analyze"
   #     - make analyze
   - label: "TSan"
-    env:
-      DEVELOPER_DIR: /Applications/Xcode-14.0.0-Beta.5.app/Contents/Developer
     commands:
       - bazel clean --expunge
       - echo "+++ Test"

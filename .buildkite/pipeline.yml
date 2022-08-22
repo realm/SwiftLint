@@ -1,23 +1,27 @@
 steps:
-  # - label: "Bazel"
-  #   commands:
-  #     - echo "+++ Build"
-  #     - bazel build :swiftlint
-  #     - echo "+++ Test"
-  #     - bazel test --test_output=errors //Tests/...
-  # - label: "Danger"
-  #   commands:
-  #     - echo "--- Bundle Install"
-  #     - bundle install
-  #     - echo "+++ Run Danger"
-  #     - bundle exec danger --verbose
-  # - label: "Analyze"
-  #   commands:
-  #     - echo "+++ Analyze"
-  #     - make analyze
+  - label: "Bazel"
+    commands:
+      - bazel clean --expunge
+      - bazel shutdown
+      - echo "+++ Build"
+      - bazel build :swiftlint
+      - echo "+++ Test"
+      - bazel test --test_output=errors //Tests/...
+  - label: "Danger"
+    commands:
+      - bazel clean --expunge
+      - bazel shutdown
+      - echo "--- Bundle Install"
+      - bundle install
+      - echo "+++ Run Danger"
+      - bundle exec danger --verbose
+  - label: "Analyze"
+    commands:
+      - echo "+++ Analyze"
+      - make analyze
   - label: "TSan"
     commands:
       - bazel clean --expunge
       - bazel shutdown
       - echo "+++ Test"
-      - bazel test --xcode_version_config=//bazel:xcode_config --test_output=streamed --build_tests_only --features=tsan --test_timeout=600 //Tests/...
+      - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=600 //Tests/...

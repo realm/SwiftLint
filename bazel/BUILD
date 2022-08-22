@@ -1,6 +1,5 @@
 filegroup(
-    name = "BazelDirectorySources",
+    name = "release_files",
     srcs = glob(["*"]),
     visibility = ["//visibility:public"],
 )
-

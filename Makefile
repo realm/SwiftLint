@@ -140,8 +140,7 @@ package: build
 
 bazel_release:
 	bazel build :release
-	mv bazel-bin/bazel.tar.gz .
-	shasum -a 256 bazel.tar.gz > bazel.tar.gz.sha256
+	mv bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
 
 release: bazel_release package portable_zip spm_artifactbundle_macos zip_linux_release
 

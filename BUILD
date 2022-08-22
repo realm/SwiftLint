@@ -55,20 +55,35 @@ filegroup(
 
 # Release
 
-genrule(
-    name = "release",
+filegroup(
+    name = "release_files",
     srcs = [
-        "//:BUILD",
-        "//:LICENSE",
+        "BUILD",
+        "LICENSE",
         "//:LintInputs",
         "//Tests:BUILD",
-        "//bazel:BazelDirectorySources",
+        "//bazel:release_files",
     ],
-    outs = ["bazel.tar.gz"],
-    cmd = """
+)
+
+# TODO: Use rules_pkg
+genrule(
+    name = "release",
+    srcs = [":release_files"],
+    outs = [
+        "bazel.tar.gz",
+        "bazel.tar.gz.sha256",
+    ],
+    cmd = """\
 set -euo pipefail
 
-COPYFILE_DISABLE=1 tar czvfh $(OUTS) --exclude ^bazel-out/ --exclude ^external/ *
+outs=($(OUTS))
+
+COPYFILE_DISABLE=1 tar czvfh "$${outs[0]}" \
+  --exclude ^bazel-out/ \
+  --exclude ^external/ \
+  *
+shasum -a 256 "$${outs[0]}" > "$${outs[1]}"
     """,
 )
 

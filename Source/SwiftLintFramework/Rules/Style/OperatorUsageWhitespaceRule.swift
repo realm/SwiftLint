@@ -27,7 +27,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
     private func violationRanges(file: SwiftLintFile) -> [(ByteRange, String)] {
         OperatorUsageWhitespaceVisitor(
-            additionalAllowedNoSpaceOperators: configuration.additionalAllowedNoSpaceOperators
+            allowedNoSpaceOperators: configuration.allowedNoSpaceOperators
         )
         .walk(file: file, handler: \.violationRanges)
         .filter { byteRange, _ in
@@ -121,11 +121,11 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 }
 
 private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
-    private let additionalAllowedNoSpaceOperators: Set<String>
+    private let allowedNoSpaceOperators: Set<String>
     private(set) var violationRanges: [(ByteRange, String)] = []
 
-    init(additionalAllowedNoSpaceOperators: [String]) {
-        self.additionalAllowedNoSpaceOperators = Set(additionalAllowedNoSpaceOperators)
+    init(allowedNoSpaceOperators: [String]) {
+        self.allowedNoSpaceOperators = Set(allowedNoSpaceOperators)
     }
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
@@ -172,10 +172,8 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         let noSpacingAfter = operatorToken.trailingTrivia.isEmpty && nextToken.leadingTrivia.isEmpty
         let noSpacing = noSpacingBefore || noSpacingAfter
 
-        let allowedNoSpacingOperators = additionalAllowedNoSpaceOperators.union(["...", "..<"])
-
         let operatorText = operatorToken.withoutTrivia().text
-        if noSpacing && allowedNoSpacingOperators.contains(operatorText) {
+        if noSpacing && allowedNoSpaceOperators.contains(operatorText) {
             return nil
         }
 
@@ -197,7 +195,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
             length: endPosition - location
         )
 
-        let correction = allowedNoSpacingOperators.contains(operatorText) ? operatorText : " \(operatorText) "
+        let correction = allowedNoSpaceOperators.contains(operatorText) ? operatorText : " \(operatorText) "
         return (range, correction)
     }
 }

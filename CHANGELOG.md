@@ -91,6 +91,8 @@ accordingly._
 * The `--compile-commands` argument can now parse SwiftPM yaml files produced
   when running `swift build` at `.build/{debug,release}.yaml`.  
   [JP Simard](https://github.com/jpsim)
+* Add configuration to customise no space operators.  
+  [imben123](https://github.com/imben123)
 
 #### Bug Fixes
 
@@ -163,9 +165,6 @@ macOS < 12.
 * Support `UIEdgeInsets` type in `prefer_zero_over_explicit_init` rule.  
   [KokiHirokawa](https://github.com/KokiHirokawa)
   [#3986](https://github.com/realm/SwiftLint/issues/3986)
-
-* Add configuration to customise no space operators.  
-  [imben123](https://github.com/imben123)
 
 #### Bug Fixes
 

@@ -4,15 +4,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "build_bazel_rules_apple",
-    sha256 = "36072d4f3614d309d6a703da0dfe48684ec4c65a89611aeb9590b45af7a3e592",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.0.1/rules_apple.1.0.1.tar.gz",
-)
-
-http_archive(
-    name = "build_bazel_rules_swift",
-    sha256 = "7a25fa865205f96fe4924ed137fed02a1b9529afd82ffd14e52186a0aa222cad",
-    strip_prefix = "rules_swift-469db13330e94af864540d50acdfc742998ef292",
-    url = "https://github.com/bazelbuild/rules_swift/archive/469db13330e94af864540d50acdfc742998ef292.tar.gz",
+    sha256 = "f003875c248544009c8e8ae03906bbdacb970bc3e5931b40cd76cadeded99632",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.1.0/rules_apple.1.1.0.tar.gz",
 )
 
 load(

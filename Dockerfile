@@ -30,9 +30,7 @@ RUN apt-get update && apt-get install -y \
     libxml2 \
  && rm -r /var/lib/apt/lists/*
 COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libBlocksRuntime.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/lib_InternalSwiftSyntaxParser.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/* /usr/lib
 COPY --from=builder /executables/* /usr/bin
 
 RUN swiftlint version

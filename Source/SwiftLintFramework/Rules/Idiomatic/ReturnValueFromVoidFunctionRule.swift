@@ -1,4 +1,3 @@
-import SourceKittenFramework
 import SwiftSyntax
 
 public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {

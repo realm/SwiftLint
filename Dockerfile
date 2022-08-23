@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     curl \
  && rm -r /var/lib/apt/lists/*
 RUN curl -O -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-linux-amd64
-RUN mv bazelisk-linux-arm64 /usr/bin/bazel
+RUN mv bazelisk-linux-amd64 /usr/bin/bazel
 RUN chmod +x /usr/bin/bazel
 RUN bazel version
 

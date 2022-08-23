@@ -35,7 +35,21 @@ RUN apt-get update && apt-get install -y \
     libxml2 \
  && rm -r /var/lib/apt/lists/*
 COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/* /usr/lib
+COPY --from=builder /usr/lib/swift/linux/lib_InternalSwiftSyntaxParser.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libBlocksRuntime.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libFoundation.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libFoundationNetworking.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libFoundationXML.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libicudataswift.so.65 /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libicui18nswift.so.65 /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libicuucswift.so.65 /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswift_Concurrency.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswiftCore.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswiftDispatch.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswiftGlibc.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswiftSwiftOnoneSupport.so /usr/lib
+
 COPY --from=builder /executables/* /usr/bin
 
 RUN swiftlint version

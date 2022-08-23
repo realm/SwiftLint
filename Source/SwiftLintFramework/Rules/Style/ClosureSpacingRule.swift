@@ -55,8 +55,7 @@ public struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
 // MARK: - ClosureSpacingRuleVisitor
 
 private final class ClosureSpacingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private var positions: [AbsolutePosition] = []
-    var violationPositions: [AbsolutePosition] { positions.sorted() }
+    private(set) var violationPositions: [AbsolutePosition] = []
     let locationConverter: SourceLocationConverter
 
     init(locationConverter: SourceLocationConverter) {
@@ -66,7 +65,7 @@ private final class ClosureSpacingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVi
     override func visitPost(_ node: ClosureExprSyntax) {
         if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
            node.violations.hasViolations {
-            positions.append(node.positionAfterSkippingLeadingTrivia)
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }
@@ -74,8 +73,7 @@ private final class ClosureSpacingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVi
 // MARK: - ClosureSpacingRuleRewriter
 
 private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private var positions: [AbsolutePosition] = []
-    var correctionPositions: [AbsolutePosition] { positions.sorted() }
+    private(set) var correctionPositions: [AbsolutePosition] = []
     let locationConverter: SourceLocationConverter
     let disabledRegions: [SourceRange]
 
@@ -110,7 +108,7 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntax
             node.rightBrace = node.rightBrace.withTrailingTrivia(.spaces(1))
         }
         if violations.hasViolations {
-            positions.append(node.positionAfterSkippingLeadingTrivia)
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
 
         return ExprSyntax(node)

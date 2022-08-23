@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -16,30 +16,19 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         ReturnValueFromVoidFunctionVisitor()
-            .walk(file: file) { visitor in
-                visitor.violations(for: self, in: file)
-            }
     }
 }
 
-private final class ReturnValueFromVoidFunctionVisitor: SyntaxVisitor {
-    private var positions = [AbsolutePosition]()
+private final class ReturnValueFromVoidFunctionVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+    private(set) var violationPositions = [AbsolutePosition]()
 
     override func visitPost(_ node: ReturnStmtSyntax) {
         if node.expression != nil,
            let functionNode = Syntax(node).enclosingFunction(),
             functionNode.returnsVoid {
-            positions.append(node.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    func violations(for rule: ReturnValueFromVoidFunctionRule, in file: SwiftLintFile) -> [StyleViolation] {
-        return positions.map { position in
-            StyleViolation(ruleDescription: type(of: rule).description,
-                           severity: rule.configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

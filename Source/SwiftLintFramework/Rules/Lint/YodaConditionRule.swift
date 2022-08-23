@@ -1,7 +1,7 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SourceKitFreeRule {
+public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -37,17 +37,13 @@ public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SourceKit
             Example("if ↓200 <= i && i <= 299 || ↓600 <= i {}")
         ])
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        YodaConditionRuleVisitor().walk(file: file, handler: \.positions).map { position in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position)))
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        YodaConditionRuleVisitor()
     }
 }
 
-private final class YodaConditionRuleVisitor: SyntaxVisitor {
-    var positions: [AbsolutePosition] = []
+private final class YodaConditionRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+    private(set) var violationPositions: [AbsolutePosition] = []
 
     override func visitPost(_ node: IfStmtSyntax) {
         visit(conditions: node.conditions)
@@ -96,7 +92,7 @@ private final class YodaConditionRuleVisitor: SyntaxVisitor {
                 if children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
                     // Literal is at the very beginning of the expression or the previous token is an operator with
                     // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
-                    positions.append(lhs.positionAfterSkippingLeadingTrivia)
+                    violationPositions.append(lhs.positionAfterSkippingLeadingTrivia)
                 }
             }
         }

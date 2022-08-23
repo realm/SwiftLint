@@ -82,6 +82,7 @@ public extension SwiftSyntaxRule {
 
         return visitor
             .walk(file: file, handler: \.violationPositions)
+            .sorted()
             .map { makeViolation(file: file, position: $0) }
     }
 }
@@ -104,11 +105,14 @@ public extension SwiftSyntaxCorrectableRule {
         }
 
         file.write(newTree.description)
-        return rewriter.correctionPositions.map { position in
-            Correction(
-                ruleDescription: Self.description,
-                location: Location(file: file, position: position)
-            )
-        }
+        return rewriter
+            .correctionPositions
+            .sorted()
+            .map { position in
+                Correction(
+                    ruleDescription: Self.description,
+                    location: Location(file: file, position: position)
+                )
+            }
     }
 }

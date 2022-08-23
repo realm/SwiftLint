@@ -16,7 +16,8 @@ public struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: [ Example("NSNumber() ↓as! Int\n") ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile, locationConverter: SourceLocationConverter)
+        -> ViolationsSyntaxVisitor? {
         ForceCastRuleVisitor()
     }
 }

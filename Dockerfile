@@ -23,7 +23,7 @@ COPY bazel bazel/
 
 ENV CC=clang
 
-RUN bazel build -c opt swiftlint
+RUN bazel build -c dbg swiftlint
 RUN mkdir -p /executables
 RUN mv bazel-bin/swiftlint /executables
 

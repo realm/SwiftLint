@@ -1,4 +1,6 @@
 *
 !Source
 !Tests
-!Package.*
+!WORKSPACE
+!BUILD
+!bazel

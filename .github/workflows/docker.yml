@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - jp-fix-docker-hang
+      - jp-fix-docker-hang-2
     tags:
       - '*'
 

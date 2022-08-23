@@ -7,20 +7,25 @@ FROM ${BUILDER_IMAGE} AS builder
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libxml2-dev \
+    curl \
  && rm -r /var/lib/apt/lists/*
+RUN curl -O -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-linux-amd64
+RUN mv bazelisk-linux-arm64 /usr/bin/bazel
+RUN chmod +x /usr/bin/bazel
+RUN bazel version
+
 WORKDIR /workdir/
 COPY Source Source/
 COPY Tests Tests/
-COPY Package.* ./
+COPY WORKSPACE ./
+COPY BUILD ./
+COPY bazel bazel/
 
-RUN ln -s /usr/lib/swift/_InternalSwiftSyntaxParser .
+ENV CC=clang
 
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
-RUN swift build $SWIFT_FLAGS
+RUN bazel build -c opt swiftlint
 RUN mkdir -p /executables
-RUN for executable in $(swift package completion-tool list-executables); do \
-        install -v `swift build $SWIFT_FLAGS --show-bin-path`/$executable /executables; \
-    done
+RUN mv bazel-bin/swiftlint /executables
 
 # runtime image
 FROM ${RUNTIME_IMAGE}

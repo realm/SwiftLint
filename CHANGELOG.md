@@ -164,6 +164,9 @@ macOS < 12.
   [KokiHirokawa](https://github.com/KokiHirokawa)
   [#3986](https://github.com/realm/SwiftLint/issues/3986)
 
+* Add configuration to customise no space operators.  
+  [imben123](https://github.com/imben123)
+
 #### Bug Fixes
 
 * Ignore array types in `syntactic_sugar` rule if their associated `Index` is

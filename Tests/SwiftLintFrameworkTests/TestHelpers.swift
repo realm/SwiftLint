@@ -8,12 +8,20 @@ import XCTest
 private let violationMarker = "↓"
 
 private extension SwiftLintFile {
-    static func temporary(withContents contents: String) -> SwiftLintFile {
-        let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension("swift")
-        _ = try? contents.data(using: .utf8)!.write(to: url)
-        return SwiftLintFile(path: url.path)!
+    static func testFile(withContents contents: String, persistToDisk: Bool = false) -> SwiftLintFile {
+        let file: SwiftLintFile
+        if persistToDisk {
+            let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+                .appendingPathComponent(UUID().uuidString)
+                .appendingPathExtension("swift")
+            _ = try? contents.data(using: .utf8)!.write(to: url)
+            file = SwiftLintFile(path: url.path)!
+        } else {
+            file = SwiftLintFile(contents: contents)
+        }
+
+        file.markAsTestFile()
+        return file
     }
 
     func makeCompilerArguments() -> [String] {
@@ -58,13 +66,13 @@ func violations(_ example: Example, config inputConfig: Configuration = Configur
     let config = inputConfig.applyingConfiguration(from: example)
     let stringStrippingMarkers = example.removingViolationMarkers()
     guard requiresFileOnDisk else {
-        let file = SwiftLintFile(contents: stringStrippingMarkers.code)
+        let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code)
         let storage = RuleStorage()
         let linter = Linter(file: file, configuration: config).collect(into: storage)
         return linter.styleViolations(using: storage)
     }
 
-    let file = SwiftLintFile.temporary(withContents: stringStrippingMarkers.code)
+    let file = SwiftLintFile.testFile(withContents: stringStrippingMarkers.code, persistToDisk: true)
     let storage = RuleStorage()
     let collecter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
     let linter = collecter.collect(into: storage)
@@ -74,13 +82,13 @@ func violations(_ example: Example, config inputConfig: Configuration = Configur
 extension Collection where Element == String {
     func violations(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false)
         -> [StyleViolation] {
-            let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
-            return map(makeFile).violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
+            return map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
+                .violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
     func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
-        let makeFile = requiresFileOnDisk ? SwiftLintFile.temporary : SwiftLintFile.init(contents:)
-        return map(makeFile).corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
+        return map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
+            .corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 }
 
@@ -197,7 +205,7 @@ private extension Configuration {
     // swiftlint:disable:next function_body_length
     func assertCorrection(_ before: Example, expected: Example) {
         let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before.code)
-        let file = SwiftLintFile.temporary(withContents: cleanedBefore)
+        let file = SwiftLintFile.testFile(withContents: cleanedBefore, persistToDisk: true)
         // expectedLocations are needed to create before call `correct()`
         let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
         let includeCompilerArguments = self.rules.contains(where: { $0 is AnalyzerRule })
@@ -472,7 +480,7 @@ extension XCTestCase {
                 }
                 continue
             }
-            let file = SwiftLintFile(contents: cleanTrigger)
+            let file = SwiftLintFile.testFile(withContents: cleanTrigger)
             let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
 
             // Assert violations on unexpected location

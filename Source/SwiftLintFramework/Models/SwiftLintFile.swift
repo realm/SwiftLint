@@ -5,6 +5,7 @@ import SourceKittenFramework
 public final class SwiftLintFile {
     let file: File
     let id: UUID
+    private(set) var isTestFile = false
 
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///
@@ -56,6 +57,11 @@ public final class SwiftLintFile {
     /// The parsed lines for this file's contents.
     public var lines: [Line] {
         return file.lines
+    }
+
+    /// Mark this file as used for testing purposes.
+    func markAsTestFile() {
+        isTestFile = true
     }
 
     /// Returns whether or not the file contains any attributes that require the Foundation module.

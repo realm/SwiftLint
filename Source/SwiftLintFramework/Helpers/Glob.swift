@@ -38,7 +38,8 @@ struct Glob {
     // MARK: Private
     private static func expandGlobstar(pattern: String) -> [String] {
         var shouldToLintForPaths = [String]()
-        vagueSearchStarPaths(pattern: optimizationGeneralPath(pattern: pattern), lintPaths: &shouldToLintForPaths)
+        vagueSearchStarPaths(pattern: optimizationGeneralPath(pattern: pattern),
+                           lintPaths: &shouldToLintForPaths)
 //        debugPrint(shouldToLintForPaths)
         return shouldToLintForPaths
     }
@@ -88,13 +89,16 @@ struct Glob {
         }
 
         /// split two paths
-        let path_parts = splitDoubleStarDirPath(path: pattern)
-        let current_matching_dir = path_parts[0].bridge().deletingLastPathComponent
-        let general_folders = path_parts[0].bridge().lastPathComponent
-        let remain_parts = path_parts[1]
+        let pathParts = splitDoubleStarDirPath(path: pattern)
+        let currentMatchingDir = pathParts[0].bridge().deletingLastPathComponent
+        let generalFolders = pathParts[0].bridge().lastPathComponent
+        let remainParts = pathParts[1]
 
-//        debugPrint("start matching search: \(current_matching_dir), vague: \(general_folders), remain: \(remain_parts)")
-        searchMatchingDir(searchDir: current_matching_dir, vagueExpression: general_folders, remainPath: remain_parts, lintPaths: &lintPaths)
+//        debugPrint("start matching search: \(currentMatchingDir), vague: \(generalFolders), remain: \(remainParts)")
+        searchMatchingDir(searchDir: currentMatchingDir,
+                    vagueExpression: generalFolders,
+                         remainPath: remainParts,
+                          lintPaths: &lintPaths)
     }
 
     /// matching include * folder
@@ -102,25 +106,28 @@ struct Glob {
     ///   - searchDir: search target dir
     ///   - vagueExpression: star dir , eg: *DM*, DM*,*DM, **,  s*ed
     ///   - remainPath: last path
-    private static func searchMatchingDir(searchDir: String, vagueExpression: String, remainPath: String, lintPaths: inout [String]) {
+    private static func searchMatchingDir(searchDir: String,
+                                    vagueExpression: String,
+                                         remainPath: String,
+                                          lintPaths: inout [String]) {
         let fileManager = FileManager.default
         let searchPath = searchDir.isEmpty ? fileManager.currentDirectoryPath : searchDir
-        let loop_all = vagueExpression.isEqualTo("**")
+        let loopAll = vagueExpression.isEqualTo("**")
         do {
-            var top_sub_dir = ""
+            var topSubDir = ""
             _ = try fileManager.subpathsOfDirectory(atPath: searchPath).compactMap({ subpath in
-                guard !subpath.contains(top_sub_dir) || loop_all else {
+                guard !subpath.contains(topSubDir) || loopAll else {
                     return
                 }
 
-                top_sub_dir = subpath
+                topSubDir = subpath
 
                 if isMatching(src: subpath, pstr: vagueExpression) {
-                    var next_folder = searchPath.bridge().appendingPathComponent(subpath)
+                    var nextFolder = searchPath.bridge().appendingPathComponent(subpath)
                     if !remainPath.isEmpty {
-                        next_folder = next_folder.bridge().appendingPathComponent(remainPath)
+                        nextFolder = nextFolder.bridge().appendingPathComponent(remainPath)
                     }
-                    vagueSearchStarPaths(pattern: next_folder, lintPaths: &lintPaths)
+                    vagueSearchStarPaths(pattern: nextFolder, lintPaths: &lintPaths)
                 }
             })
         } catch {
@@ -141,13 +148,13 @@ struct Glob {
         // eg: local/host/tk*, local/host/tk*/*rec*/
         if first.contains("*") {
             var spos = -1
-            var found_star = false
+            var foundStar = false
             for ( cidx, citem ) in first.enumerated() {
                 if citem == "*" {
-                    found_star = true
+                    foundStar = true
                 }
 
-                if citem == "/", found_star {
+                if citem == "/", foundStar {
                     spos = cidx
                     break
                 }
@@ -165,6 +172,8 @@ struct Glob {
         return [first, last]
     }
 
+    
+    
     /**
         src: moTestDemo    pstr: *Test*         true
         src: moTestDemo    pstr: *Test          false
@@ -187,70 +196,85 @@ struct Glob {
             return src.isEqualTo(pstr)
         }
 
-        var first_is_star = false
-        var last_is_star = false
-        var mid_is_start = false
+        var firstIsStar = false
+        var lastIsStar = false
+        var midIsStart = false
         var matchstr = ""
-        for (idx, ic) in pstr.enumerated() {
-            if idx == 0, "*".isEqualTo(String(ic)) {
-                first_is_star = true
+        for (idx, icstr) in pstr.enumerated() {
+            if idx == 0, "*".isEqualTo(String(icstr)) {
+                firstIsStar = true
             }
-            if idx == pstr.count - 1, "*".isEqualTo(String(ic)) {
-                last_is_star = true
+            if idx == pstr.count - 1, "*".isEqualTo(String(icstr)) {
+                lastIsStar = true
             }
 
-            if "*".isEqualTo(String(ic)) {
-                mid_is_start = true
+            if "*".isEqualTo(String(icstr)) {
+                midIsStart = true
                 continue
             }
 
-            matchstr += String(ic)
+            matchstr += String(icstr)
         }
 
         guard !matchstr.isEmpty else {
             return false
         }
 
-        if first_is_star && last_is_star { // match being star, end star. eg: *xx*
-            var tmp = src
-
-            if let range: Range = tmp.range(of: matchstr) {
-                let location = tmp.distance(from: tmp.startIndex, to: range.lowerBound)
-
-                if location == 0 {
-                    tmp.removeSubrange(range)
-                }
-            }
-
-            tmp = String(tmp.reversed())
-
-            if let range: Range = tmp.range(of: String(matchstr.reversed())) {
-                let location = tmp.distance(from: tmp.startIndex, to: range.lowerBound)
-
-                if location == 0 {
-                    tmp.removeSubrange(range)
-                }
-            }
-
-            tmp = String(tmp.reversed())
-
-            return tmp.contains(matchstr)
-        } else if first_is_star { // matching being star. eg: *subs
+        return dispatchMatching(firstIsStar, lastIsStar,
+                                src, matchstr,
+                                midIsStart, pstr)
+    }
+    
+    private static func dispatchMatching(_ firstIsStar: Bool,
+                                         _ lastIsStar: Bool,
+                                         _ src: String,
+                                         _ matchstr: String,
+                                         _ midIsStart: Bool,
+                                         _ pstr: String) -> Bool {
+        if firstIsStar && lastIsStar { // match being star, end star. eg: *xx*
+            return matchingMidString(src: src, mstr: matchstr)
+        } else if firstIsStar { // matching being star. eg: *subs
             let len = matchstr.count
             let laststr = String(src.suffix(len))
             return laststr.isEqualTo(matchstr)
-        } else if last_is_star {// matching end star. eg: folder*
+        } else if lastIsStar {// matching end star. eg: folder*
             let len = matchstr.count
             let prestr = String(src.prefix(len))
             return prestr.isEqualTo(matchstr)
-        } else if mid_is_start {// matching mid stat. eg: s*ed
-            let folder_parts = pstr.components(separatedBy: "*")
-            guard folder_parts.count == 2 else {
+        } else if midIsStart {// matching mid stat. eg: s*ed
+            let folderParts = pstr.components(separatedBy: "*")
+            guard folderParts.count == 2 else {
                 return false
             }
-            return src.hasPrefix(folder_parts[0]) && src.hasSuffix(folder_parts[1])
+            return src.hasPrefix(folderParts[0]) && src.hasSuffix(folderParts[1])
+        }
+        
+        return false
+    }
+    
+    private static func matchingMidString(src: String, mstr: String) -> Bool {
+        var tmp = src
+
+        if let range: Range = tmp.range(of: mstr) {
+            let location = tmp.distance(from: tmp.startIndex, to: range.lowerBound)
+
+            if location == 0 {
+                tmp.removeSubrange(range)
+            }
         }
 
-        return false
+        tmp = String(tmp.reversed())
+
+        if let range: Range = tmp.range(of: String(mstr.reversed())) {
+            let location = tmp.distance(from: tmp.startIndex, to: range.lowerBound)
+
+            if location == 0 {
+                tmp.removeSubrange(range)
+            }
+        }
+
+        tmp = String(tmp.reversed())
+
+        return tmp.contains(mstr)
     }
 }

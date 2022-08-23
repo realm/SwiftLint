@@ -13,8 +13,10 @@ steps:
       - bundle exec danger --verbose
   - label: "Analyze"
     commands:
-      - echo "+++ Build"
+      - echo "+++ Build With Bazel"
       - bazel build -c opt swiftlint
+      - echo "+++ Build With SwiftPM"
+      - swift build
       - echo "+++ Analyze"
       - bazel test -c opt --test_output=streamed --test_timeout=1800 --spawn_strategy=local --test_env=PROJECT_ROOT=$(bazel info workspace) analyze
   - label: "TSan"

@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 import Yams
 
 private struct SwiftPMCommand: Codable {

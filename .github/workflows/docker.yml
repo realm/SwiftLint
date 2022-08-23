@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - jp-fix-docker-hang
     tags:
       - '*'
 
@@ -22,7 +23,7 @@ jobs:
     - name: Use default DOCKER_TAG
       if: startsWith(github.ref, 'refs/tags/') != true
       run: |
-        echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+        echo "DOCKER_TAG=jp-fix-docker-hang" >> $GITHUB_ENV
     
     - name: Set lowercase repository name
       run: |

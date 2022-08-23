@@ -122,6 +122,7 @@ genrule(
     cmd = """
 set -euo pipefail
 
+swift package clean
 swift build
 cp .build/debug.yaml $(OUTS)
     """,

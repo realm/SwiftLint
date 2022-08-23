@@ -44,3 +44,71 @@ extension SwiftLintSyntaxVisitor {
         return walk(tree: syntaxTree, handler: handler)
     }
 }
+
+public protocol ViolationsSyntaxVisitor: SyntaxVisitor {
+    var violationPositions: [AbsolutePosition] { get }
+}
+
+public protocol SwiftSyntaxRule: SourceKitFreeRule {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor?
+    func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation
+}
+
+public extension SwiftSyntaxRule where Self: ConfigurationProviderRule, ConfigurationType == SeverityConfiguration {
+    func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
+        StyleViolation(
+            ruleDescription: Self.description,
+            severity: configuration.severity,
+            location: Location(file: file, position: position)
+        )
+    }
+}
+
+public extension SwiftSyntaxRule {
+    func disabledRegions(file: SwiftLintFile) -> [SourceRange] {
+        guard let locationConverter = file.locationConverter else {
+            return []
+        }
+
+        return file.regions()
+            .filter { $0.isRuleDisabled(self) }
+            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
+    }
+
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
+        guard let visitor = makeVisitor(file: file) else {
+            return []
+        }
+
+        return visitor
+            .walk(file: file, handler: \.violationPositions)
+            .map { makeViolation(file: file, position: $0) }
+    }
+}
+
+public protocol ViolationsSyntaxRewriter: SyntaxRewriter {
+    var correctionPositions: [AbsolutePosition] { get }
+}
+
+public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter?
+}
+
+public extension SwiftSyntaxCorrectableRule {
+    func correct(file: SwiftLintFile) -> [Correction] {
+        guard let rewriter = makeRewriter(file: file),
+              let syntaxTree = file.syntaxTree,
+              case let newTree = rewriter.visit(syntaxTree),
+              rewriter.correctionPositions.isNotEmpty else {
+            return []
+        }
+
+        file.write(newTree.description)
+        return rewriter.correctionPositions.map { position in
+            Correction(
+                ruleDescription: Self.description,
+                location: Location(file: file, position: position)
+            )
+        }
+    }
+}

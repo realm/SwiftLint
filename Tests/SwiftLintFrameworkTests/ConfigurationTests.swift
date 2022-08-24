@@ -515,7 +515,7 @@ extension ConfigurationTests {
                         "Level0.swift",
                         "frame.swift",
                         "work.swift",
-                        "demos.swift", "Level0.swift"], filenames)
+                        "demos.swift", "Level0.swift"].sorted(), filenames.sorted())
     }
 
     func testExcludeByPrefixGlobExcludePaths() {

@@ -50,7 +50,7 @@ public protocol ViolationsSyntaxVisitor: SyntaxVisitor {
 }
 
 public protocol SwiftSyntaxRule: SourceKitFreeRule {
-    func makeVisitor(file: SwiftLintFile, locationConverter: SourceLocationConverter) -> ViolationsSyntaxVisitor?
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor?
     func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation
 }
 
@@ -76,8 +76,7 @@ public extension SwiftSyntaxRule {
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let locationConverter = file.locationConverter,
-                let visitor = makeVisitor(file: file, locationConverter: locationConverter) else {
+        guard let visitor = makeVisitor(file: file) else {
             return []
         }
 
@@ -93,19 +92,12 @@ public protocol ViolationsSyntaxRewriter: SyntaxRewriter {
 }
 
 public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
-    func makeRewriter(file: SwiftLintFile, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange])
-        -> ViolationsSyntaxRewriter?
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter?
 }
 
 public extension SwiftSyntaxCorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
-        let disabledRegions = disabledRegions(file: file)
-        guard let locationConverter = file.locationConverter,
-              let rewriter = makeRewriter(
-                file: file,
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions
-              ),
+        guard let rewriter = makeRewriter(file: file),
               let syntaxTree = file.syntaxTree,
               case let newTree = rewriter.visit(syntaxTree),
               rewriter.correctionPositions.isNotEmpty else {

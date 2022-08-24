@@ -15,8 +15,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile, locationConverter: SourceLocationConverter)
-        -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         ReturnValueFromVoidFunctionVisitor()
     }
 }

@@ -97,6 +97,10 @@ accordingly._
   shall not be considered by the rule.  
   [imben123](https://github.com/imben123)
 
+* Add new protocols to remove some boilerplate involved in writing
+  SwiftSyntax-based rules.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using

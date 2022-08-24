@@ -37,10 +37,14 @@ struct Glob {
 
     // MARK: Private
     private static func expandGlobstar(pattern: String) -> [String] {
+        // not include star, or .swift files, eg: level[0-9].swift
+        guard pattern.contains("*") else {
+            return [pattern]
+        }
+
         var shouldToLintForPaths = [String]()
         vagueSearchStarPaths(pattern: optimizationGeneralPath(pattern: pattern),
-                           lintPaths: &shouldToLintForPaths)
-//        debugPrint(shouldToLintForPaths)
+                             lintPaths: &shouldToLintForPaths)
         return shouldToLintForPaths
     }
 
@@ -81,10 +85,14 @@ struct Glob {
         // path include * or **，eg:  /Test*/**/demo/f*/**/
         guard pattern.contains("*") else {
             guard isDirectory(path: pattern) else { // filter invalid paths
-//                debugPrint("invalid paths: \(pattern)")
                 return
             }
             lintPaths.append(pattern) // valid paths and no include star dir
+            return
+        }
+        // is *.swift , Leve*.swift
+        guard !pattern.hasSuffix(".swift") || pattern.contains("**") else {
+            lintPaths.append(pattern)
             return
         }
 
@@ -96,19 +104,18 @@ struct Glob {
 
 //        debugPrint("start matching search: \(currentMatchingDir), vague: \(generalFolders), remain: \(remainParts)")
         searchMatchingDir(searchDir: currentMatchingDir,
-                    vagueExpression: generalFolders,
-                         remainPath: remainParts,
+                          vagueExpression: generalFolders,
+                          remainPath: remainParts,
                           lintPaths: &lintPaths)
     }
-
     /// matching include * folder
     /// - Parameters:
     ///   - searchDir: search target dir
     ///   - vagueExpression: star dir , eg: *DM*, DM*,*DM, **,  s*ed
     ///   - remainPath: last path
     private static func searchMatchingDir(searchDir: String,
-                                    vagueExpression: String,
-                                         remainPath: String,
+                                          vagueExpression: String,
+                                          remainPath: String,
                                           lintPaths: inout [String]) {
         let fileManager = FileManager.default
         let searchPath = searchDir.isEmpty ? fileManager.currentDirectoryPath : searchDir
@@ -124,12 +131,22 @@ struct Glob {
 
                 if isMatching(src: subpath, pstr: vagueExpression) {
                     var nextFolder = searchPath.bridge().appendingPathComponent(subpath)
+                    // filter files
+                    guard isDirectory(path: nextFolder) else {
+                        return
+                    }
                     if !remainPath.isEmpty {
                         nextFolder = nextFolder.bridge().appendingPathComponent(remainPath)
                     }
+
                     vagueSearchStarPaths(pattern: nextFolder, lintPaths: &lintPaths)
                 }
             })
+            // if **, search current self 
+            if loopAll, !remainPath.isEmpty {
+                let next = searchPath.bridge().appendingPathComponent(remainPath)
+                vagueSearchStarPaths(pattern: next, lintPaths: &lintPaths)
+            }
         } catch {
             queuedPrintError("filter Sub Path: \(searchPath) Error : \(error)")
         }
@@ -171,21 +188,17 @@ struct Glob {
 
         return [first, last]
     }
-
-    
-    
     /**
-        src: moTestDemo    pstr: *Test*         true
-        src: moTestDemo    pstr: *Test          false
-        src: moTestDemo    pstr: Test*          false
-        src: moTestDemo    pstr: mo*           true
-        src: moTestDemo    pstr: *mo*        false
-        src: moTestDemo   pstr: *mo           true
-        src: moTestDemo pstr: m*mo          true
-        src: moTestmoDemo  pstr: *mo*     true
-        src: Any String     pstr: **              true
-     
-        src: moTestDemo   pstr: *m*T*D*     is not support.
+     src: moTestDemo    pstr: *Test*         true
+     src: moTestDemo    pstr: *Test          false
+     src: moTestDemo    pstr: Test*          false
+     src: moTestDemo    pstr: mo*           true
+     src: moTestDemo    pstr: *mo*        false
+     src: moTestDemo   pstr: *mo           true
+     src: moTestDemo pstr: m*mo          true
+     src: moTestmoDemo  pstr: *mo*     true
+     src: Any String     pstr: **              true
+     src: moTestDemo   pstr: *m*T*D*     is not support.
      */
     private static func isMatching(src: String, pstr: String) -> Bool {
         guard !pstr.contains("**") else { // matching any folders
@@ -219,18 +232,21 @@ struct Glob {
         guard !matchstr.isEmpty else {
             return false
         }
-
-        return dispatchMatching(firstIsStar, lastIsStar,
-                                src, matchstr,
-                                midIsStart, pstr)
+        let tupleStr: ( String, String, String ) = ( src, matchstr, pstr )
+        return dispatchMatching(firstIsStar,
+                                lastIsStar,
+                                midIsStart,
+                                tupleStr)
     }
-    
+
     private static func dispatchMatching(_ firstIsStar: Bool,
                                          _ lastIsStar: Bool,
-                                         _ src: String,
-                                         _ matchstr: String,
                                          _ midIsStart: Bool,
-                                         _ pstr: String) -> Bool {
+                                         _ origin: (String, String, String)
+                                         ) -> Bool {
+        let src = origin.0
+        let matchstr = origin.1
+        let pstr = origin.2
         if firstIsStar && lastIsStar { // match being star, end star. eg: *xx*
             return matchingMidString(src: src, mstr: matchstr)
         } else if firstIsStar { // matching being star. eg: *subs
@@ -248,13 +264,11 @@ struct Glob {
             }
             return src.hasPrefix(folderParts[0]) && src.hasSuffix(folderParts[1])
         }
-        
         return false
     }
-    
+
     private static func matchingMidString(src: String, mstr: String) -> Bool {
         var tmp = src
-
         if let range: Range = tmp.range(of: mstr) {
             let location = tmp.distance(from: tmp.startIndex, to: range.lowerBound)
 

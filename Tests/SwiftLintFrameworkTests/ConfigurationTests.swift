@@ -292,10 +292,10 @@ class ConfigurationTests: XCTestCase {
             "DirectoryLevel1.swift",
             "Level0.swift", "Level1.swift", "Level2.swift", "Level3.swift",
             "Main.swift", "Sub.swift",
-            "example.swift","22.swift",
-            "level22_demos.swift","product.swift",
-            "Level0.swift","frame.swift",
-            "work.swift","demos.swift"
+            "example.swift", "22.swift",
+            "level22_demos.swift", "product.swift",
+            "Level0.swift", "frame.swift",
+            "work.swift", "demos.swift"
         ]
 
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
@@ -310,47 +310,47 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }
-    
+
     func testGeneralIncludePaths() {
         let checkDir = Mock.Dir.level0.bridge().appendingPathComponent("Example/Level0/**/fram*")
         let configuration = Configuration(includedPaths: [checkDir])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
-        
+
         guard !paths.isEmpty else {
             XCTAssertEqual(paths, [])
             return
         }
-        
+
         let files = paths[0].bridge().lastPathComponent
         XCTAssertEqual(Set(files), Set("frame.swift"))
     }
-    
+
     func testGeneralIncludePaths2() {
         let checkDir = Mock.Dir.level0.bridge().appendingPathComponent("Example/**/*em*/fram*")
         let configuration = Configuration(includedPaths: [checkDir])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
-        
+
         guard !paths.isEmpty else {
             XCTAssertEqual(paths, [])
             return
         }
-        
+
         let files = paths[0].bridge().lastPathComponent
         XCTAssertEqual(Set(files), Set("frame.swift"))
     }
-    
+
     func testGeneralIncludePaths3() {
         let checkDir = Mock.Dir.level0.bridge().appendingPathComponent("Example/**/*em*")
         let configuration = Configuration(includedPaths: [checkDir])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
-        
+
         guard !paths.isEmpty else {
             XCTAssertEqual(paths, [])
             return
         }
-        
-        let files = paths.map{$0.bridge().lastPathComponent}
-        let example = ["frame.swift","work.swift","demos.swift","level22_demos.swift"]
+
+        let files = paths.map { $0.bridge().lastPathComponent }
+        let example = ["frame.swift", "work.swift", "demos.swift", "level22_demos.swift"]
         XCTAssertEqual(Set(files), Set(example))
     }
 
@@ -361,6 +361,10 @@ class ConfigurationTests: XCTestCase {
         )
 
         let paths = configuration.lintablePaths(inPath: "", forceExclude: false)
+        guard !paths.isEmpty else {
+            XCTAssertEqual([], paths)
+            return
+        }
         let frames = paths[0].bridge().lastPathComponent
         XCTAssertEqual([frames], ["Level3.swift"])
     }
@@ -486,11 +490,11 @@ extension ConfigurationTests {
                                                 forceExclude: true,
                                                 excludeByPrefix: true)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
-        XCTAssertEqual(["22.swift","Level0.swift",
+        XCTAssertEqual(["22.swift", "Level0.swift",
                         "Level0.swift", "Level1.swift",
-                        "demos.swift","example.swift",
-                        "frame.swift","level22_demos.swift",
-                        "product.swift","work.swift"], filenames)
+                        "demos.swift", "example.swift",
+                        "frame.swift", "level22_demos.swift",
+                        "product.swift", "work.swift"], filenames)
     }
 
     func testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
@@ -511,7 +515,7 @@ extension ConfigurationTests {
                         "Level0.swift",
                         "frame.swift",
                         "work.swift",
-                        "demos.swift","Level0.swift"], filenames)
+                        "demos.swift", "Level0.swift"], filenames)
     }
 
     func testExcludeByPrefixGlobExcludePaths() {
@@ -523,7 +527,7 @@ extension ConfigurationTests {
                                                 forceExclude: false,
                                                 excludeByPrefix: true)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
-        XCTAssertEqual(filenames, ["Level1.swift","Level2.swift","Level3.swift"])
+        XCTAssertEqual(filenames, ["Level1.swift"])
     }
 
     func testDictInitWithCachePath() throws {

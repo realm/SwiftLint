@@ -91,7 +91,8 @@ accordingly._
 * The `--compile-commands` argument can now parse SwiftPM yaml files produced
   when running `swift build` at `.build/{debug,release}.yaml`.  
   [JP Simard](https://github.com/jpsim)
-* Add configuration to customise no space operators.  
+
+* Add new configuration option `allowed_no_space_operators` to `operator_usage_whitespace` rule. It allows to specify custom operators which shall not be considered by the rule.  
   [imben123](https://github.com/imben123)
 
 #### Bug Fixes

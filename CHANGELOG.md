@@ -18,7 +18,10 @@ accordingly._
 
 #### Bug Fixes
 
-* None.
+* Migrate `empty_xctest_method` rule to SwiftSyntax fixing some false positives.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3647](https://github.com/realm/SwiftLint/issues/3647)
+  [#3691](https://github.com/realm/SwiftLint/issues/3691))
 
 ## 0.49.0: Asynchronous Defuzzer
 

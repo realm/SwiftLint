@@ -184,7 +184,7 @@ public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, AST
     ///
     /// - parameter file:       The file in which to find ranges of violations for this rule.
     /// - parameter kind:       The kind of token being recursed over.
-    /// - parameter dictionary: The dicttionary for an AST subset to validate.
+    /// - parameter dictionary: The dictionary for an AST subset to validate.
     ///
     /// - returns: The NSString-based `NSRange`s to be replaced in the specified file.
     func violationRanges(in file: SwiftLintFile, kind: KindType,

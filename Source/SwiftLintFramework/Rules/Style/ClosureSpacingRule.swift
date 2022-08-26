@@ -2,7 +2,7 @@ import SwiftSyntax
 
 // MARK: - ClosureSpacingRule
 
-public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+public struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -38,40 +38,15 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let locationConverter = file.locationConverter else {
-            return []
-        }
-
-        return ClosureSpacingRuleVisitor(locationConverter: locationConverter)
-            .walk(file: file, handler: \.sortedPositions)
-            .map { position in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, position: position))
-            }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        file.locationConverter.map(ClosureSpacingRuleVisitor.init)
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        guard let locationConverter = file.locationConverter else {
-            return []
-        }
-
-        let disabledRegions = file.regions()
-            .filter { $0.isRuleDisabled(self) }
-            .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
-
-        let rewriter = ClosureSpacingRuleRewriter(locationConverter: locationConverter,
-                                                  disabledRegions: disabledRegions)
-        let newTree = rewriter
-            .visit(file.syntaxTree!)
-        guard rewriter.sortedPositions.isNotEmpty else { return [] }
-
-        file.write(newTree.description)
-        return rewriter.sortedPositions.map { position in
-            Correction(
-                ruleDescription: Self.description,
-                location: Location(file: file, position: position)
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            ClosureSpacingRuleRewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
             )
         }
     }
@@ -79,9 +54,8 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
 
 // MARK: - ClosureSpacingRuleVisitor
 
-private final class ClosureSpacingRuleVisitor: SyntaxVisitor {
-    private var positions: [AbsolutePosition] = []
-    var sortedPositions: [AbsolutePosition] { positions.sorted() }
+private final class ClosureSpacingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+    private(set) var violationPositions: [AbsolutePosition] = []
     let locationConverter: SourceLocationConverter
 
     init(locationConverter: SourceLocationConverter) {
@@ -91,16 +65,15 @@ private final class ClosureSpacingRuleVisitor: SyntaxVisitor {
     override func visitPost(_ node: ClosureExprSyntax) {
         if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
            node.violations.hasViolations {
-            positions.append(node.positionAfterSkippingLeadingTrivia)
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
 // MARK: - ClosureSpacingRuleRewriter
 
-private final class ClosureSpacingRuleRewriter: SyntaxRewriter {
-    private var positions: [AbsolutePosition] = []
-    var sortedPositions: [AbsolutePosition] { positions.sorted() }
+private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    private(set) var correctionPositions: [AbsolutePosition] = []
     let locationConverter: SourceLocationConverter
     let disabledRegions: [SourceRange]
 
@@ -135,7 +108,7 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter {
             node.rightBrace = node.rightBrace.withTrailingTrivia(.spaces(1))
         }
         if violations.hasViolations {
-            positions.append(node.positionAfterSkippingLeadingTrivia)
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
 
         return ExprSyntax(node)

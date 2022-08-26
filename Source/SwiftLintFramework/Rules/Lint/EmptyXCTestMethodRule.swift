@@ -35,6 +35,18 @@ private class EmptyXCTestMethodRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisit
         return isTestClass ? .visitChildren : .skipChildren
     }
 
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        .skipChildren
+    }
+
+    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+        .skipChildren
+    }
+
+    override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        .skipChildren
+    }
+
     override func visitPost(_ node: FunctionDeclSyntax) {
         if node.isOverride, node.hasEmptyBody {
             violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)

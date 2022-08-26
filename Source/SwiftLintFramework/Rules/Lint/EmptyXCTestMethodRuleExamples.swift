@@ -84,7 +84,21 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func testFoo() { XCTAssert(true) }
         }
-        """)
+        """),
+
+        Example("""
+        extension C {
+            override func foo(a: Int) {}
+        }
+
+        struct S {
+            override func foo(a: Int) {}
+        }
+
+        enum E {
+            override func foo(a: Int) {}
+        }
+        """, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [

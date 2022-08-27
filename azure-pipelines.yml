@@ -85,9 +85,8 @@ jobs:
     - script: |
         curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazelisk
         chmod +x bazelisk
-        mv bazelisk /usr/bin/bazel
       displayName: Install Bazel
-    - script: bazel build -c opt --features=tsan swiftlint
+    - script: ./bazelisk build -c opt --features=tsan swiftlint
       displayName: Build SwiftLint
     - script: ./bazel-bin/swiftlint --lenient
       displayName: Pre-cache SwiftLint Run

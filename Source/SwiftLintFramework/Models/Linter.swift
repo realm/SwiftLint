@@ -222,15 +222,12 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        var arr = [0, 1, 2]
-        let validationResults = rules.parallelCompactMap { asdf -> LintResult? in
-            _ = arr[0]
-            arr[0] = .random(in: 0...100)
-            return asdf.lint(file: self.file, regions: regions, benchmark: benchmark,
-                             storage: storage,
-                             configuration: self.configuration,
-                             superfluousDisableCommandRule: superfluousDisableCommandRule,
-                             compilerArguments: self.compilerArguments)
+        let validationResults = rules.parallelCompactMap {
+            $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+                    storage: storage,
+                    configuration: self.configuration,
+                    superfluousDisableCommandRule: superfluousDisableCommandRule,
+                    compilerArguments: self.compilerArguments)
         }
         let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,

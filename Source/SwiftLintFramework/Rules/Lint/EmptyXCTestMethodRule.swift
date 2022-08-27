@@ -19,20 +19,11 @@ public struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, Swift
     }
 }
 
-private class EmptyXCTestMethodRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+private final class EmptyXCTestMethodRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
     private(set) var violationPositions: [AbsolutePosition] = []
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        guard let inheritanceList = node.inheritanceClause?.inheritedTypeCollection else {
-            return .skipChildren
-        }
-        let isTestClass = inheritanceList
-            .map(\.typeName)
-            .compactMap { $0.as(SimpleTypeIdentifierSyntax.self) }
-            .map(\.name)
-            .map(\.text)
-            .contains("XCTestCase")
-        return isTestClass ? .visitChildren : .skipChildren
+        node.isXCTestCase ? .visitChildren : .skipChildren
     }
 
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -48,20 +39,26 @@ private class EmptyXCTestMethodRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisit
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
-        if node.isOverride, node.hasEmptyBody {
+        if (node.isOverride || node.isTestMethod) && node.hasEmptyBody {
             violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
-        } else if node.isTestMethod, node.hasEmptyBody {
-            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension ClassDeclSyntax {
+    var isXCTestCase: Bool {
+        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+            return false
+        }
+        return inheritanceList.contains { type in
+            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "XCTestCase"
         }
     }
 }
 
 private extension FunctionDeclSyntax {
     var isOverride: Bool {
-        if let modifiers = modifiers {
-            return modifiers.map(\.name).map(\.text).contains("override")
-        }
-        return false
+        modifiers?.contains { $0.name.text == "override" } ?? false
     }
 
     var hasEmptyBody: Bool {

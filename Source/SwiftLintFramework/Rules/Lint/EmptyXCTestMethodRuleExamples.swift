@@ -11,6 +11,10 @@ internal struct EmptyXCTestMethodRuleExamples {
                 foobar = Foobar()
             }
 
+            override func setUpWithError() throws {
+                foobar = nil
+            }
+
             override func tearDown() {
                 foobar = nil
                 super.tearDown()
@@ -26,6 +30,10 @@ internal struct EmptyXCTestMethodRuleExamples {
                 XCTAssertFalse(foobar?.bar)
 
                 // comment...
+            }
+
+            func testBaz() {
+                _ = 4 + 4
             }
         }
         """),
@@ -64,7 +72,33 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func testBar() { XCTAssertFalse(foobar?.bar) }
         }
-        """)
+        """),
+
+        // Class/static variables
+
+        Example("""
+        class TotoTests: XCTestCase {
+            override class var runsForEachTargetApplicationUIConfiguration: Bool { true }
+
+            static var allTests = [("testFoo", testFoo)]
+
+            func testFoo() { XCTAssert(true) }
+        }
+        """),
+
+        Example("""
+        extension C {
+            override func foo(a: Int) {}
+        }
+
+        struct S {
+            override func foo(a: Int) {}
+        }
+
+        enum E {
+            override func foo(a: Int) {}
+        }
+        """, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples = [

@@ -82,7 +82,6 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
-    # Touch
     - script: |
         curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazelisk
         chmod +x bazelisk

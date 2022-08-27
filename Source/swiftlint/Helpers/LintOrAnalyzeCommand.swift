@@ -182,7 +182,7 @@ struct LintOrAnalyzeCommand {
                 }
 
                 let corrections = linter.correct(using: storage)
-                if !corrections.isEmpty && !options.quiet {
+                if !corrections.isEmpty && !options.quiet && !options.useSTDIN {
                     let correctionLogs = corrections.map({ $0.consoleDescription })
                     queuedPrint(correctionLogs.joined(separator: "\n"))
                 }

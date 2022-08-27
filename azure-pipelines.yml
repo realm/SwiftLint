@@ -83,9 +83,9 @@ jobs:
     DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
   steps:
     - script: |
-        curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazel
-        chmod +x bazel
-        mv bazel /usr/bin
+        curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazelisk
+        chmod +x bazelisk
+        mv bazelisk /usr/bin/bazel
       displayName: Install Bazel
     - script: bazel build -c opt --features=tsan swiftlint
       displayName: Build SwiftLint

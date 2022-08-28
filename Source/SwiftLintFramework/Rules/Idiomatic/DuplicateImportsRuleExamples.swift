@@ -36,7 +36,7 @@ internal struct DuplicateImportsRuleExamples {
         """)
     ]
 
-    static let triggeringExamples = Array(corrections.keys)
+    static let triggeringExamples = Array(corrections.keys.sorted())
 
     static let corrections: [Example: Example] = {
         var corrections = [

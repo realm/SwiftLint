@@ -241,7 +241,9 @@ extension SwiftLintFile {
             return
         }
         guard let path = path else {
-            queuedFatalError("file needs a path to call write(_:)")
+            // A file without a path stems from STDIN input. The content is printed to STDOUT.
+            queuedPrint(string)
+            return
         }
         guard let stringData = String(string).data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")

@@ -23,6 +23,10 @@ accordingly._
   [#3647](https://github.com/realm/SwiftLint/issues/3647)
   [#3691](https://github.com/realm/SwiftLint/issues/3691)
 
+* Print autocorrected STDIN input to STDOUT fixing a fatal error.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4127](https://github.com/realm/SwiftLint/issues/4127)
+
 ## 0.49.0: Asynchronous Defuzzer
 
 _Note: The default branch for the SwiftLint git repository will be renamed from

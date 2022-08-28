@@ -170,10 +170,19 @@ To bring up a new Buildkite worker from MacStadium:
 1. Change account password
 1. Update macOS to the latest version
 1. Install Homebrew: https://brew.sh
-1. Install Buildkite agent and other tools via Homebrew: `brew install buildkite/buildkite/buildkite-agent aria2 htop`
-1. Install the xcodes CLI by downloading the zip and moving it to `/usr/local/bin`: https://github.com/RobotsAndPencils/xcodes/releases
+1. Install Buildkite agent and other tools via Homebrew:
+   `brew install buildkite/buildkite/buildkite-agent aria2 htop rbenv`
+1. Install the xcodes CLI by downloading the zip and moving it to `/usr/local/bin`:
+   https://github.com/RobotsAndPencils/xcodes/releases
 1. Install latest Xcode version: `xcodes install --latest`
-1. Install bundler: `sudo gem install bundler`
-1. Add `DANGER_GITHUB_API_TOKEN` and `BAZEL_REMOTE_CREDENTIALS` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
-1. Configure and launch buildkite agent: `brew info buildkite-agent` / https://buildkite.com/organizations/swiftlint/agents#setup-macos
-1. `docker run -d -u 1000:1000 -v /tmp/swiftlint-bazel-remote-cache:/data -v ~/Desktop/bazel-remote.htpasswd:/etc/bazel-remote/htpasswd -p 9090:8080 -p 9092:9092 buchgr/bazel-remote-cache --htpasswd_file=/etc/bazel-remote/htpasswd --max_size=5`
+1. Install ruby: `rbenv install 2.7.3 && rbenv global 2.7.3 && rbenv rehash`
+1. Install bundler: `gem install bundler && rbenv rehash`
+1. Add `DANGER_GITHUB_API_TOKEN` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
+1. Add `eval "$(rbenv init -)"` to `/opt/homebrew/etc/buildkite-agent/hooks/pre-command`
+1. Add `echo "build --remote_cache=grpc://<creds>@swiftlint-ci.jpsim.com:9092" > ci.bazelrc`
+   to `/opt/homebrew/etc/buildkite-agent/hooks/pre-command`, replacing `<creds>` with the
+   bazel-remote credentials
+1. Configure and launch buildkite agent: `brew info buildkite-agent` /
+   https://buildkite.com/organizations/swiftlint/agents#setup-macos
+1. On the `swiftlint-ci.jpsim.com` machine only:
+   `docker run -d -u 1000:1000 -v /tmp/swiftlint-bazel-remote-cache:/data -v ~/Desktop/bazel-remote.htpasswd:/etc/bazel-remote/htpasswd -p 9090:8080 -p 9092:9092 buchgr/bazel-remote-cache --htpasswd_file=/etc/bazel-remote/htpasswd --max_size=5`

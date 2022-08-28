@@ -103,12 +103,18 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
   steps:
-    - script: swift run swiftlint generate-docs
-      displayName: Run swiftlint generate-docs
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec jazzy
-      displayName: Run jazzy
+    - script: |
+        curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazelisk
+        chmod +x bazelisk
+      displayName: Install Bazel
+    - script: echo "build --remote_cache=grpc://$BAZEL_REMOTE_CREDENTIALS@swiftlint-ci.jpsim.com:9092" > ci.bazelrc
+      env:
+        BAZEL_REMOTE_CREDENTIALS: $(BAZEL_REMOTE_CREDENTIALS)
+      displayName: Set CI Bazel flags
+    - script: ./bazelisk build --spawn_strategy=local -c opt html_docs
+      displayName: Generate Docs
+    - script: mv bazel-bin/docs .
+      displayName: Move Docs
     - script: >
         if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
           echo "Undocumented declarations:"

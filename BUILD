@@ -141,3 +141,36 @@ ruby_binary(
     main = "@bundle//:bin/danger",
     deps = ["@bundle//:bin"],
 )
+
+# Jazzy
+
+ruby_binary(
+    name = "jazzy",
+    main = "@bundle//:bin/jazzy",
+    deps = ["@bundle//:bin"],
+)
+
+genrule(
+    name = "html_docs",
+    srcs = [
+        ":SourceAndTestFiles",
+        "Package.swift",
+        "Package.resolved",
+    ],
+    outs = ["docs"],
+    cmd = """
+set -euo pipefail
+
+# Change to workspace directory
+cd $$(dirname "$$(readlink "Package.swift")")
+$(location swiftlint) generate-docs
+$(location @com_github_jpsim_sourcekitten//:sourcekitten) \
+  doc --spm --module-name SwiftLintFramework > SwiftLintFramework.json
+$(location jazzy) --sourcekitten-sourcefile SwiftLintFramework.json --output $(OUTS)
+    """,
+    exec_tools = [
+        "@com_github_jpsim_sourcekitten//:sourcekitten",
+        "jazzy",
+        "swiftlint",
+    ],
+)

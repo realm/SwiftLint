@@ -7,10 +7,10 @@ steps:
       - bazel test --test_output=errors //Tests/...
   - label: "Danger"
     commands:
-      - echo "--- Bundle Install"
-      - bundle install
+      - echo "--- Build Danger"
+      - bazel build danger
       - echo "+++ Run Danger"
-      - bundle exec danger --verbose
+      - bazel run danger --run_under="cd $PWD && " -- --verbose
   - label: "Analyze"
     commands:
       - echo "+++ Analyze"

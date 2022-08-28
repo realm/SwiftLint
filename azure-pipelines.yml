@@ -86,7 +86,9 @@ jobs:
         curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazelisk
         chmod +x bazelisk
       displayName: Install Bazel
-    - script: ./bazelisk build --remote_cache=grpc://$(BAZEL_REMOTE_CREDENTIALS)@207.254.50.16:9092 -c opt --features=tsan swiftlint
+    - script: ./bazelisk build --remote_cache=grpc://$BAZEL_REMOTE_CREDENTIALS@swiftlint-ci.jpsim.com:9092 -c opt --features=tsan swiftlint
+      env:
+        BAZEL_REMOTE_CREDENTIALS: $(BAZEL_REMOTE_CREDENTIALS)
       displayName: Build SwiftLint
     - script: ./bazel-bin/swiftlint --lenient
       displayName: Pre-cache SwiftLint Run

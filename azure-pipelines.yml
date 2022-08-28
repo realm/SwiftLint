@@ -13,9 +13,9 @@ jobs:
     - script: "! git diff -U0 | grep '^[-+][^-+]' | grep --invert-match '// Generated using Sourcery'"
       displayName: Check changed files ignoring Sourcery's version
 
-- job: linux
+- job: Linux
   pool:
-    vmImage: 'Ubuntu 18.04'
+    vmImage: 'ubuntu-latest'
   strategy:
     maxParallel: 10
     matrix:

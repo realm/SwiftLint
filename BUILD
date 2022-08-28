@@ -110,26 +110,24 @@ xcodeproj(
     ],
 )
 
+# Analyze
+
 filegroup(
     name = "SourceAndTestFiles",
-    srcs = glob(["Source/**", "Tests/SwiftLintFrameworkTests/**"]),
-)
-
-genrule(
-    name = "write_swiftpm_yaml",
-    srcs = [":SourceAndTestFiles", "Package.swift", "Package.resolved"],
-    outs = ["swiftpm.yaml"],
-    cmd = """
-set -euo pipefail
-
-swift package clean
-swift build
-cp .build/debug.yaml $(OUTS)
-    """,
+    srcs = glob([
+        "Source/**",
+        "Tests/SwiftLintFrameworkTests/**",
+    ]),
 )
 
 sh_test(
     name = "analyze",
     srcs = ["script/test-analyze.sh"],
-    data = [":swiftlint", ":LintInputs", "swiftpm.yaml"],
+    data = [
+        "Package.resolved",
+        "Package.swift",
+        ":LintInputs",
+        ":SourceAndTestFiles",
+        ":swiftlint",
+    ],
 )

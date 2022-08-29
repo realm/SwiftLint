@@ -27,7 +27,7 @@ LICENSE_PATH="$(shell pwd)/LICENSE"
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-VERSION_STRING=$(shell ./script/get-version)
+VERSION_STRING=$(shell ./tools/get-version)
 
 .PHONY: all clean build install package test uninstall docs
 
@@ -109,7 +109,7 @@ portable_zip: installables
 
 spm_artifactbundle_macos: installables
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
-	sed 's/__VERSION__/$(VERSION_STRING)/g' script/info-macos.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
+	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info-macos.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
 	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary-macos.artifactbundle.zip"
@@ -177,7 +177,7 @@ endif
 	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Master/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
-	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin HEAD

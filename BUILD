@@ -122,7 +122,7 @@ filegroup(
 
 sh_test(
     name = "analyze",
-    srcs = ["script/test-analyze.sh"],
+    srcs = ["//tools:test-analyze.sh"],
     data = [
         "Package.resolved",
         "Package.swift",
@@ -130,14 +130,4 @@ sh_test(
         ":SourceAndTestFiles",
         ":swiftlint",
     ],
-)
-
-# Danger
-
-load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_binary")
-
-ruby_binary(
-    name = "danger",
-    main = "@bundle//:bin/danger",
-    deps = ["@bundle//:bin"],
 )

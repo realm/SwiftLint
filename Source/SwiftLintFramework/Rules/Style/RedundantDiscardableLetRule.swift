@@ -16,7 +16,8 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
             Example("if let _ = foo() { }\n"),
             Example("guard let _ = foo() else { return }\n"),
             Example("let _: ExplicitType = foo()"),
-            Example("while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }\n")
+            Example("while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }\n"),
+            Example("async let _ = await foo()")
         ],
         triggeringExamples: [
             Example("↓let _ = foo()\n"),
@@ -42,7 +43,7 @@ public struct RedundantDiscardableLetRule: SubstitutionCorrectableRule, Configur
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.stringView
-        return file.match(pattern: "let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
+        return file.match(pattern: "(?<!async\\s)let\\s+_\\b", with: [.keyword, .keyword]).filter { range in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
                 return false
             }

@@ -10,7 +10,7 @@ steps:
       - echo "--- Build Danger"
       - bazel build //tools:danger
       - echo "+++ Run Danger"
-      - ./bazel-bin/tools/danger -- --verbose
+      - ./bazel-bin/tools/danger --verbose
   - label: "Analyze"
     commands:
       - echo "+++ Analyze"

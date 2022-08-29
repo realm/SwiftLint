@@ -171,14 +171,11 @@ To bring up a new Buildkite worker from MacStadium:
 1. Update macOS to the latest version
 1. Install Homebrew: https://brew.sh
 1. Install Buildkite agent and other tools via Homebrew:
-   `brew install buildkite/buildkite/buildkite-agent aria2 htop rbenv`
+   `brew install buildkite/buildkite/buildkite-agent aria2 htop`
 1. Install the xcodes CLI by downloading the zip and moving it to `/usr/local/bin`:
    https://github.com/RobotsAndPencils/xcodes/releases
 1. Install latest Xcode version: `xcodes install --latest`
-1. Install ruby: `rbenv install 2.7.3 && rbenv global 2.7.3 && rbenv rehash`
-1. Install bundler: `gem install bundler && rbenv rehash`
 1. Add `DANGER_GITHUB_API_TOKEN` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
-1. Add `eval "$(rbenv init -)"` to `/opt/homebrew/etc/buildkite-agent/hooks/pre-command`
 1. Add `echo "build --remote_cache=grpc://<creds>@swiftlint-ci.jpsim.com:9092" > ci.bazelrc`
    to `/opt/homebrew/etc/buildkite-agent/hooks/pre-command`, replacing `<creds>` with the
    bazel-remote credentials

@@ -7,8 +7,6 @@ steps:
       - bazel test --test_output=errors //Tests/...
   - label: "Danger"
     commands:
-      - echo "--- Clean Bazel"
-      - bazel clean --expunge && bazel shutdown
       - echo "--- Build Danger"
       - bazel build danger
       - echo "+++ Run Danger"

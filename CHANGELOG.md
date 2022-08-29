@@ -27,6 +27,11 @@ accordingly._
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4127](https://github.com/realm/SwiftLint/issues/4127)
 
+* Fix false positives in `redundant_discardable_let` when using
+  `async let`.  
+  [Martin Hosna](https://github.com/mhosna)
+  [#4142](https://github.com/realm/SwiftLint/issues/4142)
+
 ## 0.49.0: Asynchronous Defuzzer
 
 _Note: The default branch for the SwiftLint git repository will be renamed from

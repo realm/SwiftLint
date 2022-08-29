@@ -8,9 +8,9 @@ steps:
   - label: "Danger"
     commands:
       - echo "--- Build Danger"
-      - bazel build danger
+      - bazel build //tools:danger
       - echo "+++ Run Danger"
-      - bazel run danger --run_under="cd $PWD && " -- --verbose
+      - bazel run //tools:danger --run_under="cd $PWD && " -- --verbose
   - label: "Analyze"
     commands:
       - echo "+++ Analyze"

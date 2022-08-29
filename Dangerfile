@@ -51,7 +51,7 @@ end
 
 file = Tempfile.new('violations')
 
-Open3.popen3("script/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
+Open3.popen3("tools/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
   while char = stdout.getc
     print char
   end

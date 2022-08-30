@@ -39,6 +39,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var reporter: String?
     @Flag(help: "Use the in-process version of SourceKit.")
     var inProcessSourcekit = false
+    @Option(help: "The file where violations should be saved. Prints to stdout by default.")
+    var output: String?
 }
 
 // MARK: - Common Argument Help

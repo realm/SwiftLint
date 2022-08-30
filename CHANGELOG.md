@@ -20,6 +20,11 @@ accordingly._
   [JP Simard](https://github.com/jpsim)
   [#2495](https://github.com/realm/SwiftLint/issues/2495)
 
+* Add `--output` option to lint and analyze commands to write to a file instead
+  of to stdout.  
+  [JP Simard](https://github.com/jpsim)
+  [#4048](https://github.com/realm/SwiftLint/issues/4048)
+
 #### Bug Fixes
 
 * Migrate `empty_xctest_method` rule to SwiftSyntax fixing some false positives.  

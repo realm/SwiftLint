@@ -47,6 +47,7 @@ extension SwiftLint {
                 benchmark: common.benchmark,
                 reporter: common.reporter,
                 quiet: quiet,
+                output: common.output,
                 cachePath: cachePath,
                 ignoreCache: noCache,
                 enableAllRules: enableAllRules,

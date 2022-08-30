@@ -971,6 +971,12 @@ class ReturnValueFromVoidFunctionRuleGeneratedTests: XCTestCase {
     }
 }
 
+class SelfBindingRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SelfBindingRule.description)
+    }
+}
+
 class SelfInPropertyInitializationRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)

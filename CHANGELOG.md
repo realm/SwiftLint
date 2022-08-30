@@ -14,7 +14,11 @@ accordingly._
 
 #### Enhancements
 
-* None.
+* Add new `self_binding` opt-in rule to enforce that `self` identifiers are
+  consistently re-bound to a common identifier name. Configure `bind_identifier`
+  to the name you want to use. Defaults to `self`.  
+  [JP Simard](https://github.com/jpsim)
+  [#2495](https://github.com/realm/SwiftLint/issues/2495)
 
 #### Bug Fixes
 

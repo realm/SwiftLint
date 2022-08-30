@@ -25,6 +25,10 @@ accordingly._
   [JP Simard](https://github.com/jpsim)
   [#4048](https://github.com/realm/SwiftLint/issues/4048)
 
+* Add `--progress` flag to lint and analyze commands to show a live-updating
+  progress bar instead of each file being processed.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Migrate `empty_xctest_method` rule to SwiftSyntax fixing some false positives.  

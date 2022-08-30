@@ -141,19 +141,27 @@ extension Configuration {
                          storage: RuleStorage,
                          duplicateFileNames: Set<String>) async -> ([CollectedLinter], Set<String>) {
         let counter = CounterActor()
-        let total = linters.filter({ $0.isCollecting }).count
+        let total = linters.filter(\.isCollecting).count
+        let progress = ProgressBar(count: total)
+        if visitor.showProgressBar && total > 0 {
+            await progress.initialize()
+        }
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
-            if !visitor.quiet, linter.isCollecting, let filePath = linter.file.path {
-                let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
-                let collected = await counter.next()
-                if skipFile {
-                    queuedPrintError("""
-                        Skipping '\(outputFilename)' (\(collected)/\(total)) \
-                        because its compiler arguments could not be found
-                        """)
-                } else {
-                    queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
+            if !visitor.quiet && linter.isCollecting {
+                if visitor.showProgressBar {
+                    await progress.printNext()
+                } else if let filePath = linter.file.path {
+                    let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
+                    let collected = await counter.next()
+                    if skipFile {
+                        queuedPrintError("""
+                            Skipping '\(outputFilename)' (\(collected)/\(total)) \
+                            because its compiler arguments could not be found
+                            """)
+                    } else {
+                        queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
+                    }
                 }
             }
 
@@ -177,15 +185,23 @@ extension Configuration {
                        storage: RuleStorage,
                        duplicateFileNames: Set<String>) async -> [SwiftLintFile] {
         let counter = CounterActor()
+        let progress = ProgressBar(count: linters.count)
+        if visitor.showProgressBar {
+            await progress.initialize()
+        }
         let visit = { (linter: CollectedLinter) -> SwiftLintFile in
-            if !visitor.quiet, let filePath = linter.file.path {
-                let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
-                let visited = await counter.next()
-                queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
+            if !visitor.quiet {
+                if visitor.showProgressBar {
+                    await progress.printNext()
+                } else if let filePath = linter.file.path {
+                    let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
+                    let visited = await counter.next()
+                    queuedPrintError("\(visitor.action) '\(outputFilename)' (\(visited)/\(linters.count))")
+                }
             }
 
-            Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
-                visitor.block(linter)
+            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+                await visitor.block(linter)
             }
             return linter.file
         }
@@ -230,7 +246,7 @@ extension Configuration {
     }
 
     func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil, storage: RuleStorage,
-                            visitorBlock: @escaping (CollectedLinter) -> Void) async throws -> [SwiftLintFile] {
+                            visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
         let visitor = try LintableFilesVisitor.create(options, cache: cache,
                                                       allowZeroLintableFiles: allowZeroLintableFiles,
                                                       block: visitorBlock)

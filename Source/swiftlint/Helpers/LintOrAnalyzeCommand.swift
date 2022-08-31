@@ -77,7 +77,7 @@ struct LintOrAnalyzeCommand {
                 }
             }
             linter.file.invalidateCache()
-            builder.reporter.report(violations: currentViolations, realtimeCondition: true)
+            builder.report(violations: currentViolations, realtimeCondition: true)
         }
     }
 
@@ -89,9 +89,9 @@ struct LintOrAnalyzeCommand {
             builder.violations.append(
                 createThresholdViolation(threshold: configuration.warningThreshold!)
             )
-            builder.reporter.report(violations: [builder.violations.last!], realtimeCondition: true)
+            builder.report(violations: [builder.violations.last!], realtimeCondition: true)
         }
-        builder.reporter.report(violations: builder.violations, realtimeCondition: false)
+        builder.report(violations: builder.violations, realtimeCondition: false)
         let numberOfSeriousViolations = builder.violations.filter({ $0.severity == .error }).count
         if !options.quiet {
             printStatus(violations: builder.violations, files: files, serious: numberOfSeriousViolations,
@@ -183,8 +183,8 @@ struct LintOrAnalyzeCommand {
 
                 let corrections = linter.correct(using: storage)
                 if !corrections.isEmpty && !options.quiet && !options.useSTDIN {
-                    let correctionLogs = corrections.map({ $0.consoleDescription })
-                    queuedPrint(correctionLogs.joined(separator: "\n"))
+                    let correctionLogs = corrections.map(\.consoleDescription)
+                    options.writeToOutput(correctionLogs.joined(separator: "\n"))
                 }
             }
 
@@ -210,6 +210,7 @@ struct LintOrAnalyzeOptions {
     let benchmark: Bool
     let reporter: String?
     let quiet: Bool
+    let output: String?
     let cachePath: String?
     let ignoreCache: Bool
     let enableAllRules: Bool
@@ -243,8 +244,44 @@ private class LintOrAnalyzeResultBuilder {
             Configuration(options: options)
         }
         configuration = config
-        reporter = reporterFrom(optionsReporter: options.reporter, configuration: config)
+        reporter = reporterFrom(identifier: options.reporter ?? config.reporter)
         cache = options.ignoreCache ? nil : LinterCache(configuration: config)
         self.options = options
+
+        if let outFile = options.output {
+            do {
+                try Data().write(to: URL(fileURLWithPath: outFile))
+            } catch {
+                queuedPrintError("Could not write to file at path \(outFile)")
+            }
+        }
+    }
+
+    func report(violations: [StyleViolation], realtimeCondition: Bool) {
+        if reporter.isRealtime == realtimeCondition {
+            let report = reporter.generateReport(violations)
+            if !report.isEmpty {
+                options.writeToOutput(report)
+            }
+        }
+    }
+}
+
+private extension LintOrAnalyzeOptions {
+    func writeToOutput(_ string: String) {
+        guard let outFile = output else {
+            queuedPrint(string)
+            return
+        }
+
+        do {
+            let outFileURL = URL(fileURLWithPath: outFile)
+            let fileUpdater = try FileHandle(forUpdating: outFileURL)
+            fileUpdater.seekToEndOfFile()
+            fileUpdater.write(Data((string + "\n").utf8))
+            fileUpdater.closeFile()
+        } catch {
+            queuedPrintError("Could not write to file at path \(outFile)")
+        }
     }
 }

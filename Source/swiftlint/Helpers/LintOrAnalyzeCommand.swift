@@ -250,7 +250,7 @@ private class LintOrAnalyzeResultBuilder {
 
         if let outFile = options.output {
             do {
-                try "".write(toFile: outFile, atomically: true, encoding: .utf8)
+                try Data().write(to: URL(fileURLWithPath: outFile))
             } catch {
                 queuedPrintError("Could not write to file at path \(outFile)")
             }
@@ -267,33 +267,21 @@ private class LintOrAnalyzeResultBuilder {
     }
 }
 
-private enum WriteError: Error {
-    case couldNotCreateFile
-}
-
 private extension LintOrAnalyzeOptions {
     func writeToOutput(_ string: String) {
-        if let outFile = output {
-            do {
-                let data = Data((string + "\n").utf8)
-                guard FileManager.default.fileExists(atPath: outFile) else {
-                    let didCreateFile = FileManager.default.createFile(atPath: outFile, contents: data)
-                    if !didCreateFile {
-                        throw WriteError.couldNotCreateFile
-                    }
-                    return
-                }
-
-                let outFileURL = URL(fileURLWithPath: outFile)
-                let fileUpdater = try FileHandle(forUpdating: outFileURL)
-                fileUpdater.seekToEndOfFile()
-                fileUpdater.write(data)
-                fileUpdater.closeFile()
-            } catch {
-                queuedPrintError("Could not write to file at path \(outFile)")
-            }
-        } else {
+        guard let outFile = output else {
             queuedPrint(string)
+            return
+        }
+
+        do {
+            let outFileURL = URL(fileURLWithPath: outFile)
+            let fileUpdater = try FileHandle(forUpdating: outFileURL)
+            fileUpdater.seekToEndOfFile()
+            fileUpdater.write(Data((string + "\n").utf8))
+            fileUpdater.closeFile()
+        } catch {
+            queuedPrintError("Could not write to file at path \(outFile)")
         }
     }
 }

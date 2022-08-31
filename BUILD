@@ -22,6 +22,7 @@ swift_library(
     deps = [
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
         "@com_github_keith_swift_syntax//:SwiftSyntax",
+        "@com_github_keith_swift_syntax//:SwiftSyntaxBuilder",
         "@com_github_keith_swift_syntax//:SwiftSyntaxParser",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
     ] + select({

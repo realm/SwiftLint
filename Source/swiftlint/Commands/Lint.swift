@@ -48,6 +48,7 @@ extension SwiftLint {
                 reporter: common.reporter,
                 quiet: quiet,
                 output: common.output,
+                progress: common.progress,
                 cachePath: cachePath,
                 ignoreCache: noCache,
                 enableAllRules: enableAllRules,

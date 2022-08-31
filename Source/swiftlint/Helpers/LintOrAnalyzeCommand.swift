@@ -170,6 +170,7 @@ struct LintOrAnalyzeCommand {
     private static func autocorrect(_ options: LintOrAnalyzeOptions) async throws {
         let storage = RuleStorage()
         let configuration = Configuration(options: options)
+        let correctionsBuilder = CorrectionsBuilder()
         let files = try await configuration
             .visitLintableFiles(options: options, cache: nil, storage: storage) { linter in
                 if options.format {
@@ -183,16 +184,28 @@ struct LintOrAnalyzeCommand {
 
                 let corrections = linter.correct(using: storage)
                 if !corrections.isEmpty && !options.quiet && !options.useSTDIN {
+                    if options.progress {
+                        await correctionsBuilder.append(corrections)
+                    } else {
+                        let correctionLogs = corrections.map(\.consoleDescription)
+                        queuedPrint(correctionLogs.joined(separator: "\n"))
+                    }
+                }
+            }
+
+        if !options.quiet {
+            if options.progress {
+                let corrections = await correctionsBuilder.corrections
+                if !corrections.isEmpty {
                     let correctionLogs = corrections.map(\.consoleDescription)
                     options.writeToOutput(correctionLogs.joined(separator: "\n"))
                 }
             }
 
-        if !options.quiet {
             let pluralSuffix = { (collection: [Any]) -> String in
                 return collection.count != 1 ? "s" : ""
             }
-            queuedPrintError("Done inspecting \(files.count) file\(pluralSuffix(files)) for auto-correction!")
+            queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
         }
     }
 }
@@ -211,6 +224,7 @@ struct LintOrAnalyzeOptions {
     let reporter: String?
     let quiet: Bool
     let output: String?
+    let progress: Bool
     let cachePath: String?
     let ignoreCache: Bool
     let enableAllRules: Bool
@@ -258,7 +272,7 @@ private class LintOrAnalyzeResultBuilder {
     }
 
     func report(violations: [StyleViolation], realtimeCondition: Bool) {
-        if reporter.isRealtime == realtimeCondition {
+        if (reporter.isRealtime && !options.progress) == realtimeCondition {
             let report = reporter.generateReport(violations)
             if !report.isEmpty {
                 options.writeToOutput(report)
@@ -283,5 +297,13 @@ private extension LintOrAnalyzeOptions {
         } catch {
             queuedPrintError("Could not write to file at path \(outFile)")
         }
+    }
+}
+
+private actor CorrectionsBuilder {
+    private(set) var corrections: [Correction] = []
+
+    func append(_ corrections: [Correction]) {
+        self.corrections.append(contentsOf: corrections)
     }
 }

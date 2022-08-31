@@ -73,6 +73,7 @@ struct LintableFilesVisitor {
     let action: String
     let useSTDIN: Bool
     let quiet: Bool
+    let showProgressBar: Bool
     let useScriptInputFiles: Bool
     let forceExclude: Bool
     let useExcludingByPrefix: Bool
@@ -80,16 +81,17 @@ struct LintableFilesVisitor {
     let parallel: Bool
     let allowZeroLintableFiles: Bool
     let mode: LintOrAnalyzeModeWithCompilerArguments
-    let block: (CollectedLinter) -> Void
+    let block: (CollectedLinter) async -> Void
 
     init(paths: [String], action: String, useSTDIN: Bool,
-         quiet: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
+         quiet: Bool, showProgressBar: Bool, useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
          cache: LinterCache?, parallel: Bool,
-         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
+         allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
         self.quiet = quiet
+        self.showProgressBar = showProgressBar
         self.useScriptInputFiles = useScriptInputFiles
         self.forceExclude = forceExclude
         self.useExcludingByPrefix = useExcludingByPrefix
@@ -100,14 +102,15 @@ struct LintableFilesVisitor {
         self.block = block
     }
 
-    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool,
+    private init(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, showProgressBar: Bool,
                  useScriptInputFiles: Bool, forceExclude: Bool, useExcludingByPrefix: Bool,
                  cache: LinterCache?, compilerInvocations: CompilerInvocations?,
-                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) -> Void) {
+                 allowZeroLintableFiles: Bool, block: @escaping (CollectedLinter) async -> Void) {
         self.paths = resolveParamsFiles(args: paths)
         self.action = action
         self.useSTDIN = useSTDIN
         self.quiet = quiet
+        self.showProgressBar = showProgressBar
         self.useScriptInputFiles = useScriptInputFiles
         self.forceExclude = forceExclude
         self.useExcludingByPrefix = useExcludingByPrefix
@@ -129,7 +132,7 @@ struct LintableFilesVisitor {
     static func create(_ options: LintOrAnalyzeOptions,
                        cache: LinterCache?,
                        allowZeroLintableFiles: Bool,
-                       block: @escaping (CollectedLinter) -> Void)
+                       block: @escaping (CollectedLinter) async -> Void)
         throws -> LintableFilesVisitor {
         try Signposts.record(name: "LintableFilesVisitor.Create") {
             let compilerInvocations: CompilerInvocations?
@@ -141,6 +144,7 @@ struct LintableFilesVisitor {
 
             return LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
                                         useSTDIN: options.useSTDIN, quiet: options.quiet,
+                                        showProgressBar: options.progress,
                                         useScriptInputFiles: options.useScriptInputFiles,
                                         forceExclude: options.forceExclude,
                                         useExcludingByPrefix: options.useExcludingByPrefix,

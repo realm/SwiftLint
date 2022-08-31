@@ -41,6 +41,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var inProcessSourcekit = false
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")
     var output: String?
+    @Flag(help: "Show a live-updating progress bar instead of each file being processed.")
+    var progress = false
 }
 
 // MARK: - Common Argument Help

@@ -41,6 +41,10 @@ accordingly._
   [Martin Hosna](https://github.com/mhosna)
   [#4142](https://github.com/realm/SwiftLint/issues/4142)
 
+* Consistently print error/info messages to stderr instead of stdout,
+  which wasn't being done for errors regarding remote configurations.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.49.0: Asynchronous Defuzzer
 
 _Note: The default branch for the SwiftLint git repository will be renamed from

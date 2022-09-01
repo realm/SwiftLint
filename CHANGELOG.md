@@ -29,16 +29,17 @@ accordingly._
   progress bar instead of each file being processed.  
   [JP Simard](https://github.com/jpsim)
 
+* `--fix` now works with `--use-stdin`, printing the output to to STDOUT instead
+  of crashing.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4127](https://github.com/realm/SwiftLint/issues/4127)
+
 #### Bug Fixes
 
 * Migrate `empty_xctest_method` rule to SwiftSyntax fixing some false positives.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3647](https://github.com/realm/SwiftLint/issues/3647)
   [#3691](https://github.com/realm/SwiftLint/issues/3691)
-
-* Print autocorrected STDIN input to STDOUT fixing a fatal error.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#4127](https://github.com/realm/SwiftLint/issues/4127)
 
 * Fix false positives in `redundant_discardable_let` when using
   `async let`.  

@@ -1,4 +1,4 @@
-## Main
+## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from
 `master` to `main` on September 1st. Please update any code or automation

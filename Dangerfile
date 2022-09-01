@@ -20,7 +20,7 @@ has_bazel_changes = !modified_files.grep(/WORKSPACE|bazel\/|BUILD/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !modified_files.include?('CHANGELOG.md') && has_app_changes
-  warn("If this is a user-facing change, please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
+  warn("If this is a user-facing change, please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/main/CHANGELOG.md).")
     markdown <<-MARKDOWN
 Here's an example of your CHANGELOG entry:
 ```markdown

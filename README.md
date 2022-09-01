@@ -7,8 +7,8 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
-[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=master)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=master)
-[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
+[![Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
+[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main)](https://codecov.io/github/realm/SwiftLint?branch=main)
 
 ![](assets/screenshot.png)
 
@@ -16,7 +16,7 @@ This project adheres to the [Contributor Covenant Code of Conduct](https://realm
 By participating, you are expected to uphold this code. Please report
 unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
-> Language Switch: [中文](https://github.com/realm/SwiftLint/blob/master/README_CN.md), [한국어](https://github.com/realm/SwiftLint/blob/master/README_KR.md).
+> Language Switch: [中文](https://github.com/realm/SwiftLint/blob/main/README_CN.md), [한국어](https://github.com/realm/SwiftLint/blob/main/README_KR.md).
 
 ## Installation
 
@@ -349,7 +349,7 @@ continues to contribute more over time.
 You can find an updated list of rules and more information about them
 [here](https://realm.github.io/SwiftLint/rule-directory.html).
 
-You can also check [Source/SwiftLintFramework/Rules](https://github.com/realm/SwiftLint/tree/master/Source/SwiftLintFramework/Rules)
+You can also check [Source/SwiftLintFramework/Rules](https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Rules)
 directory to see their implementation.
 
 ### Opt-In Rules

@@ -102,8 +102,8 @@ swift_rules_extra_dependencies()
 
 http_archive(
     name = "SwiftLint",
-    sha256 = "d34bf123e6380a7527ee78c5f6ec7ede5e00e8c39a9c3b394f590374f566c57d",
-    url = "https://github.com/realm/SwiftLint/releases/download/0.49.0-rc.2/bazel.tar.gz",
+    sha256 = "7c454ff4abeeecdd9513f6293238a6d9f803b587eb93de147f9aa1be0d8337c4",
+    url = "https://github.com/realm/SwiftLint/releases/download/0.49.1/bazel.tar.gz",
 )
 
 load("@SwiftLint//bazel:repos.bzl", "swiftlint_repos")

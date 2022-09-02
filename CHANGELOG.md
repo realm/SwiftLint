@@ -47,6 +47,14 @@
 * Add methods from SE-0348 to `UnusedDeclarationRule`.  
   [JP Simard](https://github.com/jpims)
 
+* Show warnings in the console for
+  * opt-in rules that are listed in the `disabled_rules` configuration section,
+  * active-by-default rules that are listed in the `opt_in_rules` configuration section and
+  * Analyzer rules that are listed in the `opt_in_rules` configuration section
+
+  as the user's intention might not be reflected correctly in the configuration.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * None.

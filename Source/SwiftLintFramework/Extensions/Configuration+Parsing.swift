@@ -57,6 +57,9 @@ extension Configuration {
             configurationDictionary: dict, disabledRules: disabledRules,
             optInRules: optInRules, onlyRules: onlyRules, ruleList: ruleList
         )
+        Self.warnAboutMisplacedAnalyzerRules(optInRules: optInRules, ruleList: ruleList)
+        Self.warnAboutMisplaced(optInRules: optInRules, ruleList: ruleList)
+        Self.warnAboutMisplaced(disabledRules: disabledRules, ruleList: ruleList)
 
         let allRulesWrapped: [ConfigurationRuleWrapper]
         do {
@@ -201,5 +204,35 @@ extension Configuration {
                 }
             }
         }
+    }
+
+    private static func warnAboutMisplacedAnalyzerRules(optInRules: [String], ruleList: RuleList) {
+        let analyzerRules = ruleList.list
+            .filter { $0.value.self is AnalyzerRule.Type }
+            .map(\.key)
+        Set(analyzerRules).intersection(optInRules)
+            .sorted()
+            .map { "warning: '\($0)' must be listed in the 'analyzer_rules' configuration section" }
+            .forEach(queuedPrintError)
+    }
+
+    private static func warnAboutMisplaced(optInRules rules: [String], ruleList: RuleList) {
+        let defaultRules = ruleList.list
+            .filter { !($0.value.self is OptInRule.Type) }
+            .map(\.key)
+        Set(defaultRules).intersection(rules)
+            .sorted()
+            .map { "warning: '\($0) is active anyway, no need to list it as an opt-in rule" }
+            .forEach(queuedPrintError)
+    }
+
+    private static func warnAboutMisplaced(disabledRules rules: [String], ruleList: RuleList) {
+        let disabledRules = ruleList.list
+            .filter { $0.value.self is OptInRule.Type }
+            .map(\.key)
+        Set(disabledRules).intersection(rules)
+            .sorted()
+            .map { "warning: '\($0)' is opt-in anyway, no need to disable it" }
+            .forEach(queuedPrintError)
     }
 }

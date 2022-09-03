@@ -273,12 +273,6 @@ macOS < 12.
   [KokiHirokawa](https://github.com/KokiHirokawa)
   [#3986](https://github.com/realm/SwiftLint/issues/3986)
 
-* Add `accessibility_trait_for_button` rule to warn if a SwiftUI
-  View has a tap gesture added to it without having the button or
-  link accessibility trait.  
-  [Ryan Cole](https://github.com/rcole34)  
-  [#2728](https://github.com/realm/SwiftLint/issues/2728) 
-
 #### Bug Fixes
 
 * Ignore array types in `syntactic_sugar` rule if their associated `Index` is

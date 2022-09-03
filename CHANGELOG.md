@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* Exclude `weak_delegate` rule from autocorrection due to behavioral changes
+  leading to potential undefined behavior or bugs.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3577](https://github.com/realm/SwiftLint/issues/3577)
 
 #### Experimental
 

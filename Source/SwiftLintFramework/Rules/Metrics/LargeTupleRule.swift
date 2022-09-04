@@ -1,4 +1,3 @@
-import Foundation
 import SwiftSyntax
 
 public struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {

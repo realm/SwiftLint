@@ -5,6 +5,7 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
     ]
     private(set) var excludesExtensions = true
     private(set) var excludesInheritedTypes = true
+    private(set) var excludesTrivialInit = false
 
     public var consoleDescription: String {
         let parametersDescription = parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
@@ -14,14 +15,16 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         if parametersDescription.isEmpty {
             return [
                 "excludes_extensions: \(excludesExtensions)",
-                "excludes_inherited_types: \(excludesInheritedTypes)"
+                "excludes_inherited_types: \(excludesInheritedTypes)",
+                "excludes_trivial_init: \(excludesTrivialInit)"
             ]
             .joined(separator: ", ")
         } else {
             return [
                 parametersDescription,
                 "excludes_extensions: \(excludesExtensions)",
-                "excludes_inherited_types: \(excludesInheritedTypes)"
+                "excludes_inherited_types: \(excludesInheritedTypes)",
+                "excludes_trivial_init: \(excludesTrivialInit)"
             ]
             .joined(separator: ", ")
         }
@@ -40,6 +43,16 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             excludesInheritedTypes = shouldExcludeInheritedTypes
         }
 
+        if let excludesTrivialInit = dict["excludes_trivial_init"] as? Bool {
+            self.excludesTrivialInit = excludesTrivialInit
+        }
+
+        if let parameters = try parameters(from: dict) {
+            self.parameters = parameters
+        }
+    }
+
+    private func parameters(from dict: [String: Any]) throws -> [RuleParameter<AccessControlLevel>]? {
         var parameters: [RuleParameter<AccessControlLevel>] = []
 
         for (key, value) in dict {
@@ -68,8 +81,6 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        if parameters.isNotEmpty {
-            self.parameters = parameters
-        }
+        return parameters.isNotEmpty ? parameters : nil
     }
 }

@@ -6,7 +6,8 @@ class MissingDocsRuleTests: XCTestCase {
         let configuration = MissingDocsRuleConfiguration()
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, excludes_inherited_types: true"
+            "warning: open, public, excludes_extensions: true, " +
+            "excludes_inherited_types: true, excludes_trivial_init: false"
         )
     }
 
@@ -14,7 +15,8 @@ class MissingDocsRuleTests: XCTestCase {
         let configuration = MissingDocsRuleConfiguration(excludesExtensions: false, excludesInheritedTypes: false)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: false, excludes_inherited_types: false"
+            "warning: open, public, excludes_extensions: false, " +
+            "excludes_inherited_types: false, excludes_trivial_init: false"
         )
     }
 
@@ -22,7 +24,8 @@ class MissingDocsRuleTests: XCTestCase {
         let configuration = MissingDocsRuleConfiguration(excludesExtensions: false, excludesInheritedTypes: true)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: false, excludes_inherited_types: true"
+            "warning: open, public, excludes_extensions: false, " +
+            "excludes_inherited_types: true, excludes_trivial_init: false"
         )
     }
 
@@ -30,7 +33,8 @@ class MissingDocsRuleTests: XCTestCase {
         let configuration = MissingDocsRuleConfiguration(excludesExtensions: true, excludesInheritedTypes: false)
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, excludes_inherited_types: false"
+            "warning: open, public, excludes_extensions: true, " +
+            "excludes_inherited_types: false, excludes_trivial_init: false"
         )
     }
 
@@ -39,7 +43,8 @@ class MissingDocsRuleTests: XCTestCase {
             parameters: [RuleParameter<AccessControlLevel>(severity: .error, value: .open)])
         XCTAssertEqual(
             configuration.consoleDescription,
-            "error: open, excludes_extensions: true, excludes_inherited_types: true"
+            "error: open, excludes_extensions: true, " +
+            "excludes_inherited_types: true, excludes_trivial_init: false"
         )
     }
 
@@ -49,7 +54,8 @@ class MissingDocsRuleTests: XCTestCase {
                          RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
         XCTAssertEqual(
             configuration.consoleDescription,
-            "error: open, warning: public, excludes_extensions: true, excludes_inherited_types: true"
+            "error: open, warning: public, excludes_extensions: true, " +
+            "excludes_inherited_types: true, excludes_trivial_init: false"
         )
     }
 
@@ -59,7 +65,17 @@ class MissingDocsRuleTests: XCTestCase {
                          RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
         XCTAssertEqual(
             configuration.consoleDescription,
-            "warning: open, public, excludes_extensions: true, excludes_inherited_types: true"
+            "warning: open, public, excludes_extensions: true, " +
+            "excludes_inherited_types: true, excludes_trivial_init: false"
+        )
+    }
+
+    func testDescriptionExcludesTrivialInitTrue() {
+        let configuration = MissingDocsRuleConfiguration(excludesTrivialInit: true)
+        XCTAssertEqual(
+            configuration.consoleDescription,
+            "warning: open, public, excludes_extensions: true, " +
+            "excludes_inherited_types: true, excludes_trivial_init: true"
         )
     }
 

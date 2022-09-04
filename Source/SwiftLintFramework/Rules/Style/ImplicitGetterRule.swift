@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
+public struct ImplicitGetterRule: ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -14,13 +14,37 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        ImplicitGetterRuleVisitor()
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        let visitor = ImplicitGetterRuleVisitor()
+
+        return visitor
+            .walk(file: file, handler: \.violationPositions)
+            .sorted { $0.position < $1.position }
+            .map { violation in
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: configuration.severity,
+                    location: Location(file: file, position: violation.position),
+                    reason: violation.kind.violationDescription
+                )
+            }
     }
 }
 
-private final class ImplicitGetterRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
+private final class ImplicitGetterRuleVisitor: SyntaxVisitor {
+    enum ViolationKind {
+        case `subscript`, property
+
+        var violationDescription: String {
+            switch self {
+            case .subscript:
+                return "Computed read-only subscripts should avoid using the get keyword."
+            case .property:
+                return "Computed read-only properties should avoid using the get keyword."
+            }
+        }
+    }
+    private(set) var violationPositions: [(position: AbsolutePosition, kind: ViolationKind)] = []
 
     override func visitPost(_ node: AccessorBlockSyntax) {
         guard let getAccessor = node.getAccessor,
@@ -33,7 +57,8 @@ private final class ImplicitGetterRuleVisitor: SyntaxVisitor, ViolationsSyntaxVi
             return
         }
 
-        violationPositions.append(getAccessor.positionAfterSkippingLeadingTrivia)
+        let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
+        violationPositions.append((getAccessor.positionAfterSkippingLeadingTrivia, kind))
     }
 }
 

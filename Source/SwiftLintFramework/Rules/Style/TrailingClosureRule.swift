@@ -1,7 +1,7 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
+public struct TrailingClosureRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = TrailingClosureConfiguration()
 
     public init() {}
@@ -30,117 +30,46 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
-        return violationOffsets(for: dict, file: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, byteOffset: $0))
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        TrailingClosureRuleVisitor(onlySingleMutedParameter: configuration.onlySingleMutedParameter)
     }
 
-    private func violationOffsets(for dictionary: SourceKittenDictionary, file: SwiftLintFile) -> [ByteCount] {
-        var results = [ByteCount]()
+    public func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
+        StyleViolation(ruleDescription: Self.description,
+                       severity: configuration.severityConfiguration.severity,
+                       location: Location(file: file, position: position))
+    }
+}
 
-        if dictionary.expressionKind == .call,
-            shouldBeTrailingClosure(dictionary: dictionary, file: file),
-            let offset = dictionary.offset {
-            results = [offset]
-        }
+private final class TrailingClosureRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+    private(set) var violationPositions: [AbsolutePosition] = []
+    private let onlySingleMutedParameter: Bool
 
-        if let kind = dictionary.statementKind, kind != .brace {
-            // trailing closures are not allowed in `if`, `guard`, etc
-            results += dictionary.substructure.flatMap { subDict -> [ByteCount] in
-                guard subDict.statementKind == .brace else {
-                    return []
-                }
-
-                return violationOffsets(for: subDict, file: file)
-            }
-        } else {
-            results += dictionary.substructure.flatMap { subDict in
-                violationOffsets(for: subDict, file: file)
-            }
-        }
-
-        return results
+    init(onlySingleMutedParameter: Bool) {
+        self.onlySingleMutedParameter = onlySingleMutedParameter
     }
 
-    private func shouldBeTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        func shouldTrigger() -> Bool {
-            return !isAlreadyTrailingClosure(dictionary: dictionary, file: file) &&
-                !isAnonymousClosureCall(dictionary: dictionary, file: file)
+    override func visitPost(_ node: FunctionCallExprSyntax) {
+        guard node.trailingClosure == nil,
+              node.leftParen != nil,
+              node.argumentList.containsSingleClosureArgument,
+              node.parent?.parent?.as(OptionalBindingConditionSyntax.self) == nil else {
+            return
         }
 
-        let arguments = dictionary.enclosedArguments
-
-        // check if last parameter should be trailing closure
-        if !configuration.onlySingleMutedParameter, arguments.isNotEmpty,
-            case let closureArguments = filterClosureArguments(arguments, file: file),
-            closureArguments.count == 1,
-            closureArguments.last?.offset == arguments.last?.offset {
-            return shouldTrigger()
+        if onlySingleMutedParameter,
+           (node.argumentList.count > 1 || node.argumentList.first?.label != nil) {
+            return
         }
 
-        let argumentsCountIsExpected: Bool = {
-            if SwiftVersion.current >= .fiveDotSix, arguments.count == 1,
-               arguments[0].expressionKind == .argument {
-                return true
-            }
-
-            return arguments.isEmpty
-        }()
-        // check if there's only one unnamed parameter that is a closure
-        if argumentsCountIsExpected,
-            let offset = dictionary.offset,
-            let totalLength = dictionary.length,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            case let start = nameOffset + nameLength,
-            case let length = totalLength + offset - start,
-            case let byteRange = ByteRange(location: start, length: length),
-            let range = file.stringView.byteRangeToNSRange(byteRange),
-            let match = regex("\\s*\\(\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
-            match.location == range.location {
-            return shouldTrigger()
-        }
-
-        return false
+        violationPositions.append(node.positionAfterSkippingLeadingTrivia)
     }
+}
 
-    private func filterClosureArguments(_ arguments: [SourceKittenDictionary],
-                                        file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return arguments.filter { argument in
-            guard let bodyByteRange = argument.bodyByteRange,
-                let range = file.stringView.byteRangeToNSRange(bodyByteRange),
-                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
-                match.location == range.location
-            else {
-                return false
-            }
-
-            return true
-        }
-    }
-
-    private func isAlreadyTrailingClosure(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let byteRange = dictionary.byteRange,
-            let text = file.stringView.substringWithByteRange(byteRange)
-        else {
-            return false
-        }
-
-        return !text.hasSuffix(")")
-    }
-
-    private func isAnonymousClosureCall(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let byteRange = dictionary.byteRange,
-            let range = file.stringView.byteRangeToNSRange(byteRange)
-        else {
-            return false
-        }
-
-        let pattern = regex("\\)\\s*\\)\\z")
-        return pattern.numberOfMatches(in: file.contents, range: range) > 0
+private extension TupleExprElementListSyntax {
+    var containsSingleClosureArgument: Bool {
+        return filter { element in
+            element.expression.is(ClosureExprSyntax.self)
+        }.count == 1
     }
 }

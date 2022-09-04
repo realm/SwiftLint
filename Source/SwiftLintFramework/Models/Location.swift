@@ -60,9 +60,9 @@ public struct Location: CustomStringConvertible, Comparable, Codable {
     /// - parameter position: The absolute position returned from SwiftSyntax.
     public init(file: SwiftLintFile, position: AbsolutePosition) {
         self.file = file.path
-        if let sourceLocation = file.locationConverter?.location(for: position) {
-            line = sourceLocation.line
-            character = sourceLocation.column
+        if let lineAndCharacter = file.stringView.lineAndCharacter(forByteOffset: ByteCount(position.utf8Offset)) {
+            line = lineAndCharacter.line
+            character = lineAndCharacter.character
         } else {
             line = nil
             character = nil

@@ -54,6 +54,7 @@ public struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProv
             Example("dict[\"abc\"]↓!.bar(\"B\")"),
             Example("if dict[\"a\"]↓!↓!↓!↓! {}"),
             Example("var foo: [Bool]! = dict[\"abc\"]↓!"),
+            Example("realm.objects(SwiftUTF8Object.self).filter(\"%K == %@\", \"柱нǢкƱаم👍\", utf8TestString).first↓!"),
             Example("""
             context("abc") {
               var foo: [Bool]! = dict["abc"]↓!

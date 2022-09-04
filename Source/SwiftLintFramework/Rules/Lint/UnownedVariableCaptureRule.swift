@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -26,50 +25,25 @@ public struct UnownedVariableCaptureRule: ASTRule, OptInRule, ConfigurationProvi
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .closure, let bodyRange = dictionary.bodyByteRange,
-            case let contents = file.stringView,
-            let closureRange = contents.byteRangeToNSRange(bodyRange),
-            let inTokenRange = file.match(pattern: "\\bin\\b", with: [.keyword], range: closureRange).first,
-            let inTokenByteRange = contents.NSRangeToByteRange(start: inTokenRange.location,
-                                                               length: inTokenRange.length)
-        else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        UnownedVariableCaptureRuleVisitor()
+    }
+}
 
-        let length = inTokenByteRange.location - bodyRange.location
-        let variables = localVariableDeclarations(inByteRange: ByteRange(location: bodyRange.location, length: length),
-                                                  structureDictionary: file.structureDictionary)
-        let unownedVariableOffsets = variables.compactMap { dictionary in
-            return dictionary.swiftAttributes.first { attributeDict in
-                guard attributeDict.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .weak,
-                    let attributeByteRange = attributeDict.byteRange
-                else {
-                    return false
-                }
+private final class UnownedVariableCaptureRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+    private(set) var violationPositions: [AbsolutePosition] = []
 
-                return contents.substringWithByteRange(attributeByteRange) == "unowned"
-            }?.offset
-        }.unique
-
-        return unownedVariableOffsets.map { offset in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
+    override func visitPost(_ node: ClosureCaptureItemSyntax) {
+        if let token = node.unownedToken {
+            violationPositions.append(token.positionAfterSkippingLeadingTrivia)
         }
     }
+}
 
-    private func localVariableDeclarations(inByteRange byteRange: ByteRange,
-                                           structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        return structureDictionary.traverseBreadthFirst { dictionary in
-            guard dictionary.declarationKind == .varLocal,
-                let variableByteRange = dictionary.byteRange,
-                byteRange.intersects(variableByteRange)
-            else {
-                return nil
-            }
-            return [dictionary]
+private extension ClosureCaptureItemSyntax {
+    var unownedToken: TokenSyntax? {
+        specifier?.first { token in
+            token.tokenKind == .identifier("unowned")
         }
     }
 }

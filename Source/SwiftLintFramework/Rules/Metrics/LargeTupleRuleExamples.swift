@@ -31,10 +31,10 @@ struct LargeTupleRuleExamples {
     ]
 
     static let triggeringExamples: [Example] = [
-        Example("↓let foo: (Int, Int, Int)\n"),
-        Example("↓let foo: (start: Int, end: Int, value: String)\n"),
-        Example("↓let foo: (Int, (Int, Int, Int))\n"),
-        Example("func foo(↓bar: (Int, Int, Int))\n"),
+        Example("let foo: ↓(Int, Int, Int)\n"),
+        Example("let foo: ↓(start: Int, end: Int, value: String)\n"),
+        Example("let foo: (Int, ↓(Int, Int, Int))\n"),
+        Example("func foo(bar: ↓(Int, Int, Int))\n"),
         Example("func foo() -> ↓(Int, Int, Int)\n"),
         Example("func foo() -> ↓(Int, Int, Int) {}\n"),
         Example("func foo(bar: String) -> ↓(Int, Int, Int)\n"),
@@ -43,7 +43,7 @@ struct LargeTupleRuleExamples {
         Example("func foo() throws -> ↓(Int, Int, Int) {}\n"),
         Example("func foo() throws -> ↓(Int, ↓(String, String, String), Int) {}\n"),
         Example("func getDictionaryAndInt() -> (Dictionary<Int, ↓(String, String, String)>, Int)?\n"),
-        Example("func foo(↓bar: (Int, Int, Int)) async\n"),
+        Example("func foo(bar: ↓(Int, Int, Int)) async\n"),
         Example("func foo() async -> ↓(Int, Int, Int)\n"),
         Example("func foo() async -> ↓(Int, Int, Int) {}\n"),
         Example("func foo(bar: String) async -> ↓(Int, Int, Int)\n"),

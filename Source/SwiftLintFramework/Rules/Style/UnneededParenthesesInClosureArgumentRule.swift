@@ -1,4 +1,3 @@
-import Foundation
 import SwiftSyntax
 
 public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule,
@@ -21,7 +20,12 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
             DispatchQueue.main.async { () -> Void in
                 doSomething()
             }
-            """)
+            """),
+            Example("""
+            registerFilter(name) { any, args throws -> Any? in
+                doSomething(any, args)
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("call(arg: { ↓(bar) in })\n"),
@@ -52,7 +56,12 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                 }
                 return false
             }
-            """)
+            """),
+            Example("""
+            registerFilter(name) { ↓(any, args) throws -> Any? in
+                doSomething(any, args)
+            }
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("call(arg: { ↓(bar) in })\n"): Example("call(arg: { bar in })\n"),

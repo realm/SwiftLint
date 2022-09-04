@@ -61,7 +61,9 @@ public struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProv
             }
             """),
             Example("open var computed: String { return foo.bar↓! }"),
-            Example("return self↓!")
+            Example("return self↓!"),
+            Example("[1, 3, 5, 6].first { $0.isMultiple(of: 2) }↓!"),
+            Example("map[\"a\"]↓!↓!")
         ]
     )
 

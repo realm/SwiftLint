@@ -33,6 +33,15 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Swi
               try foo()
             } catch var error as MyError {
             } catch {}
+            """),
+            Example("""
+            do {
+                try something()
+            } catch let e where e.code == .fileError {
+                // can be ignored
+            } catch {
+                print(error)
+            }
             """)
         ],
         triggeringExamples: [
@@ -94,6 +103,10 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Swi
 
 private extension CatchItemSyntax {
     var isIdentifierPattern: Bool {
+        guard whereClause == nil else {
+            return false
+        }
+
         if let pattern = pattern?.as(ValueBindingPatternSyntax.self) {
             return pattern.valuePattern.is(IdentifierPatternSyntax.self)
         }

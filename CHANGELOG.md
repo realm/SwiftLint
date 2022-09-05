@@ -31,6 +31,9 @@
 * Rewrite `large_tuple` rule using SwiftSyntax, fixing false negatives.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add methods from SE-0348 to `UnusedDeclarationRule`.  
+  [JP Simard](https://github.com/jpims)
+
 #### Bug Fixes
 
 * None.

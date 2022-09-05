@@ -20,6 +20,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2915](https://github.com/realm/SwiftLint/issues/2915)
 
+* Rewrite `large_tuple` rule using SwiftSyntax, fixing false negatives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 #### Bug Fixes
 
 * None.

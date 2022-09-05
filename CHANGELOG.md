@@ -15,7 +15,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4107](https://github.com/realm/SwiftLint/issues/4107)
 
-* Rewrite `implicit_getter` rule with SwiftSyntax.  
+* Rewrite `implicit_getter` and `unowned_variable_capture` rules with
+  SwiftSyntax.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Rewrite `force_unwrapping` rule with SwiftSyntax, fixing false negatives

@@ -53,6 +53,7 @@ struct ImplicitGetterRuleExamples {
         Example("""
             protocol Foo {
                 var foo: Int { get }
+            }
             """),
         Example("""
             protocol Foo {

@@ -15,6 +15,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4107](https://github.com/realm/SwiftLint/issues/4107)
 
+* Rewrite `implicit_getter` rule with SwiftSyntax.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Rewrite `force_unwrapping` rule with SwiftSyntax, fixing false negatives
   when force unwrapping method calls with trailing closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)

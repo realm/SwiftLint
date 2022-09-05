@@ -17,6 +17,9 @@
 
 * Rewrite `implicit_getter` and `unowned_variable_capture` rules with
   SwiftSyntax.  
+
+* Rewrite `unneeded_parentheses_in_closure_argument` rule with SwiftSyntax,
+  fixing some false negatives.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Rewrite `force_unwrapping` rule with SwiftSyntax, fixing false negatives

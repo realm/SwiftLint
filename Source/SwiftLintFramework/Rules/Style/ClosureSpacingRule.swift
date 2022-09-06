@@ -91,7 +91,7 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntax
         }
 
         guard !isInDisabledRegion, node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter) else {
-            return ExprSyntax(node)
+            return super.visit(node)
         }
 
         let violations = node.violations
@@ -111,7 +111,7 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntax
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        return ExprSyntax(node)
+        return super.visit(node)
     }
 }
 

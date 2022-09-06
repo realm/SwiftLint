@@ -104,7 +104,7 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
            identifierPattern.identifier.text != bindIdentifier,
            let initializerIdentifier = node.initializer.value.as(IdentifierExprSyntax.self),
            initializerIdentifier.identifier.text == "self" else {
-            return Syntax(node)
+            return super.visit(node)
         }
 
         let isInDisabledRegion = disabledRegions.contains { region in
@@ -112,12 +112,12 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
         }
 
         guard !isInDisabledRegion else {
-            return Syntax(node)
+            return super.visit(node)
         }
 
         correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
 
-        return Syntax(
+        return super.visit(
             node.withPattern(
                 PatternSyntax(
                     identifierPattern.withIdentifier(

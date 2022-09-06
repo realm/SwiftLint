@@ -15,8 +15,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4107](https://github.com/realm/SwiftLint/issues/4107)
 
-* Rewrite `implicit_getter` and `unowned_variable_capture` rules with
-  SwiftSyntax.  
+* Rewrite `implicit_getter`, `unowned_variable_capture` and 
+  `unneeded_break_in_switch` rules with  SwiftSyntax.  
+  [Marcelo Fabri](https://github.com/marcelofabri)  
 
 * Rewrite `unneeded_parentheses_in_closure_argument` rule with SwiftSyntax,
   fixing some false negatives.  

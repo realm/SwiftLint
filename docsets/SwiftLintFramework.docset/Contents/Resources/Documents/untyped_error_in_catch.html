@@ -362,6 +362,14 @@
 <span class="p">}</span> <span class="k">catch</span> <span class="k">var</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">MyError</span> <span class="p">{</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="p">{}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">something</span><span class="p">()</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">e</span> <span class="k">where</span> <span class="n">e</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="o">.</span><span class="n">fileError</span> <span class="p">{</span>
+    <span class="c1">// can be ignored</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="k">try</span> <span class="nf">foo</span><span class="p">()</span>

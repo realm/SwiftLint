@@ -444,6 +444,14 @@
   <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildFinalResult</span><span class="p">(</span><span class="n">_</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
     <span class="k">return</span> <span class="n">component</span>
   <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildPartialBlock</span><span class="p">(</span><span class="n">first</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">component</span>
+  <span class="p">}</span>
+
+  <span class="kd">static</span> <span class="kd">func</span> <span class="nf">buildPartialBlock</span><span class="p">(</span><span class="n">accumulated</span> <span class="nv">component</span><span class="p">:</span> <span class="kt">Component</span><span class="p">,</span> <span class="nv">next</span><span class="p">:</span> <span class="kt">Component</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Component</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">component</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">acceptComponentBuilder</span><span class="p">(</span><span class="kd">@ComponentBuilder</span> <span class="n">_</span> <span class="nv">body</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Component</span><span class="p">)</span> <span class="p">{</span>

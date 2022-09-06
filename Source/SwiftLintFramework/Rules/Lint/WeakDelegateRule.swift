@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct WeakDelegateRule: OptInRule, ASTRule, SubstitutionCorrectableASTRule, ConfigurationProviderRule {
+public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -30,12 +30,6 @@ public struct WeakDelegateRule: OptInRule, ASTRule, SubstitutionCorrectableASTRu
         triggeringExamples: [
             Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"),
             Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n")
-        ],
-        corrections: [
-            Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"):
-                Example("class Foo {\n  weak var delegate: SomeProtocol?\n}\n"),
-            Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n"):
-                Example("class Foo {\n  weak var scrollDelegate: ScrollDelegate?\n}\n")
         ]
     )
 
@@ -48,8 +42,8 @@ public struct WeakDelegateRule: OptInRule, ASTRule, SubstitutionCorrectableASTRu
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
+    private func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                                 dictionary: SourceKittenDictionary) -> [NSRange] {
         guard kind == .varInstance else {
             return []
         }
@@ -92,10 +86,6 @@ public struct WeakDelegateRule: OptInRule, ASTRule, SubstitutionCorrectableASTRu
         }
 
         return [range]
-    }
-
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "weak var")
     }
 
     private func protocolDeclarations(forByteOffset byteOffset: ByteCount,

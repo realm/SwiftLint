@@ -107,7 +107,7 @@ private struct ExpressibleByCompiler {
     }()
 
     private static let byNilLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByNilLiteral",
-                                                            types: ["ImplicitlyUnwrappedOptional", "Optional"],
+                                                            types: ["Optional"],
                                                             arguments: [["nilLiteral"]])
 
     private static let byBooleanLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByBooleanLiteral",

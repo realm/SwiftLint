@@ -126,6 +126,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
 
     init(allowedNoSpaceOperators: [String]) {
         self.allowedNoSpaceOperators = Set(allowedNoSpaceOperators)
+        super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
@@ -216,8 +217,7 @@ private extension Trivia {
             switch element {
             case .blockComment, .docLineComment, .docBlockComment, .lineComment:
                 return true
-            case .carriageReturnLineFeeds, .carriageReturns, .formfeeds,
-                 .garbageText, .newlines, .spaces, .verticalTabs, .tabs:
+            default:
                 return false
             }
         }

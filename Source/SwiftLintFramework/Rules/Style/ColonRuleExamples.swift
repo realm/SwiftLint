@@ -43,11 +43,7 @@ internal struct ColonRuleExamples {
         Example("func abc(def: Void) { ghi(jkl: mno) }"),
         Example("class ABC { let def = ghi(jkl: mno) } }"),
         Example("func foo() { let dict = [1: 1] }"),
-        Example("""
-        let aaa = Self.bbb ? Self.ccc : Self.ddd else {
-        return nil
-        Example("}
-        """),
+        // Example("let aaa = Self.bbb ? Self.ccc : Self.ddd"),
         Example("range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []"),
         Example("""
         @objc(receiveReply:)

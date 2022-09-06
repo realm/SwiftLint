@@ -24,17 +24,17 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
         "state": {
           "branch": null,
-          "revision": "df9ee6676cd5b3bf5b330ec7568a5644f547201b",
-          "version": "1.1.3"
+          "revision": "9f39744e025c7d377987f30b03770805dcb0bcd1",
+          "version": "1.1.4"
         }
       },
       {
         "package": "SwiftSyntax",
-        "repositoryURL": "https://github.com/apple/swift-syntax.git",
+        "repositoryURL": "https://github.com/jpsim/swift-syntax.git",
         "state": {
           "branch": null,
-          "revision": "0b6c22b97f8e9320bca62e82cdbee601cf37ad3f",
-          "version": "0.50600.1"
+          "revision": "14b8f625e45bad69b0199376e8c2576a0d57c3c9",
+          "version": null
         }
       },
       {

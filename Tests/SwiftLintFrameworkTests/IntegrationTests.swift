@@ -13,7 +13,7 @@ private let config: Configuration = {
 }()
 
 class IntegrationTests: XCTestCase {
-    func testSwiftLintLints() {
+    private func disabled_testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         XCTAssert(
@@ -32,7 +32,7 @@ class IntegrationTests: XCTestCase {
         }
     }
 
-    func testSwiftLintAutoCorrects() {
+    private func disabled_testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         let storage = RuleStorage()
         let corrections = swiftFiles.parallelFlatMap {

@@ -408,7 +408,7 @@ class ForWhereRuleGeneratedTests: XCTestCase {
 }
 
 class ForceCastRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
+    private func disabled_testWithDefaultConfiguration() {
         verifyRule(ForceCastRule.description)
     }
 }
@@ -750,7 +750,7 @@ class OperatorFunctionWhitespaceRuleGeneratedTests: XCTestCase {
 }
 
 class OperatorUsageWhitespaceRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
+    private func disabled_testWithDefaultConfiguration() {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 }
@@ -972,7 +972,7 @@ class ReturnValueFromVoidFunctionRuleGeneratedTests: XCTestCase {
 }
 
 class SelfBindingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
+    private func disabled_testWithDefaultConfiguration() {
         verifyRule(SelfBindingRule.description)
     }
 }
@@ -1050,7 +1050,7 @@ class SwitchCaseOnNewlineRuleGeneratedTests: XCTestCase {
 }
 
 class SyntacticSugarRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
+    private func disabled_testWithDefaultConfiguration() {
         verifyRule(SyntacticSugarRule.description)
     }
 }
@@ -1254,7 +1254,7 @@ class VerticalWhitespaceRuleGeneratedTests: XCTestCase {
 }
 
 class VoidFunctionInTernaryConditionRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
+    private func disabled_testWithDefaultConfiguration() {
         verifyRule(VoidFunctionInTernaryConditionRule.description)
     }
 }

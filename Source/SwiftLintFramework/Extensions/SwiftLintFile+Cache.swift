@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 import SwiftSyntax
-#if canImport(SwiftSyntaxParser)
-import SwiftSyntaxParser
+#if canImport(SwiftParser)
+import SwiftParser
 #endif
 
 private let warnSyntaxParserFailureOnceImpl: Void = {
@@ -38,7 +38,7 @@ private var structureDictionaryCache = Cache({ file in
 
 private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
     do {
-        return try SyntaxParser.parse(source: file.contents)
+        return try Parser.parse(source: file.contents)
     } catch {
         warnSyntaxParserFailureOnce()
         return nil

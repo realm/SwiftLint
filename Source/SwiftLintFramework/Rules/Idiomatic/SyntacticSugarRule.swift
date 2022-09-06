@@ -50,7 +50,6 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, So
 
 private enum SugaredType: String {
     case optional = "Optional"
-    case implicitlyUnwrappedOptional = "ImplicitlyUnwrappedOptional"
     case array = "Array"
     case dictionary = "Dictionary"
 
@@ -67,8 +66,6 @@ private enum SugaredType: String {
         switch self {
         case .optional:
             return "Int?"
-        case .implicitlyUnwrappedOptional:
-            return "Int!"
         case .array:
             return "[Int]"
         case .dictionary:
@@ -78,7 +75,7 @@ private enum SugaredType: String {
 
     var desugaredExample: String {
         switch self {
-        case .optional, .implicitlyUnwrappedOptional, .array:
+        case .optional, .array:
             return "\(rawValue)<Int>"
         case .dictionary:
             return "\(rawValue)<String, Int>"
@@ -105,7 +102,6 @@ private struct SyntacticSugarRuleViolation {
         case optional
         case dictionary(commaStart: AbsolutePosition, commaEnd: AbsolutePosition)
         case array
-        case implicitlyUnwrappedOptional
     }
 
     let position: AbsolutePosition
@@ -237,8 +233,6 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         switch type {
         case .optional:
             correctionType = .optional
-        case .implicitlyUnwrappedOptional:
-            correctionType = .implicitlyUnwrappedOptional
         case .array:
             correctionType = .array
         case .dictionary:
@@ -311,11 +305,6 @@ private struct CorrectingContext {
 
         case .optional:
             replaceCharacters(in: rightRange, with: "?")
-            correctViolations(violation.children)
-            replaceCharacters(in: leftRange, with: "")
-
-        case .implicitlyUnwrappedOptional:
-            replaceCharacters(in: rightRange, with: "!")
             correctViolations(violation.children)
             replaceCharacters(in: leftRange, with: "")
         }

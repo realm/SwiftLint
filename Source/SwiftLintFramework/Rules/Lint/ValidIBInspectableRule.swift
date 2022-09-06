@@ -93,22 +93,12 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             """),
             Example("""
             class Foo {
-              @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<Int>
-            }
-            """),
-            Example("""
-            class Foo {
               @IBInspectable private ↓var count: Optional<Int>
             }
             """),
             Example("""
             class Foo {
               @IBInspectable private ↓var x: Optional<String>
-            }
-            """),
-            Example("""
-            class Foo {
-              @IBInspectable private ↓var x: ImplicitlyUnwrappedOptional<String>
             }
             """)
         ]

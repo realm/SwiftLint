@@ -29,14 +29,13 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
             Example("let int: Int! = 42"),
             Example("let int: Int! = nil"),
             Example("var int: Int! = 42"),
-            Example("let int: ImplicitlyUnwrappedOptional<Int>"),
             Example("let collection: AnyCollection<Int!>"),
             Example("func foo(int: Int!) {}")
         ]
     )
 
     private func hasImplicitlyUnwrappedOptional(_ typeName: String) -> Bool {
-        return typeName.contains("!") || typeName.contains("ImplicitlyUnwrappedOptional<")
+        return typeName.contains("!")
     }
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,

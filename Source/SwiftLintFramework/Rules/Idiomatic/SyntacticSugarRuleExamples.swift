@@ -35,7 +35,6 @@ internal enum SyntacticSugarRuleExamples {
         Example("let x: ↓Array<String>"),
         Example("let x: ↓Dictionary<Int, String>"),
         Example("let x: ↓Optional<Int>"),
-        Example("let x: ↓ImplicitlyUnwrappedOptional<Int>"),
         Example("let x: ↓Swift.Array<String>"),
 
         Example("func x(a: ↓Array<Int>, b: Int) -> [Int: Any]"),
@@ -67,8 +66,6 @@ internal enum SyntacticSugarRuleExamples {
         Example("let x: Dictionary<Int, String>"): Example("let x: [Int: String]"),
         Example("let x: Optional<Int>"): Example("let x: Int?"),
         Example("let x: Optional< Int >"): Example("let x: Int?"),
-        Example("let x: ImplicitlyUnwrappedOptional<Int>"): Example("let x: Int!"),
-        Example("let x: ImplicitlyUnwrappedOptional< Int >"): Example("let x: Int!"),
 
         Example("let x: Dictionary<Int , String>"): Example("let x: [Int: String]"),
         Example("let x: Swift.Optional<String>"): Example("let x: String?"),
@@ -77,7 +74,6 @@ internal enum SyntacticSugarRuleExamples {
         Example("let x:↓Dictionary<↓Dictionary<↓Dictionary<Int, Int>, Int>, String>"):
             Example("let x:[[[Int: Int]: Int]: String]"),
         Example("let x:↓Array<↓Dictionary<Int, Int>>"): Example("let x:[[Int: Int]]"),
-        Example("let x:↓Optional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]?"),
-        Example("let x:↓ImplicitlyUnwrappedOptional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]!")
+        Example("let x:↓Optional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]?")
     ]
 }

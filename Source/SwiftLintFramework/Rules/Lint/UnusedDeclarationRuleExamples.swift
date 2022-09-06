@@ -112,6 +112,14 @@ struct UnusedDeclarationRuleExamples {
           static func buildFinalResult(_ component: Component) -> Component {
             return component
           }
+
+          static func buildPartialBlock(first component: Component) -> Component {
+            return component
+          }
+
+          static func buildPartialBlock(accumulated component: Component, next: Component) -> Component {
+            return component
+          }
         }
 
         func acceptComponentBuilder(@ComponentBuilder _ body: () -> Component) {

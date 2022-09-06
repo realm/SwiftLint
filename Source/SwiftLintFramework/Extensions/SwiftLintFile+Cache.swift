@@ -247,6 +247,7 @@ extension SwiftLintFile {
         syntaxKindsByLinesCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
         commandsCache.invalidate(self)
+        file.clearCaches()
     }
 
     internal static func clearCaches() {

@@ -3,6 +3,7 @@
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
     AccessibilityLabelForImageRule.self,
+    AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
     AnyObjectProtocolRule.self,
     ArrayInitRule.self,

@@ -35,6 +35,11 @@
 * Rewrite `large_tuple` rule using SwiftSyntax, fixing false negatives.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `accessibility_trait_for_button` rule to warn if a SwiftUI
+  View has a tap gesture added to it without having the button or
+  link accessibility trait.  
+  [Ryan Cole](https://github.com/rcole34)
+
 * Add methods from SE-0348 to `UnusedDeclarationRule`.  
   [JP Simard](https://github.com/jpims)
 

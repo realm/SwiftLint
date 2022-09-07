@@ -23,31 +23,31 @@ public struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRu
             Example("foo.map { /* a comment */ !$0 }\n")
         ],
         triggeringExamples: [
-            Example("↓foo.map({ $0 })\n"),
-            Example("↓foo.map { $0 }\n"),
-            Example("↓foo.map { return $0 }\n"),
+            Example("foo.↓map({ $0 })\n"),
+            Example("foo.↓map { $0 }\n"),
+            Example("foo.↓map { return $0 }\n"),
             Example("""
-                ↓foo.map { elem in
+                foo.↓map { elem in
                     elem
                 }
             """),
             Example("""
-                ↓foo.map { elem in
+                foo.↓map { elem in
                     return elem
                 }
             """),
             Example("""
-                ↓foo.map { (elem: String) in
+                foo.↓map { (elem: String) in
                     elem
                 }
             """),
             Example("""
-                ↓foo.map { elem -> String in
+                foo.↓map { elem -> String in
                     elem
                 }
             """),
-            Example("↓foo.map { $0 /* a comment */ }\n"),
-            Example("↓foo.map { /* a comment */ $0 }\n")
+            Example("foo.↓map { $0 /* a comment */ }\n"),
+            Example("foo.↓map { /* a comment */ $0 }\n")
         ]
     )
 
@@ -69,7 +69,7 @@ extension ArrayInitRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violationPositions.append(memberAccess.name.positionAfterSkippingLeadingTrivia)
         }
     }
 }

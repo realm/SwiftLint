@@ -1,6 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
+// swiftlint:disable type_body_length
+
 public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 

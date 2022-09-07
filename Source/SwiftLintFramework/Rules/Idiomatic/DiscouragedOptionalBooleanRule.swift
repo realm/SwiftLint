@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule {
+public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -15,16 +14,34 @@ public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRu
         triggeringExamples: DiscouragedOptionalBooleanRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let booleanPattern = "Bool\\?"
-        let optionalPattern = "Optional\\.some\\(\\s*(true|false)\\s*\\)"
-        let pattern = "(" + [booleanPattern, optionalPattern].joined(separator: "|") + ")"
-        let excludingKinds = SyntaxKind.commentAndStringKinds
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
 
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+private extension DiscouragedOptionalBooleanRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: OptionalTypeSyntax) {
+            if node.wrappedType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Bool" {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
+                node.argumentList.count == 1,
+                node.argumentList.first!.expression.is(BooleanLiteralExprSyntax.self),
+                let base = calledExpression.base?.as(IdentifierExprSyntax.self),
+                base.identifier.text == "Optional",
+                calledExpression.name.text == "some"
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

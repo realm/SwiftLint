@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
+public struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -12,11 +11,11 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("""
-            let observer = foo.observe(\\.value, options: [.new]) { (foo, change) in
+            Example(#"""
+            let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
                print(change.newValue)
             }
-            """)
+            """#)
         ],
         triggeringExamples: [
             Example("""
@@ -36,44 +35,32 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .functionMethodInstance,
-            dictionary.enclosedSwiftAttributes.contains(.override),
-            dictionary.name == "observeValue(forKeyPath:of:change:context:)",
-            hasExpectedParamTypes(types: dictionary.enclosedVarParameters.parameterTypes),
-            let offset = dictionary.offset else {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
-    }
-
-    private func hasExpectedParamTypes(types: [String]) -> Bool {
-        guard types.count == 4,
-            types[0] == "String?",
-            types[1] == "Any?",
-            types[2] == "[NSKeyValueChangeKey:Any]?" || types[2] == "Dictionary<NSKeyValueChangeKey,Any>?",
-            types[3] == "UnsafeMutableRawPointer?" else {
-                return false
-        }
-
-        return true
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
     }
 }
 
-private extension Array where Element == SourceKittenDictionary {
-    var parameterTypes: [String] {
-        return compactMap { element in
-            guard element.declarationKind == .varParameter else {
-                return nil
+private extension BlockBasedKVORule {
+    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let modifiers = node.modifiers,
+                  case let parameterList = node.signature.input.parameterList,
+                  parameterList.count == 4,
+                  node.identifier.text == "observeValue",
+                  modifiers.contains(where: { $0.name.text == "override" }),
+                  parameterList.compactMap(\.firstName?.text) == ["forKeyPath", "of", "change", "context"]
+            else {
+                return
             }
 
-            return element.typeName?.replacingOccurrences(of: " ", with: "")
+            let types = parameterList.compactMap { $0.type?.withoutTrivia().description }
+            let firstTypes = ["String?", "Any?", "[NSKeyValueChangeKey : Any]?", "UnsafeMutableRawPointer?"]
+            let secondTypes = ["String?", "Any?", "Dictionary<NSKeyValueChangeKey, Any>?", "UnsafeMutableRawPointer?"]
+            if types == firstTypes || types == secondTypes {
+                violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

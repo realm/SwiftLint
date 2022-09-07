@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FlatMapOverMapReduceRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -19,9 +19,29 @@ public struct FlatMapOverMapReduceRule: CallPairRule, OptInRule, ConfigurationPr
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.reduce\\s*\\(\\[\\s*\\],\\s*\\+\\s*\\)"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".map", severity: configuration.severity)
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
+
+private extension FlatMapOverMapReduceRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
+                memberAccess.name.text == "reduce",
+                node.argumentList.count == 2,
+                let firstArgument = node.argumentList.first?.expression.as(ArrayExprSyntax.self),
+                firstArgument.elements.isEmpty,
+                let secondArgument = node.argumentList.last?.expression.as(IdentifierExprSyntax.self),
+                secondArgument.identifier.text == "+"
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

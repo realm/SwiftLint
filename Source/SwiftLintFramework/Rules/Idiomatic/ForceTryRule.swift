@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ForceTryRule: ConfigurationProviderRule {
+public struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -26,11 +26,19 @@ public struct ForceTryRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: "try!", with: [.keyword]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
+
+private extension ForceTryRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: TryExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

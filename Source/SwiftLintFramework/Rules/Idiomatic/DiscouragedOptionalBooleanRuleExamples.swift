@@ -154,7 +154,10 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         wrapExample("enum", "func foo(input: [↓Bool?]) {}"),
         wrapExample("enum", "static func foo(input: ↓Bool?) {}"),
         wrapExample("enum", "static func foo(input: [String: ↓Bool?]) {}"),
-        wrapExample("enum", "static func foo(input: [↓Bool?]) {}")
+        wrapExample("enum", "static func foo(input: [↓Bool?]) {}"),
+
+        // Optional chaining
+        Example("_ = ↓Bool?.values()")
     ]
 }
 

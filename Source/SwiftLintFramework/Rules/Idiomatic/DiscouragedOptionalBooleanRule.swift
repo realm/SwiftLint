@@ -29,6 +29,12 @@ private extension DiscouragedOptionalBooleanRule {
             }
         }
 
+        override func visitPost(_ node: OptionalChainingExprSyntax) {
+            if node.expression.as(IdentifierExprSyntax.self)?.identifier.text == "Bool" {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),

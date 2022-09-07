@@ -1,6 +1,17 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `anyobject_protocol` rule is now deprecated and will be completely removed in a future release.
+        """
+    )
+}()
+
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
+
 public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -33,7 +44,8 @@ public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Conf
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        warnDeprecatedOnce()
+        return Visitor()
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {

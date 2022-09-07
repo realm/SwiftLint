@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
+public struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -27,65 +26,68 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}\n"),
-            Example("↓protocol FooDelegate: Bar {}\n")
+            Example("↓protocol FooDelegate: Bar {}\n"),
+            Example("↓protocol FooDelegate where Self: StringProtocol {}\n")
         ]
     )
 
-    private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol", "class"]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .protocol else {
-            return []
+private extension ClassDelegateProtocolRule {
+    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if node.identifier.text.hasSuffix("Delegate") &&
+                !node.hasObjCAttribute() &&
+                !node.isClassRestricted() &&
+                !node.inheritsFromObjectOrDelegate() {
+                violationPositions.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
+    }
+}
 
-        // Check if name contains "Delegate"
-        guard let name = dictionary.name, isDelegateProtocol(name) else {
-            return []
-        }
-
-        // Check if @objc
-        let objcAttributes: Set<SwiftDeclarationAttributeKind> = [.objc, .objcName]
-        let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)
-        guard !isObjc else {
-            return []
-        }
-
-        // Check in direct inheritance and `where` constraints for:
-        // reference type protocol, another Delegate protocol, or `class`.
-        guard let offset = dictionary.offset,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let bodyOffset = dictionary.bodyOffset,
-            case let contents = file.stringView,
-            case let start = nameOffset + nameLength,
-            case let byteRange = ByteRange(location: start, length: bodyOffset - start),
-            let range = contents.byteRangeToNSRange(byteRange),
-            !isClassProtocol(file: file, range: range)
-        else {
-            return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+private extension ProtocolDeclSyntax {
+    func hasObjCAttribute() -> Bool {
+        attributes?.contains { $0.as(AttributeSyntax.self)?.attributeName.text == "objc" } == true
     }
 
-    private func isClassProtocol(file: SwiftLintFile, range: NSRange) -> Bool {
-        let characterSet = Set(" {:&,\n")
-        return file.stringView.substring(with: range)
-            .split(whereSeparator: characterSet.contains)
-            // Check if it inherits from a delegate or if its reference bound
-            .contains { isDelegateProtocol($0) || isReferenceTypeProtocol($0) }
+    func isClassRestricted() -> Bool {
+        inheritanceClause?.inheritedTypeCollection.contains { $0.typeName.is(ClassRestrictionTypeSyntax.self) } == true
     }
 
-    private func isDelegateProtocol<S: StringProtocol>(_ name: S) -> Bool {
-        return name.hasSuffix("Delegate")
-    }
+    func inheritsFromObjectOrDelegate() -> Bool {
+        if inheritanceClause?.inheritedTypeCollection.contains(where: { $0.typeName.isObjectOrDelegate() }) == true {
+            return true
+        }
 
-    private func isReferenceTypeProtocol<S: StringProtocol>(_ name: S) -> Bool {
-        return referenceTypeProtocols.contains(String(name))
+        guard let requirementList = genericWhereClause?.requirementList else {
+            return false
+        }
+
+        return requirementList.contains { requirement in
+            guard let conformanceRequirement = requirement.body.as(ConformanceRequirementSyntax.self),
+                  let simpleLeftType = conformanceRequirement.leftTypeIdentifier.as(SimpleTypeIdentifierSyntax.self),
+                  simpleLeftType.typeName == "Self"
+            else {
+                return false
+            }
+
+            return conformanceRequirement.rightTypeIdentifier.isObjectOrDelegate()
+        }
+    }
+}
+
+private extension TypeSyntax {
+    func isObjectOrDelegate() -> Bool {
+        guard let typeName = self.as(SimpleTypeIdentifierSyntax.self)?.typeName else {
+            return false
+        }
+
+        return typeName == "AnyObject" || typeName == "NSObjectProtocol" || typeName.hasSuffix("Delegate")
     }
 }

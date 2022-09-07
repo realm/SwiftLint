@@ -55,9 +55,10 @@ private extension BlockBasedKVORule {
                 return
             }
 
-            let types = parameterList.compactMap { $0.type?.withoutTrivia().description }
-            let firstTypes = ["String?", "Any?", "[NSKeyValueChangeKey : Any]?", "UnsafeMutableRawPointer?"]
-            let secondTypes = ["String?", "Any?", "Dictionary<NSKeyValueChangeKey, Any>?", "UnsafeMutableRawPointer?"]
+            let types = parameterList
+                .compactMap { $0.type?.withoutTrivia().description.replacingOccurrences(of: " ", with: "") }
+            let firstTypes = ["String?", "Any?", "[NSKeyValueChangeKey:Any]?", "UnsafeMutableRawPointer?"]
+            let secondTypes = ["String?", "Any?", "Dictionary<NSKeyValueChangeKey,Any>?", "UnsafeMutableRawPointer?"]
             if types == firstTypes || types == secondTypes {
                 violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }

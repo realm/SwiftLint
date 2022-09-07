@@ -20,7 +20,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntax
             Example(#"myString↓ != """#),
             Example(#"myString↓=="""#),
             Example(##"myString↓ == #""#"##),
-            Example(###"myString↓ == ##""##"###),
+            Example(###"myString↓ == ##""##"###)
         ]
     )
 

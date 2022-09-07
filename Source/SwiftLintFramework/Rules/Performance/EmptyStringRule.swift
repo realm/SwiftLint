@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyStringRule: ConfigurationProviderRule, OptInRule {
+public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -17,23 +16,44 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule {
             Example("\"\"\"\nfoo==\n\"\"\"")
         ],
         triggeringExamples: [
-            Example("myString↓ == \"\""),
-            Example("myString↓ != \"\"")
+            Example(#"myString↓ == """#),
+            Example(#"myString↓ != """#),
+            Example(#"myString↓=="""#),
+            Example(##"myString↓ == #""#"##),
+            Example(###"myString↓ == ##""##"###)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\b\\s*(==|!=)\\s*\"\""
-        return file.match(pattern: pattern, with: [.string]).compactMap { range in
-            guard let byteRange = file.stringView.NSRangeToByteRange(NSRange(location: range.location, length: 1)),
-                case let kinds = file.syntaxMap.kinds(inByteRange: byteRange),
-                kinds.isEmpty else {
-                    return nil
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
+
+private extension EmptyStringRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: StringLiteralExprSyntax) {
+            guard
+                // Empty string literal: `""`, `#""#`, etc.
+                node.segments.count == 1 && node.segments.first?.contentLength == .zero,
+                let previousToken = node.previousToken,
+                // On the rhs of an `==` or `!=` operator
+                previousToken.tokenKind.isEqualityComparison,
+                let violationPosition = previousToken.previousToken?.endPositionBeforeTrailingTrivia
+            else {
+                return
             }
 
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+            violationPositions.append(violationPosition)
         }
+    }
+}
+
+private extension TokenKind {
+    var isEqualityComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==")
     }
 }

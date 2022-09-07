@@ -7,6 +7,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3577](https://github.com/realm/SwiftLint/issues/3577)
 
+* The `anyobject_protocol` rule is now deprecated and will be completely removed
+  in a future release because it is now handled by the Swift compiler.  
+  [JP Simard](https://github.com/jpims)
+
 #### Experimental
 
 * None.

@@ -12,6 +12,7 @@ private let staticSwiftSyntax = false
 let frameworkDependencies: [Target.Dependency] = [
     .product(name: "SourceKittenFramework", package: "SourceKitten"),
     .product(name: "SwiftSyntax", package: "SwiftSyntax"),
+    .product(name: "SwiftSyntaxBuilder", package: "SwiftSyntax"),
     .product(name: "SwiftSyntaxParser", package: "SwiftSyntax"),
     "Yams",
 ]

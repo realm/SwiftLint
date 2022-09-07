@@ -1,7 +1,18 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
+import SwiftSyntaxBuilder
 
-public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule, ConfigurationProviderRule {
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `anyobject_protocol` rule is now deprecated and will be completely removed in a future release.
+        """
+    )
+}()
+
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
+
+public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -32,39 +43,64 @@ public struct AnyObjectProtocolRule: SubstitutionCorrectableASTRule, OptInRule, 
         ]
     )
 
-    // MARK: - ASTRule
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        warnDeprecatedOnce()
+        return Visitor()
+    }
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
+    }
+}
+
+private extension AnyObjectProtocolRule {
+    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: ClassRestrictionTypeSyntax) {
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    // MARK: - SubstitutionCorrectableASTRule
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "AnyObject")
-    }
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
 
-    public func violationRanges(in file: SwiftLintFile,
-                                kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard kind == .protocol else { return [] }
-
-        return dictionary.elements.compactMap { subDict -> NSRange? in
-            guard
-                let byteRange = subDict.byteRange,
-                let content = file.stringView.substringWithByteRange(byteRange),
-                content == "class"
-            else {
-                return nil
+        override func visit(_ node: InheritedTypeSyntax) -> Syntax {
+            let typeName = node.typeName
+            guard typeName.is(ClassRestrictionTypeSyntax.self) else {
+                return super.visit(node)
             }
 
-            return file.stringView.byteRangeToNSRange(byteRange)
+            let isInDisabledRegion = disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            }
+
+            guard !isInDisabledRegion else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            return super.visit(
+                node.withTypeName(
+                    TypeSyntax(
+                        SimpleTypeIdentifierSyntax { $0.useName(.identifier("AnyObject")) }
+                            .withLeadingTrivia(typeName.leadingTrivia ?? .zero)
+                            .withTrailingTrivia(typeName.trailingTrivia ?? .zero)
+                    )
+                )
+            )
         }
     }
 }

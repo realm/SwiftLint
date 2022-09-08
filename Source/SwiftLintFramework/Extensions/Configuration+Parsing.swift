@@ -183,7 +183,7 @@ extension Configuration {
 
             switch rulesMode {
             case .allEnabled:
-                return
+                break
 
             case .only(let onlyRules):
                 if Set(onlyRules).isDisjoint(with: rule.description.allIdentifiers) {

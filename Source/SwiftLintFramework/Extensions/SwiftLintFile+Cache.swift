@@ -1,9 +1,7 @@
 import Foundation
 import SourceKittenFramework
+import SwiftParser
 import SwiftSyntax
-#if canImport(SwiftSyntaxParser)
-import SwiftSyntaxParser
-#endif
 
 private let warnSyntaxParserFailureOnceImpl: Void = {
     queuedPrintError("Could not parse the syntax tree for at least one file. Results may be invalid.")
@@ -38,7 +36,7 @@ private var structureDictionaryCache = Cache({ file in
 
 private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
     do {
-        return try SyntaxParser.parse(source: file.contents)
+        return try Parser.parse(source: file.contents)
     } catch {
         warnSyntaxParserFailureOnce()
         return nil

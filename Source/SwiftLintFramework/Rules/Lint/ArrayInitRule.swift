@@ -52,7 +52,7 @@ public struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRu
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

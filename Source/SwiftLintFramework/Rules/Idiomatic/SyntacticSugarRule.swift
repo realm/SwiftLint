@@ -18,7 +18,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, So
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = SyntacticSugarRuleVisitor()
+        let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             flattenViolations(visitor.violations)
         }.map { violation in
@@ -34,7 +34,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, So
     }
 
     public func correct(file: SwiftLintFile) -> [Correction] {
-        let visitor = SyntacticSugarRuleVisitor()
+        let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             var context = CorrectingContext(rule: self, file: file, contents: file.contents)
             context.correctViolations(visitor.violations)
@@ -144,6 +144,17 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         }
     }
 
+    override func visitPost(_ node: UnresolvedAsExprSyntax) {
+        // json["recommendations"] as? ↓Array<[String: Any]>
+        if
+            let parent = node.parent,
+            let typeName = parent.children(viewMode: .sourceAccurate).last?.as(TypeExprSyntax.self),
+            let violation = violation(in: typeName.type)
+        {
+            violations.append(violation)
+        }
+    }
+
     override func visitPost(_ node: TypeInitializerClauseSyntax) {
         // typealias Document = ↓Dictionary<String, AnyBSON?>
         if let violation = violation(in: node.value) {
@@ -172,7 +183,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         // let x = ↓Array<String>.array(of: object)
         // Skip checks for 'self' or \T Dictionary<Key, Value>.self
         if let parent = node.parent?.as(MemberAccessExprSyntax.self),
-           let lastToken = Array(parent.tokens).last?.tokenKind,
+           let lastToken = Array(parent.tokens(viewMode: .sourceAccurate)).last?.tokenKind,
            [.selfKeyword, .identifier("Type"), .identifier("none"), .identifier("Index")].contains(lastToken) {
             return
         }

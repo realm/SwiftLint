@@ -17,11 +17,13 @@ def swiftlint_repos():
         url = "https://github.com/scottrhoyt/SwiftyTextTable/archive/refs/tags/0.9.0.tar.gz",
     )
 
+    # https://github.com/apple/swift-syntax/pull/807
     http_archive(
-        name = "com_github_keith_swift_syntax_bazel",
-        sha256 = "ca7f3a8099e4e7a454f45abea1ededabe209d9f6964df87566a142e3b281fe24",
-        strip_prefix = "swift-syntax-bazel-14.0.0.14A309",
-        url = "https://github.com/keith/swift-syntax-bazel/archive/refs/tags/14.0.0.14A309.tar.gz",
+        name = "com_github_apple_swift_syntax",
+        sha256 = "d1171203ae646323a3b9878356ff183744122ec5e1fb452974e7ecfffc9f5220",
+        build_file = "@SwiftLint//bazel:SwiftSyntax.BUILD",
+        strip_prefix = "swift-syntax-322559c794d7d4ed4d3053c6fac4890941abb0b4",
+        url = "https://github.com/rintaro/swift-syntax/archive/322559c794d7d4ed4d3053c6fac4890941abb0b4.tar.gz",
     )
 
     http_archive(

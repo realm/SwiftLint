@@ -17,7 +17,7 @@ public struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        ForceCastRuleVisitor()
+        ForceCastRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 
@@ -25,6 +25,12 @@ private final class ForceCastRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor
     private(set) var violationPositions: [AbsolutePosition] = []
 
     override func visitPost(_ node: AsExprSyntax) {
+        if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+            violationPositions.append(node.asTok.positionAfterSkippingLeadingTrivia)
+        }
+    }
+
+    override func visitPost(_ node: UnresolvedAsExprSyntax) {
         if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
             violationPositions.append(node.asTok.positionAfterSkippingLeadingTrivia)
         }

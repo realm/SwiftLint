@@ -30,11 +30,11 @@
       },
       {
         "package": "SwiftSyntax",
-        "repositoryURL": "https://github.com/apple/swift-syntax.git",
+        "repositoryURL": "https://github.com/rintaro/swift-syntax.git",
         "state": {
           "branch": null,
-          "revision": "04d4497be6b88e524a71778d828790e9589ae1c4",
-          "version": "0.50700.0"
+          "revision": "322559c794d7d4ed4d3053c6fac4890941abb0b4",
+          "version": null
         }
       },
       {

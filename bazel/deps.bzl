@@ -1,5 +1,4 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@com_github_keith_swift_syntax_bazel//:deps.bzl", "swift_syntax_deps")
 load("@com_github_jpsim_sourcekitten//bazel:repos.bzl", "sourcekitten_repos")
 
 def _default_extra_swift_sources_impl(ctx):
@@ -27,5 +26,4 @@ def swiftlint_deps():
     if not native.existing_rule("swiftlint_extra_rules"):
         _default_extra_swift_sources(name = "swiftlint_extra_rules")
 
-    swift_syntax_deps()
     sourcekitten_repos()

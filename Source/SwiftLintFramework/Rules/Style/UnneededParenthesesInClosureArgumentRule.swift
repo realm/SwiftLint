@@ -76,7 +76,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -134,15 +134,15 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
             }
 
             let isLast = idx == clause.parameterList.count - 1
-            return SyntaxFactory.makeClosureParam(
+            return ClosureParamSyntax(
                 name: name,
-                trailingComma: isLast ? nil : SyntaxFactory.makeCommaToken(trailingTrivia: .spaces(1))
+                trailingComma: isLast ? nil : .commaToken(trailingTrivia: Trivia(pieces: [.spaces(1)]))
             )
         }
 
         correctionPositions.append(clause.positionAfterSkippingLeadingTrivia)
 
-        let paramList = SyntaxFactory.makeClosureParamList(items).withTrailingTrivia(.spaces(1))
+        let paramList = ClosureParamListSyntax(items).withTrailingTrivia(.spaces(1))
         return super.visit(node.withInput(Syntax(paramList)))
     }
 }

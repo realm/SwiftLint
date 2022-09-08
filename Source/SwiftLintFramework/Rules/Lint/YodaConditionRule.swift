@@ -37,7 +37,7 @@ public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSynt
         ])
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        YodaConditionRuleVisitor()
+        YodaConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 
@@ -65,7 +65,7 @@ private final class YodaConditionRuleVisitor: SyntaxVisitor, ViolationsSyntaxVis
     }
 
     private func visit(condition: ExprSyntax) {
-        guard let children = condition.as(SequenceExprSyntax.self)?.elements.children else {
+        guard let children = condition.as(SequenceExprSyntax.self)?.elements.children(viewMode: .sourceAccurate) else {
             return
         }
         let comparisonOperators = children

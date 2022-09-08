@@ -15,7 +15,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, SourceKitFreeRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        ImplicitGetterRuleVisitor()
+        ImplicitGetterRuleVisitor(viewMode: .sourceAccurate)
             .walk(file: file, handler: \.violationPositions)
             .sorted { $0.position < $1.position }
             .map { violation in

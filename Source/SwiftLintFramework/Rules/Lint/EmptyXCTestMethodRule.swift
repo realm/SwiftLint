@@ -15,7 +15,7 @@ public struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, Swift
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        EmptyXCTestMethodRuleVisitor()
+        EmptyXCTestMethodRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 

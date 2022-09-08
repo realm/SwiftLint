@@ -77,7 +77,7 @@ public struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Conf
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let visitor = CommaInheritanceRuleVisitor()
+        let visitor = CommaInheritanceRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor -> [ByteRange] in
             visitor.violationRanges
         }.compactMap {
@@ -90,7 +90,7 @@ private final class CommaInheritanceRuleVisitor: SyntaxVisitor {
     private(set) var violationRanges: [ByteRange] = []
 
     override func visitPost(_ node: InheritedTypeSyntax) {
-        for type in node.children {
+        for type in node.children(viewMode: .sourceAccurate) {
             guard let composition = type.as(CompositionTypeSyntax.self) else {
                 continue
             }

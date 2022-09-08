@@ -21,9 +21,9 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
-        "@com_github_keith_swift_syntax//:SwiftSyntax",
-        "@com_github_keith_swift_syntax//:SwiftSyntaxBuilder",
-        "@com_github_keith_swift_syntax//:SwiftSyntaxParser",
+        "@com_github_apple_swift_syntax//:SwiftSyntax",
+        "@com_github_apple_swift_syntax//:SwiftSyntaxBuilder",
+        "@com_github_apple_swift_syntax//:SwiftParser",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],

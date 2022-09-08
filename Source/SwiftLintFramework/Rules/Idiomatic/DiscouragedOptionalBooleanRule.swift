@@ -15,7 +15,7 @@ public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRu
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

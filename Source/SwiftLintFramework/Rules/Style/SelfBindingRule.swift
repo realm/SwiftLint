@@ -74,12 +74,13 @@ private final class SelfBindingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisit
 
     init(bindIdentifier: String) {
         self.bindIdentifier = bindIdentifier
+        super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: OptionalBindingConditionSyntax) {
         if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
            identifierPattern.identifier.text != bindIdentifier,
-           let initializerIdentifier = node.initializer.value.as(IdentifierExprSyntax.self),
+           let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
            initializerIdentifier.identifier.text == "self" {
             violationPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
         }
@@ -103,7 +104,7 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
     override func visit(_ node: OptionalBindingConditionSyntax) -> Syntax {
         guard let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
            identifierPattern.identifier.text != bindIdentifier,
-           let initializerIdentifier = node.initializer.value.as(IdentifierExprSyntax.self),
+           let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
            initializerIdentifier.identifier.text == "self" else {
             return super.visit(node)
         }

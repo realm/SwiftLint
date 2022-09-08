@@ -2,7 +2,7 @@ import SwiftSyntax
 
 extension SourceFileSyntax {
     func windowsOfThreeTokens() -> [(TokenSyntax, TokenSyntax, TokenSyntax)] {
-        Array(tokens)
+        Array(tokens(viewMode: .sourceAccurate))
             .windows(ofCount: 3)
             .map { tokens in
                 let previous = tokens[tokens.startIndex]

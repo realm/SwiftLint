@@ -37,7 +37,7 @@ public struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

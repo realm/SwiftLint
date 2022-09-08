@@ -24,7 +24,7 @@ public struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {

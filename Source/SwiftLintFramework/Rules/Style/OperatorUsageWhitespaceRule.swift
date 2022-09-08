@@ -126,6 +126,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
 
     init(allowedNoSpaceOperators: [String]) {
         self.allowedNoSpaceOperators = Set(allowedNoSpaceOperators)
+        super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
@@ -153,6 +154,16 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: TernaryExprSyntax) {
+        if let violation = violation(operatorToken: node.colonMark) {
+            violationRanges.append(violation)
+        }
+
+        if let violation = violation(operatorToken: node.questionMark) {
+            violationRanges.append(violation)
+        }
+    }
+
+    override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
         if let violation = violation(operatorToken: node.colonMark) {
             violationRanges.append(violation)
         }
@@ -216,8 +227,8 @@ private extension Trivia {
             switch element {
             case .blockComment, .docLineComment, .docBlockComment, .lineComment:
                 return true
-            case .carriageReturnLineFeeds, .carriageReturns, .formfeeds,
-                 .garbageText, .newlines, .spaces, .verticalTabs, .tabs:
+            case .carriageReturnLineFeeds, .carriageReturns, .formfeeds, .newlines,
+                 .shebang, .spaces, .tabs, .unexpectedText, .verticalTabs:
                 return false
             }
         }

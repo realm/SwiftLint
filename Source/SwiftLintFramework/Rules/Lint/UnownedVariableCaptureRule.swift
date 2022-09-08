@@ -26,7 +26,7 @@ public struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, Configurat
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        UnownedVariableCaptureRuleVisitor()
+        UnownedVariableCaptureRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 
@@ -36,6 +36,12 @@ private final class UnownedVariableCaptureRuleVisitor: SyntaxVisitor, Violations
     override func visitPost(_ node: ClosureCaptureItemSyntax) {
         if let token = node.unownedToken {
             violationPositions.append(token.positionAfterSkippingLeadingTrivia)
+        }
+    }
+
+    override func visitPost(_ node: TokenListSyntax) {
+        if case .contextualKeyword("unowned") = node.first?.tokenKind {
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

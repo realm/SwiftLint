@@ -27,7 +27,7 @@ public struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

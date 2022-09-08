@@ -25,7 +25,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntax
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

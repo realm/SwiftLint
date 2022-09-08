@@ -22,22 +22,31 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4107](https://github.com/realm/SwiftLint/issues/4107)
 
-* Rewrite `implicit_getter`, `unowned_variable_capture`, 
-  `unneeded_break_in_switch`, `computed_accessors_order` and
-  `untyped_error_in_catch` rules with  SwiftSyntax.  
+* Rewrite some rules with SwiftSyntax, fixing some false positives and catching
+  more violations:
+  - `anyobject_protocol`
+  - `array_init`
+  - `block_based_kvo`
+  - `class_delegate_protocol`
+  - `closing_brace`
+  - `computed_accessors_order`
+  - `discouraged_optional_boolean`
+  - `empty_string`
+  - `flatmap_over_map_reduce`
+  - `force_try`
+  - `force_unwrapping`
+  - `implicit_getter`
+  - `large_tuple`
+  - `redundant_nil_coalescing`
+  - `toggle_bool`
+  - `unneeded_break_in_switch`
+  - `unneeded_parentheses_in_closure_argument`
+  - `unowned_variable_capture`
+  - `untyped_error_in_catch`
+  - `xctfail_message`  
   [Marcelo Fabri](https://github.com/marcelofabri)  
-
-* Rewrite `unneeded_parentheses_in_closure_argument` rule with SwiftSyntax,
-  fixing some false negatives.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-
-* Rewrite `force_unwrapping` rule with SwiftSyntax, fixing false negatives
-  when force unwrapping method calls with trailing closures.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
+  [JP Simard](https://github.com/jpims)
   [#2915](https://github.com/realm/SwiftLint/issues/2915)
-
-* Rewrite `large_tuple` rule using SwiftSyntax, fixing false negatives.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `accessibility_trait_for_button` rule to warn if a SwiftUI
   View has a tap gesture added to it without having the button or

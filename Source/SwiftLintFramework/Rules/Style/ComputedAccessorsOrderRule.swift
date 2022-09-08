@@ -51,6 +51,7 @@ private final class ComputedAccessorsOrderRuleVisitor: SyntaxVisitor {
 
     init(expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order) {
         self.expectedOrder = expectedOrder
+        super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: AccessorBlockSyntax) {

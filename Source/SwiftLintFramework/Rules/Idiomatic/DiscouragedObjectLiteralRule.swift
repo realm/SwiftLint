@@ -44,6 +44,7 @@ private extension DiscouragedObjectLiteralRule {
 
         init(configuration: ObjectLiteralConfiguration) {
             self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: ObjectLiteralExprSyntax) {

@@ -73,7 +73,7 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, SourceKitFree
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = UnavailableConditionRuleVisitor()
+        let visitor = UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file, handler: \.availabilityChecks).map { check in
             StyleViolation(
                 ruleDescription: Self.description,

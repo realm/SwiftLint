@@ -20,7 +20,7 @@ public struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, Configuratio
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

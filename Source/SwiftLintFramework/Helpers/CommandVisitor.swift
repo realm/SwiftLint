@@ -9,7 +9,7 @@ final class CommandVisitor: SyntaxVisitor {
 
     init(locationConverter: SourceLocationConverter) {
         self.locationConverter = locationConverter
-        super.init()
+        super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: TokenSyntax) {

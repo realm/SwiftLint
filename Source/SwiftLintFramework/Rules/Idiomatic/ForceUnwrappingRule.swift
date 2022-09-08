@@ -68,7 +68,7 @@ public struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProv
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        ForceUnwrappingVisitor()
+        ForceUnwrappingVisitor(viewMode: .sourceAccurate)
     }
 }
 

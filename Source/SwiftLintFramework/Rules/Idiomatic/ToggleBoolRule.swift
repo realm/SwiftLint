@@ -1,5 +1,4 @@
 import SwiftSyntax
-import SwiftSyntaxBuilder
 
 public struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
@@ -32,7 +31,7 @@ public struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -81,19 +80,18 @@ private extension ToggleBoolRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let functionCall = FunctionCallExprSyntax { functionCall in
-                functionCall.useCalledExpression(
-                    ExprSyntax(
-                        MemberAccessExprSyntax { memberAccess in
-                            memberAccess.useBase(node.first!.withoutTrivia())
-                            memberAccess.useDot(.period)
-                            memberAccess.useName(.identifier("toggle"))
-                        }
+            let functionCall = FunctionCallExprSyntax(
+                calledExpression: ExprSyntax(
+                    MemberAccessExprSyntax(
+                        base: node.first!.withoutTrivia(),
+                        dot: .periodToken(),
+                        name: .identifier("toggle"),
+                        declNameArguments: nil
                     )
-                )
-                functionCall.useLeftParen(.leftParen)
-                functionCall.useRightParen(.rightParen)
-            }
+                ),
+                leftParen: .leftParenToken(), argumentList: .init([]), rightParen: .rightParenToken(),
+                trailingClosure: nil, additionalTrailingClosures: nil
+            )
 
             let newNode = node
                 .replacing(childAt: 0, with: ExprSyntax(functionCall))

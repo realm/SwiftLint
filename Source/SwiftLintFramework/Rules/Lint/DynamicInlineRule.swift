@@ -25,7 +25,7 @@ public struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
@@ -50,7 +50,6 @@ private extension DynamicInlineRule {
 private extension AttributeSyntax {
     var isInlineAlways: Bool {
         attributeName.text == "inline" &&
-            argument?.isToken == true &&
             argument?.firstToken?.tokenKind == .identifier("__always")
     }
 }

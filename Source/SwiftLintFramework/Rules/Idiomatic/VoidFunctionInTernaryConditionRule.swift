@@ -109,7 +109,7 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Swi
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        VoidFunctionInTernaryConditionVisitor()
+        VoidFunctionInTernaryConditionVisitor(viewMode: .sourceAccurate)
     }
 }
 
@@ -130,11 +130,26 @@ private class VoidFunctionInTernaryConditionVisitor: SyntaxVisitor, ViolationsSy
 
         violationPositions.append(node.questionMark.positionAfterSkippingLeadingTrivia)
     }
+
+    override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
+        guard node.firstChoice.is(FunctionCallExprSyntax.self),
+              let parent = node.parent?.as(ExprListSyntax.self),
+              parent.last?.is(FunctionCallExprSyntax.self) == true,
+              !parent.containsAssignment,
+              let grandparent = parent.parent,
+              grandparent.is(SequenceExprSyntax.self),
+              let blockItem = grandparent.parent?.as(CodeBlockItemSyntax.self),
+              !blockItem.isImplicitReturn else {
+            return
+        }
+
+        violationPositions.append(node.questionMark.positionAfterSkippingLeadingTrivia)
+    }
 }
 
 private extension ExprListSyntax {
     var containsAssignment: Bool {
-        return children.contains(where: { $0.is(AssignmentExprSyntax.self) })
+        return children(viewMode: .sourceAccurate).contains(where: { $0.is(AssignmentExprSyntax.self) })
     }
 }
 
@@ -151,7 +166,7 @@ private extension CodeBlockItemSyntax {
             return false
         }
 
-        return parent.children.count == 1 && grandparent.is(ClosureExprSyntax.self)
+        return parent.children(viewMode: .sourceAccurate).count == 1 && grandparent.is(ClosureExprSyntax.self)
     }
 
     var isFunctionImplicitReturn: Bool {
@@ -160,7 +175,7 @@ private extension CodeBlockItemSyntax {
             return false
         }
 
-        return parent.children.count == 1 && functionDecl.signature.allowsImplicitReturns
+        return parent.children(viewMode: .sourceAccurate).count == 1 && functionDecl.signature.allowsImplicitReturns
     }
 
     var isVariableImplicitReturn: Bool {
@@ -169,7 +184,7 @@ private extension CodeBlockItemSyntax {
         }
 
         let isVariableDecl = parent.parent?.parent?.as(PatternBindingSyntax.self) != nil
-        return parent.children.count == 1 && isVariableDecl
+        return parent.children(viewMode: .sourceAccurate).count == 1 && isVariableDecl
     }
 
     var isSubscriptImplicitReturn: Bool {
@@ -178,7 +193,7 @@ private extension CodeBlockItemSyntax {
             return false
         }
 
-        return parent.children.count == 1 && subscriptDecl.allowsImplicitReturns
+        return parent.children(viewMode: .sourceAccurate).count == 1 && subscriptDecl.allowsImplicitReturns
     }
 
     var isAcessorImplicitReturn: Bool {
@@ -187,7 +202,7 @@ private extension CodeBlockItemSyntax {
             return false
         }
 
-        return parent.children.count == 1
+        return parent.children(viewMode: .sourceAccurate).count == 1
     }
 }
 

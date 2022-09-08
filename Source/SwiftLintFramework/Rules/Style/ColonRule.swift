@@ -32,7 +32,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
             return []
         }
 
-        let visitor = ColonRuleVisitor()
+        let visitor = ColonRuleVisitor(viewMode: .sourceAccurate)
         visitor.walk(syntaxTree)
         let positionsToSkip = visitor.positionsToSkip
         let dictionaryPositions = visitor.dictionaryPositions
@@ -101,7 +101,7 @@ private final class ColonRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: DeclNameArgumentsSyntax) {
         positionsToSkip.append(
-            contentsOf: node.tokens
+            contentsOf: node.tokens(viewMode: .sourceAccurate)
                 .filter { $0.tokenKind == .colon }
                 .map(\.position)
         )
@@ -115,6 +115,10 @@ private final class ColonRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: OperatorPrecedenceAndTypesSyntax) {
         positionsToSkip.append(node.colon.position)
+    }
+
+    override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
+        positionsToSkip.append(node.colonMark.position)
     }
 
     override func visitPost(_ node: DictionaryElementSyntax) {

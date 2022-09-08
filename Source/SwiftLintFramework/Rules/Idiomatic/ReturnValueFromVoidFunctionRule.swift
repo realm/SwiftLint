@@ -16,7 +16,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        ReturnValueFromVoidFunctionVisitor()
+        ReturnValueFromVoidFunctionVisitor(viewMode: .sourceAccurate)
     }
 }
 
@@ -26,7 +26,7 @@ private final class ReturnValueFromVoidFunctionVisitor: SyntaxVisitor, Violation
     override func visitPost(_ node: ReturnStmtSyntax) {
         if node.expression != nil,
            let functionNode = Syntax(node).enclosingFunction(),
-            functionNode.returnsVoid {
+           functionNode.returnsVoid {
             violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }

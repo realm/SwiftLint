@@ -1,5 +1,4 @@
 import SwiftSyntax
-import SwiftSyntaxBuilder
 
 private let warnDeprecatedOnceImpl: Void = {
     queuedPrintError("""
@@ -45,7 +44,7 @@ public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Conf
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         warnDeprecatedOnce()
-        return Visitor()
+        return Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -95,7 +94,7 @@ private extension AnyObjectProtocolRule {
             return super.visit(
                 node.withTypeName(
                     TypeSyntax(
-                        SimpleTypeIdentifierSyntax { $0.useName(.identifier("AnyObject")) }
+                        SimpleTypeIdentifierSyntax(name: .identifier("AnyObject"), genericArgumentClause: nil)
                             .withLeadingTrivia(typeName.leadingTrivia ?? .zero)
                             .withTrailingTrivia(typeName.trailingTrivia ?? .zero)
                     )

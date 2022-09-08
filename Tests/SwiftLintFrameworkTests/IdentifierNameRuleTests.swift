@@ -30,7 +30,8 @@ class IdentifierNameRuleTests: XCTestCase {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
             Example("↓let MyLet = 0"),
-            Example("enum Foo { case ↓MyEnum }")
+            Example("enum Foo { case ↓MyEnum }"),
+            Example("↓func IsOperator(name: String) -> Bool")
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule {
+public struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -36,31 +36,40 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let offset = dictionary.offset,
-            dictionary.name == "XCTFail",
-            hasEmptyMessage(dictionary: dictionary, file: file)
-            else {
-                return []
-        }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
     }
+}
 
-    private func hasEmptyMessage(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let bodyRange = dictionary.bodyByteRange else {
-            return false
+private extension XCTFailMessageRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let expression = node.calledExpression.as(IdentifierExprSyntax.self),
+                expression.identifier.text == "XCTFail",
+                node.argumentList.isEmptyOrEmptyString
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        guard bodyRange.length > 0 else { return true }
+private extension TupleExprElementListSyntax {
+    var isEmptyOrEmptyString: Bool {
+        if isEmpty {
+            return true
+        }
+        return count == 1 && first?.expression.as(StringLiteralExprSyntax.self)?.isEmpty == true
+    }
+}
 
-        let body = file.stringView.substringWithByteRange(bodyRange)
-        return body == "\"\""
+private extension StringLiteralExprSyntax {
+    var isEmpty: Bool {
+        segments.count == 1 && segments.first?.contentLength == .zero
     }
 }

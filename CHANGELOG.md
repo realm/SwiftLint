@@ -37,6 +37,7 @@
   - `force_unwrapping`
   - `implicit_getter`
   - `large_tuple`
+  - `multiple_closures_with_trailing_closure`
   - `redundant_nil_coalescing`
   - `toggle_bool`
   - `unneeded_break_in_switch`

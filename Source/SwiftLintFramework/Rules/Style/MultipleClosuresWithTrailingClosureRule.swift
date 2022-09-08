@@ -48,7 +48,7 @@ private extension MultipleClosuresWithTrailingClosureRule {
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let trailingClosure = node.trailingClosure,
-                  node.hasMultipleClosuresWithTrailingClosureViolation else {
+                  node.hasTrailingClosureViolation else {
                 return
             }
 
@@ -58,7 +58,7 @@ private extension MultipleClosuresWithTrailingClosureRule {
 }
 
 private extension FunctionCallExprSyntax {
-    var hasMultipleClosuresWithTrailingClosureViolation: Bool {
+    var hasTrailingClosureViolation: Bool {
         guard trailingClosure != nil else {
             return false
         }

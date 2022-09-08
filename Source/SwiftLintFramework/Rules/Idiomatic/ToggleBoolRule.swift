@@ -1,7 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
+import SwiftSyntaxBuilder
 
-public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProviderRule, OptInRule {
+public struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -31,24 +31,95 @@ public struct ToggleBoolRule: SubstitutionCorrectableRule, ConfigurationProvider
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location)
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
             )
         }
     }
+}
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = #"(?<![\w.])([\w.]+) = !\1\b(?!\.)"#
-        let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds)
+private extension ToggleBoolRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: ExprListSyntax) {
+            if node.hasToggleBoolViolation {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        let violationString = file.stringView.substring(with: violationRange)
-        let identifier = violationString.components(separatedBy: .whitespaces).first { $0.isNotEmpty }
-        return (violationRange, identifier! + ".toggle()")
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: ExprListSyntax) -> Syntax {
+            guard node.hasToggleBoolViolation else {
+                return super.visit(node)
+            }
+
+            let isInDisabledRegion = disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            }
+
+            guard !isInDisabledRegion else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+
+            let functionCall = FunctionCallExprSyntax { functionCall in
+                functionCall.useCalledExpression(
+                    ExprSyntax(
+                        MemberAccessExprSyntax { memberAccess in
+                            memberAccess.useBase(node.first!.withoutTrivia())
+                            memberAccess.useDot(.period)
+                            memberAccess.useName(.identifier("toggle"))
+                        }
+                    )
+                )
+                functionCall.useLeftParen(.leftParen)
+                functionCall.useRightParen(.rightParen)
+            }
+
+            let newNode = node
+                .replacing(childAt: 0, with: ExprSyntax(functionCall))
+                .removingLast()
+                .removingLast()
+                .withLeadingTrivia(node.leadingTrivia ?? .zero)
+                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+
+            return super.visit(newNode)
+        }
+    }
+}
+
+private extension ExprListSyntax {
+    var hasToggleBoolViolation: Bool {
+        guard
+            count == 3,
+            dropFirst().first?.is(AssignmentExprSyntax.self) == true,
+            last?.is(PrefixOperatorExprSyntax.self) == true,
+            let lhs = first?.withoutTrivia().description,
+            let rhs = last?.withoutTrivia().description,
+            rhs == "!\(lhs)"
+        else {
+            return false
+        }
+
+        return true
     }
 }

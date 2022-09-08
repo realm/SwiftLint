@@ -1,8 +1,6 @@
-import Foundation
-import SourceKittenFramework
 import SwiftSyntax
 
-public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
+public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -76,38 +74,19 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
         let rewriter = SequenceExprFoldingRewriter(operatorContext: .makeBuiltinOperatorContext())
         let folded = rewriter.visit(tree)
 
-        let visitor = IdenticalOperandsVisitor()
-        #if DEBUG
-        let lock = NSLock()
-
-        // https://bugs.swift.org/browse/SR-11170
-        let work = DispatchWorkItem {
-            lock.lock()
-            visitor.walk(folded)
-            lock.unlock()
-        }
-        let thread = Thread {
-            work.perform()
-        }
-        thread.stackSize = 8 << 20 // 8 MB.
-        thread.start()
-        work.wait()
-
-        lock.lock()
-        defer { lock.unlock() }
-        #else
-        visitor.walk(folded)
-        #endif
-
-        return visitor.positions.map { position in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: ByteCount(position.utf8Offset)))
-        }
+        return Visitor()
+            .walk(tree: folded, handler: \.violationPositions)
+            .map { position in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, position: position))
+            }
     }
+}
 
-    private final class IdenticalOperandsVisitor: SyntaxVisitor {
-        var positions: [AbsolutePosition] = []
+private extension IdenticalOperandsRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
 
         override func visitPost(_ node: SequenceExprSyntax) {
             guard node.elements.count == 3,
@@ -119,7 +98,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, OptInRule {
             }
 
             if lhs.withoutTrivia().description == rhs.withoutTrivia().description {
-                positions.append(lhs.positionAfterSkippingLeadingTrivia)
+                violationPositions.append(lhs.positionAfterSkippingLeadingTrivia)
             }
         }
     }

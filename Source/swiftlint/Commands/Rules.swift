@@ -10,28 +10,13 @@ import Foundation
 import SwiftLintFramework
 import SwiftyTextTable
 
-enum RuleEnablementOptions: String, EnumerableFlag {
-    case enabled, disabled
-
-    static func name(for value: RuleEnablementOptions) -> NameSpecification {
-        return .shortAndLong
-    }
-
-    static func help(for value: RuleEnablementOptions) -> ArgumentHelp? {
-        return "Only show \(value.rawValue) rules"
-    }
-}
-
 extension SwiftLint {
     struct Rules: ParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Display the list of rules and their identifiers")
 
         @Option(help: "The path to a SwiftLint configuration file")
         var config: String?
-        @Flag(exclusivity: .exclusive)
-        var ruleEnablement: RuleEnablementOptions?
-        @Flag(name: .shortAndLong, help: "Only display correctable rules")
-        var correctable = false
+        @OptionGroup var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")
         var verbose = false
         @Argument(help: "The rule identifier to display description for")

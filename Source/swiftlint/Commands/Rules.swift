@@ -33,34 +33,11 @@ extension SwiftLint {
             }
 
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
-            let rules = ruleList(configuration: configuration)
+            let rulesFilter = RulesFilter(enabledRules: configuration.rules)
+            let rules = rulesFilter.getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
             let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
             print(table.render())
             ExitHelper.successfullyExit()
-        }
-
-        private func ruleList(configuration: Configuration) -> RuleList {
-            guard ruleEnablement != nil || correctable else {
-                return primaryRuleList
-            }
-
-            let filtered: [Rule.Type] = primaryRuleList.list.compactMap { ruleID, ruleType in
-                let configuredRule = configuration.rules.first { rule in
-                    return type(of: rule).description.identifier == ruleID
-                }
-
-                if ruleEnablement == .enabled && configuredRule == nil {
-                    return nil
-                } else if ruleEnablement == .disabled && configuredRule != nil {
-                    return nil
-                } else if correctable && !(configuredRule is CorrectableRule) {
-                    return nil
-                }
-
-                return ruleType
-            }
-
-            return RuleList(rules: filtered)
         }
     }
 }

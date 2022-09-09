@@ -1,7 +1,6 @@
 import Foundation
 
 extension RulesFilter.ExcludingOptions {
-
     static func excludingOptions(byCommandLineOptions rulesFilterOptions: RulesFilterOptions) -> Self {
         var excludingOptions: Self = []
 

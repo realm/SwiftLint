@@ -49,7 +49,7 @@
 
 #### Bug Fixes
 
-* Respect `validates_start_with_lowercase` value when linting function names
+* Respect `validates_start_with_lowercase` option when linting function names.  
   [Chris Brakebill](https://github.com/braker1nine)
   [#2708](https://github.com/realm/SwiftLint/issues/2708)
 

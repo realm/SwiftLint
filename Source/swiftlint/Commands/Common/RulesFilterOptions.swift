@@ -1,5 +1,4 @@
 import ArgumentParser
-import Foundation
 
 enum RuleEnablementOptions: String, EnumerableFlag {
     case enabled, disabled

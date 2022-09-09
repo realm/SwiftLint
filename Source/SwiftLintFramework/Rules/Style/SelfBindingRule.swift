@@ -46,7 +46,8 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
         StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severityConfiguration.severity,
-            location: Location(file: file, position: position)
+            location: Location(file: file, position: position),
+            reason: "`self` should always be re-bound to `\(configuration.bindIdentifier)`"
         )
     }
 

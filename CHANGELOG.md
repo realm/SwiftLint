@@ -57,6 +57,10 @@
 * Add methods from SE-0348 to `UnusedDeclarationRule`.  
   [JP Simard](https://github.com/jpims)
 
+* Include the configured `bind_identifier` in `self_binding` violation
+  messages.  
+  [JP Simard](https://github.com/jpims)
+
 #### Bug Fixes
 
 * None.

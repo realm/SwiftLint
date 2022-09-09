@@ -90,6 +90,16 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4202](https://github.com/realm/SwiftLint/issues/4202)
 
+* SwiftSyntax libraries were updated to their 5.7 releases, improving how newer
+  Swift language features are handled.  
+  [JP Simard](https://github.com/jpims)
+* Rewrite `large_tuple` rule using SwiftSyntax, fixing false negatives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* Add Swift Package Build Tool Plugin with support for Swift Packages 
+  and Xcode projects.
+  [Johannes Ebeling](https://github.com/technocidal) 
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

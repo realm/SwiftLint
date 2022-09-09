@@ -39,7 +39,7 @@ jobs:
         sw_vers
         xcodebuild -version
       displayName: Version Informations
-    - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="-D DISABLE_FOCUSED_EXAMPLES"
+    - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="\$(inherited) -D DISABLE_FOCUSED_EXAMPLES"
       displayName: xcodebuild test
 
 - job: SwiftPM

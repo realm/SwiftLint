@@ -158,7 +158,8 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
 
     private func ignoreComment(line: Line, in file: SwiftLintFile) -> Bool {
         if configuration.includeComments {
-            return false
+            // Comment is right at the beginning of the line. We always ignore them.
+            return line.content.starts(with: "//")
         }
         let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
         if syntaxKindsInLine.isNotEmpty, SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) {

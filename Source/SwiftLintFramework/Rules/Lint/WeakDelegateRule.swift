@@ -35,6 +35,12 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
         ]
     )
 
+    private static let ignoredAnnotations = [
+        "@UIApplicationDelegateAdaptor",
+        "@NSApplicationDelegateAdaptor",
+        "@WKExtensionDelegateAdaptor"
+    ]
+
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
@@ -69,16 +75,13 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
         // Check if non-computed
         let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
-
-        // Check for UIApplicationDelegateAdaptor
+        // Check for annotations
         for attribute in dictionary.swiftAttributes {
             if
                 let offset = attribute.offset,
                 let length = attribute.length,
                 let value = file.stringView.substringWithByteRange(ByteRange(location: offset, length: length)),
-                (value.hasPrefix("@UIApplicationDelegateAdaptor")
-                  || value.hasPrefix("@NSApplicationDelegateAdaptor")
-                  || value.hasPrefix("@WKExtensionDelegateAdaptor")) {
+                value.hasAnyPrefix(of: Self.ignoredAnnotations) {
                 return []
             }
         }

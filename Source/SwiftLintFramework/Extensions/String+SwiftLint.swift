@@ -122,4 +122,8 @@ extension String {
             }
         }
     }
+
+    internal func hasAnyPrefix(of prefixes: [String]) -> Bool {
+        prefixes.contains(where: hasPrefix)
+    }
 }

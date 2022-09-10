@@ -25,13 +25,21 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
             Example("protocol P {\n var delegate: AnyObject? { get set }\n}\n"),
             Example("class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"),
             Example("class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"),
-            Example("struct Foo {\n @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}")
+            Example("struct Foo {\n @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}"),
+            Example("struct Foo {\n @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}"),
+            Example("struct Foo {\n @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate \n}")
         ],
         triggeringExamples: [
             Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"),
             Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n")
         ]
     )
+
+    private static let ignoredAnnotations = [
+        "@UIApplicationDelegateAdaptor",
+        "@NSApplicationDelegateAdaptor",
+        "@WKExtensionDelegateAdaptor"
+    ]
 
     public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
@@ -67,14 +75,13 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
         // Check if non-computed
         let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
-
-        // Check for UIApplicationDelegateAdaptor
+        // Check for annotations
         for attribute in dictionary.swiftAttributes {
             if
                 let offset = attribute.offset,
                 let length = attribute.length,
                 let value = file.stringView.substringWithByteRange(ByteRange(location: offset, length: length)),
-                value.hasPrefix("@UIApplicationDelegateAdaptor") {
+                value.hasAnyPrefix(of: Self.ignoredAnnotations) {
                 return []
             }
         }

@@ -67,6 +67,12 @@
   [Chris Brakebill](https://github.com/braker1nine)
   [#2708](https://github.com/realm/SwiftLint/issues/2708)
 
+* Do not report variables annotated with `@NSApplicationDelegateAdaptor` and
+  `@WKExtensionDelegateAdaptor` in `weak_delegate` rule.  
+  [Till Hainbach](https://github.com/tillhainbach)
+  [#3598](https://github.com/realm/SwiftLint/issues/3456)
+  [#3611](https://github.com/realm/SwiftLint/issues/3611)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from
@@ -587,10 +593,7 @@ macOS < 12.
 
 #### Enhancements
 
-* Don't report `@NSApplicationDelegateAdaptor` and `@WKExtensionDelegateAdaptor` statements in `weak-delegate` rule.
-  [Till Hainbach](https://github.com/tillhainbach)
-  [#3598](https://github.com/realm/SwiftLint/issues/3456)
-  [#3611](https://github.com/realm/SwiftLint/issues/3611)
+* None.
 
 #### Bug Fixes
 

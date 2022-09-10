@@ -1,18 +1,14 @@
 internal struct TypeNameRuleExamples {
-    private static let types = ["class", "struct", "enum"]
-
     static let nonTriggeringExamples: [Example] = {
-        let typeExamples: [Example] = types.flatMap { type -> [Example] in
-            [
-                Example("\(type) MyType {}"),
-                Example("private \(type) _MyType {}"),
-                Example("\(type) \(repeatElement("A", count: 40).joined()) {}"),
-                Example("\(type) MyView_Previews: PreviewProvider"),
-                Example("private \(type) _MyView_Previews: PreviewProvider")
-            ]
-        }
+        let typeExamples = [
+            Example("class MyType {}"),
+            Example("private struct _MyType {}"),
+            Example("enum \(repeatElement("A", count: 40).joined()) {}"),
+            Example("struct MyView_Previews: PreviewProvider", excludeFromDocumentation: true),
+            Example("private class _MyView_Previews: PreviewProvider", excludeFromDocumentation: true)
+        ]
 
-        let typeAliasAndAssociatedTypeExamples: [Example] = [
+        let typeAliasAndAssociatedTypeExamples = [
             Example("typealias Foo = Void"),
             Example("private typealias Foo = Void"),
             Example("""
@@ -31,21 +27,19 @@ internal struct TypeNameRuleExamples {
     }()
 
     static let triggeringExamples: [Example] = {
-        let typeExamples: [Example] = types.flatMap { type in
-            [
-                Example("\(type) ↓myType {}"),
-                Example("\(type) ↓_MyType {}"),
-                Example("private \(type) ↓MyType_ {}"),
-                Example("private \(type) ↓`_` {}", excludeFromDocumentation: true),
-                Example("\(type) ↓My {}"),
-                Example("\(type) ↓\(repeatElement("A", count: 41).joined()) {}"),
-                Example("\(type) ↓MyView_Previews"),
-                Example("private \(type) ↓_MyView_Previews"),
-                Example("\(type) ↓MyView_Previews_Previews: PreviewProvider")
-            ]
-        }
+        let typeExamples = [
+            Example("class ↓myType {}"),
+            Example("enum ↓_MyType {}"),
+            Example("private struct ↓MyType_ {}"),
+            Example("private class ↓`_` {}", excludeFromDocumentation: true),
+            Example("struct ↓My {}"),
+            Example("struct ↓\(repeatElement("A", count: 41).joined()) {}"),
+            Example("class ↓MyView_Previews"),
+            Example("private struct ↓_MyView_Previews"),
+            Example("struct ↓MyView_Previews_Previews: PreviewProvider", excludeFromDocumentation: true)
+        ]
 
-        let typeAliasAndAssociatedTypeExamples: [Example] = [
+        let typeAliasAndAssociatedTypeExamples = [
             Example("typealias ↓X = Void"),
             Example("private typealias ↓Foo_Bar = Void"),
             Example("private typealias ↓foo = Void"),

@@ -233,6 +233,7 @@ struct LintOrAnalyzeOptions {
     let compilerLogPath: String?
     let compileCommands: String?
     let inProcessSourcekit: Bool
+    let correctableOnly: Bool
 
     var verb: String {
         if autocorrect {

@@ -43,6 +43,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var output: String?
     @Flag(help: "Show a live-updating progress bar instead of each file being processed.")
     var progress = false
+    @Flag(help: "Whether only correctable rules should be applied.")
+    var correctableOnly = false
 }
 
 // MARK: - Common Argument Help

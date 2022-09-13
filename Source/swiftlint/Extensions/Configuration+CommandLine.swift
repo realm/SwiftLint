@@ -259,7 +259,8 @@ extension Configuration {
         self.init(
             configurationFiles: options.configurationFiles,
             enableAllRules: options.enableAllRules,
-            cachePath: options.cachePath
+            cachePath: options.cachePath,
+            correctableOnly: options.correctableOnly
         )
     }
 }

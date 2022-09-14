@@ -81,6 +81,7 @@ public let primaryRuleList = RuleList(rules: [
     IBInspectableInExtensionRule.self,
     IdenticalOperandsRule.self,
     IdentifierNameRule.self,
+    IfLetShadowingRule.self,
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,

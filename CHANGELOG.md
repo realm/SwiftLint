@@ -61,6 +61,11 @@
   messages.  
   [JP Simard](https://github.com/jpims)
 
+* Add a new `if_let_shadowing` opt-in rule that triggers in Swift 5.7 when a
+  shadowing optional binding is created in an if- or guard-statement.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4202](https://github.com/realm/SwiftLint/issues/4202)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

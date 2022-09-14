@@ -7,6 +7,8 @@ final class SwiftVersionTests: XCTestCase {
         let version = "6.0.0"
 #elseif compiler(>=5.7.0)
         let version = "5.7.0"
+#elseif compiler(>=5.6.3)
+        let version = "5.6.3"
 #elseif compiler(>=5.6.2)
         let version = "5.6.2"
 #elseif compiler(>=5.6.1)

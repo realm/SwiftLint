@@ -23,7 +23,9 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
             .buildCommand(
                 displayName: "SwiftLint",
                 executable: try context.tool(named: "swiftlint").path,
-                arguments: []
+                arguments: [
+                    "--cache-path", "\(context.pluginWorkDirectory)"
+                ]
             )
         ]
     }

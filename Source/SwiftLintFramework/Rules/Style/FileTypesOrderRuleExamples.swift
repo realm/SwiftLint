@@ -1,3 +1,4 @@
+// swiftlint:disable:next type_body_length
 internal struct FileTypesOrderRuleExamples {
     static let defaultOrderParts = [
         """
@@ -120,14 +121,23 @@ internal struct FileTypesOrderRuleExamples {
         }
         """),
         Example("""
+        // Main Type
         struct ContentView: View {
             var body: some View {
                 Text("Hello, World!")
             }
         }
 
+        // Preview Provider
         struct ContentView_Previews: PreviewProvider {
             static var previews: some View { ContentView() }
+        }
+
+        // Library Content Provider
+        struct ContentView_LibraryContent: LibraryContentProvider {
+            var views: [LibraryItem] {
+                LibraryItem(ContentView())
+            }
         }
         """)
     ]
@@ -192,6 +202,16 @@ internal struct FileTypesOrderRuleExamples {
 
         // Main Type
         struct ContentView: View {}
+        """),
+        Example("""
+        // Library Content Provider
+        ↓struct ContentView_LibraryContent: LibraryContentProvider {}
+
+        // Main Type
+        struct ContentView: View {}
+
+        // Preview Provider
+        struct ContentView_Previews: PreviewProvider {}
         """)
     ]
 }

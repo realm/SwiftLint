@@ -3,6 +3,7 @@ enum FileType: String {
     case mainType = "main_type"
     case `extension` = "extension"
     case previewProvider = "preview_provider"
+    case libraryContentProvider = "library_content_provider"
 }
 
 public struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
@@ -11,7 +12,8 @@ public struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
         [.supportingType],
         [.mainType],
         [.extension],
-        [.previewProvider]
+        [.previewProvider],
+        [.libraryContentProvider]
     ]
 
     public var consoleDescription: String {

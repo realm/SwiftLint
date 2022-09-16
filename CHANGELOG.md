@@ -60,6 +60,10 @@
 * Include the configured `bind_identifier` in `self_binding` violation
   messages.  
   [JP Simard](https://github.com/jpims)
+  
+* Add `library_content_provider` file type to `file_types_order` rule 
+  to allow LibraryContentProvider to be ordered independent from `main_type`
+  [dahlborn](https://github.com/dahlborn)
 
 #### Bug Fixes
 

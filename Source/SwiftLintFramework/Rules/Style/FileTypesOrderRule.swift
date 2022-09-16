@@ -20,7 +20,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     // swiftlint:disable:next function_body_length
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
-            let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
+              let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 
         let extensionsSubstructures = self.extensionsSubstructures(
             in: file,
@@ -33,6 +33,8 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         )
 
         let previewProviderSubstructures = self.previewProviderSubstructures(in: file)
+
+        let libraryContentProviderSubstructures = self.libraryContentProviderSubstructures(in: file)
 
         let mainTypeOffset: [FileTypeOffset] = [(.mainType, mainTypeSubstuctureOffset)]
         let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.compactMap { substructure in
@@ -50,7 +52,18 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             return (.previewProvider, offset)
         }
 
-        let allOffsets = mainTypeOffset + extensionOffsets + supportingTypeOffsets + previewProviderOffsets
+        let libraryContentProviderOffsets: [FileTypeOffset] = libraryContentProviderSubstructures
+            .compactMap { substructure in
+                guard let offset = substructure.offset else { return nil }
+                return (.libraryContentProvider, offset)
+            }
+
+        let allOffsets = mainTypeOffset
+        + extensionOffsets
+        + supportingTypeOffsets
+        + previewProviderOffsets
+        + libraryContentProviderOffsets
+
         let orderedFileTypeOffsets = allOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
 
         var violations = [StyleViolation]()
@@ -98,7 +111,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             return substructure.offset != mainTypeSubstructure.offset &&
-                kind.contains(SwiftDeclarationKind.extension.rawValue)
+            kind.contains(SwiftDeclarationKind.extension.rawValue)
         }
     }
 
@@ -112,16 +125,26 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
             guard let declarationKind = substructure.declarationKind else { return false }
-            guard !substructure.inheritedTypes.contains("PreviewProvider") else { return false }
+
+            let hasExcludedInheritedType = substructure.inheritedTypes.contains { inheritedType in
+                inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
+            }
+            guard !hasExcludedInheritedType else { return false }
 
             return substructure.offset != mainTypeSubstructure.offset &&
-                supportingTypeKinds.contains(declarationKind)
+            supportingTypeKinds.contains(declarationKind)
         }
     }
 
     private func previewProviderSubstructures(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         return file.structureDictionary.substructure.filter { substructure in
             return substructure.inheritedTypes.contains("PreviewProvider")
+        }
+    }
+
+    private func libraryContentProviderSubstructures(in file: SwiftLintFile) -> [SourceKittenDictionary] {
+        return file.structureDictionary.substructure.filter { substructure in
+            return substructure.inheritedTypes.contains("LibraryContentProvider")
         }
     }
 
@@ -147,7 +170,11 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
         let priorityKindSubstructures = dict.substructure.filter { substructure in
             guard let kind = substructure.declarationKind else { return false }
-            guard !substructure.inheritedTypes.contains("PreviewProvider") else { return false }
+
+            let hasExcludedInheritedType = substructure.inheritedTypes.contains { inheritedType in
+                inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
+            }
+            guard !hasExcludedInheritedType else { return false }
 
             return priorityKinds.contains(kind)
         }

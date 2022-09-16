@@ -300,6 +300,12 @@ macOS < 12.
   [KokiHirokawa](https://github.com/KokiHirokawa)
   [#3986](https://github.com/realm/SwiftLint/issues/3986)
 
+* Add `TypeACLOrderRule` with identifier `type_acl_order` to enforce ordering of 
+  type contents by ACL.
+  [jd014](https://github.com/jd014)
+  [#2410](https://github.com/realm/SwiftLint/issues/2410)
+  [#3672](https://github.com/realm/SwiftLint/issues/3672)
+
 #### Bug Fixes
 
 * Ignore array types in `syntactic_sugar` rule if their associated `Index` is

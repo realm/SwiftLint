@@ -1,3 +1,5 @@
+import SourceKittenFramework
+
 enum TypeContent: String {
     case `case` = "case"
     case typeAlias = "type_alias"
@@ -14,6 +16,71 @@ enum TypeContent: String {
     case otherMethod = "other_method"
     case `subscript` = "subscript"
     case deinitializer = "deinitializer"
+
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    init?(structure: SourceKittenDictionary) {
+        guard let typeContentKind = structure.declarationKind else { return nil }
+
+        switch typeContentKind {
+        case .enumcase, .enumelement:
+            self = .case
+
+        case .typealias:
+            self = .typeAlias
+
+        case .associatedtype:
+            self = .associatedType
+
+        case .class, .enum, .extension, .protocol, .struct:
+            self = .subtype
+
+        case .varClass, .varStatic:
+            self = .typeProperty
+
+        case .varInstance:
+            if structure.enclosedSwiftAttributes.contains(.iboutlet) {
+                self = .ibOutlet
+            } else if structure.enclosedSwiftAttributes.contains(.ibinspectable) {
+                self = .ibInspectable
+            } else {
+                self = .instanceProperty
+            }
+
+        case .functionMethodClass, .functionMethodStatic:
+            self = .typeMethod
+
+        case .functionMethodInstance:
+            let viewLifecycleMethodNames = [
+                "loadView(",
+                "loadViewIfNeeded(",
+                "viewDidLoad(",
+                "viewWillAppear(",
+                "viewWillLayoutSubviews(",
+                "viewDidLayoutSubviews(",
+                "viewDidAppear(",
+                "viewWillDisappear(",
+                "viewDidDisappear("
+            ]
+
+            if structure.name!.starts(with: "init(") {
+                self = .initializer
+            } else if structure.name!.starts(with: "deinit") {
+                self = .deinitializer
+            } else if viewLifecycleMethodNames.contains(where: { structure.name!.starts(with: $0) }) {
+                self = .viewLifeCycleMethod
+            } else if structure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
+                self = .ibAction
+            } else {
+                self = .otherMethod
+            }
+
+        case .functionSubscript:
+            self = .subscript
+
+        default:
+            return nil
+        }
+    }
 }
 
 public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {

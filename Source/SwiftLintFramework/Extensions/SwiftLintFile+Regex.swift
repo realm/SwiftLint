@@ -241,8 +241,7 @@ extension SwiftLintFile {
             return
         }
         guard let path = path else {
-            // A file without a path stems from STDIN input. The content is printed to STDOUT.
-            queuedPrint(string)
+            // A file without a path stems from STDIN input. The content will be printed to STDOUT later.
             return
         }
         guard let stringData = String(string).data(using: .utf8) else {

@@ -1,5 +1,5 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
+import SwiftSyntaxBuilder
 
 private func wrapInSwitch(
     variable: String = "foo",
@@ -24,7 +24,7 @@ private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = 
     """, file: file, line: line)
 }
 
-public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
+public struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -84,94 +84,103 @@ public struct EmptyEnumArgumentsRule: SubstitutionCorrectableASTRule, Configurat
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
+    }
+}
+
+private extension EmptyEnumArgumentsRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: CaseItemSyntax) {
+            if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
+                violationPositions.append(violationPosition)
+            }
+        }
+
+        override func visitPost(_ node: MatchingPatternConditionSyntax) {
+            if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
+                violationPositions.append(violationPosition)
+            }
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    public func violationRanges(in file: SwiftLintFile, kind: StatementKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard kind == .case || kind == .if || kind == .guard else {
-            return []
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        let needsCase = kind == .if || kind == .guard
-        let contents = file.stringView
-        let callsRanges = dictionary.methodCallRanges(in: file)
-
-        return dictionary.elements.flatMap { subDictionary -> [NSRange] in
-            guard (subDictionary.kind == "source.lang.swift.structure.elem.pattern" ||
-                subDictionary.kind == "source.lang.swift.structure.elem.condition_expr"),
-                let byteRange = subDictionary.byteRange,
-                let caseRange = contents.byteRangeToNSRange(byteRange)
+        override func visit(_ node: CaseItemSyntax) -> Syntax {
+            guard
+                let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
+                !isInDisabledRegion(node)
             else {
-                return []
+                return super.visit(node)
             }
 
-            let emptyArgumentRegex = regex(#"\.\S+\s*(\([,\s_]*\))"#)
-            return emptyArgumentRegex.matches(in: file.contents, options: [], range: caseRange).compactMap { match in
-                let parenthesesRange = match.range(at: 1)
+            correctionPositions.append(violationPosition)
+            return super.visit(Syntax(node.withPattern(newPattern)))
+        }
 
-                // avoid matches after `where` keyworkd
-                if let whereRange = file.match(pattern: "where", with: [.keyword], range: caseRange).first {
-                    if whereRange.location < parenthesesRange.location {
-                        return nil
-                    }
+        override func visit(_ node: MatchingPatternConditionSyntax) -> Syntax {
+            guard
+                let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
+                !isInDisabledRegion(node)
+            else {
+                return super.visit(node)
+            }
 
-                    // avoid matches in "(_, _) where"
-                    if let whereByteRange = contents.NSRangeToByteRange(start: whereRange.location,
-                                                                        length: whereRange.length),
-                        case let length = whereByteRange.location - byteRange.location,
-                        case let byteRange = ByteRange(location: byteRange.location, length: length),
-                        Set(file.syntaxMap.kinds(inByteRange: byteRange)) == [.keyword] {
-                        return nil
-                    }
-                }
+            correctionPositions.append(violationPosition)
+            return super.visit(Syntax(node.withPattern(newPattern)))
+        }
 
-                if needsCase, file.match(pattern: "\\bcase\\b", with: [.keyword], range: caseRange).isEmpty {
-                    return nil
-                }
-
-                if callsRanges.contains(where: parenthesesRange.intersects) {
-                    return nil
-                }
-
-                return parenthesesRange
+        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
+            disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
             }
         }
     }
 }
 
-private extension SourceKittenDictionary {
-    func methodCallRanges(in file: SwiftLintFile) -> [NSRange] {
-        return substructure
-            .flatMap { dict -> [SourceKittenDictionary] in
-                // In Swift >= 5.6, calls are embedded in a `source.lang.swift.expr.argument` entry
-                guard SwiftVersion.current >= .fiveDotSix, dict.expressionKind == .argument else {
-                    return [dict]
-                }
+private extension PatternSyntax {
+    func emptyEnumArgumentsViolation(rewrite: Bool) -> (position: AbsolutePosition, pattern: PatternSyntax)? {
+        guard
+            var pattern = self.as(ExpressionPatternSyntax.self),
+            let expression = pattern.expression.as(FunctionCallExprSyntax.self),
+            expression.argumentList.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }),
+            let calledExpression = expression.calledExpression.as(MemberAccessExprSyntax.self),
+            calledExpression.base == nil,
+            let violationPosition = expression.leftParen?.positionAfterSkippingLeadingTrivia
+        else {
+            return nil
+        }
 
-                return dict.substructure
-            }
-            .compactMap { dict -> NSRange? in
-                guard dict.expressionKind == .call,
-                      let byteRange = dict.byteRange,
-                      let range = file.stringView.byteRangeToNSRange(byteRange),
-                      let name = dict.name,
-                      !name.starts(with: ".")
-                else {
-                    return nil
-                }
+        if rewrite {
+            let newCalledExpression = calledExpression
+                .withTrailingTrivia(expression.rightParen?.trailingTrivia ?? .zero)
+            let newExpression = expression
+                .withCalledExpression(ExprSyntax(newCalledExpression))
+                .withLeftParen(nil)
+                .withArgumentList(nil)
+                .withRightParen(nil)
+            pattern.expression = ExprSyntax(newExpression)
+        }
 
-                return range
-            }
+        return (violationPosition, PatternSyntax(pattern))
     }
 }

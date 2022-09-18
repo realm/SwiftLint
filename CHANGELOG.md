@@ -61,6 +61,11 @@
   messages.  
   [JP Simard](https://github.com/jpims)
 
+* Add `xctestcase_subclasses` option to `test_case_accessibility` rule, which
+  allows detection in subclasses of XCTestCase (or in arbitrary classes.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4200](https://github.com/realm/SwiftLint/issues/4200)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

@@ -1,10 +1,12 @@
 public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     public private(set) var allowedPrefixes: Set<String> = []
+    public private(set) var xctestcaseSubclasses: Set<String> = []
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            ", allowed_prefixes: [\(allowedPrefixes)]"
+            ", allowed_prefixes: [\(allowedPrefixes)]" +
+            ", xctestcase_subclasses: [\(xctestcaseSubclasses)]"
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -18,6 +20,10 @@ public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
 
         if let allowedPrefixes = configuration["allowed_prefixes"] as? [String] {
             self.allowedPrefixes = Set(allowedPrefixes)
+        }
+
+        if let xctestcaseSubclasses = configuration["xctestcase_subclasses"] as? [String] {
+            self.xctestcaseSubclasses = Set(xctestcaseSubclasses)
         }
     }
 

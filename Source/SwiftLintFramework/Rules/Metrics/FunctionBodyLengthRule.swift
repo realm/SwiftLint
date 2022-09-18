@@ -1,7 +1,10 @@
 import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 40, error: 100)
+    public var configuration = FunctionBodyLengthConfiguration(warning: 40,
+                                                               error: 100,
+                                                               excludedByName: [],
+                                                               excludedBySignature: [])
 
     public init() {}
 
@@ -12,25 +15,41 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         kind: .metrics
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+    public func validate(file: SwiftLintFile,
+                         kind: SwiftDeclarationKind,
                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let input = RuleInput(file: file, kind: kind, dictionary: dictionary) else {
             return []
         }
 
-        for parameter in configuration.params {
+        if let functionName = dictionary.name, configuration.excludedBySignature.contains(functionName) {
+            return []
+        }
+
+        let functionNameWithoutAgruments = dictionary.name?.split(separator: "(").first
+            .flatMap(String.init)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if let maybeExcludedFunction = functionNameWithoutAgruments,
+            configuration.excludedByName.contains(maybeExcludedFunction) {
+            return []
+        }
+
+        for parameter in configuration.severityConfiguration.params {
             let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                 input.startLine, input.endLine, parameter.value
             )
             guard exceeds else { continue }
+
             return [
                 StyleViolation(
                     ruleDescription: Self.description, severity: parameter.severity,
                     location: Location(file: file, byteOffset: input.offset),
                     reason: """
-                        Function body should span \(configuration.warning) lines or less excluding comments and \
-                        whitespace: currently spans \(lineCount) lines
-                        """
+                    Function body should span \(configuration.severityConfiguration.warning) \
+                    lines or less excluding comments and \
+                    whitespace: currently spans \(lineCount) lines
+                    """
                 )
             ]
         }

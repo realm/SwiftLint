@@ -1,4 +1,6 @@
-public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationProviderRule {
+import SwiftSyntax
+
+public struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
@@ -22,21 +24,38 @@ public struct DiscouragedObjectLiteralRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.offset, kind == .objectLiteral else { return [] }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(configuration: configuration)
+    }
 
-        if !configuration.imageLiteral && dictionary.name == "imageLiteral" {
-            return []
+    public func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
+        StyleViolation(
+            ruleDescription: Self.description,
+            severity: configuration.severityConfiguration.severity,
+            location: Location(file: file, position: position)
+        )
+    }
+}
+
+private extension DiscouragedObjectLiteralRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+        private let configuration: ObjectLiteralConfiguration
+
+        init(configuration: ObjectLiteralConfiguration) {
+            self.configuration = configuration
         }
 
-        if !configuration.colorLiteral && dictionary.name == "colorLiteral" {
-            return []
-        }
+        override func visitPost(_ node: ObjectLiteralExprSyntax) {
+            if !configuration.imageLiteral && node.identifier.text == "#imageLiteral" {
+                return
+            }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+            if !configuration.colorLiteral && node.identifier.text == "#colorLiteral" {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

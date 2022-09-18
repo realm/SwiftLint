@@ -25,7 +25,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             Example("rect.insetBy(dx: 5.0, dy: -7.0)"),
             Example("rect.offsetBy(dx: 5.0, dy: -7.0)"),
             Example("rect1.union(rect2)"),
-            Example("rect1.intersect(rect2)"),
+            Example("rect1.intersection(rect2)"),
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
             Example("rect1.contains(rect2)"),
             Example("rect.contains(point)"),
@@ -72,7 +72,6 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             Example("↓NSInsetRect(rect, 5.0, -7.0)\n"): Example("rect.insetBy(dx: 5.0, dy: -7.0)\n"),
             Example("↓NSOffsetRect(rect, -2, 8.3)\n"): Example("rect.offsetBy(dx: -2, dy: 8.3)\n"),
             Example("↓NSUnionRect(rect1, rect2)\n"): Example("rect1.union(rect2)\n"),
-            Example("↓NSIntersectionRect( rect1 ,rect2)\n"): Example("rect1.intersect(rect2)\n"),
             Example("↓NSContainsRect( rect1,rect2     )\n"): Example("rect1.contains(rect2)\n"),
             Example("↓NSPointInRect(point  ,rect)\n"): Example("rect.contains(point)\n"), // note order of arguments
             Example("↓NSIntersectsRect(  rect1,rect2 )\n"): Example("rect1.intersects(rect2)\n"),
@@ -120,7 +119,6 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "NSInsetRect\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
             "NSOffsetRect\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
             "NSUnionRect\\(\(twoVars)\\)": "$1.union($2)",
-            "NSIntersectionRect\\(\(twoVars)\\)": "$1.intersect($2)",
             "NSContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
             "NSPointInRect\\(\(twoVars)\\)": "$2.contains($1)", // note order of arguments
             "NSIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"

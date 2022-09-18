@@ -183,6 +183,45 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 "${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
+### Plug-in Support
+
+SwiftLint can be used as a build tool plug-in for both Xcode projects as well as
+Swift packages.
+
+> Due to limitations with Swift Package Manager Plug-ins this is only
+recommended for projects that have a SwiftLint configuration in their root directory as
+there is currently no way to pass any additional options to the SwiftLint executable.
+
+#### Xcode
+
+You can integrate SwiftLint as a Xcode Build Tool Plug-in if you're working
+with a project in Xcode.
+
+Add SwiftLint as a package dependency to your project without linking any of the
+products.
+
+Select the target you want to add linting to and open the `Build Phases` inspector.
+Open `Run Build Tool Plug-ins` and select the `+` button.
+Select `SwiftLintPlugin` from the list and add it to the project.
+
+![](assets/select-swiftlint-plugin.png)
+
+#### Swift Package
+
+You can integrate SwiftLint as a Swift Package Manager Plug-in if you're working with
+a Swift Package with a `Package.swift` manifest.
+
+Add SwiftLint as a package dependency to your `Package.swift` file.  
+Add SwiftLint to a target using the `plugins` parameter.
+
+```swift
+.target(
+    ...
+    plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+),
+```
+
+
 ### AppCode
 
 To integrate SwiftLint with AppCode, install

@@ -65,6 +65,13 @@ internal struct TypeContentsOrderRuleExamples {
                 hasLayoutedView1 = true
             }
 
+            override func willMove(toParent parent: UIViewController?) {
+                super.willMove(toParent: parent)
+                if parent == nil {
+                    viewModel.willMoveToParent()
+                }
+            }
+
             override func viewDidLayoutSubviews() {
                 super.viewDidLayoutSubviews()
 

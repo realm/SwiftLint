@@ -118,7 +118,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 "viewDidLayoutSubviews(",
                 "viewDidAppear(",
                 "viewWillDisappear(",
-                "viewDidDisappear("
+                "viewDidDisappear(",
+                "willMove("
             ]
 
             if typeContentStructure.name!.starts(with: "init(") {

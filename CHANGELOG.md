@@ -77,6 +77,11 @@
   [#3598](https://github.com/realm/SwiftLint/issues/3456)
   [#3611](https://github.com/realm/SwiftLint/issues/3611)
 
+* Fix false-positives related to the `willMove` lifecycle method in
+  `type_contents_order` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3478](https://github.com/realm/SwiftLint/issues/3478)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from

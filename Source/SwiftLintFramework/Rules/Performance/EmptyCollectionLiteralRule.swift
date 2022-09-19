@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule {
+public struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -28,13 +28,36 @@ public struct EmptyCollectionLiteralRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\b\\s*(==|!=)\\s*\\[\\s*:?\\s*\\]"
-        let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
+
+private extension EmptyCollectionLiteralRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: TokenSyntax) {
+            guard
+                node.tokenKind.isEqualityComparison,
+                let violationPosition = node.previousToken?.endPositionBeforeTrailingTrivia,
+                let expectedLeftSquareBracketToken = node.nextToken,
+                expectedLeftSquareBracketToken.tokenKind == .leftSquareBracket,
+                let expectedColonToken = expectedLeftSquareBracketToken.nextToken,
+                expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquareBracket
+            else {
+                return
+            }
+
+            violationPositions.append(violationPosition)
         }
+    }
+}
+
+private extension TokenKind {
+    var isEqualityComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==")
     }
 }

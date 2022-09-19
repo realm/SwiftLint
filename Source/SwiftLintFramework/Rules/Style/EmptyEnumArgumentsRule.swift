@@ -1,5 +1,4 @@
 import SwiftSyntax
-import SwiftSyntaxBuilder
 
 private func wrapInSwitch(
     variable: String = "foo",

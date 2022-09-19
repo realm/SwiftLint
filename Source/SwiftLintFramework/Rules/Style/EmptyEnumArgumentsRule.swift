@@ -48,9 +48,15 @@ public struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationP
             Example("guard foo == .bar() else { return }"),
             Example("""
             if case .appStore = self.appInstaller, !UIDevice.isSimulator() {
-                viewController.present(self, animated: false)
+              viewController.present(self, animated: false)
             } else {
-                UIApplication.shared.open(self.appInstaller.url)
+              UIApplication.shared.open(self.appInstaller.url)
+            }
+            """),
+            Example("""
+            let updatedUserNotificationSettings = deepLink.filter { nav in
+              guard case .settings(.notifications(_, nil)) = nav else { return false }
+              return true
             }
             """)
         ],
@@ -66,9 +72,15 @@ public struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationP
             Example("guard case .bar↓() = foo else {\n}"),
             Example("""
             if case .appStore↓(_) = self.appInstaller, !UIDevice.isSimulator() {
-                viewController.present(self, animated: false)
+              viewController.present(self, animated: false)
             } else {
-                UIApplication.shared.open(self.appInstaller.url)
+              UIApplication.shared.open(self.appInstaller.url)
+            }
+            """),
+            Example("""
+            let updatedUserNotificationSettings = deepLink.filter { nav in
+              guard case .settings(.notifications↓(_, _)) = nav else { return false }
+              return true
             }
             """)
         ],
@@ -79,7 +91,19 @@ public struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationP
             wrapInSwitch("case .bar↓() where method() > 2"): wrapInSwitch("case .bar where method() > 2"),
             wrapInFunc("case .bar↓(_)"): wrapInFunc("case .bar"),
             Example("if case .bar↓(_) = foo {"): Example("if case .bar = foo {"),
-            Example("guard case .bar↓(_) = foo else {"): Example("guard case .bar = foo else {")
+            Example("guard case .bar↓(_) = foo else {"): Example("guard case .bar = foo else {"),
+            Example("""
+            let updatedUserNotificationSettings = deepLink.filter { nav in
+              guard case .settings(.notifications↓(_, _)) = nav else { return false }
+              return true
+            }
+            """):
+                Example("""
+                let updatedUserNotificationSettings = deepLink.filter { nav in
+                  guard case .settings(.notifications) = nav else { return false }
+                  return true
+                }
+                """)
         ]
     )
 
@@ -161,25 +185,68 @@ private extension PatternSyntax {
         guard
             var pattern = self.as(ExpressionPatternSyntax.self),
             let expression = pattern.expression.as(FunctionCallExprSyntax.self),
-            expression.argumentList.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }),
+            expression.argumentsHasViolation,
             let calledExpression = expression.calledExpression.as(MemberAccessExprSyntax.self),
             calledExpression.base == nil,
-            let violationPosition = expression.leftParen?.positionAfterSkippingLeadingTrivia
+            let violationPosition = expression.innermostFunctionCall.leftParen?.positionAfterSkippingLeadingTrivia
         else {
             return nil
         }
 
         if rewrite {
+            pattern.expression = expression.removingInnermostDiscardArguments
+        }
+
+        return (violationPosition, PatternSyntax(pattern))
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var argumentsHasViolation: Bool {
+        argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
+    }
+
+    var innermostFunctionCall: FunctionCallExprSyntax {
+        argumentList
+            .lazy
+            .compactMap { $0.expression.as(FunctionCallExprSyntax.self)?.innermostFunctionCall }
+            .first ?? self
+    }
+
+    var removingInnermostDiscardArguments: ExprSyntax {
+        guard
+            argumentsHasViolation,
+            let calledExpression = calledExpression.as(MemberAccessExprSyntax.self),
+            calledExpression.base == nil
+        else {
+            return ExprSyntax(self)
+        }
+
+        if argumentList.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }) {
             let newCalledExpression = calledExpression
-                .withTrailingTrivia(expression.rightParen?.trailingTrivia ?? .zero)
-            let newExpression = expression
+                .withTrailingTrivia(rightParen?.trailingTrivia ?? .zero)
+            let newExpression = self
                 .withCalledExpression(ExprSyntax(newCalledExpression))
                 .withLeftParen(nil)
                 .withArgumentList(nil)
                 .withRightParen(nil)
-            pattern.expression = ExprSyntax(newExpression)
+            return ExprSyntax(newExpression)
         }
 
-        return (violationPosition, PatternSyntax(pattern))
+        var copy = self
+        for (index, arg) in argumentList.enumerated() {
+            if let newArgExpr = arg.expression.as(FunctionCallExprSyntax.self) {
+                let newArg = arg.withExpression(newArgExpr.removingInnermostDiscardArguments)
+                copy.argumentList = copy.argumentList.replacing(childAt: index, with: newArg)
+            }
+        }
+        return ExprSyntax(copy)
+    }
+}
+
+private extension ExprSyntax {
+    var isDiscardAssignmentOrFunction: Bool {
+        self.is(DiscardAssignmentExprSyntax.self) ||
+            (self.as(FunctionCallExprSyntax.self)?.argumentsHasViolation == true)
     }
 }

@@ -32,37 +32,27 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        let previewProviderSubstructures = self.previewProviderSubstructures(in: file)
+        let previewProviderSubstructures = self.substructures(
+            in: file,
+            withInheritedType: "PreviewProvider"
+        )
 
-        let libraryContentProviderSubstructures = self.libraryContentProviderSubstructures(in: file)
+        let libraryContentSubstructures = self.substructures(
+            in: file,
+            withInheritedType: "LibraryContentProvider"
+        )
 
         let mainTypeOffset: [FileTypeOffset] = [(.mainType, mainTypeSubstuctureOffset)]
-        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.compactMap { substructure in
-            guard let offset = substructure.offset else { return nil }
-            return (.extension, offset)
-        }
-
-        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.compactMap { substructure in
-            guard let offset = substructure.offset else { return nil }
-            return (.supportingType, offset)
-        }
-
-        let previewProviderOffsets: [FileTypeOffset] = previewProviderSubstructures.compactMap { substructure in
-            guard let offset = substructure.offset else { return nil }
-            return (.previewProvider, offset)
-        }
-
-        let libraryContentProviderOffsets: [FileTypeOffset] = libraryContentProviderSubstructures
-            .compactMap { substructure in
-                guard let offset = substructure.offset else { return nil }
-                return (.libraryContentProvider, offset)
-            }
+        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.offsets(for: .extension)
+        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.offsets(for: .supportingType)
+        let previewProviderOffsets: [FileTypeOffset] = previewProviderSubstructures.offsets(for: .previewProvider)
+        let libraryContentOffsets: [FileTypeOffset] = libraryContentSubstructures.offsets(for: .libraryContentProvider)
 
         let allOffsets = mainTypeOffset
-        + extensionOffsets
-        + supportingTypeOffsets
-        + previewProviderOffsets
-        + libraryContentProviderOffsets
+            + extensionOffsets
+            + supportingTypeOffsets
+            + previewProviderOffsets
+            + libraryContentOffsets
 
         let orderedFileTypeOffsets = allOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
 
@@ -110,8 +100,8 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
-            return substructure.offset != mainTypeSubstructure.offset &&
-            kind.contains(SwiftDeclarationKind.extension.rawValue)
+            return substructure.offset != mainTypeSubstructure.offset
+                && kind.contains(SwiftDeclarationKind.extension.rawValue)
         }
     }
 
@@ -125,26 +115,19 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let dict = file.structureDictionary
         return dict.substructure.filter { substructure in
             guard let declarationKind = substructure.declarationKind else { return false }
-
-            let hasExcludedInheritedType = substructure.inheritedTypes.contains { inheritedType in
-                inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
-            }
-            guard !hasExcludedInheritedType else { return false }
+            guard !substructure.hasExcludedInheritedType else { return false }
 
             return substructure.offset != mainTypeSubstructure.offset &&
             supportingTypeKinds.contains(declarationKind)
         }
     }
 
-    private func previewProviderSubstructures(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return file.structureDictionary.substructure.filter { substructure in
-            return substructure.inheritedTypes.contains("PreviewProvider")
-        }
-    }
-
-    private func libraryContentProviderSubstructures(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return file.structureDictionary.substructure.filter { substructure in
-            return substructure.inheritedTypes.contains("LibraryContentProvider")
+    private func substructures(
+        in file: SwiftLintFile,
+        withInheritedType inheritedType: String
+    ) -> [SourceKittenDictionary] {
+        file.structureDictionary.substructure.filter { substructure in
+            substructure.inheritedTypes.contains(inheritedType)
         }
     }
 
@@ -170,20 +153,33 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
 
         let priorityKindSubstructures = dict.substructure.filter { substructure in
             guard let kind = substructure.declarationKind else { return false }
-
-            let hasExcludedInheritedType = substructure.inheritedTypes.contains { inheritedType in
-                inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
-            }
-            guard !hasExcludedInheritedType else { return false }
+            guard !substructure.hasExcludedInheritedType else { return false }
 
             return priorityKinds.contains(kind)
         }
 
         let substructuresSortedByBodyLength = priorityKindSubstructures.sorted { lhs, rhs in
-            return (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
+            (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
         }
 
         // specify class, enum or struct with longest body as main type
         return substructuresSortedByBodyLength.first
+    }
+}
+
+private extension SourceKittenDictionary {
+    var hasExcludedInheritedType: Bool {
+        self.inheritedTypes.contains { inheritedType in
+            inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
+        }
+    }
+}
+
+private extension Array where Element == SourceKittenDictionary {
+    func offsets(for fileType: FileType) -> [(fileType: FileType, offset: ByteCount)] {
+        self.compactMap { substructure in
+            guard let offset = substructure.offset else { return nil }
+            return (fileType, offset)
+        }
     }
 }

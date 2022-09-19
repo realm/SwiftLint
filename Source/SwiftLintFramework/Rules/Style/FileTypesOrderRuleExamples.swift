@@ -198,20 +198,31 @@ internal struct FileTypesOrderRuleExamples {
         """),
         Example("""
         // Preview Provider
-        ↓struct ContentView_Previews: PreviewProvider {}
+        ↓struct ContentView_Previews: PreviewProvider {
+            static var previews: some View { ContentView() }
+        }
 
         // Main Type
-        struct ContentView: View {}
+        struct ContentView: View {
+            var body: some View {
+                Text("Hello, World!")
+            }
+        }
         """),
         Example("""
         // Library Content Provider
-        ↓struct ContentView_LibraryContent: LibraryContentProvider {}
+        ↓struct ContentView_LibraryContent: LibraryContentProvider {
+            var views: [LibraryItem] {
+                LibraryItem(ContentView())
+            }
+        }
 
         // Main Type
-        struct ContentView: View {}
-
-        // Preview Provider
-        struct ContentView_Previews: PreviewProvider {}
+        struct ContentView: View {
+            var body: some View {
+                Text("Hello, World!")
+            }
+        }
         """)
     ]
 }

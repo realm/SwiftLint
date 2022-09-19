@@ -117,8 +117,8 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             guard let declarationKind = substructure.declarationKind else { return false }
             guard !substructure.hasExcludedInheritedType else { return false }
 
-            return substructure.offset != mainTypeSubstructure.offset &&
-            supportingTypeKinds.contains(declarationKind)
+            return substructure.offset != mainTypeSubstructure.offset
+                && supportingTypeKinds.contains(declarationKind)
         }
     }
 

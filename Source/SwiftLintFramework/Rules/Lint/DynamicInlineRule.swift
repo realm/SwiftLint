@@ -37,12 +37,20 @@ private extension DynamicInlineRule {
             guard let modifiers = node.modifiers,
                   let attributes = node.attributes,
                   modifiers.contains(where: { $0.name.text == "dynamic" }),
-                  attributes.contains(where: { $0.as(AttributeSyntax.self)?.attributeName.text == "inline" })
+                  attributes.contains(where: { $0.as(AttributeSyntax.self)?.isInlineAlways == true })
             else {
                 return
             }
 
             violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension AttributeSyntax {
+    var isInlineAlways: Bool {
+        attributeName.text == "inline" &&
+            argument?.isToken == true &&
+            argument?.firstToken?.tokenKind == .identifier("__always")
     }
 }

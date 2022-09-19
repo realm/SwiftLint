@@ -400,6 +400,13 @@
         <span class="n">hasLayoutedView1</span> <span class="o">=</span> <span class="kc">true</span>
     <span class="p">}</span>
 
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">willMove</span><span class="p">(</span><span class="n">toParent</span> <span class="nv">parent</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">?)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">willMove</span><span class="p">(</span><span class="nv">toParent</span><span class="p">:</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="n">viewModel</span><span class="o">.</span><span class="nf">willMoveToParent</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
     <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLayoutSubviews</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLayoutSubviews</span><span class="p">()</span>
 

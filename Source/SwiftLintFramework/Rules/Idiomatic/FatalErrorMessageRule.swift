@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -36,32 +36,38 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call,
-            let offset = dictionary.offset,
-            dictionary.name == "fatalError",
-            hasEmptyBody(dictionary: dictionary, file: file) else {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
     }
+}
 
-    private func hasEmptyBody(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let bodyRange = dictionary.bodyByteRange else {
-            return false
+private extension FatalErrorMessageRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let expression = node.calledExpression.as(IdentifierExprSyntax.self),
+                expression.identifier.text == "fatalError",
+                node.argumentList.isEmptyOrEmptyString else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        if bodyRange.length == 0 {
+private extension TupleExprElementListSyntax {
+    var isEmptyOrEmptyString: Bool {
+        if isEmpty {
             return true
         }
+        return count == 1 && first?.expression.as(StringLiteralExprSyntax.self)?.isEmpty == true
+    }
+}
 
-        let body = file.stringView.substringWithByteRange(bodyRange)
-        return body == "\"\""
+private extension StringLiteralExprSyntax {
+    var isEmpty: Bool {
+        segments.count == 1 && segments.first?.contentLength == .zero
     }
 }

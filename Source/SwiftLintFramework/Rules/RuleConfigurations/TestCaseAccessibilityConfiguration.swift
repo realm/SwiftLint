@@ -22,11 +22,11 @@ public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
             self.allowedPrefixes = Set(allowedPrefixes)
         }
 
-        var testParentClasses = ["XCTestCase"]
+        var allTestParentClasses = ["XCTestCase"]
         if let extraTestParentClasses = configuration["test_parent_classes"] as? [String] {
-            testParentClasses.append(contentsOf: extraTestParentClasses)
+            allTestParentClasses.append(contentsOf: extraTestParentClasses)
         }
-        self.testParentClasses = Set(testParentClasses)
+        self.testParentClasses = Set(allTestParentClasses)
 
     }
 

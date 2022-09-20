@@ -82,6 +82,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3478](https://github.com/realm/SwiftLint/issues/3478)
 
+* Do no longer autocorrect usage of `NSIntersectionRect` in `legacy_nsgeometry_functions`
+  rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3703](https://github.com/realm/SwiftLint/issues/3703)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from

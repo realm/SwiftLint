@@ -61,7 +61,7 @@
   messages.  
   [JP Simard](https://github.com/jpims)
 
-* Add `xctestcase_subclasses` option to `test_case_accessibility` rule, which
+* Add `test_parent_classes` option to `test_case_accessibility` rule, which
   allows detection in subclasses of XCTestCase.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)

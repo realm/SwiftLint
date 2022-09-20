@@ -42,8 +42,7 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         return file.structureDictionary.substructure.filter { dictionary in
             dictionary.declarationKind == .class &&
-                (dictionary.inheritedTypes.contains("XCTestCase") ||
-                 dictionary.inheritedTypes.contains(where: configuration.xctestcaseSubclasses.contains))
+            configuration.testParentClasses.intersection(dictionary.inheritedTypes).isNotEmpty
         }
     }
 

@@ -93,7 +93,8 @@ extension Array where Element == String {
                 "-parseable-output",
                 "-incremental",
                 "-serialize-diagnostics",
-                "-emit-dependencies"
+                "-emit-dependencies",
+                "-use-frontend-parseable-output"
             ].contains($0)
         }.map {
             if $0 == "-O" {

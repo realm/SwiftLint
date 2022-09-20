@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
+public struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -25,47 +24,33 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        // Look for functions with both "inline" and "dynamic". For each of these, we can get offset
-        // of the "func" keyword. We can assume that the nearest "@inline" before this offset is
-        // the attribute we are interested in.
-        guard functionKinds.contains(kind),
-            case let attributes = dictionary.enclosedSwiftAttributes,
-            attributes.contains(.dynamic),
-            attributes.contains(.inline),
-            let funcOffset = dictionary.offset.flatMap(file.stringView.location),
-            case let inlinePattern = regex("@inline"),
-            case let range = NSRange(location: 0, length: funcOffset),
-            let inlineMatch = inlinePattern.matches(in: file.contents, options: [], range: range)
-                .last,
-            inlineMatch.range.location != NSNotFound,
-            case let attributeRange = NSRange(location: inlineMatch.range.location,
-                                              length: funcOffset - inlineMatch.range.location),
-            case let alwaysInlinePattern = regex("@inline\\(\\s*__always\\s*\\)"),
-            alwaysInlinePattern.firstMatch(in: file.contents, options: [], range: attributeRange) != nil
-        else {
-            return []
-        }
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: funcOffset))]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
     }
+}
 
-    fileprivate let functionKinds: [SwiftDeclarationKind] = [
-        .functionAccessorAddress,
-        .functionAccessorDidset,
-        .functionAccessorGetter,
-        .functionAccessorMutableaddress,
-        .functionAccessorSetter,
-        .functionAccessorWillset,
-        .functionConstructor,
-        .functionDestructor,
-        .functionFree,
-        .functionMethodClass,
-        .functionMethodInstance,
-        .functionMethodStatic,
-        .functionOperator,
-        .functionSubscript
-    ]
+private extension DynamicInlineRule {
+    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let modifiers = node.modifiers,
+                  let attributes = node.attributes,
+                  modifiers.contains(where: { $0.name.text == "dynamic" }),
+                  attributes.contains(where: { $0.as(AttributeSyntax.self)?.isInlineAlways == true })
+            else {
+                return
+            }
+
+            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension AttributeSyntax {
+    var isInlineAlways: Bool {
+        attributeName.text == "inline" &&
+            argument?.isToken == true &&
+            argument?.firstToken?.tokenKind == .identifier("__always")
+    }
 }

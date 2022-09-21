@@ -70,6 +70,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)
 
+* Add `test_parent_classes` option to `balanced_xctest_lifecycle`, `single_test_class`
+  and `empty_xctest_method` rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4200](https://github.com/realm/SwiftLint/issues/4200)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

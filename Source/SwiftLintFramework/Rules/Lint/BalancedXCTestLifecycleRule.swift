@@ -3,7 +3,7 @@ import SourceKittenFramework
 public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = BalancedXCTestLifecycleConfiguration()
 
     public static let description = RuleDescription(
         identifier: "balanced_xctest_lifecycle",
@@ -120,8 +120,8 @@ public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProvide
 
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
         file.structureDictionary.substructure.filter { dictionary in
-            guard dictionary.declarationKind == .class else { return false }
-            return dictionary.inheritedTypes.contains("XCTestCase")
+            dictionary.declarationKind == .class &&
+            configuration.testParentClasses.intersection(dictionary.inheritedTypes).isNotEmpty
         }
     }
 

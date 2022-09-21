@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = SingleTestClassConfiguration()
 
     public static let description = RuleDescription(
         identifier: "single_test_class",
@@ -44,8 +44,6 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    private let testClasses: Set = ["QuickSpec", "XCTestCase"]
-
     public init() {}
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
@@ -64,10 +62,9 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
     }
 
     private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        let dict = file.structureDictionary
-        return dict.substructure.filter { dictionary in
-            guard dictionary.declarationKind == .class else { return false }
-            return !testClasses.isDisjoint(with: dictionary.inheritedTypes)
+        return file.structureDictionary.substructure.filter { dictionary in
+            dictionary.declarationKind == .class &&
+            configuration.testParentClasses.intersection(dictionary.inheritedTypes).isNotEmpty
         }
     }
 }

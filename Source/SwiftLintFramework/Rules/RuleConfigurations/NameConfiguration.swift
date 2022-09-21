@@ -73,12 +73,18 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
 
 public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
     func severity(forLength length: Int) -> ViolationSeverity? {
-        if let minError = configuration.minLength.error, length < minError {
+        return configuration.severity(forLength: length)
+    }
+}
+
+public extension NameConfiguration {
+    func severity(forLength length: Int) -> ViolationSeverity? {
+        if let minError = minLength.error, length < minError {
             return .error
-        } else if let maxError = configuration.maxLength.error, length > maxError {
+        } else if let maxError = maxLength.error, length > maxError {
             return .error
-        } else if length < configuration.minLength.warning ||
-                  length > configuration.maxLength.warning {
+        } else if length < minLength.warning ||
+                  length > maxLength.warning {
             return .warning
         }
         return nil

@@ -473,6 +473,12 @@ class IdentifierNameRuleGeneratedTests: XCTestCase {
     }
 }
 
+class IfLetShadowingRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IfLetShadowingRule.description)
+    }
+}
+
 class ImplicitGetterRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitGetterRule.description)

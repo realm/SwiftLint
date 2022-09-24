@@ -67,7 +67,7 @@ jobs:
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install

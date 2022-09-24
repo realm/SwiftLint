@@ -239,6 +239,7 @@ extension SwiftLintFile {
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
+        invalidateCache()
     }
 
     internal func write<S: StringProtocol>(_ string: S) {

@@ -67,9 +67,9 @@ public final class SwiftLintFile {
 
 // MARK: - Hashable Conformance
 
-extension SwiftLintFile: Hashable {
+extension SwiftLintFile: Equatable, Hashable {
     public static func == (lhs: SwiftLintFile, rhs: SwiftLintFile) -> Bool {
-        return lhs.id == rhs.id
+        lhs.id == rhs.id
     }
 
     public func hash(into hasher: inout Hasher) {

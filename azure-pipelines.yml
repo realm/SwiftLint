@@ -57,11 +57,11 @@ jobs:
       displayName: Version Informations
     - script: swift test --parallel --enable-code-coverage -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
-    - script: |
-        xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
-        bash <(curl -s https://codecov.io/bash)
-      displayName: Upload code coverage
-      condition: eq(variables['DEVELOPER_DIR'], '/Applications/Xcode_14.0.1.app')
+    # - script: |
+    #     xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+    #     bash <(curl -s https://codecov.io/bash)
+    #   displayName: Upload code coverage
+    #   condition: eq(variables['DEVELOPER_DIR'], '/Applications/Xcode_14.0.1.app')
 
 - job: CocoaPods
   pool:

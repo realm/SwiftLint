@@ -6,6 +6,8 @@ public final class SwiftLintFile {
     let file: File
     let id: UUID
     private(set) var isTestFile = false
+    /// A file is virtual if it is not backed by a filesystem path.
+    private(set) var isVirtual = false
 
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///
@@ -37,6 +39,7 @@ public final class SwiftLintFile {
     /// - parameter contents: The contents of the file.
     public convenience init(contents: String) {
         self.init(file: File(contents: contents))
+        isVirtual = true
     }
 
     /// The path on disk for this file.

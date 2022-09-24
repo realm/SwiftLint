@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - pin-swift-docker-image-to-5.6.3-focal
     tags:
       - '*'
 

@@ -9,6 +9,7 @@ extension SwiftLint {
 
         func run() throws {
             open(URL(string: "https://realm.github.io/SwiftLint")!)
+            ExitHelper.successfullyExit()
         }
     }
 }

@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - docker-update-to-swift-5.7--ubuntu-jammy
     tags:
       - '*'
 

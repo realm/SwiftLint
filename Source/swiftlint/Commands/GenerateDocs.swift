@@ -12,6 +12,7 @@ extension SwiftLint {
         func run() throws {
             try RuleListDocumentation(primaryRuleList)
                 .write(to: URL(fileURLWithPath: path, isDirectory: true))
+            ExitHelper.successfullyExit()
         }
     }
 }

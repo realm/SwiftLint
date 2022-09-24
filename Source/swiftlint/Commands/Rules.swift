@@ -51,6 +51,7 @@ extension SwiftLint {
             let rules = ruleList(configuration: configuration)
             let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
             print(table.render())
+            ExitHelper.successfullyExit()
         }
 
         private func ruleList(configuration: Configuration) -> RuleList {

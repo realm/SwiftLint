@@ -17,6 +17,7 @@ extension SwiftLint {
             } else {
                 print(Self.value)
             }
+            ExitHelper.successfullyExit()
         }
     }
 }

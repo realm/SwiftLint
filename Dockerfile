@@ -1,6 +1,6 @@
-# Explicitly specify `focal` because `swift:latest` does not use `ubuntu:latest`.
-ARG BUILDER_IMAGE=swift:5.6.3-focal
-ARG RUNTIME_IMAGE=ubuntu:focal
+# Explicitly specify `jammy` to keep the Swift & Ubuntu images in sync.
+ARG BUILDER_IMAGE=swift:jammy
+ARG RUNTIME_IMAGE=ubuntu:jammy
 
 # builder image
 FROM ${BUILDER_IMAGE} AS builder

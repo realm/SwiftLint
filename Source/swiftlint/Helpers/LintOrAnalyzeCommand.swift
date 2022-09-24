@@ -37,11 +37,7 @@ struct LintOrAnalyzeCommand {
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
             try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
         }
-
-#if os(Linux)
-        // Workaround for https://github.com/realm/SwiftLint/issues/4117
-        exit(0)
-#endif
+        ExitHelper.successfullyExit()
     }
 
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {

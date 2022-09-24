@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -25,19 +24,75 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Sub
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
+    }
+}
+
+private extension ProtocolPropertyAccessorsOrderRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: AccessorBlockSyntax) {
+            guard node.hasViolation else {
+                return
+            }
+
+            violationPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "\\bset\\s*get\\b", with: [.keyword, .keyword])
-    }
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "get set")
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: AccessorBlockSyntax) -> Syntax {
+            guard node.hasViolation else {
+                return super.visit(node)
+            }
+
+            let isInDisabledRegion = disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            }
+
+            guard !isInDisabledRegion else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
+
+            let reversedAccessors = SyntaxFactory.makeAccessorList(Array(node.accessors.reversed()))
+            return super.visit(
+                node.withAccessors(reversedAccessors)
+            )
+        }
+    }
+}
+
+private extension AccessorBlockSyntax {
+    var hasViolation: Bool {
+        guard accessors.count == 2,
+              accessors.allSatisfy({ $0.body == nil }),
+              let firstAccessor = accessors.first,
+              firstAccessor.accessorKind.tokenKind == .contextualKeyword("set") else {
+            return false
+        }
+
+        return true
     }
 }

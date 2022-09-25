@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct InertDeferRule: ConfigurationProviderRule {
+public struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -51,43 +50,23 @@ public struct InertDeferRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file
-            .match(pattern: "defer\\s*\\{", with: [.keyword])
-            .filter(file.shouldReportViolation(for:))
-            .map { range in
-                StyleViolation(ruleDescription: Self.description, severity: configuration.severity,
-                               location: Location(file: file, characterOffset: range.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+}
+
+private extension InertDeferRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: DeferStmtSyntax) {
+            guard let codeBlockItem = node.parent?.as(CodeBlockItemSyntax.self),
+                  let codeBlockList = codeBlockItem.parent?.as(CodeBlockItemListSyntax.self),
+                  codeBlockList.last == codeBlockItem  else {
+                return
             }
-    }
-}
 
-private extension SwiftLintFile {
-    func shouldReportViolation(for range: NSRange) -> Bool {
-        guard let byteRange = stringView.NSRangeToByteRange(start: range.location, length: range.length),
-            case let kinds = structureDictionary.kinds(forByteOffset: byteRange.upperBound),
-            let brace = kinds.enumerated().lazy.reversed().first(where: isBrace),
-            brace.offset > kinds.startIndex else {
-            return false
+            violationPositions.append(node.deferKeyword.positionAfterSkippingLeadingTrivia)
         }
-
-        let outerKindIndex = kinds.index(before: brace.offset)
-        let outerKind = kinds[outerKindIndex]
-        let braceEnd = brace.element.byteRange.upperBound
-        let tokensRange = ByteRange(location: braceEnd, length: outerKind.byteRange.upperBound - braceEnd)
-        let tokens = syntaxMap.tokens(inByteRange: tokensRange)
-        return !tokens.contains(where: isNotComment)
     }
-}
-
-private func isBrace(offset: Int, element: (kind: String, byteRange: ByteRange)) -> Bool {
-    return StatementKind(rawValue: element.kind) == .brace
-}
-
-private func isNotComment(token: SwiftLintSyntaxToken) -> Bool {
-    guard let kind = token.kind else {
-        return false
-    }
-
-    return !SyntaxKind.commentKinds.contains(kind)
 }

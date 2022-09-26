@@ -19,8 +19,8 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      swift56:
-        containerImage: swift:5.6
+      swift57:
+        containerImage: swift:5.7
   container: $[ variables['containerImage'] ]
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
@@ -32,8 +32,8 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode1341:
-        DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
+      xcode14:
+        DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
     - script: |
         sw_vers
@@ -48,8 +48,8 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      xcode1341:
-        DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
+      xcode14:
+        DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
     - script: |
         sw_vers
@@ -57,11 +57,11 @@ jobs:
       displayName: Version Informations
     - script: swift test --parallel --enable-code-coverage -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
-    - script: |
-        xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
-        bash <(curl -s https://codecov.io/bash)
-      displayName: Upload code coverage
-      condition: eq(variables['DEVELOPER_DIR'], '/Applications/Xcode_13.2.1.app')
+    # - script: |
+    #     xcrun llvm-cov export -format="lcov" .build/debug/SwiftLintPackageTests.xctest/Contents/MacOS/SwiftLintPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+    #     bash <(curl -s https://codecov.io/bash)
+    #   displayName: Upload code coverage
+    #   condition: eq(variables['DEVELOPER_DIR'], '/Applications/Xcode_14.0.1.app')
 
 - job: CocoaPods
   pool:
@@ -80,7 +80,7 @@ jobs:
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.3.1.app
+    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
     - script: |
         curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.2/bazelisk-darwin-amd64 -o bazelisk
@@ -101,7 +101,7 @@ jobs:
   pool:
     vmImage: 'macOS-12'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
+    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
     - script: swift run swiftlint generate-docs
       displayName: Run swiftlint generate-docs

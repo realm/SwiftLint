@@ -19,9 +19,9 @@ def swiftlint_repos():
 
     http_archive(
         name = "com_github_keith_swift_syntax_bazel",
-        sha256 = "f83b8449f84e29d263d2b0ceb9d2ae7f88c9f2a81f4b10035e94073664507507",
-        strip_prefix = "swift-syntax-bazel-13.3.13E113",
-        url = "https://github.com/keith/swift-syntax-bazel/archive/refs/tags/13.3.13E113.tar.gz",
+        sha256 = "ca7f3a8099e4e7a454f45abea1ededabe209d9f6964df87566a142e3b281fe24",
+        strip_prefix = "swift-syntax-bazel-14.0.0.14A309",
+        url = "https://github.com/keith/swift-syntax-bazel/archive/refs/tags/14.0.0.14A309.tar.gz",
     )
 
     http_archive(

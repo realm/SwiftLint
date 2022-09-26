@@ -2,6 +2,9 @@
 
 #### Breaking
 
+* SwiftLint now requires Swift 5.7 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
 * Exclude `weak_delegate` rule from autocorrection due to behavioral changes
   leading to potential undefined behavior or bugs.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -74,6 +77,10 @@
   shadowing optional binding is created in an if- or guard-statement.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4202](https://github.com/realm/SwiftLint/issues/4202)
+
+* SwiftSyntax libraries were updated to their 5.7 releases, improving how newer
+  Swift language features are handled.  
+  [JP Simard](https://github.com/jpims)
 
 #### Bug Fixes
 

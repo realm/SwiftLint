@@ -128,7 +128,7 @@ public final class LinterCache {
             return fileCache
         }
 
-        guard let location = location else {
+        guard let location else {
             return .empty
         }
 

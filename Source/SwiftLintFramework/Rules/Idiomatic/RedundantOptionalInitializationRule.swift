@@ -182,7 +182,7 @@ private extension RedundantOptionalInitializationRule {
 
 private extension PatternBindingSyntax {
     var violationPosition: AbsolutePosition? {
-        guard let initializer = initializer,
+        guard let initializer,
               let type = typeAnnotation,
               initializer.isInitializingToNil,
               type.isOptionalType else {

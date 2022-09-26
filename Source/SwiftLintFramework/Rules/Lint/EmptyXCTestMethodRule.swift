@@ -41,7 +41,7 @@ private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
 
 private extension FunctionDeclSyntax {
     var hasEmptyBody: Bool {
-        if let body = body {
+        if let body {
             return body.statements.isEmpty
         }
         return false

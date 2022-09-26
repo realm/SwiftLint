@@ -69,7 +69,7 @@ private extension Array where Element == (kind: String, byteRange: ByteRange) {
             return last
         }
 
-        guard let last = last else {
+        guard let last else {
             return nil
         }
 

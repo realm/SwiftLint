@@ -225,7 +225,7 @@ private extension ExplicitInitRule {
 
 private extension MemberAccessExprSyntax {
     var explicitInitPosition: AbsolutePosition? {
-        if let base = base, base.isTypeReferenceLike, name.text == "init" {
+        if let base, base.isTypeReferenceLike, name.text == "init" {
             return base.endPositionBeforeTrailingTrivia
         } else {
             return nil

@@ -155,7 +155,7 @@ extension NumberSeparatorValidator {
 
     private func isInValidRanges(number: String) -> Bool {
         let doubleValue = Double(number.replacingOccurrences(of: "_", with: ""))
-        if let doubleValue = doubleValue, configuration.excludeRanges.contains(where: { $0.contains(doubleValue) }) {
+        if let doubleValue, configuration.excludeRanges.contains(where: { $0.contains(doubleValue) }) {
             return true
         }
 

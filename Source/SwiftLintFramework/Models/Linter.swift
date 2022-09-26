@@ -19,7 +19,7 @@ private extension Rule {
     static func superfluousDisableCommandViolations(regions: [Region],
                                                     superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                                     allViolations: [StyleViolation]) -> [StyleViolation] {
-        guard regions.isNotEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+        guard regions.isNotEmpty, let superfluousDisableCommandRule else {
             return []
         }
 
@@ -240,7 +240,7 @@ public struct CollectedLinter {
             deprecatedToValidIdentifier[key] = value
         }
 
-        if let cache = cache, let path = file.path {
+        if let cache, let path = file.path {
             cache.cache(violations: violations, forFile: path, configuration: configuration)
         }
 
@@ -257,7 +257,7 @@ public struct CollectedLinter {
 
     private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
         let start: Date! = benchmark ? Date() : nil
-        guard let cache = cache, let file = file.path,
+        guard let cache, let file = file.path,
             let cachedViolations = cache.violations(forFile: file, configuration: configuration) else {
             return nil
         }
@@ -314,7 +314,7 @@ public struct CollectedLinter {
         let formattedContents = try? file.file.format(trimmingTrailingWhitespace: true,
                                                       useTabs: useTabs,
                                                       indentWidth: indentWidth)
-        if let formattedContents = formattedContents {
+        if let formattedContents {
             file.write(formattedContents)
         }
     }
@@ -323,7 +323,7 @@ public struct CollectedLinter {
                                                        configuration: Configuration,
                                                        superfluousDisableCommandRule: SuperfluousDisableCommandRule?
         ) -> [StyleViolation] {
-        guard regions.isNotEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
+        guard regions.isNotEmpty, let superfluousDisableCommandRule else {
             return []
         }
 

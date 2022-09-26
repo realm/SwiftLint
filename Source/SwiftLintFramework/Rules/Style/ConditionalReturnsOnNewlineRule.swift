@@ -76,7 +76,7 @@ private extension ConditionalReturnsOnNewlineRule {
         }
 
         private func isReturn(_ returnStmt: ReturnStmtSyntax?, onTheSameLineAs token: TokenSyntax) -> Bool {
-            guard let returnStmt = returnStmt else {
+            guard let returnStmt else {
                 return false
             }
 

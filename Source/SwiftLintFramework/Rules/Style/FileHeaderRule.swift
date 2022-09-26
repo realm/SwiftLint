@@ -60,7 +60,7 @@ struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         let requiredRegex = configuration.requiredRegex(for: file)
 
         var violationsOffsets = [Int]()
-        if let firstToken = firstToken, let lastToken = lastToken {
+        if let firstToken, let lastToken {
             let start = firstToken.offset
             let length = lastToken.offset + lastToken.length - firstToken.offset
             let byteRange = ByteRange(location: start, length: length)

@@ -103,7 +103,7 @@ private extension RedundantStringEnumValueRule {
 
 private extension EnumDeclSyntax {
     var isStringEnum: Bool {
-        guard let inheritanceClause = inheritanceClause else {
+        guard let inheritanceClause else {
             return false
         }
 

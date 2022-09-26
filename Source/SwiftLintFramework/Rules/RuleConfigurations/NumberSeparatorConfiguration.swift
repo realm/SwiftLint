@@ -6,7 +6,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
 
     var consoleDescription: String {
         let minimumFractionLengthDescription: String
-        if let minimumFractionLength = minimumFractionLength {
+        if let minimumFractionLength {
             minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
         } else {
             minimumFractionLengthDescription = ", minimum_fraction_length: none"

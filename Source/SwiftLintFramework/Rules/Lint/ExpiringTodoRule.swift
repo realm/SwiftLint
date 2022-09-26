@@ -99,7 +99,7 @@ struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     }
 
     private func violationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
-        guard let expiryDate = expiryDate else {
+        guard let expiryDate else {
             return .badFormatting
         }
         guard expiryDate.isAfterToday else {

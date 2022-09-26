@@ -129,7 +129,7 @@ private struct ArrowViolation {
 
 private extension TokenSyntax {
     var arrowViolation: ArrowViolation? {
-        guard let previousToken = previousToken, let nextToken = nextToken else {
+        guard let previousToken, let nextToken else {
             return nil
         }
 
@@ -156,7 +156,7 @@ private extension TokenSyntax {
             end = endPosition
         }
 
-        guard let start = start, let end = end else {
+        guard let start, let end else {
             return nil
         }
 

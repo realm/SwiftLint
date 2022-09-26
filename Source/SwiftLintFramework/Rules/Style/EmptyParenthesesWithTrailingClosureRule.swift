@@ -100,7 +100,7 @@ private extension EmptyParenthesesWithTrailingClosureRule {
 private extension FunctionCallExprSyntax {
     var violationPosition: AbsolutePosition? {
         guard trailingClosure != nil,
-              let leftParen = leftParen,
+              let leftParen,
               argumentList.isEmpty else {
             return nil
         }

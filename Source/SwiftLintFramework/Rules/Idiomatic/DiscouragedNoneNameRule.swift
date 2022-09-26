@@ -207,7 +207,7 @@ private extension DiscouragedNoneNameRule {
                 }
             }()
 
-            guard let type = type else {
+            guard let type else {
                 return
             }
 

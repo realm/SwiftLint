@@ -225,7 +225,7 @@ extension FunctionDeclSyntax {
     /// How many times this function calls the `super` implementation in its body.
     /// Returns 0 if the function has no body.
     func numberOfCallsToSuper() -> Int {
-        guard let body = body else {
+        guard let body else {
             return 0
         }
 

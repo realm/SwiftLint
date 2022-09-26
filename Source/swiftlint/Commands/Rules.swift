@@ -24,7 +24,7 @@ extension SwiftLint {
         var ruleID: String?
 
         func run() throws {
-            if let ruleID = ruleID {
+            if let ruleID {
                 guard let rule = primaryRuleList.list[ruleID] else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
@@ -87,7 +87,7 @@ private extension TextTable {
                 offsetBy: max(minWidth, maxWidth - configurationStartColumn),
                 limitedBy: stringWithNoNewlines.endIndex
             )
-            if let truncatedEndIndex = truncatedEndIndex {
+            if let truncatedEndIndex {
                 return stringWithNoNewlines[..<truncatedEndIndex] + "..."
             }
             return stringWithNoNewlines

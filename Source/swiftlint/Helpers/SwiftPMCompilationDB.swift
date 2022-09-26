@@ -54,7 +54,7 @@ struct SwiftPMCompilationDB: Codable {
                 .values
                 .first { $0.sources?.contains(swiftSource) == true }
 
-            guard let command = command,
+            guard let command,
                   let module = command.module,
                   let sources = command.sources,
                   let arguments = command.args,

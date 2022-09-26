@@ -129,7 +129,7 @@ private extension String {
     }
 
     func strippingTrailingSwiftUIPreviewProvider(inheritedTypes: InheritedTypeListSyntax?) -> String {
-        guard let inheritedTypes = inheritedTypes,
+        guard let inheritedTypes,
               hasSuffix("_Previews"),
               let lastPreviewsIndex = lastIndex(of: "_Previews"),
               inheritedTypes.typeNames.contains("PreviewProvider") else {

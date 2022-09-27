@@ -1,5 +1,7 @@
 try-import %workspace%/ci.bazelrc
 try-import %workspace%/user.bazelrc
 
+build --override_repository=com_github_buildbuddy_io_rules_xcodeproj=/Users/jsimard/src/rules_xcodeproj
+
 build --macos_minimum_os=12.0 --host_macos_minimum_os=12.0
 build --disk_cache=~/.bazel_cache

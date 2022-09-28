@@ -208,7 +208,7 @@ def build(branch)
     perform("git worktree add --detach #{dir} #{target}")
   end
 
-  build_command = "cd #{dir}; bazel build -c opt @SwiftLint//:swiftlint && mv bazel-bin/swiftlint swiftlint-#{branch}"
+  build_command = "cd #{dir}; bazel build --config=release @SwiftLint//:swiftlint && mv bazel-bin/swiftlint swiftlint-#{branch}"
 
   perform(build_command)
   return if $?.success?

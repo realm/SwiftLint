@@ -190,13 +190,6 @@ To integrate SwiftLint with AppCode, install
 SwiftLint's installed path in the plugin's preferences.
 The `fix` action is available via `⌥⏎`.
 
-### Atom
-
-To integrate SwiftLint with [Atom](https://atom.io/), install the
-[`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from
-APM.
-
-
 ### Visual Studio Code
 
 To integrate SwiftLint with [vscode](https://code.visualstudio.com), install the

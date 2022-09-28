@@ -17,6 +17,14 @@ swift_library(
 )
 
 swift_library(
+    name = "SwiftBasicFormat",
+    srcs = glob(["Sources/SwiftBasicFormat/**/*.swift"]),
+    module_name = "SwiftBasicFormat",
+    visibility = ["//visibility:public"],
+    deps = [":SwiftSyntax"],
+)
+
+swift_library(
     name = "SwiftDiagnostics",
     srcs = glob(["Sources/SwiftDiagnostics/**/*.swift"]),
     module_name = "SwiftDiagnostics",
@@ -29,7 +37,7 @@ swift_library(
     srcs = glob(["Sources/SwiftParser/**/*.swift"]),
     module_name = "SwiftParser",
     visibility = ["//visibility:public"],
-    deps = [":SwiftSyntax", ":SwiftDiagnostics"],
+    deps = [":SwiftSyntax", ":SwiftDiagnostics", ":SwiftBasicFormat"],
 )
 
 swift_library(
@@ -37,5 +45,5 @@ swift_library(
     srcs = glob(["Sources/SwiftSyntaxBuilder/**/*.swift"]),
     module_name = "SwiftSyntaxBuilder",
     visibility = ["//visibility:public"],
-    deps = [":SwiftSyntax"],
+    deps = [":SwiftSyntax", ":SwiftBasicFormat"],
 )

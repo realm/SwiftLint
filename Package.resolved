@@ -30,10 +30,10 @@
       },
       {
         "package": "SwiftSyntax",
-        "repositoryURL": "https://github.com/rintaro/swift-syntax.git",
+        "repositoryURL": "https://github.com/jpsim/swift-syntax.git",
         "state": {
           "branch": null,
-          "revision": "322559c794d7d4ed4d3053c6fac4890941abb0b4",
+          "revision": "dd44b5f8998018e7fcb199fbd370187dc4986364",
           "version": null
         }
       },

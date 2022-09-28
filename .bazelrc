@@ -5,4 +5,4 @@ build --macos_minimum_os=12.0 --host_macos_minimum_os=12.0
 build --disk_cache=~/.bazel_cache
 
 build:release \
-  --config=opt
+  --compilation_mode=opt

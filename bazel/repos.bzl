@@ -34,8 +34,8 @@ def swiftlint_repos():
 
     http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",
-        sha256 = "8460b44f8378c4201d15bd2617b2d8d1dbf5fef28cb8886ced4b72ad201e2361",
+        sha256 = "5d500caf1817beb0a63467ef14d3274ae19449bcf05853a257673d0c27f4b761",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
-        strip_prefix = "CryptoSwift-1.5.1",
-        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.5.1.tar.gz",
+        strip_prefix = "CryptoSwift-1.6.0",
+        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.6.0.tar.gz",
     )

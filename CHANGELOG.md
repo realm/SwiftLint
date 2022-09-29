@@ -392,6 +392,15 @@ macOS < 12.
 
 #### Enhancements
 
+* Add new option `only_enforce_before_trivial_lines` to
+  `vertical_whitespace_closing_braces` rule. It restricts
+  the rule to apply only before trivial lines (containing
+  only closing braces, brackets and parentheses). This
+  allows empty lines before non-trivial lines of code
+  (e.g. if-else-statements).  
+  [benjamin-kramer](https://github.com/benjamin-kramer)
+  [#3940](https://github.com/realm/SwiftLint/issues/3940)
+
 * Add type-checked analyzer rule version of `ArrayInitRule` named
   `TypesafeArrayInitRule` with identifier `typesafe_array_init` that
   avoids the false positives present in the lint rule.  

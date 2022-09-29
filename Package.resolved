@@ -30,10 +30,10 @@
       },
       {
         "package": "SwiftSyntax",
-        "repositoryURL": "https://github.com/jpsim/swift-syntax.git",
+        "repositoryURL": "https://github.com/CodaFi/swift-syntax.git",
         "state": {
           "branch": null,
-          "revision": "62c674973d2ad6ef2e3e30c6028374e130bac6a6",
+          "revision": "12174972766b29f57a45cec44bf7a2c4a887ff76",
           "version": null
         }
       },

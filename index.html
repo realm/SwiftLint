@@ -810,29 +810,37 @@ reject matches that include syntax kinds that are not present in this list. Here
 are all the possible syntax kinds:</p>
 
 <ul>
-<li>argument</li>
-<li>attribute.builtin</li>
-<li>attribute.id</li>
-<li>buildconfig.id</li>
-<li>buildconfig.keyword</li>
-<li>comment</li>
-<li>comment.mark</li>
-<li>comment.url</li>
-<li>doccomment</li>
-<li>doccomment.field</li>
-<li>identifier</li>
-</ul><div class="aside aside-keyword">
-    <p class="aside-title">Keyword</p>
-    keyword
-
-</div><ul>
-<li>number</li>
-<li>objectliteral</li>
-<li>placeholder</li>
-<li>string</li>
-<li>string_interpolation_anchor</li>
-<li>typeidentifier</li>
+<li><code>argument</code></li>
+<li><code>attribute.builtin</code></li>
+<li><code>attribute.id</code></li>
+<li><code>buildconfig.id</code></li>
+<li><code>buildconfig.keyword</code></li>
+<li><code>comment</code></li>
+<li><code>comment.mark</code></li>
+<li><code>comment.url</code></li>
+<li><code>doccomment</code></li>
+<li><code>doccomment.field</code></li>
+<li><code>identifier</code></li>
+<li><code>keyword</code></li>
+<li><code>number</code></li>
+<li><code>objectliteral</code></li>
+<li><code>parameter</code></li>
+<li><code>placeholder</code></li>
+<li><code>string</code></li>
+<li><code>string_interpolation_anchor</code></li>
+<li><code>typeidentifier</code></li>
 </ul>
+
+<p>All syntax kinds used in a snippet of Swift code can be extracted asking
+<a href="https://github.com/jpsim/SourceKitten">SourceKitten</a>. For example,
+<code>sourcekitten syntax --text &quot;struct S {}&quot;</code> delivers</p>
+
+<ul>
+<li><code>source.lang.swift.syntaxtype.keyword</code> for the <code>struct</code> keyword and</li>
+<li><code>source.lang.swift.syntaxtype.identifier</code> for its name <code>S</code></li>
+</ul>
+
+<p>which match to <code>keyword</code> and <code>identifier</code> in the above list.</p>
 
 <p>If using custom rules in combination with <code>only_rules</code>, make sure to add
 <code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>only_rules</code>.</p>

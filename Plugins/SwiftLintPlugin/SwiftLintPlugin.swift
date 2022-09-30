@@ -13,6 +13,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
                 executable: try context.tool(named: "swiftlint").path,
                 arguments: [
                     "lint",
+                    "--in-process-sourcekit",
                     "--cache-path", "\(context.pluginWorkDirectory)"
                 ]
             )
@@ -35,6 +36,7 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
                 executable: try context.tool(named: "swiftlint").path,
                 arguments: [
                     "lint",
+                    "--in-process-sourcekit",
                     "--cache-path", "\(context.pluginWorkDirectory)"
                 ]
             )

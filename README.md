@@ -524,25 +524,34 @@ You can filter the matches by providing one or more `match_kinds`, which will
 reject matches that include syntax kinds that are not present in this list. Here
 are all the possible syntax kinds:
 
-* argument
-* attribute.builtin
-* attribute.id
-* buildconfig.id
-* buildconfig.keyword
-* comment
-* comment.mark
-* comment.url
-* doccomment
-* doccomment.field
-* identifier
-* keyword
-* number
-* objectliteral
-* parameter
-* placeholder
-* string
-* string_interpolation_anchor
-* typeidentifier
+* `argument`
+* `attribute.builtin`
+* `attribute.id`
+* `buildconfig.id`
+* `buildconfig.keyword`
+* `comment`
+* `comment.mark`
+* `comment.url`
+* `doccomment`
+* `doccomment.field`
+* `identifier`
+* `keyword`
+* `number`
+* `objectliteral`
+* `parameter`
+* `placeholder`
+* `string`
+* `string_interpolation_anchor`
+* `typeidentifier`
+
+All syntax kinds used in a snippet of Swift code can be extracted asking
+[SourceKitten](https://github.com/jpsim/SourceKitten). For example,
+`sourcekitten syntax --text "struct S {}"` delivers
+
+* `source.lang.swift.syntaxtype.keyword` for the `struct` keyword and
+* `source.lang.swift.syntaxtype.identifier` for its name `S`
+
+which match to `keyword` and `identifier` in the above list.
 
 If using custom rules in combination with `only_rules`, make sure to add
 `custom_rules` as an item under `only_rules`.

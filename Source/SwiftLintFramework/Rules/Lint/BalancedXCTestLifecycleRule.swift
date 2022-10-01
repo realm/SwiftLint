@@ -3,7 +3,7 @@ import SwiftSyntax
 struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(
         identifier: "balanced_xctest_lifecycle",
@@ -112,17 +112,32 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 
     // MARK: - Public
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
+    }
+    
+    public func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
+        StyleViolation(
+            ruleDescription: Self.description,
+            severity: violation.severity ?? configuration.severity,
+            location: Location(file: file, position: violation.position),
+            reason: violation.reason
+        )
     }
 }
 
 private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        private let testClasses: Set<String>
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
+        init(viewMode: SyntaxTreeViewMode, testClasses: Set<String>) {
+            self.testClasses = testClasses
+            super.init(viewMode: viewMode)
+        }
+
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard node.isXCTestCase else {
+            guard node.isXCTestCase(testClasses) else {
                 return
             }
 
@@ -150,13 +165,12 @@ private extension BalancedXCTestLifecycleRule {
 }
 
 private extension ClassDeclSyntax {
-    var isXCTestCase: Bool {
+    func isXCTestCase(_ testParentClasses: Set<String>) -> Bool {
         guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
             return false
         }
-        return inheritanceList.contains { type in
-            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "XCTestCase"
-        }
+        let inheritedTypes = inheritanceList.compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text }
+        return testParentClasses.intersection(inheritedTypes).isNotEmpty
     }
 }
 

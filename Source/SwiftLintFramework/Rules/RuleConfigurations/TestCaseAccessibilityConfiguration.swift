@@ -1,7 +1,7 @@
 struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var allowedPrefixes: Set<String> = []
-    private(set) var testParentClasses: Set<String> = ["XCTestCase"]
+    private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
     var consoleDescription: String {
         return severityConfiguration.consoleDescription +

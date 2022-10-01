@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = SingleTestClassConfiguration()
 
     static let description = RuleDescription(
         identifier: "single_test_class",
@@ -52,7 +52,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
     init() {}
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let classes = TestClassVisitor(viewMode: .sourceAccurate)
+        let classes = TestClassVisitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
             .walk(tree: file.syntaxTree, handler: \.violations)
 
         guard classes.count > 1 else { return [] }
@@ -67,9 +67,14 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
 }
 
 private class TestClassVisitor: ViolationsSyntaxVisitor {
-    private let testClasses: Set = ["QuickSpec", "XCTestCase"]
+    private let testClasses: Set<String>
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
+    init(viewMode: SyntaxTreeViewMode, testClasses: Set<String>) {
+        self.testClasses = testClasses
+        super.init(viewMode: viewMode)
+    }
+    
     override func visitPost(_ node: ClassDeclSyntax) {
         guard node.inheritanceClause.containsInheritedType(inheritedTypes: testClasses) else {
             return

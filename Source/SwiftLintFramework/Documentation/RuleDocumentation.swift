@@ -2,9 +2,23 @@
 struct RuleDocumentation {
     private let ruleType: Rule.Type
 
-    var isOptInRule: Bool {
-        return ruleType is OptInRule.Type
-    }
+    /// If this rule is an opt-in rule.
+    var isOptInRule: Bool { ruleType is OptInRule.Type }
+
+    /// If this rule is an analyzer rule.
+    var isAnalyzerRule: Bool { ruleType is AnalyzerRule.Type }
+
+    /// If this rule is a linter rule.
+    var isLinterRule: Bool { !isAnalyzerRule }
+
+    /// If this rule uses SourceKit.
+    var usesSourceKit: Bool { !(ruleType is SourceKitFreeRule.Type) }
+
+    /// If this rule is disabled by default.
+    var isDisabledByDefault: Bool { ruleType is OptInRule.Type }
+
+    /// If this rule is enabled by default.
+    var isEnabledByDefault: Bool { !isDisabledByDefault }
 
     /// Creates a RuleDocumentation instance from a Rule type.
     ///
@@ -14,19 +28,13 @@ struct RuleDocumentation {
     }
 
     /// The name of the documented rule.
-    var ruleName: String {
-        return ruleType.description.name
-    }
+    var ruleName: String { ruleType.description.name }
 
     /// The identifier of the documented rule.
-    var ruleIdentifier: String {
-        return ruleType.description.identifier
-    }
+    var ruleIdentifier: String { ruleType.description.identifier }
 
     /// The name of the file on disk for this rule documentation.
-    var fileName: String {
-        return "\(ruleType.description.identifier).md"
-    }
+    var fileName: String { "\(ruleType.description.identifier).md" }
 
     /// The contents of the file for this rule documentation.
     var fileContents: String {
@@ -46,13 +54,9 @@ struct RuleDocumentation {
     }
 }
 
-private func h1(_ text: String) -> String {
-    return "# \(text)"
-}
+private func h1(_ text: String) -> String { "# \(text)" }
 
-private func h2(_ text: String) -> String {
-    return "## \(text)"
-}
+private func h2(_ text: String) -> String { "## \(text)" }
 
 private func detailsSummary(_ rule: Rule) -> String {
     return """

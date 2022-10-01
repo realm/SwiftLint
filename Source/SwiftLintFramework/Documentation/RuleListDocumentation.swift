@@ -73,13 +73,33 @@ public struct RuleListDocumentation {
 
             ## Rules Using SourceKit
 
+            ### Enabled By Default (\(rulesUsingSourceKit.filter(\.isEnabledByDefault).count))
+
             \(rulesUsingSourceKit
+                .filter(\.isEnabledByDefault)
+                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
+                .joined(separator: "\n"))
+
+            ### Opt-In (\(rulesUsingSourceKit.filter(\.isDisabledByDefault).count))
+
+            \(rulesUsingSourceKit
+                .filter(\.isDisabledByDefault)
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 
             ## Rules Not Using SourceKit
 
+            ### Enabled By Default (\(rulesNotUsingSourceKit.filter(\.isEnabledByDefault).count))
+
             \(rulesNotUsingSourceKit
+                .filter(\.isEnabledByDefault)
+                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
+                .joined(separator: "\n"))
+
+            ### Opt-In (\(rulesNotUsingSourceKit.filter(\.isDisabledByDefault).count))
+
+            \(rulesNotUsingSourceKit
+                .filter(\.isDisabledByDefault)
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 

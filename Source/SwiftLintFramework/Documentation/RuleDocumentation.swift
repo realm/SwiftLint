@@ -14,6 +14,12 @@ struct RuleDocumentation {
     /// If this rule uses SourceKit.
     var usesSourceKit: Bool { !(ruleType is SourceKitFreeRule.Type) }
 
+    /// If this rule is disabled by default.
+    var isDisabledByDefault: Bool { ruleType is OptInRule.Type }
+
+    /// If this rule is enabled by default.
+    var isEnabledByDefault: Bool { !isDisabledByDefault }
+
     /// Creates a RuleDocumentation instance from a Rule type.
     ///
     /// - parameter ruleType: A subtype of the `Rule` protocol to document.

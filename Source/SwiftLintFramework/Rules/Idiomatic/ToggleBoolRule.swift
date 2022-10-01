@@ -1,4 +1,5 @@
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 public struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
@@ -80,21 +81,8 @@ private extension ToggleBoolRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let functionCall = FunctionCallExprSyntax(
-                calledExpression: ExprSyntax(
-                    MemberAccessExprSyntax(
-                        base: node.first!.withoutTrivia(),
-                        dot: .periodToken(),
-                        name: .identifier("toggle"),
-                        declNameArguments: nil
-                    )
-                ),
-                leftParen: .leftParenToken(), argumentList: .init([]), rightParen: .rightParenToken(),
-                trailingClosure: nil, additionalTrailingClosures: nil
-            )
-
             let newNode = node
-                .replacing(childAt: 0, with: ExprSyntax(functionCall))
+                .replacing(childAt: 0, with: "\(node.first!.withoutTrivia()).toggle()")
                 .removingLast()
                 .removingLast()
                 .withLeadingTrivia(node.leadingTrivia ?? .zero)

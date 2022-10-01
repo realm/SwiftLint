@@ -271,6 +271,14 @@
 
 * Print violations in realtime if `--progress` and `--output` are both set.  
   [JP Simard](https://github.com/jpsim)
+* SwiftSyntax libraries were updated to their 5.7 releases, improving how newer
+  Swift language features are handled.  
+  [JP Simard](https://github.com/jpims)
+
+* Add `test_parent_classes` option to `balanced_xctest_lifecycle`, `single_test_class`
+  and `empty_xctest_method` rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4200](https://github.com/realm/SwiftLint/issues/4200)
 
 * Trigger `prefer_self_in_static_references` rule on more type references like:
   * Key paths (e.g. `\MyType.myVar` -> `\Self.myVar`)

@@ -31,7 +31,7 @@ public struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptIn
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

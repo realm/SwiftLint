@@ -108,3 +108,7 @@ custom_rules:
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
+
+unused_import:
+  always_keep_imports:
+    - SwiftSyntaxBuilder # we can't detect uses of string interpolation of swift syntax nodes

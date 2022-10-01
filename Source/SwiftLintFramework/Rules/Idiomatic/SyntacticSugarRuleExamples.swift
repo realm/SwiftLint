@@ -57,6 +57,11 @@ internal enum SyntacticSugarRuleExamples {
         Example("""
         @_specialize(where S == ↓Array<Character>)
         public init<S: Sequence>(_ elements: S)
+        """),
+
+        Example("""
+        let dict: [String: Any] = [:]
+        _ = dict["key"] as? ↓Optional<String?> ?? Optional<String?>.none
         """)
     ]
 

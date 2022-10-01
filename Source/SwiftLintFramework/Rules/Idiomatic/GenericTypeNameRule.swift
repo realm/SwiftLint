@@ -69,6 +69,7 @@ private extension GenericTypeNameRule {
 
         init(configuration: NameConfiguration) {
             self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
         override func visitPost(_ node: GenericParameterSyntax) {

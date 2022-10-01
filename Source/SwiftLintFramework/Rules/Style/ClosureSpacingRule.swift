@@ -60,6 +60,7 @@ private final class ClosureSpacingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVi
 
     init(locationConverter: SourceLocationConverter) {
         self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: ClosureExprSyntax) {

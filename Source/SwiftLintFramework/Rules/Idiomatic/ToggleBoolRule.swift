@@ -32,7 +32,7 @@ public struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -81,22 +81,8 @@ private extension ToggleBoolRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let functionCall = FunctionCallExprSyntax { functionCall in
-                functionCall.useCalledExpression(
-                    ExprSyntax(
-                        MemberAccessExprSyntax { memberAccess in
-                            memberAccess.useBase(node.first!.withoutTrivia())
-                            memberAccess.useDot(.period)
-                            memberAccess.useName(.identifier("toggle"))
-                        }
-                    )
-                )
-                functionCall.useLeftParen(.leftParen)
-                functionCall.useRightParen(.rightParen)
-            }
-
             let newNode = node
-                .replacing(childAt: 0, with: ExprSyntax(functionCall))
+                .replacing(childAt: 0, with: "\(node.first!.withoutTrivia()).toggle()")
                 .removingLast()
                 .removingLast()
                 .withLeadingTrivia(node.leadingTrivia ?? .zero)

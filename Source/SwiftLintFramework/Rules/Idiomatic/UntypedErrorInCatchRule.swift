@@ -88,7 +88,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Swi
         ])
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        UntypedErrorInCatchRuleVisitor()
+        UntypedErrorInCatchRuleVisitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -167,7 +167,7 @@ private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsS
         return super.visit(
             node
                 .withCatchKeyword(node.catchKeyword.withTrailingTrivia(.spaces(1)))
-                .withCatchItems(SyntaxFactory.makeBlankCatchItemList())
+                .withCatchItems(CatchItemListSyntax([]))
         )
     }
 }

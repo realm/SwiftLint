@@ -38,7 +38,7 @@ public struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, Configur
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

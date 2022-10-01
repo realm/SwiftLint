@@ -81,7 +81,7 @@ public struct IfLetShadowingRule: OptInRule, SwiftSyntaxCorrectableRule, Configu
     public init() {}
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -135,7 +135,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
 private extension OptionalBindingConditionSyntax {
     var isShadowingOptionalBinding: Bool {
         if let id = pattern.as(IdentifierPatternSyntax.self),
-           let value = initializer.value.as(IdentifierExprSyntax.self),
+           let value = initializer?.value.as(IdentifierExprSyntax.self),
            id.identifier.text == value.identifier.text {
             return true
         }

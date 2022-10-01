@@ -20,6 +20,18 @@
 
 #### Enhancements
 
+* SwiftSyntax libraries have been updated from the previous 5.6 release and now
+  use the new parser written in Swift.
+  Swift 5.7+ features should now be parsed more accurately.
+  We've also measured an improvement in lint times of up to 15%.
+  This should also fix some deployment issues where the exact version of the
+  internal SwiftSyntax parser needed to be available.
+  If you notice any unexpected changes to lint results, please file an issue on
+  the SwiftLint issue tracker. We can look into it and if it's a SwiftSyntax
+  parser regression we can re-file it upstream.  
+  [JP Simard](https://github.com/jpims)
+  [#4031](https://github.com/realm/SwiftLint/issues/4031)
+
 * Add new `excludes_trivial_init` configuration for `missing_docs` rule
   to exclude initializers without any parameters.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -77,10 +89,6 @@
   shadowing optional binding is created in an if- or guard-statement.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4202](https://github.com/realm/SwiftLint/issues/4202)
-
-* SwiftSyntax libraries were updated to their 5.7 releases, improving how newer
-  Swift language features are handled.  
-  [JP Simard](https://github.com/jpims)
 
 #### Bug Fixes
 

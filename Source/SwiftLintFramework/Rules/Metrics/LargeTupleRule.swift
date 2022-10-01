@@ -15,7 +15,7 @@ public struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        LargeTupleRuleVisitor()
+        LargeTupleRuleVisitor(viewMode: .sourceAccurate)
             .walk(file: file, handler: \.violationPositions)
             .sorted(by: { $0.position < $1.position })
             .compactMap { position, size in

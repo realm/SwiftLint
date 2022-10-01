@@ -5,8 +5,8 @@ struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equat
 
     var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            ", allowed_prefixes: [\(allowedPrefixes)]" +
-            ", test_parent_classes: [\(testParentClasses)]"
+            ", allowed_prefixes: \(allowedPrefixes.sorted())" +
+            ", test_parent_classes: \(testParentClasses.sorted())"
     }
 
     mutating func apply(configuration: Any) throws {

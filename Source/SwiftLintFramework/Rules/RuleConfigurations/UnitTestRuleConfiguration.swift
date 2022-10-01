@@ -8,7 +8,7 @@ public struct UnitTestRuleConfiguration: RuleConfiguration, Equatable {
     
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            ", test_parent_classes: [\(testParentClasses)]"
+            ", test_parent_classes: \(testParentClasses.sorted())"
     }
 
     public mutating func apply(configuration: Any) throws {

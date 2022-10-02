@@ -25,7 +25,7 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Swi
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+        Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
@@ -48,6 +48,22 @@ private extension ProtocolPropertyAccessorsOrderRule {
             }
 
             violationPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
     }
 
@@ -76,7 +92,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
 
             correctionPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
 
-            let reversedAccessors = SyntaxFactory.makeAccessorList(Array(node.accessors.reversed()))
+            let reversedAccessors = AccessorListSyntax(Array(node.accessors.reversed()))
             return super.visit(
                 node.withAccessors(reversedAccessors)
             )
@@ -88,8 +104,7 @@ private extension AccessorBlockSyntax {
     var hasViolation: Bool {
         guard accessors.count == 2,
               accessors.allSatisfy({ $0.body == nil }),
-              let firstAccessor = accessors.first,
-              firstAccessor.accessorKind.tokenKind == .contextualKeyword("set") else {
+              accessors.first?.accessorKind.tokenKind == .contextualKeyword("set") else {
             return false
         }
 

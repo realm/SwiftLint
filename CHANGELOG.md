@@ -18,6 +18,10 @@
   SwiftLintFramework. This only impacts the programmatic API for the
   SwiftLintFramework module.  
   [JP Simard](https://github.com/jpsim)
+* The `balanced_xctest_lifecycle`, `single_test_class`, `empty_xctest_method` and
+  `test_case_accessibility rules will now be applied to subclasses of `QuickSpec`,
+  as well as `XCTestCase`, by default.  
+  [Martin Redington](https://github.com/mildm8nnered)
 
 #### Experimental
 

@@ -112,13 +112,14 @@ class IndentationWidthRuleTests: XCTestCase {
 
     /// It's okay to have comments not following the indentation pattern iff the configuration allows this.
     func testCommentLines() {
-        assert1Violation(
+        // Comments starting right at the beginning of a line are always okay.
+        assertNoViolation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
             includeComments: true
         )
         assertViolations(
-            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n // test\n//test\n\t\tfourthLine",
-            equals: 2,
+            in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t  //test\n // test\n//test\n\t\tfourthLine",
+            equals: 3,
             includeComments: true
         )
         assertViolations(
@@ -197,6 +198,19 @@ class IndentationWidthRuleTests: XCTestCase {
             """, includeCompilerDirectives: true)
     }
 
+    func testIgnoreCommentsRightAtTheBeginningOfALine() {
+        assertNoViolation(in: """
+            struct S {
+                var i: Int = 0
+            // a comment
+                func reset() {
+            //     another comment
+            //          one more comment
+                    i = 0
+                }
+            }
+            """, includeComments: true)
+    }
     // MARK: Helpers
     private func countViolations(
         in example: Example,

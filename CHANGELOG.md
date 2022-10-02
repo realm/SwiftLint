@@ -116,6 +116,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4208](https://github.com/realm/SwiftLint/issues/4208)
 
+* Always ignore comments starting right at the beginning of a line with `//` in
+  the `indentation_width` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3430](https://github.com/realm/SwiftLint/issues/3430)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from

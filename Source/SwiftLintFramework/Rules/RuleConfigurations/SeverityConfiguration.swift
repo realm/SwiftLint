@@ -1,9 +1,13 @@
-public struct SeverityConfiguration: RuleConfiguration, Equatable {
+public struct SeverityConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public var consoleDescription: String {
         return severity.rawValue
     }
 
     var severity: ViolationSeverity
+
+    public var severityConfiguration: SeverityConfiguration {
+        self
+    }
 
     public init(_ severity: ViolationSeverity) {
         self.severity = severity

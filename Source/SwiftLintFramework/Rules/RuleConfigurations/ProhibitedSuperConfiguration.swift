@@ -1,5 +1,5 @@
-public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
+public struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     var excluded = [String]()
     var included = ["*"]
 
@@ -40,10 +40,6 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
         }
 
         resolvedMethodNames = calculateResolvedMethodNames()
-    }
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
     }
 
     private func calculateResolvedMethodNames() -> [String] {

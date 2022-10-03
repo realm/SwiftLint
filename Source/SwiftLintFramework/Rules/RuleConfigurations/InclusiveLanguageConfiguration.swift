@@ -5,7 +5,7 @@ private enum ConfigurationKey: String {
     case overrideAllowedTerms = "override_allowed_terms"
 }
 
-public struct InclusiveLanguageConfiguration: RuleConfiguration, Equatable {
+public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var additionalTerms: Set<String>?
     public var overrideTerms: Set<String>?
@@ -18,10 +18,6 @@ public struct InclusiveLanguageConfiguration: RuleConfiguration, Equatable {
             + ", additional_terms: \(additionalTerms?.sorted() ?? [])"
             + ", override_terms: \(overrideTerms?.sorted() ?? [])"
             + ", override_allowed_terms: \(overrideAllowedTerms?.sorted() ?? [])"
-    }
-
-    public var severity: ViolationSeverity {
-        severityConfiguration.severity
     }
 
     private let defaultTerms: Set<String> = [

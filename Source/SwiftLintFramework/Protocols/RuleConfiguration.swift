@@ -18,6 +18,19 @@ public protocol RuleConfiguration {
     func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool
 }
 
+/// A configuration for a rule that allows to configure at least the severity.
+public protocol SeverityBasedRuleConfiguration: RuleConfiguration {
+    /// The configuration of a rule's severity.
+    var severityConfiguration: SeverityConfiguration { get }
+}
+
+public extension SeverityBasedRuleConfiguration {
+    /// The severity of a rule.
+    var severity: ViolationSeverity {
+        severityConfiguration.severity
+    }
+}
+
 public extension RuleConfiguration where Self: Equatable {
     func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self

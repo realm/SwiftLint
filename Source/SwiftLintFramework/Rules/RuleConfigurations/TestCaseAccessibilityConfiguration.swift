@@ -1,4 +1,4 @@
-public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
+public struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     public private(set) var allowedPrefixes: Set<String> = []
     public private(set) var testParentClasses: Set<String> = ["XCTestCase"]
@@ -25,9 +25,5 @@ public struct TestCaseAccessibilityConfiguration: RuleConfiguration, Equatable {
         if let extraTestParentClasses = configuration["test_parent_classes"] as? [String] {
             self.testParentClasses.formUnion(extraTestParentClasses)
         }
-    }
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
     }
 }

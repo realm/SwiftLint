@@ -2,15 +2,11 @@ private func toExplicitInitMethod(typeName: String) -> String {
     return "\(typeName).init"
 }
 
-public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
+public struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", types: \(discouragedInits.sorted(by: <))"
-    }
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
     }
 
     public private(set) var discouragedInits: Set<String>

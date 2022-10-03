@@ -720,6 +720,12 @@ class NoGroupingExtensionRuleGeneratedTests: XCTestCase {
     }
 }
 
+class NoMagicNumbersRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoMagicNumbersRule.description)
+    }
+}
+
 class NoSpaceInMethodCallRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoSpaceInMethodCallRule.description)

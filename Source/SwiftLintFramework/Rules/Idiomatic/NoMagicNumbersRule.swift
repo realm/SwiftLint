@@ -35,7 +35,7 @@ foo(x)
                       let nrString = file.contents(for: token)?.replacingOccurrences(of: "_", with: ""),
                       let number = Double(nrString),
                       ![0, 1, -1].contains(number),
-                      // if it follows a `<keyword> <identifier> <number>` pattern it's (probably) a declaration (i.e. `var x = 2`)
+                      // `<keyword> <identifier> <number>` pattern means (probably) a declaration (i.e. `var x = 2`)g
                       tokenIx < 2 || line[tokenIx - 1].kind != .identifier || line[tokenIx - 2].kind != .keyword else {
                     return nil
                 }

@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
+public struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -97,66 +96,57 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private static let openBraceRegex = regex("\\{")
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = self.kind(from: subDict) else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict)
-        }.unique.sorted(by: { $0.location < $1.location })
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        file.locationConverter.map {
+            Visitor(locationConverter: $0)
+        }
     }
+}
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .closure || kind == .call else {
-            return []
+private extension ClosureParameterPositionRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+        private let locationConverter: SourceLocationConverter
+
+        init(locationConverter: SourceLocationConverter) {
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard let bodyLength = dictionary.bodyLength,
-            bodyLength > 0
-        else {
-            return []
-        }
-
-        let nameOffset = dictionary.nameOffset ?? 0
-        let nameLength = dictionary.nameLength ?? 0
-
-        let captureLists = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
-            if SwiftVersion.current >= .fiveDotSix, dict.expressionKind == .argument {
-                return dict.substructure.filter { $0.declarationKind == .varLocal }
+        override func visitPost(_ node: ClosureExprSyntax) {
+            guard let signature = node.signature,
+                  case let leftBracePosition = node.leftBrace.positionAfterSkippingLeadingTrivia,
+                  let startLine = locationConverter.location(for: leftBracePosition).line else {
+                return
             }
 
-            return dict.declarationKind == .varLocal ? [dict] : []
+            let violations = signature.positionsToCheck
+                .filter { position in
+                    guard let line = locationConverter.location(for: position).line else {
+                        return false
+                    }
+
+                    return line != startLine
+                }
+
+            violationPositions.append(contentsOf: violations)
         }
-        let parameters = dictionary.enclosedVarParameters + captureLists
-        let rangeStart = nameOffset + nameLength
-        let regex = Self.openBraceRegex
+    }
+}
 
-        // parameters from inner closures are reported on the top-level one, so we can't just
-        // use the first and last parameters to check, we need to check all of them
-        return parameters.compactMap { param -> StyleViolation? in
-            guard let paramOffset = param.offset, paramOffset > rangeStart else {
-                return nil
-            }
-
-            let rangeLength = paramOffset - rangeStart
-            let contents = file.stringView
-
-            let byteRange = ByteRange(location: rangeStart, length: rangeLength)
-            guard let range = contents.byteRangeToNSRange(byteRange),
-                let match = regex.matches(in: file.contents, options: [], range: range).last?.range,
-                match.location != NSNotFound,
-                let braceOffset = contents.NSRangeToByteRange(start: match.location, length: match.length)?.location,
-                let (braceLine, _) = contents.lineAndCharacter(forByteOffset: braceOffset),
-                let (paramLine, _) = contents.lineAndCharacter(forByteOffset: paramOffset),
-                braceLine != paramLine
-            else {
-                return nil
-            }
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: paramOffset))
+private extension ClosureSignatureSyntax {
+    var positionsToCheck: [AbsolutePosition] {
+        var positions: [AbsolutePosition] = []
+        if let captureItems = capture?.items {
+            positions.append(contentsOf: captureItems.map(\.expression.positionAfterSkippingLeadingTrivia))
         }
+
+        if let input = input?.as(ClosureParamListSyntax.self) {
+            positions.append(contentsOf: input.map(\.positionAfterSkippingLeadingTrivia))
+        } else if let input = input?.as(ParameterClauseSyntax.self) {
+            positions.append(contentsOf: input.parameterList.map(\.positionAfterSkippingLeadingTrivia))
+        }
+
+        return positions
     }
 }

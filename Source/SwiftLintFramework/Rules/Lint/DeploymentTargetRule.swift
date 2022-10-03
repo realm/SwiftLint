@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DeploymentTargetRule: ConfigurationProviderRule {
+public struct DeploymentTargetRule: ConfigurationProviderRule, SourceKitFreeRule {
     private typealias Version = DeploymentTargetConfiguration.Version
     public var configuration = DeploymentTargetConfiguration()
 
@@ -18,95 +17,17 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        var violations = validateAttributes(file: file, dictionary: file.structureDictionary)
-        violations += validateConditions(file: file, type: .condition)
-        violations += validateConditions(file: file, type: .negativeCondition)
-        violations.sort(by: { $0.location < $1.location })
-
-        return violations
-    }
-
-    private func validateConditions(file: SwiftLintFile, type: AvailabilityType) -> [StyleViolation] {
-        guard SwiftVersion.current >= type.requiredSwiftVersion else {
-            return []
-        }
-
-        let pattern = "#\(type.keyword)\\s*\\([^\\(]+\\)"
-
-        return file.rangesAndTokens(matching: pattern).flatMap { range, tokens -> [StyleViolation] in
-            guard let availabilityToken = tokens.first,
-                availabilityToken.kind == .keyword,
-                let tokenRange = file.stringView.byteRangeToNSRange(availabilityToken.range)
-            else {
-                return []
+        return Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
+            .walk(file: file, handler: \.violationPositions)
+            .sorted(by: { $0.position < $1.position })
+            .map { position, reason in
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: configuration.severityConfiguration.severity,
+                    location: Location(file: file, position: position),
+                    reason: reason
+                )
             }
-
-            let rangeToSearch = NSRange(location: tokenRange.upperBound, length: range.length - tokenRange.length)
-            return validate(range: rangeToSearch, file: file, violationType: type,
-                            byteOffsetToReport: availabilityToken.offset)
-        }
-    }
-
-    private func validateAttributes(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.declarationKind else { return nil }
-            return validateAttributes(file: file, kind: kind, dictionary: subDict)
-        }
-    }
-
-    private func validateAttributes(file: SwiftLintFile,
-                                    kind: SwiftDeclarationKind,
-                                    dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let attributes = dictionary.swiftAttributes.filter {
-            $0.attribute.flatMap(SwiftDeclarationAttributeKind.init) == .available
-        }
-        guard attributes.isNotEmpty else {
-            return []
-        }
-
-        let contents = file.stringView
-        return attributes.flatMap { dictionary -> [StyleViolation] in
-            guard let byteRange = dictionary.byteRange,
-                let range = contents.byteRangeToNSRange(byteRange)
-            else {
-                return []
-            }
-
-            return validate(range: range, file: file, violationType: .attribute,
-                            byteOffsetToReport: byteRange.location)
-        }.unique
-    }
-
-    private func validate(range: NSRange, file: SwiftLintFile, violationType: AvailabilityType,
-                          byteOffsetToReport: ByteCount) -> [StyleViolation] {
-        let platformToConfiguredMinVersion = self.platformToConfiguredMinVersion
-        let allPlatforms = "(?:" + platformToConfiguredMinVersion.keys.joined(separator: "|") + ")"
-        let pattern = "\(allPlatforms) [\\d\\.]+"
-
-        return file.rangesAndTokens(matching: pattern, range: range).compactMap { _, tokens -> StyleViolation? in
-            guard tokens.count == 2,
-                tokens.kinds == [.keyword, .number],
-                let platformString = file.contents(for: tokens[0]),
-                let platform = DeploymentTargetConfiguration.Platform(rawValue: platformString),
-                let minVersion = platformToConfiguredMinVersion[platformString],
-                let versionString = file.contents(for: tokens[1]) else {
-                    return nil
-            }
-
-            guard let version = try? Version(platform: platform, rawValue: versionString),
-                version <= minVersion else {
-                    return nil
-            }
-
-            let reason = """
-            Availability \(violationType.displayString) is using a version (\(versionString)) that is \
-            satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platformString).
-            """
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, byteOffset: byteOffsetToReport),
-                                  reason: reason)
-        }
     }
 
     private var platformToConfiguredMinVersion: [String: Version] {
@@ -138,23 +59,79 @@ public struct DeploymentTargetRule: ConfigurationProviderRule {
                 return "negative condition"
             }
         }
+    }
+}
 
-        var keyword: String {
-            switch self {
-            case .condition, .attribute:
-                return "available"
-            case .negativeCondition:
-                return "unavailable"
+private extension DeploymentTargetRule {
+    private final class Visitor: SyntaxVisitor {
+        private(set) var violationPositions: [(position: AbsolutePosition, reason: String)] = []
+        private let platformToConfiguredMinVersion: [String: Version]
+
+        init(platformToConfiguredMinVersion: [String: Version]) {
+            self.platformToConfiguredMinVersion = platformToConfiguredMinVersion
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: AttributeSyntax) {
+            guard let argument = node.argument?.as(AvailabilitySpecListSyntax.self) else {
+                return
+            }
+
+            for arg in argument {
+                guard let entry = arg.entry.as(AvailabilityVersionRestrictionSyntax.self),
+                      let versionString = entry.version?.description,
+                      case let platform = entry.platform,
+                      let reason = reason(platform: platform, version: versionString, violationType: .attribute) else {
+                    continue
+                }
+
+                violationPositions.append((node.atSignToken.positionAfterSkippingLeadingTrivia, reason))
             }
         }
 
-        var requiredSwiftVersion: SwiftVersion {
-            switch self {
-            case .condition, .attribute:
-                return .five
-            case .negativeCondition:
-                return .fiveDotSix
+        override func visitPost(_ node: UnavailabilityConditionSyntax) {
+            for elem in node.availabilitySpec {
+                guard let restriction = elem.entry.as(AvailabilityVersionRestrictionSyntax.self),
+                      let versionString = restriction.version?.description,
+                      let reason = reason(platform: restriction.platform, version: versionString,
+                                          violationType: .negativeCondition) else {
+                    continue
+                }
+
+                violationPositions.append((node.poundUnavailableKeyword.positionAfterSkippingLeadingTrivia, reason))
             }
+        }
+
+        override func visitPost(_ node: AvailabilityConditionSyntax) {
+            for elem in node.availabilitySpec {
+                guard let restriction = elem.entry.as(AvailabilityVersionRestrictionSyntax.self),
+                      let versionString = restriction.version?.description,
+                      let reason = reason(platform: restriction.platform, version: versionString,
+                                          violationType: .condition) else {
+                    continue
+                }
+
+                violationPositions.append((node.poundAvailableKeyword.positionAfterSkippingLeadingTrivia, reason))
+            }
+        }
+
+        private func reason(platform: TokenSyntax,
+                            version versionString: String,
+                            violationType: AvailabilityType) -> String? {
+            guard let platform = DeploymentTargetConfiguration.Platform(rawValue: platform.text),
+                  let minVersion = platformToConfiguredMinVersion[platform.rawValue] else {
+                    return nil
+            }
+
+            guard let version = try? Version(platform: platform, rawValue: versionString),
+                version <= minVersion else {
+                    return nil
+            }
+
+            return """
+            Availability \(violationType.displayString) is using a version (\(versionString)) that is \
+            satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platform.rawValue).
+            """
         }
     }
 }

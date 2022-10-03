@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule {
+public struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -37,40 +37,36 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, ASTRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .enum else {
-            return []
-        }
-
-        let enumElements = substructureElements(of: dictionary, matching: .enumcase)
-            .compactMap { substructureElements(of: $0, matching: .enumelement) }
-            .flatMap { $0 }
-
-        var elementsByName: [String: [ByteCount]] = [:]
-        for element in enumElements {
-            guard let name = element.name,
-                let nameWithoutParameters = name.split(separator: "(").first,
-                let offset = element.offset
-            else {
-                continue
-            }
-
-            elementsByName[String(nameWithoutParameters), default: []].append(offset)
-        }
-
-        return elementsByName.filter { $0.value.count > 1 }
-            .flatMap { $0.value }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
-            }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func substructureElements(of dict: SourceKittenDictionary,
-                                      matching kind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        return dict.substructure
-            .filter { $0.declarationKind == kind }
+private extension DuplicateEnumCasesRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            let enumElements = node.members.members
+                .flatMap { member -> EnumCaseElementListSyntax in
+                    guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
+                        return EnumCaseElementListSyntax([])
+                    }
+
+                    return enumCaseDecl.elements
+                }
+
+            var elementsByName: [String: [AbsolutePosition]] = [:]
+            for element in enumElements {
+                let name = element.identifier.text
+                elementsByName[String(name), default: []].append(element.positionAfterSkippingLeadingTrivia)
+            }
+
+            let duplicatedElementPositions = elementsByName
+                .filter { $0.value.count > 1 }
+                .flatMap { $0.value }
+
+            violationPositions.append(contentsOf: duplicatedElementPositions)
+        }
     }
 }

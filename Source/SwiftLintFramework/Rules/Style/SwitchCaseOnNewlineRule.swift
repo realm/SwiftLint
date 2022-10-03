@@ -1,4 +1,4 @@
-import SourceKittenFramework
+import SwiftSyntax
 
 private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
     return Example("""
@@ -8,7 +8,7 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
     """, file: file, line: line)
 }
 
-public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -62,46 +62,32 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .switch else {
-            return []
-        }
-
-        return dictionary.substructure.compactMap { dictionary in
-            validateCase(file: file, dictionary: dictionary)
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        file.locationConverter.map {
+            Visitor(locationConverter: $0)
         }
     }
+}
 
-    private func validateCase(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> StyleViolation? {
-        guard dictionary.kind.flatMap(StatementKind.init) == .case,
-              let offset = dictionary.offset,
-              let length = dictionary.length,
-              let lastElement = dictionary.elements.last,
-              let lastElementOffset = lastElement.offset,
-              let lastElementLength = lastElement.length,
-              case let start = lastElementOffset + lastElementLength,
-              case let rangeLength = offset + length - start,
-              case let byteRange = ByteRange(location: start, length: rangeLength),
-              let firstToken = firstNonCommentToken(inByteRange: byteRange, file: file),
-              let (tokenLine, _) = file.stringView.lineAndCharacter(forByteOffset: firstToken.offset),
-              let (caseEndLine, _) = file.stringView.lineAndCharacter(forByteOffset: start),
-              tokenLine == caseEndLine else {
-            return nil
+private extension SwitchCaseOnNewlineRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+        private let locationConverter: SourceLocationConverter
+
+        init(locationConverter: SourceLocationConverter) {
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severity,
-                              location: Location(file: file, byteOffset: offset))
-    }
-
-    private func firstNonCommentToken(inByteRange byteRange: ByteRange, file: SwiftLintFile) -> SwiftLintSyntaxToken? {
-        return file.syntaxMap.tokens(inByteRange: byteRange).first { token -> Bool in
-            guard let kind = token.kind else {
-                return false
+        override func visitPost(_ node: SwitchCaseSyntax) {
+            guard let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line,
+                  case let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia,
+                  let statementStartLine = locationConverter.location(for: statementsPosition).line,
+                  statementStartLine == caseEndLine else {
+                return
             }
 
-            return !SyntaxKind.commentKinds.contains(kind)
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

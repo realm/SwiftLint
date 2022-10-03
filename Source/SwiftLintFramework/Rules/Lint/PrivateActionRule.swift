@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -33,22 +33,53 @@ public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            let offset = dictionary.offset,
-            kind == .functionMethodInstance,
-            dictionary.enclosedSwiftAttributes.contains(.ibaction),
-            dictionary.accessibility?.isPrivate != true
-            else {
-                return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension PrivateActionRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
         }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard node.isIBAction, !node.isPrivateOrFileprivate else {
+                return
+            }
+
+            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isIBAction: Bool {
+        guard let attributes = attributes else {
+            return false
+        }
+
+        return attributes.contains { elem in
+            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
+        }
+    }
+
+    var isPrivateOrFileprivate: Bool {
+        modifiers.isPrivateOrFileprivate
+    }
+}
+
+private extension ModifierListSyntax? {
+    var isPrivateOrFileprivate: Bool {
+        guard let modifiers = self else {
+            return false
+        }
+
+        return modifiers.contains { elem in
+            elem.name.tokenKind == .privateKeyword || elem.name.tokenKind == .fileprivateKeyword
+        }
     }
 }

@@ -14,7 +14,7 @@ modified_files = git.modified_files + git.added_files
 # including in a CHANGELOG for example
 has_app_changes = !modified_files.grep(/Source/).empty?
 has_test_changes = !modified_files.grep(/Tests/).empty?
-has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_danger_changes = !modified_files.grep(/Dangerfile|tools\/oss-check|Gemfile/).empty?
 has_package_changes = !modified_files.grep(/Package\.swift/).empty?
 has_bazel_changes = !modified_files.grep(/\.bazelrc|WORKSPACE|bazel\/|BUILD/).empty?
 

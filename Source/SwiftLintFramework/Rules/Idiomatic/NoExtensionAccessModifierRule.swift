@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -23,22 +23,19 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .extension, let offset = dictionary.offset else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let syntaxTokens = file.syntaxMap.tokens
-        let parts = syntaxTokens.prefix(while: { offset > $0.offset })
-        guard let aclToken = parts.last, file.isACL(token: aclToken) else {
-            return []
-        }
+private extension NoExtensionAccessModifierRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: aclToken.offset))
-        ]
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            if let modifiers = node.modifiers, modifiers.isNotEmpty {
+                violationPositions.append(modifiers.positionAfterSkippingLeadingTrivia)
+            }
+        }
     }
 }

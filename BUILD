@@ -49,7 +49,7 @@ swift_binary(
     name = "swiftlint-cli",
     visibility = ["//visibility:public"],
     deps = [
-        ":swiftlint.library",
+        ":swiftlint",
     ],
 )
 

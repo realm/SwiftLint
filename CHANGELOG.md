@@ -116,6 +116,9 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4208](https://github.com/realm/SwiftLint/issues/4208)
 
+* Add column for SourceKit usage to `rules` command.  
+  [JP Simard](https://github.com/jpims)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from

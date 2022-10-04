@@ -109,6 +109,7 @@ private extension TextTable {
             TextTableColumn(header: "enabled in your config"),
             TextTableColumn(header: "kind"),
             TextTableColumn(header: "analyzer"),
+            TextTableColumn(header: "uses sourcekit"),
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
@@ -116,7 +117,7 @@ private extension TextTable {
         func truncate(_ string: String) -> String {
             let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
             let minWidth = "configuration".count - "...".count
-            let configurationStartColumn = 124
+            let configurationStartColumn = 140
             let maxWidth = verbose ? Int.max : Terminal.currentWidth()
             let truncatedEndIndex = stringWithNoNewlines.index(
                 stringWithNoNewlines.startIndex,
@@ -146,6 +147,7 @@ private extension TextTable {
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
                 (rule is AnalyzerRule) ? "yes" : "no",
+                (rule is SourceKitFreeRule) ? "no" : "yes",
                 truncate((configuredRule ?? rule).configurationDescription)
             ])
         }

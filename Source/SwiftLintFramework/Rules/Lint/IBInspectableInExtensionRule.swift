@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule {
+public struct IBInspectableInExtensionRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -20,33 +20,45 @@ public struct IBInspectableInExtensionRule: ConfigurationProviderRule, OptInRule
         triggeringExamples: [
             Example("""
             extension Foo {
-              @IBInspectable private var x: Int
+              ↓@IBInspectable private var x: Int
             }
             """)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structureDictionary)
-        let elements = collector.findAllElements(of: [.extension])
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        return elements
-            .flatMap { element in
-                return element.dictionary.substructure.compactMap { element -> ByteCount? in
-                    guard element.declarationKind == .varInstance,
-                        element.enclosedSwiftAttributes.contains(.ibinspectable),
-                        let offset = element.offset
-                    else {
-                        return nil
-                    }
+private extension IBInspectableInExtensionRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
 
-                    return offset
-                }
+        override func visitPost(_ node: VariableDeclSyntax) {
+            let containsIBInspectable = node.attributes?.contains { attribute in
+                attribute.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBInspectable")
+            } ?? false
+
+            if containsIBInspectable {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
-            }
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
     }
 }

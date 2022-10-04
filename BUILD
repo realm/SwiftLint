@@ -31,8 +31,9 @@ swift_library(
     }),
 )
 
-swift_binary(
+swift_library(
     name = "swiftlint",
+    module_name = "swiftlint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
     visibility = ["//visibility:public"],
     deps = [
@@ -40,6 +41,15 @@ swift_binary(
         "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
+    ],
+)
+
+# TODO: Rename to 'swiftlint'
+swift_binary(
+    name = "swiftlint-cli",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":swiftlint.library",
     ],
 )
 

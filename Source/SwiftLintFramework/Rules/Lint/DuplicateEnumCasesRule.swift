@@ -56,10 +56,9 @@ private extension DuplicateEnumCasesRule {
                     return enumCaseDecl.elements
                 }
 
-            var elementsByName: [String: [AbsolutePosition]] = [:]
-            for element in enumElements {
-                let name = element.identifier.text
-                elementsByName[String(name), default: []].append(element.positionAfterSkippingLeadingTrivia)
+            let elementsByName = enumElements.reduce(into: [String: [AbsolutePosition]]()) { elements, element in
+                let name = String(element.identifier.text)
+                elements[name, default: []].append(element.positionAfterSkippingLeadingTrivia)
             }
 
             let duplicatedElementPositions = elementsByName

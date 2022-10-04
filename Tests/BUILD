@@ -8,14 +8,14 @@ swift_library(
     srcs = glob(["CLITests/**/*.swift"]),
     module_name = "CLITests",
     deps = [
-        "//:swiftlint",
+        "//:swiftlintlib",
     ],
 )
 
 swift_test(
     name = "CLITests",
     visibility = ["//visibility:public"],
-    deps = [":CLITests.library", "//:swiftlint"],
+    deps = [":CLITests.library", "//:swiftlintlib"],
 )
 
 filegroup(

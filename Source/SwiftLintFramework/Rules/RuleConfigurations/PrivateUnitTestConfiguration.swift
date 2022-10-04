@@ -1,16 +1,12 @@
 import Foundation
 
-public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
+public struct PrivateUnitTestConfiguration: SeverityBasedRuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
     public var severityConfiguration = SeverityConfiguration(.warning)
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
-    }
 
     public var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"

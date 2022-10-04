@@ -1,4 +1,4 @@
-public struct OverriddenSuperCallConfiguration: RuleConfiguration, Equatable {
+public struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private let defaultIncluded = [
         // NSObject
         "awakeFromNib()",
@@ -34,7 +34,7 @@ public struct OverriddenSuperCallConfiguration: RuleConfiguration, Equatable {
         "tearDownWithError()"
     ]
 
-    var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     var excluded: [String] = []
     var included: [String] = ["*"]
 
@@ -68,10 +68,6 @@ public struct OverriddenSuperCallConfiguration: RuleConfiguration, Equatable {
         }
 
         resolvedMethodNames = calculateResolvedMethodNames()
-    }
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
     }
 
     private func calculateResolvedMethodNames() -> [String] {

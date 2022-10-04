@@ -1,5 +1,5 @@
-public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+public struct ObjectLiteralConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var imageLiteral = true
     private(set) var colorLiteral = true
 

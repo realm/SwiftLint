@@ -18,7 +18,8 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation
 }
 
-public extension SwiftSyntaxRule where Self: ConfigurationProviderRule, ConfigurationType == SeverityConfiguration {
+public extension SwiftSyntaxRule where Self: ConfigurationProviderRule,
+                                       ConfigurationType: SeverityBasedRuleConfiguration {
     func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
         StyleViolation(
             ruleDescription: Self.description,

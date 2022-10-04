@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionProvider {
+public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
@@ -11,10 +11,6 @@ public struct RegexConfiguration: RuleConfiguration, Hashable, CacheDescriptionP
     public var excludedMatchKinds = Set<SyntaxKind>()
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var captureGroup: Int = 0
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
-    }
 
     public var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"

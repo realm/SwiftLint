@@ -76,7 +76,7 @@ public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Co
                                 allReferencedUSRs: allReferencedUSRs)
             .map {
                 StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
+                               severity: configuration.severityConfiguration.severity,
                                location: Location(file: file, byteOffset: $0))
             }
     }

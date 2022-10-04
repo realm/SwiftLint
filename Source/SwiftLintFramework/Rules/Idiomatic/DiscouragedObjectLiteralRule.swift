@@ -27,14 +27,6 @@ public struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, Configur
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         Visitor(configuration: configuration)
     }
-
-    public func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severityConfiguration.severity,
-            location: Location(file: file, position: position)
-        )
-    }
 }
 
 private extension DiscouragedObjectLiteralRule {

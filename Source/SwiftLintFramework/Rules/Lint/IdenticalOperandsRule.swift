@@ -64,7 +64,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
             Example("""
                 return lhs.foo == rhs.foo &&
                        ↓lhs.bar == lhs.bar
-            """).focused()
+            """)
         ]
     )
 

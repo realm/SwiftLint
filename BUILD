@@ -32,7 +32,7 @@ swift_library(
 )
 
 swift_library(
-    name = "swiftlintlib",
+    name = "swiftlint.library",
     module_name = "swiftlint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
     visibility = ["//visibility:public"],
@@ -48,7 +48,7 @@ swift_binary(
     name = "swiftlint",
     visibility = ["//visibility:public"],
     deps = [
-        ":swiftlintlib",
+        ":swiftlint.library",
     ],
 )
 

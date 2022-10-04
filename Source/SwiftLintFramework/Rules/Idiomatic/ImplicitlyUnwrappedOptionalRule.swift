@@ -1,9 +1,10 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
-                                                                        severity: SeverityConfiguration(.warning))
+public struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    public var configuration = ImplicitlyUnwrappedOptionalConfiguration(
+        mode: .allExceptIBOutlets,
+        severityConfiguration: SeverityConfiguration(.warning)
+    )
 
     public init() {}
 
@@ -34,35 +35,40 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
         ]
     )
 
-    private func hasImplicitlyUnwrappedOptional(_ typeName: String) -> Bool {
-        return typeName.contains("!")
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(mode: configuration.mode)
     }
+}
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.variableKinds.contains(kind) else {
-            return []
+private extension ImplicitlyUnwrappedOptionalRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+        private let mode: ImplicitlyUnwrappedOptionalModeConfiguration
+
+        init(mode: ImplicitlyUnwrappedOptionalModeConfiguration) {
+            self.mode = mode
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard let typeName = dictionary.typeName  else { return [] }
-        guard hasImplicitlyUnwrappedOptional(typeName) else { return [] }
-
-        if configuration.mode == .allExceptIBOutlets {
-            let isOutlet = dictionary.enclosedSwiftAttributes.contains(.iboutlet)
-            if isOutlet { return [] }
+        override func visitPost(_ node: ImplicitlyUnwrappedOptionalTypeSyntax) {
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        let location: Location
-        if let offset = dictionary.offset {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            switch mode {
+            case .all:
+                return .visitChildren
+            case .allExceptIBOutlets:
+                return node.isIBOutlet ? .skipChildren : .visitChildren
+            }
         }
+    }
+}
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity.severity,
-                           location: location)
-        ]
+private extension VariableDeclSyntax {
+    var isIBOutlet: Bool {
+        attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
+        } ?? false
     }
 }

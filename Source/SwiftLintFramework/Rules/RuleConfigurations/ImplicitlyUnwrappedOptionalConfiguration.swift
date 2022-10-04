@@ -13,17 +13,17 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     }
 }
 
-public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equatable {
-    private(set) var severity: SeverityConfiguration
-    private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
+public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equatable, SeverityBasedRuleConfiguration {
+    public private(set) var severityConfiguration: SeverityConfiguration
+    public private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
 
-    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severity: SeverityConfiguration) {
+    public init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severityConfiguration: SeverityConfiguration) {
         self.mode = mode
-        self.severity = severity
+        self.severityConfiguration = severityConfiguration
     }
 
     public var consoleDescription: String {
-        return severity.consoleDescription +
+        return severityConfiguration.consoleDescription +
             ", mode: \(mode)"
     }
 
@@ -37,7 +37,7 @@ public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equat
         }
 
         if let severityString = configuration["severity"] as? String {
-            try severity.apply(configuration: severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }

@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -23,12 +23,39 @@ public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, Confi
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\)\\s*(==|!=)\\s*nil"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                        callNameSuffix: ".range", severity: configuration.severity,
-                        reason: "Prefer `contains` over range(of:) comparison to nil") { expression in
-                            return expression.enclosedArguments.map { $0.name } == ["of"]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ContainsOverRangeNilComparisonRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: ExprListSyntax) {
+            guard
+                node.count == 3,
+                node.last?.is(NilLiteralExprSyntax.self) == true,
+                let second = node.dropFirst().first,
+                second.firstToken?.tokenKind.isEqualityComparison == true,
+                let first = node.first?.as(FunctionCallExprSyntax.self),
+                first.argumentList.count == 1,
+                first.argumentList.allSatisfy({ $0.label?.text == "of" }),
+                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "range"
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension TokenKind {
+    var isEqualityComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==")
     }
 }

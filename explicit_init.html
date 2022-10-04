@@ -370,6 +370,8 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kt">Observable</span><span class="o">.</span><span class="nf">zip</span><span class="p">(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="nv">resultSelector</span><span class="p">:</span> <span class="kt">MyType</span><span class="o">.</span><span class="kd">init</span><span class="p">)</span><span class="o">.</span><span class="nf">asMaybe</span><span class="p">()</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">GleanMetrics</span><span class="o">.</span><span class="kt">Tabs</span><span class="o">.</span><span class="n">someType</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kt">Observable</span><span class="o">.</span><span class="nf">zip</span><span class="p">(</span>
   <span class="n">obs1</span><span class="p">,</span>
   <span class="n">obs2</span><span class="p">,</span>
@@ -384,6 +386,10 @@
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="kt">String</span><span class="err">↓</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">GleanMetrics</span><span class="o">.</span><span class="kt">Tabs</span><span class="o">.</span><span class="kt">GroupedTabExtra</span><span class="err">↓</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">KsApi</span><span class="o">.</span><span class="kt">Category</span><span class="o">&gt;</span><span class="err">↓</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kt">Observable</span><span class="o">.</span><span class="nf">zip</span><span class="p">(</span>
   <span class="n">obs1</span><span class="p">,</span>

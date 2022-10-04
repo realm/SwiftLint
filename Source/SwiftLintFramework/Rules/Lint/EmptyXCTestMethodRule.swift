@@ -38,6 +38,10 @@ private final class EmptyXCTestMethodRuleVisitor: SyntaxVisitor, ViolationsSynta
         .skipChildren
     }
 
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        .skipChildren
+    }
+
     override func visitPost(_ node: FunctionDeclSyntax) {
         if (node.isOverride || node.isTestMethod) && node.hasEmptyBody {
             violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)

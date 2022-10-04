@@ -5,7 +5,7 @@ import SwiftLintFramework
 extension SwiftLint {
     struct GenerateDocs: ParsableCommand {
         static let configuration = CommandConfiguration(
-          abstract: "Generates markdown documentation for selected group of rules"
+            abstract: "Generates markdown documentation for selected group of rules"
         )
 
         @Option(help: "The directory where the documentation should be saved")

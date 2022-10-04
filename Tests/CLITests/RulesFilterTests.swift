@@ -5,125 +5,125 @@ import XCTest
 final class RulesFilterTests: XCTestCase {
     func testRulesFilterExcludesEnabledRules() {
         let allRules = RuleList(
-          rules: [
-            RuleMock1.self,
-            RuleMock2.self,
-            CorrectableRuleMock.self
-          ]
+            rules: [
+                RuleMock1.self,
+                RuleMock2.self,
+                CorrectableRuleMock.self
+            ]
         )
         let enabledRules: [Rule] = [
-          RuleMock1(),
-          CorrectableRuleMock()
+            RuleMock1(),
+            CorrectableRuleMock()
         ]
         let rulesFilter = RulesFilter(
-          allRules: allRules,
-          enabledRules: enabledRules
+            allRules: allRules,
+            enabledRules: enabledRules
         )
 
         let filteredRules = rulesFilter.getRules(excluding: [.enabled])
 
         XCTAssertEqual(
-          Set(filteredRules.list.keys),
-          Set([RuleMock2.description.identifier])
+            Set(filteredRules.list.keys),
+            Set([RuleMock2.description.identifier])
         )
     }
 
     func testRulesFilterExcludesDisabledRules() {
         let allRules = RuleList(
-          rules: [
-            RuleMock1.self,
-            RuleMock2.self,
-            CorrectableRuleMock.self
-          ]
+            rules: [
+                RuleMock1.self,
+                RuleMock2.self,
+                CorrectableRuleMock.self
+            ]
         )
         let enabledRules: [Rule] = [
-          RuleMock1(),
-          CorrectableRuleMock()
+            RuleMock1(),
+            CorrectableRuleMock()
         ]
         let rulesFilter = RulesFilter(
-          allRules: allRules,
-          enabledRules: enabledRules
+            allRules: allRules,
+            enabledRules: enabledRules
         )
 
         let filteredRules = rulesFilter.getRules(excluding: [.disabled])
 
         XCTAssertEqual(
-          Set(filteredRules.list.keys),
-          Set([RuleMock1.description.identifier, CorrectableRuleMock.description.identifier])
+            Set(filteredRules.list.keys),
+            Set([RuleMock1.description.identifier, CorrectableRuleMock.description.identifier])
         )
     }
 
     func testRulesFilterExcludesUncorrectableRules() {
         let allRules = RuleList(
-          rules: [
-            RuleMock1.self,
-            RuleMock2.self,
-            CorrectableRuleMock.self
-          ]
+            rules: [
+                RuleMock1.self,
+                RuleMock2.self,
+                CorrectableRuleMock.self
+            ]
         )
         let enabledRules: [Rule] = [
-          RuleMock1(),
-          CorrectableRuleMock()
+            RuleMock1(),
+            CorrectableRuleMock()
         ]
         let rulesFilter = RulesFilter(
-          allRules: allRules,
-          enabledRules: enabledRules
+            allRules: allRules,
+            enabledRules: enabledRules
         )
 
         let filteredRules = rulesFilter.getRules(excluding: [.uncorrectable])
 
         XCTAssertEqual(
-          Set(filteredRules.list.keys),
-          Set([CorrectableRuleMock.description.identifier])
+            Set(filteredRules.list.keys),
+            Set([CorrectableRuleMock.description.identifier])
         )
     }
 
     func testRulesFilterExcludesUncorrectableDisabledRules() {
         let allRules = RuleList(
-          rules: [
-            RuleMock1.self,
-            RuleMock2.self,
-            CorrectableRuleMock.self
-          ]
+            rules: [
+                RuleMock1.self,
+                RuleMock2.self,
+                CorrectableRuleMock.self
+            ]
         )
         let enabledRules: [Rule] = [
-          RuleMock1(),
-          CorrectableRuleMock()
+            RuleMock1(),
+            CorrectableRuleMock()
         ]
         let rulesFilter = RulesFilter(
-          allRules: allRules,
-          enabledRules: enabledRules
+            allRules: allRules,
+            enabledRules: enabledRules
         )
 
         let filteredRules = rulesFilter.getRules(excluding: [.disabled, .uncorrectable])
 
         XCTAssertEqual(
-          Set(filteredRules.list.keys),
-          Set([CorrectableRuleMock.description.identifier])
+            Set(filteredRules.list.keys),
+            Set([CorrectableRuleMock.description.identifier])
         )
     }
 
     func testRulesFilterExcludesUncorrectableEnabledRules() {
         let allRules = RuleList(
-          rules: [
-            RuleMock1.self,
-            RuleMock2.self,
-            CorrectableRuleMock.self
-          ]
+            rules: [
+                RuleMock1.self,
+                RuleMock2.self,
+                CorrectableRuleMock.self
+            ]
         )
         let enabledRules: [Rule] = [
-          RuleMock1()
+            RuleMock1()
         ]
         let rulesFilter = RulesFilter(
-          allRules: allRules,
-          enabledRules: enabledRules
+            allRules: allRules,
+            enabledRules: enabledRules
         )
 
         let filteredRules = rulesFilter.getRules(excluding: [.enabled, .uncorrectable])
 
         XCTAssertEqual(
-          Set(filteredRules.list.keys),
-          Set([CorrectableRuleMock.description.identifier])
+            Set(filteredRules.list.keys),
+            Set([CorrectableRuleMock.description.identifier])
         )
     }
 }

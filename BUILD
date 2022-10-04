@@ -31,8 +31,9 @@ swift_library(
     }),
 )
 
-swift_binary(
-    name = "swiftlint",
+swift_library(
+    name = "swiftlint.library",
+    module_name = "swiftlint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
     visibility = ["//visibility:public"],
     deps = [
@@ -40,6 +41,14 @@ swift_binary(
         "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
+    ],
+)
+
+swift_binary(
+    name = "swiftlint",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":swiftlint.library",
     ],
 )
 

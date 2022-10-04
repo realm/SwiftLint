@@ -2,6 +2,22 @@ load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 
 exports_files(["BUILD"])
 
+swift_library(
+    name = "CLITests.library",
+    testonly = True,
+    srcs = glob(["CLITests/**/*.swift"]),
+    module_name = "CLITests",
+    deps = [
+        "//:swiftlint.library",
+    ],
+)
+
+swift_test(
+    name = "CLITests",
+    visibility = ["//visibility:public"],
+    deps = [":CLITests.library"],
+)
+
 filegroup(
     name = "SwiftLintFrameworkTestsSources",
     srcs = glob(

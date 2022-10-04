@@ -31,6 +31,7 @@
   parser regression we can re-file it upstream.  
   [JP Simard](https://github.com/jpims)
   [#4031](https://github.com/realm/SwiftLint/issues/4031)
+
 * Add ability to filter rules for `generate-docs` subcommand.  
   [kattouf](https://github.com/kattouf)
 

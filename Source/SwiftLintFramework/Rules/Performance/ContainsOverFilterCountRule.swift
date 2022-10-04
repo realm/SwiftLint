@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -30,9 +30,42 @@ public struct ContainsOverFilterCountRule: CallPairRule, OptInRule, Configuratio
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.count\\s*(?:!=|==|>)\\s*0\\b"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier, .number],
-                        callNameSuffix: ".filter", severity: configuration.severity)
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ContainsOverFilterCountRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: ExprListSyntax) {
+            guard
+                node.count == 3,
+                let last = node.last?.as(IntegerLiteralExprSyntax.self),
+                last.digits.text == "0",
+                let second = node.dropFirst().first,
+                second.firstToken?.tokenKind.isZeroComparison == true,
+                let first = node.first?.as(MemberAccessExprSyntax.self),
+                first.name.text == "count",
+                let firstBase = first.base?.as(FunctionCallExprSyntax.self),
+                let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
+                firstBaseCalledExpression.name.text == "filter"
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension TokenKind {
+    var isZeroComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator(">") ||
+            self == .unspacedBinaryOperator(">")
     }
 }

@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationProviderRule {
+public struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -25,20 +24,74 @@ public struct TrailingSemicolonRule: SubstitutionCorrectableRule, ConfigurationP
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
+    }
+}
+
+private extension TrailingSemicolonRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: TokenSyntax) {
+            if node.isTrailingSemicolon {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.match(pattern: "(;+([^\\S\\n]?)*)+;?$",
-                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-    }
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: TokenSyntax) -> Syntax {
+            guard node.isTrailingSemicolon, !isInDisabledRegion(node) else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            // Is there a better way to remove a node? Should we somehow keep trailing trivia?
+            return super.visit(TokenSyntax(.semicolon, presence: .missing))
+        }
+
+        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
+            disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            }
+        }
+    }
+}
+
+private extension TokenSyntax {
+    var isTrailingSemicolon: Bool {
+        tokenKind == .semicolon &&
+            (trailingTrivia.containsNewlines() || (nextToken?.leadingTrivia.containsNewlines() == true))
+    }
+}
+
+private extension Trivia {
+    func containsNewlines() -> Bool {
+        contains { piece in
+            if case .newlines = piece {
+                return true
+            } else {
+                return false
+            }
+        }
     }
 }

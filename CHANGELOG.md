@@ -84,6 +84,7 @@
   - `strong_iboutlet`
   - `switch_case_on_newline`
   - `toggle_bool`
+  - `trailing_semicolon`
   - `unneeded_break_in_switch`
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`

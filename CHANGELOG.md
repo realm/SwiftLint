@@ -42,28 +42,54 @@
 
 * Rewrite some rules with SwiftSyntax, fixing some false positives and catching
   more violations:
-  - `anyobject_protocol`
+  - `anonymous_argument_in_multiline_closure`
   - `array_init`
   - `block_based_kvo`
   - `class_delegate_protocol`
   - `closing_brace`
+  - `closure_parameter_position`
   - `computed_accessors_order`
+  - `contains_over_filter_count`
+  - `deployment_target`
+  - `discouraged_object_literal`
   - `discouraged_optional_boolean`
+  - `duplicate_enum_cases`
+  - `dynamic_inline`
+  - `empty_collection_literal`
+  - `empty_enum_arguments`
+  - `empty_parentheses_with_trailing_closure`
   - `empty_string`
+  - `explicit_init`
+  - `fallthrough`
   - `flatmap_over_map_reduce`
   - `force_try`
   - `force_unwrapping`
+  - `generic_type_name`
+  - `ibinspectable_in_extension`
   - `implicit_getter`
+  - `inert_defer`
   - `large_tuple`
   - `multiple_closures_with_trailing_closure`
+  - `no_extension_access_modifier`
+  - `no_fallthrough_only`
+  - `no_space_in_method_call`
+  - `nsobject_prefer_isequal`
+  - `private_action`
+  - `private_outlet`
+  - `private_unit_test`
+  - `protocol_property_accessors_order`
   - `redundant_nil_coalescing`
+  - `redundant_string_enum_value`
+  - `strong_iboutlet`
+  - `switch_case_on_newline`
   - `toggle_bool`
   - `unneeded_break_in_switch`
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`
   - `untyped_error_in_catch`
   - `xctfail_message`  
-  [Marcelo Fabri](https://github.com/marcelofabri)  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [SimplyDanny](https://github.com/SimplyDanny)
   [JP Simard](https://github.com/jpims)
   [#2915](https://github.com/realm/SwiftLint/issues/2915)
 

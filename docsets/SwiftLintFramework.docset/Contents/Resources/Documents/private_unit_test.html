@@ -346,12 +346,12 @@
 <li><strong>Default configuration:</strong> warning: XCTestCase</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="s">"class FooTest: XCTestCase {
-    func test1() {}
-    internal func test2() {}
-    public func test3() {}
-}
-</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">internal</span> <span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
     <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
@@ -366,8 +366,8 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@objc</span> <span class="kd">private</span> <span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">@objc</span> <span class="kd">private</span> <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">class</span> <span class="kt">Foo</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
@@ -383,36 +383,38 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
-    <span class="kd">func</span> <span class="nf">test1</span><span class="p">(</span><span class="nv">param</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">test1</span><span class="p">(</span><span class="nv">param</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span> <span class="s">""</span> <span class="p">}</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">atest</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="err">↓</span><span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">private</span> <span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">private</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">private</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">internal</span> <span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">private</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">private</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">FooTest</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="kd">func</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
-        <span class="kd">private</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">internal</span> <span class="kd">func</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">test3</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="kd">private</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">test4</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
 

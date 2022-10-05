@@ -283,18 +283,12 @@ public struct CollectedLinter {
             return []
         }
 
-        if let parserDiagnostics = file.parserDiagnostics {
-            let errorDiagnostics = parserDiagnostics.filter { diagnostic in
-                diagnostic["key.severity"] as? String == "source.diagnostic.severity.error"
-            }
-
-            if errorDiagnostics.isNotEmpty {
-                queuedPrintError(
-                    "Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
-                )
-                queuedPrintError(toJSON(["diagnostics": errorDiagnostics]))
-                return []
-            }
+        if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
+            queuedPrintError(
+                "Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
+            )
+            queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
+            return []
         }
 
         var corrections = [Correction]()

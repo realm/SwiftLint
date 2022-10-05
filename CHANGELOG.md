@@ -93,6 +93,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4202](https://github.com/realm/SwiftLint/issues/4202)
 
+* Use SwiftSyntax instead of SourceKit to determine if a file has parser errors
+  before applying corrections. This speeds up corrections significantly when
+  none of the rules use SourceKit.  
+  [JP Simard](https://github.com/jpims)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

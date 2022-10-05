@@ -70,6 +70,7 @@ public struct PrivateUnitTestRule: SwiftSyntaxRule, ConfigurationProviderRule, C
                 private func test1(param: Int) {}
                 private func test2() -> String { "" }
                 private func atest() {}
+                private static func test3() {}
             }
             """)
         ],
@@ -177,13 +178,20 @@ private extension FunctionDeclSyntax {
     }
 
     var isTestMethod: Bool {
-        identifier.text.hasPrefix("test") && signature.input.parameterList.isEmpty && signature.output == nil
+        identifier.text.hasPrefix("test")
+            && signature.input.parameterList.isEmpty
+            && signature.output == nil
+            && !(modifiers?.hasStatic ?? false)
     }
 }
 
 private extension ModifierListSyntax {
     var hasPrivate: Bool {
         contains { $0.name.tokenKind == .privateKeyword }
+    }
+
+    var hasStatic: Bool {
+        contains { $0.name.tokenKind == .staticKeyword }
     }
 }
 

@@ -13,7 +13,7 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     }
 }
 
-public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equatable, SeverityBasedRuleConfiguration {
+public struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public private(set) var severityConfiguration: SeverityConfiguration
     public private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
 

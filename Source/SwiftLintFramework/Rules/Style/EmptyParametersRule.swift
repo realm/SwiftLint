@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+public struct EmptyParametersRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -34,28 +33,76 @@ public struct EmptyParametersRule: ConfigurationProviderRule, SubstitutionCorrec
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
+    }
+}
+
+private extension EmptyParametersRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionTypeSyntax) {
+            guard let violationPosition = node.emptyParametersViolationPosition else {
+                return
+            }
+
+            violationPositions.append(violationPosition)
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let voidPattern = "\\(Void\\)"
-        let pattern = voidPattern + "\\s*(throws\\s+)?->"
-        let excludingPattern = "->\\s*" + pattern // excludes curried functions
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-        return file.match(pattern: pattern,
-                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                          excludingPattern: excludingPattern).compactMap { range in
-            let voidRegex = regex(voidPattern)
-            return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FunctionTypeSyntax) -> TypeSyntax {
+            guard
+                let violationPosition = node.emptyParametersViolationPosition,
+                !isInDisabledRegion(node)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(violationPosition)
+            return super.visit(node.withArguments(TupleTypeElementListSyntax([])))
+        }
+
+        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
+            disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            }
         }
     }
+}
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "()")
+private extension FunctionTypeSyntax {
+    var emptyParametersViolationPosition: AbsolutePosition? {
+        guard
+            arguments.count == 1,
+            leftParen.presence == .present,
+            rightParen.presence == .present,
+            let argument = arguments.first,
+            let simpleType = argument.type.as(SimpleTypeIdentifierSyntax.self),
+            simpleType.typeName == "Void"
+        else {
+            return nil
+        }
+
+        return leftParen.positionAfterSkippingLeadingTrivia
     }
 }

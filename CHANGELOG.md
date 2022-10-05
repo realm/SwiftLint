@@ -97,6 +97,10 @@
   before applying corrections. This speeds up corrections significantly when
   none of the rules use SourceKit.  
   [JP Simard](https://github.com/jpims)
+  
+* Add Swift Package Build Tool Plugin with support for Swift Packages
+  and Xcode projects.  
+  [Johannes Ebeling](https://github.com/technocidal)
 
 #### Bug Fixes
 

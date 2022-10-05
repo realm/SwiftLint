@@ -70,6 +70,7 @@
   - `implicit_getter`
   - `inert_defer`
   - `large_tuple`
+  - `legacy_constant`
   - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`
   - `no_fallthrough_only`

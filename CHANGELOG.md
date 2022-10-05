@@ -101,6 +101,8 @@
 * Add Swift Package Build Tool Plugin with support for Swift Packages
   and Xcode projects.  
   [Johannes Ebeling](https://github.com/technocidal)
+  [#3679](https://github.com/realm/SwiftLint/issues/3679)
+  [#3840](https://github.com/realm/SwiftLint/issues/3840)
 
 #### Bug Fixes
 

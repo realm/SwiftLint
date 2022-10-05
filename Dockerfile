@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
  && rm -r /var/lib/apt/lists/*
 WORKDIR /workdir/
+COPY Plugins Plugins/
 COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./

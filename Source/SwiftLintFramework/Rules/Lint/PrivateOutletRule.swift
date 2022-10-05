@@ -104,7 +104,7 @@ private extension PrivateOutletRule {
                 return
             }
 
-            if allowPrivateSet && decl.modifiers?.isPrivateSet == true {
+            if allowPrivateSet && decl.modifiers?.isPrivateOrFilePrivateSet == true {
                 return
             }
 
@@ -124,8 +124,8 @@ private extension ModifierListSyntax {
         contains(where: \.isPrivateOrFilePrivate)
     }
 
-    var isPrivateSet: Bool {
-        contains(where: \.isPrivateSet)
+    var isPrivateOrFilePrivateSet: Bool {
+        contains(where: \.isPrivateOrFilePrivateSet)
     }
 }
 
@@ -134,7 +134,7 @@ private extension ModifierListSyntax.Element {
         (name.text == "private" || name.text == "fileprivate") && detail == nil
     }
 
-    var isPrivateSet: Bool {
-        name.text == "private" && detail?.detail.text == "set"
+    var isPrivateOrFilePrivateSet: Bool {
+        (name.text == "private" || name.text == "fileprivate") && detail?.detail.text == "set"
     }
 }

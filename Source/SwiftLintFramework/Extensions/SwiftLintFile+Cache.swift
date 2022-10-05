@@ -155,20 +155,22 @@ extension SwiftLintFile {
         }
     }
 
-    internal var parserDiagnostics: [[String: SourceKitRepresentable]]? {
+    internal var parserDiagnostics: [String]? {
         if parserDiagnosticsDisabledForTests {
             return nil
         }
 
-        guard let response = responseCache.get(self) else {
+        guard let syntaxTree = syntaxTree else {
             if let handler = assertHandler {
                 handler()
                 return nil
             }
-            queuedFatalError("Never call this for file that sourcekitd fails.")
+            queuedFatalError("Could not get diagnostics for file.")
         }
 
-        return response["key.diagnostics"] as? [[String: SourceKitRepresentable]]
+        return ParseDiagnosticsGenerator.diagnostics(for: syntaxTree)
+            .filter { $0.diagMessage.severity == .error }
+            .map(\.message)
     }
 
     internal var structure: Structure {

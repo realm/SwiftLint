@@ -13,7 +13,7 @@ extension SwiftLint {
         var quiet = false
         @Option(help: "The path of the full xcodebuild log to use when running AnalyzerRules.")
         var compilerLogPath: String?
-        @Option(help: "The path of a compilation database to use when running AnalyzerRules")
+        @Option(help: "The path of a compilation database to use when running AnalyzerRules.")
         var compileCommands: String?
         @Argument(help: pathsArgumentDescription(for: .analyze))
         var paths = [String]()

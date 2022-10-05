@@ -68,6 +68,13 @@ public struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, Configuratio
             enum Numbers: Decimal {
               case ↓one, ↓two
             }
+            """),
+            Example("""
+            enum Outer {
+                enum Numbers: Decimal {
+                  case ↓one, ↓two
+                }
+            }
             """)
         ]
     )
@@ -82,18 +89,23 @@ private extension ExplicitEnumRawValueRule {
         private(set) var violationPositions: [AbsolutePosition] = []
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            if node.rawValue == nil {
+            if node.rawValue == nil,
+               let enclosingEnum = Syntax(node).enclosingEnum(),
+               let inheritance = enclosingEnum.inheritanceClause,
+               inheritance.supportsRawValue {
                 violationPositions.append(node.identifier.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
+}
 
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let inheritance = node.inheritanceClause, inheritance.supportsRawValue else {
-                return .skipChildren
-            }
-
-            return .visitChildren
+private extension Syntax {
+    func enclosingEnum() -> EnumDeclSyntax? {
+        if let node = self.as(EnumDeclSyntax.self) {
+            return node
         }
+
+        return parent?.enclosingEnum()
     }
 }
 

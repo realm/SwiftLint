@@ -497,6 +497,41 @@ your project for remaining violations.</p>
 <p>If you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
 <pre class="highlight shell"><code><span class="s2">"</span><span class="k">${</span><span class="nv">PODS_ROOT</span><span class="k">}</span><span class="s2">/SwiftLint/swiftlint"</span>
 </code></pre>
+<h3 id='plug-in-support' class='heading'>Plug-in Support</h3>
+
+<p>SwiftLint can be used as a build tool plug-in for both Xcode projects as well as
+Swift packages.</p>
+
+<blockquote>
+<p>Due to limitations with Swift Package Manager Plug-ins this is only
+recommended for projects that have a SwiftLint configuration in their root directory as
+there is currently no way to pass any additional options to the SwiftLint executable.</p>
+</blockquote>
+<h4 id='xcode' class='heading'>Xcode</h4>
+
+<p>You can integrate SwiftLint as a Xcode Build Tool Plug-in if you&rsquo;re working
+with a project in Xcode.</p>
+
+<p>Add SwiftLint as a package dependency to your project without linking any of the
+products.</p>
+
+<p>Select the target you want to add linting to and open the <code>Build Phases</code> inspector.
+Open <code>Run Build Tool Plug-ins</code> and select the <code>+</code> button.
+Select <code>SwiftLintPlugin</code> from the list and add it to the project.</p>
+
+<p><img src="assets/select-swiftlint-plugin.png" alt=""></p>
+<h4 id='swift-package' class='heading'>Swift Package</h4>
+
+<p>You can integrate SwiftLint as a Swift Package Manager Plug-in if you&rsquo;re working with
+a Swift Package with a <code>Package.swift</code> manifest.</p>
+
+<p>Add SwiftLint as a package dependency to your <code>Package.swift</code> file.<br>
+Add SwiftLint to a target using the <code>plugins</code> parameter.</p>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
+<span class="p">),</span>
+</code></pre>
 <h3 id='appcode' class='heading'>AppCode</h3>
 
 <p>To integrate SwiftLint with AppCode, install

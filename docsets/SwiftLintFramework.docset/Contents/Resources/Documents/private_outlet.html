@@ -371,6 +371,26 @@
 <span class="p">}</span>
 
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span>
+<span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+<span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">@IBOutlet</span> <span class="k">weak</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span>
+<span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span>
+<span class="p">}</span>
+
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="kd">@IBOutlet</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span>
@@ -379,6 +399,11 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="kd">@IBOutlet</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+<span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+  <span class="kd">@IBOutlet</span> <span class="kd">private(set)</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">label</span><span class="p">:</span> <span class="kt">UILabel</span><span class="p">?</span>
 <span class="p">}</span>
 
 </code></pre>

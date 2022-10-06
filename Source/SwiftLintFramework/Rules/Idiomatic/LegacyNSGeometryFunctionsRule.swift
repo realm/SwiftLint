@@ -1,5 +1,3 @@
-import SwiftSyntax
-
 public struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 

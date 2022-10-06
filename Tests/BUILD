@@ -20,6 +20,18 @@ swift_test(
     deps = [":CLITests.library"],
 )
 
+# SwiftLintTestHelpers
+
+swift_library(
+    name = "SwiftLintTestHelpers",
+    testonly = True,
+    srcs = glob(["SwiftLintTestHelpers/**/*.swift"]),
+    module_name = "SwiftLintTestHelpers",
+    deps = [
+        "//:SwiftLintFramework",
+    ],
+)
+
 # SwiftLintFrameworkTests
 
 filegroup(
@@ -51,6 +63,7 @@ swift_library(
     module_name = "SwiftLintFrameworkTests",
     deps = [
         "//:SwiftLintFramework",
+        ":SwiftLintTestHelpers",
     ],
 )
 
@@ -77,8 +90,7 @@ swift_library(
     name = "ExtraRulesTests.library",
     testonly = True,
     srcs = [
-        "SwiftLintFrameworkTests/ExtraRulesTests.swift",
-        "SwiftLintFrameworkTests/TestHelpers.swift",
+        "ExtraRulesTests/ExtraRulesTests.swift",
     ] + select({
         "@platforms//os:linux": [":ExtraRulesLinuxMain"],
         "//conditions:default": [],
@@ -86,6 +98,7 @@ swift_library(
     module_name = "ExtraRulesTests",
     deps = [
         "//:SwiftLintFramework",
+        ":SwiftLintTestHelpers",
     ],
 )
 

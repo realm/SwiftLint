@@ -59,13 +59,28 @@ let package = Package(
             name: "SwiftLintFramework",
             dependencies: frameworkDependencies
         ),
-        .testTarget(
-            name: "SwiftLintFrameworkTests",
+        .target(
+            name: "SwiftLintTestHelpers",
             dependencies: [
                 "SwiftLintFramework"
             ],
+            path: "Tests/SwiftLintTestHelpers"
+        ),
+        .testTarget(
+            name: "SwiftLintFrameworkTests",
+            dependencies: [
+                "SwiftLintFramework",
+                "SwiftLintTestHelpers"
+            ],
             exclude: [
                 "Resources",
+            ]
+        ),
+        .testTarget(
+            name: "ExtraRulesTests",
+            dependencies: [
+                "SwiftLintFramework",
+                "SwiftLintTestHelpers"
             ]
         ),
     ]

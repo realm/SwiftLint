@@ -1,6 +1,6 @@
 import SwiftLintFramework
 
-extension RuleDescription {
+public extension RuleDescription {
     func with(nonTriggeringExamples: [Example],
               triggeringExamples: [Example]) -> RuleDescription {
         return RuleDescription(identifier: identifier,

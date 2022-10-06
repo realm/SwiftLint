@@ -1,4 +1,5 @@
 @testable import SwiftLintFramework
+import SwiftLintTestHelpers
 import XCTest
 
 final class ExtraRulesTests: XCTestCase {

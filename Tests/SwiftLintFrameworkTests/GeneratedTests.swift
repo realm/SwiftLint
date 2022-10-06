@@ -1,6 +1,7 @@
 // Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
+import SwiftLintTestHelpers
 import XCTest
 
 // swiftlint:disable file_length single_test_class type_name

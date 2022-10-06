@@ -60,9 +60,16 @@ let package = Package(
             dependencies: frameworkDependencies
         ),
         .testTarget(
-            name: "SwiftLintFrameworkTests",
+            name: "SwiftLintTestHelpers",
             dependencies: [
                 "SwiftLintFramework"
+            ]
+        ),
+        .testTarget(
+            name: "SwiftLintFrameworkTests",
+            dependencies: [
+                "SwiftLintFramework",
+                "SwiftLintTestHelpers"
             ],
             exclude: [
                 "Resources",
@@ -71,7 +78,8 @@ let package = Package(
         .testTarget(
             name: "ExtraRulesTests",
             dependencies: [
-                "SwiftLintFramework"
+                "SwiftLintFramework",
+                "SwiftLintTestHelpers"
             ]
         ),
     ]

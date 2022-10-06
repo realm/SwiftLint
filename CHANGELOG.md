@@ -134,6 +134,9 @@
   [#3679](https://github.com/realm/SwiftLint/issues/3679)
   [#3840](https://github.com/realm/SwiftLint/issues/3840)
 
+* Make `private_unit_test` rule correctable.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

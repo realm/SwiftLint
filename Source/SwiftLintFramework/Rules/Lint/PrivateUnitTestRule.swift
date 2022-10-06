@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-public struct PrivateUnitTestRule: SwiftSyntaxRule, ConfigurationProviderRule, CacheDescriptionProvider {
+public struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, CacheDescriptionProvider {
     public var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
         configuration.message = "Unit test marked `private` will not be run by XCTest."
@@ -107,11 +107,47 @@ public struct PrivateUnitTestRule: SwiftSyntaxRule, ConfigurationProviderRule, C
                 private ↓func test4() {}
             }
             """)
+        ],
+        corrections: [
+            Example("""
+
+                ↓private class Test: XCTestCase {}
+                """): Example("""
+
+                    class Test: XCTestCase {}
+                    """),
+            Example("""
+                class Test: XCTestCase {
+
+                    ↓private func test1() {}
+                    private func test2(i: Int) {}
+                    @objc private func test3() {}
+                    internal func test4() {}
+                }
+                """): Example("""
+                    class Test: XCTestCase {
+
+                        func test1() {}
+                        private func test2(i: Int) {}
+                        @objc private func test3() {}
+                        internal func test4() {}
+                    }
+                    """)
         ]
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         Visitor(parentClassRegex: configuration.regex)
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                parentClassRegex: configuration.regex,
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
     }
 }
 
@@ -125,7 +161,7 @@ private class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        node.hasParent(matching: parentClassRegex) && !node.isPrivate ? .visitChildren : .skipChildren
+        !node.isPrivate && node.hasParent(matching: parentClassRegex) ? .visitChildren : .skipChildren
     }
 
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -145,7 +181,7 @@ private class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        if node.hasParent(matching: parentClassRegex), node.isPrivate {
+        if node.isPrivate, node.hasParent(matching: parentClassRegex) {
             violationPositions.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -154,6 +190,77 @@ private class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         if node.isTestMethod, node.isPrivate {
             violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+    private(set) var correctionPositions: [AbsolutePosition] = []
+    private let parentClassRegex: NSRegularExpression
+    let locationConverter: SourceLocationConverter
+    let disabledRegions: [SourceRange]
+
+    init(parentClassRegex: NSRegularExpression,
+         locationConverter: SourceLocationConverter,
+         disabledRegions: [SourceRange]) {
+        self.parentClassRegex = parentClassRegex
+        self.locationConverter = locationConverter
+        self.disabledRegions = disabledRegions
+    }
+
+    override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
+        guard node.isPrivate, node.hasParent(matching: parentClassRegex) else {
+            return super.visit(node)
+        }
+
+        let isInDisabledRegion = disabledRegions.contains { region in
+            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+        }
+
+        guard !isInDisabledRegion else {
+            return super.visit(node)
+        }
+
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.classKeyword)
+        return super.visit(node.withModifiers(modifiers).withClassKeyword(declKeyword))
+    }
+
+    override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
+        guard node.isTestMethod, node.isPrivate else {
+            return super.visit(node)
+        }
+
+        let isInDisabledRegion = disabledRegions.contains { region in
+            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+        }
+
+        guard !isInDisabledRegion else {
+            return super.visit(node)
+        }
+
+        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+        let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.funcKeyword)
+        return super.visit(node.withModifiers(modifiers).withFuncKeyword(declKeyword))
+    }
+
+    private func withoutPrivate(modifiers: ModifierListSyntax?,
+                                declKeyword: TokenSyntax) -> (ModifierListSyntax?, TokenSyntax) {
+        guard let modifiers else {
+            return (nil, declKeyword)
+        }
+        var filteredModifiers = [DeclModifierSyntax]()
+        var leadingTrivia = Trivia.zero
+        for modifier in modifiers {
+            let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia ?? .zero)
+            if modifier.name.tokenKind == .privateKeyword {
+                leadingTrivia = accumulatedLeadingTrivia
+            } else {
+                filteredModifiers.append(modifier.withLeadingTrivia(accumulatedLeadingTrivia))
+                leadingTrivia = .zero
+            }
+        }
+        let declKeyword = declKeyword.withLeadingTrivia(leadingTrivia + (declKeyword.leadingTrivia ?? .zero))
+        return (ModifierListSyntax(filteredModifiers), declKeyword)
     }
 }
 

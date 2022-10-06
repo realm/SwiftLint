@@ -2,6 +2,8 @@ load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 
 exports_files(["BUILD"])
 
+# CLITests
+
 swift_library(
     name = "CLITests.library",
     testonly = True,
@@ -17,6 +19,8 @@ swift_test(
     visibility = ["//visibility:public"],
     deps = [":CLITests.library"],
 )
+
+# SwiftLintFrameworkTests
 
 filegroup(
     name = "SwiftLintFrameworkTestsSources",
@@ -56,6 +60,8 @@ swift_test(
     visibility = ["//visibility:public"],
     deps = [":SwiftLintFrameworkTests.library"],
 )
+
+# ExtraRulesTests
 
 genrule(
     name = "ExtraRulesLinuxMain",

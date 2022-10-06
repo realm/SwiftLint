@@ -1,5 +1,4 @@
 import SwiftSyntax
-import SwiftSyntaxBuilder
 
 public struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
@@ -82,49 +81,7 @@ public struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, Configu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            Rewriter(
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
-    }
-}
-
-private extension LegacyCGGeometryFunctionsRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            if node.isLegacyNSGeometryExpression {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
-            }
-        }
-    }
-
-    enum RewriteStrategy {
-        case equal
-        case property(name: String)
-        case function(name: String, argumentLabels: [String], reversed: Bool = false)
-
-        var expectedInitialArguments: Int {
-            switch self {
-            case .equal:
-                return 2
-            case .property:
-                return 1
-            case .function(name: _, argumentLabels: let argumentLabels, reversed: _):
-                return argumentLabels.count + 1
-            }
-        }
-    }
-
-    static let legacyFunctions: [String: RewriteStrategy] = [
+    private static let legacyFunctions: [String: LegacyFunctionRuleHelper.RewriteStrategy] = [
         "CGRectGetWidth": .property(name: "width"),
         "CGRectGetHeight": .property(name: "height"),
         "CGRectGetMinX": .property(name: "minX"),
@@ -147,79 +104,17 @@ private extension LegacyCGGeometryFunctionsRule {
         "CGRectIntersection": .function(name: "intersect", argumentLabels: [""])
     ]
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
-        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard
-                node.isLegacyNSGeometryExpression,
-                let funcName = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
-                !isInDisabledRegion(node)
-            else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
-            let trimmedArguments = node.argumentList.map { $0.trimmed() }
-            let rewriteStrategy = LegacyCGGeometryFunctionsRule.legacyFunctions[funcName]
-
-            let expr: ExprSyntax
-            switch rewriteStrategy {
-            case .equal:
-                expr = "\(trimmedArguments[0]) == \(trimmedArguments[1])"
-            case let .property(name: propertyName):
-                expr = "\(trimmedArguments[0]).\(propertyName)"
-            case let .function(name: functionName, argumentLabels: argumentLabels, reversed: reversed):
-                let arguments = reversed ? trimmedArguments.reversed() : trimmedArguments
-                let params = zip(argumentLabels, arguments.dropFirst())
-                    .map { $0.isEmpty ? "\($1)" : "\($0): \($1)" }
-                    .joined(separator: ", ")
-                expr = "\(arguments[0]).\(functionName)(\(params))"
-            case .none:
-                return super.visit(node)
-            }
-
-            return expr
-                .withLeadingTrivia(node.leadingTrivia ?? .zero)
-                .withTrailingTrivia(node.trailingTrivia ?? .zero)
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
     }
-}
 
-private extension FunctionCallExprSyntax {
-    var isLegacyNSGeometryExpression: Bool {
-        guard
-            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
-            case let funcName = calledExpression.identifier.text,
-            let rewriteStrategy = LegacyCGGeometryFunctionsRule.legacyFunctions[funcName],
-            argumentList.count == rewriteStrategy.expectedInitialArguments
-        else {
-            return false
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            LegacyFunctionRuleHelper.Rewriter(
+                legacyFunctions: Self.legacyFunctions,
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
         }
-
-        return true
-    }
-}
-
-private extension TupleExprElementSyntax {
-    func trimmed() -> TupleExprElementSyntax {
-        self
-            .withoutTrivia()
-            .withTrailingComma(nil)
-            .withoutTrivia()
     }
 }

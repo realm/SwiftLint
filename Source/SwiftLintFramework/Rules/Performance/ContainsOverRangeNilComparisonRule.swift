@@ -50,7 +50,7 @@ private extension ContainsOverRangeNilComparisonRule {
                 node.rightOperand.is(NilLiteralExprSyntax.self),
                 let first = node.leftOperand.as(FunctionCallExprSyntax.self),
                 first.argumentList.count == 1,
-                first.argumentList.allSatisfy({ $0.label?.text == "of" }),
+                first.argumentList.first?.label?.text == "of",
                 let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
                 calledExpression.name.text == "range"
             else {

@@ -48,8 +48,6 @@ internal struct LegacyConstantRuleExamples {
         "NSZeroPoint": "NSPoint.zero",
         "NSZeroRect": "NSRect.zero",
         "NSZeroSize": "NSSize.zero",
-        "CGRectNull": "CGRect.null",
-        "CGFloat\\(M_PI\\)": "CGFloat.pi",
-        "Float\\(M_PI\\)": "Float.pi"
+        "CGRectNull": "CGRect.null"
     ]
 }

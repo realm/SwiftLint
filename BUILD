@@ -122,14 +122,6 @@ xcodeproj(
 
 # Analyze
 
-filegroup(
-    name = "SourceAndTestFiles",
-    srcs = glob([
-        "Source/**",
-        "Tests/SwiftLintFrameworkTests/**",
-    ]),
-)
-
 sh_test(
     name = "analyze",
     srcs = ["//tools:test-analyze.sh"],
@@ -137,7 +129,6 @@ sh_test(
         "Package.resolved",
         "Package.swift",
         ":LintInputs",
-        ":SourceAndTestFiles",
         ":swiftlint",
     ],
 )

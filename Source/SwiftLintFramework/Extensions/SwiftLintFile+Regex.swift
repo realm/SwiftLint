@@ -290,35 +290,6 @@ extension SwiftLintFile {
         return (count > limit, count)
     }
 
-    private typealias RangePatternTemplate = (NSRange, String, String)
-
-    internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
-        let matches: [RangePatternTemplate]
-        matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
-            return match(pattern: pattern).filter { range, kinds in
-                return kinds.first == .identifier &&
-                    !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
-            }.map { ($0.0, pattern, template) }
-        }).sorted { $0.0.location > $1.0.location } // reversed
-
-        guard matches.isNotEmpty else { return [] }
-
-        let description = type(of: legacyRule).description
-        var corrections = [Correction]()
-        var contents = self.contents
-
-        for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatches(in: contents, options: [],
-                                                               range: range,
-                                                               withTemplate: template)
-            let location = Location(file: self, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        write(contents)
-        return corrections
-    }
-
     internal func isACL(token: SwiftLintSyntaxToken) -> Bool {
         guard token.kind == .attributeBuiltin else {
             return false

@@ -71,6 +71,7 @@
   - `implicit_getter`
   - `inert_defer`
   - `large_tuple`
+  - `legacy_cggeometry_functions`
   - `legacy_constant`
   - `legacy_nsgeometry_functions`
   - `multiple_closures_with_trailing_closure`

@@ -16,6 +16,7 @@ public struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
             Example("class Foo {\n  var notAnOutlet: UILabel\n}\n"),
             Example("class Foo {\n  @IBOutlet weak private var label: UILabel?\n}\n"),
             Example("class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n"),
+            Example("class Foo {\n  @IBOutlet fileprivate weak var label: UILabel?\n}\n"),
             // allow_private_set
             Example(
                 "class Foo {\n  @IBOutlet private(set) var label: UILabel?\n}\n",
@@ -32,12 +33,17 @@ public struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
             Example(
                 "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n",
                 configuration: ["allow_private_set": true]
+            ),
+            Example(
+                "class Foo {\n  @IBOutlet fileprivate(set) weak var label: UILabel?\n}\n",
+                configuration: ["allow_private_set": true]
             )
         ],
         triggeringExamples: [
             Example("class Foo {\n  @IBOutlet ↓var label: UILabel?\n}\n"),
             Example("class Foo {\n  @IBOutlet ↓var label: UILabel!\n}\n"),
             Example("class Foo {\n  @IBOutlet private(set) ↓var label: UILabel?\n}\n"),
+            Example("class Foo {\n  @IBOutlet fileprivate(set) ↓var label: UILabel?\n}\n"),
             Example("""
             import Gridicons
 

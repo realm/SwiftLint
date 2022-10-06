@@ -68,5 +68,11 @@ let package = Package(
                 "Resources",
             ]
         ),
+        .testTarget(
+            name: "ExtraRulesTests",
+            dependencies: [
+                "SwiftLintFramework"
+            ]
+        ),
     ]
 )

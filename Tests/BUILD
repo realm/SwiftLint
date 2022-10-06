@@ -77,7 +77,7 @@ swift_library(
     name = "ExtraRulesTests.library",
     testonly = True,
     srcs = [
-        "SwiftLintFrameworkTests/ExtraRulesTests.swift",
+        "ExtraRulesTests/ExtraRulesTests.swift",
         "SwiftLintFrameworkTests/TestHelpers.swift",
     ] + select({
         "@platforms//os:linux": [":ExtraRulesLinuxMain"],

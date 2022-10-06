@@ -21,10 +21,7 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
-        "@com_github_apple_swift_syntax//:SwiftSyntax",
-        "@com_github_apple_swift_syntax//:SwiftSyntaxBuilder",
-        "@com_github_apple_swift_syntax//:SwiftParser",
-        "@com_github_apple_swift_syntax//:SwiftOperators",
+        "@com_github_apple_swift_syntax//:optlibs",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
@@ -34,8 +31,8 @@ swift_library(
 
 swift_library(
     name = "swiftlint.library",
-    module_name = "swiftlint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
+    module_name = "swiftlint",
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",

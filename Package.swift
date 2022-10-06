@@ -77,6 +77,20 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "GeneratedTests",
+            dependencies: [
+                "SwiftLintFramework",
+                "SwiftLintTestHelpers"
+            ]
+        ),
+        .testTarget(
+            name: "IntegrationTests",
+            dependencies: [
+                "SwiftLintFramework",
+                "SwiftLintTestHelpers"
+            ]
+        ),
+        .testTarget(
             name: "ExtraRulesTests",
             dependencies: [
                 "SwiftLintFramework",

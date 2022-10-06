@@ -49,7 +49,7 @@ filegroup(
 filegroup(
     name = "SwiftLintFrameworkTestsData",
     srcs = glob(
-        ["SwiftLintFrameworkTests/**"],
+        ["**/**"],
         # Bazel doesn't support paths with spaces in them
         exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),
@@ -69,9 +69,52 @@ swift_library(
 
 swift_test(
     name = "SwiftLintFrameworkTests",
-    data = ["//:LintInputs"],
+    data = glob(
+        ["SwiftLintFrameworkTests/Resources/**"],
+        # Bazel doesn't support paths with spaces in them
+        exclude = ["SwiftLintFrameworkTests/Resources/FileNameNoSpaceRuleFixtures/**"],
+    ),
     visibility = ["//visibility:public"],
     deps = [":SwiftLintFrameworkTests.library"],
+)
+
+# GeneratedTests
+
+swift_library(
+    name = "GeneratedTests.library",
+    testonly = True,
+    srcs = ["GeneratedTests/GeneratedTests.swift"],
+    module_name = "GeneratedTests",
+    deps = [
+        "//:SwiftLintFramework",
+        ":SwiftLintTestHelpers",
+    ],
+)
+
+swift_test(
+    name = "GeneratedTests",
+    visibility = ["//visibility:public"],
+    deps = [":GeneratedTests.library"],
+)
+
+# IntegrationTests
+
+swift_library(
+    name = "IntegrationTests.library",
+    testonly = True,
+    srcs = ["IntegrationTests/IntegrationTests.swift"],
+    module_name = "IntegrationTests",
+    deps = [
+        "//:SwiftLintFramework",
+        ":SwiftLintTestHelpers",
+    ],
+)
+
+swift_test(
+    name = "IntegrationTests",
+    data = ["//:LintInputs"],
+    visibility = ["//visibility:public"],
+    deps = [":IntegrationTests.library"],
 )
 
 # ExtraRulesTests

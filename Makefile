@@ -33,15 +33,15 @@ VERSION_STRING=$(shell ./tools/get-version)
 
 all: build
 
-sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/SwiftLintFrameworkTests/GeneratedTests.swift
+sourcery: Source/SwiftLintFramework/Models/PrimaryRuleList.swift Tests/GeneratedTests/GeneratedTests.swift
 
 Source/SwiftLintFramework/Models/PrimaryRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/PrimaryRuleList.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/PrimaryRuleList.stencil --output .sourcery
 	mv .sourcery/PrimaryRuleList.generated.swift Source/SwiftLintFramework/Models/PrimaryRuleList.swift
 
-Tests/SwiftLintFrameworkTests/GeneratedTests.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/GeneratedTests.stencil
+Tests/GeneratedTests/GeneratedTests.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/GeneratedTests.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
-	mv .sourcery/GeneratedTests.generated.swift Tests/SwiftLintFrameworkTests/GeneratedTests.swift
+	mv .sourcery/GeneratedTests.generated.swift Tests/GeneratedTests/GeneratedTests.swift
 
 test: clean_xcode
 	$(BUILD_TOOL) $(XCODEFLAGS) test

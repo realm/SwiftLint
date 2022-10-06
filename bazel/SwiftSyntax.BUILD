@@ -1,5 +1,5 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
-load("@//bazel:opt_wrapper.bzl", "opt_wrapper")
+load("@SwiftLint//bazel:opt_wrapper.bzl", "opt_wrapper")
 
 cc_library(
     name = "_CSwiftSyntax",

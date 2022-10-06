@@ -1,7 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
+import SwiftSyntaxBuilder
 
-public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
+public struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -82,49 +82,144 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let functions = ["CGRectGetWidth", "CGRectGetHeight", "CGRectGetMinX", "CGRectGetMidX",
-                         "CGRectGetMaxX", "CGRectGetMinY", "CGRectGetMidY", "CGRectGetMaxY",
-                         "CGRectIsNull", "CGRectIsEmpty", "CGRectIsInfinite", "CGRectStandardize",
-                         "CGRectIntegral", "CGRectInset", "CGRectOffset", "CGRectUnion",
-                         "CGRectIntersection", "CGRectContainsRect", "CGRectContainsPoint",
-                         "CGRectIntersectsRect"]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
 
-        let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        file.locationConverter.map { locationConverter in
+            Rewriter(
+                locationConverter: locationConverter,
+                disabledRegions: disabledRegions(file: file)
+            )
+        }
+    }
+}
 
-        return file.match(pattern: pattern, with: [.identifier]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+private extension LegacyCGGeometryFunctionsRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if node.isLegacyNSGeometryExpression {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let varName = RegexHelpers.varNameGroup
-        let twoVars = RegexHelpers.twoVars
-        let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-        let patterns: [String: String] = [
-            "CGRectGetWidth\\(\(varName)\\)": "$1.width",
-            "CGRectGetHeight\\(\(varName)\\)": "$1.height",
-            "CGRectGetMinX\\(\(varName)\\)": "$1.minX",
-            "CGRectGetMidX\\(\(varName)\\)": "$1.midX",
-            "CGRectGetMaxX\\(\(varName)\\)": "$1.maxX",
-            "CGRectGetMinY\\(\(varName)\\)": "$1.minY",
-            "CGRectGetMidY\\(\(varName)\\)": "$1.midY",
-            "CGRectGetMaxY\\(\(varName)\\)": "$1.maxY",
-            "CGRectIsNull\\(\(varName)\\)": "$1.isNull",
-            "CGRectIsEmpty\\(\(varName)\\)": "$1.isEmpty",
-            "CGRectIsInfinite\\(\(varName)\\)": "$1.isInfinite",
-            "CGRectStandardize\\(\(varName)\\)": "$1.standardized",
-            "CGRectIntegral\\(\(varName)\\)": "$1.integral",
-            "CGRectInset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
-            "CGRectOffset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
-            "CGRectUnion\\(\(twoVars)\\)": "$1.union($2)",
-            "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect($2)",
-            "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
-        ]
-        return file.correct(legacyRule: self, patterns: patterns)
+    enum RewriteStrategy {
+        case equal
+        case property(name: String)
+        case function(name: String, argumentLabels: [String], reversed: Bool = false)
+
+        var expectedInitialArguments: Int {
+            switch self {
+            case .equal:
+                return 2
+            case .property:
+                return 1
+            case .function(name: _, argumentLabels: let argumentLabels, reversed: _):
+                return argumentLabels.count + 1
+            }
+        }
+    }
+
+    static let legacyFunctions: [String: RewriteStrategy] = [
+        "CGRectGetWidth": .property(name: "width"),
+        "CGRectGetHeight": .property(name: "height"),
+        "CGRectGetMinX": .property(name: "minX"),
+        "CGRectGetMidX": .property(name: "midX"),
+        "CGRectGetMaxX": .property(name: "maxX"),
+        "CGRectGetMinY": .property(name: "minY"),
+        "CGRectGetMidY": .property(name: "midY"),
+        "CGRectGetMaxY": .property(name: "maxY"),
+        "CGRectIsNull": .property(name: "isNull"),
+        "CGRectIsEmpty": .property(name: "isEmpty"),
+        "CGRectIsInfinite": .property(name: "isInfinite"),
+        "CGRectStandardize": .property(name: "standardized"),
+        "CGRectIntegral": .property(name: "integral"),
+        "CGRectInset": .function(name: "insetBy", argumentLabels: ["dx", "dy"]),
+        "CGRectOffset": .function(name: "offsetBy", argumentLabels: ["dx", "dy"]),
+        "CGRectUnion": .function(name: "union", argumentLabels: [""]),
+        "CGRectContainsRect": .function(name: "contains", argumentLabels: [""]),
+        "CGRectContainsPoint": .function(name: "contains", argumentLabels: [""]),
+        "CGRectIntersectsRect": .function(name: "intersects", argumentLabels: [""]),
+        "CGRectIntersection": .function(name: "intersect", argumentLabels: [""])
+    ]
+
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard
+                node.isLegacyNSGeometryExpression,
+                let funcName = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+                !isInDisabledRegion(node)
+            else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+
+            let trimmedArguments = node.argumentList.map { $0.trimmed() }
+            let rewriteStrategy = LegacyCGGeometryFunctionsRule.legacyFunctions[funcName]
+
+            let expr: ExprSyntax
+            switch rewriteStrategy {
+            case .equal:
+                expr = "\(trimmedArguments[0]) == \(trimmedArguments[1])"
+            case let .property(name: propertyName):
+                expr = "\(trimmedArguments[0]).\(propertyName)"
+            case let .function(name: functionName, argumentLabels: argumentLabels, reversed: reversed):
+                let arguments = reversed ? trimmedArguments.reversed() : trimmedArguments
+                let params = zip(argumentLabels, arguments.dropFirst())
+                    .map { $0.isEmpty ? "\($1)" : "\($0): \($1)" }
+                    .joined(separator: ", ")
+                expr = "\(arguments[0]).\(functionName)(\(params))"
+            case .none:
+                return super.visit(node)
+            }
+
+            return expr
+                .withLeadingTrivia(node.leadingTrivia ?? .zero)
+                .withTrailingTrivia(node.trailingTrivia ?? .zero)
+        }
+
+        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
+            disabledRegions.contains { region in
+                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            }
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var isLegacyNSGeometryExpression: Bool {
+        guard
+            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
+            case let funcName = calledExpression.identifier.text,
+            let rewriteStrategy = LegacyCGGeometryFunctionsRule.legacyFunctions[funcName],
+            argumentList.count == rewriteStrategy.expectedInitialArguments
+        else {
+            return false
+        }
+
+        return true
+    }
+}
+
+private extension TupleExprElementSyntax {
+    func trimmed() -> TupleExprElementSyntax {
+        self
+            .withoutTrivia()
+            .withTrailingComma(nil)
+            .withoutTrivia()
     }
 }

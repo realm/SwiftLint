@@ -108,14 +108,20 @@ xcodeproj(
             name = "SwiftLint",
             launch_action = xcode_schemes.launch_action("//:swiftlint"),
             test_action = xcode_schemes.test_action([
+                "//Tests:CLITests",
                 "//Tests:SwiftLintFrameworkTests",
+                "//Tests:GeneratedTests",
+                "//Tests:IntegrationTests",
                 "//Tests:ExtraRulesTests",
             ]),
         ),
     ],
     top_level_targets = [
         "//:swiftlint",
+        "//Tests:CLITests",
         "//Tests:SwiftLintFrameworkTests",
+        "//Tests:GeneratedTests",
+        "//Tests:IntegrationTests",
         "//Tests:ExtraRulesTests",
     ],
 )

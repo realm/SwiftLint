@@ -1,6 +1,7 @@
-import SourceKittenFramework
+import SwiftOperators
+import SwiftSyntax
 
-public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverRangeNilComparisonRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -24,11 +25,55 @@ public struct ContainsOverRangeNilComparisonRule: CallPairRule, OptInRule, Confi
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\)\\s*(==|!=)\\s*nil"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                        callNameSuffix: ".range", severity: configuration.severity,
-                        reason: "Prefer `contains` over range(of:) comparison to nil") { expression in
-                            return expression.enclosedArguments.map { $0.name } == ["of"]
+        guard let tree = file.syntaxTree?.folded() else {
+            return []
         }
+
+        return Visitor(viewMode: .sourceAccurate)
+            .walk(tree: tree, handler: \.violationPositions)
+            .map { position in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, position: position))
+            }
+    }
+}
+
+private extension ContainsOverRangeNilComparisonRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard
+                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                node.rightOperand.is(NilLiteralExprSyntax.self),
+                let first = node.leftOperand.as(FunctionCallExprSyntax.self),
+                first.argumentList.count == 1,
+                first.argumentList.first?.label?.text == "of",
+                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "range"
+            else {
+                return
+            }
+
+            violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension SourceFileSyntax {
+    func folded() -> SourceFileSyntax? {
+        OperatorTable.standardOperators
+            .foldAll(self) { _ in }
+            .as(SourceFileSyntax.self)
+    }
+}
+
+private extension TokenKind {
+    var isEqualityComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==")
     }
 }

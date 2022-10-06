@@ -50,6 +50,7 @@
   - `closure_parameter_position`
   - `computed_accessors_order`
   - `contains_over_filter_count`
+  - `contains_over_range_nil_comparison`
   - `deployment_target`
   - `discouraged_object_literal`
   - `discouraged_optional_boolean`

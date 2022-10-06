@@ -1,4 +1,5 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+load("@//bazel:opt_wrapper.bzl", "opt_wrapper")
 
 cc_library(
     name = "_CSwiftSyntax",
@@ -13,14 +14,12 @@ swift_library(
     srcs = glob(["Sources/SwiftSyntax/**/*.swift"]),
     module_name = "SwiftSyntax",
     private_deps = ["_CSwiftSyntax"],
-    visibility = ["//visibility:public"],
 )
 
 swift_library(
     name = "SwiftBasicFormat",
     srcs = glob(["Sources/SwiftBasicFormat/**/*.swift"]),
     module_name = "SwiftBasicFormat",
-    visibility = ["//visibility:public"],
     deps = [":SwiftSyntax"],
 )
 
@@ -28,7 +27,6 @@ swift_library(
     name = "SwiftDiagnostics",
     srcs = glob(["Sources/SwiftDiagnostics/**/*.swift"]),
     module_name = "SwiftDiagnostics",
-    visibility = ["//visibility:public"],
     deps = [":SwiftSyntax"],
 )
 
@@ -36,22 +34,42 @@ swift_library(
     name = "SwiftParser",
     srcs = glob(["Sources/SwiftParser/**/*.swift"]),
     module_name = "SwiftParser",
-    visibility = ["//visibility:public"],
-    deps = [":SwiftSyntax", ":SwiftDiagnostics", ":SwiftBasicFormat"],
+    deps = [
+        ":SwiftBasicFormat",
+        ":SwiftDiagnostics",
+        ":SwiftSyntax",
+    ],
 )
 
 swift_library(
     name = "SwiftSyntaxBuilder",
     srcs = glob(["Sources/SwiftSyntaxBuilder/**/*.swift"]),
     module_name = "SwiftSyntaxBuilder",
-    visibility = ["//visibility:public"],
-    deps = [":SwiftSyntax", ":SwiftBasicFormat", ":SwiftParser"],
+    deps = [
+        ":SwiftBasicFormat",
+        ":SwiftParser",
+        ":SwiftSyntax",
+    ],
 )
 
 swift_library(
     name = "SwiftOperators",
     srcs = glob(["Sources/SwiftOperators/**/*.swift"]),
     module_name = "SwiftOperators",
+    deps = [
+        ":SwiftDiagnostics",
+        ":SwiftParser",
+        ":SwiftSyntax",
+    ],
+)
+
+opt_wrapper(
+    name = "optlibs",
     visibility = ["//visibility:public"],
-    deps = [":SwiftSyntax", ":SwiftDiagnostics", ":SwiftParser"],
+    deps = [
+        ":SwiftOperators",
+        ":SwiftParser",
+        ":SwiftSyntax",
+        ":SwiftSyntaxBuilder",
+    ],
 )

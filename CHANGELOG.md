@@ -72,6 +72,7 @@
   - `inert_defer`
   - `large_tuple`
   - `legacy_constant`
+  - `legacy_nsgeometry_functions`
   - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`
   - `no_fallthrough_only`

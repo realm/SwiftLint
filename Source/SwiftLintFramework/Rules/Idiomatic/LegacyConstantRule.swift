@@ -41,17 +41,9 @@ private extension LegacyConstantRule {
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard
-                let calledExpression = node.calledExpression.as(IdentifierExprSyntax.self),
-                calledExpression.identifier.text == "CGFloat" || calledExpression.identifier.text == "Float",
-                node.argumentList.count == 1,
-                let argument = node.argumentList.first?.expression.as(IdentifierExprSyntax.self),
-                argument.identifier.text == "M_PI"
-            else {
-                return
+            if node.isLegacyPiExpression {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
-
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 
@@ -81,11 +73,8 @@ private extension LegacyConstantRule {
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard
+                node.isLegacyPiExpression,
                 let calledExpression = node.calledExpression.as(IdentifierExprSyntax.self),
-                calledExpression.identifier.text == "CGFloat" || calledExpression.identifier.text == "Float",
-                node.argumentList.count == 1,
-                let argument = node.argumentList.first?.expression.as(IdentifierExprSyntax.self),
-                argument.identifier.text == "M_PI",
                 !isInDisabledRegion(node)
             else {
                 return super.visit(node)
@@ -105,19 +94,18 @@ private extension LegacyConstantRule {
     }
 }
 
-private extension FunctionTypeSyntax {
-    var emptyParametersViolationPosition: AbsolutePosition? {
+private extension FunctionCallExprSyntax {
+    var isLegacyPiExpression: Bool {
         guard
-            arguments.count == 1,
-            leftParen.presence == .present,
-            rightParen.presence == .present,
-            let argument = arguments.first,
-            let simpleType = argument.type.as(SimpleTypeIdentifierSyntax.self),
-            simpleType.typeName == "Void"
+            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
+            calledExpression.identifier.text == "CGFloat" || calledExpression.identifier.text == "Float",
+            argumentList.count == 1,
+            let argument = argumentList.first?.expression.as(IdentifierExprSyntax.self),
+            argument.identifier.text == "M_PI"
         else {
-            return nil
+            return false
         }
 
-        return leftParen.positionAfterSkippingLeadingTrivia
+        return true
     }
 }

@@ -297,7 +297,6 @@ end
   Repo.new('Nimble', 'Quick/Nimble'),
   Repo.new('Quick', 'Quick/Quick'),
   Repo.new('Realm', 'realm/realm-swift'),
-  Repo.new('Signal', 'signalapp/Signal-iOS'),
   Repo.new('SourceKitten', 'jpsim/SourceKitten'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
   Repo.new('Swift', 'apple/swift'),

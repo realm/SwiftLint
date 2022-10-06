@@ -34,9 +34,7 @@ public struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRu
 }
 
 private extension LastWhereRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.name.text == "last",

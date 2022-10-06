@@ -26,9 +26,7 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSy
 }
 
 private extension ProhibitedInterfaceBuilderRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isIBOutlet {
                 violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)

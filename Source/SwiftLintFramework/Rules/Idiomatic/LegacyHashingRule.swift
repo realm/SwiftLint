@@ -81,9 +81,7 @@ public struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 extension LegacyHashingRule {
-    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard
                 node.parent?.is(MemberDeclListItemSyntax.self) == true,

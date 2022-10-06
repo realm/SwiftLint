@@ -98,9 +98,7 @@ public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, Swift
 }
 
 private extension SelfInPropertyInitializationRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard !node.modifiers.containsLazy,
                   !node.modifiers.containsStaticOrClass,

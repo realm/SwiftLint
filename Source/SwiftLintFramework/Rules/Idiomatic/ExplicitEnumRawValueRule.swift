@@ -85,8 +85,8 @@ public struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, Configuratio
 }
 
 private extension ExplicitEnumRawValueRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
             if node.rawValue == nil,

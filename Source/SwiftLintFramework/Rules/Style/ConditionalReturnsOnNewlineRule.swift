@@ -43,8 +43,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
 }
 
 private extension ConditionalReturnsOnNewlineRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let ifOnly: Bool
         private let locationConverter: SourceLocationConverter
 

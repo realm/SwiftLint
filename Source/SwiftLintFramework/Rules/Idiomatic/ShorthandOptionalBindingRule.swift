@@ -93,9 +93,7 @@ public struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRul
     }
 }
 
-private class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private class Visitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: OptionalBindingConditionSyntax) {
         if node.isShadowingOptionalBinding {
             violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)

@@ -20,9 +20,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
     }
 }
 
-private final class ReturnValueFromVoidFunctionVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions = [AbsolutePosition]()
-
+private final class ReturnValueFromVoidFunctionVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ReturnStmtSyntax) {
         if node.expression != nil,
            let functionNode = Syntax(node).enclosingFunction(),

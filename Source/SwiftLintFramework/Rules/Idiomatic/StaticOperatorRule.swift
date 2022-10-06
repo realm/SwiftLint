@@ -84,33 +84,13 @@ public struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, Op
 }
 
 private extension StaticOperatorRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isFreeFunction, node.isOperator {
                 violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
-        }
-
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-             .skipChildren
-        }
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
         }
     }
 }

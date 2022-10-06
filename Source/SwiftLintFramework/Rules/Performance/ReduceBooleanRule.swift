@@ -48,9 +48,8 @@ private extension ReduceBooleanRule {
         let reason: String
     }
 
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor {
         private(set) var violations: [Violation] = []
-        var violationPositions: [AbsolutePosition] { violations.map(\.position) }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard

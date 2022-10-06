@@ -113,9 +113,7 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Swi
     }
 }
 
-private class VoidFunctionInTernaryConditionVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private class VoidFunctionInTernaryConditionVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: TernaryExprSyntax) {
         guard node.firstChoice.is(FunctionCallExprSyntax.self),
               node.secondChoice.is(FunctionCallExprSyntax.self),

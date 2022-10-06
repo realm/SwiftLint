@@ -26,8 +26,7 @@ public struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
 }
 
 private extension AttributesRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
         private let configuration: AttributesConfiguration
 

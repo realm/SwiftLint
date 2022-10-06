@@ -21,9 +21,7 @@ public struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
     }
 }
 
-private final class ForceCastRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class ForceCastRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: AsExprSyntax) {
         if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
             violationPositions.append(node.asTok.positionAfterSkippingLeadingTrivia)

@@ -67,9 +67,7 @@ public struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProvid
 }
 
 private extension RedundantStringEnumValueRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: EnumDeclSyntax) {
             guard node.isStringEnum else {
                 return

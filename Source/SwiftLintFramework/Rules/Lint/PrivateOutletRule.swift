@@ -92,8 +92,7 @@ public struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
 }
 
 private extension PrivateOutletRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let allowPrivateSet: Bool
 
         init(allowPrivateSet: Bool) {

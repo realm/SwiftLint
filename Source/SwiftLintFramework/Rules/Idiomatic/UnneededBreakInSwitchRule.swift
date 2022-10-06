@@ -55,9 +55,7 @@ public struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderR
     }
 }
 
-private final class UnneededBreakInSwitchRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: SwitchCaseSyntax) {
         guard node.statements.count > 1,
               let statement = node.statements.last,

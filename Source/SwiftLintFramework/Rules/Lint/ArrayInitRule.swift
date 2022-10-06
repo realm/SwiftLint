@@ -57,9 +57,7 @@ public struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRu
 }
 
 extension ArrayInitRule {
-    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
                   memberAccess.name.text == "map",

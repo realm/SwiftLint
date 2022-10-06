@@ -122,9 +122,7 @@ private extension CatchItemSyntax {
     }
 }
 
-private final class UntypedErrorInCatchRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class UntypedErrorInCatchRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: CatchClauseSyntax) {
         guard node.catchItems?.count == 1,
               let item = node.catchItems?.first,

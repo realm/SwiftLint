@@ -44,9 +44,7 @@ public struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
 }
 
 private extension ToggleBoolRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ExprListSyntax) {
             if node.hasToggleBoolViolation {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)

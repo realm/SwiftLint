@@ -157,17 +157,13 @@ public struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule
 }
 
 private extension ValidIBInspectableRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [FunctionDeclSyntax.self] }
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
                 violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
-        }
-
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
         }
     }
 }

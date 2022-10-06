@@ -42,9 +42,7 @@ public struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 private extension XCTFailMessageRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let expression = node.calledExpression.as(IdentifierExprSyntax.self),

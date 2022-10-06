@@ -41,9 +41,7 @@ public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSynt
     }
 }
 
-private final class YodaConditionRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: IfStmtSyntax) {
         visit(conditions: node.conditions)
     }

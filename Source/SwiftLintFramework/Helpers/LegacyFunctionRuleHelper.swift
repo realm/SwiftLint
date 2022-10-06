@@ -3,8 +3,7 @@ import SwiftSyntaxBuilder
 
 /// A helper to hold a visitor and rewriter that can lint and correct legacy NS/CG functions to a more modern syntax.
 enum LegacyFunctionRuleHelper {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let legacyFunctions: [String: RewriteStrategy]
 
         init(legacyFunctions: [String: RewriteStrategy]) {

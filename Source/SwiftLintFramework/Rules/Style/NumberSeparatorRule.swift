@@ -34,8 +34,7 @@ public struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Config
 }
 
 private extension NumberSeparatorRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor, NumberSeparatorValidator {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor, NumberSeparatorValidator {
         let configuration: NumberSeparatorConfiguration
 
         init(configuration: NumberSeparatorConfiguration) {

@@ -66,8 +66,7 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
 
 // MARK: - SelfBindingRuleVisitor
 
-private final class SelfBindingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
+private final class SelfBindingRuleVisitor: ViolationsSyntaxVisitor {
     private let bindIdentifier: String
 
     init(bindIdentifier: String) {

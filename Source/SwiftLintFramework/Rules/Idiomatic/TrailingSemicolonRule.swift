@@ -37,9 +37,7 @@ public struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationPr
 }
 
 private extension TrailingSemicolonRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             if node.isTrailingSemicolon {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)

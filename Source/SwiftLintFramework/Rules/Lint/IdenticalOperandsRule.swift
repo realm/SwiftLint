@@ -1,3 +1,4 @@
+import SwiftOperators
 import SwiftSyntax
 
 public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRule, OptInRule {
@@ -63,19 +64,17 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
             Example("""
                 return lhs.foo == rhs.foo &&
                        ↓lhs.bar == lhs.bar
-            """)
+            """).focused()
         ]
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree else {
+        guard let tree = file.syntaxTree?.folded() else {
             return []
         }
-        let rewriter = SequenceExprFoldingRewriter(operatorContext: .makeBuiltinOperatorContext())
-        let folded = rewriter.visit(tree)
 
-        return Visitor()
-            .walk(tree: folded, handler: \.violationPositions)
+        return Visitor(viewMode: .sourceAccurate)
+            .walk(tree: tree, handler: \.violationPositions)
             .map { position in
                 StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
@@ -84,21 +83,26 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
     }
 }
 
+private extension SourceFileSyntax {
+    func folded() -> SourceFileSyntax? {
+        OperatorTable.standardOperators
+            .foldAll(self) { _ in }
+            .as(SourceFileSyntax.self)
+    }
+}
+
 private extension IdenticalOperandsRule {
     final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         private(set) var violationPositions: [AbsolutePosition] = []
 
-        override func visitPost(_ node: SequenceExprSyntax) {
-            guard node.elements.count == 3,
-                  let operatorNode = Array(node.elements)[1].as(BinaryOperatorExprSyntax.self),
-                  let lhs = node.elements.first,
-                  let rhs = node.elements.last,
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
                   IdenticalOperandsRule.operators.contains(operatorNode.operatorToken.withoutTrivia().text) else {
                 return
             }
 
-            if lhs.withoutTrivia().description == rhs.withoutTrivia().description {
-                violationPositions.append(lhs.positionAfterSkippingLeadingTrivia)
+            if node.leftOperand.withoutTrivia().description == node.rightOperand.withoutTrivia().description {
+                violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
             }
         }
     }

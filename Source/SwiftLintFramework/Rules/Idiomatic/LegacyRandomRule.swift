@@ -1,4 +1,6 @@
-public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule {
+import SwiftSyntax
+
+public struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -20,37 +22,26 @@ public struct LegacyRandomRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private let legacyRandomFunctions: Set<String> = [
-        "arc4random",
-        "arc4random_uniform",
-        "drand48"
-    ]
-
-    public func validate(
-        file: SwiftLintFile,
-        kind: SwiftExpressionKind,
-        dictionary: SourceKittenDictionary
-    ) -> [StyleViolation] {
-        guard containsViolation(kind: kind, dictionary: dictionary),
-        let offset = dictionary.offset else {
-            return []
-        }
-
-        let location = Location(file: file, byteOffset: offset)
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: location)
-        ]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func containsViolation(kind: SwiftExpressionKind, dictionary: SourceKittenDictionary) -> Bool {
-        guard kind == .call,
-            let name = dictionary.name,
-            legacyRandomFunctions.contains(name) else {
-            return false
+private extension LegacyRandomRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        private static let legacyRandomFunctions: Set<String> = [
+            "arc4random",
+            "arc4random_uniform",
+            "drand48"
+        ]
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let function = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.withoutTrivia().text,
+               Self.legacyRandomFunctions.contains(function) {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
-
-        return true
     }
 }

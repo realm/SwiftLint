@@ -12,7 +12,7 @@
 
 * The `anyobject_protocol` rule is now deprecated and will be completely removed
   in a future release because it is now handled by the Swift compiler.  
-  [JP Simard](https://github.com/jpims)
+  [JP Simard](https://github.com/jpsim)
 
 #### Experimental
 
@@ -29,7 +29,7 @@
   If you notice any unexpected changes to lint results, please file an issue on
   the SwiftLint issue tracker. We can look into it and if it's a SwiftSyntax
   parser regression we can re-file it upstream.  
-  [JP Simard](https://github.com/jpims)
+  [JP Simard](https://github.com/jpsim)
   [#4031](https://github.com/realm/SwiftLint/issues/4031)
 
 * Add ability to filter rules for `generate-docs` subcommand.  
@@ -96,7 +96,7 @@
   - `xctfail_message`  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [SimplyDanny](https://github.com/SimplyDanny)
-  [JP Simard](https://github.com/jpims)
+  [JP Simard](https://github.com/jpsim)
   [#2915](https://github.com/realm/SwiftLint/issues/2915)
 
 * Add `accessibility_trait_for_button` rule to warn if a SwiftUI
@@ -105,12 +105,12 @@
   [Ryan Cole](https://github.com/rcole34)
 
 * Add methods from SE-0348 to `UnusedDeclarationRule`.  
-  [JP Simard](https://github.com/jpims)
+  [JP Simard](https://github.com/jpsim)
 
 * Include the configured `bind_identifier` in `self_binding` violation
   messages.  
-  [JP Simard](https://github.com/jpims)
-  
+  [JP Simard](https://github.com/jpsim)
+
 * Add `library_content_provider` file type to `file_types_order` rule 
   to allow `LibraryContentProvider` to be ordered independent from `main_type`.  
   [dahlborn](https://github.com/dahlborn)
@@ -128,8 +128,8 @@
 * Use SwiftSyntax instead of SourceKit to determine if a file has parser errors
   before applying corrections. This speeds up corrections significantly when
   none of the rules use SourceKit.  
-  [JP Simard](https://github.com/jpims)
-  
+  [JP Simard](https://github.com/jpsim)
+
 * Add Swift Package Build Tool Plugin with support for Swift Packages
   and Xcode projects.  
   [Johannes Ebeling](https://github.com/technocidal)
@@ -166,7 +166,7 @@
   [#4208](https://github.com/realm/SwiftLint/issues/4208)
 
 * Add column for SourceKit usage to `rules` command.  
-  [JP Simard](https://github.com/jpims)
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.49.1: Buanderie Principale
 

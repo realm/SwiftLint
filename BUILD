@@ -4,7 +4,7 @@ load(
     "swift_library",
 )
 load(
-    "@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:xcodeproj.bzl",
+    "@com_github_buildbuddy_io_rules_xcodeproj//xcodeproj:defs.bzl",
     "xcode_schemes",
     "xcodeproj",
 )
@@ -99,12 +99,16 @@ shasum -a 256 "$${outs[0]}" > "$${outs[1]}"
 
 xcodeproj(
     name = "xcodeproj",
-    build_mode = "bazel",
     project_name = "SwiftLint",
     schemes = [
         xcode_schemes.scheme(
             name = "SwiftLint",
-            launch_action = xcode_schemes.launch_action("//:swiftlint"),
+            launch_action = xcode_schemes.launch_action(
+                "swiftlint",
+                args = [
+                    "--progress",
+                ],
+            ),
             test_action = xcode_schemes.test_action([
                 "//Tests:CLITests",
                 "//Tests:SwiftLintFrameworkTests",

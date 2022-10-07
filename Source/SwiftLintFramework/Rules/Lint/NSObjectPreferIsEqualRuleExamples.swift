@@ -56,7 +56,17 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 return true
             }
         }
-        """)
+        """),
+        // Nested class is not itself inheriting from NSObject
+        Example("""
+        class C: NSObject {
+            class NestedClass {
+                static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                    return false
+                }
+            }
+        }
+        """, excludeFromDocumentation: true)
     ]
 
     static let triggeringExamples: [Example] = [
@@ -98,6 +108,32 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 return false
             }
         }
-        """)
+        """),
+        // Nested @objc class implementing ==
+        Example("""
+        class C {
+            @objc class NestedClass {
+                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                    return false
+                }
+            }
+        }
+        struct S {
+            @objcMembers class NestedClass {
+                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                    return false
+                }
+            }
+        }
+        enum E {
+            struct S {
+                @objc class NestedClass {
+                    ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                        return false
+                    }
+                }
+            }
+        }
+        """, excludeFromDocumentation: true)
     ]
 }

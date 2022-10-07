@@ -23,24 +23,18 @@ private extension NSObjectPreferIsEqualRule {
     final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         private(set) var violationPositions: [AbsolutePosition] = []
 
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.isObjC ? .visitChildren : .skipChildren
-        }
-
+        // Extensions do not allow nested classes.
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        // Protocols do not allow nested classes.
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if node.isSelfEqualFunction {
+            if node.isSelfEqualFunction, Syntax(node).isInObjcClass {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -89,6 +83,14 @@ private extension FunctionDeclSyntax {
     }
 }
 
+private extension Syntax {
+    var isInObjcClass: Bool {
+        if let parentClass = parent?.as(ClassDeclSyntax.self) {
+            return parentClass.isObjC
+        }
+        return parent?.isInObjcClass ?? false
+    }
+}
 private extension ModifierListSyntax? {
     var isStatic: Bool {
         guard let modifiers = self else {
@@ -101,6 +103,6 @@ private extension ModifierListSyntax? {
 
 private extension AttributeListSyntax {
     var isObjc: Bool {
-        contains { $0.as(AttributeSyntax.self)?.attributeName.text == "objc" }
+        contains { ["objc", "objcMembers"].contains($0.as(AttributeSyntax.self)?.attributeName.text) }
     }
 }

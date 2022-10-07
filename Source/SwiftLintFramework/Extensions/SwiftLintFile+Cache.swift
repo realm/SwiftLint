@@ -283,10 +283,11 @@ private final class PlatformLock {
 #if canImport(Darwin)
         os_unfair_lock_lock(primitiveLock)
         defer { os_unfair_lock_unlock(primitiveLock) }
+        return closure()
 #else
         primitiveLock.lock()
         defer { primitiveLock.unlock() }
-#endif
         return closure()
+#endif
     }
 }

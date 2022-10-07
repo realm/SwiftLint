@@ -69,10 +69,10 @@ clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
 build_x86_64:
-	swift build $(SWIFT_BUILD_FLAGS) --arch x86_64
+	swift run $(SWIFT_BUILD_FLAGS) --arch x86_64 swiftlint version
 
 build_arm64:
-	swift build $(SWIFT_BUILD_FLAGS) --arch arm64
+	swift run $(SWIFT_BUILD_FLAGS) --arch arm64 swiftlint version
 
 build: clean build_x86_64 build_arm64
 	# Need to build for each arch independently to work around https://bugs.swift.org/browse/SR-15802

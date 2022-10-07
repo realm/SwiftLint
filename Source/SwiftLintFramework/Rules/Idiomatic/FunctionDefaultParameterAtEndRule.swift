@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -37,70 +37,70 @@ public struct FunctionDefaultParameterAtEndRule: ASTRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds.contains(kind),
-            let offset = dictionary.offset,
-            let bodyOffset = dictionary.bodyOffset,
-            !dictionary.enclosedSwiftAttributes.contains(.override) else {
-                return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let isNotClosure = { !self.isClosureParameter(dictionary: $0) }
-        let params = dictionary.substructure
-            .flatMap { subDict -> [SourceKittenDictionary] in
-                guard subDict.declarationKind == .varParameter else {
-                    return []
-                }
+private extension FunctionDefaultParameterAtEndRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
 
-                return [subDict]
-            }
-            .filter(isNotClosure)
-            .filter { param in
-                guard let paramOffset = param.offset else {
-                    return false
-                }
-
-                return paramOffset < bodyOffset
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard !node.isOverride else {
+                return
             }
 
-        guard params.isNotEmpty else {
-            return []
+            let params = node.signature.input.parameterList
+                .filter { param in
+                    !param.isClosure
+                }
+
+            guard params.isNotEmpty else {
+                return
+            }
+
+            let defaultParams = params.filter { param in
+                param.defaultArgument != nil
+            }
+            guard defaultParams.isNotEmpty else {
+                return
+            }
+
+            let lastParameters = params.suffix(defaultParams.count)
+            let lastParametersWithDefaultValue = lastParameters.filter { param in
+                param.defaultArgument != nil
+            }
+
+            guard lastParameters.count != lastParametersWithDefaultValue.count else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
 
-        let containsDefaultValue = { self.isDefaultParameter(file: file, dictionary: $0) }
-        let defaultParams = params.filter(containsDefaultValue)
-        guard defaultParams.isNotEmpty else {
-            return []
-        }
+private extension FunctionDeclSyntax {
+    var isOverride: Bool {
+        modifiers?.contains { decl in
+            decl.name.tokenKind == .contextualKeyword("override")
+        } ?? false
+    }
+}
 
-        let lastParameters = params.suffix(defaultParams.count)
-        let lastParametersWithDefaultValue = lastParameters.filter(containsDefaultValue)
-
-        guard lastParameters.count != lastParametersWithDefaultValue.count else {
-            return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+private extension FunctionParameterSyntax {
+    var isClosure: Bool {
+        isEscaping || type?.as(FunctionTypeSyntax.self) != nil
     }
 
-    private func isClosureParameter(dictionary: SourceKittenDictionary) -> Bool {
-        guard let typeName = dictionary.typeName else {
+    var isEscaping: Bool {
+        guard let attrType = type?.as(AttributedTypeSyntax.self) else {
             return false
         }
 
-        return typeName.contains("->") || typeName.contains("@escaping")
-    }
-
-    private func isDefaultParameter(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
-        guard let range = dictionary.byteRange.flatMap(file.stringView.byteRangeToNSRange) else {
-            return false
-        }
-
-        return regex("=").firstMatch(in: file.contents, options: [], range: range) != nil
+        return attrType.attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("escaping")
+        } ?? false
     }
 }

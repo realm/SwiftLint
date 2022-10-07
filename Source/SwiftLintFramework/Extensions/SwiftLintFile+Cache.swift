@@ -1,3 +1,6 @@
+#if canImport(Darwin)
+import Darwin
+#endif
 import Foundation
 import SourceKittenFramework
 import SwiftParser
@@ -66,19 +69,19 @@ private var assertHandlers = [FileCacheKey: AssertHandler]()
 private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
 
 private struct RebuildQueue {
-    private let lock = NSLock()
+    private let lock = PlatformLock()
     private var queue = [Structure]()
 
     mutating func append(_ structure: Structure) {
-        lock.lock()
-        defer { lock.unlock() }
-        queue.append(structure)
+        lock.doLocked {
+            queue.append(structure)
+        }
     }
 
     mutating func clear() {
-        lock.lock()
-        defer { lock.unlock() }
-        queue.removeAll(keepingCapacity: false)
+        lock.doLocked {
+            queue.removeAll(keepingCapacity: false)
+        }
     }
 }
 
@@ -87,7 +90,7 @@ private var queueForRebuild = RebuildQueue()
 private class Cache<T> {
     private var values = [FileCacheKey: T]()
     private let factory: (SwiftLintFile) -> T
-    private let lock = NSLock()
+    private let lock = PlatformLock()
 
     fileprivate init(_ factory: @escaping (SwiftLintFile) -> T) {
         self.factory = factory
@@ -95,36 +98,30 @@ private class Cache<T> {
 
     fileprivate func get(_ file: SwiftLintFile) -> T {
         let key = file.cacheKey
-        lock.lock()
-        defer { lock.unlock() }
-        if let cachedValue = values[key] {
-            return cachedValue
+        return lock.doLocked {
+            if let cachedValue = values[key] {
+                return cachedValue
+            }
+            let value = factory(file)
+            values[key] = value
+            return value
         }
-        let value = factory(file)
-        values[key] = value
-        return value
     }
 
     fileprivate func invalidate(_ file: SwiftLintFile) {
-        doLocked { values.removeValue(forKey: file.cacheKey) }
+        lock.doLocked { values.removeValue(forKey: file.cacheKey) }
     }
 
     fileprivate func clear() {
-        doLocked { values.removeAll(keepingCapacity: false) }
+        lock.doLocked { values.removeAll(keepingCapacity: false) }
     }
 
     fileprivate func set(key: FileCacheKey, value: T) {
-        doLocked { values[key] = value }
+        lock.doLocked { values[key] = value }
     }
 
     fileprivate func unset(key: FileCacheKey) {
-        doLocked { values.removeValue(forKey: key) }
-    }
-
-    private func doLocked(block: () -> Void) {
-        lock.lock()
-        block()
-        lock.unlock()
+        lock.doLocked { values.removeValue(forKey: key) }
     }
 }
 
@@ -264,5 +261,33 @@ extension SwiftLintFile {
         syntaxKindsByLinesCache.clear()
         syntaxTreeCache.clear()
         commandsCache.clear()
+    }
+}
+
+private final class PlatformLock {
+#if canImport(Darwin)
+    private let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
+#else
+    private let primitiveLock = NSLock()
+#endif
+
+    init() {
+#if canImport(Darwin)
+        primitiveLock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
+        primitiveLock.initialize(to: os_unfair_lock())
+#endif
+    }
+
+    @discardableResult
+    func doLocked<U>(_ closure: () -> U) -> U {
+#if canImport(Darwin)
+        os_unfair_lock_lock(primitiveLock)
+        defer { os_unfair_lock_unlock(primitiveLock) }
+        return closure()
+#else
+        primitiveLock.lock()
+        defer { primitiveLock.unlock() }
+        return closure()
+#endif
     }
 }

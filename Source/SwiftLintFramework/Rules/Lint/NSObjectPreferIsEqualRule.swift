@@ -34,7 +34,7 @@ private extension NSObjectPreferIsEqualRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if node.isSelfEqualFunction, Syntax(node).isInObjcClass {
+            if node.isSelfEqualFunction, node.isInObjcClass {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -83,7 +83,7 @@ private extension FunctionDeclSyntax {
     }
 }
 
-private extension Syntax {
+private extension SyntaxProtocol {
     var isInObjcClass: Bool {
         if let parentClass = parent?.as(ClassDeclSyntax.self) {
             return parentClass.isObjC
@@ -91,6 +91,7 @@ private extension Syntax {
         return parent?.isInObjcClass ?? false
     }
 }
+
 private extension ModifierListSyntax? {
     var isStatic: Bool {
         guard let modifiers = self else {

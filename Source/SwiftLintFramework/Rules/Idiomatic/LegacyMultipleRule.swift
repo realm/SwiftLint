@@ -28,6 +28,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKi
         ],
         triggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white"),
+            Example("cell.contentView.backgroundColor = 0 == indexPath.row ↓% 2 ? .gray : .white"),
             Example("cell.contentView.backgroundColor = indexPath.row ↓% 2 != 0 ? .gray : .white"),
             Example("guard count ↓% 2 == 0 else { throw DecodingError.dataCorrupted(...) }"),
             Example("sanityCheck(bytes > 0 && bytes ↓% 4 == 0, \"capacity must be multiple of 4 bytes\")"),
@@ -70,10 +71,22 @@ private extension LegacyMultipleRule {
             guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
                   operatorNode.operatorToken.tokenKind == .spacedBinaryOperator("%"),
                   let parent = node.parent?.as(InfixOperatorExprSyntax.self),
-                  parent.leftOperand.as(InfixOperatorExprSyntax.self) == node,
                   let parentOperatorNode = parent.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  parentOperatorNode.isEqualityOrInequalityOperator,
-                  parent.rightOperand.as(IntegerLiteralExprSyntax.self)?.digits.tokenKind == .integerLiteral("0") else {
+                  parentOperatorNode.isEqualityOrInequalityOperator else {
+                return
+            }
+
+            let isExprEqualTo0 = {
+                parent.leftOperand.as(InfixOperatorExprSyntax.self) == node &&
+                    parent.rightOperand.as(IntegerLiteralExprSyntax.self)?.digits.tokenKind == .integerLiteral("0")
+            }
+
+            let is0EqualToExpr = {
+                parent.leftOperand.as(IntegerLiteralExprSyntax.self)?.digits.tokenKind == .integerLiteral("0") &&
+                    parent.rightOperand.as(InfixOperatorExprSyntax.self) == node
+            }
+
+            guard isExprEqualTo0() || is0EqualToExpr() else {
                 return
             }
 

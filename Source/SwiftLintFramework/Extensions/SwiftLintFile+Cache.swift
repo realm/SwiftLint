@@ -34,15 +34,6 @@ private var structureDictionaryCache = Cache({ file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
 })
 
-private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
-    do {
-        return try Parser.parse(source: file.contents)
-    } catch {
-        warnSyntaxParserFailureOnce()
-        return nil
-    }
-})
-
 private var commandsCache = Cache({ file -> [Command] in
     guard file.contents.contains("swiftlint:"), let locationConverter = file.locationConverter else {
         return []
@@ -210,7 +201,14 @@ extension SwiftLintFile {
         return syntaxMap
     }
 
-    internal var syntaxTree: SourceFileSyntax? { syntaxTreeCache.get(self) }
+    internal var syntaxTree: SourceFileSyntax? {
+        do {
+            return try Parser.parse(source: contents)
+        } catch {
+            warnSyntaxParserFailureOnce()
+            return nil
+        }
+    }
 
     internal var locationConverter: SourceLocationConverter? {
         syntaxTree.map { SourceLocationConverter(file: path ?? "<nopath>", tree: $0) }
@@ -249,7 +247,6 @@ extension SwiftLintFile {
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
-        syntaxTreeCache.invalidate(self)
         commandsCache.invalidate(self)
     }
 
@@ -262,7 +259,6 @@ extension SwiftLintFile {
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
-        syntaxTreeCache.clear()
         commandsCache.clear()
     }
 }

@@ -31,7 +31,12 @@ public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationP
             func foo(a: String, b: String? = nil,
                      c: String? = nil, d: @escaping AlertActionHandler = { _ in }) {}
             """),
-            Example("override init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
+            Example("override init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
+            Example("""
+            func handleNotification(_ userInfo: NSDictionary,
+                                    userInteraction: Bool = false,
+                                    completionHandler: ((UIBackgroundFetchResult) -> Void)?) {}")
+            """)
         ],
         triggeringExamples: [
             Example("↓func foo(bar: Int = 0, baz: String) {}"),
@@ -103,7 +108,17 @@ private extension FunctionSignatureSyntax {
 
 private extension FunctionParameterSyntax {
     var isClosure: Bool {
-        isEscaping || type?.as(FunctionTypeSyntax.self) != nil
+        if isEscaping || type?.as(FunctionTypeSyntax.self) != nil {
+            return true
+        }
+
+        if let optionalType = type?.as(OptionalTypeSyntax.self),
+           let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self),
+           tuple.elements.count == 1 {
+            return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
+        }
+
+        return false
     }
 
     var isEscaping: Bool {

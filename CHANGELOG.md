@@ -168,6 +168,10 @@
 * Add column for SourceKit usage to `rules` command.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `nsobject_prefer_isequal` rule work for nested `@objc` classes. Also consider
+  the `@objcMembers` annotation.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from

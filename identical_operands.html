@@ -606,6 +606,8 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="n">histogram</span><span class="p">[</span><span class="mi">156</span><span class="p">]</span><span class="o">.</span><span class="mi">0</span> <span class="o">==</span> <span class="mh">0x003B8D96</span> <span class="o">&amp;&amp;</span> <span class="n">histogram</span><span class="p">[</span><span class="mi">156</span><span class="p">]</span><span class="o">.</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="p">[</span><span class="kt">Wrapper</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">three</span><span class="p">),</span> <span class="kt">Wrapper</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="o">.</span><span class="n">one</span><span class="p">)]</span><span class="o">.</span><span class="n">sorted</span> <span class="p">{</span> <span class="s">"</span><span class="se">\(</span><span class="nv">$0</span><span class="o">.</span><span class="n">type</span><span class="se">)</span><span class="s">"</span> <span class="o">&gt;</span> <span class="s">"</span><span class="se">\(</span><span class="nv">$1</span><span class="o">.</span><span class="n">type</span><span class="se">)</span><span class="s">"</span><span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span>
 </code></pre>
@@ -750,6 +752,12 @@
 <pre class="highlight swift"><code><span class="kt">XCTAssertTrue</span><span class="p">(</span><span class="err">↓</span><span class="n">s3</span> <span class="o">&lt;=</span> <span class="n">s3</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">if</span> <span class="k">let</span> <span class="nv">tab</span> <span class="o">=</span> <span class="n">tabManager</span><span class="o">.</span><span class="n">selectedTab</span><span class="p">,</span> <span class="err">↓</span><span class="n">tab</span><span class="o">.</span><span class="n">webView</span> <span class="o">&lt;=</span> <span class="n">tab</span><span class="o">.</span><span class="n">webView</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">return</span> <span class="err">↓</span><span class="n">lhs</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="n">lhs</span><span class="o">.</span><span class="n">foo</span> <span class="o">&amp;&amp;</span>
+           <span class="n">lhs</span><span class="o">.</span><span class="n">bar</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">bar</span>
+</code></pre>
+<pre class="highlight swift"><code>    <span class="k">return</span> <span class="n">lhs</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">foo</span> <span class="o">&amp;&amp;</span>
+           <span class="err">↓</span><span class="n">lhs</span><span class="o">.</span><span class="n">bar</span> <span class="o">==</span> <span class="n">lhs</span><span class="o">.</span><span class="n">bar</span>
 </code></pre>
 
           </div>

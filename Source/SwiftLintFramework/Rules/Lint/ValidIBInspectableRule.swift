@@ -1,10 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
+public struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-
-    private static let supportedTypes = Self.createSupportedTypes()
 
     public init() {}
 
@@ -104,49 +101,11 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .varInstance else {
-            return []
-        }
-
-        // Check if IBInspectable
-        let isIBInspectable = dictionary.enclosedSwiftAttributes.contains(.ibinspectable)
-        guard isIBInspectable else {
-            return []
-        }
-
-        let shouldMakeViolation: Bool
-        if !file.isMutableProperty(dictionary) {
-            shouldMakeViolation = true
-        } else if let type = dictionary.typeName,
-            Self.supportedTypes.contains(type) {
-            shouldMakeViolation = false
-        } else {
-            // Variable should have explicit type or IB won't recognize it
-            // Variable should be of one of the supported types
-            shouldMakeViolation = true
-        }
-
-        guard shouldMakeViolation else {
-            return []
-        }
-
-        let location: Location
-        if let offset = dictionary.offset {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: location)
-        ]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    private static func createSupportedTypes() -> [String] {
+    fileprivate static var supportedTypes: Set<String> = {
         // "You can add the IBInspectable attribute to any property in a class declaration,
         // class extension, or category of type: boolean, integer or floating point number, string,
         // localized string, rectangle, point, size, color, range, and nil."
@@ -184,27 +143,80 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         let expandToIncludeOptionals: (String) -> [String] = { [$0, $0 + "!", $0 + "?"] }
 
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
-        return referenceTypes.flatMap(expandToIncludeOptionals) + types + intTypes
+        return Set(referenceTypes.flatMap(expandToIncludeOptionals) + types + intTypes)
+    }()
+}
+
+private extension ValidIBInspectableRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
+                violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
     }
 }
 
-private extension SwiftLintFile {
-    func isMutableProperty(_ dictionary: SourceKittenDictionary) -> Bool {
-        if dictionary.setterAccessibility != nil {
+private extension VariableDeclSyntax {
+    var isInstanceVariable: Bool {
+        guard let modifiers = modifiers else {
             return true
         }
 
-        if SwiftVersion.current >= .fiveDotTwo,
-            let range = dictionary.byteRange.map(stringView.byteRangeToNSRange) {
-            return hasSetToken(in: range)
-        } else {
-            return false
+        return !modifiers.contains { modifier in
+            modifier.name.text == "static" || modifier.name.text == "class"
         }
     }
 
-    private func hasSetToken(in range: NSRange?) -> Bool {
-        return rangesAndTokens(matching: "\\bset\\b", range: range).contains { _, tokens in
-            return tokens.count == 1 && tokens[0].kind == .keyword
+    var isIBInspectable: Bool {
+        attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.text == "IBInspectable"
+        } ?? false
+    }
+
+    var hasViolation: Bool {
+        !isMutableProperty || !isSupportedType
+    }
+
+    var isMutableProperty: Bool {
+        if letOrVarKeyword.tokenKind == .letKeyword {
+            return false
+        }
+
+        let computedProperty = bindings.contains { binding in
+            binding.accessor != nil
+        }
+
+        if !computedProperty {
+            return true
+        }
+
+        return bindings.allSatisfy { binding in
+            binding.accessor?.as(AccessorBlockSyntax.self)?.containsSetAccessor ?? false
+        }
+    }
+
+    var isSupportedType: Bool {
+        bindings.allSatisfy { binding in
+            guard let type = binding.typeAnnotation else {
+                return false
+            }
+
+            return ValidIBInspectableRule.supportedTypes.contains(type.type.withoutTrivia().description)
+        }
+    }
+}
+
+private extension AccessorBlockSyntax {
+    var containsSetAccessor: Bool {
+        return accessors.contains { accessor in
+            accessor.accessorKind.tokenKind == .contextualKeyword("set")
         }
     }
 }

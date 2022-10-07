@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule, OptInRule {
+public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -20,27 +20,42 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, ASTRule
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.offset else {
-            return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ProhibitedInterfaceBuilderRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.isIBOutlet {
+                violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        func makeViolation() -> StyleViolation {
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.isIBAction {
+                violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
+    }
+}
 
-        if kind == .varInstance && dictionary.enclosedSwiftAttributes.contains(.iboutlet) {
-            return [makeViolation()]
-        }
+private extension VariableDeclSyntax {
+    var isIBOutlet: Bool {
+        attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
+        } ?? false
+    }
+}
 
-        if kind == .functionMethodInstance && dictionary.enclosedSwiftAttributes.contains(.ibaction) {
-            return [makeViolation()]
-        }
-
-        return []
+private extension FunctionDeclSyntax {
+    var isIBAction: Bool {
+        attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
+        } ?? false
     }
 }
 

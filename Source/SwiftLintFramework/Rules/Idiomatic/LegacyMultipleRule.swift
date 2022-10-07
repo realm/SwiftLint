@@ -1,6 +1,7 @@
-import SourceKittenFramework
+import SwiftOperators
+import SwiftSyntax
 
-public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule {
+public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -38,15 +39,53 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    // MARK: - Rule
-
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "(?!\\b\\s*)%\(RegexHelpers.variableOrNumber)[=!]=\\s*0\\b"
-        return file.match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-            .map {
+        guard let tree = file.syntaxTree?.folded() else {
+            return []
+        }
+
+        return Visitor(viewMode: .sourceAccurate)
+            .walk(tree: tree, handler: \.violationPositions)
+            .map { position in
                 StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
+                               location: Location(file: file, position: position))
             }
+    }
+}
+
+private extension SourceFileSyntax {
+    func folded() -> SourceFileSyntax? {
+        OperatorTable.standardOperators
+            .foldAll(self) { _ in }
+            .as(SourceFileSyntax.self)
+    }
+}
+
+private extension LegacyMultipleRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  operatorNode.operatorToken.tokenKind == .spacedBinaryOperator("%"),
+                  let parent = node.parent?.as(InfixOperatorExprSyntax.self),
+                  parent.leftOperand.as(InfixOperatorExprSyntax.self) == node,
+                  let parentOperatorNode = parent.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  parentOperatorNode.isEqualityOrInequalityOperator,
+                  parent.rightOperand.as(IntegerLiteralExprSyntax.self)?.digits.tokenKind == .integerLiteral("0") else {
+                return
+            }
+
+            violationPositions.append(node.operatorOperand.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension BinaryOperatorExprSyntax {
+    var isEqualityOrInequalityOperator: Bool {
+        operatorToken.tokenKind == .spacedBinaryOperator("==") ||
+            operatorToken.tokenKind == .unspacedBinaryOperator("==") ||
+            operatorToken.tokenKind == .spacedBinaryOperator("!=")
     }
 }

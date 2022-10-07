@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule {
+public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -59,12 +58,19 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        // Mark all fileprivate occurrences as a violation
-        return file.match(pattern: "fileprivate", with: [.attributeBuiltin]).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension StrictFilePrivateRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: DeclModifierSyntax) {
+            if node.name.tokenKind == .fileprivateKeyword {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

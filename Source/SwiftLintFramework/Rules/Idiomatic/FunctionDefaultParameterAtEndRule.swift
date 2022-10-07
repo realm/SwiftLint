@@ -30,10 +30,13 @@ public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationP
             Example("""
             func foo(a: String, b: String? = nil,
                      c: String? = nil, d: @escaping AlertActionHandler = { _ in }) {}
-            """)
+            """),
+            Example("override init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
         ],
         triggeringExamples: [
-            Example("↓func foo(bar: Int = 0, baz: String) {}")
+            Example("↓func foo(bar: Int = 0, baz: String) {}"),
+            Example("private ↓func foo(bar: Int = 0, baz: String) {}"),
+            Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
         ]
     )
 
@@ -47,45 +50,54 @@ private extension FunctionDefaultParameterAtEndRule {
         private(set) var violationPositions: [AbsolutePosition] = []
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard !node.isOverride else {
+            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
                 return
             }
 
-            let params = node.signature.input.parameterList
-                .filter { param in
-                    !param.isClosure
-                }
+            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        }
 
-            guard params.isNotEmpty else {
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
                 return
             }
 
-            let defaultParams = params.filter { param in
-                param.defaultArgument != nil
-            }
-            guard defaultParams.isNotEmpty else {
-                return
-            }
-
-            let lastParameters = params.suffix(defaultParams.count)
-            let lastParametersWithDefaultValue = lastParameters.filter { param in
-                param.defaultArgument != nil
-            }
-
-            guard lastParameters.count != lastParametersWithDefaultValue.count else {
-                return
-            }
-
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violationPositions.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
-private extension FunctionDeclSyntax {
-    var isOverride: Bool {
-        modifiers?.contains { decl in
+private extension ModifierListSyntax? {
+    var containsOverride: Bool {
+        self?.contains { decl in
             decl.name.tokenKind == .contextualKeyword("override")
         } ?? false
+    }
+}
+
+private extension FunctionSignatureSyntax {
+    var containsViolation: Bool {
+        let params = input.parameterList.filter { param in
+            !param.isClosure
+        }
+
+        guard params.isNotEmpty else {
+            return false
+        }
+
+        let defaultParams = params.filter { param in
+            param.defaultArgument != nil
+        }
+        guard defaultParams.isNotEmpty else {
+            return false
+        }
+
+        let lastParameters = params.suffix(defaultParams.count)
+        let lastParametersWithDefaultValue = lastParameters.filter { param in
+            param.defaultArgument != nil
+        }
+
+        return lastParameters.count != lastParametersWithDefaultValue.count
     }
 }
 

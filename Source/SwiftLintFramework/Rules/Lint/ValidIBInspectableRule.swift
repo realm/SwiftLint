@@ -60,6 +60,15 @@ public struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule
                     }
                 }
             }
+            """),
+            Example("""
+            class Foo {
+                @IBInspectable var borderColor: UIColor? = nil {
+                    didSet {
+                        updateAppearance()
+                    }
+                }
+            }
             """)
         ],
         triggeringExamples: [
@@ -181,12 +190,12 @@ private extension VariableDeclSyntax {
     }
 
     var hasViolation: Bool {
-        !isMutableProperty || !isSupportedType
+        isReadOnlyProperty || !isSupportedType
     }
 
-    var isMutableProperty: Bool {
+    var isReadOnlyProperty: Bool {
         if letOrVarKeyword.tokenKind == .letKeyword {
-            return false
+            return true
         }
 
         let computedProperty = bindings.contains { binding in
@@ -194,11 +203,20 @@ private extension VariableDeclSyntax {
         }
 
         if !computedProperty {
-            return true
+            return false
         }
 
         return bindings.allSatisfy { binding in
-            binding.accessor?.as(AccessorBlockSyntax.self)?.containsSetAccessor ?? false
+            guard let accessorBlock = binding.accessor?.as(AccessorBlockSyntax.self) else {
+                return true
+            }
+
+            // if it has a `get`, it needs to have a `set`, otherwise it's readonly
+            if accessorBlock.containsGetAccessor {
+                return !accessorBlock.containsSetAccessor
+            }
+
+            return false
         }
     }
 
@@ -217,6 +235,12 @@ private extension AccessorBlockSyntax {
     var containsSetAccessor: Bool {
         return accessors.contains { accessor in
             accessor.accessorKind.tokenKind == .contextualKeyword("set")
+        }
+    }
+
+    var containsGetAccessor: Bool {
+        return accessors.contains { accessor in
+            accessor.accessorKind.tokenKind == .contextualKeyword("get")
         }
     }
 }

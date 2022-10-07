@@ -139,6 +139,11 @@
 * Make `private_unit_test` rule correctable.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Disregard whitespace differences in `identical_operands` rule. That is, the rule
+  now also triggers if the left-hand side and the right-hand side of an operation
+  only differ in trivia.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

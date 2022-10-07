@@ -32,7 +32,9 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
                 let num: Int? = 0
                 _ = num != nil && num \(operation) num?.byteSwapped
                 """),
-                Example("num \(operation) num!.byteSwapped")
+                Example("num \(operation) num!.byteSwapped"),
+                Example("1    + 1 \(operation)   1     +    2"),
+                Example("f(  i :   2) \(operation)   f (i: 3 )")
             ]
         } + [
             // swiftlint:disable:next line_length
@@ -54,7 +56,9 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
                 Example("↓a?.b \(operation) a?.b"),
                 Example("if (↓elem \(operation) elem) {}"),
                 Example("XCTAssertTrue(↓s3 \(operation) s3)"),
-                Example("if let tab = tabManager.selectedTab, ↓tab.webView \(operation) tab.webView")
+                Example("if let tab = tabManager.selectedTab, ↓tab.webView \(operation) tab.webView"),
+                Example("↓1    + 1 \(operation)   1     +    1"),
+                Example(" ↓f(  i :   2) \(operation)   f (i: \n 2 )")
             ]
         } + [
             Example("""
@@ -101,9 +105,15 @@ private extension IdenticalOperandsRule {
                 return
             }
 
-            if node.leftOperand.withoutTrivia().description == node.rightOperand.withoutTrivia().description {
+            if node.leftOperand.normalizedDescription == node.rightOperand.normalizedDescription {
                 violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
+}
+
+private extension ExprSyntax {
+    var normalizedDescription: String {
+        debugDescription(includeChildren: true, includeTrivia: false)
     }
 }

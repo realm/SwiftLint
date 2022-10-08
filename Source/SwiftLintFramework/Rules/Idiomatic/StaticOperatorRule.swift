@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -79,23 +78,54 @@ public struct StaticOperatorRule: ASTRule, ConfigurationProviderRule, OptInRule 
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .functionFree,
-            let offset = dictionary.offset,
-            let name = dictionary.name?.split(separator: "(").first.flatMap(String.init) else {
-                return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension StaticOperatorRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.isFreeFunction, node.isOperator {
+                violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        let characterSet = CharacterSet(charactersIn: name)
-        guard characterSet.isDisjoint(with: .alphanumerics) else {
-            return []
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+             .skipChildren
         }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isFreeFunction: Bool {
+        parent?.is(CodeBlockItemSyntax.self) ?? false
+    }
+
+    var isOperator: Bool {
+        switch identifier.tokenKind {
+        case .spacedBinaryOperator:
+            return true
+        default:
+            return false
+        }
     }
 }

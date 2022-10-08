@@ -182,7 +182,7 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             currentSpaceEquivalent == lastSpaceEquivalent + configuration.indentationWidth ||
             (
                 (lastSpaceEquivalent - currentSpaceEquivalent) >= 0 &&
-                (lastSpaceEquivalent - currentSpaceEquivalent) % configuration.indentationWidth == 0
+                (lastSpaceEquivalent - currentSpaceEquivalent).isMultiple(of: configuration.indentationWidth)
             ) // Allow unindent if it stays in the grid
         )
     }

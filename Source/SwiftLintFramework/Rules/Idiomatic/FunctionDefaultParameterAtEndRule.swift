@@ -35,7 +35,10 @@ public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationP
             Example("""
             func handleNotification(_ userInfo: NSDictionary,
                                     userInteraction: Bool = false,
-                                    completionHandler: ((UIBackgroundFetchResult) -> Void)?) {}")
+                                    completionHandler: ((UIBackgroundFetchResult) -> Void)?) {}
+            """),
+            Example("""
+            func write(withoutNotifying tokens: [NotificationToken] =  {}, _ block: (() throws -> Int)) {}
             """)
         ],
         triggeringExamples: [
@@ -115,6 +118,11 @@ private extension FunctionParameterSyntax {
         if let optionalType = type?.as(OptionalTypeSyntax.self),
            let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self),
            tuple.elements.count == 1 {
+            return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
+        }
+
+
+        if let tuple = type?.as(TupleTypeSyntax.self), tuple.elements.count == 1 {
             return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
         }
 

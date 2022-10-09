@@ -112,7 +112,6 @@ private extension NumberSeparatorRule {
 
 private protocol NumberSeparatorValidator {
     var configuration: NumberSeparatorConfiguration { get }
-    func violation(token: TokenSyntax) -> (position: AbsolutePosition, correction: String)?
 }
 
 extension NumberSeparatorValidator {

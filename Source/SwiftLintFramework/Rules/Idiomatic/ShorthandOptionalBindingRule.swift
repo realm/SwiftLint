@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct IfLetShadowingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+public struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static var description = RuleDescription(
-        identifier: "if_let_shadowing",
-        name: "If-let Shadowing",
+        identifier: "shorthand_optional_binding",
+        name: "Shorthand Optional Binding",
         description: "Use shorthand syntax for optional binding",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotSeven,
@@ -75,7 +75,8 @@ public struct IfLetShadowingRule: OptInRule, SwiftSyntaxCorrectableRule, Configu
             """): Example("""
                 while j > 0, var i   { i = nil }
             """)
-        ]
+        ],
+        deprecatedAliases: ["if_let_shadowing"]
     )
 
     public init() {}

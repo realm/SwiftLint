@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import SwiftLintFramework
 import SwiftLintTestHelpers
@@ -471,12 +471,6 @@ class IdenticalOperandsRuleGeneratedTests: XCTestCase {
 class IdentifierNameRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdentifierNameRule.description)
-    }
-}
-
-class IfLetShadowingRuleGeneratedTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(IfLetShadowingRule.description)
     }
 }
 
@@ -999,6 +993,12 @@ class SelfInPropertyInitializationRuleGeneratedTests: XCTestCase {
 class ShorthandOperatorRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)
+    }
+}
+
+class ShorthandOptionalBindingRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ShorthandOptionalBindingRule.description)
     }
 }
 

@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 /// The rule list containing all available rules built into SwiftLint.
 public let primaryRuleList = RuleList(rules: [
@@ -81,7 +81,6 @@ public let primaryRuleList = RuleList(rules: [
     IBInspectableInExtensionRule.self,
     IdenticalOperandsRule.self,
     IdentifierNameRule.self,
-    IfLetShadowingRule.self,
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
@@ -169,6 +168,7 @@ public let primaryRuleList = RuleList(rules: [
     SelfBindingRule.self,
     SelfInPropertyInitializationRule.self,
     ShorthandOperatorRule.self,
+    ShorthandOptionalBindingRule.self,
     SingleTestClassRule.self,
     SortedFirstLastRule.self,
     SortedImportsRule.self,

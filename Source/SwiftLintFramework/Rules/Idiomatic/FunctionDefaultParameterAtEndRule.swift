@@ -121,7 +121,6 @@ private extension FunctionParameterSyntax {
             return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
         }
 
-
         if let tuple = type?.as(TupleTypeSyntax.self), tuple.elements.count == 1 {
             return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
         }

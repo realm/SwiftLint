@@ -20,10 +20,10 @@ internal struct NumberSeparatorRuleExamples {
         }
     }()
 
-    static let triggeringExamples = makeTriggeringExamples(signs: ["↓-", "+↓", "↓"]) +
+    static let triggeringExamples = makeTriggeringExamples(signs: ["-↓", "+↓", "↓"]) +
         makeTriggeringExamplesWithParentheses()
 
-    static let corrections = makeCorrections(signs: [("↓-", "-"), ("+↓", "+"), ("↓", "")])
+    static let corrections = makeCorrections(signs: [("-↓", "-"), ("+↓", "+"), ("↓", "")])
 
     private static func makeTriggeringExamples(signs: [String]) -> [Example] {
         return signs.flatMap { (sign: String) -> [Example] in
@@ -41,7 +41,7 @@ internal struct NumberSeparatorRuleExamples {
     }
 
     private static func makeTriggeringExamplesWithParentheses() -> [Example] {
-        let signsWithParenthesisAndViolation = ["↓-(", "+(↓", "(↓"]
+        let signsWithParenthesisAndViolation = ["-(↓", "+(↓", "(↓"]
         return signsWithParenthesisAndViolation.flatMap { (sign: String) -> [Example] in
             [
                 Example("let foo: Double = \(sign)100000)"),

@@ -62,14 +62,6 @@ private extension ContainsOverRangeNilComparisonRule {
     }
 }
 
-private extension SourceFileSyntax {
-    func folded() -> SourceFileSyntax? {
-        OperatorTable.standardOperators
-            .foldAll(self) { _ in }
-            .as(SourceFileSyntax.self)
-    }
-}
-
 private extension TokenKind {
     var isEqualityComparison: Bool {
         self == .spacedBinaryOperator("==") ||

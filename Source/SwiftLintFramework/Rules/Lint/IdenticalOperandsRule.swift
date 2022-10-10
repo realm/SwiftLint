@@ -83,14 +83,6 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
     }
 }
 
-private extension SourceFileSyntax {
-    func folded() -> SourceFileSyntax? {
-        OperatorTable.standardOperators
-            .foldAll(self) { _ in }
-            .as(SourceFileSyntax.self)
-    }
-}
-
 private extension IdenticalOperandsRule {
     final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         private(set) var violationPositions: [AbsolutePosition] = []

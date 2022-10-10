@@ -55,14 +55,6 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKi
     }
 }
 
-private extension SourceFileSyntax {
-    func folded() -> SourceFileSyntax? {
-        OperatorTable.standardOperators
-            .foldAll(self) { _ in }
-            .as(SourceFileSyntax.self)
-    }
-}
-
 private extension LegacyMultipleRule {
     final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         private(set) var violationPositions: [AbsolutePosition] = []

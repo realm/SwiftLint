@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule {
+public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -14,45 +14,74 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
-        let testClasses = dict.substructure.filter {
-            return $0.inheritedTypes.contains("QuickSpec") &&
-                $0.declarationKind == .class
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let specDeclarations = testClasses.flatMap { classDict in
-            return classDict.substructure.filter {
-                return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.declarationKind == .functionMethodInstance &&
-                    $0.enclosedSwiftAttributes.contains(.override)
+private extension QuickDiscouragedFocusedTestRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
+               case let name = identifierExpr.identifier.withoutTrivia().text,
+               QuickFocusedCallKind(rawValue: name) != nil {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        return specDeclarations.flatMap {
-            validate(file: file, dictionary: $0)
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isQuickSpec ? .visitChildren : .skipChildren
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isSpecFunction ? .visitChildren : .skipChildren
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
     }
+}
 
-    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict)
+private extension ClassDeclSyntax {
+    var isQuickSpec: Bool {
+        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+            return false
+        }
+
+        return inheritanceList.contains { type in
+            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "QuickSpec"
         }
     }
+}
 
-    private func validate(file: SwiftLintFile,
-                          kind: SwiftExpressionKind,
-                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let name = dictionary.name,
-            let offset = dictionary.offset,
-            QuickFocusedCallKind(rawValue: name) != nil else { return [] }
+private extension FunctionDeclSyntax {
+    var isSpecFunction: Bool {
+        return identifier.tokenKind == .identifier("spec") &&
+            signature.input.parameterList.isEmpty &&
+            modifiers.containsOverride
+    }
+}
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+private extension ModifierListSyntax? {
+    var containsOverride: Bool {
+        self?.contains { elem in
+            elem.name.tokenKind == .contextualKeyword("override")
+        } ?? false
     }
 }
 

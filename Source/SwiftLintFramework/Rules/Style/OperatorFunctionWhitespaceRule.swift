@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
+public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -25,19 +25,42 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
-            .map({ "\\\($0)" }).joined()
-        let operators = "\(escapedOperators)%<>&"
-        let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
-        return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .keyword
-        }.map { range, _ in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension OperatorFunctionWhitespaceRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard node.isOperatorDeclaration, node.hasWhitespaceViolation else {
+                return
+            }
+
+            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isOperatorDeclaration: Bool {
+        switch identifier.tokenKind {
+        case .spacedBinaryOperator, .unspacedBinaryOperator:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var hasWhitespaceViolation: Bool {
+        !identifier.trailingTrivia.isSingleSpace || !funcKeyword.trailingTrivia.isSingleSpace
+    }
+}
+
+private extension Trivia {
+    var isSingleSpace: Bool {
+        self == .spaces(1)
     }
 }

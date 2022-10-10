@@ -4,8 +4,10 @@ import XCTest
 class NoMagicNumbersRuleTests: XCTestCase {
     func testNoMagicNumbers() {
         let nonTriggeringExamples = [
+            Example("0.123"),
             Example("var foo = 123"),
             Example("static let bar = 0.123"),
+            Example("static let bar: Double = 0.123"),
             Example("array[1]"),
             Example("array[0]"),
             Example("let foo = 1_000.000_01"),
@@ -13,15 +15,23 @@ class NoMagicNumbersRuleTests: XCTestCase {
             Example("baz(\"9999\")"),
             Example("""
 func foo() {
-    let x = 2
-    let y = [0, 0, 0][x]
+    let x: Int = 2
+    let y = 3
+    let vector = [x, y, 0]
 }
 """),
-            Example(
-"""
+            Example("""
 class A {
-    var foo = 132
-    static let bar = 0.98
+    var foo: Double = 132
+    static let bar: Double = 0.98
+}
+"""),
+            Example("""
+@available(iOS 13, *)
+func version() {
+    if #available(iOS 13, OSX 10.10, *) {
+        return
+    }
 }
 """)
         ]

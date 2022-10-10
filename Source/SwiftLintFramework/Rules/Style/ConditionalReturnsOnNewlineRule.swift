@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule {
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     public var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     public init() {}
@@ -29,22 +28,57 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = configuration.ifOnly ? "(if)[^\n]*return" : "(guard|if)[^\n]*return"
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        file.locationConverter.map { locationConverter in
+            Visitor(
+                ifOnly: configuration.ifOnly,
+                locationConverter: locationConverter
+            )
+        }
+    }
+}
 
-        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
-            guard let firstToken = tokens.first, let lastToken = tokens.last,
-                firstToken.kind == .keyword && lastToken.kind == .keyword else {
-                    return false
+private extension ConditionalReturnsOnNewlineRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+        private let ifOnly: Bool
+        private let locationConverter: SourceLocationConverter
+
+        init(ifOnly: Bool, locationConverter: SourceLocationConverter) {
+            self.ifOnly = ifOnly
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: IfStmtSyntax) {
+            if isReturn(node.body.leftBrace.nextToken, onTheSameLineAs: node.body.leftBrace) {
+                violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+                return
             }
 
-            let searchTokens = configuration.ifOnly ? ["if"] : ["if", "guard"]
-            return searchTokens.contains(file.contents(for: firstToken) ?? "") &&
-                file.contents(for: lastToken) == "return"
-        }.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.0.location))
+            if let elseBody = node.elseBody?.as(CodeBlockSyntax.self),
+               isReturn(elseBody.leftBrace.nextToken, onTheSameLineAs: elseBody.leftBrace) {
+                violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: GuardStmtSyntax) {
+            if ifOnly {
+                return
+            }
+
+            if isReturn(node.body.leftBrace.nextToken, onTheSameLineAs: node.body.leftBrace) {
+                violationPositions.append(node.guardKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func isReturn(_ returnToken: TokenSyntax?, onTheSameLineAs token2: TokenSyntax) -> Bool {
+            guard let returnToken = returnToken, returnToken.tokenKind == .returnKeyword else {
+                return false
+            }
+
+            return locationConverter.location(for: returnToken.positionAfterSkippingLeadingTrivia).line ==
+                locationConverter.location(for: token2.positionAfterSkippingLeadingTrivia).line
         }
     }
 }

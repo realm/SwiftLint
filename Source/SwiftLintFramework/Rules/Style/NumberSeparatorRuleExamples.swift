@@ -16,7 +16,7 @@ internal struct NumberSeparatorRuleExamples {
                 Example("let exp = \(sign)1_000_000.000_000e2"),
                 Example("let foo: Double = \(sign)(200)"),
                 Example("let foo: Double = \(sign)(200 / 447.214)"),
-                Example("let foo = \(sign)6.283_2e-6"),
+                Example("let foo = \(sign)6.283_2e-6")
             ]
         }
     }()
@@ -37,7 +37,7 @@ internal struct NumberSeparatorRuleExamples {
                 Example("let foo = \(sign)1.0001"),
                 Example("let foo = \(sign)1_000_000.000000_1"),
                 Example("let foo = \(sign)1000000.000000_1"),
-                Example("let foo = \(sign)6.2832e-6"),
+                Example("let foo = \(sign)6.2832e-6")
             ]
         }
     }

@@ -374,6 +374,8 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mi">200</span> <span class="o">/</span> <span class="mf">447.214</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="mf">6.283_2e-6</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="mi">100</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="mi">1_000</span>
@@ -401,6 +403,8 @@
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="mi">200</span> <span class="o">/</span> <span class="mf">447.214</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="mf">6.283_2e-6</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="mi">100</span>
 </code></pre>
@@ -430,22 +434,26 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span> <span class="o">/</span> <span class="mf">447.214</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="mf">6.283_2e-6</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mi">10_0</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mi">10_0</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mi">1000</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mi">1000</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mf">1000e2</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1000e2</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mf">1000E2</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1000E2</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mi">1</span><span class="n">__000</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mi">1</span><span class="n">__000</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mf">1.0001</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1.0001</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mf">1_000_000.000000_1</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1_000_000.000000_1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="mf">1000000.000000_1</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">1000000.000000_1</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">-</span><span class="err">↓</span><span class="mf">6.2832e-6</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mi">10_0</span>
 </code></pre>
@@ -463,6 +471,8 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">1000000.000000_1</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="o">+</span><span class="err">↓</span><span class="mf">6.2832e-6</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mi">10_0</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mi">1000</span>
@@ -479,11 +489,13 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">1000000.000000_1</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="mf">6.2832e-6</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="p">(</span><span class="mf">10.000000_1</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mi">100000</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="err">↓</span><span class="o">-</span><span class="p">(</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mf">10.000000_1</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="err">↓</span><span class="mi">123456</span> <span class="o">/</span> <span class="err">↓</span><span class="mf">447.214214</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">+</span><span class="p">(</span><span class="err">↓</span><span class="mi">100000</span><span class="p">)</span>
 </code></pre>

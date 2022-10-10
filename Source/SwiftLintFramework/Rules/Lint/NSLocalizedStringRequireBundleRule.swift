@@ -1,4 +1,6 @@
-public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, ConfigurationProviderRule {
+import SwiftSyntax
+
+public struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -40,21 +42,29 @@ public struct NSLocalizedStringRequireBundleRule: ASTRule, OptInRule, Configurat
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let isBundleArgument: (SourceKittenDictionary) -> Bool = { $0.name == "bundle" }
-        guard kind == .call,
-            dictionary.name == "NSLocalizedString",
-            let offset = dictionary.offset,
-            !dictionary.enclosedArguments.contains(where: isBundleArgument) else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+private extension NSLocalizedStringRequireBundleRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
+               identifierExpr.identifier.tokenKind == .identifier("NSLocalizedString"),
+               !node.argumentList.containsArgument(named: "bundle") {
+                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+}
+
+private extension TupleExprElementListSyntax {
+    func containsArgument(named name: String) -> Bool {
+        contains { arg in
+            arg.label?.tokenKind == .identifier(name)
+        }
     }
 }

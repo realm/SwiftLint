@@ -1,4 +1,3 @@
-import SwiftOperators
 import SwiftSyntax
 
 public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRule, OptInRule {
@@ -80,14 +79,6 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
                                severity: configuration.severity,
                                location: Location(file: file, position: position))
             }
-    }
-}
-
-private extension SourceFileSyntax {
-    func folded() -> SourceFileSyntax? {
-        OperatorTable.standardOperators
-            .foldAll(self) { _ in }
-            .as(SourceFileSyntax.self)
     }
 }
 

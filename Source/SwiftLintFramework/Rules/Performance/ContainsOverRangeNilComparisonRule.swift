@@ -1,4 +1,3 @@
-import SwiftOperators
 import SwiftSyntax
 
 public struct ContainsOverRangeNilComparisonRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
@@ -59,14 +58,6 @@ private extension ContainsOverRangeNilComparisonRule {
 
             violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
         }
-    }
-}
-
-private extension SourceFileSyntax {
-    func folded() -> SourceFileSyntax? {
-        OperatorTable.standardOperators
-            .foldAll(self) { _ in }
-            .as(SourceFileSyntax.self)
     }
 }
 

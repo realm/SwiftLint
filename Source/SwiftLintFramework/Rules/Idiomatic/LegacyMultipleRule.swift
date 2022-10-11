@@ -1,4 +1,3 @@
-import SwiftOperators
 import SwiftSyntax
 
 public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKitFreeRule {
@@ -52,14 +51,6 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKi
                                severity: configuration.severity,
                                location: Location(file: file, position: position))
             }
-    }
-}
-
-private extension SourceFileSyntax {
-    func folded() -> SourceFileSyntax? {
-        OperatorTable.standardOperators
-            .foldAll(self) { _ in }
-            .as(SourceFileSyntax.self)
     }
 }
 

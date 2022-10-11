@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRule {
+public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -92,55 +92,72 @@ public struct SelfInPropertyInitializationRule: ConfigurationProviderRule, ASTRu
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .class else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let inlineClosures = dictionary.substructure
-            .filter { entry in
-                guard let name = entry.name,
-                      entry.expressionKind == .call, name.hasPrefix("{"),
-                      let closureByteRange = entry.nameByteRange,
-                      let closureRange = file.stringView.byteRangeToNSRange(closureByteRange) else {
-                    return false
-                }
+private extension SelfInPropertyInitializationRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
 
-                return file.match(pattern: "\\b(?<!\\.)self\\b", with: [.keyword], range: closureRange).isNotEmpty
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard !node.modifiers.containsLazy,
+                  !node.modifiers.containsStaticOrClass,
+                  let closestDecl = node.closestDecl(),
+                  closestDecl.is(ClassDeclSyntax.self) else {
+                return
             }
 
-        let variableDeclarations = inlineClosures.compactMap { closureDict -> ByteCount? in
-            guard let closureOffset = closureDict.offset else {
-                return nil
-            }
-
-            let lastStructure = dictionary.substructure.last { dict in
-                guard let offset = dict.offset else {
-                    return false
-                }
-                return offset < closureOffset
-            }
-
-            return lastStructure.flatMap { lastStructure -> ByteCount? in
-                guard lastStructure.declarationKind == .varInstance,
-                      !lastStructure.enclosedSwiftAttributes.contains(.lazy) else {
-                    return nil
+            let visitor = IdentifierUsageVisitor(identifier: .selfKeyword)
+            for binding in node.bindings {
+                guard let initializer = binding.initializer,
+                      visitor.walk(tree: initializer.value, handler: \.isTokenUsed) else {
+                    continue
                 }
 
-                if let bodyRange = lastStructure.bodyByteRange,
-                   bodyRange.contains(closureOffset) {
-                    return nil
-                }
-
-                return lastStructure.offset
+                violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
 
-        return variableDeclarations.map { byteOffset in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: byteOffset))
+    final class IdentifierUsageVisitor: SyntaxVisitor {
+        let identifier: TokenKind
+        private(set) var isTokenUsed = false
+
+        init(identifier: TokenKind) {
+            self.identifier = identifier
+            super.init(viewMode: .sourceAccurate)
         }
+
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if node.identifier.tokenKind == identifier {
+                isTokenUsed = true
+            }
+        }
+    }
+}
+
+private extension SyntaxProtocol {
+    func closestDecl() -> DeclSyntax? {
+        if let decl = self.parent?.as(DeclSyntax.self) {
+            return decl
+        }
+
+        return parent?.closestDecl()
+    }
+}
+
+private extension ModifierListSyntax? {
+    var containsLazy: Bool {
+        self?.contains { elem in
+            elem.name.tokenKind == .contextualKeyword("lazy")
+        } ?? false
+    }
+
+    var containsStaticOrClass: Bool {
+        self?.contains { elem in
+            elem.name.tokenKind == .staticKeyword || elem.name.tokenKind == .classKeyword
+        } ?? false
     }
 }

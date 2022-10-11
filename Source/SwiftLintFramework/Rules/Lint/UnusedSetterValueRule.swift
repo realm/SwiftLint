@@ -197,10 +197,10 @@ private enum Either<L, R> {
 private extension Either<SubscriptDeclSyntax, VariableDeclSyntax> {
     var modifiers: ModifierListSyntax? {
         switch self {
-        case .left(let l):
-            return l.modifiers
-        case .right(let r):
-            return r.modifiers
+        case .left(let left):
+            return left.modifiers
+        case .right(let right):
+            return right.modifiers
         }
     }
 }

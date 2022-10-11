@@ -17,14 +17,21 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
             Example("if true,\n let x = true else {\n return true\n}"),
             Example("if textField.returnKeyType == .Next {"),
             Example("if true { // return }"),
-            Example("/*if true { */ return }")
+            Example("/*if true { */ return }"),
+            Example("""
+            guard something
+            else { return }
+            """)
         ],
         triggeringExamples: [
             Example("↓guard true else { return }"),
             Example("↓if true { return }"),
             Example("↓if true { break } else { return }"),
             Example("↓if true { break } else {       return }"),
-            Example("↓if true { return \"YES\" } else { return \"NO\" }")
+            Example("↓if true { return \"YES\" } else { return \"NO\" }"),
+            Example("""
+            ↓guard condition else { XCTFail(); return }
+            """)
         ]
     )
 
@@ -51,13 +58,13 @@ private extension ConditionalReturnsOnNewlineRule {
         }
 
         override func visitPost(_ node: IfStmtSyntax) {
-            if isReturn(node.body.leftBrace.nextToken, onTheSameLineAs: node.body.leftBrace) {
+            if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.ifKeyword) {
                 violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
                 return
             }
 
-            if let elseBody = node.elseBody?.as(CodeBlockSyntax.self),
-               isReturn(elseBody.leftBrace.nextToken, onTheSameLineAs: elseBody.leftBrace) {
+            if let elseBody = node.elseBody?.as(CodeBlockSyntax.self), let elseKeyword = node.elseKeyword,
+               isReturn(elseBody.statements.lastReturn, onTheSameLineAs: elseKeyword) {
                 violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -67,18 +74,24 @@ private extension ConditionalReturnsOnNewlineRule {
                 return
             }
 
-            if isReturn(node.body.leftBrace.nextToken, onTheSameLineAs: node.body.leftBrace) {
+            if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.guardKeyword) {
                 violationPositions.append(node.guardKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        private func isReturn(_ returnToken: TokenSyntax?, onTheSameLineAs token2: TokenSyntax) -> Bool {
-            guard let returnToken = returnToken, returnToken.tokenKind == .returnKeyword else {
+        private func isReturn(_ returnStmt: ReturnStmtSyntax?, onTheSameLineAs token2: TokenSyntax) -> Bool {
+            guard let returnStmt = returnStmt else {
                 return false
             }
 
-            return locationConverter.location(for: returnToken.positionAfterSkippingLeadingTrivia).line ==
+            return locationConverter.location(for: returnStmt.returnKeyword.positionAfterSkippingLeadingTrivia).line ==
                 locationConverter.location(for: token2.positionAfterSkippingLeadingTrivia).line
         }
+    }
+}
+
+private extension CodeBlockItemListSyntax {
+    var lastReturn: ReturnStmtSyntax? {
+        last?.item.as(ReturnStmtSyntax.self)
     }
 }

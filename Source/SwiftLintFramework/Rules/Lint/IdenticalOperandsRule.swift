@@ -1,4 +1,3 @@
-import SwiftOperators
 import SwiftSyntax
 
 public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRule, OptInRule {

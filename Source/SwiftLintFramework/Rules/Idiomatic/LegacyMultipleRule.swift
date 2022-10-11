@@ -1,4 +1,3 @@
-import SwiftOperators
 import SwiftSyntax
 
 public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKitFreeRule {

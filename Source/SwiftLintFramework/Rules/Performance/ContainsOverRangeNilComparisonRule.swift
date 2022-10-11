@@ -1,4 +1,3 @@
-import SwiftOperators
 import SwiftSyntax
 
 public struct ContainsOverRangeNilComparisonRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {

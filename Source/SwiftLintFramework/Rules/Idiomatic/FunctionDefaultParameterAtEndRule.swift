@@ -39,7 +39,10 @@ public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationP
             """),
             Example("""
             func write(withoutNotifying tokens: [NotificationToken] =  {}, _ block: (() throws -> Int)) {}
-            """)
+            """),
+            Example("""
+            func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("↓func foo(bar: Int = 0, baz: String) {}"),
@@ -123,6 +126,10 @@ private extension FunctionParameterSyntax {
 
         if let tuple = type?.as(TupleTypeSyntax.self), tuple.elements.count == 1 {
             return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
+        }
+
+        if let attrType = type?.as(AttributedTypeSyntax.self) {
+            return attrType.baseType.is(FunctionTypeSyntax.self)
         }
 
         return false

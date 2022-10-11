@@ -35,9 +35,9 @@ def swiftlint_repos():
 
     # https://github.com/krzyzanowskim/CryptoSwift/pull/989
     http_archive(
-        name = "com_github_jpsim_cryptoswift",
-        sha256 = "9371d81d8c9a9673b0a22acbc3cc4b62862c58af60daf76928126c7f80cf7783",
+        name = "com_github_krzyzanowskim_cryptoswift",
+        sha256 = "bbabd3a5c5f50683d6eeb90cf3f7f7184e18065beaec7cccd2059ed3c9bac2ed",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
-        strip_prefix = "CryptoSwift-782caf96909e15d0cbba2db2c53923bd3a6a865d",
-        url = "https://github.com/jpsim/CryptoSwift/archive/782caf96909e15d0cbba2db2c53923bd3a6a865d.tar.gz",
+        strip_prefix = "CryptoSwift-ea07950124f7e44e88bd783bf29e6691a7866228",
+        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/ea07950124f7e44e88bd783bf29e6691a7866228.tar.gz",
     )

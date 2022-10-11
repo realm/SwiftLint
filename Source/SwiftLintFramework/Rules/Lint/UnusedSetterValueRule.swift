@@ -48,7 +48,11 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule 
              }
              set { }
             }
-            """)
+            """),
+            Example("""
+            protocol Foo {
+                var bar: Bool { get set }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -149,6 +153,10 @@ private extension UnusedSetterValueRule {
         override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
             isInOverridenDecl = node.modifiers.containsOverride
             return .visitChildren
+        }
+
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
     }
 

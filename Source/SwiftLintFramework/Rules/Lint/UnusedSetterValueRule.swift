@@ -52,6 +52,16 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule 
             Example("""
             protocol Foo {
                 var bar: Bool { get set }
+            """, excludeFromDocumentation: true),
+            Example("""
+            override var accessibilityValue: String? {
+                get {
+                    let index = Int(self.value)
+                    guard steps.indices.contains(index) else { return "" }
+                    return ""
+                }
+                set {}
+            }
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
@@ -127,7 +137,6 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule 
 private extension UnusedSetterValueRule {
     final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
         private(set) var violationPositions: [AbsolutePosition] = []
-        private var isInOverridenDecl = false
 
         override func visitPost(_ node: AccessorDeclSyntax) {
             guard node.accessorKind.tokenKind == .contextualKeyword("set") else {
@@ -137,22 +146,13 @@ private extension UnusedSetterValueRule {
             let variableName = node.parameter?.name.withoutTrivia().text ?? "newValue"
             let visitor = NewValueUsageVisitor(variableName: variableName)
             if !visitor.walk(tree: node, handler: \.isVariableUsed) {
-                if isInOverridenDecl, let body = node.body, body.statements.isEmpty {
+                if (Syntax(node).closestVariableOrSubscript()?.modifiers).containsOverride,
+                    let body = node.body, body.statements.isEmpty {
                     return
                 }
 
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
-        }
-
-        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            isInOverridenDecl = node.modifiers.containsOverride
-            return .visitChildren
-        }
-
-        override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
-            isInOverridenDecl = node.modifiers.containsOverride
-            return .visitChildren
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -173,6 +173,34 @@ private extension UnusedSetterValueRule {
             if node.identifier.withoutTrivia().text == variableName {
                 isVariableUsed = true
             }
+        }
+    }
+}
+
+private extension Syntax {
+    func closestVariableOrSubscript() -> Either<SubscriptDeclSyntax, VariableDeclSyntax>? {
+        if let subscriptDecl = self.as(SubscriptDeclSyntax.self) {
+            return .left(subscriptDecl)
+        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+            return .right(variableDecl)
+        }
+
+        return parent?.closestVariableOrSubscript()
+    }
+}
+
+private enum Either<L, R> {
+    case left(L)
+    case right(R)
+}
+
+private extension Either<SubscriptDeclSyntax, VariableDeclSyntax> {
+    var modifiers: ModifierListSyntax? {
+        switch self {
+        case .left(let l):
+            return l.modifiers
+        case .right(let r):
+            return r.modifiers
         }
     }
 }

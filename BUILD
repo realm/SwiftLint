@@ -24,7 +24,7 @@ swift_library(
         "@com_github_apple_swift_syntax//:optlibs",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
     ] + select({
-        "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
+        "@platforms//os:linux": ["@com_github_jpsim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [],
     }),
 )

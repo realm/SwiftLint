@@ -33,10 +33,11 @@ def swiftlint_repos():
         url = "https://github.com/JohnSundell/CollectionConcurrencyKit/archive/refs/tags/0.2.0.tar.gz",
     )
 
+    # https://github.com/krzyzanowskim/CryptoSwift/pull/989
     http_archive(
-        name = "com_github_krzyzanowskim_cryptoswift",
-        sha256 = "5d500caf1817beb0a63467ef14d3274ae19449bcf05853a257673d0c27f4b761",
+        name = "com_github_jpsim_cryptoswift",
+        sha256 = "9371d81d8c9a9673b0a22acbc3cc4b62862c58af60daf76928126c7f80cf7783",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
-        strip_prefix = "CryptoSwift-1.6.0",
-        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.6.0.tar.gz",
+        strip_prefix = "CryptoSwift-782caf96909e15d0cbba2db2c53923bd3a6a865d",
+        url = "https://github.com/jpsim/CryptoSwift/archive/782caf96909e15d0cbba2db2c53923bd3a6a865d.tar.gz",
     )

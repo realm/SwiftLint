@@ -81,15 +81,10 @@ private extension NoSpaceInMethodCallRule {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard node.hasNoSpaceInMethodCallViolation else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
+            guard
+                node.hasNoSpaceInMethodCallViolation,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 

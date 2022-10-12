@@ -58,19 +58,16 @@ private extension TrailingSemicolonRule {
         }
 
         override func visit(_ node: TokenSyntax) -> Syntax {
-            guard node.isTrailingSemicolon, !isInDisabledRegion(node) else {
+            guard
+                node.isTrailingSemicolon,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
             // Is there a better way to remove a node? Should we somehow keep trailing trivia?
             return super.visit(TokenSyntax(.semicolon, presence: .missing))
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

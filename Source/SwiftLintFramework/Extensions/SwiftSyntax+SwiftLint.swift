@@ -42,3 +42,22 @@ extension SwiftLintSyntaxVisitor {
         return walk(tree: syntaxTree, handler: handler)
     }
 }
+
+extension SyntaxProtocol {
+    func windowsOfThreeTokens() -> [(TokenSyntax, TokenSyntax, TokenSyntax)] {
+        Array(tokens(viewMode: .sourceAccurate))
+            .windows(ofCount: 3)
+            .map { tokens in
+                let previous = tokens[tokens.startIndex]
+                let current = tokens[tokens.startIndex + 1]
+                let next = tokens[tokens.startIndex + 2]
+                return (previous, current, next)
+            }
+    }
+
+    func isContainedIn(regions: [SourceRange], locationConverter: SourceLocationConverter) -> Bool {
+        regions.contains { region in
+            region.contains(positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+        }
+    }
+}

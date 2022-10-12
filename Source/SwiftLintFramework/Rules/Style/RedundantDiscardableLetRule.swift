@@ -62,7 +62,10 @@ private extension RedundantDiscardableLetRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.hasRedundantDiscardableLetViolation, !isInDisabledRegion(node) else {
+            guard
+                node.hasRedundantDiscardableLetViolation,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 
@@ -71,12 +74,6 @@ private extension RedundantDiscardableLetRule {
                 .withLetOrVarKeyword(nil)
                 .withBindings(node.bindings.withLeadingTrivia(node.letOrVarKeyword.leadingTrivia))
             return super.visit(newNode)
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

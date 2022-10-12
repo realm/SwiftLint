@@ -147,17 +147,12 @@ private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsS
     }
 
     override func visit(_ node: CatchClauseSyntax) -> Syntax {
-        guard node.catchItems?.count == 1,
-              let item = node.catchItems?.first,
-              item.isIdentifierPattern else {
-            return super.visit(node)
-        }
-
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-
-        guard !isInDisabledRegion else {
+        guard
+            node.catchItems?.count == 1,
+            let item = node.catchItems?.first,
+            item.isIdentifierPattern,
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
 

@@ -112,17 +112,12 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 
     override func visit(_ node: ClosureSignatureSyntax) -> Syntax {
-        guard let clause = node.input?.as(ParameterClauseSyntax.self),
-              !clause.parameterList.contains(where: { $0.type != nil }),
-              clause.parameterList.isNotEmpty else {
-            return super.visit(node)
-        }
-
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-
-        guard !isInDisabledRegion else {
+        guard
+            let clause = node.input?.as(ParameterClauseSyntax.self),
+            !clause.parameterList.contains(where: { $0.type != nil }),
+            clause.parameterList.isNotEmpty,
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
 

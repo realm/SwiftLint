@@ -82,15 +82,10 @@ private extension EmptyParenthesesWithTrailingClosureRule {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard let violationPosition = node.violationPosition else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
+            guard
+                let violationPosition = node.violationPosition,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 

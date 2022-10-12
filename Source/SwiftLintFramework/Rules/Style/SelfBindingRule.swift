@@ -100,18 +100,13 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
     }
 
     override func visit(_ node: OptionalBindingConditionSyntax) -> Syntax {
-        guard let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-           identifierPattern.identifier.text != bindIdentifier,
-           let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
-           initializerIdentifier.identifier.text == "self" else {
-            return super.visit(node)
-        }
-
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-
-        guard !isInDisabledRegion else {
+        guard
+            let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
+            identifierPattern.identifier.text != bindIdentifier,
+            let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
+            initializerIdentifier.identifier.text == "self",
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
 

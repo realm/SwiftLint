@@ -65,15 +65,9 @@ private extension StrongIBOutletRule {
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard let violationPosition = node.violationPosition,
                   let weakOrUnownedModifier = node.weakOrUnownedModifier,
-                  let modifiers = node.modifiers else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
+                  let modifiers = node.modifiers,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 

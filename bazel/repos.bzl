@@ -2,11 +2,12 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def swiftlint_repos():
     """Fetches SwiftLint repositories"""
+    # https://github.com/jpsim/SourceKitten/pull/749
     http_archive(
         name = "com_github_jpsim_sourcekitten",
-        sha256 = "beeddf444ff079dc2248c5b9b0df3e6ee9d886b03a68c4e372e955e5e76c16b9",
-        strip_prefix = "SourceKitten-0.33.0",
-        url = "https://github.com/jpsim/SourceKitten/archive/refs/tags/0.33.0.tar.gz",
+        sha256 = "ebce266e1f30d7a96593e7bb884ea702f546ad07d51535c7a1ec91fcd5d2db02",
+        strip_prefix = "SourceKitten-a9e6df65d8e31e0fa6e8a05ffe40ecd54a645871",
+        url = "https://github.com/jpsim/SourceKitten/archive/a9e6df65d8e31e0fa6e8a05ffe40ecd54a645871.tar.gz",
     )
 
     http_archive(

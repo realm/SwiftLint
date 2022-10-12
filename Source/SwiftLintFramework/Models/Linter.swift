@@ -249,6 +249,9 @@ public struct CollectedLinter {
                 "completely removed in a future release.")
         }
 
+        // Free some memory used for this file's caches. They shouldn't be needed after this point.
+        file.invalidateCache()
+
         return (violations, ruleTimes)
     }
 

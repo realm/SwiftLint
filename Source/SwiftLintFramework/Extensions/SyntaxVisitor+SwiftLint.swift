@@ -37,9 +37,7 @@ extension SwiftLintSyntaxVisitor {
     }
 
     func walk<T>(file: SwiftLintFile, handler: (Self) -> [T]) -> [T] {
-        guard let syntaxTree = file.syntaxTree else {
-            return []
-        }
+        let syntaxTree = file.syntaxTree
 
         return walk(tree: syntaxTree, handler: handler)
     }

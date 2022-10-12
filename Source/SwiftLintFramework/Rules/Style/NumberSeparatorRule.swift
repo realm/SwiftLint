@@ -25,13 +25,11 @@ public struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Config
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            Rewriter(
-                configuration: configuration,
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        Rewriter(
+            configuration: configuration,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 

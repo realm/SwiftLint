@@ -36,10 +36,7 @@ public extension SwiftSyntaxRule {
     ///
     /// - returns: The source ranges in the specified file where this rule is disabled.
     func disabledRegions(file: SwiftLintFile) -> [SourceRange] {
-        guard let locationConverter = file.locationConverter else {
-            return []
-        }
-
+        let locationConverter = file.locationConverter
         return file.regions()
             .filter { $0.isRuleDisabled(self) }
             .compactMap { $0.toSourceRange(locationConverter: locationConverter) }

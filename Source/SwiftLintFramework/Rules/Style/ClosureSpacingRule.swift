@@ -39,16 +39,14 @@ public struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        file.locationConverter.map(ClosureSpacingRuleVisitor.init)
+        ClosureSpacingRuleVisitor(locationConverter: file.locationConverter)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            ClosureSpacingRuleRewriter(
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        ClosureSpacingRuleRewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 

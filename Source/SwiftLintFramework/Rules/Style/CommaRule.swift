@@ -90,9 +90,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFr
     }
 
     private func violationRanges(in file: SwiftLintFile) -> [(ByteRange, shouldAddSpace: Bool)] {
-        guard let syntaxTree = file.syntaxTree else {
-            return []
-        }
+        let syntaxTree = file.syntaxTree
 
         return syntaxTree
             .windowsOfThreeTokens()

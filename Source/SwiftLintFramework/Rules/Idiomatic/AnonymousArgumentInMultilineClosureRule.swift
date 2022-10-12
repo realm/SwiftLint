@@ -34,9 +34,7 @@ public struct AnonymousArgumentInMultilineClosureRule: SwiftSyntaxRule, OptInRul
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        file.locationConverter.map {
-            Visitor(locationConverter: $0)
-        }
+        Visitor(locationConverter: file.locationConverter)
     }
 }
 

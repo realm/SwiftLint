@@ -107,12 +107,10 @@ public struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule, Configu
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            LegacyFunctionRuleHelper.Rewriter(
-                legacyFunctions: Self.legacyFunctions,
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        LegacyFunctionRuleHelper.Rewriter(
+            legacyFunctions: Self.legacyFunctions,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }

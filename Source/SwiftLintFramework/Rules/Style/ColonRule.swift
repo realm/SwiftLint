@@ -28,10 +28,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
     }
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        guard let syntaxTree = file.syntaxTree else {
-            return []
-        }
-
+        let syntaxTree = file.syntaxTree
         let visitor = ColonRuleVisitor(viewMode: .sourceAccurate)
         visitor.walk(syntaxTree)
         let positionsToSkip = visitor.positionsToSkip

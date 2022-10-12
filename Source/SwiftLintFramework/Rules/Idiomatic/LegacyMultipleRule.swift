@@ -40,7 +40,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKi
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree?.folded() else {
+        guard let tree = file.syntaxTree.folded() else {
             return []
         }
 

@@ -6,16 +6,8 @@ import SourceKittenFramework
 import SwiftParser
 import SwiftSyntax
 
-private let warnSyntaxParserFailureOnceImpl: Void = {
-    queuedPrintError("Could not parse the syntax tree for at least one file. Results may be invalid.")
-}()
-
-private func warnSyntaxParserFailureOnce() {
-    _ = warnSyntaxParserFailureOnceImpl
-}
-
 private typealias FileCacheKey = UUID
-private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
+private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file.file).sendIfNotDisabled()
     } catch let error as Request.Error {
@@ -24,48 +16,37 @@ private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     } catch {
         return nil
     }
-})
-private var structureCache = Cache({ file -> Structure? in
-    if let structure = responseCache.get(file).map(Structure.init) {
-        return structure
-    }
-    return nil
-})
-
-private var structureDictionaryCache = Cache({ file in
+}
+private let structureCache = Cache { file -> Structure? in
+    return responseCache.get(file).map(Structure.init)
+}
+private let structureDictionaryCache = Cache { file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
-})
-
-private var syntaxTreeCache = Cache({ file -> SourceFileSyntax? in
-    do {
-        return try Parser.parse(source: file.contents)
-    } catch {
-        warnSyntaxParserFailureOnce()
-        return nil
-    }
-})
-
-private var commandsCache = Cache({ file -> [Command] in
-    guard file.contents.contains("swiftlint:"), let locationConverter = file.locationConverter else {
+}
+private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
+    // swiftlint:disable:next force_try - Cannot fail. See https://github.com/apple/swift-syntax/pull/912
+    return try! Parser.parse(source: file.contents)
+}
+private let commandsCache = Cache { file -> [Command] in
+    guard file.contents.contains("swiftlint:") else {
         return []
     }
-    return CommandVisitor(locationConverter: locationConverter)
+    return CommandVisitor(locationConverter: file.locationConverter)
         .walk(file: file, handler: \.commands)
-})
-
-private var syntaxMapCache = Cache({ file in
+}
+private let syntaxMapCache = Cache { file in
     responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
-})
-private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
-private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
+}
+private let syntaxKindsByLinesCache = Cache { file in file.syntaxKindsByLine() }
+private let syntaxTokensByLinesCache = Cache { file in file.syntaxTokensByLine() }
 
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
 internal var parserDiagnosticsDisabledForTests = false
 
-private var assertHandlers = [FileCacheKey: AssertHandler]()
-private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
+private let assertHandlers = [FileCacheKey: AssertHandler]()
+private let assertHandlerCache = Cache { file in assertHandlers[file.cacheKey] }
 
 private class Cache<T> {
     private var values = [FileCacheKey: T]()
@@ -137,14 +118,6 @@ extension SwiftLintFile {
             return nil
         }
 
-        guard let syntaxTree = syntaxTree else {
-            if let handler = assertHandler {
-                handler()
-                return nil
-            }
-            queuedFatalError("Could not get diagnostics for file.")
-        }
-
         return ParseDiagnosticsGenerator.diagnostics(for: syntaxTree)
             .filter { $0.diagMessage.severity == .error }
             .map(\.message)
@@ -183,10 +156,10 @@ extension SwiftLintFile {
         return syntaxMap
     }
 
-    internal var syntaxTree: SourceFileSyntax? { syntaxTreeCache.get(self) }
+    internal var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
 
-    internal var locationConverter: SourceLocationConverter? {
-        syntaxTree.map { SourceLocationConverter(file: path ?? "<nopath>", tree: $0) }
+    internal var locationConverter: SourceLocationConverter {
+        SourceLocationConverter(file: path ?? "<nopath>", tree: syntaxTree)
     }
 
     internal var commands: [Command] { commandsCache.get(self) }

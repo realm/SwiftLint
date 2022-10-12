@@ -1,5 +1,5 @@
-public struct AttributesConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+public struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var alwaysOnSameLine = Set<String>()
     private(set) var alwaysOnNewLine = Set<String>()
 

@@ -168,10 +168,6 @@ extension SwiftLintFile {
         return ParseDiagnosticsGenerator.diagnostics(for: syntaxTree)
             .filter { $0.diagMessage.severity == .error }
             .map(\.message)
-            .filter { message in
-                // Workaround for https://github.com/apple/swift-syntax/issues/888
-                return !message.starts(with: "unexpected text '.?.")
-            }
     }
 
     internal var structure: Structure {

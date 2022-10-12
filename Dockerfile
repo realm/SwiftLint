@@ -18,7 +18,7 @@ RUN ln -s /usr/lib/swift/_InternalSwiftSyntaxParser .
 
 RUN swift package update
 ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
-RUN swift run $SWIFT_FLAGS swiftlint version
+RUN swift build $SWIFT_FLAGS --product swiftlint
 RUN mkdir -p /executables
 RUN install -v `swift build $SWIFT_FLAGS --show-bin-path`/swiftlint /executables
 

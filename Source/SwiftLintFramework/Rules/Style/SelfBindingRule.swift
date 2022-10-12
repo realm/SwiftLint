@@ -56,13 +56,11 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            SelfBindingRuleRewriter(
-                bindIdentifier: configuration.bindIdentifier,
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        SelfBindingRuleRewriter(
+            bindIdentifier: configuration.bindIdentifier,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 

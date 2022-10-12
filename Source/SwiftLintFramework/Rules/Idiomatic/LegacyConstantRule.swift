@@ -21,12 +21,10 @@ public struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            Rewriter(
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 

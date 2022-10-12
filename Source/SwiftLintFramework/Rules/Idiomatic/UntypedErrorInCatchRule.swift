@@ -92,12 +92,10 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Swi
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            UntypedErrorInCatchRuleRewriter(
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        UntypedErrorInCatchRuleRewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 

@@ -13,7 +13,7 @@ public protocol SwiftSyntaxCorrectableRule: SwiftSyntaxRule, CorrectableRule {
 public extension SwiftSyntaxCorrectableRule {
     func correct(file: SwiftLintFile) -> [Correction] {
         guard let rewriter = makeRewriter(file: file),
-              let syntaxTree = file.syntaxTree,
+              case let syntaxTree = file.syntaxTree,
               case let newTree = rewriter.visit(syntaxTree),
               rewriter.correctionPositions.isNotEmpty else {
             return []

@@ -63,9 +63,7 @@ public struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRul
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        file.locationConverter.map {
-            Visitor(locationConverter: $0)
-        }
+        Visitor(locationConverter: file.locationConverter)
     }
 }
 

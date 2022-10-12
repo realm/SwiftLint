@@ -141,13 +141,11 @@ public struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProv
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            Rewriter(
-                parentClassRegex: configuration.regex,
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        Rewriter(
+            parentClassRegex: configuration.regex,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 

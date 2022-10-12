@@ -24,7 +24,7 @@ public struct ContainsOverRangeNilComparisonRule: SourceKitFreeRule, OptInRule, 
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree?.folded() else {
+        guard let tree = file.syntaxTree.folded() else {
             return []
         }
 

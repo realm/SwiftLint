@@ -43,7 +43,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, SourceKitFreeRul
     fileprivate static let allOperators = ["-", "/", "+", "*"]
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree?.folded() else {
+        guard let tree = file.syntaxTree.folded() else {
             return []
         }
 

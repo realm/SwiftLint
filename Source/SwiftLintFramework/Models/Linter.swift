@@ -250,7 +250,9 @@ public struct CollectedLinter {
         }
 
         // Free some memory used for this file's caches. They shouldn't be needed after this point.
-        file.invalidateCache()
+        Task {
+            file.invalidateCache()
+        }
 
         return (violations, ruleTimes)
     }

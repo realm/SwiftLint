@@ -83,6 +83,7 @@
   - `private_outlet`
   - `private_unit_test`
   - `protocol_property_accessors_order`
+  - `redundant_discardable_let`
   - `redundant_nil_coalescing`
   - `redundant_string_enum_value`
   - `strong_iboutlet`

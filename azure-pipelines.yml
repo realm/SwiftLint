@@ -83,7 +83,7 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
   steps:
-    - script: swift build --configuration release --sanitize thread
+    - script: swift build --configuration release --sanitize thread --product swiftlint
       displayName: Build SwiftLint
     - script: swift run --configuration release --sanitize thread swiftlint --lenient
       displayName: Pre-cache SwiftLint Run

@@ -113,15 +113,13 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 
     override func visit(_ node: OptionalBindingConditionSyntax) -> Syntax {
-        guard node.isShadowingOptionalBinding else {
+        guard
+            node.isShadowingOptionalBinding,
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-        guard !isInDisabledRegion else {
-            return super.visit(node)
-        }
+
         correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
         let newNode = node
             .withInitializer(nil)

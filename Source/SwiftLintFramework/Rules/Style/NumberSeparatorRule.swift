@@ -71,15 +71,10 @@ private extension NumberSeparatorRule {
         }
 
         override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
-            guard let violation = violation(token: node.floatingDigits) else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
+            guard
+                let violation = violation(token: node.floatingDigits),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 
@@ -89,15 +84,10 @@ private extension NumberSeparatorRule {
         }
 
         override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
-            guard let violation = violation(token: node.digits) else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
+            guard
+                let violation = violation(token: node.digits),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
                 return super.visit(node)
             }
 

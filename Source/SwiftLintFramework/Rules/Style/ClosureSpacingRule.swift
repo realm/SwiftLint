@@ -85,11 +85,10 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntax
         var node = node
         node.statements = visit(node.statements).as(CodeBlockItemListSyntax.self)!
 
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-
-        guard !isInDisabledRegion, node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter) else {
+        guard
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+            node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
 

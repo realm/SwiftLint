@@ -214,19 +214,13 @@ private extension ExplicitInitRule {
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
                 let violationPosition = calledExpression.explicitInitPosition,
                 let calledBase = calledExpression.base,
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
 
             correctionPositions.append(violationPosition)
             return super.visit(node.withCalledExpression("\(calledBase.withoutTrivia())"))
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

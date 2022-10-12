@@ -71,19 +71,13 @@ private extension EmptyParametersRule {
         override func visit(_ node: FunctionTypeSyntax) -> TypeSyntax {
             guard
                 let violationPosition = node.emptyParametersViolationPosition,
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
 
             correctionPositions.append(violationPosition)
             return super.visit(node.withArguments(TupleTypeElementListSyntax([])))
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

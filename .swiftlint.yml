@@ -84,6 +84,7 @@ number_separator:
   minimum_length: 5
 file_name:
   excluded:
+    - SwiftSyntax+SwiftLint.swift
     - GeneratedTests.swift
     - TestHelpers.swift
 

@@ -56,7 +56,7 @@ enum LegacyFunctionRuleHelper {
             guard
                 node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions),
                 let funcName = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
@@ -85,12 +85,6 @@ enum LegacyFunctionRuleHelper {
             return expr
                 .withLeadingTrivia(node.leadingTrivia ?? .zero)
                 .withTrailingTrivia(node.trailingTrivia ?? .zero)
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

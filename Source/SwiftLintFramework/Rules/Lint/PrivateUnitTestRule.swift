@@ -206,15 +206,11 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 
     override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-        guard node.isPrivate, node.hasParent(matching: parentClassRegex) else {
-            return super.visit(node)
-        }
-
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-
-        guard !isInDisabledRegion else {
+        guard
+            node.isPrivate,
+            node.hasParent(matching: parentClassRegex),
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
 
@@ -224,15 +220,11 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 
     override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
-        guard node.isTestMethod, node.isPrivate else {
-            return super.visit(node)
-        }
-
-        let isInDisabledRegion = disabledRegions.contains { region in
-            region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-        }
-
-        guard !isInDisabledRegion else {
+        guard
+            node.isTestMethod,
+            node.isPrivate,
+            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        else {
             return super.visit(node)
         }
 

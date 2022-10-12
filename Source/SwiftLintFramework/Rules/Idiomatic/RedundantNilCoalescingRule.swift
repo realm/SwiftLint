@@ -62,16 +62,9 @@ private extension RedundantNilCoalescingRule {
                 let lastExpression = node.last,
                 lastExpression.is(NilLiteralExprSyntax.self),
                 let secondToLastExpression = node.dropLast().last?.as(BinaryOperatorExprSyntax.self),
-                secondToLastExpression.operatorToken.tokenKind.isNilCoalescingOperator
+                secondToLastExpression.operatorToken.tokenKind.isNilCoalescingOperator,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
                 return super.visit(node)
             }
 

@@ -149,7 +149,7 @@ private extension EmptyEnumArgumentsRule {
         override func visit(_ node: CaseItemSyntax) -> Syntax {
             guard
                 let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
@@ -161,19 +161,13 @@ private extension EmptyEnumArgumentsRule {
         override func visit(_ node: MatchingPatternConditionSyntax) -> Syntax {
             guard
                 let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
 
             correctionPositions.append(violationPosition)
             return super.visit(Syntax(node.withPattern(newPattern)))
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

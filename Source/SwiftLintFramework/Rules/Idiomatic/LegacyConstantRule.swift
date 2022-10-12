@@ -58,7 +58,7 @@ private extension LegacyConstantRule {
         override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
             guard
                 let correction = LegacyConstantRuleExamples.patterns[node.identifier.text],
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
@@ -73,7 +73,7 @@ private extension LegacyConstantRule {
             guard
                 node.isLegacyPiExpression,
                 let calledExpression = node.calledExpression.as(IdentifierExprSyntax.self),
-                !isInDisabledRegion(node)
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
             else {
                 return super.visit(node)
             }
@@ -82,12 +82,6 @@ private extension LegacyConstantRule {
             return ("\(calledExpression.identifier.text).pi" as ExprSyntax)
                 .withLeadingTrivia(node.leadingTrivia ?? .zero)
                 .withTrailingTrivia(node.trailingTrivia ?? .zero)
-        }
-
-        private func isInDisabledRegion<T: SyntaxProtocol>(_ node: T) -> Bool {
-            disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
         }
     }
 }

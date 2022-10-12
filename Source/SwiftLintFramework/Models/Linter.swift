@@ -298,7 +298,7 @@ public struct CollectedLinter {
         for rule in rules.compactMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
-            if newCorrections.isNotEmpty {
+            if newCorrections.isNotEmpty, !file.isVirtual {
                 file.invalidateCache()
             }
         }

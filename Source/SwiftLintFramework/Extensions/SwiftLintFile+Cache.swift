@@ -27,7 +27,6 @@ private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
 })
 private var structureCache = Cache({ file -> Structure? in
     if let structure = responseCache.get(file).map(Structure.init) {
-        queueForRebuild.append(structure)
         return structure
     }
     return nil
@@ -67,25 +66,6 @@ internal var parserDiagnosticsDisabledForTests = false
 
 private var assertHandlers = [FileCacheKey: AssertHandler]()
 private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
-
-private struct RebuildQueue {
-    private let lock = PlatformLock()
-    private var queue = [Structure]()
-
-    mutating func append(_ structure: Structure) {
-        lock.doLocked {
-            queue.append(structure)
-        }
-    }
-
-    mutating func clear() {
-        lock.doLocked {
-            queue.removeAll(keepingCapacity: false)
-        }
-    }
-}
-
-private var queueForRebuild = RebuildQueue()
 
 private class Cache<T> {
     private var values = [FileCacheKey: T]()
@@ -235,6 +215,7 @@ extension SwiftLintFile {
 
     /// Invalidates all cached data for this file.
     public func invalidateCache() {
+        file.clearCaches()
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
@@ -247,7 +228,6 @@ extension SwiftLintFile {
     }
 
     internal static func clearCaches() {
-        queueForRebuild.clear()
         responseCache.clear()
         assertHandlerCache.clear()
         structureCache.clear()

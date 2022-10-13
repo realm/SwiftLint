@@ -37,17 +37,6 @@ private extension AttributesRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: ImportDeclSyntax) {
-            let importLine = node.importTok.startLine(locationConverter: locationConverter)
-            let hasViolation = node.attributes?.contains { attribute in
-                attribute.startLine(locationConverter: locationConverter) != importLine
-            } == true
-
-            if hasViolation {
-                violationPositions.append(node.importTok.positionAfterSkippingLeadingTrivia)
-            }
-        }
-
         override func visitPost(_ node: AttributeListSyntax) {
             guard let helper = node.makeHelper(locationConverter: locationConverter) else {
                 return
@@ -74,7 +63,7 @@ private extension AttributesRule {
 
             if linesForAttributes.isEmpty {
                 return
-            } else if !linesForAttributes.contains(helper.declarationLine - 1) {
+            } else if !linesForAttributes.contains(helper.keywordLine - 1) {
                 violationPositions.append(helper.violationPosition)
                 return
             }
@@ -128,14 +117,14 @@ private enum AttributePlacement {
 
 private struct RuleHelper {
     let violationPosition: AbsolutePosition
-    let declarationLine: Int
+    let keywordLine: Int
     let shouldBeOnSameLine: Bool
 
     func hasViolation(
         locationConverter: SourceLocationConverter,
         attributesAndPlacements: [(AttributeSyntax, AttributePlacement)]
     ) -> Bool {
-        var linesWithAttributes: Set<Int> = [declarationLine]
+        var linesWithAttributes: Set<Int> = [keywordLine]
         for (attribute, placement) in attributesAndPlacements {
             guard let attributeStartLine = attribute.startLine(locationConverter: locationConverter) else {
                 continue
@@ -143,11 +132,11 @@ private struct RuleHelper {
 
             switch placement {
             case .sameLineAsDeclaration:
-                if attributeStartLine != declarationLine {
+                if attributeStartLine != keywordLine {
                     return true
                 }
             case .dedicatedLine:
-                let hasViolation = attributeStartLine == declarationLine ||
+                let hasViolation = attributeStartLine == keywordLine ||
                     linesWithAttributes.contains(attributeStartLine)
                 linesWithAttributes.insert(attributeStartLine)
                 if hasViolation {
@@ -180,34 +169,74 @@ private extension AttributeListSyntax {
     }
 
     func makeHelper(locationConverter: SourceLocationConverter) -> RuleHelper? {
-        if
-            let parent = parent?.as(VariableDeclSyntax.self),
-            let letOrVarLine = parent.letOrVarKeyword.startLine(locationConverter: locationConverter)
+        guard let parent = parent else {
+            return nil
+        }
+
+        if let parent = parent.as(VariableDeclSyntax.self),
+           let keywordLine = parent.letOrVarKeyword.startLine(locationConverter: locationConverter)
         {
             return RuleHelper(
                 violationPosition: parent.letOrVarKeyword.positionAfterSkippingLeadingTrivia,
-                declarationLine: letOrVarLine,
+                keywordLine: keywordLine,
                 shouldBeOnSameLine: true
             )
-        } else if
-            let parent = parent?.as(FunctionDeclSyntax.self),
-            let funcLine = parent.funcKeyword.startLine(locationConverter: locationConverter)
+        } else if let parent = parent.as(FunctionDeclSyntax.self),
+                  let keywordLine = parent.funcKeyword.startLine(locationConverter: locationConverter)
         {
             return RuleHelper(
                 violationPosition: parent.funcKeyword.positionAfterSkippingLeadingTrivia,
-                declarationLine: funcLine,
+                keywordLine: keywordLine,
                 shouldBeOnSameLine: false
             )
-        } else if
-            let parent = parent?.as(ClassDeclSyntax.self),
-            let keywordLine = parent.classKeyword.startLine(locationConverter: locationConverter)
+        } else if let parent = parent.as(EnumDeclSyntax.self),
+                  let keywordLine = parent.enumKeyword.startLine(locationConverter: locationConverter)
+        {
+            return RuleHelper(
+                violationPosition: parent.enumKeyword.positionAfterSkippingLeadingTrivia,
+                keywordLine: keywordLine,
+                shouldBeOnSameLine: false
+            )
+        } else if let parent = parent.as(StructDeclSyntax.self),
+                  let keywordLine = parent.structKeyword.startLine(locationConverter: locationConverter)
+        {
+            return RuleHelper(
+                violationPosition: parent.structKeyword.positionAfterSkippingLeadingTrivia,
+                keywordLine: keywordLine,
+                shouldBeOnSameLine: false
+            )
+        } else if let parent = parent.as(ClassDeclSyntax.self),
+                  let keywordLine = parent.classKeyword.startLine(locationConverter: locationConverter)
         {
             return RuleHelper(
                 violationPosition: parent.classKeyword.positionAfterSkippingLeadingTrivia,
-                declarationLine: keywordLine,
+                keywordLine: keywordLine,
                 shouldBeOnSameLine: false
             )
+        } else if let parent = parent.as(ImportDeclSyntax.self),
+                  let keywordLine = parent.importTok.startLine(locationConverter: locationConverter)
+        {
+            return RuleHelper(
+                violationPosition: parent.importTok.positionAfterSkippingLeadingTrivia,
+                keywordLine: keywordLine,
+                shouldBeOnSameLine: true
+            )
+        } else if let parent = parent.as(InitializerDeclSyntax.self),
+                  let keywordLine = parent.initKeyword.startLine(locationConverter: locationConverter)
+        {
+            return RuleHelper(
+                violationPosition: parent.initKeyword.positionAfterSkippingLeadingTrivia,
+                keywordLine: keywordLine,
+                shouldBeOnSameLine: false
+            )
+        } else if parent.is(AttributedTypeSyntax.self) {
+            return nil
+        } else if parent.is(FunctionParameterSyntax.self) {
+            return nil
+        } else if parent.is(ClosureSignatureSyntax.self) {
+            return nil
         } else {
+            dump(parent)
             return nil
         }
     }

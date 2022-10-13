@@ -168,6 +168,8 @@ private extension AttributeListSyntax {
             }
     }
 
+    // swiftlint:disable cyclomatic_complexity function_body_length opening_brace
+
     func makeHelper(locationConverter: SourceLocationConverter) -> RuleHelper? {
         guard let parent = parent else {
             return nil

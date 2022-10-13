@@ -146,6 +146,9 @@
   only differ in trivia.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Print violations in realtime if `--progress` and `--output` are both set.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

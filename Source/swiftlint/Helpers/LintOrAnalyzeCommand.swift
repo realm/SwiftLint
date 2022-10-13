@@ -272,7 +272,7 @@ private class LintOrAnalyzeResultBuilder {
     }
 
     func report(violations: [StyleViolation], realtimeCondition: Bool) {
-        if (reporter.isRealtime && !options.progress) == realtimeCondition {
+        if (reporter.isRealtime && (!options.progress || options.output != nil)) == realtimeCondition {
             let report = reporter.generateReport(violations)
             if !report.isEmpty {
                 options.writeToOutput(report)

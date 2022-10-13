@@ -78,6 +78,7 @@
   - `last_where`
   - `legacy_cggeometry_functions`
   - `legacy_constant`
+  - `legacy_hashing`
   - `legacy_nsgeometry_functions`
   - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`

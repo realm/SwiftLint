@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule {
+public struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -75,21 +75,30 @@ public struct LegacyHashingRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    // MARK: - ASTRule
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .varInstance,
-            dictionary.setterAccessibility == nil,
-            dictionary.typeName == "Int",
-            dictionary.name == "hashValue",
-            let offset = dictionary.offset else {
-                return []
+extension LegacyHashingRule {
+    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard
+                node.parent?.is(MemberDeclListItemSyntax.self) == true,
+                node.letOrVarKeyword.tokenKind == .varKeyword,
+                node.bindings.count == 1,
+                let binding = node.bindings.first,
+                let identifier = binding.pattern.as(IdentifierPatternSyntax.self),
+                identifier.identifier.text == "hashValue",
+                let returnType = binding.typeAnnotation?.type.as(SimpleTypeIdentifierSyntax.self),
+                returnType.name.text == "Int"
+            else {
+                return
+            }
+
+            violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
         }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
     }
 }

@@ -66,7 +66,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider, SourceKitFreeRule {
     internal var cacheDescription: String {
         return configuration.cacheDescription
     }

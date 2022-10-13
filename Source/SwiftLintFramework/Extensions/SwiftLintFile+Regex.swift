@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 internal func regex(_ pattern: String,
                     options: NSRegularExpression.Options? = nil) -> NSRegularExpression {
@@ -100,10 +101,9 @@ extension SwiftLintFile {
                                    range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
         let contents = stringView
         let range = range ?? contents.range
-        let syntax = syntaxMap
         return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location, length: match.range.length)
-            return matchByteRange.map { (match, syntax.tokens(inByteRange: $0)) }
+            return matchByteRange.map { (match, tokens(inByteRange: $0)) }
         }
     }
 
@@ -291,5 +291,86 @@ extension SwiftLintFile {
 
     internal func contents(for token: SwiftLintSyntaxToken) -> String? {
         return stringView.substringWithByteRange(token.range)
+    }
+}
+
+private extension SwiftLintFile {
+    func tokens(inByteRange byteRange: ByteRange) -> [SwiftLintSyntaxToken] {
+        let byteSourceRange = ByteSourceRange(offset: byteRange.location.value, length: byteRange.length.value)
+        let classifications = syntaxTree.classifications(in: byteSourceRange)
+        let new = classifications.compactMap { classification -> SwiftLintSyntaxToken? in
+            guard var syntaxKind = classification.kind.toSyntaxKind() else {
+                return nil
+            }
+
+            let offset = ByteCount(classification.offset)
+            let length = ByteCount(classification.length)
+
+            // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in attributes.
+            if syntaxKind == .keyword,
+               case let byteRange = ByteRange(location: offset, length: length),
+               let substring = stringView.substringWithByteRange(byteRange),
+               AccessControlLevel(description: substring) != nil {
+                syntaxKind = .attributeBuiltin
+            }
+
+            let syntaxToken = SyntaxToken(type: syntaxKind.rawValue, offset: offset, length: length)
+            return SwiftLintSyntaxToken(value: syntaxToken)
+        }
+        // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
+//        let old = syntaxMap.tokens(inByteRange: byteRange)
+//        if new != old {
+//            queuedPrint("Old")
+//            queuedPrint(old)
+//            queuedPrint("New")
+//            queuedPrint(new)
+//            queuedPrint("Classifications")
+//            var desc = ""
+//            dump(classifications, to: &desc)
+//            queuedFatalError(desc)
+//        }
+        return new
+    }
+}
+
+private extension SyntaxClassification {
+    // swiftlint:disable:next cyclomatic_complexity
+    func toSyntaxKind() -> SyntaxKind? {
+        switch self {
+        case .none:
+            return nil
+        case .keyword:
+            return .keyword
+        case .identifier:
+            return .identifier
+        case .typeIdentifier:
+            return .typeidentifier
+        case .dollarIdentifier:
+            return .identifier
+        case .integerLiteral:
+            return .number
+        case .floatingLiteral:
+            return .number
+        case .stringLiteral:
+            return .string
+        case .stringInterpolationAnchor:
+            return .stringInterpolationAnchor
+        case .poundDirectiveKeyword, .buildConfigId:
+            return .poundDirectiveKeyword
+        case .attribute:
+            return .attributeBuiltin
+        case .objectLiteral:
+            return .objectLiteral
+        case .editorPlaceholder:
+            return .placeholder
+        case .lineComment:
+            return .comment
+        case .docLineComment:
+            return .docComment
+        case .blockComment:
+            return .comment
+        case .docBlockComment:
+            return .docComment
+        }
     }
 }

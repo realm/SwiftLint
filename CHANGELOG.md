@@ -56,6 +56,7 @@
   - `contains_over_filter_is_empty`
   - `contains_over_first_not_nil`
   - `contains_over_range_nil_comparison`
+  - `custom_rules`
   - `deployment_target`
   - `discouraged_assert`
   - `discouraged_direct_init`

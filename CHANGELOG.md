@@ -74,6 +74,7 @@
   - `ibinspectable_in_extension`
   - `implicit_getter`
   - `inert_defer`
+  - `is_disjoint`
   - `large_tuple`
   - `last_where`
   - `legacy_cggeometry_functions`

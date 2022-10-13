@@ -168,93 +168,53 @@ private extension AttributeListSyntax {
             }
     }
 
-    // swiftlint:disable cyclomatic_complexity function_body_length opening_brace
-
+    // swiftlint:disable:next cyclomatic_complexity
     func makeHelper(locationConverter: SourceLocationConverter) -> RuleHelper? {
         guard let parent = parent else {
             return nil
         }
 
-        if let parent = parent.as(VariableDeclSyntax.self),
-           let keywordLine = parent.letOrVarKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.letOrVarKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: true
-            )
-        } else if let parent = parent.as(FunctionDeclSyntax.self),
-                  let keywordLine = parent.funcKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.funcKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if let parent = parent.as(EnumDeclSyntax.self),
-                  let keywordLine = parent.enumKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.enumKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if let parent = parent.as(StructDeclSyntax.self),
-                  let keywordLine = parent.structKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.structKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if let parent = parent.as(ClassDeclSyntax.self),
-                  let keywordLine = parent.classKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.classKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if let parent = parent.as(ExtensionDeclSyntax.self),
-                  let keywordLine = parent.extensionKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.extensionKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if let parent = parent.as(ProtocolDeclSyntax.self),
-                  let keywordLine = parent.protocolKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.protocolKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if let parent = parent.as(ImportDeclSyntax.self),
-                  let keywordLine = parent.importTok.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.importTok.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: true
-            )
-        } else if let parent = parent.as(InitializerDeclSyntax.self),
-                  let keywordLine = parent.initKeyword.startLine(locationConverter: locationConverter)
-        {
-            return RuleHelper(
-                violationPosition: parent.initKeyword.positionAfterSkippingLeadingTrivia,
-                keywordLine: keywordLine,
-                shouldBeOnSameLine: false
-            )
-        } else if parent.is(AttributedTypeSyntax.self) {
-            return nil
-        } else if parent.is(FunctionParameterSyntax.self) {
-            return nil
-        } else if parent.is(ClosureSignatureSyntax.self) {
-            return nil
+        let keyword: any SyntaxProtocol
+        let shouldBeOnSameLine: Bool
+        if let funcKeyword = parent.as(FunctionDeclSyntax.self)?.funcKeyword {
+            keyword = funcKeyword
+            shouldBeOnSameLine = false
+        } else if let initKeyword = parent.as(InitializerDeclSyntax.self)?.initKeyword {
+            keyword = initKeyword
+            shouldBeOnSameLine = false
+        } else if let enumKeyword = parent.as(EnumDeclSyntax.self)?.enumKeyword {
+            keyword = enumKeyword
+            shouldBeOnSameLine = false
+        } else if let structKeyword = parent.as(StructDeclSyntax.self)?.structKeyword {
+            keyword = structKeyword
+            shouldBeOnSameLine = false
+        } else if let classKeyword = parent.as(ClassDeclSyntax.self)?.classKeyword {
+            keyword = classKeyword
+            shouldBeOnSameLine = false
+        } else if let extensionKeyword = parent.as(ExtensionDeclSyntax.self)?.extensionKeyword {
+            keyword = extensionKeyword
+            shouldBeOnSameLine = false
+        } else if let protocolKeyword = parent.as(ProtocolDeclSyntax.self)?.protocolKeyword {
+            keyword = protocolKeyword
+            shouldBeOnSameLine = false
+        } else if let importTok = parent.as(ImportDeclSyntax.self)?.importTok {
+            keyword = importTok
+            shouldBeOnSameLine = true
+        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.letOrVarKeyword {
+            keyword = letOrVarKeyword
+            shouldBeOnSameLine = true
         } else {
             return nil
         }
+
+        guard let keywordLine = keyword.startLine(locationConverter: locationConverter) else {
+            return nil
+        }
+
+        return RuleHelper(
+            violationPosition: keyword.positionAfterSkippingLeadingTrivia,
+            keywordLine: keywordLine,
+            shouldBeOnSameLine: shouldBeOnSameLine
+        )
     }
 }

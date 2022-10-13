@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverFirstNotNilRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -31,14 +31,47 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*(==|!=)\\s*nil"
-        let firstViolations = validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                                       callNameSuffix: ".first", severity: configuration.severity,
-                                       reason: "Prefer `contains` over `first(where:) != nil`")
-        let firstIndexViolations = validate(file: file, pattern: pattern, patternSyntaxKinds: [.keyword],
-                                            callNameSuffix: ".firstIndex", severity: configuration.severity,
-                                            reason: "Prefer `contains` over `firstIndex(where:) != nil`")
+        guard let tree = file.syntaxTree.folded() else {
+            return []
+        }
 
-        return firstViolations + firstIndexViolations
+        return Visitor(viewMode: .sourceAccurate)
+            .walk(tree: tree, handler: \.violations)
+            .map { violation in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, position: violation.position),
+                               reason: violation.reason)
+            }
+    }
+}
+
+private extension ContainsOverFirstNotNilRule {
+    struct Violation {
+        let position: AbsolutePosition
+        let reason: String
+    }
+
+    final class Visitor: SyntaxVisitor {
+        private(set) var violations: [Violation] = []
+
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard
+                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                node.rightOperand.is(NilLiteralExprSyntax.self),
+                let first = node.leftOperand.asFunctionCall,
+                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "first" || calledExpression.name.text == "firstIndex"
+            else {
+                return
+            }
+
+            let violation = Violation(
+                position: first.positionAfterSkippingLeadingTrivia,
+                reason: "Prefer `contains` over `\(calledExpression.name.text)(where:) != nil`"
+            )
+            violations.append(violation)
+        }
     }
 }

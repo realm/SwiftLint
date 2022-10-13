@@ -47,7 +47,7 @@ private extension ContainsOverRangeNilComparisonRule {
                 let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
                 operatorNode.operatorToken.tokenKind.isEqualityComparison,
                 node.rightOperand.is(NilLiteralExprSyntax.self),
-                let first = node.leftOperand.as(FunctionCallExprSyntax.self),
+                let first = node.leftOperand.asFunctionCall,
                 first.argumentList.count == 1,
                 first.argumentList.first?.label?.text == "of",
                 let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
@@ -56,15 +56,7 @@ private extension ContainsOverRangeNilComparisonRule {
                 return
             }
 
-            violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
+            violationPositions.append(first.positionAfterSkippingLeadingTrivia)
         }
-    }
-}
-
-private extension TokenKind {
-    var isEqualityComparison: Bool {
-        self == .spacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator("!=") ||
-            self == .unspacedBinaryOperator("==")
     }
 }

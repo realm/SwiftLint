@@ -44,7 +44,7 @@ private extension FirstWhereRule {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.name.text == "first",
-                let functionCall = node.functionCallBase,
+                let functionCall = node.base?.asFunctionCall,
                 let calledExpression = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
                 calledExpression.name.text == "filter",
                 !functionCall.argumentList.contains(where: \.expression.shouldSkip)

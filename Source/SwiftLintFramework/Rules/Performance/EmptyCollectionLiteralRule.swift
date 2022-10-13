@@ -53,11 +53,3 @@ private extension EmptyCollectionLiteralRule {
         }
     }
 }
-
-private extension TokenKind {
-    var isEqualityComparison: Bool {
-        self == .spacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator("!=") ||
-            self == .unspacedBinaryOperator("==")
-    }
-}

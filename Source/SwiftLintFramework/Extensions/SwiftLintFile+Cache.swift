@@ -24,8 +24,7 @@ private let structureDictionaryCache = Cache { file in
     return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
 }
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
-    // swiftlint:disable:next force_try - Cannot fail. See https://github.com/apple/swift-syntax/pull/912
-    return try! Parser.parse(source: file.contents)
+    return Parser.parse(source: file.contents)
 }
 private let commandsCache = Cache { file -> [Command] in
     guard file.contents.contains("swiftlint:") else {

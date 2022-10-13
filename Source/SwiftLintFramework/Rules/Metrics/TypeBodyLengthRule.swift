@@ -1,4 +1,4 @@
-import SourceKittenFramework
+import SwiftSyntax
 
 private func wrapExample(
     prefix: String = "",
@@ -12,7 +12,7 @@ private func wrapExample(
                    repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
-public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
+public struct TypeBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 250, error: 350)
 
     public init() {}
@@ -22,7 +22,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         name: "Type Body Length",
         description: "Type bodies should not span too many lines.",
         kind: .metrics,
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
+        nonTriggeringExamples: ["class", "struct", "enum", "actor"].flatMap({ type in
             [
                 wrapExample(type, "let abc = 0\n", 249),
                 wrapExample(type, "\n", 251),
@@ -30,38 +30,18 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
                 wrapExample(type, "let abc = 0\n", 249, "\n/* this is\na multiline comment\n*/\n")
             ]
         }),
-        triggeringExamples: ["class", "struct", "enum"].map({ type in
+        triggeringExamples: ["class", "struct", "enum", "actor"].map({ type in
              wrapExample(prefix: "↓", type, "let abc = 0\n", 251)
         })
     )
-
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.typeKinds.contains(kind) else {
-            return []
-        }
-        if let offset = dictionary.offset,
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength {
-            let startLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset)
-            let endLine = file.stringView
-                .lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
-
-            if let leftBraceLine = startLine?.line, let rightBraceLine = endLine?.line {
-                for parameter in configuration.params {
-                    let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
-                                                                                    rightBraceLine: rightBraceLine)
-                    if lineCount >= parameter.value {
-                        let reason = "Type body should span \(configuration.warning) lines or less " +
-                            "excluding comments and whitespace: currently spans \(lineCount) lines"
-                        return [StyleViolation(ruleDescription: Self.description,
-                                               severity: parameter.severity,
-                                               location: Location(file: file, byteOffset: offset),
-                                               reason: reason)]
-                    }
-                }
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        BodyLengthRuleVisitor(kind: .type, file: file, configuration: configuration)
+            .walk(file: file, handler: \.violations)
+            .map { violation in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: violation.severity,
+                               location: Location(file: file, position: violation.position),
+                               reason: violation.reason)
             }
-        }
-        return []
     }
 }

@@ -48,6 +48,7 @@
   - `block_based_kvo`
   - `class_delegate_protocol`
   - `closing_brace`
+  - `closure_body_length`
   - `closure_parameter_position`
   - `computed_accessors_order`
   - `contains_over_filter_count`
@@ -70,6 +71,7 @@
   - `flatmap_over_map_reduce`
   - `force_try`
   - `force_unwrapping`
+  - `function_body_length`
   - `generic_type_name`
   - `ibinspectable_in_extension`
   - `implicit_getter`
@@ -98,6 +100,7 @@
   - `switch_case_on_newline`
   - `toggle_bool`
   - `trailing_semicolon`
+  - `type_body_length`
   - `unneeded_break_in_switch`
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`

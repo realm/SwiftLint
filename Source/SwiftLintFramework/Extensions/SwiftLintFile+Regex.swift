@@ -223,6 +223,13 @@ extension SwiftLintFile {
     }
 
     internal func append(_ string: String) {
+        guard string.isNotEmpty else {
+            return
+        }
+        file.contents += string
+        if isVirtual {
+            return
+        }
         guard let stringData = string.data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
@@ -232,18 +239,19 @@ extension SwiftLintFile {
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
-
-        file.contents += string
+        invalidateCache()
     }
 
     internal func write<S: StringProtocol>(_ string: S) {
         guard string != contents else {
             return
         }
-        guard let path = path else {
-            // A file without a path stems from STDIN input. The content is printed to STDOUT.
-            queuedPrint(string)
+        file.contents = String(string)
+        if isVirtual {
             return
+        }
+        guard let path = path else {
+            queuedFatalError("file needs a path to call write(_:)")
         }
         guard let stringData = String(string).data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")
@@ -253,7 +261,6 @@ extension SwiftLintFile {
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        file.contents = String(string)
         invalidateCache()
     }
 

@@ -179,12 +179,16 @@ struct LintOrAnalyzeCommand {
                 }
 
                 let corrections = linter.correct(using: storage)
-                if !corrections.isEmpty && !options.quiet && !options.useSTDIN {
-                    if options.progress {
-                        await correctionsBuilder.append(corrections)
+                if !corrections.isEmpty && !options.quiet {
+                    if options.useSTDIN {
+                        queuedPrint(linter.file.contents)
                     } else {
-                        let correctionLogs = corrections.map(\.consoleDescription)
-                        queuedPrint(correctionLogs.joined(separator: "\n"))
+                        if options.progress {
+                            await correctionsBuilder.append(corrections)
+                        } else {
+                            let correctionLogs = corrections.map(\.consoleDescription)
+                            queuedPrint(correctionLogs.joined(separator: "\n"))
+                        }
                     }
                 }
             }

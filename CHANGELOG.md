@@ -177,6 +177,14 @@
 * Make `nsobject_prefer_isequal` rule work for nested `@objc` classes. Also consider
   the `@objcMembers` annotation.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Print fixed content at most once to STDOUT.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4211](https://github.com/realm/SwiftLint/issues/4211)
+
+* Fix fatal error when content given via STDIN is corrected in the
+  `trailing_newline` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4234](https://github.com/realm/SwiftLint/issues/4234)
 
 ## 0.49.1: Buanderie Principale
 

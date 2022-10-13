@@ -213,6 +213,14 @@ private extension AttributeListSyntax {
                 keywordLine: keywordLine,
                 shouldBeOnSameLine: false
             )
+        } else if let parent = parent.as(ExtensionDeclSyntax.self),
+                  let keywordLine = parent.extensionKeyword.startLine(locationConverter: locationConverter)
+        {
+            return RuleHelper(
+                violationPosition: parent.extensionKeyword.positionAfterSkippingLeadingTrivia,
+                keywordLine: keywordLine,
+                shouldBeOnSameLine: false
+            )
         } else if let parent = parent.as(ImportDeclSyntax.self),
                   let keywordLine = parent.importTok.startLine(locationConverter: locationConverter)
         {

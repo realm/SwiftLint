@@ -61,3 +61,18 @@ extension SyntaxProtocol {
         }
     }
 }
+
+extension MemberAccessExprSyntax {
+    var functionCallBase: FunctionCallExprSyntax? {
+        if let functionCallBase = base?.as(FunctionCallExprSyntax.self) {
+            return functionCallBase
+        } else if let tupleBase = base?.as(TupleExprSyntax.self),
+                  tupleBase.elementList.count == 1,
+                  let firstElement = tupleBase.elementList.first,
+                  let functionCallBase = firstElement.expression.as(FunctionCallExprSyntax.self) {
+            return functionCallBase
+        } else {
+            return nil
+        }
+    }
+}

@@ -48,7 +48,7 @@ private extension ContainsOverFilterCountRule {
                 second.firstToken?.tokenKind.isZeroComparison == true,
                 let first = node.first?.as(MemberAccessExprSyntax.self),
                 first.name.text == "count",
-                let firstBase = first.base?.as(FunctionCallExprSyntax.self),
+                let firstBase = first.functionCallBase,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
                 firstBaseCalledExpression.name.text == "filter"
             else {

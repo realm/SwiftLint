@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct IsDisjointRule: ConfigurationProviderRule {
+public struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -22,13 +22,26 @@ public struct IsDisjointRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\bintersection\\(\\S+\\)\\.isEmpty"
-        let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension IsDisjointRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard
+                node.name.text == "isEmpty",
+                let firstBase = node.base?.asFunctionCall,
+                let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
+                firstBaseCalledExpression.name.text == "intersection"
+            else {
+                return
+            }
+
+            violationPositions.append(firstBaseCalledExpression.name.positionAfterSkippingLeadingTrivia)
         }
     }
 }

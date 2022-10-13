@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ContainsOverFilterIsEmptyRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -28,9 +28,26 @@ public struct ContainsOverFilterIsEmptyRule: CallPairRule, OptInRule, Configurat
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.isEmpty\\b"
-        return validate(file: file, pattern: pattern, patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".filter", severity: configuration.severity)
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ContainsOverFilterIsEmptyRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard
+                node.name.text == "isEmpty",
+                let firstBase = node.base?.as(FunctionCallExprSyntax.self),
+                let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
+                firstBaseCalledExpression.name.text == "filter"
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

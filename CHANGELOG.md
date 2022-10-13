@@ -44,6 +44,7 @@
   more violations:
   - `anonymous_argument_in_multiline_closure`
   - `array_init`
+  - `attributes`
   - `block_based_kvo`
   - `class_delegate_protocol`
   - `closing_brace`

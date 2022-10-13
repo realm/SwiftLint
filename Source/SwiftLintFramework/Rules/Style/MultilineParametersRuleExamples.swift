@@ -1,5 +1,3 @@
-// swiftlint:disable type_body_length
-
 internal struct MultilineParametersRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("func foo() { }"),

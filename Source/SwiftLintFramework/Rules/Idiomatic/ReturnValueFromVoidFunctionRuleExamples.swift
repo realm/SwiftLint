@@ -1,4 +1,3 @@
-// swiftlint:disable:next type_body_length
 internal struct ReturnValueFromVoidFunctionRuleExamples {
     static let nonTriggeringExamples = [
         Example("""

@@ -1,4 +1,3 @@
-// swiftlint:disable:next type_body_length
 struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = [
         Example("@objc private var foo: String? {}"),

@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable function_body_length type_body_length
+// swiftlint:disable function_body_length
 class TypeContentsOrderRuleTests: XCTestCase {
     func testTypeContentsOrderReversedOrder() {
         // Test with reversed `order` entries

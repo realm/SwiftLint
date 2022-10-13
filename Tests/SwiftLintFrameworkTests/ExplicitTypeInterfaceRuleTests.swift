@@ -173,7 +173,6 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         verifyRule(description)
     }
 
-    // swiftlint:disable function_body_length
     func testSwitchCaseDeclarations() {
         let nonTriggeringExamples = [
             Example("""

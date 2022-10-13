@@ -1,4 +1,3 @@
-// swiftlint:disable type_body_length
 internal struct AccessibilityTraitForButtonRuleExamples {
     static let nonTriggeringExamples = [
         Example("""

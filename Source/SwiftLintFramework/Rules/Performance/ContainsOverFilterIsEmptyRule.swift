@@ -40,7 +40,7 @@ private extension ContainsOverFilterIsEmptyRule {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.name.text == "isEmpty",
-                let firstBase = node.base?.as(FunctionCallExprSyntax.self),
+                let firstBase = node.functionCallBase,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
                 firstBaseCalledExpression.name.text == "filter"
             else {

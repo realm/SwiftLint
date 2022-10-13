@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -17,7 +17,7 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
             Example("let max = myList.max()\n"),
             Example("let max = myList.max(by: { $0 < $1 })\n"),
             Example("let message = messages.sorted(byKeyPath: #keyPath(Message.timestamp)).last"),
-            Example("let message = messages.sorted(byKeyPath: \"timestamp\", ascending: false).first"),
+            Example(#"let message = messages.sorted(byKeyPath: "timestamp", ascending: false).first"#),
             Example("myList.sorted().firstIndex(of: key)"),
             Example("myList.sorted().lastIndex(of: key)"),
             Example("myList.sorted().firstIndex(where: someFunction)"),
@@ -42,14 +42,28 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return validate(file: file,
-                        pattern: "[\\}\\)]\\s*\\.(first|last)(?!Index)",
-                        patternSyntaxKinds: [.identifier],
-                        callNameSuffix: ".sorted",
-                        severity: configuration.severity) { dictionary in
-            let arguments = dictionary.enclosedArguments.compactMap { $0.name }
-            return arguments.isEmpty || arguments == ["by"]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension SortedFirstLastRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard
+                node.name.text == "first" || node.name.text == "last",
+                let firstBase = node.functionCallBase,
+                let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
+                firstBaseCalledExpression.name.text == "sorted",
+                case let argumentLabels = firstBase.argumentList.map({ $0.label?.text }),
+                argumentLabels.isEmpty || argumentLabels == ["by"]
+            else {
+                return
+            }
+
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

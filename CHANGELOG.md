@@ -65,6 +65,7 @@
   - `empty_string`
   - `explicit_init`
   - `fallthrough`
+  - `first_where`
   - `flatmap_over_map_reduce`
   - `force_try`
   - `force_unwrapping`
@@ -88,6 +89,7 @@
   - `redundant_discardable_let`
   - `redundant_nil_coalescing`
   - `redundant_string_enum_value`
+  - `sorted_first_last`
   - `strong_iboutlet`
   - `switch_case_on_newline`
   - `toggle_bool`

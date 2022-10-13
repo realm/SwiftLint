@@ -223,6 +223,14 @@ private extension AttributeListSyntax {
                 keywordLine: keywordLine,
                 shouldBeOnSameLine: false
             )
+        } else if let parent = parent.as(ProtocolDeclSyntax.self),
+                  let keywordLine = parent.protocolKeyword.startLine(locationConverter: locationConverter)
+        {
+            return RuleHelper(
+                violationPosition: parent.protocolKeyword.positionAfterSkippingLeadingTrivia,
+                keywordLine: keywordLine,
+                shouldBeOnSameLine: false
+            )
         } else if let parent = parent.as(ImportDeclSyntax.self),
                   let keywordLine = parent.importTok.startLine(locationConverter: locationConverter)
         {
@@ -246,7 +254,6 @@ private extension AttributeListSyntax {
         } else if parent.is(ClosureSignatureSyntax.self) {
             return nil
         } else {
-            dump(parent)
             return nil
         }
     }

@@ -49,11 +49,3 @@ private extension EmptyStringRule {
         }
     }
 }
-
-private extension TokenKind {
-    var isEqualityComparison: Bool {
-        self == .spacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator("!=") ||
-            self == .unspacedBinaryOperator("==")
-    }
-}

@@ -62,17 +62,25 @@ extension SyntaxProtocol {
     }
 }
 
-extension MemberAccessExprSyntax {
-    var functionCallBase: FunctionCallExprSyntax? {
-        if let functionCallBase = base?.as(FunctionCallExprSyntax.self) {
-            return functionCallBase
-        } else if let tupleBase = base?.as(TupleExprSyntax.self),
-                  tupleBase.elementList.count == 1,
-                  let firstElement = tupleBase.elementList.first,
-                  let functionCallBase = firstElement.expression.as(FunctionCallExprSyntax.self) {
-            return functionCallBase
+extension ExprSyntax {
+    var asFunctionCall: FunctionCallExprSyntax? {
+        if let functionCall = self.as(FunctionCallExprSyntax.self) {
+            return functionCall
+        } else if let tuple = self.as(TupleExprSyntax.self),
+                  tuple.elementList.count == 1,
+                  let firstElement = tuple.elementList.first,
+                  let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
+            return functionCall
         } else {
             return nil
         }
+    }
+}
+
+extension TokenKind {
+    var isEqualityComparison: Bool {
+        self == .spacedBinaryOperator("==") ||
+            self == .spacedBinaryOperator("!=") ||
+            self == .unspacedBinaryOperator("==")
     }
 }

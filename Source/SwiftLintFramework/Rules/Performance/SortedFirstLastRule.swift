@@ -54,7 +54,7 @@ private extension SortedFirstLastRule {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.name.text == "first" || node.name.text == "last",
-                let firstBase = node.functionCallBase,
+                let firstBase = node.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
                 firstBaseCalledExpression.name.text == "sorted",
                 case let argumentLabels = firstBase.argumentList.map({ $0.label?.text }),

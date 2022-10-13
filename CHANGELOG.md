@@ -52,6 +52,7 @@
   - `computed_accessors_order`
   - `contains_over_filter_count`
   - `contains_over_filter_is_empty`
+  - `contains_over_first_not_nil`
   - `contains_over_range_nil_comparison`
   - `deployment_target`
   - `discouraged_object_literal`
@@ -74,6 +75,7 @@
   - `implicit_getter`
   - `inert_defer`
   - `large_tuple`
+  - `last_where`
   - `legacy_cggeometry_functions`
   - `legacy_constant`
   - `legacy_nsgeometry_functions`

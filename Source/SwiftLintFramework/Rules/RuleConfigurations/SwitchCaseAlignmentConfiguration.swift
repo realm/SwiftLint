@@ -1,5 +1,5 @@
-public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+public struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var indentedCases = false
 
     init() {}

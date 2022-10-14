@@ -1,5 +1,3 @@
-import SwiftSyntax
-
 public struct FunctionBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 50, error: 100)
 

@@ -1,5 +1,3 @@
-import SwiftSyntax
-
 public struct ClosureBodyLengthRule: OptInRule, SourceKitFreeRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
 

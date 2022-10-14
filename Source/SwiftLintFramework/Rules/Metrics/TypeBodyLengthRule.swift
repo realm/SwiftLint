@@ -1,5 +1,3 @@
-import SwiftSyntax
-
 private func wrapExample(
     prefix: String = "",
     _ type: String,
@@ -34,6 +32,7 @@ public struct TypeBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRule {
              wrapExample(prefix: "↓", type, "let abc = 0\n", 251)
         })
     )
+
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         BodyLengthRuleVisitor(kind: .type, file: file, configuration: configuration)
             .walk(file: file, handler: \.violations)

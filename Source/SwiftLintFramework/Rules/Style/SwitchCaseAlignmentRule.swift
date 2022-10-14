@@ -35,7 +35,7 @@ public struct SwitchCaseAlignmentRule: SourceKitFreeRule, ConfigurationProviderR
                 }
               }
             }
-            """, excludeFromDocumentation: true).focused()
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )

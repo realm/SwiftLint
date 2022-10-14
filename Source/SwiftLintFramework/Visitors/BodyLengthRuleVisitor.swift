@@ -98,6 +98,16 @@ final class BodyLengthRuleVisitor: SyntaxVisitor {
         }
     }
 
+    override func visitPost(_ node: InitializerDeclSyntax) {
+        if kind == .function {
+            registerViolations(
+                getLeftBrace: { node.body?.leftBrace },
+                getRightBrace: { node.body?.rightBrace },
+                getViolationNode: { node.initKeyword }
+            )
+        }
+    }
+
     private func registerViolations(
         getLeftBrace: () -> TokenSyntax?, getRightBrace: () -> TokenSyntax?, getViolationNode: () -> some SyntaxProtocol
     ) {

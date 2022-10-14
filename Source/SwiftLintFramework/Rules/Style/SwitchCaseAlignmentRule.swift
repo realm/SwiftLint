@@ -13,7 +13,30 @@ public struct SwitchCaseAlignmentRule: SourceKitFreeRule, ConfigurationProviderR
             otherwise.
             """,
         kind: .style,
-        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples,
+        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples + [
+            Example("""
+            extension OSLogFloatFormatting {
+              /// Returns a fprintf-compatible length modifier for a given argument type
+              @_semantics("constant_evaluable")
+              @inlinable
+              @_optimize(none)
+              internal static func _formatStringLengthModifier<I: FloatingPoint>(
+                _ type: I.Type
+              ) -> String? {
+                switch type {
+                //   fprintf formatters promote Float to Double
+                case is Float.Type: return ""
+                case is Double.Type: return ""
+            #if !os(Windows) && (arch(i386) || arch(x86_64))
+                //   fprintf formatters use L for Float80
+                case is Float80.Type: return "L"
+            #endif
+                default: return nil
+                }
+              }
+            }
+            """, excludeFromDocumentation: true).focused()
+        ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 
@@ -57,7 +80,7 @@ extension SwitchCaseAlignmentRule {
                 return
             }
 
-            for `case` in node.cases {
+            for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
                 let casePosition = `case`.positionAfterSkippingLeadingTrivia
                 guard let caseColumn = locationConverter.location(for: casePosition).column else {
                     continue

@@ -31,11 +31,9 @@ public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRu
         }
 
         return configuration.params.compactMap { parameter in
-            let result = BodyLineCounter.lineCountIgnoringCommentsAndWhitespace(
-                file: file, leftBraceLine: startLine, rightBraceLine: endLine, limit: parameter.value
-            )
-            let (exceeds, lineCount) = (result.exceeds, result.lineCount)
-            guard exceeds else { return nil }
+            let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: startLine,
+                                                                            rightBraceLine: endLine)
+            guard lineCount >= parameter.value else { return nil }
 
             let reason = """
                 Closure body should span \(configuration.warning) lines or less excluding comments and whitespace: \

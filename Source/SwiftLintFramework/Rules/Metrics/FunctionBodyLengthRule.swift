@@ -19,11 +19,9 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         }
 
         for parameter in configuration.params {
-            let result = BodyLineCounter.lineCountIgnoringCommentsAndWhitespace(
-                file: file, leftBraceLine: input.startLine, rightBraceLine: input.endLine, limit: parameter.value
-            )
-            let (exceeds, lineCount) = (result.exceeds, result.lineCount)
-            guard exceeds else { continue }
+            let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: input.startLine,
+                                                                            rightBraceLine: input.endLine)
+            guard lineCount >= parameter.value else { continue }
             return [
                 StyleViolation(
                     ruleDescription: Self.description, severity: parameter.severity,

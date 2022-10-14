@@ -38,7 +38,7 @@ private let syntaxMapCache = Cache { file in
 }
 private let syntaxKindsByLinesCache = Cache { file in file.syntaxKindsByLine() }
 private let syntaxTokensByLinesCache = Cache { file in file.syntaxTokensByLine() }
-private let linesWithTokensCache = Cache { file in BodyLineCounter.linesWithTokens(file: file) }
+private let linesWithTokensCache = Cache { file in file.computeLinesWithTokens() }
 
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.

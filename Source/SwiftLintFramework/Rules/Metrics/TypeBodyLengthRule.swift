@@ -49,11 +49,9 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
 
             if let leftBraceLine = startLine?.line, let rightBraceLine = endLine?.line {
                 for parameter in configuration.params {
-                    let result = BodyLineCounter.lineCountIgnoringCommentsAndWhitespace(
-                        file: file, leftBraceLine: leftBraceLine, rightBraceLine: rightBraceLine, limit: parameter.value
-                    )
-                    let (exceeds, lineCount) = (result.exceeds, result.lineCount)
-                    if exceeds {
+                    let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
+                                                                                    rightBraceLine: rightBraceLine)
+                    if lineCount >= parameter.value {
                         let reason = "Type body should span \(configuration.warning) lines or less " +
                             "excluding comments and whitespace: currently spans \(lineCount) lines"
                         return [StyleViolation(ruleDescription: Self.description,

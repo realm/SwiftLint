@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ReduceBooleanRule: Rule, ConfigurationProviderRule {
+public struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -26,24 +26,49 @@ public struct ReduceBooleanRule: Rule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = "\\breduce\\((true|false)"
-        return file
-            .match(pattern: pattern, with: [.identifier, .keyword])
-            .map { range in
-                let reason: String
-                if file.contents[Range(range, in: file.contents)!].contains("true") {
-                    reason = "Use `allSatisfy` instead"
-                } else {
-                    reason = "Use `contains` instead"
-                }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
+    }
 
-                return StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: range.location),
-                    reason: reason
-                )
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        Visitor(viewMode: .sourceAccurate)
+            .walk(file: file, handler: \.violations)
+            .map { violation in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, position: violation.position),
+                               reason: violation.reason)
             }
+    }
+}
+
+private extension ReduceBooleanRule {
+    struct Violation {
+        let position: AbsolutePosition
+        let reason: String
+    }
+
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violations: [Violation] = []
+        var violationPositions: [AbsolutePosition] { violations.map(\.position) }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
+                calledExpression.name.text == "reduce",
+                let firstArgument = node.argumentList.first,
+                let bool = firstArgument.expression.as(BooleanLiteralExprSyntax.self)
+            else {
+                return
+            }
+
+            let suggestedFunction = bool.booleanLiteral.tokenKind == .trueKeyword ? "allSatisfy" : "contains"
+            violations.append(
+                Violation(
+                    position: calledExpression.name.positionAfterSkippingLeadingTrivia,
+                    reason: "Use `\(suggestedFunction)` instead"
+                )
+            )
+        }
     }
 }

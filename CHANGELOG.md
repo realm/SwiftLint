@@ -95,6 +95,7 @@
   - `legacy_hashing`
   - `legacy_multiple`
   - `legacy_nsgeometry_functions`
+  - `legacy_objc_type`
   - `legacy_random`
   - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`

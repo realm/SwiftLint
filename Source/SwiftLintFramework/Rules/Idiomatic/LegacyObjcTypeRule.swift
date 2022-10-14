@@ -1,5 +1,4 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
 private let legacyObjcTypes = [
     "NSAffineTransform",
@@ -29,7 +28,7 @@ private let legacyObjcTypes = [
     "NSUUID"
 ]
 
-public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule {
+public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -43,23 +42,37 @@ public struct LegacyObjcTypeRule: OptInRule, ConfigurationProviderRule {
             Example("var array = Array<Int>()\n"),
             Example("var calendar: Calendar? = nil"),
             Example("var formatter: NSDataDetector"),
-            Example("var className: String = NSStringFromClass(MyClass.self)")
+            Example("var className: String = NSStringFromClass(MyClass.self)"),
+            Example("_ = NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData")
         ],
         triggeringExamples: [
-            Example("var array = NSArray()"),
-            Example("var calendar: NSCalendar? = nil")
+            Example("var array = ↓NSArray()"),
+            Example("var calendar: ↓NSCalendar? = nil")
         ]
     )
 
-    private let pattern = "\\b(?:\(legacyObjcTypes.joined(separator: "|")))\\b"
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: pattern)
-            .filter { !Set($0.1).isDisjoint(with: [.typeidentifier, .identifier]) }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.0.location))
+private extension LegacyObjcTypeRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
+            if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
+        }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let identifierText = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+                legacyObjcTypes.contains(identifierText)
+            else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

@@ -1,5 +1,4 @@
 import Dispatch
-import Foundation
 
 extension Array where Element: Equatable {
     var unique: [Element] {

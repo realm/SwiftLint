@@ -339,10 +339,10 @@
 <p>Rules written using SwiftSyntax tend to be significantly faster and have fewer false positives
 than rules that use SourceKit to get source structure information.</p>
 
-<p>116 out of 212 (54%)
+<p>113 out of 212 (53%)
 of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <h2 id='rules-using-sourcekit' class='heading'>Rules Using SourceKit</h2>
-<h3 id='enabled-by-default-43' class='heading'>Enabled By Default (43)</h3>
+<h3 id='enabled-by-default-41' class='heading'>Enabled By Default (41)</h3>
 
 <ul>
 <li><code><a href="comment_spacing.html">comment_spacing</a></code>: Comment Spacing</li>
@@ -355,7 +355,6 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="duplicated_key_in_dictionary_literal.html">duplicated_key_in_dictionary_literal</a></code>: Duplicated Key in Dictionary Literal</li>
 <li><code><a href="file_length.html">file_length</a></code>: File Length</li>
 <li><code><a href="for_where.html">for_where</a></code>: For Where</li>
-<li><code><a href="function_body_length.html">function_body_length</a></code>: Function Body Length</li>
 <li><code><a href="function_parameter_count.html">function_parameter_count</a></code>: Function Parameter Count</li>
 <li><code><a href="identifier_name.html">identifier_name</a></code>: Identifier Name</li>
 <li><code><a href="inclusive_language.html">inclusive_language</a></code>: Inclusive Language</li>
@@ -378,7 +377,6 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="todo.html">todo</a></code>: Todo</li>
 <li><code><a href="trailing_comma.html">trailing_comma</a></code>: Trailing Comma</li>
 <li><code><a href="trailing_whitespace.html">trailing_whitespace</a></code>: Trailing Whitespace</li>
-<li><code><a href="type_body_length.html">type_body_length</a></code>: Type Body Length</li>
 <li><code><a href="type_name.html">type_name</a></code>: Type Name</li>
 <li><code><a href="unused_capture_list.html">unused_capture_list</a></code>: Unused Capture List</li>
 <li><code><a href="unused_control_flow_label.html">unused_control_flow_label</a></code>: Unused Control Flow Label</li>
@@ -389,13 +387,12 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="vertical_whitespace.html">vertical_whitespace</a></code>: Vertical Whitespace</li>
 <li><code><a href="void_return.html">void_return</a></code>: Void Return</li>
 </ul>
-<h3 id='opt-in-73' class='heading'>Opt-In (73)</h3>
+<h3 id='opt-in-72' class='heading'>Opt-In (72)</h3>
 
 <ul>
 <li><code><a href="accessibility_label_for_image.html">accessibility_label_for_image</a></code>: Accessibility Label for Image</li>
 <li><code><a href="accessibility_trait_for_button.html">accessibility_trait_for_button</a></code>: Accessibility Trait for Button</li>
 <li><code><a href="balanced_xctest_lifecycle.html">balanced_xctest_lifecycle</a></code>: Balanced XCTest life-cycle</li>
-<li><code><a href="closure_body_length.html">closure_body_length</a></code>: Closure Body Length</li>
 <li><code><a href="closure_end_indentation.html">closure_end_indentation</a></code>: Closure End Indentation</li>
 <li><code><a href="collection_alignment.html">collection_alignment</a></code>: Collection Element Alignment</li>
 <li><code><a href="conditional_returns_on_newline.html">conditional_returns_on_newline</a></code>: Conditional Returns on Newline</li>
@@ -467,7 +464,7 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="xct_specific_matcher.html">xct_specific_matcher</a></code>: XCTest Specific Matcher</li>
 </ul>
 <h2 id='rules-not-using-sourcekit' class='heading'>Rules Not Using SourceKit</h2>
-<h3 id='enabled-by-default-47' class='heading'>Enabled By Default (47)</h3>
+<h3 id='enabled-by-default-49' class='heading'>Enabled By Default (49)</h3>
 
 <ul>
 <li><code><a href="block_based_kvo.html">block_based_kvo</a></code>: Block Based KVO</li>
@@ -485,6 +482,7 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="empty_parentheses_with_trailing_closure.html">empty_parentheses_with_trailing_closure</a></code>: Empty Parentheses with Trailing Closure</li>
 <li><code><a href="force_cast.html">force_cast</a></code>: Force Cast</li>
 <li><code><a href="force_try.html">force_try</a></code>: Force Try</li>
+<li><code><a href="function_body_length.html">function_body_length</a></code>: Function Body Length</li>
 <li><code><a href="generic_type_name.html">generic_type_name</a></code>: Generic Type Name</li>
 <li><code><a href="implicit_getter.html">implicit_getter</a></code>: Implicit Getter</li>
 <li><code><a href="inert_defer.html">inert_defer</a></code>: Inert Defer</li>
@@ -511,6 +509,7 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="syntactic_sugar.html">syntactic_sugar</a></code>: Syntactic Sugar</li>
 <li><code><a href="trailing_newline.html">trailing_newline</a></code>: Trailing Newline</li>
 <li><code><a href="trailing_semicolon.html">trailing_semicolon</a></code>: Trailing Semicolon</li>
+<li><code><a href="type_body_length.html">type_body_length</a></code>: Type Body Length</li>
 <li><code><a href="unavailable_condition.html">unavailable_condition</a></code>: Unavailable Condition</li>
 <li><code><a href="unneeded_break_in_switch.html">unneeded_break_in_switch</a></code>: Unneeded Break in Switch</li>
 <li><code><a href="unused_closure_parameter.html">unused_closure_parameter</a></code>: Unused Closure Parameter</li>
@@ -518,13 +517,14 @@ of SwiftLint&rsquo;s linter rules use SourceKit.</p>
 <li><code><a href="void_function_in_ternary.html">void_function_in_ternary</a></code>: Void Function in Ternary</li>
 <li><code><a href="xctfail_message.html">xctfail_message</a></code>: XCTFail Message</li>
 </ul>
-<h3 id='opt-in-49' class='heading'>Opt-In (49)</h3>
+<h3 id='opt-in-50' class='heading'>Opt-In (50)</h3>
 
 <ul>
 <li><code><a href="anonymous_argument_in_multiline_closure.html">anonymous_argument_in_multiline_closure</a></code>: Anonymous Argument in Multiline Closure</li>
 <li><code><a href="anyobject_protocol.html">anyobject_protocol</a></code>: AnyObject Protocol</li>
 <li><code><a href="array_init.html">array_init</a></code>: Array Init</li>
 <li><code><a href="attributes.html">attributes</a></code>: Attributes</li>
+<li><code><a href="closure_body_length.html">closure_body_length</a></code>: Closure Body Length</li>
 <li><code><a href="closure_spacing.html">closure_spacing</a></code>: Closure Spacing</li>
 <li><code><a href="comma_inheritance.html">comma_inheritance</a></code>: Comma Inheritance Rule</li>
 <li><code><a href="contains_over_filter_count.html">contains_over_filter_count</a></code>: Contains Over Filter Count</li>

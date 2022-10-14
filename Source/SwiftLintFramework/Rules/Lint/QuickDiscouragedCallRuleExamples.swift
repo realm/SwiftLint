@@ -1,5 +1,3 @@
-// swiftlint:disable type_body_length
-
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""

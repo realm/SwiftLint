@@ -9,11 +9,11 @@ private func wrapExample(
     file: StaticString = #file,
     line: UInt = #line) -> Example {
     return Example("\(prefix)\(type) Abc {\n" +
-        repeatElement(template, count: count).joined() + "\(add)}\n")
+                   repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
+    public var configuration = SeverityLevelsConfiguration(warning: 250, error: 350)
 
     public init() {}
 
@@ -24,14 +24,14 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
-                wrapExample(type, "let abc = 0\n", 199),
-                wrapExample(type, "\n", 201),
-                wrapExample(type, "// this is a comment\n", 201),
-                wrapExample(type, "let abc = 0\n", 199, "\n/* this is\na multiline comment\n*/\n")
+                wrapExample(type, "let abc = 0\n", 249),
+                wrapExample(type, "\n", 251),
+                wrapExample(type, "// this is a comment\n", 251),
+                wrapExample(type, "let abc = 0\n", 249, "\n/* this is\na multiline comment\n*/\n")
             ]
         }),
         triggeringExamples: ["class", "struct", "enum"].map({ type in
-             wrapExample(prefix: "↓", type, "let abc = 0\n", 201)
+             wrapExample(prefix: "↓", type, "let abc = 0\n", 251)
         })
     )
 
@@ -47,12 +47,11 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
             let endLine = file.stringView
                 .lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
 
-            if let startLine = startLine?.line, let endLine = endLine?.line {
+            if let leftBraceLine = startLine?.line, let rightBraceLine = endLine?.line {
                 for parameter in configuration.params {
-                    let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                        startLine, endLine, parameter.value
-                    )
-                    if exceeds {
+                    let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
+                                                                                    rightBraceLine: rightBraceLine)
+                    if lineCount >= parameter.value {
                         let reason = "Type body should span \(configuration.warning) lines or less " +
                             "excluding comments and whitespace: currently spans \(lineCount) lines"
                         return [StyleViolation(ruleDescription: Self.description,

@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 20, error: 100)
+    public var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
 
     public init() {}
 
@@ -26,19 +26,19 @@ public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRu
             let bodyLength = dictionary.bodyLength,
             let startLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset)?.line,
             let endLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
-            else {
-                return []
+        else {
+            return []
         }
 
         return configuration.params.compactMap { parameter in
-            let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(startLine,
-                                                                                           endLine,
-                                                                                           parameter.value)
+            let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: startLine,
+                                                                            rightBraceLine: endLine)
+            guard lineCount >= parameter.value else { return nil }
 
-            guard exceeds else { return nil }
-
-            let reason = "Closure body should span \(configuration.warning) lines or less "
-                + "excluding comments and whitespace: currently spans \(lineCount) lines"
+            let reason = """
+                Closure body should span \(configuration.warning) lines or less excluding comments and whitespace: \
+                currently spans \(lineCount) lines
+                """
 
             return StyleViolation(ruleDescription: Self.description,
                                   severity: parameter.severity,

@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable:next type_body_length
 class IndentationWidthRuleTests: XCTestCase {
     // MARK: Examples
     /// It's not okay to have the first line indented.

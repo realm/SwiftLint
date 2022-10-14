@@ -24,6 +24,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
+    // swiftlint:disable:next function_body_length
     public func validate(
         file: SwiftLintFile,
         kind: SwiftDeclarationKind,

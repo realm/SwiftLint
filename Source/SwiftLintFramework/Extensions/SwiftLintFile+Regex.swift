@@ -280,23 +280,6 @@ extension SwiftLintFile {
         return ruleEnabled(violatingRanges: [violatingRange], for: rule).first
     }
 
-    fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
-        let commentKinds = SyntaxKind.commentKinds
-        return syntaxKindsByLines[startLine...endLine].filter { kinds in
-            commentKinds.isSuperset(of: kinds)
-        }.count
-    }
-
-    internal func exceedsLineCountExcludingCommentsAndWhitespace(_ start: Int, _ end: Int,
-                                                                 _ limit: Int) -> (Bool, Int) {
-        guard end - start > limit else {
-            return (false, end - start)
-        }
-
-        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
-        return (count > limit, count)
-    }
-
     internal func isACL(token: SwiftLintSyntaxToken) -> Bool {
         guard token.kind == .attributeBuiltin else {
             return false

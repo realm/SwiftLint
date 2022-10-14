@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable:next type_body_length
 class ModifierOrderTests: XCTestCase {
     func testAttributeTypeMethod() {
         let descriptionOverride = ModifierOrderRule.description
@@ -67,7 +66,6 @@ class ModifierOrderTests: XCTestCase {
                                                                     "override"]])
     }
 
-    // swiftlint:disable function_body_length
     func testAtPrefixedGroup() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [

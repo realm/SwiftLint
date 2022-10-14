@@ -38,6 +38,7 @@ private let syntaxMapCache = Cache { file in
 }
 private let syntaxKindsByLinesCache = Cache { file in file.syntaxKindsByLine() }
 private let syntaxTokensByLinesCache = Cache { file in file.syntaxTokensByLine() }
+private let linesWithTokensCache = Cache { file in file.computeLinesWithTokens() }
 
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
@@ -122,6 +123,8 @@ extension SwiftLintFile {
             .map(\.message)
     }
 
+    internal var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
+
     internal var structure: Structure {
         guard let structure = structureCache.get(self) else {
             if let handler = assertHandler {
@@ -197,6 +200,7 @@ extension SwiftLintFile {
         syntaxKindsByLinesCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
         commandsCache.invalidate(self)
+        linesWithTokensCache.invalidate(self)
     }
 
     internal static func clearCaches() {
@@ -209,6 +213,7 @@ extension SwiftLintFile {
         syntaxKindsByLinesCache.clear()
         syntaxTreeCache.clear()
         commandsCache.clear()
+        linesWithTokensCache.clear()
     }
 }
 

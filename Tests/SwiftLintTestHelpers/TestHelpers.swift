@@ -202,7 +202,6 @@ private func render(locations: [Location], in contents: String) -> String {
 }
 
 private extension Configuration {
-    // swiftlint:disable:next function_body_length
     func assertCorrection(_ before: Example, expected: Example) {
         let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before.code)
         let file = SwiftLintFile.testFile(withContents: cleanedBefore, persistToDisk: true)

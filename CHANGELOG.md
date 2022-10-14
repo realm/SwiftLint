@@ -108,6 +108,12 @@
   [JP Simard](https://github.com/jpsim)
   [#2915](https://github.com/realm/SwiftLint/issues/2915)
 
+* The "body length" family of rules have changed how they calculate body
+  line count to be significantly more correct and intuitive. However,
+  this is likely to require adjustments to your configuration or disable
+  commands to account for the changes.  
+  [JP Simard](https://github.com/jpsim)
+
 * Add `accessibility_trait_for_button` rule to warn if a SwiftUI
   View has a tap gesture added to it without having the button or
   link accessibility trait.  

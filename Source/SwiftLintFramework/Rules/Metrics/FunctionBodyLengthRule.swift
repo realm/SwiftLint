@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 40, error: 100)
+    public var configuration = SeverityLevelsConfiguration(warning: 50, error: 100)
 
     public init() {}
 
@@ -19,10 +19,9 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         }
 
         for parameter in configuration.params {
-            let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                input.startLine, input.endLine, parameter.value
-            )
-            guard exceeds else { continue }
+            let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: input.startLine,
+                                                                            rightBraceLine: input.endLine)
+            guard lineCount >= parameter.value else { continue }
             return [
                 StyleViolation(
                     ruleDescription: Self.description, severity: parameter.severity,

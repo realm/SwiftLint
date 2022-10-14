@@ -41,14 +41,53 @@ public struct SwitchCaseAlignmentRule: SourceKitFreeRule, ConfigurationProviderR
     )
 
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
+        var violations = [Violation]()
+        let locationConverter = file.locationConverter
+        let indentedCases = configuration.indentedCases
+
+        VisitorBuilder()
+            .onSwitchStmt { node in
+                let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
+                guard
+                    let switchColumn = locationConverter.location(for: switchPosition).column,
+                    node.cases.isNotEmpty,
+                    let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia,
+                    let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+                else {
+                    return
+                }
+
+                for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
+                    let casePosition = `case`.positionAfterSkippingLeadingTrivia
+                    guard let caseColumn = locationConverter.location(for: casePosition).column else {
+                        continue
+                    }
+
+                    let hasViolation = (indentedCases && caseColumn <= switchColumn) ||
+                        (!indentedCases && caseColumn != switchColumn) ||
+                        (indentedCases && caseColumn != firstCaseColumn)
+
+                    guard hasViolation else {
+                        continue
+                    }
+
+                    let reason = """
+                        Case statements should \
+                        \(indentedCases ? "be indented within" : "vertically align with") \
+                        their enclosing switch statement.
+                        """
+                    let violation = Violation(position: casePosition, reason: reason)
+                    violations.append(violation)
+                }
             }
+            .walk(file.syntaxTree)
+
+        return violations.map { violation in
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, position: violation.position),
+                           reason: violation.reason)
+        }
     }
 }
 
@@ -56,53 +95,6 @@ extension SwitchCaseAlignmentRule {
     private struct Violation {
         let position: AbsolutePosition
         let reason: String
-    }
-
-    private final class Visitor: SyntaxVisitor {
-        private(set) var violations: [Violation] = []
-        private let locationConverter: SourceLocationConverter
-        private let indentedCases: Bool
-
-        init(locationConverter: SourceLocationConverter, indentedCases: Bool) {
-            self.locationConverter = locationConverter
-            self.indentedCases = indentedCases
-            super.init(viewMode: .sourceAccurate)
-        }
-
-        override func visitPost(_ node: SwitchStmtSyntax) {
-            let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
-            guard
-                let switchColumn = locationConverter.location(for: switchPosition).column,
-                node.cases.isNotEmpty,
-                let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia,
-                let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
-            else {
-                return
-            }
-
-            for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
-                let casePosition = `case`.positionAfterSkippingLeadingTrivia
-                guard let caseColumn = locationConverter.location(for: casePosition).column else {
-                    continue
-                }
-
-                let hasViolation = (indentedCases && caseColumn <= switchColumn) ||
-                    (!indentedCases && caseColumn != switchColumn) ||
-                    (indentedCases && caseColumn != firstCaseColumn)
-
-                guard hasViolation else {
-                    continue
-                }
-
-                let reason = """
-                    Case statements should \
-                    \(indentedCases ? "be indented within" : "vertically align with") \
-                    their enclosing switch statement.
-                    """
-                let violation = Violation(position: casePosition, reason: reason)
-                violations.append(violation)
-            }
-        }
     }
 
     struct Examples {

@@ -122,7 +122,7 @@ final class BodyLengthRuleVisitor: SyntaxVisitor {
 
         let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
                                                                         rightBraceLine: rightBraceLine)
-        guard lineCount >= configuration.warning else {
+        guard lineCount > configuration.warning else {
             return
         }
 

@@ -97,6 +97,7 @@
   - `redundant_string_enum_value`
   - `sorted_first_last`
   - `strong_iboutlet`
+  - `switch_case_alignment`
   - `switch_case_on_newline`
   - `toggle_bool`
   - `trailing_semicolon`

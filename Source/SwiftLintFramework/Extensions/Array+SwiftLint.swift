@@ -1,12 +1,6 @@
 import Dispatch
 import Foundation
 
-extension Array where Element: NSTextCheckingResult {
-    func ranges() -> [NSRange] {
-        return map { $0.range }
-    }
-}
-
 extension Array where Element: Equatable {
     var unique: [Element] {
         var uniqueValues = [Element]()

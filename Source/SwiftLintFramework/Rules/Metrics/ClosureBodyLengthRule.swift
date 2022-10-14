@@ -1,6 +1,4 @@
-import SourceKittenFramework
-
-public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRule {
+public struct ClosureBodyLengthRule: OptInRule, SourceKitFreeRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
 
     public init() {}
@@ -14,36 +12,14 @@ public struct ClosureBodyLengthRule: OptInRule, ASTRule, ConfigurationProviderRu
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
 
-    // MARK: - ASTRule
-
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .closure,
-            let offset = dictionary.offset,
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength,
-            let startLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset)?.line,
-            let endLine = file.stringView.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
-        else {
-            return []
-        }
-
-        return configuration.params.compactMap { parameter in
-            let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: startLine,
-                                                                            rightBraceLine: endLine)
-            guard lineCount >= parameter.value else { return nil }
-
-            let reason = """
-                Closure body should span \(configuration.warning) lines or less excluding comments and whitespace: \
-                currently spans \(lineCount) lines
-                """
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: parameter.severity,
-                                  location: Location(file: file, byteOffset: offset),
-                                  reason: reason)
-        }
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        BodyLengthRuleVisitor(kind: .closure, file: file, configuration: configuration)
+            .walk(file: file, handler: \.violations)
+            .map { violation in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: violation.severity,
+                               location: Location(file: file, position: violation.position),
+                               reason: violation.reason)
+            }
     }
 }

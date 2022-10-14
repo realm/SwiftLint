@@ -13,7 +13,7 @@ internal struct ClosureBodyLengthRuleExamples {
         labeledArgumentClosure(codeLinesCount: 29),
         multiLabeledArgumentClosures(codeLinesCount: 29),
         labeledAndTrailingClosures(codeLinesCount: 29),
-        lazyInitialization(codeLinesCount: 27)
+        lazyInitialization(codeLinesCount: 28)
     ]
 
     static let triggeringExamples: [Example] = [
@@ -23,7 +23,7 @@ internal struct ClosureBodyLengthRuleExamples {
         labeledArgumentClosure("↓", codeLinesCount: 31),
         multiLabeledArgumentClosures("↓", codeLinesCount: 31),
         labeledAndTrailingClosures("↓", codeLinesCount: 31),
-        lazyInitialization("↓", codeLinesCount: 28)
+        lazyInitialization("↓", codeLinesCount: 29)
     ]
 }
 

@@ -102,6 +102,7 @@
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`
   - `untyped_error_in_catch`
+  - `unused_closure_parameter`
   - `xctfail_message`  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [SimplyDanny](https://github.com/SimplyDanny)

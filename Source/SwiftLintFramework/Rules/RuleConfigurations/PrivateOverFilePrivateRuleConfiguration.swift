@@ -1,4 +1,4 @@
-public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equatable {
+public struct PrivateOverFilePrivateRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var validateExtensions = false
 

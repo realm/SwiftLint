@@ -89,7 +89,7 @@ private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
                 if children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
                     // Literal is at the very beginning of the expression or the previous token is an operator with
                     // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
-                    violationPositions.append(lhs.positionAfterSkippingLeadingTrivia)
+                    violations.append(lhs.positionAfterSkippingLeadingTrivia)
                 }
             }
         }

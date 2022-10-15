@@ -50,7 +50,7 @@ private extension FirstWhereRule {
                 return
             }
 
-            violationPositions.append(functionCall.positionAfterSkippingLeadingTrivia)
+            violations.append(functionCall.positionAfterSkippingLeadingTrivia)
         }
     }
 }

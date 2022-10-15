@@ -28,7 +28,7 @@ private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: FunctionDeclSyntax) {
         if (node.isOverride || node.isTestMethod) && node.hasEmptyBody {
-            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

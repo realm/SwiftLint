@@ -114,7 +114,7 @@ private extension SelfInPropertyInitializationRule {
                     continue
                 }
 
-                violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

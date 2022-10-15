@@ -44,13 +44,13 @@ private extension NumberSeparatorRule {
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
             if let violation = violation(token: node.floatingDigits) {
-                violationPositions.append(violation.position)
+                violations.append(violation.position)
             }
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
             if let violation = violation(token: node.digits) {
-                violationPositions.append(violation.position)
+                violations.append(violation.position)
             }
         }
     }

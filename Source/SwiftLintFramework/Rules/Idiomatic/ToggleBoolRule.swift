@@ -47,7 +47,7 @@ private extension ToggleBoolRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ExprListSyntax) {
             if node.hasToggleBoolViolation {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

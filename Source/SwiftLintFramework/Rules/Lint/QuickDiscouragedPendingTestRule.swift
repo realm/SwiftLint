@@ -27,7 +27,7 @@ private extension QuickDiscouragedPendingTestRule {
             if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
                case let name = identifierExpr.identifier.withoutTrivia().text,
                QuickPendingCallKind(rawValue: name) != nil {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 

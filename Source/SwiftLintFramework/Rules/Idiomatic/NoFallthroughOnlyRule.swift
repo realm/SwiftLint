@@ -24,7 +24,7 @@ private extension NoFallthroughOnlyRule {
         override func visitPost(_ node: SwitchCaseListSyntax) {
             let cases = node.compactMap { $0.as(SwitchCaseSyntax.self) }
 
-            let violations = cases.enumerated()
+            let localViolations = cases.enumerated()
                 .compactMap { index, element -> AbsolutePosition? in
                     guard element.statements.count == 1,
                           let fallthroughStmt = element.statements.first?.item.as(FallthroughStmtSyntax.self) else {
@@ -41,7 +41,7 @@ private extension NoFallthroughOnlyRule {
                     return fallthroughStmt.positionAfterSkippingLeadingTrivia
                 }
 
-            violationPositions.append(contentsOf: violations)
+            violations.append(contentsOf: localViolations)
         }
     }
 }

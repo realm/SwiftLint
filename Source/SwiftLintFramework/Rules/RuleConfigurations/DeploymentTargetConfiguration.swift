@@ -1,4 +1,4 @@
-public struct DeploymentTargetConfiguration: RuleConfiguration, Equatable {
+public struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public enum Platform: String {
         case iOS
         case iOSApplicationExtension
@@ -107,7 +107,7 @@ public struct DeploymentTargetConfiguration: RuleConfiguration, Equatable {
     private(set) var tvOSDeploymentTarget = Version(platform: .tvOS, major: 9)
     private(set) var tvOSAppExtensionDeploymentTarget = Version(platform: .tvOSApplicationExtension, major: 9)
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
     private let targets: [String: Version]
 

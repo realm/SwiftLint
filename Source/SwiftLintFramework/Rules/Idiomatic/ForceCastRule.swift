@@ -24,13 +24,13 @@ public struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
 private final class ForceCastRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: AsExprSyntax) {
         if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            violationPositions.append(node.asTok.positionAfterSkippingLeadingTrivia)
+            violations.append(node.asTok.positionAfterSkippingLeadingTrivia)
         }
     }
 
     override func visitPost(_ node: UnresolvedAsExprSyntax) {
         if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            violationPositions.append(node.asTok.positionAfterSkippingLeadingTrivia)
+            violations.append(node.asTok.positionAfterSkippingLeadingTrivia)
         }
     }
 }

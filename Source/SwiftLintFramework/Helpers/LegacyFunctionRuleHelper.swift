@@ -13,7 +13,7 @@ enum LegacyFunctionRuleHelper {
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions) {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

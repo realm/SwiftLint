@@ -117,7 +117,7 @@ private extension ClosureParameterPositionRule {
                 return
             }
 
-            let violations = signature.positionsToCheck
+            let localViolations = signature.positionsToCheck
                 .filter { position in
                     guard let line = locationConverter.location(for: position).line else {
                         return false
@@ -126,7 +126,7 @@ private extension ClosureParameterPositionRule {
                     return line != startLine
                 }
 
-            violationPositions.append(contentsOf: violations)
+            violations.append(contentsOf: localViolations)
         }
     }
 }

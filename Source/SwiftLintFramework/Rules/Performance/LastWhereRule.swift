@@ -46,7 +46,7 @@ private extension LastWhereRule {
                 return
             }
 
-            violationPositions.append(functionCall.positionAfterSkippingLeadingTrivia)
+            violations.append(functionCall.positionAfterSkippingLeadingTrivia)
         }
     }
 }

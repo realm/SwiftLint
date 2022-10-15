@@ -1,5 +1,5 @@
-public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
+public struct PrivateOutletRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     var allowPrivateSet = false
 
     public var consoleDescription: String {

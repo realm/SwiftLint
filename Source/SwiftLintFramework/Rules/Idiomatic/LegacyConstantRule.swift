@@ -32,13 +32,13 @@ private extension LegacyConstantRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: IdentifierExprSyntax) {
             if LegacyConstantRuleExamples.patterns.keys.contains(node.identifier.text) {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.isLegacyPiExpression {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

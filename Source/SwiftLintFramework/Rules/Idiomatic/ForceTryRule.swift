@@ -35,7 +35,7 @@ private extension ForceTryRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TryExprSyntax) {
             if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

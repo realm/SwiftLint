@@ -151,7 +151,7 @@ private extension UnusedSetterValueRule {
                     return
                 }
 
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

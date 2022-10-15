@@ -60,7 +60,7 @@ private extension AnonymousArgumentInMultilineClosureRule {
 
         override func visitPost(_ node: IdentifierExprSyntax) {
             if case .dollarIdentifier = node.identifier.tokenKind {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

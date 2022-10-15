@@ -96,7 +96,7 @@ extension LegacyHashingRule {
                 return
             }
 
-            violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

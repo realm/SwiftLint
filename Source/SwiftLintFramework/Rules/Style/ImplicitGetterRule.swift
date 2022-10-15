@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct ImplicitGetterRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -14,22 +14,12 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, SourceKitFreeRule {
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         ImplicitGetterRuleVisitor(viewMode: .sourceAccurate)
-            .walk(file: file, handler: \.violationPositions)
-            .sorted { $0.position < $1.position }
-            .map { violation in
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severity,
-                    location: Location(file: file, position: violation.position),
-                    reason: violation.kind.violationDescription
-                )
-            }
     }
 }
 
-private final class ImplicitGetterRuleVisitor: SyntaxVisitor {
+private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
     enum ViolationKind {
         case `subscript`, property
 
@@ -42,7 +32,6 @@ private final class ImplicitGetterRuleVisitor: SyntaxVisitor {
             }
         }
     }
-    private(set) var violationPositions: [(position: AbsolutePosition, kind: ViolationKind)] = []
 
     override func visitPost(_ node: AccessorBlockSyntax) {
         guard let getAccessor = node.getAccessor,
@@ -56,7 +45,12 @@ private final class ImplicitGetterRuleVisitor: SyntaxVisitor {
         }
 
         let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
-        violationPositions.append((getAccessor.positionAfterSkippingLeadingTrivia, kind))
+        violations.append(
+            ReasonedRuleViolation(
+                position: getAccessor.positionAfterSkippingLeadingTrivia,
+                reason: kind.violationDescription
+            )
+        )
     }
 }
 

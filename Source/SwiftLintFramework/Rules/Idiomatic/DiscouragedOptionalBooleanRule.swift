@@ -23,13 +23,13 @@ private extension DiscouragedOptionalBooleanRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: OptionalTypeSyntax) {
             if node.wrappedType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Bool" {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: OptionalChainingExprSyntax) {
             if node.expression.as(IdentifierExprSyntax.self)?.identifier.text == "Bool" {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -45,7 +45,7 @@ private extension DiscouragedOptionalBooleanRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

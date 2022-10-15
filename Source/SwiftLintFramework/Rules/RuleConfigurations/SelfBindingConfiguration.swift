@@ -3,8 +3,8 @@ private enum ConfigurationKey: String {
     case bindIdentifier = "bind_identifier"
 }
 
-public struct SelfBindingConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+public struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var bindIdentifier = "self"
 
     public var consoleDescription: String {

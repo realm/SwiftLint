@@ -11,11 +11,11 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
 
     /// Produce a violation for the given file and absolute position.
     ///
-    /// - parameter file:     The file for which to produce the violation.
-    /// - parameter position: The absolute position in the file where the violation should be located.
+    /// - parameter file:      The file for which to produce the violation.
+    /// - parameter violation: A violation in the file.
     ///
     /// - returns: A violation for the given file and absolute position.
-    func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation
+    func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation
 
     /// Gives a chance for the rule to do some pre-processing on the syntax tree.
     /// One typical example is using `SwiftOperators` to "fold" the tree, resolving operators precedence.
@@ -29,11 +29,12 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
 
 public extension SwiftSyntaxRule where Self: ConfigurationProviderRule,
                                        ConfigurationType: SeverityBasedRuleConfiguration {
-    func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
+    func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
         StyleViolation(
             ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, position: position)
+            severity: violation.severity ?? configuration.severity,
+            location: Location(file: file, position: violation.position),
+            reason: violation.reason
         )
     }
 }
@@ -58,9 +59,9 @@ public extension SwiftSyntaxRule {
         }
 
         return visitor
-            .walk(tree: syntaxTree, handler: \.violationPositions)
+            .walk(tree: syntaxTree, handler: \.violations)
             .sorted()
-            .map { makeViolation(file: file, position: $0) }
+            .map { makeViolation(file: file, violation: $0) }
     }
 
     func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
@@ -68,10 +69,47 @@ public extension SwiftSyntaxRule {
     }
 }
 
+/// A violation produced by `ViolationsSyntaxVisitor`s.
+public struct ReasonedRuleViolation: Comparable {
+    /// The violation's position.
+    public let position: AbsolutePosition
+    /// A specific reason for the violation.
+    public let reason: String?
+    /// The violation's severity.
+    public let severity: ViolationSeverity?
+
+    /// Creates a `ReasonedRuleViolation`.
+    ///
+    /// - parameter position: The violations position in the analyzed source file.
+    /// - parameter reason: The reason for the violation if different from the rule's description.
+    /// - parameter severity: The severity of the violation if different from the rule's default configured severity.
+    public init(position: AbsolutePosition, reason: String? = nil, severity: ViolationSeverity? = nil) {
+        self.position = position
+        self.reason = reason
+        self.severity = severity
+    }
+
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.position < rhs.position
+    }
+}
+
+/// Extension for arrays of `ReasonedRuleViolation`s that provides the automatic conversion of
+/// `AbsolutePosition`s into `ReasonedRuleViolation`s (without a specific reason).
+extension Array where Element == ReasonedRuleViolation {
+    mutating func append(_ position: AbsolutePosition) {
+        append(ReasonedRuleViolation(position: position))
+    }
+
+    mutating func append(contentsOf positions: [AbsolutePosition]) {
+        append(contentsOf: positions.map { ReasonedRuleViolation(position: $0) })
+    }
+}
+
 /// A SwiftSyntax `SyntaxVisitor` that produces absolute positions where violations should be reported.
 open class ViolationsSyntaxVisitor: SyntaxVisitor {
     /// Positions in a source file where violations should be reported.
-    internal var violationPositions: [AbsolutePosition] = []
+    internal var violations: [ReasonedRuleViolation] = []
     /// List of declaration types that shall be skipped while traversing the AST.
     internal var skippableDeclarations: [DeclSyntaxProtocol.Type] { [] }
 

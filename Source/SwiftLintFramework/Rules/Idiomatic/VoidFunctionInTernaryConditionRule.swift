@@ -126,7 +126,7 @@ private class VoidFunctionInTernaryConditionVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violationPositions.append(node.questionMark.positionAfterSkippingLeadingTrivia)
+        violations.append(node.questionMark.positionAfterSkippingLeadingTrivia)
     }
 
     override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
@@ -141,7 +141,7 @@ private class VoidFunctionInTernaryConditionVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violationPositions.append(node.questionMark.positionAfterSkippingLeadingTrivia)
+        violations.append(node.questionMark.positionAfterSkippingLeadingTrivia)
     }
 }
 

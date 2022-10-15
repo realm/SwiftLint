@@ -38,7 +38,7 @@ private extension LegacyRandomRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let function = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.withoutTrivia().text,
                Self.legacyRandomFunctions.contains(function) {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

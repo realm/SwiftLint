@@ -1,10 +1,10 @@
-public struct ComputedAccessorsOrderRuleConfiguration: RuleConfiguration, Equatable {
+public struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public enum Order: String {
         case getSet = "get_set"
         case setGet = "set_get"
     }
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order = Order.getSet
 
     public var consoleDescription: String {

@@ -38,7 +38,7 @@ public struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptIn
 private extension FallthroughRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FallthroughStmtSyntax) {
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

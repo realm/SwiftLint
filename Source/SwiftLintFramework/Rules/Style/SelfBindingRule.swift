@@ -42,15 +42,6 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
         ]
     )
 
-    public func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severityConfiguration.severity,
-            location: Location(file: file, position: position),
-            reason: "`self` should always be re-bound to `\(configuration.bindIdentifier)`"
-        )
-    }
-
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         SelfBindingRuleVisitor(bindIdentifier: configuration.bindIdentifier)
     }
@@ -79,7 +70,12 @@ private final class SelfBindingRuleVisitor: ViolationsSyntaxVisitor {
            identifierPattern.identifier.text != bindIdentifier,
            let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
            initializerIdentifier.identifier.text == "self" {
-            violationPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
+            violations.append(
+                ReasonedRuleViolation(
+                    position: identifierPattern.positionAfterSkippingLeadingTrivia,
+                    reason: "`self` should always be re-bound to `\(bindIdentifier)`"
+                )
+            )
         }
     }
 }

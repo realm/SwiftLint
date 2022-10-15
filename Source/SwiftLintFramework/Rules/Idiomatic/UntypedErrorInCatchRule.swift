@@ -130,7 +130,7 @@ private final class UntypedErrorInCatchRuleVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violationPositions.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
+        violations.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
     }
 }
 

@@ -64,7 +64,7 @@ private extension InertDeferRule {
                 return
             }
 
-            violationPositions.append(node.deferKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.deferKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

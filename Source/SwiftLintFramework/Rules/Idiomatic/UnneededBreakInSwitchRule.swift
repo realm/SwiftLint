@@ -64,6 +64,6 @@ private final class UnneededBreakInSwitchRuleVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violationPositions.append(statement.item.positionAfterSkippingLeadingTrivia)
+        violations.append(statement.item.positionAfterSkippingLeadingTrivia)
     }
 }

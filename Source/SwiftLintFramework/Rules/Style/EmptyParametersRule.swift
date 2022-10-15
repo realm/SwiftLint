@@ -52,7 +52,7 @@ private extension EmptyParametersRule {
                 return
             }
 
-            violationPositions.append(violationPosition)
+            violations.append(violationPosition)
         }
     }
 

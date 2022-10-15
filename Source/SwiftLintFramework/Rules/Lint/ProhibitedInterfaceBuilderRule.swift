@@ -29,13 +29,13 @@ private extension ProhibitedInterfaceBuilderRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isIBOutlet {
-                violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isIBAction {
-                violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

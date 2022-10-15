@@ -165,13 +165,13 @@ private class Visitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: ClassDeclSyntax) {
         if node.isPrivate, node.hasParent(matching: parentClassRegex) {
-            violationPositions.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
         if node.isTestMethod, node.isPrivate {
-            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

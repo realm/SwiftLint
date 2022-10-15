@@ -50,7 +50,7 @@ private extension MultipleClosuresWithTrailingClosureRule {
                 return
             }
 
-            violationPositions.append(trailingClosure.positionAfterSkippingLeadingTrivia)
+            violations.append(trailingClosure.positionAfterSkippingLeadingTrivia)
         }
     }
 }

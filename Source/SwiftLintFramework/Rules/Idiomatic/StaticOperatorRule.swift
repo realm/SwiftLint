@@ -89,7 +89,7 @@ private extension StaticOperatorRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isFreeFunction, node.isOperator {
-                violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

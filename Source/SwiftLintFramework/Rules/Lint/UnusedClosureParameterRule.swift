@@ -20,17 +20,6 @@ public struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, Configurat
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        Visitor(viewMode: .sourceAccurate)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
-    }
-
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
@@ -40,14 +29,7 @@ public struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, Configurat
 }
 
 private extension UnusedClosureParameterRule {
-    struct Violation {
-        let position: AbsolutePosition
-        let reason: String
-    }
-
     final class Visitor: ViolationsSyntaxVisitor {
-        private(set) var violations: [Violation] = []
-
         override func visitPost(_ node: ClosureExprSyntax) {
             let namedParameters = node.namedParameters
             guard namedParameters.isNotEmpty else {
@@ -58,7 +40,7 @@ private extension UnusedClosureParameterRule {
                 .walk(tree: node.statements, handler: \.identifiers)
 
             for parameter in namedParameters where !referencedIdentifiers.contains(parameter.name) {
-                let violation = Violation(
+                let violation = ReasonedRuleViolation(
                     position: parameter.position,
                     reason: #"Unused parameter "\#(parameter.name)" in a closure should be replaced with _."#
                 )

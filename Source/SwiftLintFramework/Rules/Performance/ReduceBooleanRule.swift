@@ -29,28 +29,10 @@ public struct ReduceBooleanRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         Visitor(viewMode: .sourceAccurate)
     }
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        Visitor(viewMode: .sourceAccurate)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
-    }
 }
 
 private extension ReduceBooleanRule {
-    struct Violation {
-        let position: AbsolutePosition
-        let reason: String
-    }
-
     final class Visitor: ViolationsSyntaxVisitor {
-        private(set) var violations: [Violation] = []
-
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
@@ -63,7 +45,7 @@ private extension ReduceBooleanRule {
 
             let suggestedFunction = bool.booleanLiteral.tokenKind == .trueKeyword ? "allSatisfy" : "contains"
             violations.append(
-                Violation(
+                ReasonedRuleViolation(
                     position: calledExpression.name.positionAfterSkippingLeadingTrivia,
                     reason: "Use `\(suggestedFunction)` instead"
                 )

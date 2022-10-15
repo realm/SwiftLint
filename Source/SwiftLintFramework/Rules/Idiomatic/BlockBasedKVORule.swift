@@ -58,7 +58,7 @@ private extension BlockBasedKVORule {
             let firstTypes = ["String?", "Any?", "[NSKeyValueChangeKey:Any]?", "UnsafeMutableRawPointer?"]
             let secondTypes = ["String?", "Any?", "Dictionary<NSKeyValueChangeKey,Any>?", "UnsafeMutableRawPointer?"]
             if types == firstTypes || types == secondTypes {
-                violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

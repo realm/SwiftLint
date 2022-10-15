@@ -55,13 +55,13 @@ private extension ConditionalReturnsOnNewlineRule {
 
         override func visitPost(_ node: IfStmtSyntax) {
             if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.ifKeyword) {
-                violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
                 return
             }
 
             if let elseBody = node.elseBody?.as(CodeBlockSyntax.self), let elseKeyword = node.elseKeyword,
                isReturn(elseBody.statements.lastReturn, onTheSameLineAs: elseKeyword) {
-                violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -71,7 +71,7 @@ private extension ConditionalReturnsOnNewlineRule {
             }
 
             if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.guardKeyword) {
-                violationPositions.append(node.guardKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.guardKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 

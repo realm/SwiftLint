@@ -47,7 +47,7 @@ private extension EmptyCollectionLiteralRule {
                 return
             }
 
-            violationPositions.append(violationPosition)
+            violations.append(violationPosition)
         }
     }
 }

@@ -45,7 +45,7 @@ private extension StrongIBOutletRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if let violationPosition = node.violationPosition {
-                violationPositions.append(violationPosition)
+                violations.append(violationPosition)
             }
         }
     }

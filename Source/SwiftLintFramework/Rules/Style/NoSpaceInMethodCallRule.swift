@@ -64,7 +64,7 @@ private extension NoSpaceInMethodCallRule {
                 return
             }
 
-            violationPositions.append(node.calledExpression.endPositionBeforeTrailingTrivia)
+            violations.append(node.calledExpression.endPositionBeforeTrailingTrivia)
         }
     }
 

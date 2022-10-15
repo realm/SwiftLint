@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct DeploymentTargetRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
     private typealias Version = DeploymentTargetConfiguration.Version
     public var configuration = DeploymentTargetConfiguration()
 
@@ -16,18 +16,8 @@ public struct DeploymentTargetRule: ConfigurationProviderRule, SourceKitFreeRule
         triggeringExamples: DeploymentTargetRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
-            .walk(file: file, handler: \.violationPositions)
-            .sorted(by: { $0.position < $1.position })
-            .map { position, reason in
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, position: position),
-                    reason: reason
-                )
-            }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
     }
 
     private var platformToConfiguredMinVersion: [String: Version] {
@@ -63,8 +53,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule, SourceKitFreeRule
 }
 
 private extension DeploymentTargetRule {
-    private final class Visitor: SyntaxVisitor {
-        private(set) var violationPositions: [(position: AbsolutePosition, reason: String)] = []
+    private final class Visitor: ViolationsSyntaxVisitor {
         private let platformToConfiguredMinVersion: [String: Version]
 
         init(platformToConfiguredMinVersion: [String: Version]) {
@@ -85,7 +74,12 @@ private extension DeploymentTargetRule {
                     continue
                 }
 
-                violationPositions.append((node.atSignToken.positionAfterSkippingLeadingTrivia, reason))
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.atSignToken.positionAfterSkippingLeadingTrivia,
+                        reason: reason
+                    )
+                )
             }
         }
 
@@ -98,7 +92,12 @@ private extension DeploymentTargetRule {
                     continue
                 }
 
-                violationPositions.append((node.poundUnavailableKeyword.positionAfterSkippingLeadingTrivia, reason))
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.poundUnavailableKeyword.positionAfterSkippingLeadingTrivia,
+                        reason: reason
+                    )
+                )
             }
         }
 
@@ -111,7 +110,12 @@ private extension DeploymentTargetRule {
                     continue
                 }
 
-                violationPositions.append((node.poundAvailableKeyword.positionAfterSkippingLeadingTrivia, reason))
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.poundAvailableKeyword.positionAfterSkippingLeadingTrivia,
+                        reason: reason
+                    )
+                )
             }
         }
 

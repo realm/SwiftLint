@@ -93,7 +93,7 @@ private extension ExplicitEnumRawValueRule {
                let enclosingEnum = Syntax(node).enclosingEnum(),
                let inheritance = enclosingEnum.inheritanceClause,
                inheritance.supportsRawValue {
-                violationPositions.append(node.identifier.positionAfterSkippingLeadingTrivia)
+                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }

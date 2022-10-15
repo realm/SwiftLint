@@ -63,7 +63,7 @@ private extension FunctionDefaultParameterAtEndRule {
                 return
             }
 
-            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
@@ -71,7 +71,7 @@ private extension FunctionDefaultParameterAtEndRule {
                 return
             }
 
-            violationPositions.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

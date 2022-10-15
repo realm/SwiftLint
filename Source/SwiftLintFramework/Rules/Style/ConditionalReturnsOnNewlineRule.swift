@@ -17,7 +17,6 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
             Example("if true,\n let x = true else {\n return true\n}"),
             Example("if textField.returnKeyType == .Next {"),
             Example("if true { // return }"),
-            Example("/*if true { */ return }"),
             Example("""
             guard something
             else { return }
@@ -36,12 +35,10 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        file.locationConverter.map { locationConverter in
-            Visitor(
-                ifOnly: configuration.ifOnly,
-                locationConverter: locationConverter
-            )
-        }
+        Visitor(
+            ifOnly: configuration.ifOnly,
+            locationConverter: file.locationConverter
+        )
     }
 }
 
@@ -79,13 +76,13 @@ private extension ConditionalReturnsOnNewlineRule {
             }
         }
 
-        private func isReturn(_ returnStmt: ReturnStmtSyntax?, onTheSameLineAs token2: TokenSyntax) -> Bool {
+        private func isReturn(_ returnStmt: ReturnStmtSyntax?, onTheSameLineAs token: TokenSyntax) -> Bool {
             guard let returnStmt = returnStmt else {
                 return false
             }
 
             return locationConverter.location(for: returnStmt.returnKeyword.positionAfterSkippingLeadingTrivia).line ==
-                locationConverter.location(for: token2.positionAfterSkippingLeadingTrivia).line
+                locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line
         }
     }
 }

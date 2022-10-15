@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule {
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     public var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     public init() {}
@@ -18,33 +17,78 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
             Example("if true,\n let x = true else {\n return true\n}"),
             Example("if textField.returnKeyType == .Next {"),
             Example("if true { // return }"),
-            Example("/*if true { */ return }")
+            Example("""
+            guard something
+            else { return }
+            """)
         ],
         triggeringExamples: [
             Example("↓guard true else { return }"),
             Example("↓if true { return }"),
             Example("↓if true { break } else { return }"),
             Example("↓if true { break } else {       return }"),
-            Example("↓if true { return \"YES\" } else { return \"NO\" }")
+            Example("↓if true { return \"YES\" } else { return \"NO\" }"),
+            Example("""
+            ↓guard condition else { XCTFail(); return }
+            """)
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = configuration.ifOnly ? "(if)[^\n]*return" : "(guard|if)[^\n]*return"
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(
+            ifOnly: configuration.ifOnly,
+            locationConverter: file.locationConverter
+        )
+    }
+}
 
-        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
-            guard let firstToken = tokens.first, let lastToken = tokens.last,
-                firstToken.kind == .keyword && lastToken.kind == .keyword else {
-                    return false
+private extension ConditionalReturnsOnNewlineRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
+        private let ifOnly: Bool
+        private let locationConverter: SourceLocationConverter
+
+        init(ifOnly: Bool, locationConverter: SourceLocationConverter) {
+            self.ifOnly = ifOnly
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: IfStmtSyntax) {
+            if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.ifKeyword) {
+                violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+                return
             }
 
-            let searchTokens = configuration.ifOnly ? ["if"] : ["if", "guard"]
-            return searchTokens.contains(file.contents(for: firstToken) ?? "") &&
-                file.contents(for: lastToken) == "return"
-        }.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.0.location))
+            if let elseBody = node.elseBody?.as(CodeBlockSyntax.self), let elseKeyword = node.elseKeyword,
+               isReturn(elseBody.statements.lastReturn, onTheSameLineAs: elseKeyword) {
+                violationPositions.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
+
+        override func visitPost(_ node: GuardStmtSyntax) {
+            if ifOnly {
+                return
+            }
+
+            if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.guardKeyword) {
+                violationPositions.append(node.guardKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func isReturn(_ returnStmt: ReturnStmtSyntax?, onTheSameLineAs token: TokenSyntax) -> Bool {
+            guard let returnStmt = returnStmt else {
+                return false
+            }
+
+            return locationConverter.location(for: returnStmt.returnKeyword.positionAfterSkippingLeadingTrivia).line ==
+                locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line
+        }
+    }
+}
+
+private extension CodeBlockItemListSyntax {
+    var lastReturn: ReturnStmtSyntax? {
+        last?.item.as(ReturnStmtSyntax.self)
     }
 }

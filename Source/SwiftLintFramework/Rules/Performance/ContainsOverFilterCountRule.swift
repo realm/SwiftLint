@@ -36,9 +36,7 @@ public struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, Configura
 }
 
 private extension ContainsOverFilterCountRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ExprListSyntax) {
             guard
                 node.count == 3,

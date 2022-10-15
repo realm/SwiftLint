@@ -56,9 +56,7 @@ public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Conf
 }
 
 private extension AnyObjectProtocolRule {
-    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ClassRestrictionTypeSyntax) {
             violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }

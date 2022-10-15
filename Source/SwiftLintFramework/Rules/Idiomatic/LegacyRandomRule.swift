@@ -28,9 +28,7 @@ public struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 private extension LegacyRandomRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         private static let legacyRandomFunctions: Set<String> = [
             "arc4random",
             "arc4random_uniform",

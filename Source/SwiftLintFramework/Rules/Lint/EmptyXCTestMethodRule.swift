@@ -19,27 +19,11 @@ public struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, Swift
     }
 }
 
-private final class EmptyXCTestMethodRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
+private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
         node.isXCTestCase ? .visitChildren : .skipChildren
-    }
-
-    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
-    }
-
-    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
-    }
-
-    override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
-    }
-
-    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {

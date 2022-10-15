@@ -20,18 +20,8 @@ public struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderR
 }
 
 private extension NSObjectPreferIsEqualRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
-        // Extensions do not allow nested classes.
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        // Protocols do not allow nested classes.
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .extensionsAndProtocols }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isSelfEqualFunction, node.isInObjcClass {

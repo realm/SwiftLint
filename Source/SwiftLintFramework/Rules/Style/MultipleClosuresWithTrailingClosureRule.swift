@@ -43,9 +43,7 @@ public struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, Configur
 }
 
 private extension MultipleClosuresWithTrailingClosureRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let trailingClosure = node.trailingClosure,
                   node.hasTrailingClosureViolation else {

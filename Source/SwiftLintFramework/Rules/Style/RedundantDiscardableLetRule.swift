@@ -41,9 +41,7 @@ public struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule, Configura
 }
 
 private extension RedundantDiscardableLetRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.hasRedundantDiscardableLetViolation {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)

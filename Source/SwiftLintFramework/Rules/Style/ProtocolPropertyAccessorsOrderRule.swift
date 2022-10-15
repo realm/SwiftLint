@@ -37,8 +37,8 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Swi
 }
 
 private extension ProtocolPropertyAccessorsOrderRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
 
         override func visitPost(_ node: AccessorBlockSyntax) {
             guard node.hasViolation else {
@@ -46,22 +46,6 @@ private extension ProtocolPropertyAccessorsOrderRule {
             }
 
             violationPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
-        }
-
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
         }
     }
 

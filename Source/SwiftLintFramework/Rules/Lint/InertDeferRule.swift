@@ -56,9 +56,7 @@ public struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
 }
 
 private extension InertDeferRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeferStmtSyntax) {
             guard let codeBlockItem = node.parent?.as(CodeBlockItemSyntax.self),
                   let codeBlockList = codeBlockItem.parent?.as(CodeBlockItemListSyntax.self),

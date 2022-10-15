@@ -68,8 +68,7 @@ public struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRul
 }
 
 private extension SwitchCaseOnNewlineRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
 
         init(locationConverter: SourceLocationConverter) {

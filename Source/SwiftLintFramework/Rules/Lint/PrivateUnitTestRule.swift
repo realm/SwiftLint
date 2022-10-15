@@ -149,9 +149,10 @@ public struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProv
     }
 }
 
-private class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
+private class Visitor: ViolationsSyntaxVisitor {
     private let parentClassRegex: NSRegularExpression
+
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
     init(parentClassRegex: NSRegularExpression) {
         self.parentClassRegex = parentClassRegex
@@ -160,22 +161,6 @@ private class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
         !node.isPrivate && node.hasParent(matching: parentClassRegex) ? .visitChildren : .skipChildren
-    }
-
-    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
-    }
-
-    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
-    }
-
-    override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
-    }
-
-    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        .skipChildren
     }
 
     override func visitPost(_ node: ClassDeclSyntax) {

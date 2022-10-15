@@ -43,9 +43,7 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule
 }
 
 private extension DuplicateEnumCasesRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: EnumDeclSyntax) {
             let enumElements = node.members.members
                 .flatMap { member -> EnumCaseElementListSyntax in

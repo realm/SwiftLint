@@ -30,8 +30,7 @@ public struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, Configur
 }
 
 private extension DiscouragedObjectLiteralRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: ObjectLiteralConfiguration
 
         init(configuration: ObjectLiteralConfiguration) {

@@ -58,9 +58,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, SourceKitFreeRul
 }
 
 private extension ShorthandOperatorRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard node.operatorOperand.is(AssignmentExprSyntax.self),
                   let rightExpr = node.rightOperand.as(InfixOperatorExprSyntax.self),

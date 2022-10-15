@@ -25,9 +25,7 @@ public struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, Configuratio
 }
 
 private extension FlatMapOverMapReduceRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),

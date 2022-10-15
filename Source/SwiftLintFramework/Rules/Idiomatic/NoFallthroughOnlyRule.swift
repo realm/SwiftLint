@@ -20,9 +20,7 @@ public struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule 
 }
 
 private extension NoFallthroughOnlyRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: SwitchCaseListSyntax) {
             let cases = node.compactMap { $0.as(SwitchCaseSyntax.self) }
 

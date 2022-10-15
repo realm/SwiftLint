@@ -38,9 +38,7 @@ public struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
 }
 
 private extension FirstWhereRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
                 node.name.text == "first",

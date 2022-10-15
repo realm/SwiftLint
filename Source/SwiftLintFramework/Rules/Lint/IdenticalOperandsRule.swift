@@ -87,9 +87,7 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
 }
 
 private extension IdenticalOperandsRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
                   IdenticalOperandsRule.operators.contains(operatorNode.operatorToken.withoutTrivia().text) else {

@@ -20,8 +20,8 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
 }
 
 private extension QuickDiscouragedFocusedTestRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
@@ -37,22 +37,6 @@ private extension QuickDiscouragedFocusedTestRule {
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             node.isSpecFunction ? .visitChildren : .skipChildren
-        }
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
         }
     }
 }

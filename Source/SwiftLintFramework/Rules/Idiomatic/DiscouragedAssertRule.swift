@@ -37,9 +37,7 @@ public struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
 }
 
 private extension DiscouragedAssertRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.withoutTrivia().text == "assert",
                   let firstArg = node.argumentList.first,

@@ -36,9 +36,7 @@ public struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
 }
 
 private extension ClosingBraceRule {
-    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             if node.hasClosingBraceViolation {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)

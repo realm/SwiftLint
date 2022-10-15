@@ -120,9 +120,7 @@ public struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationP
 }
 
 private extension EmptyEnumArgumentsRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: CaseItemSyntax) {
             if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
                 violationPositions.append(violationPosition)

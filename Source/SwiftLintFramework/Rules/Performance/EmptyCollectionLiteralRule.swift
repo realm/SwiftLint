@@ -34,9 +34,7 @@ public struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProvider
 }
 
 private extension EmptyCollectionLiteralRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             guard
                 node.tokenKind.isEqualityComparison,

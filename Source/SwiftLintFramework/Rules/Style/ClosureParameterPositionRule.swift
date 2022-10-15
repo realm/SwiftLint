@@ -102,8 +102,7 @@ public struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProvid
 }
 
 private extension ClosureParameterPositionRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
 
         init(locationConverter: SourceLocationConverter) {

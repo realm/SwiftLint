@@ -39,9 +39,7 @@ public struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
 }
 
 private extension PrivateActionRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
         }

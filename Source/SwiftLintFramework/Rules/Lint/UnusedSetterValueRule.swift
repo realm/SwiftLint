@@ -135,8 +135,8 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule 
 }
 
 private extension UnusedSetterValueRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: AccessorDeclSyntax) {
             guard node.accessorKind.tokenKind == .contextualKeyword("set") else {
@@ -153,10 +153,6 @@ private extension UnusedSetterValueRule {
 
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)
             }
-        }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
         }
     }
 

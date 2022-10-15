@@ -37,9 +37,7 @@ public struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderR
 }
 
 private extension ClassDelegateProtocolRule {
-    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: ProtocolDeclSyntax) {
             if node.identifier.text.hasSuffix("Delegate") &&
                 !node.hasObjCAttribute() &&

@@ -184,9 +184,7 @@ public struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
 }
 
 private extension ExplicitInitRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),

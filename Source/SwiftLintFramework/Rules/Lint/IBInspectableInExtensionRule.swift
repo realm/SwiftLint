@@ -32,28 +32,8 @@ public struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProvid
 }
 
 private extension IBInspectableInExtensionRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .visitChildren
-        }
-
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
 
         override func visitPost(_ node: AttributeSyntax) {
             if node.attributeName.text == "IBInspectable" {

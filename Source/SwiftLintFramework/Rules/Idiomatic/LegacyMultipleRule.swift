@@ -55,9 +55,7 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SourceKi
 }
 
 private extension LegacyMultipleRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
                   operatorNode.operatorToken.tokenKind == .spacedBinaryOperator("%"),

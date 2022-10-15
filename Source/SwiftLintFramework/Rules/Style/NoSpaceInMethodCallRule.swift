@@ -58,9 +58,7 @@ public struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, Configuration
 }
 
 private extension NoSpaceInMethodCallRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.hasNoSpaceInMethodCallViolation else {
                 return

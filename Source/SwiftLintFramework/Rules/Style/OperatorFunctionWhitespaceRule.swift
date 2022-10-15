@@ -31,9 +31,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSy
 }
 
 private extension OperatorFunctionWhitespaceRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.isOperatorDeclaration, node.hasWhitespaceViolation else {
                 return

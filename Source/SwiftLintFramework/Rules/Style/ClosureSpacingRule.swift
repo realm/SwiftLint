@@ -52,8 +52,7 @@ public struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
 
 // MARK: - ClosureSpacingRuleVisitor
 
-private final class ClosureSpacingRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
+private final class ClosureSpacingRuleVisitor: ViolationsSyntaxVisitor {
     let locationConverter: SourceLocationConverter
 
     init(locationConverter: SourceLocationConverter) {

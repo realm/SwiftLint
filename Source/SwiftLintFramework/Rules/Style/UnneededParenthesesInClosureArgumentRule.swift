@@ -87,9 +87,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
     }
 }
 
-private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class Visitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ClosureSignatureSyntax) {
         guard let clause = node.input?.as(ParameterClauseSyntax.self),
               !clause.parameterList.contains(where: { $0.type != nil }),

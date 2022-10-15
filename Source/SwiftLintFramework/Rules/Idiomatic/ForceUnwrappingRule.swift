@@ -72,9 +72,7 @@ public struct ForceUnwrappingRule: OptInRule, SwiftSyntaxRule, ConfigurationProv
     }
 }
 
-private final class ForceUnwrappingVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class ForceUnwrappingVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ForcedValueExprSyntax) {
         violationPositions.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)
     }

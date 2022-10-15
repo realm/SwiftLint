@@ -32,9 +32,7 @@ public struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
 }
 
 private extension ForceTryRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TryExprSyntax) {
             if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
                 violationPositions.append(node.positionAfterSkippingLeadingTrivia)

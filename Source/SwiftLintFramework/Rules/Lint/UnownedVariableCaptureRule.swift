@@ -30,9 +30,7 @@ public struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, Configurat
     }
 }
 
-private final class UnownedVariableCaptureRuleVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-
+private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ClosureCaptureItemSyntax) {
         if let token = node.unownedToken {
             violationPositions.append(token.positionAfterSkippingLeadingTrivia)

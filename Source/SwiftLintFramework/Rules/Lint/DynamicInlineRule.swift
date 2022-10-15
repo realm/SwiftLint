@@ -30,9 +30,7 @@ public struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 private extension DynamicInlineRule {
-    private final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard let modifiers = node.modifiers,
                   let attributes = node.attributes,

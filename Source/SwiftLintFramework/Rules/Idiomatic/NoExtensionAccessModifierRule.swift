@@ -29,33 +29,13 @@ public struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, Configu
 }
 
 private extension NoExtensionAccessModifierRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             if let modifiers = node.modifiers, modifiers.isNotEmpty {
                 violationPositions.append(modifiers.positionAfterSkippingLeadingTrivia)
             }
-        }
-
-        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
         }
     }
 }

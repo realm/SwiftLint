@@ -239,7 +239,7 @@ private extension DiscouragedNoneNameRule {
 
 private extension TokenSyntax {
     var isNone: Bool {
-        tokenKind == .identifier("none")
+        tokenKind == .identifier("none") || tokenKind == .identifier("`none`")
     }
 }
 

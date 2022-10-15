@@ -1,7 +1,8 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DiscouragedNoneNameRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct DiscouragedNoneNameRule: SourceKitFreeRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+
     public static var description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
@@ -175,43 +176,87 @@ public struct DiscouragedNoneNameRule: ASTRule, OptInRule, ConfigurationProvider
         ]
     )
 
-    public func validate(
-        file: SwiftLintFile,
-        kind: SwiftDeclarationKind,
-        dictionary: SourceKittenDictionary
-    ) -> [StyleViolation] {
-        guard kind.isForValidating && dictionary.isNameInvalid, let offset = dictionary.offset else { return [] }
-        return [
-            StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, byteOffset: offset),
-                reason: kind.reason
-            )
-        ]
-    }
-
     public init() {}
+
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        Visitor(viewMode: .sourceAccurate)
+            .walk(file: file, handler: \.violationPositions)
+            .sorted { $0.position < $1.position }
+            .map { position, reason in
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: configuration.severity,
+                    location: Location(file: file, position: position),
+                    reason: reason
+                )
+            }
+    }
 }
 
-private extension SwiftDeclarationKind {
-    var isForValidating: Bool { self == .enumelement || self == .varClass || self == .varStatic }
+private extension DiscouragedNoneNameRule {
+    final class Visitor: SyntaxVisitor {
+        private(set) var violationPositions: [(position: AbsolutePosition, reason: String)] = []
 
-    var reason: String {
-        var reasonPrefix: String {
-            switch self {
-            case .enumelement: return "`case`"
-            case .varClass: return "`class` member"
-            case .varStatic: return "`static` member"
-            default: return ""
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            let emptyParams = node.associatedValue?.parameterList.isEmpty ?? true
+            if node.identifier.isNone, emptyParams {
+                violationPositions.append((node.positionAfterSkippingLeadingTrivia, reason(type: "`case`")))
             }
         }
-        let reason = "Avoid naming \(reasonPrefix) `none` as the compiler can think you mean `Optional<T>.none`."
-        let recommendation = "Consider using an Optional value instead."
-        return "\(reason) \(recommendation)"
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            let type: String? = {
+                if node.modifiers.isClass {
+                    return "`class` member"
+                } else if node.modifiers.isStatic {
+                    return "`static` member"
+                } else {
+                    return nil
+                }
+            }()
+
+            guard let type = type else {
+                return
+            }
+
+            for binding in node.bindings {
+                guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self), pattern.identifier.isNone else {
+                    continue
+                }
+
+                violationPositions.append((node.positionAfterSkippingLeadingTrivia, reason(type: type)))
+                return
+            }
+        }
+
+        private func reason(type: String) -> String {
+            let reason = "Avoid naming \(type) `none` as the compiler can think you mean `Optional<T>.none`."
+            let recommendation = "Consider using an Optional value instead."
+            return "\(reason) \(recommendation)"
+        }
     }
 }
 
-private extension SourceKittenDictionary {
-    var isNameInvalid: Bool { name == "none" }
+private extension TokenSyntax {
+    var isNone: Bool {
+        tokenKind == .identifier("none")
+    }
+}
+
+private extension ModifierListSyntax? {
+    var isStatic: Bool {
+        guard let modifiers = self else {
+            return false
+        }
+
+        return modifiers.contains { $0.name.tokenKind == .staticKeyword }
+    }
+
+    var isClass: Bool {
+        guard let modifiers = self else {
+            return false
+        }
+
+        return modifiers.contains { $0.name.tokenKind == .classKeyword }
+    }
 }

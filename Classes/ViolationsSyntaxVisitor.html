@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ViolationsSyntaxVisitor Protocol Reference</title>
+    <title>ViolationsSyntaxVisitor Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/ViolationsSyntaxVisitor" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Class/ViolationsSyntaxVisitor" class="dashAnchor"></a>
 
-    <a title="ViolationsSyntaxVisitor Protocol Reference"></a>
+    <a title="ViolationsSyntaxVisitor Class Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -50,7 +50,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">SwiftLintFramework Reference</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      ViolationsSyntaxVisitor Protocol Reference
+      ViolationsSyntaxVisitor Class Reference
     </p>
 
     <div class="content-wrapper">
@@ -104,6 +104,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/SwiftLintFile.html">SwiftLintFile</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a>
               </li>
             </ul>
           </li>
@@ -235,9 +238,6 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/ViolationsSyntaxRewriter.html">ViolationsSyntaxRewriter</a>
               </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -336,14 +336,14 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ViolationsSyntaxVisitor</span> <span class="p">:</span> <span class="kt">SyntaxVisitor</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">ViolationsSyntaxVisitor</span> <span class="p">:</span> <span class="kt">SyntaxVisitor</span></code></pre>
 
                 </div>
               </div>
             <p>A SwiftSyntax <code>SyntaxVisitor</code> that produces absolute positions where violations should be reported.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L58-L61">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L58-L91">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -355,9 +355,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorP18violationPositionsSay0aE016AbsolutePositionVGvp"></a>
-                    <a name="//apple_ref/swift/Property/violationPositions" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorP18violationPositionsSay0aE016AbsolutePositionVGvp">violationPositions</a>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE09ActorDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE09ActorDeclE0VF">visit(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -365,19 +365,192 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Positions in a source file where violations should be reported.</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">violationPositions</span><span class="p">:</span> <span class="p">[</span><span class="kt">AbsolutePosition</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">ActorDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L60">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L64-L66">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE09ClassDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE09ClassDeclE0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">ClassDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L68-L70">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE08EnumDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE08EnumDeclE0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">EnumDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L72-L74">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE013ExtensionDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE013ExtensionDeclE0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">ExtensionDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L76-L78">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE012FunctionDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE012FunctionDeclE0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">FunctionDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L80-L82">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE012ProtocolDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE012ProtocolDeclE0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">ProtocolDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L84-L86">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE010StructDeclE0VF"></a>
+                    <a name="//apple_ref/swift/Method/visit(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework23ViolationsSyntaxVisitorC5visity0aE00eF12ContinueKindOAE010StructDeclE0VF">visit(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">visit</span><span class="p">(</span><span class="n">_</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">StructDeclSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SyntaxVisitorContinueKind</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L88-L90">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

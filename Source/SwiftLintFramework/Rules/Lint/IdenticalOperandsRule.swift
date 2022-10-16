@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRule, OptInRule {
+public struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -71,18 +71,12 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SourceKitFreeRul
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree.folded() else {
-            return []
-        }
+    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
+    }
 
-        return Visitor(viewMode: .sourceAccurate)
-            .walk(tree: tree, handler: \.violationPositions)
-            .map { position in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, position: position))
-            }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

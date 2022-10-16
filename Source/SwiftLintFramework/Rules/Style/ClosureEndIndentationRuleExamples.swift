@@ -23,7 +23,8 @@ internal struct ClosureEndIndentationRuleExamples {
         "    anotherClosure: { y in\n" +
         "        print(y)\n" +
         "    })"),
-        Example("function(parameter: param,\n" +
+        Example(
+        "function(parameter: param,\n" +
         "         closure: { x in\n" +
         "    print(x)\n" +
         "})"),
@@ -37,22 +38,28 @@ internal struct ClosureEndIndentationRuleExamples {
     ]
 
     static let triggeringExamples = [
-        Example("SignalProducer(values: [1, 2, 3])\n" +
-        "   .startWithNext { number in\n" +
-        "       print(number)\n" +
-        "↓}\n"),
-        Example("return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
-        "   return Command(string: contents, range: range)\n" +
-        "   ↓}.flatMap { command in\n" +
-        "   return command.expand()\n" +
-        "↓}\n"),
-        Example("function(\n" +
-        "    closure: { x in\n" +
-        "        print(x)\n" +
-        "↓},\n" +
-        "    anotherClosure: { y in\n" +
-        "        print(y)\n" +
-        "↓})")
+        Example("""
+        SignalProducer(values: [1, 2, 3])
+            .startWithNext { number in
+                print(number)
+        ↓}
+        """),
+        Example("""
+        return match(pattern: pattern, with: [.comment]).flatMap { range in
+           return Command(string: contents, range: range)
+           ↓}.flatMap { command in
+           return command.expand()
+        ↓}
+        """),
+        Example("""
+        function(
+            closure: { x in
+                print(x)
+        ↓},
+            anotherClosure: { y in
+                print(y)
+        ↓})
+        """)
     ]
 
     static let corrections = [

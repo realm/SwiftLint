@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
+public struct LegacyConstructorRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -62,22 +61,22 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
             Example("↓UIOffsetMake(horizontal, vertical)")
         ],
         corrections: [
-            Example("↓CGPointMake(10,  10   )\n"): Example("CGPoint(x: 10, y: 10)\n"),
-            Example("↓CGPointMake(xPos,  yPos   )\n"): Example("CGPoint(x: xPos, y: yPos)\n"),
+            Example("↓CGPointMake(10,  10)\n"): Example("CGPoint(x: 10,  y: 10)\n"),
+            Example("↓CGPointMake(xPos,  yPos)\n"): Example("CGPoint(x: xPos,  y: yPos)\n"),
             Example("↓CGSizeMake(10, 10)\n"): Example("CGSize(width: 10, height: 10)\n"),
-            Example("↓CGSizeMake( aWidth, aHeight )\n"): Example("CGSize(width: aWidth, height: aHeight)\n"),
+            Example("↓CGSizeMake( aWidth, aHeight )\n"): Example("CGSize( width: aWidth, height: aHeight )\n"),
             Example("↓CGRectMake(0, 0, 10, 10)\n"): Example("CGRect(x: 0, y: 0, width: 10, height: 10)\n"),
             Example("↓CGRectMake(xPos, yPos , width, height)\n"):
-                Example("CGRect(x: xPos, y: yPos, width: width, height: height)\n"),
+                Example("CGRect(x: xPos, y: yPos , width: width, height: height)\n"),
             Example("↓CGVectorMake(10, 10)\n"): Example("CGVector(dx: 10, dy: 10)\n"),
             Example("↓CGVectorMake(deltaX, deltaY)\n"): Example("CGVector(dx: deltaX, dy: deltaY)\n"),
-            Example("↓NSMakePoint(10,  10   )\n"): Example("NSPoint(x: 10, y: 10)\n"),
-            Example("↓NSMakePoint(xPos,  yPos   )\n"): Example("NSPoint(x: xPos, y: yPos)\n"),
+            Example("↓NSMakePoint(10,  10   )\n"): Example("NSPoint(x: 10,  y: 10   )\n"),
+            Example("↓NSMakePoint(xPos,  yPos   )\n"): Example("NSPoint(x: xPos,  y: yPos   )\n"),
             Example("↓NSMakeSize(10, 10)\n"): Example("NSSize(width: 10, height: 10)\n"),
-            Example("↓NSMakeSize( aWidth, aHeight )\n"): Example("NSSize(width: aWidth, height: aHeight)\n"),
+            Example("↓NSMakeSize( aWidth, aHeight )\n"): Example("NSSize( width: aWidth, height: aHeight )\n"),
             Example("↓NSMakeRect(0, 0, 10, 10)\n"): Example("NSRect(x: 0, y: 0, width: 10, height: 10)\n"),
             Example("↓NSMakeRect(xPos, yPos , width, height)\n"):
-                Example("NSRect(x: xPos, y: yPos, width: width, height: height)\n"),
+                Example("NSRect(x: xPos, y: yPos , width: width, height: height)\n"),
             Example("↓NSMakeRange(10, 1)\n"): Example("NSRange(location: 10, length: 1)\n"),
             Example("↓NSMakeRange(loc, len)\n"): Example("NSRange(location: loc, length: len)\n"),
             Example("↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)\n"):
@@ -125,99 +124,65 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
                                                        "NSEdgeInsetsMake": "NSEdgeInsets",
                                                        "UIOffsetMake": "UIOffset"]
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard containsViolation(kind: kind, dictionary: dictionary),
-            let offset = dictionary.offset else {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    private func violations(in file: SwiftLintFile, kind: SwiftExpressionKind,
-                            dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        guard containsViolation(kind: kind, dictionary: dictionary) else {
-            return []
-        }
-
-        return [dictionary]
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
+}
 
-    private func containsViolation(kind: SwiftExpressionKind,
-                                   dictionary: SourceKittenDictionary) -> Bool {
-        guard kind == .call,
-            let name = dictionary.name,
-            dictionary.offset != nil,
-            let expectedArguments = Self.constructorsToArguments[name],
-            dictionary.enclosedArguments.count == expectedArguments.count else {
-                return false
-        }
-
-        return true
-    }
-
-    private func violations(in file: SwiftLintFile,
-                            dictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        return dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return violations(in: file, kind: kind, dictionary: subDict)
-        }
-    }
-
-    private func violations(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return violations(in: file, dictionary: file.structureDictionary).sorted { lhs, rhs in
-            (lhs.offset ?? 0) < (rhs.offset ?? 0)
-        }
-    }
-
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingDictionaries = violations(in: file)
-        var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
-        for dictionary in violatingDictionaries.reversed() {
-            guard let byteRange = dictionary.byteRange,
-                let range = file.stringView.byteRangeToNSRange(byteRange),
-                let name = dictionary.name,
-                let correctedName = Self.constructorsToCorrectedNames[name],
-                file.ruleEnabled(violatingRanges: [range], for: self) == [range],
-                case let arguments = argumentsContents(file: file, arguments: dictionary.enclosedArguments),
-                let expectedArguments = Self.constructorsToArguments[name],
-                arguments.count == expectedArguments.count else {
-                    continue
-            }
-
-            if let indexRange = correctedContents.nsrangeToIndexRange(range) {
-                let joinedArguments = zip(expectedArguments, arguments).map { "\($0): \($1)" }.joined(separator: ", ")
-                let replacement = correctedName + "(" + joinedArguments + ")"
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: replacement)
-                adjustedLocations.insert(range.location, at: 0)
+private extension LegacyConstructorRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
+               constructorsToCorrectedNames[identifierExpr.identifier.withoutTrivia().text] != nil {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
-
-        let corrections = adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: Location(file: file, characterOffset: $0))
-        }
-
-        file.write(correctedContents)
-
-        return corrections
     }
 
-    private func argumentsContents(file: SwiftLintFile, arguments: [SourceKittenDictionary]) -> [String] {
-        let contents = file.stringView
-        return arguments.compactMap { argument -> String? in
-            guard argument.name == nil, let byteRange = argument.byteRange else {
-                return nil
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
+                  case let identifier = identifierExpr.identifier.withoutTrivia().text,
+                  let correctedName = constructorsToCorrectedNames[identifier],
+                  let args = constructorsToArguments[identifier],
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
             }
 
-            return contents.substringWithByteRange(byteRange)
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+
+            let arguments = TupleExprElementListSyntax(node.argumentList.map { elem in
+                elem
+                    .withLabel(.identifier(args[elem.indexInParent]))
+                    .withColon(.colonToken(trailingTrivia: .space))
+            })
+            let newExpression = identifierExpr.withIdentifier(
+                .identifier(
+                    correctedName,
+                    leadingTrivia: identifierExpr.identifier.leadingTrivia,
+                    trailingTrivia: identifierExpr.identifier.trailingTrivia
+                )
+            )
+            let newNode = node
+                .withCalledExpression(ExprSyntax(newExpression))
+                .withArgumentList(arguments)
+            return super.visit(newNode)
         }
     }
 }

@@ -35,14 +35,13 @@ public struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationPro
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(mode: configuration.mode)
     }
 }
 
 private extension ImplicitlyUnwrappedOptionalRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let mode: ImplicitlyUnwrappedOptionalModeConfiguration
 
         init(mode: ImplicitlyUnwrappedOptionalModeConfiguration) {
@@ -51,7 +50,7 @@ private extension ImplicitlyUnwrappedOptionalRule {
         }
 
         override func visitPost(_ node: ImplicitlyUnwrappedOptionalTypeSyntax) {
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {

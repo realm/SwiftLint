@@ -27,7 +27,7 @@ private extension QuickDiscouragedFocusedTestRule {
             if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
                case let name = identifierExpr.identifier.withoutTrivia().text,
                QuickFocusedCallKind(rawValue: name) != nil {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 

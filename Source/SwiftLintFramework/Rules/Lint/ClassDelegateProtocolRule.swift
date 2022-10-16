@@ -43,7 +43,7 @@ private extension ClassDelegateProtocolRule {
                 !node.hasObjCAttribute() &&
                 !node.isClassRestricted() &&
                 !node.inheritsFromObjectOrDelegate() {
-                violationPositions.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

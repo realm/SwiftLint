@@ -63,7 +63,7 @@ private final class ClosureSpacingRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: ClosureExprSyntax) {
         if node.shouldCheckForClosureSpacingRule(locationConverter: locationConverter),
            node.violations.hasViolations {
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

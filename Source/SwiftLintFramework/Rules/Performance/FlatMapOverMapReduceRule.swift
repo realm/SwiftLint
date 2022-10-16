@@ -39,7 +39,7 @@ private extension FlatMapOverMapReduceRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

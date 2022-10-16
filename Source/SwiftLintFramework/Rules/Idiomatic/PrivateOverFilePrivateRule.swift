@@ -80,56 +80,56 @@ private extension PrivateOverFilePrivateRule {
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             if validateExtensions, let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }
 
         override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
             if let privateModifier = node.modifiers.fileprivateModifier {
-                violationPositions.append(privateModifier.positionAfterSkippingLeadingTrivia)
+                violations.append(privateModifier.positionAfterSkippingLeadingTrivia)
             }
             return .skipChildren
         }

@@ -193,7 +193,7 @@ private extension ExplicitInitRule {
                 return
             }
 
-            violationPositions.append(violationPosition)
+            violations.append(violationPosition)
         }
     }
 

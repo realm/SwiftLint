@@ -25,7 +25,7 @@ private extension NSObjectPreferIsEqualRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isSelfEqualFunction, node.isInObjcClass {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

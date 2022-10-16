@@ -37,7 +37,7 @@ private extension IBInspectableInExtensionRule {
 
         override func visitPost(_ node: AttributeSyntax) {
             if node.attributeName.text == "IBInspectable" {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

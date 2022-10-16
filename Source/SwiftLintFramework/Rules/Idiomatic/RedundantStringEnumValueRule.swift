@@ -96,7 +96,7 @@ private extension RedundantStringEnumValueRule {
                 }
 
             if redundantMembersPositions.count == enumsWithExplicitValues.count {
-                violationPositions.append(contentsOf: redundantMembersPositions)
+                violations.append(contentsOf: redundantMembersPositions)
             }
         }
     }

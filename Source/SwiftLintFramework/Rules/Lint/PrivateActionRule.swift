@@ -49,7 +49,7 @@ private extension PrivateActionRule {
                 return
             }
 
-            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

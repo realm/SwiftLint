@@ -37,7 +37,7 @@ private extension OperatorFunctionWhitespaceRule {
                 return
             }
 
-            violationPositions.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

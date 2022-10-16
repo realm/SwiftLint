@@ -162,7 +162,7 @@ private extension ValidIBInspectableRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
-                violationPositions.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
     }

@@ -95,7 +95,7 @@ private final class Visitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violationPositions.append(clause.positionAfterSkippingLeadingTrivia)
+        violations.append(clause.positionAfterSkippingLeadingTrivia)
     }
 }
 

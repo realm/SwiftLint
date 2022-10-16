@@ -53,7 +53,7 @@ private extension NSLocalizedStringRequireBundleRule {
             if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
                identifierExpr.identifier.tokenKind == .identifier("NSLocalizedString"),
                !node.argumentList.containsArgument(named: "bundle") {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

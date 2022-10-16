@@ -67,7 +67,7 @@ private extension StrictFilePrivateRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeclModifierSyntax) {
             if node.name.tokenKind == .fileprivateKeyword {
-                violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

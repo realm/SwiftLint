@@ -43,7 +43,7 @@ private extension EmptyStringRule {
                 return
             }
 
-            violationPositions.append(violationPosition)
+            violations.append(violationPosition)
         }
     }
 }

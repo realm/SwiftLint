@@ -48,7 +48,7 @@ private extension ContainsOverRangeNilComparisonRule {
                 return
             }
 
-            violationPositions.append(first.positionAfterSkippingLeadingTrivia)
+            violations.append(first.positionAfterSkippingLeadingTrivia)
         }
     }
 }

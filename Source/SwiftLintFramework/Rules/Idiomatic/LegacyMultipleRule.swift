@@ -73,7 +73,7 @@ private extension LegacyMultipleRule {
                 return
             }
 
-            violationPositions.append(node.operatorOperand.positionAfterSkippingLeadingTrivia)
+            violations.append(node.operatorOperand.positionAfterSkippingLeadingTrivia)
         }
     }
 }

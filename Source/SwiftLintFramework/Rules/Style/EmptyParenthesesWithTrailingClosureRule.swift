@@ -65,7 +65,7 @@ private extension EmptyParenthesesWithTrailingClosureRule {
                 return
             }
 
-            violationPositions.append(position)
+            violations.append(position)
         }
     }
 

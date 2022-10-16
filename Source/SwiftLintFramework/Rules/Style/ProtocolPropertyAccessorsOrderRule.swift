@@ -45,7 +45,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
                 return
             }
 
-            violationPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
+            violations.append(node.accessors.positionAfterSkippingLeadingTrivia)
         }
     }
 

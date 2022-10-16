@@ -34,7 +34,7 @@ private extension NoExtensionAccessModifierRule {
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             if let modifiers = node.modifiers, modifiers.isNotEmpty {
-                violationPositions.append(modifiers.positionAfterSkippingLeadingTrivia)
+                violations.append(modifiers.positionAfterSkippingLeadingTrivia)
             }
         }
     }

@@ -47,7 +47,7 @@ private extension DiscouragedObjectLiteralRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

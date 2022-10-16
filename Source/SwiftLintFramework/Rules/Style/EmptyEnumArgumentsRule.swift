@@ -123,13 +123,13 @@ private extension EmptyEnumArgumentsRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: CaseItemSyntax) {
             if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
-                violationPositions.append(violationPosition)
+                violations.append(violationPosition)
             }
         }
 
         override func visitPost(_ node: MatchingPatternConditionSyntax) {
             if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
-                violationPositions.append(violationPosition)
+                violations.append(violationPosition)
             }
         }
     }

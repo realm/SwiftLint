@@ -67,7 +67,7 @@ extension ArrayInitRule {
                 return
             }
 
-            violationPositions.append(memberAccess.name.positionAfterSkippingLeadingTrivia)
+            violations.append(memberAccess.name.positionAfterSkippingLeadingTrivia)
         }
     }
 }

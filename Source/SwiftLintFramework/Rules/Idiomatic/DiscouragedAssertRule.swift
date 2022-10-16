@@ -47,7 +47,7 @@ private extension DiscouragedAssertRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

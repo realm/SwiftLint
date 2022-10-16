@@ -25,7 +25,7 @@ private final class ReturnValueFromVoidFunctionVisitor: ViolationsSyntaxVisitor 
         if node.expression != nil,
            let functionNode = Syntax(node).enclosingFunction(),
            functionNode.returnsVoid {
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

@@ -63,7 +63,7 @@ private extension ShorthandOperatorRule {
                 return
             }
 
-            violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
+            violations.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
         }
     }
 }

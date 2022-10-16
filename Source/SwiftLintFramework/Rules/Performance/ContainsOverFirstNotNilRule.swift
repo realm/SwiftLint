@@ -47,14 +47,7 @@ public struct ContainsOverFirstNotNilRule: SourceKitFreeRule, OptInRule, Configu
 }
 
 private extension ContainsOverFirstNotNilRule {
-    struct Violation {
-        let position: AbsolutePosition
-        let reason: String
-    }
-
-    final class Visitor: SyntaxVisitor {
-        private(set) var violations: [Violation] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard
                 let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
@@ -67,7 +60,7 @@ private extension ContainsOverFirstNotNilRule {
                 return
             }
 
-            let violation = Violation(
+            let violation = ReasonedRuleViolation(
                 position: first.positionAfterSkippingLeadingTrivia,
                 reason: "Prefer `contains` over `\(calledExpression.name.text)(where:) != nil`"
             )

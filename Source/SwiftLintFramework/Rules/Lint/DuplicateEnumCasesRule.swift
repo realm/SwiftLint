@@ -63,7 +63,7 @@ private extension DuplicateEnumCasesRule {
                 .filter { $0.value.count > 1 }
                 .flatMap { $0.value }
 
-            violationPositions.append(contentsOf: duplicatedElementPositions)
+            violations.append(contentsOf: duplicatedElementPositions)
         }
     }
 }

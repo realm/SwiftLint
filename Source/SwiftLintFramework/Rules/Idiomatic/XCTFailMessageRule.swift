@@ -52,7 +52,7 @@ private extension XCTFailMessageRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

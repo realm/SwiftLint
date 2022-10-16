@@ -39,7 +39,7 @@ private extension IsDisjointRule {
                 return
             }
 
-            violationPositions.append(firstBaseCalledExpression.name.positionAfterSkippingLeadingTrivia)
+            violations.append(firstBaseCalledExpression.name.positionAfterSkippingLeadingTrivia)
         }
     }
 }

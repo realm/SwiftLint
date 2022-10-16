@@ -81,14 +81,6 @@ public struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         Visitor(allowPrivateSet: configuration.allowPrivateSet)
     }
-
-    public func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severityConfiguration.severity,
-            location: Location(file: file, position: position)
-        )
-    }
 }
 
 private extension PrivateOutletRule {
@@ -113,7 +105,7 @@ private extension PrivateOutletRule {
                 return
             }
 
-            violationPositions.append(decl.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(decl.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
 }

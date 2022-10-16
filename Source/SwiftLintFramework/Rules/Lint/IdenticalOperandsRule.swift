@@ -89,7 +89,7 @@ private extension IdenticalOperandsRule {
             }
 
             if node.leftOperand.normalizedDescription == node.rightOperand.normalizedDescription {
-                violationPositions.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
+                violations.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
             }
         }
     }

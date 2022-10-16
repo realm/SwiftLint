@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = ComputedAccessorsOrderRuleConfiguration()
 
     public init() {}
@@ -14,39 +14,16 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SourceKitFr
         triggeringExamples: ComputedAccessorsOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
         ComputedAccessorsOrderRuleVisitor(expectedOrder: configuration.order)
-            .walk(file: file, handler: \.violationPositions)
-            .sorted { $0.position < $1.position }
-            .map { violation in
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, position: violation.position),
-                    reason: reason(for: violation.kind)
-                )
-            }
-    }
-
-    private func reason(for kind: ComputedAccessorsOrderRuleVisitor.ViolationKind) -> String {
-        let kindString = kind == .subscript ? "subscripts" : "properties"
-        let orderString: String
-        switch configuration.order {
-        case .getSet:
-            orderString = "getter and then the setter"
-        case .setGet:
-            orderString = "setter and then the getter"
-        }
-        return "Computed \(kindString) should declare first the \(orderString)."
     }
 }
 
-private final class ComputedAccessorsOrderRuleVisitor: SyntaxVisitor {
+private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
     enum ViolationKind {
         case `subscript`, property
     }
 
-    private(set) var violationPositions: [(position: AbsolutePosition, kind: ViolationKind)] = []
     private let expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order
 
     init(expectedOrder: ComputedAccessorsOrderRuleConfiguration.Order) {
@@ -62,7 +39,24 @@ private final class ComputedAccessorsOrderRuleVisitor: SyntaxVisitor {
         }
 
         let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
-        violationPositions.append((firstAccessor.positionAfterSkippingLeadingTrivia, kind))
+        violations.append(
+            ReasonedRuleViolation(
+                position: firstAccessor.positionAfterSkippingLeadingTrivia,
+                reason: reason(for: kind)
+            )
+        )
+    }
+
+    private func reason(for kind: ComputedAccessorsOrderRuleVisitor.ViolationKind) -> String {
+        let kindString = kind == .subscript ? "subscripts" : "properties"
+        let orderString: String
+        switch expectedOrder {
+        case .getSet:
+            orderString = "getter and then the setter"
+        case .setGet:
+            orderString = "setter and then the getter"
+        }
+        return "Computed \(kindString) should declare first the \(orderString)."
     }
 }
 

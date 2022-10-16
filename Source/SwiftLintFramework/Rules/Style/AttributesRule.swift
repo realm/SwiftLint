@@ -52,7 +52,7 @@ private extension AttributesRule {
             )
 
             if hasViolation {
-                violationPositions.append(helper.violationPosition)
+                violations.append(helper.violationPosition)
                 return
             }
 
@@ -63,7 +63,7 @@ private extension AttributesRule {
             if linesForAttributes.isEmpty {
                 return
             } else if !linesForAttributes.contains(helper.keywordLine - 1) {
-                violationPositions.append(helper.violationPosition)
+                violations.append(helper.violationPosition)
                 return
             }
 
@@ -76,7 +76,7 @@ private extension AttributesRule {
             }
 
             if hasMultipleNewlines {
-                violationPositions.append(helper.violationPosition)
+                violations.append(helper.violationPosition)
                 return
             }
         }

@@ -547,7 +547,7 @@ private struct FocusedRuleDescription {
     init(rule: RuleDescription) {
         let nonTriggering = rule.nonTriggeringExamples.filter(\.isFocused)
         let triggering = rule.triggeringExamples.filter(\.isFocused)
-        let corrections = rule.corrections.filter { _, value in value.isFocused }
+        let corrections = rule.corrections.filter { key, value in key.isFocused || value.isFocused }
         let anyFocused = nonTriggering.isNotEmpty || triggering.isNotEmpty || corrections.isNotEmpty
 
         if anyFocused {

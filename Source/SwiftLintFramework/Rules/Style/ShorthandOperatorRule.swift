@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct ShorthandOperatorRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -42,18 +42,12 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, SourceKitFreeRul
 
     fileprivate static let allOperators = ["-", "/", "+", "*"]
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree.folded() else {
-            return []
-        }
+    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
+    }
 
-        return Visitor(viewMode: .sourceAccurate)
-            .walk(tree: tree, handler: \.violationPositions)
-            .map { position in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, position: position))
-            }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

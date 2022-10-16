@@ -16,6 +16,15 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     ///
     /// - returns: A violation for the given file and absolute position.
     func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation
+
+    /// Gives a chance for the rule to do some pre-processing on the syntax tree.
+    /// One typical example is using `SwiftOperators` to "fold" the tree, resolving operators precedence.
+    /// By default, returns this just returns the same `syntaxTree`.
+    ///
+    /// - parameter syntaxTree: The syntaxTree to run pre-processing on
+    ///
+    /// - returns: The tree that will be used to check for violations. If `nil`, this rule will return no violations.
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax?
 }
 
 public extension SwiftSyntaxRule where Self: ConfigurationProviderRule,
@@ -43,14 +52,19 @@ public extension SwiftSyntaxRule {
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let visitor = makeVisitor(file: file) else {
+        guard let visitor = makeVisitor(file: file),
+              let syntaxTree = preprocess(syntaxTree: file.syntaxTree) else {
             return []
         }
 
         return visitor
-            .walk(file: file, handler: \.violationPositions)
+            .walk(tree: syntaxTree, handler: \.violationPositions)
             .sorted()
             .map { makeViolation(file: file, position: $0) }
+    }
+
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree
     }
 }
 

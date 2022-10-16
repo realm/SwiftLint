@@ -343,7 +343,7 @@
             <p>A SwiftLint Rule backed by SwiftSyntax that does not use SourceKit requests.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L4-L19">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L4-L28">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -473,6 +473,68 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:18SwiftLintFramework0A10SyntaxRuleP10preprocess10syntaxTree0aD0010SourceFileD0VSgAH_tF"></a>
+                    <a name="//apple_ref/swift/Method/preprocess(syntaxTree:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework0A10SyntaxRuleP10preprocess10syntaxTree0aD0010SourceFileD0VSgAH_tF">preprocess(syntaxTree:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gives a chance for the rule to do some pre-processing on the syntax tree.
+One typical example is using <code>SwiftOperators</code> to &ldquo;fold&rdquo; the tree, resolving operators precedence.
+By default, it just returns the same <code>syntaxTree</code>.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">preprocess</span><span class="p">(</span><span class="nv">syntaxTree</span><span class="p">:</span> <span class="kt">SourceFileSyntax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">SourceFileSyntax</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>syntaxTree</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The syntax tree to run pre-processing on</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The tree that will be used to check for violations. If <code>nil</code>, this rule will return no violations.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L27">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:18SwiftLintFramework0A10SyntaxRulePAAE15disabledRegions4fileSay0aD011SourceRangeVGAA0aB4FileC_tF"></a>
                     <a name="//apple_ref/swift/Method/disabledRegions(file:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:18SwiftLintFramework0A10SyntaxRulePAAE15disabledRegions4fileSay0aD011SourceRangeVGAA0aB4FileC_tF">disabledRegions(file:<wbr>)</a>
@@ -521,7 +583,7 @@
                         <p>The source ranges in the specified file where this rule is disabled.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L38-L43">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L47-L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -553,7 +615,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L45-L54">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L54-L64">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

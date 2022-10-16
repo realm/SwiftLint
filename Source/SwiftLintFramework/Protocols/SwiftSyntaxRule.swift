@@ -21,7 +21,7 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
     /// One typical example is using `SwiftOperators` to "fold" the tree, resolving operators precedence.
     /// By default, it just returns the same `syntaxTree`.
     ///
-    /// - parameter syntaxTree: The syntaxTree to run pre-processing on
+    /// - parameter syntaxTree: The syntax tree to run pre-processing on
     ///
     /// - returns: The tree that will be used to check for violations. If `nil`, this rule will return no violations.
     func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax?

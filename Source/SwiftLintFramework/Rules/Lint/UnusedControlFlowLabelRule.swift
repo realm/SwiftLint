@@ -85,27 +85,23 @@ public struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, Configurat
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        file.locationConverter.map { locationConverter in
-            Rewriter(
-                locationConverter: locationConverter,
-                disabledRegions: disabledRegions(file: file)
-            )
-        }
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
 private extension UnusedControlFlowLabelRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: LabeledStmtSyntax) {
             if let position = node.violationPosition {
-                violationPositions.append(position)
+                violations.append(position)
             }
         }
     }
@@ -121,15 +117,8 @@ private extension UnusedControlFlowLabelRule {
         }
 
         override func visit(_ node: LabeledStmtSyntax) -> StmtSyntax {
-            guard let violationPosition = node.violationPosition else {
-                return super.visit(node)
-            }
-
-            let isInDisabledRegion = disabledRegions.contains { region in
-                region.contains(node.positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
-            }
-
-            guard !isInDisabledRegion else {
+            guard let violationPosition = node.violationPosition,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                 return super.visit(node)
             }
 

@@ -136,7 +136,7 @@ public struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProv
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(parentClassRegex: configuration.regex)
     }
 

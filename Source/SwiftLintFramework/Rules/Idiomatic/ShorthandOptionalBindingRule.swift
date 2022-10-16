@@ -81,7 +81,7 @@ public struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRul
 
     public init() {}
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 

@@ -34,7 +34,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(
             ifOnly: configuration.ifOnly,
             locationConverter: file.locationConverter

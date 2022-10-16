@@ -50,7 +50,7 @@ public struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnneededBreakInSwitchRuleVisitor(viewMode: .sourceAccurate)
     }
 }

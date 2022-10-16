@@ -14,7 +14,7 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntax
         triggeringExamples: ComputedAccessorsOrderRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ComputedAccessorsOrderRuleVisitor(expectedOrder: configuration.order)
     }
 }

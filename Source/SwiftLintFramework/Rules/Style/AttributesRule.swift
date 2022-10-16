@@ -17,7 +17,7 @@ public struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(
             locationConverter: file.locationConverter,
             configuration: configuration

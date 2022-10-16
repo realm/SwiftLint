@@ -16,7 +16,7 @@ public struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
         corrections: LegacyConstantRuleExamples.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 

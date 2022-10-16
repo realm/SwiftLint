@@ -1,6 +1,6 @@
-public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var mandatoryComma: Bool
+public struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var mandatoryComma: Bool
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", mandatory_comma: \(mandatoryComma)"

@@ -70,8 +70,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntax
 }
 
 private extension PrivateOverFilePrivateRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let validateExtensions: Bool
 
         init(validateExtensions: Bool) {

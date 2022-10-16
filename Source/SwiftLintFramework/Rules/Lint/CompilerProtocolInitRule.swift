@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
+public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -24,43 +23,35 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private static func violationReason(protocolName: String, isPlural: Bool) -> String {
+    private static func violationReason(protocolName: String, isPlural: Bool = false) -> String {
         return "The initializers declared in compiler protocol\(isPlural ? "s" : "") \(protocolName) " +
                 "shouldn't be called directly."
     }
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            let (violation, range) = $0
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: range.location),
-                reason: Self.violationReason(protocolName: violation.protocolName, isPlural: false)
-            )
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
-                                 dictionary: SourceKittenDictionary) -> [(ExpressibleByCompiler, NSRange)] {
-        guard kind == .call, let name = dictionary.name else {
-            return []
-        }
+private extension CompilerProtocolInitRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            let arguments = node.argumentList.compactMap { $0.label?.withoutTrivia().text }
+            let name = node.calledExpression.withoutTrivia().description
 
-        for compilerProtocol in ExpressibleByCompiler.allProtocols {
-            guard compilerProtocol.initCallNames.contains(name),
-                case let arguments = dictionary.enclosedArguments.compactMap({ $0.name }),
-                compilerProtocol.match(arguments: arguments),
-                let range = dictionary.byteRange.flatMap(file.stringView.byteRangeToNSRange)
-            else {
-                continue
+            for compilerProtocol in ExpressibleByCompiler.allProtocols {
+                guard compilerProtocol.initCallNames.contains(name),
+                    compilerProtocol.match(arguments: arguments) else {
+                    continue
+                }
+
+                violations.append(ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: violationReason(protocolName: compilerProtocol.protocolName)
+                ))
+                return
             }
-
-            return [(compilerProtocol, range)]
         }
-
-        return []
     }
 }
 

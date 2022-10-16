@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+public struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -44,77 +43,48 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file, skipParentheses: true).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
     }
+}
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
-        let violationsRanges = violationRanges(in: file, skipParentheses: false)
-        let matches = file.ruleEnabled(violatingRanges: violationsRanges, for: self)
-        if matches.isEmpty { return [] }
-        let regularExpression = regex(pattern)
-        let description = Self.description
-        var corrections = [Correction]()
-        var contents = file.contents
+private extension ReturnArrowWhitespaceRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        private(set) var violationPositions: [AbsolutePosition] = []
 
-        let results = matches.reversed().compactMap { range in
-            return regularExpression.firstMatch(in: contents, options: [], range: range)
-        }
-
-        let replacementsByIndex = [2: " -> ", 4: " -> ", 6: " ", 7: " "]
-
-        for result in results {
-            guard result.numberOfRanges > (replacementsByIndex.keys.max() ?? 0) else { break }
-
-            for (index, string) in replacementsByIndex {
-                if let range = contents.nsrangeToIndexRange(result.range(at: index)) {
-                    contents.replaceSubrange(range, with: string)
-                    break
-                }
+        override func visitPost(_ node: TokenSyntax) {
+            guard node.hasArrowViolation else {
+                return
             }
 
-            // skip the parentheses when reporting correction
-            let location = Location(file: file, characterOffset: result.range.location + 1)
-            corrections.append(Correction(ruleDescription: description, location: location))
+            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
         }
-        file.write(contents)
-        return corrections
     }
 
-    // MARK: - Private
+}
 
-    private let pattern: String = {
-        // Just horizontal spacing so that "func abc()->\n" can pass validation
-        let space = "[ \\f\\r\\t]"
-
-        // Either 0 space characters or 2+
-        let incorrectSpace = "(\(space){0}|\(space){2,})"
-
-        // The possible combinations of whitespace around the arrow
-        let patterns = [
-            "(\(incorrectSpace)\\->\(space)*)",
-            "(\(space)\\->\(incorrectSpace))",
-            "\\n\(space)*\\->\(incorrectSpace)",
-            "\(incorrectSpace)\\->\\n\(space)*"
-        ]
-
-        // ex: `func abc()-> Int {` & `func abc() ->Int {`
-        return "\\)(\(patterns.joined(separator: "|")))\\S+"
-    }()
-
-    private func violationRanges(in file: SwiftLintFile, skipParentheses: Bool) -> [NSRange] {
-        let matches = file.match(pattern: pattern, with: [.typeidentifier])
-        guard skipParentheses else {
-            return matches
+private extension TokenSyntax {
+    var hasArrowViolation: Bool {
+        guard tokenKind == .arrow else {
+            return false
         }
 
-        return matches.map {
-            // skip first (
-            NSRange(location: $0.location + 1, length: $0.length - 1)
+        if trailingTrivia.isEmpty {
+
+        }
+        return true
+    }
+    
+}
+
+private extension Trivia {
+    func containsNewlines() -> Bool {
+        contains { piece in
+            if case .newlines = piece {
+                return true
+            } else {
+                return false
+            }
         }
     }
 }

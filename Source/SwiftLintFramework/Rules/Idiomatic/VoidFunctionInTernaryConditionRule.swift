@@ -108,7 +108,7 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Swi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         VoidFunctionInTernaryConditionVisitor(viewMode: .sourceAccurate)
     }
 }

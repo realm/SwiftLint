@@ -14,7 +14,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ImplicitGetterRuleVisitor(viewMode: .sourceAccurate)
     }
 }

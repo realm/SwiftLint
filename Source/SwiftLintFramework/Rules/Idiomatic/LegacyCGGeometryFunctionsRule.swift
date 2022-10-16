@@ -102,7 +102,7 @@ public struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, Configu
         "CGRectIntersection": .function(name: "intersect", argumentLabels: [""])
     ]
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
     }
 

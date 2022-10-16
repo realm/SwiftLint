@@ -27,7 +27,7 @@ public struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, Co
         syntaxTree.folded()
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

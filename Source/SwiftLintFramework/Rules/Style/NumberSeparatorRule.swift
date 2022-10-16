@@ -20,7 +20,7 @@ public struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Config
         corrections: NumberSeparatorRuleExamples.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 

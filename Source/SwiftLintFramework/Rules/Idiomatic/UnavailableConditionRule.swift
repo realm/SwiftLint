@@ -71,7 +71,7 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }

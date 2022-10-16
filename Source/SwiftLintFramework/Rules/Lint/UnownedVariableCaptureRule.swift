@@ -25,7 +25,7 @@ public struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, Configurat
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnownedVariableCaptureRuleVisitor(viewMode: .sourceAccurate)
     }
 }

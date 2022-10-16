@@ -14,7 +14,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

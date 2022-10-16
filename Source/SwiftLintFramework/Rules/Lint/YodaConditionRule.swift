@@ -36,7 +36,7 @@ public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSynt
             Example("if ↓200 <= i && i <= 299 || ↓600 <= i {}")
         ])
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         YodaConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }

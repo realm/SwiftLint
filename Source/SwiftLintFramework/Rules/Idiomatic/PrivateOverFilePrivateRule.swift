@@ -56,7 +56,7 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntax
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(validateExtensions: configuration.validateExtensions)
     }
 

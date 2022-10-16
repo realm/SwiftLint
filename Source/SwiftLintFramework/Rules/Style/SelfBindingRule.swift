@@ -42,7 +42,7 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         SelfBindingRuleVisitor(bindIdentifier: configuration.bindIdentifier)
     }
 

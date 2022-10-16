@@ -87,7 +87,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Swi
             Example("do {\n    try foo() \n} ↓catch (let error) {}"): Example("do {\n    try foo() \n} catch {}")
         ])
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UntypedErrorInCatchRuleVisitor(viewMode: .sourceAccurate)
     }
 

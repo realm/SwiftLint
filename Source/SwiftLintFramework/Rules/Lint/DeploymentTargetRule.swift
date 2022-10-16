@@ -16,7 +16,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: DeploymentTargetRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
     }
 

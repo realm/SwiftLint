@@ -36,15 +36,13 @@ public struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule,
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
 private extension FatalErrorMessageRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        private(set) var violationPositions: [AbsolutePosition] = []
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard let expression = node.calledExpression.as(IdentifierExprSyntax.self),
                 expression.identifier.text == "fatalError",
@@ -52,7 +50,7 @@ private extension FatalErrorMessageRule {
                 return
             }
 
-            violationPositions.append(node.positionAfterSkippingLeadingTrivia)
+            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

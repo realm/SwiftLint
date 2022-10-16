@@ -39,7 +39,7 @@ private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
               getAccessor.asyncKeyword == nil,
               getAccessor.throwsKeyword == nil,
               getAccessor.modifier == nil,
-              (getAccessor.attributes == nil || getAccessor.attributes?.isEmpty == true),
+              getAccessor.attributes == nil || getAccessor.attributes?.isEmpty == true,
               getAccessor.body != nil else {
             return
         }

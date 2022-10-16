@@ -28,7 +28,7 @@ private extension SwiftLintFile {
         }
 
         guard let kind = dictionary.declarationKind,
-            (!SwiftDeclarationKind.extensionKinds.contains(kind) || !excludesExtensions),
+            !SwiftDeclarationKind.extensionKinds.contains(kind) || !excludesExtensions,
             case let isDeinit = kind == .functionMethodInstance && dictionary.name == "deinit",
             !isDeinit,
             let offset = dictionary.offset,

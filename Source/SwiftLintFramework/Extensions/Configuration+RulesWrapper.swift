@@ -242,7 +242,7 @@ internal extension Configuration {
             case var .only(onlyRules):
                 // Also add identifiers of child custom rules iff the custom_rules rule is enabled
                 // (parent custom rules are already added)
-                if (onlyRules.contains { $0 == CustomRules.description.identifier }) {
+                if onlyRules.contains(CustomRules.description.identifier) {
                     if let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
                         as? CustomRules {
                         onlyRules = onlyRules.union(

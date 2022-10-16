@@ -186,13 +186,13 @@ internal extension Configuration {
             try vertices.forEach { try walkDown(stack: [$0]) }
 
             // Detect ambiguities
-            if (edges.contains { edge in edges.filter { $0.parent == edge.parent }.count > 1 }) {
+            if edges.contains(where: { edge in edges.filter { $0.parent == edge.parent }.count > 1 }) {
                 throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
                     + "More than one parent is declared for a specific configuration, "
                     + "where there should only be exactly one.")
             }
 
-            if (edges.contains { edge in edges.filter { $0.child == edge.child }.count > 1 }) {
+            if edges.contains(where: { edge in edges.filter { $0.child == edge.child }.count > 1 }) {
                 throw ConfigurationError.generic("There's an ambiguity in the child / parent configuration tree: "
                     + "More than one child is declared for a specific configuration, "
                     + "where there should only be exactly one.")

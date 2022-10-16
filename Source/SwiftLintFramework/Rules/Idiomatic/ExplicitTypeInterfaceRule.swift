@@ -87,9 +87,8 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         guard configuration.allowedKinds.contains(kind),
             let offset = dictionary.offset,
             !dictionary.containsType,
-            (!configuration.allowRedundancy ||
-                (!dictionary.isInitCall(file: file) && !dictionary.isTypeReferenceAssignment(file: file))
-            ),
+            !configuration.allowRedundancy ||
+                (!dictionary.isInitCall(file: file) && !dictionary.isTypeReferenceAssignment(file: file)),
             !parentStructure.contains([.forEach, .guard]),
             !parentStructure.caseStatementPatternRanges.contains(offset),
             !parentStructure.caseExpressionRanges.contains(offset),

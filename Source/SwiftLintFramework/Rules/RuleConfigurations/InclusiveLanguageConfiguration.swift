@@ -7,11 +7,11 @@ private enum ConfigurationKey: String {
 
 public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
-    public var additionalTerms: Set<String>?
-    public var overrideTerms: Set<String>?
-    public var overrideAllowedTerms: Set<String>?
-    public var allTerms: Set<String>
-    public var allAllowedTerms: Set<String>
+    private var additionalTerms: Set<String>?
+    private var overrideTerms: Set<String>?
+    private var overrideAllowedTerms: Set<String>?
+    public private(set) var allTerms: Set<String>
+    public private(set) var allAllowedTerms: Set<String>
 
     public var consoleDescription: String {
         severityConfiguration.consoleDescription

@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
+public struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = InclusiveLanguageConfiguration()
 
     public init() {}
@@ -17,35 +17,47 @@ public struct InclusiveLanguageRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: InclusiveLanguageRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind != .varParameter, // Will be caught by function declaration
-            let name = dictionary.name,
-            let nameByteRange = dictionary.nameByteRange
-            else { return [] }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor(allTerms: configuration.allTerms, allAllowedTerms: configuration.allAllowedTerms)
+    }
+}
 
-        let lowercased = name.lowercased()
-        let sortedTerms = configuration.allTerms.sorted()
-        let violationTerm = sortedTerms.first { term in
-            guard let range = lowercased.range(of: term) else { return false }
-            let overlapsAllowedTerm = configuration.allAllowedTerms.contains { allowedTerm in
-                guard let allowedRange = lowercased.range(of: allowedTerm) else { return false }
-                return range.overlaps(allowedRange)
+private extension InclusiveLanguageRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let allTerms: Set<String>
+        private let allAllowedTerms: Set<String>
+
+        init(allTerms: Set<String>, allAllowedTerms: Set<String>) {
+            self.allTerms = allTerms
+            self.allAllowedTerms = allAllowedTerms
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: TokenSyntax) {
+            let name = node.withoutTrivia().text
+            let lowercased = name.lowercased()
+            let sortedTerms = allTerms.sorted()
+            let violationTerm = sortedTerms.first { term in
+                guard let range = lowercased.range(of: term) else { return false }
+                let overlapsAllowedTerm = allAllowedTerms.contains { allowedTerm in
+                    guard let allowedRange = lowercased.range(of: allowedTerm) else { return false }
+                    return range.overlaps(allowedRange)
+                }
+                return !overlapsAllowedTerm
             }
-            return !overlapsAllowedTerm
-        }
 
-        guard let term = violationTerm else {
-            return []
-        }
+            guard let term = violationTerm else {
+                return
+            }
 
-        return [
-            StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, byteOffset: nameByteRange.location),
+            violations.append(ReasonedRuleViolation(
+                position: node.positionAfterSkippingLeadingTrivia,
                 reason: "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."
-            )
-        ]
+            ))
+        }
+
+        override func visit(_ node: StringLiteralExprSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
     }
 }

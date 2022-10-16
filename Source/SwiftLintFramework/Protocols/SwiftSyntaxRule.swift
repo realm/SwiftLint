@@ -19,7 +19,7 @@ public protocol SwiftSyntaxRule: SourceKitFreeRule {
 
     /// Gives a chance for the rule to do some pre-processing on the syntax tree.
     /// One typical example is using `SwiftOperators` to "fold" the tree, resolving operators precedence.
-    /// By default, returns this just returns the same `syntaxTree`.
+    /// By default, it just returns the same `syntaxTree`.
     ///
     /// - parameter syntaxTree: The syntaxTree to run pre-processing on
     ///

@@ -1,7 +1,6 @@
-import SourceKittenFramework
 import SwiftSyntax
 
-public struct UnavailableConditionRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -72,35 +71,12 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, SourceKitFree
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let visitor = UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
-        return visitor.walk(file: file, handler: \.availabilityChecks).map { check in
-            StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(
-                    file: file,
-                    byteOffset: ByteCount(check.positionAfterSkippingLeadingTrivia.utf8Offset)),
-                reason: provideViolationReason(for: check)
-            )
-        }
-    }
-
-    private func provideViolationReason(for check: SyntaxProtocol) -> String {
-        switch check {
-        case is AvailabilityConditionSyntax:
-            return "Use #unavailable instead of #available with an empty body."
-        case is UnavailabilityConditionSyntax:
-            return "Use #available instead of #unavailable with an empty body."
-        default:
-            queuedFatalError("Unknown availability check type.")
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }
 
-private final class UnavailableConditionRuleVisitor: SyntaxVisitor {
-    private(set) var availabilityChecks: [SyntaxProtocol] = []
-
+private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: IfStmtSyntax) {
         guard node.body.statements.withoutTrivia().isEmpty else {
             return
@@ -117,7 +93,10 @@ private final class UnavailableConditionRuleVisitor: SyntaxVisitor {
             return
         }
 
-        availabilityChecks.append(availability)
+        violations.append(ReasonedRuleViolation(
+            position: availability.positionAfterSkippingLeadingTrivia,
+            reason: provideViolationReason(for: availability)
+        ))
     }
 
     private func asAvailabilityCondition(_ condition: Syntax) -> SyntaxProtocol? {
@@ -133,5 +112,16 @@ private final class UnavailableConditionRuleVisitor: SyntaxVisitor {
             return otherAvailabilityCheckInvolved(ifStmt: nestedIfStatement)
         }
         return false
+    }
+
+    private func provideViolationReason(for check: SyntaxProtocol) -> String {
+        switch check {
+        case is AvailabilityConditionSyntax:
+            return "Use #unavailable instead of #available with an empty body."
+        case is UnavailabilityConditionSyntax:
+            return "Use #available instead of #unavailable with an empty body."
+        default:
+            queuedFatalError("Unknown availability check type.")
+        }
     }
 }

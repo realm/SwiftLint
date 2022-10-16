@@ -10,7 +10,7 @@ public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Eq
     private var additionalTerms: Set<String>?
     private var overrideTerms: Set<String>?
     private var overrideAllowedTerms: Set<String>?
-    public private(set) var allTerms: Set<String>
+    public private(set) var allTerms: [String]
     public private(set) var allAllowedTerms: Set<String>
 
     public var consoleDescription: String {
@@ -32,7 +32,7 @@ public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Eq
     ]
 
     public init() {
-        self.allTerms = defaultTerms
+        self.allTerms = defaultTerms.sorted()
         self.allAllowedTerms = defaultAllowedTerms
     }
 
@@ -49,8 +49,9 @@ public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Eq
         overrideTerms = lowercasedSet(for: .overrideTerms, from: configuration)
         overrideAllowedTerms = lowercasedSet(for: .overrideAllowedTerms, from: configuration)
 
-        allTerms = overrideTerms ?? defaultTerms
+        var allTerms = overrideTerms ?? defaultTerms
         allTerms.formUnion(additionalTerms ?? [])
+        self.allTerms = allTerms.sorted()
         allAllowedTerms = overrideAllowedTerms ?? defaultAllowedTerms
     }
 

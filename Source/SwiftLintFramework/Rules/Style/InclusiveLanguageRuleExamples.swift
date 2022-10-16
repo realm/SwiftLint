@@ -35,7 +35,7 @@ internal struct InclusiveLanguageRuleExamples {
         Example("init(↓master: String, ↓slave: String) {}"),
         Example("""
         final class FooBar {
-            func register<↓Master, ↓Slave>(one: ↓Master, two: ↓Slave) {}
+            func register<↓Master, ↓Slave>(one: Master, two: Slave) {}
         }
         """)
     ]

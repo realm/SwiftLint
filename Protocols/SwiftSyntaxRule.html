@@ -283,6 +283,9 @@
                 <a class="nav-group-task-link" href="../Structs/Location.html">Location</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Region.html">Region</a>
               </li>
               <li class="nav-group-task">
@@ -408,9 +411,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:18SwiftLintFramework0A10SyntaxRuleP13makeViolation4file8positionAA05StyleG0VAA0aB4FileC_0aD016AbsolutePositionVtF"></a>
-                    <a name="//apple_ref/swift/Method/makeViolation(file:position:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework0A10SyntaxRuleP13makeViolation4file8positionAA05StyleG0VAA0aB4FileC_0aD016AbsolutePositionVtF">makeViolation(file:<wbr>position:<wbr>)</a>
+                    <a name="/s:18SwiftLintFramework0A10SyntaxRuleP13makeViolation4file9violationAA05StyleG0VAA0aB4FileC_AA08ReasonedeG0VtF"></a>
+                    <a name="//apple_ref/swift/Method/makeViolation(file:violation:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:18SwiftLintFramework0A10SyntaxRuleP13makeViolation4file9violationAA05StyleG0VAA0aB4FileC_AA08ReasonedeG0VtF">makeViolation(file:<wbr>violation:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -425,7 +428,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">makeViolation</span><span class="p">(</span><span class="nv">file</span><span class="p">:</span> <span class="kt"><a href="../Classes/SwiftLintFile.html">SwiftLintFile</a></span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="kt">AbsolutePosition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/StyleViolation.html">StyleViolation</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">makeViolation</span><span class="p">(</span><span class="nv">file</span><span class="p">:</span> <span class="kt"><a href="../Classes/SwiftLintFile.html">SwiftLintFile</a></span><span class="p">,</span> <span class="nv">violation</span><span class="p">:</span> <span class="kt"><a href="../Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/StyleViolation.html">StyleViolation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -448,12 +451,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>position</em>
+                                <em>violation</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The absolute position in the file where the violation should be located.</p>
+                                  <p>A violation in the file.</p>
                                 </div>
                               </td>
                             </tr>
@@ -583,7 +586,7 @@ By default, it just returns the same <code>syntaxTree</code>.</p>
                         <p>The source ranges in the specified file where this rule is disabled.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L47-L52">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L48-L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -615,7 +618,7 @@ By default, it just returns the same <code>syntaxTree</code>.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L54-L64">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Protocols/SwiftSyntaxRule.swift#L55-L65">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

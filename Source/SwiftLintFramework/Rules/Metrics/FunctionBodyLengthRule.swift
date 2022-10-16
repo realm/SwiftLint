@@ -1,4 +1,4 @@
-public struct FunctionBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRule {
+public struct FunctionBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 50, error: 100)
 
     public init() {}
@@ -10,14 +10,7 @@ public struct FunctionBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRu
         kind: .metrics
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         BodyLengthRuleVisitor(kind: .function, file: file, configuration: configuration)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: violation.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
     }
 }

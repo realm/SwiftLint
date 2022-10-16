@@ -3,6 +3,8 @@ import SwiftSyntax
 public struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
+    public init() {}
+
     public static var description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
@@ -175,8 +177,6 @@ public struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, Configuration
             """)
         ]
     )
-
-    public init() {}
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)

@@ -63,6 +63,22 @@ public extension SwiftSyntaxRule {
             .map { makeViolation(file: file, violation: $0) }
     }
 
+    func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
+        guard let severity = violation.severity else {
+            // This error will only be thrown in tests. It cannot come up at runtime.
+            queuedFatalError("""
+                A severity must be provided. Either define it in the violation or make the rule configuration \
+                conform to `SeverityBasedRuleConfiguration` to take the default.
+            """)
+        }
+        return StyleViolation(
+            ruleDescription: Self.description,
+            severity: severity,
+            location: Location(file: file, position: violation.position),
+            reason: violation.reason
+        )
+    }
+
     func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree
     }

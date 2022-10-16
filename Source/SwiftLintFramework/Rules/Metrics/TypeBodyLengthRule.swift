@@ -10,7 +10,7 @@ private func wrapExample(
                    repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
-public struct TypeBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRule {
+public struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 250, error: 350)
 
     public init() {}
@@ -33,14 +33,7 @@ public struct TypeBodyLengthRule: SourceKitFreeRule, ConfigurationProviderRule {
         })
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         BodyLengthRuleVisitor(kind: .type, file: file, configuration: configuration)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: violation.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
     }
 }

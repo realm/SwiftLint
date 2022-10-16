@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct ContainsOverFirstNotNilRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
+public struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -30,19 +30,12 @@ public struct ContainsOverFirstNotNilRule: SourceKitFreeRule, OptInRule, Configu
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let tree = file.syntaxTree.folded() else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
 
-        return Visitor(viewMode: .sourceAccurate)
-            .walk(tree: tree, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
+    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
     }
 }
 

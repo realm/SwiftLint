@@ -1,4 +1,4 @@
-public struct ClosureBodyLengthRule: OptInRule, SourceKitFreeRule, ConfigurationProviderRule {
+public struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
 
     public init() {}
@@ -12,14 +12,7 @@ public struct ClosureBodyLengthRule: OptInRule, SourceKitFreeRule, Configuration
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         BodyLengthRuleVisitor(kind: .closure, file: file, configuration: configuration)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: violation.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
     }
 }

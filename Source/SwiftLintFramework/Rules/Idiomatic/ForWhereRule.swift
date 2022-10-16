@@ -118,46 +118,40 @@ public struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        ForWhereVisitor(allowForAsFilter: configuration.allowForAsFilter)
-    }
-
-    public func makeViolation(file: SwiftLintFile, position: AbsolutePosition) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severityConfiguration.severity,
-            location: Location(file: file, position: position)
-        )
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(allowForAsFilter: configuration.allowForAsFilter)
     }
 }
 
-private class ForWhereVisitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-    private(set) var violationPositions: [AbsolutePosition] = []
-    private let allowForAsFilter: Bool
+private extension ForWhereRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let allowForAsFilter: Bool
 
-    init(allowForAsFilter: Bool) {
-        self.allowForAsFilter = allowForAsFilter
-    }
-
-    override func visitPost(_ node: ForInStmtSyntax) {
-        guard node.whereClause == nil,
-              case let statements = node.body.statements,
-              statements.count == 1,
-              let ifStatement = statements.first?.item.as(IfStmtSyntax.self),
-              ifStatement.elseBody == nil,
-              !ifStatement.containsOptionalBinding,
-              !ifStatement.containsPatternCondition,
-              ifStatement.conditions.count == 1,
-              let condition = ifStatement.conditions.first,
-              !condition.containsMultipleConditions else {
-            return
+        init(allowForAsFilter: Bool) {
+            self.allowForAsFilter = allowForAsFilter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        if allowForAsFilter, ifStatement.containsReturnStatement {
-            return
-        }
+        override func visitPost(_ node: ForInStmtSyntax) {
+            guard node.whereClause == nil,
+                  case let statements = node.body.statements,
+                  statements.count == 1,
+                  let ifStatement = statements.first?.item.as(IfStmtSyntax.self),
+                  ifStatement.elseBody == nil,
+                  !ifStatement.containsOptionalBinding,
+                  !ifStatement.containsPatternCondition,
+                  ifStatement.conditions.count == 1,
+                  let condition = ifStatement.conditions.first,
+                  !condition.containsMultipleConditions else {
+                return
+            }
 
-        violationPositions.append(ifStatement.positionAfterSkippingLeadingTrivia)
+            if allowForAsFilter, ifStatement.containsReturnStatement {
+                return
+            }
+
+            violations.append(ifStatement.positionAfterSkippingLeadingTrivia)
+        }
     }
 }
 

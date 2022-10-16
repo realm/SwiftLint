@@ -1,6 +1,6 @@
-public struct ForWhereRuleConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var allowForAsFilter = false
+public struct ForWhereRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var allowForAsFilter = false
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", allow_for_as_filter: \(allowForAsFilter)"

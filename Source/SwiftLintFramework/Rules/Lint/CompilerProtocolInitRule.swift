@@ -19,7 +19,9 @@ public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRu
         ],
         triggeringExamples: [
             Example("let set = ↓Set(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n")
+            Example("let set = ↓Set (arrayLiteral: 1, 2)\n"),
+            Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n"),
+            Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n"),
         ]
     )
 
@@ -36,16 +38,23 @@ public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRu
 private extension CompilerProtocolInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            let arguments = node.argumentList.compactMap { $0.label?.withoutTrivia().text }
+            guard node.trailingClosure == nil else {
+                return
+            }
+
+            let arguments = node.argumentList.compactMap(\.label)
             guard ExpressibleByCompiler.possibleNumberOfArguments.contains(arguments.count) else {
                 return
             }
 
-            let name = node.calledExpression.withoutTrivia().description
+            guard let name = node.functionName, ExpressibleByCompiler.allInitNames.contains(name) else {
+                return
+            }
 
+            let argumentsNames = arguments.map(\.text)
             for compilerProtocol in ExpressibleByCompiler.allProtocols {
                 guard compilerProtocol.initCallNames.contains(name),
-                    compilerProtocol.match(arguments: arguments) else {
+                    compilerProtocol.match(arguments: argumentsNames) else {
                     continue
                 }
 
@@ -56,6 +65,21 @@ private extension CompilerProtocolInitRule {
                 return
             }
         }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    // doing this instead of calling `.description` as it's faster
+    var functionName: String? {
+        if let expr = calledExpression.as(IdentifierExprSyntax.self) {
+            return expr.identifier.text
+        } else if let expr = calledExpression.as(MemberAccessExprSyntax.self),
+                  let base = expr.base?.as(IdentifierExprSyntax.self) {
+            return base.identifier.text + "." + expr.name.text
+        }
+
+        // we don't care about other possible expressions as they wouldn't match the calls we're interested in
+        return nil
     }
 }
 
@@ -77,13 +101,15 @@ private struct ExpressibleByCompiler {
                                byStringInterpolation, byDictionaryLiteral]
 
     static let possibleNumberOfArguments: Set<Int> = {
-        var args: Set<Int> = []
-        for entry in allProtocols {
-            for argument in entry.arguments {
-                args.insert(argument.count)
-            }
+        allProtocols.reduce(into: Set<Int>()) { partialResult, entry in
+            partialResult.insert(entry.arguments.count)
         }
-        return args
+    }()
+
+    static let allInitNames: Set<String> = {
+        allProtocols.reduce(into: Set<String>()) { partialResult, entry in
+            partialResult.formUnion(entry.initCallNames)
+        }
     }()
 
     func match(arguments: [String]) -> Bool {

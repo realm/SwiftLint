@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
+public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired

@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
+public struct PreferSelfTypeOverTypeOfSelfRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule,
+                                                SourceKitFreeRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(

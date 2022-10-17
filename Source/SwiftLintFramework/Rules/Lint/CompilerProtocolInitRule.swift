@@ -21,7 +21,7 @@ public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRu
             Example("let set = ↓Set(arrayLiteral: 1, 2)\n"),
             Example("let set = ↓Set (arrayLiteral: 1, 2)\n"),
             Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n"),
+            Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n")
         ]
     )
 

@@ -58,6 +58,7 @@
   - `contains_over_range_nil_comparison`
   - `deployment_target`
   - `discouraged_assert`
+  - `discouraged_direct_init`
   - `discouraged_none_name`
   - `discouraged_object_literal`
   - `discouraged_optional_boolean`

@@ -28,7 +28,7 @@ public struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProvider
         triggeringExamples: [
             Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
             Example("↓func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
-            Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"),
+            Example("private ↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"),
             Example("""
             struct Foo {
                 init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}
@@ -86,7 +86,7 @@ private extension FunctionParameterCountRule {
 
                 violations.append(
                     ReasonedRuleViolation(
-                        position: node.positionAfterSkippingLeadingTrivia,
+                        position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
                         reason: reason,
                         severity: parameter.severity
                     )

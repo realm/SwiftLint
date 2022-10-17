@@ -1,4 +1,6 @@
-public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
+import SwiftSyntax
+
+public struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = DiscouragedDirectInitConfiguration()
 
     public init() {}
@@ -46,5 +48,29 @@ public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
         return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: offset))]
+    }
+
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(discouragedInits: configuration.discouragedInits)
+    }
+}
+
+private extension DiscouragedDirectInitRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let discouragedInits: Set<String>
+
+        init(discouragedInits: Set<String>) {
+            self.discouragedInits = discouragedInits
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard node.argumentList.isEmpty, node.trailingClosure == nil,
+                discouragedInits.contains(node.calledExpression.withoutTrivia().description) else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
     }
 }

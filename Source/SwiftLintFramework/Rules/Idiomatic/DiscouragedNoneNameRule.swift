@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct DiscouragedNoneNameRule: SourceKitFreeRule, ConfigurationProviderRule {
+public struct DiscouragedNoneNameRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static var description = RuleDescription(

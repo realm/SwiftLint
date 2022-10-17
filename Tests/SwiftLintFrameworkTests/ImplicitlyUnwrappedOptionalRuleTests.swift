@@ -5,7 +5,7 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
     func testImplicitlyUnwrappedOptionalRuleDefaultConfiguration() {
         let rule = ImplicitlyUnwrappedOptionalRule()
         XCTAssertEqual(rule.configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(rule.configuration.severity.severity, .warning)
+        XCTAssertEqual(rule.configuration.severity, .warning)
     }
 
     func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {

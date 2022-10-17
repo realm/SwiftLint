@@ -37,6 +37,10 @@ private extension CompilerProtocolInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             let arguments = node.argumentList.compactMap { $0.label?.withoutTrivia().text }
+            guard arguments.isNotEmpty else {
+                return
+            }
+
             let name = node.calledExpression.withoutTrivia().description
 
             for compilerProtocol in ExpressibleByCompiler.allProtocols {
@@ -58,9 +62,9 @@ private extension CompilerProtocolInitRule {
 private struct ExpressibleByCompiler {
     let protocolName: String
     let initCallNames: Set<String>
-    private let arguments: [[String]]
+    private let arguments: Set<[String]>
 
-    init(protocolName: String, types: Set<String>, arguments: [[String]]) {
+    init(protocolName: String, types: Set<String>, arguments: Set<[String]>) {
         self.protocolName = protocolName
         self.arguments = arguments
 
@@ -73,7 +77,7 @@ private struct ExpressibleByCompiler {
                                byStringInterpolation, byDictionaryLiteral]
 
     func match(arguments: [String]) -> Bool {
-        return self.arguments.contains { $0 == arguments }
+        return self.arguments.contains(arguments)
     }
 
     private static let byArrayLiteral: ExpressibleByCompiler = {

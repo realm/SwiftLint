@@ -131,7 +131,7 @@ private extension InclusiveLanguageRule {
         }
 
         private func violationTerm(for node: TokenSyntax) -> (violationTerm: String, name: String)? {
-            let name = node.withoutTrivia().text
+            let name = node.text
             let lowercased = name.lowercased()
             let violationTerm = allTerms.first { term in
                 guard let range = lowercased.range(of: term) else { return false }

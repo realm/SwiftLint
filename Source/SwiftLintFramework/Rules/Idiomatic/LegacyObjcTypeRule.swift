@@ -44,13 +44,13 @@ public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
             Example("var formatter: NSDataDetector"),
             Example("var className: String = NSStringFromClass(MyClass.self)"),
             Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#),
+            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#)
         ],
         triggeringExamples: [
             Example("var array = ↓NSArray()"),
             Example("var calendar: ↓NSCalendar? = nil"),
             Example("_ = ↓NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#),
+            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#)
         ]
     )
 

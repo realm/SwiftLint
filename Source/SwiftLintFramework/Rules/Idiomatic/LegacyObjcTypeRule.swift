@@ -57,7 +57,14 @@ public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
             }
             dictionary = [↓NSString: ↓NSString](uniqueKeysWithValues:
               (1...10_000).lazy.map(keyValuePair))
-            """#)
+            """#),
+            Example("""
+            extension Foundation.Notification.Name {
+                static var reachabilityChanged: Foundation.↓NSNotification.Name {
+                    return Foundation.Notification.Name("org.wordpress.reachability.changed")
+                }
+            }
+            """)
         ]
     )
 
@@ -78,6 +85,16 @@ private extension LegacyObjcTypeRule {
             if legacyObjcTypes.contains(node.identifier.text) {
                 violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
             }
+        }
+
+        override func visitPost(_ node: MemberTypeIdentifierSyntax) {
+            guard node.baseType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Foundation",
+               legacyObjcTypes.contains(node.name.text)
+            else {
+                return
+            }
+
+            violations.append(node.name.positionAfterSkippingLeadingTrivia)
         }
     }
 }

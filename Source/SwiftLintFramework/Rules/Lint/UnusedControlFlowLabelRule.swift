@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
+public struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -86,47 +85,74 @@ public struct UnusedControlFlowLabelRule: SubstitutionCorrectableASTRule, Config
         ]
     )
 
-    private static let kinds: Set<StatementKind> = [.if, .for, .forEach, .while, .repeatWhile, .switch]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return self.violationRanges(in: file, kind: kind, dictionary: dictionary).map { range in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: range.location))
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension UnusedControlFlowLabelRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: LabeledStmtSyntax) {
+            if let position = node.violationPosition {
+                violations.append(position)
+            }
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        var rangeToRemove = violationRange
-        let contentsNSString = file.stringView
-        if let byteRange = contentsNSString.NSRangeToByteRange(start: violationRange.location,
-                                                               length: violationRange.length),
-            let nextToken = file.syntaxMap.tokens.first(where: { $0.offset > byteRange.location }) {
-            let nextTokenLocation = contentsNSString.location(fromByteOffset: nextToken.offset)
-            rangeToRemove.length = nextTokenLocation - violationRange.location
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        return (rangeToRemove, "")
+        override func visit(_ node: LabeledStmtSyntax) -> StmtSyntax {
+            guard let violationPosition = node.violationPosition,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
+            }
+
+            let newNode = node.statement.withLeadingTrivia(node.leadingTrivia ?? .zero)
+            correctionPositions.append(violationPosition)
+            return visit(newNode).as(StmtSyntax.self) ?? newNode
+        }
+    }
+}
+
+private extension LabeledStmtSyntax {
+    var violationPosition: AbsolutePosition? {
+        let visitor = BreakAndContinueLabelCollector(viewMode: .sourceAccurate)
+        let labels = visitor.walk(tree: self, handler: \.labels)
+        guard !labels.contains(labelName.withoutTrivia().text) else {
+            return nil
+        }
+
+        return labelName.positionAfterSkippingLeadingTrivia
+    }
+}
+
+private class BreakAndContinueLabelCollector: SyntaxVisitor {
+    private(set) var labels: Set<String> = []
+
+    override func visitPost(_ node: BreakStmtSyntax) {
+        if let label = node.label?.withoutTrivia().text {
+            labels.insert(label)
+        }
     }
 
-    public func violationRanges(in file: SwiftLintFile, kind: StatementKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard Self.kinds.contains(kind),
-            let byteRange = dictionary.byteRange,
-            case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
-            let firstToken = tokens.first,
-            firstToken.kind == .identifier,
-            let tokenContent = file.contents(for: firstToken),
-            case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(byteRange),
-            case let pattern = "(?:break|continue)\\s+\(tokenContent)\\b",
-            file.match(pattern: pattern, with: [.keyword, .identifier], range: range).isEmpty,
-            let violationRange = contents.byteRangeToNSRange(firstToken.range)
-        else {
-            return []
+    override func visitPost(_ node: ContinueStmtSyntax) {
+        if let label = node.label?.withoutTrivia().text {
+            labels.insert(label)
         }
-
-        return [violationRange]
     }
 }

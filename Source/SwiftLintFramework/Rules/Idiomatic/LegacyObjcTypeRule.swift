@@ -43,11 +43,14 @@ public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
             Example("var calendar: Calendar? = nil"),
             Example("var formatter: NSDataDetector"),
             Example("var className: String = NSStringFromClass(MyClass.self)"),
-            Example("_ = NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData")
+            Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
+            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#),
         ],
         triggeringExamples: [
             Example("var array = ↓NSArray()"),
-            Example("var calendar: ↓NSCalendar? = nil")
+            Example("var calendar: ↓NSCalendar? = nil"),
+            Example("_ = ↓NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
+            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#),
         ]
     )
 
@@ -67,6 +70,17 @@ private extension LegacyObjcTypeRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let identifierText = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
+                legacyObjcTypes.contains(identifierText)
+            else {
+                return
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
+
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard
+                let identifierText = node.base?.as(IdentifierExprSyntax.self)?.identifier.text,
                 legacyObjcTypes.contains(identifierText)
             else {
                 return

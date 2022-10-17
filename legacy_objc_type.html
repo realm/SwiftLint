@@ -358,10 +358,30 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">className</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kt">NSStringFromClass</span><span class="p">(</span><span class="kt">MyClass</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
 </code></pre>
-<h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">array</span> <span class="o">=</span> <span class="kt">NSArray</span><span class="p">()</span>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">URLRequest</span><span class="o">.</span><span class="kt">CachePolicy</span><span class="o">.</span><span class="n">reloadIgnoringLocalCacheData</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">calendar</span><span class="p">:</span> <span class="kt">NSCalendar</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">Notification</span><span class="o">.</span><span class="kt">Name</span><span class="p">(</span><span class="s">"com.apple.Music.playerInfo"</span><span class="p">)</span>
+</code></pre>
+<h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">array</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">NSArray</span><span class="p">()</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">calendar</span><span class="p">:</span> <span class="err">↓</span><span class="kt">NSCalendar</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">NSURLRequest</span><span class="o">.</span><span class="kt">CachePolicy</span><span class="o">.</span><span class="n">reloadIgnoringLocalCacheData</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">NSNotification</span><span class="o">.</span><span class="kt">Name</span><span class="p">(</span><span class="s">"com.apple.Music.playerInfo"</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">keyValuePair</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="err">↓</span><span class="kt">NSString</span><span class="p">,</span> <span class="err">↓</span><span class="kt">NSString</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">n</span> <span class="o">=</span> <span class="s">"</span><span class="se">\(</span><span class="nv">$0</span><span class="se">)</span><span class="s">"</span> <span class="k">as</span> <span class="err">↓</span><span class="kt">NSString</span><span class="p">;</span> <span class="nf">return</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="err">↓</span><span class="kt">NSString</span><span class="p">:</span> <span class="err">↓</span><span class="kt">NSString</span><span class="p">](</span><span class="nv">uniqueKeysWithValues</span><span class="p">:</span>
+  <span class="p">(</span><span class="mi">1</span><span class="o">...</span><span class="mi">10_000</span><span class="p">)</span><span class="o">.</span><span class="kd">lazy</span><span class="o">.</span><span class="nf">map</span><span class="p">(</span><span class="n">keyValuePair</span><span class="p">))</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Foundation</span><span class="o">.</span><span class="kt">Notification</span><span class="o">.</span><span class="kt">Name</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">reachabilityChanged</span><span class="p">:</span> <span class="kt">Foundation</span><span class="o">.</span><span class="err">↓</span><span class="kt">NSNotification</span><span class="o">.</span><span class="kt">Name</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Foundation</span><span class="o">.</span><span class="kt">Notification</span><span class="o">.</span><span class="kt">Name</span><span class="p">(</span><span class="s">"org.wordpress.reachability.changed"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

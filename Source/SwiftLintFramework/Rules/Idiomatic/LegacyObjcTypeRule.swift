@@ -50,7 +50,14 @@ public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
             Example("var array = ↓NSArray()"),
             Example("var calendar: ↓NSCalendar? = nil"),
             Example("_ = ↓NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#)
+            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#),
+            Example(#"""
+            let keyValuePair: (Int) -> (↓NSString, ↓NSString) = {
+              let n = "\($0)" as ↓NSString; return (n, n)
+            }
+            dictionary = [↓NSString: ↓NSString](uniqueKeysWithValues:
+              (1...10_000).lazy.map(keyValuePair))
+            """#)
         ]
     )
 
@@ -67,26 +74,10 @@ private extension LegacyObjcTypeRule {
             }
         }
 
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard
-                let identifierText = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
-                legacyObjcTypes.contains(identifierText)
-            else {
-                return
+        override func visitPost(_ node: IdentifierExprSyntax) {
+            if legacyObjcTypes.contains(node.identifier.text) {
+                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
             }
-
-            violations.append(node.positionAfterSkippingLeadingTrivia)
-        }
-
-        override func visitPost(_ node: MemberAccessExprSyntax) {
-            guard
-                let identifierText = node.base?.as(IdentifierExprSyntax.self)?.identifier.text,
-                legacyObjcTypes.contains(identifierText)
-            else {
-                return
-            }
-
-            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

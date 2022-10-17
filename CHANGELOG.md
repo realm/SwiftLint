@@ -49,6 +49,7 @@
   - `class_delegate_protocol`
   - `closing_brace`
   - `closure_body_length`
+  - `closure_end_indentation`
   - `closure_parameter_position`
   - `computed_accessors_order`
   - `conditional_returns_on_newline`

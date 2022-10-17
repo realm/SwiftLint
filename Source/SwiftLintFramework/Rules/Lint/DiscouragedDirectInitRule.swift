@@ -32,24 +32,6 @@ public struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderR
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let offset = dictionary.nameOffset,
-            let name = dictionary.name,
-            dictionary.bodyLength == 0,
-            configuration.discouragedInits.contains(name)
-            else {
-                return []
-        }
-
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
-    }
-
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(discouragedInits: configuration.discouragedInits)
     }

@@ -51,11 +51,14 @@
   - `closure_body_length`
   - `closure_parameter_position`
   - `computed_accessors_order`
+  - `conditional_returns_on_newline`
   - `contains_over_filter_count`
   - `contains_over_filter_is_empty`
   - `contains_over_first_not_nil`
   - `contains_over_range_nil_comparison`
   - `deployment_target`
+  - `discouraged_assert`
+  - `discouraged_none_name`
   - `discouraged_object_literal`
   - `discouraged_optional_boolean`
   - `duplicate_enum_cases`
@@ -65,6 +68,8 @@
   - `empty_parameters`
   - `empty_parentheses_with_trailing_closure`
   - `empty_string`
+  - `enum_case_associated_values_count`
+  - `explicit_enum_raw_value`
   - `explicit_init`
   - `fallthrough`
   - `first_where`
@@ -72,35 +77,54 @@
   - `force_try`
   - `force_unwrapping`
   - `function_body_length`
+  - `function_default_parameter_at_end`
   - `generic_type_name`
   - `ibinspectable_in_extension`
+  - `identical_operands`
   - `implicit_getter`
+  - `implicitly_unwrapped_optional`
   - `inert_defer`
   - `is_disjoint`
   - `large_tuple`
   - `last_where`
   - `legacy_cggeometry_functions`
   - `legacy_constant`
+  - `legacy_constructor`
   - `legacy_hashing`
+  - `legacy_multiple`
   - `legacy_nsgeometry_functions`
+  - `legacy_random`
   - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`
   - `no_fallthrough_only`
   - `no_space_in_method_call`
+  - `nslocalizedstring_require_bundle`
+  - `nsobject_prefer_isequal`
+  - `number_separator`
+  - `operator_whitespace`
   - `nsobject_prefer_isequal`
   - `private_action`
+  - `private_over_fileprivate`
   - `private_outlet`
   - `private_unit_test`
+  - `prohibited_interface_builder`
   - `protocol_property_accessors_order`
+  - `quick_discouraged_focused_test`
+  - `quick_discouraged_pending_test`
   - `reduce_boolean`
   - `redundant_discardable_let`
   - `redundant_nil_coalescing`
   - `redundant_string_enum_value`
+  - `self_in_property_initialization`
+  - `shorthand_operator`
   - `sorted_first_last`
+  - `static_operator`
+  - `strict_fileprivate`
   - `strong_iboutlet`
   - `switch_case_alignment`
   - `switch_case_on_newline`
   - `toggle_bool`
+  - `trailing_comma`
   - `trailing_semicolon`
   - `type_body_length`
   - `unneeded_break_in_switch`
@@ -108,6 +132,11 @@
   - `unowned_variable_capture`
   - `untyped_error_in_catch`
   - `unused_closure_parameter`
+  - `unused_control_flow_label`
+  - `unused_enumerated`
+  - `unused_setter_value`
+  - `valid_ibinspectable`
+  - `weak_delegate`
   - `xctfail_message`  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
+public struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -25,86 +24,145 @@ public struct WeakDelegateRule: OptInRule, ASTRule, ConfigurationProviderRule {
             Example("protocol P {\n var delegate: AnyObject? { get set }\n}\n"),
             Example("class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"),
             Example("class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"),
+            Example("""
+            class Foo {
+                var computedDelegate: ComputedDelegate {
+                    get {
+                        return bar()
+                    }
+               }
+            """),
             Example("struct Foo {\n @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}"),
             Example("struct Foo {\n @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate \n}"),
-            Example("struct Foo {\n @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate \n}")
+            Example("struct Foo {\n @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate \n}"),
+            Example("""
+            class Foo {
+                func makeDelegate() -> SomeDelegate {
+                    let delegate = SomeDelegate()
+                    return delegate
+                }
+            }
+            """),
+            Example("""
+            class Foo {
+                var bar: Bool {
+                    let appDelegate = AppDelegate.bar
+                    return appDelegate.bar
+                }
+            }
+            """, excludeFromDocumentation: true),
+            Example("private var appDelegate: String?", excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}\n"),
-            Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n")
+            Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}\n"),
+            Example("""
+            class Foo {
+                ↓var delegate: SomeProtocol? {
+                    didSet {
+                        print("Updated delegate")
+                    }
+               }
+            """)
         ]
     )
 
-    private static let ignoredAnnotations = [
-        "@UIApplicationDelegateAdaptor",
-        "@NSApplicationDelegateAdaptor",
-        "@WKExtensionDelegateAdaptor"
-    ]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+private extension WeakDelegateRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [
+                ProtocolDeclSyntax.self
+            ]
+        }
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard node.hasDelegateSuffix,
+                  node.weakOrUnownedModifier == nil,
+                 !node.hasComputedBody,
+                 !node.containsIgnoredAttribute,
+                  let parent = node.parent,
+                  Syntax(parent).enclosingClass() != nil else {
+                return
+            }
+
+            violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension Syntax {
+    func enclosingClass() -> ClassDeclSyntax? {
+        if let classExpr = self.as(ClassDeclSyntax.self) {
+            return classExpr
+        } else if self.as(DeclSyntax.self) != nil {
+            return nil
+        }
+
+        return parent?.enclosingClass()
+    }
+}
+
+private extension VariableDeclSyntax {
+    var weakOrUnownedModifier: DeclModifierSyntax? {
+        modifiers?.first { decl in
+            decl.name.tokenKind == .contextualKeyword("weak") ||
+                decl.name.tokenKind == .contextualKeyword("unowned")
         }
     }
 
-    private func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                 dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard kind == .varInstance else {
-            return []
-        }
-
-        // Check if name contains "delegate"
-        guard let name = dictionary.name,
-            name.lowercased().hasSuffix("delegate") else {
-                return []
-        }
-
-        // Check if non-weak
-        let isWeak = dictionary.enclosedSwiftAttributes.contains(.weak)
-        guard !isWeak else { return [] }
-
-        // if the declaration is inside a protocol
-        if let offset = dictionary.offset,
-            protocolDeclarations(forByteOffset: offset, structureDictionary: file.structureDictionary).isNotEmpty {
-            return []
-        }
-
-        // Check if non-computed
-        let isComputed = (dictionary.bodyLength ?? 0) > 0
-        guard !isComputed else { return [] }
-        // Check for annotations
-        for attribute in dictionary.swiftAttributes {
-            if
-                let offset = attribute.offset,
-                let length = attribute.length,
-                let value = file.stringView.substringWithByteRange(ByteRange(location: offset, length: length)),
-                value.hasAnyPrefix(of: Self.ignoredAnnotations) {
-                return []
+    var hasDelegateSuffix: Bool {
+        bindings.allSatisfy { binding in
+            guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else {
+                return false
             }
-        }
 
-        guard let offset = dictionary.offset,
-            let range = file.stringView.byteRangeToNSRange(ByteRange(location: offset, length: 3))
-        else {
-            return []
+            return pattern.identifier.withoutTrivia().text.lowercased().hasSuffix("delegate")
         }
-
-        return [range]
     }
 
-    private func protocolDeclarations(forByteOffset byteOffset: ByteCount,
-                                      structureDictionary: SourceKittenDictionary) -> [SourceKittenDictionary] {
-        return structureDictionary.traverseBreadthFirst { dictionary in
-            guard dictionary.declarationKind == .protocol,
-                let byteRange = dictionary.byteRange,
-                byteRange.contains(byteOffset)
-            else {
-                return nil
+    var hasComputedBody: Bool {
+        bindings.allSatisfy { binding in
+            guard let accessor = binding.accessor else {
+                return false
             }
-            return [dictionary]
+
+            if accessor.is(CodeBlockSyntax.self) {
+                return true
+            } else if accessor.as(AccessorBlockSyntax.self)?.getAccessor != nil {
+                return true
+            }
+
+            return false
+        }
+    }
+
+    var containsIgnoredAttribute: Bool {
+        let ignoredAttributes: Set = [
+            "UIApplicationDelegateAdaptor",
+            "NSApplicationDelegateAdaptor",
+            "WKExtensionDelegateAdaptor"
+        ]
+
+        return attributes?.contains { attr in
+            guard let customAttr = attr.as(CustomAttributeSyntax.self),
+                  let typeIdentifier = customAttr.attributeName.as(SimpleTypeIdentifierSyntax.self) else {
+                return false
+            }
+
+            return ignoredAttributes.contains(typeIdentifier.name.withoutTrivia().text)
+        } ?? false
+    }
+}
+
+private extension AccessorBlockSyntax {
+    var getAccessor: AccessorDeclSyntax? {
+        return accessors.first { accessor in
+            accessor.accessorKind.tokenKind == .contextualKeyword("get")
         }
     }
 }

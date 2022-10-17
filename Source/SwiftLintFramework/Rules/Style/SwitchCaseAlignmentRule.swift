@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct SwitchCaseAlignmentRule: SourceKitFreeRule, ConfigurationProviderRule {
+public struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SwitchCaseAlignmentConfiguration()
 
     public init() {}
@@ -40,26 +40,13 @@ public struct SwitchCaseAlignmentRule: SourceKitFreeRule, ConfigurationProviderR
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
-            .walk(file: file, handler: \.violations)
-            .map { violation in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, position: violation.position),
-                               reason: violation.reason)
-            }
     }
 }
 
 extension SwitchCaseAlignmentRule {
-    private struct Violation {
-        let position: AbsolutePosition
-        let reason: String
-    }
-
-    private final class Visitor: SyntaxVisitor {
-        private(set) var violations: [Violation] = []
+    private final class Visitor: ViolationsSyntaxVisitor {
         private let locationConverter: SourceLocationConverter
         private let indentedCases: Bool
 
@@ -99,7 +86,7 @@ extension SwitchCaseAlignmentRule {
                     \(indentedCases ? "be indented within" : "vertically align with") \
                     their enclosing switch statement.
                     """
-                let violation = Violation(position: casePosition, reason: reason)
+                let violation = ReasonedRuleViolation(position: casePosition, reason: reason)
                 violations.append(violation)
             }
         }

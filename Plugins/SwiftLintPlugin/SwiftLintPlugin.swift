@@ -7,14 +7,32 @@ struct SwiftLintPlugin: BuildToolPlugin {
         context: PackagePlugin.PluginContext,
         target: PackagePlugin.Target
     ) async throws -> [PackagePlugin.Command] {
-        [
+        guard let sourceTarget = target as? SourceModuleTarget else {
+            return []
+        }
+
+        let swiftlint = try context.tool(named: "swiftlint")
+        var arguments: [String] = [
+            "lint",
+            "--cache-path", "\(context.pluginWorkDirectory)"
+        ]
+
+        let inputFilePaths = sourceTarget.sourceFiles(withSuffix: "swift").map(\.path)
+
+        guard inputFilePaths.isEmpty == false else {
+            // Don't lint anything if there are no Swift source files in this target
+            return []
+        }
+
+        arguments += inputFilePaths.map(\.string)
+
+        return [
             .buildCommand(
-                displayName: "SwiftLint",
-                executable: try context.tool(named: "swiftlint").path,
-                arguments: [
-                    "lint",
-                    "--cache-path", "\(context.pluginWorkDirectory)"
-                ]
+                displayName: "Linting Swift sources",
+                executable: swiftlint.path,
+                arguments: arguments,
+                inputFiles: inputFilePaths,
+                outputFiles: []
             )
         ]
     }
@@ -28,14 +46,32 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         context: XcodePluginContext,
         target: XcodeTarget
     ) throws -> [Command] {
-        [
+        guard let sourceTarget = target as? SourceModuleTarget else {
+            return []
+        }
+
+        let swiftlint = try context.tool(named: "swiftlint")
+        var arguments: [String] = [
+            "lint",
+            "--cache-path", "\(context.pluginWorkDirectory)"
+        ]
+
+        let inputFilePaths = sourceTarget.sourceFiles(withSuffix: "swift").map(\.path)
+
+        guard inputFilePaths.isEmpty == false else {
+            // Don't lint anything if there are no Swift source files in this target
+            return []
+        }
+
+        arguments += inputFilePaths.map(\.string)
+
+        return [
             .buildCommand(
-                displayName: "SwiftLint",
-                executable: try context.tool(named: "swiftlint").path,
-                arguments: [
-                    "lint",
-                    "--cache-path", "\(context.pluginWorkDirectory)"
-                ]
+                displayName: "Linting Swift sources",
+                executable: swiftlint.path,
+                arguments: arguments,
+                inputFiles: inputFilePaths,
+                outputFiles: []
             )
         ]
     }

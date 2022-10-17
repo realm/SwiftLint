@@ -37,7 +37,7 @@ private extension CompilerProtocolInitRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             let arguments = node.argumentList.compactMap { $0.label?.withoutTrivia().text }
-            guard arguments.isNotEmpty else {
+            guard ExpressibleByCompiler.possibleNumberOfArguments.contains(arguments.count) else {
                 return
             }
 
@@ -75,6 +75,16 @@ private struct ExpressibleByCompiler {
                                byFloatLiteral, byIntegerLiteral, byUnicodeScalarLiteral,
                                byExtendedGraphemeClusterLiteral, byStringLiteral,
                                byStringInterpolation, byDictionaryLiteral]
+
+    static let possibleNumberOfArguments: Set<Int> = {
+        var args: Set<Int> = []
+        for entry in allProtocols {
+            for argument in entry.arguments {
+                args.insert(argument.count)
+            }
+        }
+        return args
+    }()
 
     func match(arguments: [String]) -> Bool {
         return self.arguments.contains(arguments)

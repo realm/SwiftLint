@@ -397,6 +397,13 @@
 <span class="p">}</span> 
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">computedDelegate</span><span class="p">:</span> <span class="kt">ComputedDelegate</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nf">bar</span><span class="p">()</span>
+        <span class="p">}</span>
+   <span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span>
  <span class="kd">@UIApplicationDelegateAdaptor</span><span class="p">(</span><span class="kt">AppDelegate</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="k">var</span> <span class="nv">appDelegate</span> 
 <span class="p">}</span>
@@ -409,6 +416,13 @@
  <span class="kd">@WKExtensionDelegateAdaptor</span><span class="p">(</span><span class="kt">ExtensionDelegate</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="k">var</span> <span class="nv">extensionDelegate</span> 
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">makeDelegate</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">SomeDelegate</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">delegate</span> <span class="o">=</span> <span class="kt">SomeDelegate</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">delegate</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="err">↓</span><span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">SomeProtocol</span><span class="p">?</span>
@@ -419,6 +433,13 @@
   <span class="err">↓</span><span class="k">var</span> <span class="nv">scrollDelegate</span><span class="p">:</span> <span class="kt">ScrollDelegate</span><span class="p">?</span>
 <span class="p">}</span>
 
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">SomeProtocol</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"Updated delegate"</span><span class="p">)</span>
+        <span class="p">}</span>
+   <span class="p">}</span>
 </code></pre>
 
           </div>

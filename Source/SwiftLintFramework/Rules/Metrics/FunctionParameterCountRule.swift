@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
+public struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
 
     public init() {}
@@ -29,7 +28,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: [
             Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
             Example("↓func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"),
-            Example("↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"),
+            Example("private ↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"),
             Example("""
             struct Foo {
                 init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}
@@ -38,87 +37,70 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds.contains(kind) else {
-            return []
-        }
-
-        let nameRange = ByteRange(location: dictionary.nameOffset ?? 0, length: dictionary.nameLength ?? 0)
-        if functionIsInitializer(file: file, byteRange: nameRange) {
-            return []
-        }
-
-        if functionIsOverride(attributes: dictionary.enclosedSwiftAttributes) {
-            return []
-        }
-
-        let minThreshold = configuration.severityConfiguration.params.map({ $0.value }).min(by: <)
-
-        let allParameterCount = allFunctionParameterCount(structure: dictionary.substructure, range: nameRange)
-        if allParameterCount < minThreshold! {
-            return []
-        }
-
-        var parameterCount = allParameterCount
-
-        if configuration.ignoresDefaultParameters {
-            parameterCount -= defaultFunctionParameterCount(file: file, byteRange: nameRange)
-        }
-
-        for parameter in configuration.severityConfiguration.params where parameterCount > parameter.value {
-            let offset = dictionary.offset ?? 0
-            let reason = "Function should have \(configuration.severityConfiguration.warning) parameters or less: " +
-                         "it currently has \(parameterCount)"
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: parameter.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: reason)]
-        }
-
-        return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
     }
 
-    private func allFunctionParameterCount(structure: [SourceKittenDictionary], range: ByteRange) -> Int {
-        var parameterCount = 0
-        for subDict in structure {
-            guard subDict.kind != nil, let parameterOffset = subDict.offset else {
-                continue
+    public func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
+        StyleViolation(
+            ruleDescription: Self.description,
+            severity: violation.severity ?? .warning,
+            location: Location(file: file, position: violation.position),
+            reason: violation.reason
+        )
+    }
+}
+
+private extension FunctionParameterCountRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: FunctionParameterCountConfiguration
+
+        init(configuration: FunctionParameterCountConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard !node.modifiers.containsOverride else {
+                return
             }
 
-            guard range.contains(parameterOffset) else {
-                return parameterCount
+            let parameterList = node.signature.input.parameterList
+            guard let minThreshold = configuration.severityConfiguration.params.map(\.value).min(by: <) else {
+                return
             }
 
-            if subDict.declarationKind == .varParameter {
-                parameterCount += 1
+            let allParameterCount = parameterList.count
+            if allParameterCount < minThreshold {
+                return
+            }
+
+            var parameterCount = allParameterCount
+            if configuration.ignoresDefaultParameters {
+                parameterCount -= parameterList.filter { $0.defaultArgument != nil }.count
+            }
+
+            for parameter in configuration.severityConfiguration.params where parameterCount > parameter.value {
+                let reason = "Function should have \(configuration.severityConfiguration.warning) parameters " +
+                             "or less: it currently has \(parameterCount)"
+
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.funcKeyword.positionAfterSkippingLeadingTrivia,
+                        reason: reason,
+                        severity: parameter.severity
+                    )
+                )
+                return
             }
         }
-        return parameterCount
     }
+}
 
-    private func defaultFunctionParameterCount(file: SwiftLintFile, byteRange: ByteRange) -> Int {
-        let substring = file.stringView.substringWithByteRange(byteRange)!
-        let equals = substring.filter { $0 == "=" }
-        return equals.count
-    }
-
-    private func functionIsInitializer(file: SwiftLintFile, byteRange: ByteRange) -> Bool {
-        guard let name = file.stringView
-            .substringWithByteRange(byteRange),
-            name.hasPrefix("init"),
-            let funcName = name.components(separatedBy: CharacterSet(charactersIn: "<(")).first else {
-            return false
-        }
-        if funcName == "init" { // fast path
-            return true
-        }
-        let nonAlphas = CharacterSet.alphanumerics.inverted
-        let alphaNumericName = funcName.components(separatedBy: nonAlphas).joined()
-        return alphaNumericName == "init"
-    }
-
-    private func functionIsOverride(attributes: [SwiftDeclarationAttributeKind]) -> Bool {
-        return attributes.contains(.override)
+private extension ModifierListSyntax? {
+    var containsOverride: Bool {
+        self?.contains { elem in
+            elem.name.tokenKind == .contextualKeyword("override")
+        } ?? false
     }
 }

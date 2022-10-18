@@ -106,6 +106,7 @@
   - `number_separator`
   - `operator_whitespace`
   - `nsobject_prefer_isequal`
+  - `prefer_nimble`
   - `private_action`
   - `private_over_fileprivate`
   - `private_outlet`

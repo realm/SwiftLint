@@ -66,6 +66,22 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
+        """, excludeFromDocumentation: true),
+        // Enum inside nested class inheriting from NSObject
+        Example("""
+        public final class A: NSObject {
+            public enum B: Equatable {
+                case c
+
+                public func hash(into hasher: inout Hasher) {
+                    filename.original.hash(into: &hasher)
+                }
+
+                public static func == (lhs: B, rhs: B) -> Bool {
+                    return true
+                }
+            }
+        }
         """, excludeFromDocumentation: true)
     ]
 

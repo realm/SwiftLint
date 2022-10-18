@@ -77,7 +77,10 @@ private extension SyntaxProtocol {
     var isInObjcClass: Bool {
         if let parentClass = parent?.as(ClassDeclSyntax.self) {
             return parentClass.isObjC
+        } else if parent?.as(DeclSyntax.self) != nil {
+            return false
         }
+
         return parent?.isInObjcClass ?? false
     }
 }

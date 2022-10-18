@@ -28,7 +28,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
 
         return [
             .buildCommand(
-                displayName: "Linting Swift sources",
+                displayName: "SwiftLint",
                 executable: swiftlint.path,
                 arguments: arguments,
                 inputFiles: inputFilePaths,
@@ -67,7 +67,7 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
 
         return [
             .buildCommand(
-                displayName: "Linting Swift sources",
+                displayName: "SwiftLint",
                 executable: swiftlint.path,
                 arguments: arguments,
                 inputFiles: inputFilePaths,

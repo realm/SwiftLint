@@ -306,12 +306,17 @@ private extension SwiftLintFile {
             let offset = ByteCount(classification.offset)
             let length = ByteCount(classification.length)
 
-            // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in attributes.
             if syntaxKind == .keyword,
                case let byteRange = ByteRange(location: offset, length: length),
-               let substring = stringView.substringWithByteRange(byteRange),
-               AccessControlLevel(description: substring) != nil {
-                syntaxKind = .attributeBuiltin
+               let substring = stringView.substringWithByteRange(byteRange) {
+                if substring == "throws" {
+                    // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
+                    return nil
+                } else if AccessControlLevel(description: substring) != nil {
+                    // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in
+                    // attributes.
+                    syntaxKind = .attributeBuiltin
+                }
             }
 
             let syntaxToken = SyntaxToken(type: syntaxKind.rawValue, offset: offset, length: length)

@@ -142,6 +142,7 @@
   - `redundant_nil_coalescing`
   - `redundant_objc_attribute`
   - `redundant_set_access_control`
+  - `redundant_optional_initialization`
   - `redundant_string_enum_value`
   - `required_deinit`
   - `return_arrow_whitespace`

@@ -93,10 +93,12 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violations.append(ReasonedRuleViolation(
-            position: availability.positionAfterSkippingLeadingTrivia,
-            reason: provideViolationReason(for: availability)
-        ))
+        violations.append(
+            ReasonedRuleViolation(
+                position: availability.positionAfterSkippingLeadingTrivia,
+                reason: reason(for: availability)
+            )
+        )
     }
 
     private func asAvailabilityCondition(_ condition: Syntax) -> SyntaxProtocol? {
@@ -114,7 +116,7 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
         return false
     }
 
-    private func provideViolationReason(for check: SyntaxProtocol) -> String {
+    private func reason(for check: SyntaxProtocol) -> String {
         switch check {
         case is AvailabilityConditionSyntax:
             return "Use #unavailable instead of #available with an empty body."

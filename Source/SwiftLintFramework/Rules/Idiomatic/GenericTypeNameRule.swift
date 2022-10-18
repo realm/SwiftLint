@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-public struct GenericTypeNameRule: SourceKitFreeRule, ConfigurationProviderRule {
+public struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = NameConfiguration(minLengthWarning: 1,
                                                  minLengthError: 0,
                                                  maxLengthWarning: 20,
@@ -50,21 +50,13 @@ public struct GenericTypeNameRule: SourceKitFreeRule, ConfigurationProviderRule 
         }
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
-            .walk(file: file, handler: \.violationPositions)
-            .map { position, reason, severity in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: severity,
-                               location: Location(file: file, position: position),
-                               reason: reason)
-            }
     }
 }
 
 private extension GenericTypeNameRule {
-    final class Visitor: SyntaxVisitor {
-        private(set) var violationPositions: [(AbsolutePosition, String, ViolationSeverity)] = []
+    final class Visitor: ViolationsSyntaxVisitor {
         private let configuration: NameConfiguration
 
         init(configuration: NameConfiguration) {
@@ -80,18 +72,32 @@ private extension GenericTypeNameRule {
 
             let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
             if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
-                violationPositions.append((node.positionAfterSkippingLeadingTrivia,
-                                           "Generic type name should only contain alphanumeric characters: '\(name)'",
-                                          .error))
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.positionAfterSkippingLeadingTrivia,
+                        reason: "Generic type name should only contain alphanumeric characters: '\(name)'",
+                        severity: .error
+                    )
+                )
             } else if configuration.validatesStartWithLowercase &&
                 !String(name[name.startIndex]).isUppercase() {
-                violationPositions.append((node.positionAfterSkippingLeadingTrivia,
-                                           "Generic type name should start with an uppercase character: '\(name)'",
-                                          .error))
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.positionAfterSkippingLeadingTrivia,
+                        reason: "Generic type name should start with an uppercase character: '\(name)'",
+                        severity: .error
+                    )
+                )
             } else if let severity = configuration.severity(forLength: name.count) {
                 let reason = "Generic type name should be between \(configuration.minLengthThreshold) and " +
                              "\(configuration.maxLengthThreshold) characters long: '\(name)'"
-                violationPositions.append((node.positionAfterSkippingLeadingTrivia, reason, severity))
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: node.positionAfterSkippingLeadingTrivia,
+                        reason: reason,
+                        severity: severity
+                    )
+                )
             }
         }
     }

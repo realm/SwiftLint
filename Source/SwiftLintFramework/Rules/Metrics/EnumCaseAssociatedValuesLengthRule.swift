@@ -41,15 +41,6 @@ public struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Co
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
-
-    public func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: violation.severity ?? .warning,
-            location: Location(file: file, position: violation.position),
-            reason: violation.reason
-        )
-    }
 }
 
 private extension EnumCaseAssociatedValuesLengthRule {
@@ -77,8 +68,8 @@ private extension EnumCaseAssociatedValuesLengthRule {
             }
 
             let reason = "Enum case \(node.identifier.withoutTrivia().text) should contain "
-            + "less than \(configuration.warning) associated values: "
-            + "currently contains \(enumCaseAssociatedValueCount)"
+                + "less than \(configuration.warning) associated values: "
+                + "currently contains \(enumCaseAssociatedValueCount)"
             violations.append(
                 ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,

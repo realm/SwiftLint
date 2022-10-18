@@ -40,15 +40,6 @@ public struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProvider
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
-
-    public func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: violation.severity ?? .warning,
-            location: Location(file: file, position: violation.position),
-            reason: violation.reason
-        )
-    }
 }
 
 private extension FunctionParameterCountRule {

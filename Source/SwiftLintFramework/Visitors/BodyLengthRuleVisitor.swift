@@ -1,17 +1,10 @@
 import SwiftSyntax
 
-final class BodyLengthRuleVisitor: SyntaxVisitor {
-    private(set) var violations: [Violation] = []
+final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
     private let kind: Kind
     private let file: SwiftLintFile
     private let configuration: SeverityLevelsConfiguration
     private let locationConverter: SourceLocationConverter
-
-    struct Violation {
-        let position: AbsolutePosition
-        let reason: String
-        let severity: ViolationSeverity
-    }
 
     enum Kind {
         case closure
@@ -138,7 +131,7 @@ final class BodyLengthRuleVisitor: SyntaxVisitor {
             currently spans \(lineCount) lines
             """
 
-        let violation = Violation(
+        let violation = ReasonedRuleViolation(
             position: getViolationNode().positionAfterSkippingLeadingTrivia,
             reason: reason,
             severity: severity

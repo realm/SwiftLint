@@ -40,6 +40,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4107](https://github.com/realm/SwiftLint/issues/4107)
 
+* Add new `ns_number_direct_init` rule to catch `NSNumber.init` and
+  `NSDecimalNumber.init` being used as function references since it
+  can cause the wrong initializer to be used, causing crashes. See
+  https://github.com/apple/swift/issues/51036 for more info.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Rewrite some rules with SwiftSyntax, fixing some false positives and catching
   more violations:
   - `anonymous_argument_in_multiline_closure`

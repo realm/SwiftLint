@@ -56,8 +56,14 @@ extension SyntaxProtocol {
     }
 
     func isContainedIn(regions: [SourceRange], locationConverter: SourceLocationConverter) -> Bool {
+        positionAfterSkippingLeadingTrivia.isContainedIn(regions: regions, locationConverter: locationConverter)
+    }
+}
+
+extension AbsolutePosition {
+    func isContainedIn(regions: [SourceRange], locationConverter: SourceLocationConverter) -> Bool {
         regions.contains { region in
-            region.contains(positionAfterSkippingLeadingTrivia, locationConverter: locationConverter)
+            region.contains(self, locationConverter: locationConverter)
         }
     }
 }

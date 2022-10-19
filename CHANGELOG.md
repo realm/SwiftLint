@@ -106,7 +106,6 @@
   - `no_space_in_method_call`
   - `nslocalizedstring_require_bundle`
   - `nsobject_prefer_isequal`
-  - `nsobject_prefer_isequal`
   - `number_separator`
   - `operator_whitespace`
   - `prefer_nimble`

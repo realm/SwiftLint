@@ -276,6 +276,18 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
+        """),
+        Example("""
+        class TotoTests: QuickSpecSubclass {
+           override func spec() {
+               xcontext("foo") {
+                   let foo = ↓Foo()
+               }
+               fcontext("foo") {
+                   let foo = ↓Foo()
+               }
+           }
+        }
         """)
     ]
 }

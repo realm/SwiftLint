@@ -17,7 +17,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
-            return $0.inheritedTypes.contains("QuickSpec") &&
+            return $0.inheritedTypes.isNotEmpty &&
                 $0.declarationKind == .class
         }
 

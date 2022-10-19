@@ -73,6 +73,13 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                ↓fitBehavesLike("foo")
            }
         }
+        """),
+        Example("""
+        class TotoTests: QuickSpecSubclass {
+           override func spec() {
+               ↓fitBehavesLike("foo")
+           }
+        }
         """)
     ]
 }

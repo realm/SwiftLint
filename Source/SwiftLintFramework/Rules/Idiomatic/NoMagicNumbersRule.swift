@@ -1,11 +1,39 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NoMagicNumbersRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
+        Visitor()
+    }
+
     public init() {}
 
     public init(configuration: Any) throws {}
 
     public var configuration = SeverityConfiguration(.warning)
+
+    private static let functionExample = Example("""
+func foo() {
+    let x: Int = 2
+    let y = 3
+    let vector = [x, y, 0]
+}
+""")
+
+    private static let classExample = Example("""
+class A {
+    var foo: Double = 132
+    static let bar: Double = 0.98
+}
+""")
+
+    private static let availableExample = Example("""
+@available(iOS 13, *)
+func version() {
+    if #available(iOS 13, OSX 10.10, *) {
+        return
+    }
+}
+""")
 
     public static let description = RuleDescription(
         identifier: "no_magic_numbers",
@@ -13,50 +41,58 @@ public struct NoMagicNumbersRule: ASTRule, OptInRule, ConfigurationProviderRule 
         description: "‘Magic numbers’ should be replaced by named constants.",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("""
-var x = 123
-foo(x)
-"""),
+            Example("0.123"),
+            Example("var foo = 123"),
+            Example("static let bar: Double = 0.123"),
             Example("array[0] + array[1]"),
-            Example("static let foo = 0.123)")
+            Example("let foo = 1_000.000_01"),
+            Example("// array[1337]"),
+            Example("baz(\"9999\")"),
+            functionExample,
+            classExample,
+            availableExample
         ],
         triggeringExamples: [
             Example("foo(123)"),
-            Example("let someElement = array[98]"),
+            Example("bar(1_000.005_01)"),
+            Example("array[42]"),
+            Example("let box = array[12 + 14]"),
             Example("Color.primary.opacity(isAnimate ? 0.1 : 1.5)")
         ]
     )
+}
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        file.syntaxTokensByLines.flatMap { line -> [StyleViolation] in
-            guard let firstToken = line.first, firstToken.kind != .attributeBuiltin,    // @available
-                  line.count > 1,
-                  file.contents(for: firstToken) != "if" ||
-                    line[1].kind != .keyword ||
-                    file.contents(for: line[1]) != "#available" else {
-                return []
+private extension NoMagicNumbersRule {
+    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
+        var violationPositions: [AbsolutePosition] = []
+
+        init() {
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FloatLiteralExprSyntax) {
+            if let violation = violation(token: node.floatingDigits) {
+                violationPositions.append(violation)
             }
-            return line.enumerated().compactMap { tokenIx, token -> StyleViolation? in
-                guard token.kind == .number,
-                      let nrString = file.contents(for: token)?.replacingOccurrences(of: "_", with: ""),
-                      let number = Double(nrString),
-                      ![0, 1, -1].contains(number),
-                      // allow declarations for local vars
-                      tokenIx < 2 ||
-                        line[tokenIx - 1].kind != .identifier ||
-                        line[tokenIx - 2].kind != .keyword,
-                      tokenIx < 3 ||
-                        line[tokenIx - 1].kind != .typeidentifier ||
-                        line[tokenIx - 2].kind != .identifier ||
-                        line[tokenIx - 3].kind != .keyword  else {
-                    return nil
-                }
-                return StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: token.offset.value))
+        }
+
+        override func visitPost(_ node: IntegerLiteralExprSyntax) {
+            if let violation = violation(token: node.digits) {
+                violationPositions.append(violation)
             }
+        }
+
+        func violation(token: TokenSyntax) -> AbsolutePosition? {
+            let text = token.withoutTrivia().text.replacingOccurrences(of: "_", with: "")
+
+            guard let number = Double(text), ![0, 1, -1].contains(number),
+                    let parent = token.parent?.parent,
+                    !parent.is(InitializerClauseSyntax.self),
+                    !parent.is(CodeBlockItemSyntax.self) else {
+                return nil
+            }
+
+            return token.positionAfterSkippingLeadingTrivia
         }
     }
 }

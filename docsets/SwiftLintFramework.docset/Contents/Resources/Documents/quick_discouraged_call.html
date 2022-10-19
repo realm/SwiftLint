@@ -600,6 +600,17 @@
    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">TotoTests</span><span class="p">:</span> <span class="kt">QuickSpecSubclass</span> <span class="p">{</span>
+   <span class="k">override</span> <span class="kd">func</span> <span class="nf">spec</span><span class="p">()</span> <span class="p">{</span>
+       <span class="nf">xcontext</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span> <span class="p">{</span>
+           <span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Foo</span><span class="p">()</span>
+       <span class="p">}</span>
+       <span class="nf">fcontext</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span> <span class="p">{</span>
+           <span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Foo</span><span class="p">()</span>
+       <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 
           </div>
         </section>

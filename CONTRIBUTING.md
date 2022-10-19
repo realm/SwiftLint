@@ -171,7 +171,7 @@ To bring up a new Buildkite worker from MacStadium:
 1. Update macOS to the latest version
 1. Install Homebrew: https://brew.sh
 1. Install Buildkite agent and other tools via Homebrew:
-   `brew install buildkite/buildkite/buildkite-agent aria2 htop robotsandpencils/made/xcodes`
+   `brew install aria2 bazelisk htop buildkite/buildkite/buildkite-agent robotsandpencils/made/xcodes`
 1. Install latest Xcode version: `xcodes install 14.0.0`
 1. Add `DANGER_GITHUB_API_TOKEN` and `HOME` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
 1. Add `echo "build --remote_cache=grpc://<creds>@swiftlint-ci.jpsim.com:9092" > ci.bazelrc`

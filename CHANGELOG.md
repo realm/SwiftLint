@@ -87,6 +87,7 @@
   - `implicitly_unwrapped_optional`
   - `inert_defer`
   - `is_disjoint`
+  - `joined_default_parameter`
   - `large_tuple`
   - `last_where`
   - `legacy_cggeometry_functions`

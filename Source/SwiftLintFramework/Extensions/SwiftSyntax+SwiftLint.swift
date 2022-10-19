@@ -77,6 +77,12 @@ extension ExprSyntax {
     }
 }
 
+extension StringLiteralExprSyntax {
+    var isEmptyString: Bool {
+        segments.count == 1 && segments.first?.contentLength == .zero
+    }
+}
+
 extension TokenKind {
     var isEqualityComparison: Bool {
         self == .spacedBinaryOperator("==") ||

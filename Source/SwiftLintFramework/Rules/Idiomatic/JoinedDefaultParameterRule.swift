@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule, OptInRule {
+public struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -39,49 +38,62 @@ public struct JoinedDefaultParameterRule: SubstitutionCorrectableASTRule, Config
         ]
     )
 
-    // MARK: - ASTRule
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension JoinedDefaultParameterRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if let violationPosition = node.violationPosition {
+                violations.append(violationPosition)
+            }
         }
     }
 
-    // MARK: - SubstitutionCorrectableASTRule
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        private let locationConverter: SourceLocationConverter
+        private let disabledRegions: [SourceRange]
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard let violationPosition = node.violationPosition,
+                    !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(violationPosition)
+            let newNode = node.withArgumentList(nil)
+            return super.visit(newNode)
+        }
     }
+}
 
-    public func violationRanges(in file: SwiftLintFile,
-                                kind: SwiftExpressionKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard
-            // is it calling a method '.joined' and passing a single argument?
-            kind == .call,
-            dictionary.name?.hasSuffix(".joined") == true,
-            dictionary.enclosedArguments.count == 1
-            else { return [] }
+private extension FunctionCallExprSyntax {
+    var violationPosition: AbsolutePosition? {
+        guard argumentList.count == 1,
+            let memberExp = calledExpression.as(MemberAccessExprSyntax.self),
+              memberExp.name.text == "joined",
+              let argument = argumentList.first,
+              argument.label?.text == "separator",
+              let strLiteral = argument.expression.as(StringLiteralExprSyntax.self),
+              strLiteral.isEmptyString else {
+            return nil
+        }
 
-        guard
-            // is this single argument called 'separator'?
-            let argument = dictionary.enclosedArguments.first,
-            let argumentByteRange = argument.byteRange,
-            argument.name == "separator",
-            let argumentNSRange = file.stringView.byteRangeToNSRange(argumentByteRange)
-            else { return [] }
-
-        guard
-            // is this single argument the default parameter?
-            let bodyRange = argument.bodyByteRange,
-            let body = file.stringView.substringWithByteRange(bodyRange),
-            body == "\"\""
-            else { return [] }
-
-        return [argumentNSRange]
+        return argument.positionAfterSkippingLeadingTrivia
     }
 }

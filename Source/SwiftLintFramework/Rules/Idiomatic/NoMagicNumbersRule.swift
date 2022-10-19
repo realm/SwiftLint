@@ -1,13 +1,7 @@
 import SwiftSyntax
 
 public struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
-        Visitor()
-    }
-
     public init() {}
-
-    public init(configuration: Any) throws {}
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -60,39 +54,39 @@ func version() {
             Example("Color.primary.opacity(isAnimate ? 0.1 : 1.5)")
         ]
     )
+
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
 }
 
 private extension NoMagicNumbersRule {
-    final class Visitor: SyntaxVisitor, ViolationsSyntaxVisitor {
-        var violationPositions: [AbsolutePosition] = []
-
-        init() {
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FloatLiteralExprSyntax) {
-            if let violation = violation(token: node.floatingDigits) {
-                violationPositions.append(violation)
+            if node.floatingDigits.isMagicNumber {
+                self.violations.append(node.floatingDigits.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            if let violation = violation(token: node.digits) {
-                violationPositions.append(violation)
+            if node.digits.isMagicNumber {
+                self.violations.append(node.digits.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
+}
 
-        func violation(token: TokenSyntax) -> AbsolutePosition? {
-            let text = token.withoutTrivia().text.replacingOccurrences(of: "_", with: "")
+private extension TokenSyntax {
+    var isMagicNumber: Bool {
+        let numerStr = withoutTrivia().text.replacingOccurrences(of: "_", with: "")
 
-            guard let number = Double(text), ![0, 1, -1].contains(number),
-                    let parent = token.parent?.parent,
-                    !parent.is(InitializerClauseSyntax.self),
-                    !parent.is(CodeBlockItemSyntax.self) else {
-                return nil
-            }
-
-            return token.positionAfterSkippingLeadingTrivia
+        guard let number = Double(numerStr),
+              ![0, 1, -1].contains(number),
+              let parentToken = parent?.parent,
+              !parentToken.is(InitializerClauseSyntax.self),
+              !parentToken.is(CodeBlockItemSyntax.self) else {
+            return false
         }
+        return true
     }
 }

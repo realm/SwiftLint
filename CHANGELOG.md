@@ -71,6 +71,7 @@
   - `empty_parentheses_with_trailing_closure`
   - `empty_string`
   - `enum_case_associated_values_count`
+  - `expiring_todo`
   - `explicit_enum_raw_value`
   - `explicit_init`
   - `fallthrough`
@@ -105,13 +106,15 @@
   - `no_space_in_method_call`
   - `nslocalizedstring_require_bundle`
   - `nsobject_prefer_isequal`
+  - `nsobject_prefer_isequal`
   - `number_separator`
   - `operator_whitespace`
-  - `nsobject_prefer_isequal`
   - `prefer_nimble`
+  - `prefer_self_type_over_type_of_self`
+  - `prefer_zero_over_explicit_init`
   - `private_action`
-  - `private_over_fileprivate`
   - `private_outlet`
+  - `private_over_fileprivate`
   - `private_unit_test`
   - `prohibited_interface_builder`
   - `protocol_property_accessors_order`

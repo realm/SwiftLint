@@ -309,7 +309,10 @@ private extension SwiftLintFile {
             if syntaxKind == .keyword,
                case let byteRange = ByteRange(location: offset, length: length),
                let substring = stringView.substringWithByteRange(byteRange) {
-                if substring == "throws" {
+                if substring == "Self" {
+                    // SwiftSyntax considers 'Self' a keyword, but SourceKit considers it a type identifier.
+                    syntaxKind = .typeidentifier
+                } else if substring == "throws" {
                     // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
                     return nil
                 } else if AccessControlLevel(description: substring) != nil {

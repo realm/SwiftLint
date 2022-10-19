@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
+public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -20,56 +19,76 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             Example("let set = ↓Set(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n")
+            Example("let set = ↓Set (arrayLiteral: 1, 2)\n"),
+            Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n"),
+            Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n")
         ]
     )
 
-    private static func violationReason(protocolName: String, isPlural: Bool) -> String {
+    private static func violationReason(protocolName: String, isPlural: Bool = false) -> String {
         return "The initializers declared in compiler protocol\(isPlural ? "s" : "") \(protocolName) " +
                 "shouldn't be called directly."
     }
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            let (violation, range) = $0
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: range.location),
-                reason: Self.violationReason(protocolName: violation.protocolName, isPlural: false)
-            )
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func violationRanges(in file: SwiftLintFile, kind: SwiftExpressionKind,
-                                 dictionary: SourceKittenDictionary) -> [(ExpressibleByCompiler, NSRange)] {
-        guard kind == .call, let name = dictionary.name else {
-            return []
-        }
-
-        for compilerProtocol in ExpressibleByCompiler.allProtocols {
-            guard compilerProtocol.initCallNames.contains(name),
-                case let arguments = dictionary.enclosedArguments.compactMap({ $0.name }),
-                compilerProtocol.match(arguments: arguments),
-                let range = dictionary.byteRange.flatMap(file.stringView.byteRangeToNSRange)
-            else {
-                continue
+private extension CompilerProtocolInitRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard node.trailingClosure == nil else {
+                return
             }
 
-            return [(compilerProtocol, range)]
+            let arguments = node.argumentList.compactMap(\.label)
+            guard ExpressibleByCompiler.possibleNumberOfArguments.contains(arguments.count) else {
+                return
+            }
+
+            guard let name = node.functionName, ExpressibleByCompiler.allInitNames.contains(name) else {
+                return
+            }
+
+            let argumentsNames = arguments.map(\.text)
+            for compilerProtocol in ExpressibleByCompiler.allProtocols {
+                guard compilerProtocol.initCallNames.contains(name),
+                    compilerProtocol.match(arguments: argumentsNames) else {
+                    continue
+                }
+
+                violations.append(ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: violationReason(protocolName: compilerProtocol.protocolName)
+                ))
+                return
+            }
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    // doing this instead of calling `.description` as it's faster
+    var functionName: String? {
+        if let expr = calledExpression.as(IdentifierExprSyntax.self) {
+            return expr.identifier.text
+        } else if let expr = calledExpression.as(MemberAccessExprSyntax.self),
+                  let base = expr.base?.as(IdentifierExprSyntax.self) {
+            return base.identifier.text + "." + expr.name.text
         }
 
-        return []
+        // we don't care about other possible expressions as they wouldn't match the calls we're interested in
+        return nil
     }
 }
 
 private struct ExpressibleByCompiler {
     let protocolName: String
     let initCallNames: Set<String>
-    private let arguments: [[String]]
+    private let arguments: Set<[String]>
 
-    init(protocolName: String, types: Set<String>, arguments: [[String]]) {
+    init(protocolName: String, types: Set<String>, arguments: Set<[String]>) {
         self.protocolName = protocolName
         self.arguments = arguments
 
@@ -81,8 +100,20 @@ private struct ExpressibleByCompiler {
                                byExtendedGraphemeClusterLiteral, byStringLiteral,
                                byStringInterpolation, byDictionaryLiteral]
 
+    static let possibleNumberOfArguments: Set<Int> = {
+        allProtocols.reduce(into: Set<Int>()) { partialResult, entry in
+            partialResult.insert(entry.arguments.count)
+        }
+    }()
+
+    static let allInitNames: Set<String> = {
+        allProtocols.reduce(into: Set<String>()) { partialResult, entry in
+            partialResult.formUnion(entry.initCallNames)
+        }
+    }()
+
     func match(arguments: [String]) -> Bool {
-        return self.arguments.contains { $0 == arguments }
+        return self.arguments.contains(arguments)
     }
 
     private static let byArrayLiteral: ExpressibleByCompiler = {

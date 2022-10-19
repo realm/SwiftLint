@@ -136,6 +136,7 @@
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`
   - `untyped_error_in_catch`
+  - `unused_capture_list`
   - `unused_closure_parameter`
   - `unused_control_flow_label`
   - `unused_enumerated`

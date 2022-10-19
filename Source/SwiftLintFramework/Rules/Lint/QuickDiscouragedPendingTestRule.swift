@@ -32,7 +32,7 @@ private extension QuickDiscouragedPendingTestRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.isQuickSpec ? .visitChildren : .skipChildren
+            node.containsInheritance ? .visitChildren : .skipChildren
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -42,14 +42,12 @@ private extension QuickDiscouragedPendingTestRule {
 }
 
 private extension ClassDeclSyntax {
-    var isQuickSpec: Bool {
+    var containsInheritance: Bool {
         guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
             return false
         }
 
-        return inheritanceList.contains { type in
-            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "QuickSpec"
-        }
+        return inheritanceList.isNotEmpty
     }
 }
 

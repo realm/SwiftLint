@@ -322,6 +322,13 @@ private extension SwiftLintFile {
                 }
             }
 
+            if (offset + length) == byteRange.lowerBound,
+               let stringAtOffset = stringView
+                .substringWithByteRange(ByteRange(location: byteRange.lowerBound, length: 1)),
+               stringAtOffset.allSatisfy(\.isWhitespace) {
+                return nil
+            }
+
             let syntaxToken = SyntaxToken(type: syntaxKind.rawValue, offset: offset, length: length)
             return SwiftLintSyntaxToken(value: syntaxToken)
         }

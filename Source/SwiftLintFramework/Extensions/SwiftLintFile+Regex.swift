@@ -100,10 +100,10 @@ extension SwiftLintFile {
                                    range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
         let contents = stringView
         let range = range ?? contents.range
+        let syntax = syntaxMap
         return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location, length: match.range.length)
-            return matchByteRange
-                .map { (match, SwiftSyntaxSourceKitBridge.tokens(file: self, in: $0)) }
+            return matchByteRange.map { (match, syntax.tokens(inByteRange: $0)) }
         }
     }
 

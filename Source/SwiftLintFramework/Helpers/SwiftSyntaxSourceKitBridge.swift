@@ -6,11 +6,7 @@ import SwiftSyntax
 
 /// Holds code to bridge SwiftSyntax concepts to SourceKit concepts.
 enum SwiftSyntaxSourceKitBridge {
-    static func tokens(file: SwiftLintFile, in byteRange: ByteRange) -> [SwiftLintSyntaxToken] {
-        file.tokens(in: byteRange)
-    }
-
-    static func allTokens(file: SwiftLintFile) -> [SwiftLintSyntaxToken] {
+    static func tokens(file: SwiftLintFile) -> [SwiftLintSyntaxToken] {
         file.allTokens()
     }
 }

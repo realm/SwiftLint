@@ -62,7 +62,7 @@ private extension SwiftLintFile {
                     // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
                     return nil
                 } else if AccessControlLevel(description: substring) != nil || substring == "final" ||
-                            substring == "lazy" {
+                            substring == "lazy" || substring == "convenience" {
                     // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in
                     // attributes.
                     syntaxKind = .attributeBuiltin
@@ -109,7 +109,8 @@ private extension SwiftLintFile {
 
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
         let old = oldSyntaxMap.tokens
-        if new != old, !old.contains(where: { $0.kind == .commentURL }) {
+        let (shouldCompare, oldToCompare, newToCompare) = shouldCompare(old: old, new: new)
+        if shouldCompare {
             if let path = path {
                 queuedPrint("File Path: \(path)")
             } else {
@@ -117,83 +118,14 @@ private extension SwiftLintFile {
             }
 
             queuedPrint("Old")
-            queuedPrint(old)
+            queuedPrint(oldToCompare)
             queuedPrint("New")
-            queuedPrint(new)
+            queuedPrint(newToCompare)
             queuedPrint("Classifications")
             var desc = ""
             dump(classifications, to: &desc)
             queuedFatalError(desc)
         }
-        return new
-    }
-
-    func tokens(in byteRange: ByteRange) -> [SwiftLintSyntaxToken] {
-        let visitor = QuoteVisitor(viewMode: .sourceAccurate)
-        let syntaxTree = self.syntaxTree
-        visitor.walk(syntaxTree)
-        let openQuoteRanges = visitor.openQuoteRanges.sorted(by: { $0.offset < $1.offset })
-        let closeQuoteRanges = visitor.closeQuoteRanges.sorted(by: { $0.offset < $1.offset })
-        let byteSourceRange = ByteSourceRange(offset: byteRange.location.value, length: byteRange.length.value)
-        let classifications = syntaxTree.classifications(in: byteSourceRange)
-        let new = classifications.compactMap { classification -> SwiftLintSyntaxToken? in
-            guard var syntaxKind = classification.kind.toSyntaxKind() else {
-                return nil
-            }
-
-            var offset = ByteCount(classification.offset)
-            var length = ByteCount(classification.length)
-
-            let lastCharRange = ByteRange(location: offset + length, length: 1)
-            if syntaxKind.isCommentLike,
-               classification.kind != .docBlockComment,
-               stringView.substringWithByteRange(lastCharRange)?.allSatisfy(\.isNewline) == true {
-                length += 1
-            } else if syntaxKind == .string {
-                if let openQuote = openQuoteRanges.first(where: { $0.intersectsOrTouches(classification.range) }) {
-                    let diff = offset - ByteCount(openQuote.offset)
-                    offset = ByteCount(openQuote.offset)
-                    length += diff
-                }
-
-                if let closeQuote = closeQuoteRanges.first(where: { $0.intersectsOrTouches(classification.range) }) {
-                    length = ByteCount(closeQuote.endOffset) - offset
-                }
-           }
-
-            if syntaxKind == .keyword,
-               case let byteRange = ByteRange(location: offset, length: length),
-               let substring = stringView.substringWithByteRange(byteRange) {
-                if substring == "Self" {
-                    // SwiftSyntax considers 'Self' a keyword, but SourceKit considers it a type identifier.
-                    syntaxKind = .typeidentifier
-                } else if substring == "throws" {
-                    // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
-                    return nil
-                } else if AccessControlLevel(description: substring) != nil {
-                    // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in
-                    // attributes.
-                    syntaxKind = .attributeBuiltin
-                }
-            }
-
-            let syntaxToken = SyntaxToken(type: syntaxKind.rawValue, offset: offset, length: length)
-            return SwiftLintSyntaxToken(value: syntaxToken)
-        }
-        // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
-//        let old = syntaxMap.tokens(inByteRange: byteRange)
-//        if new != old {
-//            queuedPrint("File: \(self.path!)")
-//            queuedPrint("Requested byte range: \(byteRange)")
-//            queuedPrint("Old")
-//            queuedPrint(old)
-//            queuedPrint("New")
-//            queuedPrint(new)
-//            queuedPrint("Classifications")
-//            var desc = ""
-//            dump(classifications, to: &desc)
-//            queuedFatalError(desc)
-//        }
         return new
     }
 }
@@ -275,4 +207,19 @@ private final class QuoteVisitor: SyntaxVisitor {
             closeQuoteRanges.append(range)
         }
     }
+}
+
+private func shouldCompare(old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
+    -> (Bool, old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
+{
+    guard old != new else {
+        return (false, old, new)
+    }
+
+    let containsSubCommentKinds = old.contains { [.commentURL, .docCommentField].contains($0.kind) }
+    if containsSubCommentKinds {
+        return (true, old.filter { $0.kind?.isCommentLike == true }, new.filter { $0.kind?.isCommentLike == true })
+    }
+
+    return (true, old, new)
 }

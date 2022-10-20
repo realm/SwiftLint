@@ -36,6 +36,7 @@ private extension SwiftLintFile {
             let lastCharRange = ByteRange(location: offset + length, length: 1)
             if syntaxKind.isCommentLike,
                classification.kind != .docBlockComment,
+               classification.kind != .blockComment,
                stringView.substringWithByteRange(lastCharRange)?.allSatisfy(\.isNewline) == true {
                 length += 1
             } else if syntaxKind == .string {
@@ -72,7 +73,12 @@ private extension SwiftLintFile {
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
         let old = oldSyntaxMap.tokens
         if new != old {
-            queuedPrint("File: \(self.path ?? "<nopath>")")
+            if let path = path {
+                queuedPrint("File Path: \(path)")
+            } else {
+                queuedPrint("File Contents: \(contents)")
+            }
+
             queuedPrint("Old")
             queuedPrint(old)
             queuedPrint("New")

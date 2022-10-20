@@ -38,6 +38,13 @@ public struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, Configur
                 let bar = ""
                 return bar
             }
+            """),
+            Example("""
+            if condition() {
+                let result = somethingElse()
+                print(result)
+                exit()
+            }
             """)
         ],
         triggeringExamples: [
@@ -88,6 +95,10 @@ private extension PrefixedTopLevelConstantRule {
 
                 violations.append(binding.pattern.positionAfterSkippingLeadingTrivia)
             }
+        }
+
+        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
         }
     }
 }

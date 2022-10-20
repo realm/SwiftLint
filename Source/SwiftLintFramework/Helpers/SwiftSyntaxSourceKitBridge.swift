@@ -218,7 +218,7 @@ private func shouldCompare(old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxTok
 
     let containsSubCommentKinds = old.contains { [.commentURL, .docCommentField].contains($0.kind) }
     if containsSubCommentKinds {
-        return (true, old.filter { $0.kind?.isCommentLike == true }, new.filter { $0.kind?.isCommentLike == true })
+        return (true, old.filter { $0.kind?.isCommentLike != true }, new.filter { $0.kind?.isCommentLike != true })
     }
 
     return (true, old, new)

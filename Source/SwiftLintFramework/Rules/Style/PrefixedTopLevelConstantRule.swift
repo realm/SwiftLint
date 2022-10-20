@@ -32,7 +32,13 @@ public struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, Configur
             "}"),
             Example("let kFoo = {\n" +
             "   return a + b\n" +
-            "}()")
+            "}()"),
+            Example("""
+            var foo: String {
+                let bar = ""
+                return bar
+            }
+            """)
         ],
         triggeringExamples: [
             Example("private let ↓Foo = 20.0"),

@@ -116,6 +116,7 @@ public let primaryRuleList = RuleList(rules: [
     MultipleClosuresWithTrailingClosureRule.self,
     NSLocalizedStringKeyRule.self,
     NSLocalizedStringRequireBundleRule.self,
+    NSNumberInitAsFunctionReferenceRule.self,
     NSObjectPreferIsEqualRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,

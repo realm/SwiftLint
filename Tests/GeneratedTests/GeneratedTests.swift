@@ -684,6 +684,12 @@ class NSLocalizedStringRequireBundleRuleGeneratedTests: XCTestCase {
     }
 }
 
+class NSNumberInitAsFunctionReferenceRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSNumberInitAsFunctionReferenceRule.description)
+    }
+}
+
 class NSObjectPreferIsEqualRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSObjectPreferIsEqualRule.description)

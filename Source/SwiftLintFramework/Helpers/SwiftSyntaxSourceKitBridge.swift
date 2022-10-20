@@ -70,6 +70,8 @@ private extension SwiftLintFile {
                     // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in
                     // attributes.
                     syntaxKind = .attributeBuiltin
+                } else if substring == "for" && stringView.substringWithByteRange(lastCharRange) == ":" {
+                    syntaxKind = .identifier
                 }
             }
 

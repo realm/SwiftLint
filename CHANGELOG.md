@@ -210,9 +210,6 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4420](https://github.com/realm/SwiftLint/issues/4420)
 
-* `type_name` rule now also validates protocol declarations.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

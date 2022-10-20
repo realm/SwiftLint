@@ -75,13 +75,6 @@ private extension TypeNameRule {
             }
         }
 
-        override func visitPost(_ node: ProtocolDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
-                violations.append(violation)
-            }
-        }
-
         private func violation(identifier: TokenSyntax,
                                modifiers: ModifierListSyntax?,
                                inheritedTypes: InheritedTypeListSyntax?) -> ReasonedRuleViolation? {

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
+public struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public static let description = RuleDescription(

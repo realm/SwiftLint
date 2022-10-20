@@ -33,6 +33,9 @@ private let commandsCache = Cache { file -> [Command] in
     return CommandVisitor(locationConverter: file.locationConverter)
         .walk(file: file, handler: \.commands)
 }
+private let oldSyntaxMapCache = Cache { file -> SwiftLintSyntaxMap? in
+    responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
+}
 private let syntaxMapCache = Cache { file -> SwiftLintSyntaxMap? in // TODO: Remove optional
     SwiftLintSyntaxMap(value: SyntaxMap(tokens: SwiftSyntaxSourceKitBridge.allTokens(file: file).map(\.value)))
 }
@@ -158,6 +161,17 @@ extension SwiftLintFile {
         return syntaxMap
     }
 
+    internal var oldSyntaxMap: SwiftLintSyntaxMap {
+        guard let syntaxMap = oldSyntaxMapCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SwiftLintSyntaxMap(value: SyntaxMap(data: []))
+            }
+            queuedFatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntaxMap
+    }
+
     internal var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
 
     internal var locationConverter: SourceLocationConverter {
@@ -196,6 +210,7 @@ extension SwiftLintFile {
         structureCache.invalidate(self)
         structureDictionaryCache.invalidate(self)
         syntaxMapCache.invalidate(self)
+        oldSyntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
@@ -209,6 +224,7 @@ extension SwiftLintFile {
         structureCache.clear()
         structureDictionaryCache.clear()
         syntaxMapCache.clear()
+        oldSyntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
         syntaxTreeCache.clear()

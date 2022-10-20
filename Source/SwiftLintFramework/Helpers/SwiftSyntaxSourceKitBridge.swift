@@ -70,9 +70,9 @@ private extension SwiftLintFile {
             return SwiftLintSyntaxToken(value: syntaxToken)
         }
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
-        let old = syntaxMap.tokens
+        let old = oldSyntaxMap.tokens
         if new != old {
-            queuedPrint("File: \(self.path!)")
+            queuedPrint("File: \(self.path ?? "<nopath>")")
             queuedPrint("Old")
             queuedPrint(old)
             queuedPrint("New")

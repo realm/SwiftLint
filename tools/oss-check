@@ -295,6 +295,7 @@ end
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),
   Repo.new('Moya', 'Moya/Moya'),
   Repo.new('Nimble', 'Quick/Nimble'),
+  Repo.new('Pocket Casts', 'Automattic/pocket-casts-ios'),
   Repo.new('Quick', 'Quick/Quick'),
   Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('SourceKitten', 'jpsim/SourceKitten'),

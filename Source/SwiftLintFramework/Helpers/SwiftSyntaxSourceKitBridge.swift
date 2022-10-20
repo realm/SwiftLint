@@ -1,6 +1,8 @@
 import SourceKittenFramework
 import SwiftSyntax
 
+// swiftlint:disable cyclomatic_complexity function_body_length
+
 // This file contains a pile of hacks in order to convert the syntax classifications provided by SwiftSyntax to the
 // data that SourceKit used to provide.
 
@@ -209,17 +211,17 @@ private final class QuoteVisitor: SyntaxVisitor {
     }
 }
 
-//private func shouldCompare(old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
-//    -> (Bool, old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
-//{
-//    guard old != new else {
-//        return (false, old, new)
-//    }
+// private func shouldCompare(old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
+//     -> (Bool, old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
+// {
+//     guard old != new else {
+//         return (false, old, new)
+//     }
 //
-//    let containsSubCommentKinds = old.contains { [.commentURL, .docCommentField].contains($0.kind) }
-//    if containsSubCommentKinds {
-//        return (true, old.filter { $0.kind?.isCommentLike != true }, new.filter { $0.kind?.isCommentLike != true })
-//    }
+//     let containsSubCommentKinds = old.contains { [.commentURL, .docCommentField].contains($0.kind) }
+//     if containsSubCommentKinds {
+//         return (true, old.filter { $0.kind?.isCommentLike != true }, new.filter { $0.kind?.isCommentLike != true })
+//     }
 //
-//    return (true, old, new)
-//}
+//     return (true, old, new)
+// }

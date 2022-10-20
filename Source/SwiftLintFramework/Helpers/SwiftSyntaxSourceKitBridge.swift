@@ -108,24 +108,24 @@ private extension SwiftLintFile {
         }
 
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
-        let old = oldSyntaxMap.tokens
-        let (shouldCompare, oldToCompare, newToCompare) = shouldCompare(old: old, new: new)
-        if shouldCompare {
-            if let path = path {
-                queuedPrint("File Path: \(path)")
-            } else {
-                queuedPrint("File Contents: \(contents)")
-            }
-
-            queuedPrint("Old")
-            queuedPrint(oldToCompare)
-            queuedPrint("New")
-            queuedPrint(newToCompare)
-            queuedPrint("Classifications")
-            var desc = ""
-            dump(classifications, to: &desc)
-            queuedFatalError(desc)
-        }
+//        let old = oldSyntaxMap.tokens
+//        let (shouldCompare, oldToCompare, newToCompare) = shouldCompare(old: old, new: new)
+//        if shouldCompare {
+//            if let path = path {
+//                queuedPrint("File Path: \(path)")
+//            } else {
+//                queuedPrint("File Contents: \(contents)")
+//            }
+//
+//            queuedPrint("Old")
+//            queuedPrint(oldToCompare)
+//            queuedPrint("New")
+//            queuedPrint(newToCompare)
+//            queuedPrint("Classifications")
+//            var desc = ""
+//            dump(classifications, to: &desc)
+//            queuedFatalError(desc)
+//        }
         return new
     }
 }
@@ -209,17 +209,17 @@ private final class QuoteVisitor: SyntaxVisitor {
     }
 }
 
-private func shouldCompare(old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
-    -> (Bool, old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
-{
-    guard old != new else {
-        return (false, old, new)
-    }
-
-    let containsSubCommentKinds = old.contains { [.commentURL, .docCommentField].contains($0.kind) }
-    if containsSubCommentKinds {
-        return (true, old.filter { $0.kind?.isCommentLike != true }, new.filter { $0.kind?.isCommentLike != true })
-    }
-
-    return (true, old, new)
-}
+//private func shouldCompare(old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
+//    -> (Bool, old: [SwiftLintSyntaxToken], new: [SwiftLintSyntaxToken])
+//{
+//    guard old != new else {
+//        return (false, old, new)
+//    }
+//
+//    let containsSubCommentKinds = old.contains { [.commentURL, .docCommentField].contains($0.kind) }
+//    if containsSubCommentKinds {
+//        return (true, old.filter { $0.kind?.isCommentLike != true }, new.filter { $0.kind?.isCommentLike != true })
+//    }
+//
+//    return (true, old, new)
+//}

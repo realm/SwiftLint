@@ -2,10 +2,7 @@ import Foundation
 import SwiftSyntax
 
 public struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = NameConfiguration(minLengthWarning: 3,
-                                                 minLengthError: 0,
-                                                 maxLengthWarning: 40,
-                                                 maxLengthError: 1000)
+    public var configuration = TypeNameRuleConfiguration()
 
     public init() {}
 
@@ -27,9 +24,9 @@ public struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
 
 private extension TypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: NameConfiguration
+        private let configuration: TypeNameRuleConfiguration
 
-        init(configuration: NameConfiguration) {
+        init(configuration: TypeNameRuleConfiguration) {
             self.configuration = configuration
             super.init(viewMode: .sourceAccurate)
         }
@@ -75,18 +72,28 @@ private extension TypeNameRule {
             }
         }
 
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if configuration.validateProtocols,
+               let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+                violations.append(violation)
+            }
+        }
+
         private func violation(identifier: TokenSyntax,
                                modifiers: ModifierListSyntax?,
                                inheritedTypes: InheritedTypeListSyntax?) -> ReasonedRuleViolation? {
             let originalName = identifier.text
-            guard !configuration.excluded.contains(originalName) else {
+            let nameConfiguration = configuration.nameConfiguration
+
+            guard !nameConfiguration.excluded.contains(originalName) else {
                 return nil
             }
 
             let name = originalName
                 .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
                 .strippingTrailingSwiftUIPreviewProvider(inheritedTypes: inheritedTypes)
-            let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+            let allowedSymbols = nameConfiguration.allowedSymbols.union(.alphanumerics)
 
             if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
                 return ReasonedRuleViolation(
@@ -94,18 +101,18 @@ private extension TypeNameRule {
                     reason: "Type name should only contain alphanumeric characters: '\(name)'",
                     severity: .error
                 )
-            } else if configuration.validatesStartWithLowercase &&
+            } else if nameConfiguration.validatesStartWithLowercase &&
                 name.first?.isLowercase == true {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name should start with an uppercase character: '\(name)'",
                     severity: .error
                 )
-            } else if let severity = configuration.severity(forLength: name.count) {
+            } else if let severity = nameConfiguration.severity(forLength: name.count) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
-                    reason: "Type name should be between \(configuration.minLengthThreshold) and " +
-                            "\(configuration.maxLengthThreshold) characters long: '\(name)'",
+                    reason: "Type name should be between \(nameConfiguration.minLengthThreshold) and " +
+                            "\(nameConfiguration.maxLengthThreshold) characters long: '\(name)'",
                     severity: severity
                 )
             }

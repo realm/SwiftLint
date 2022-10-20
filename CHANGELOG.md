@@ -142,6 +142,7 @@
   - `trailing_comma`
   - `trailing_semicolon`
   - `type_body_length`
+  - `type_name`
   - `unneeded_break_in_switch`
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`

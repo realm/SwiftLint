@@ -24,8 +24,8 @@ private extension SwiftLintFile {
         visitor.walk(syntaxTree)
         let openQuoteRanges = visitor.openQuoteRanges.sorted(by: { $0.offset < $1.offset })
         let closeQuoteRanges = visitor.closeQuoteRanges.sorted(by: { $0.offset < $1.offset })
-        let classifications = syntaxTree.classifications
-        let new = classifications.compactMap { classification -> SwiftLintSyntaxToken? in
+        let classifications = Array(syntaxTree.classifications)
+        let new = classifications.enumerated().compactMap { index, classification -> SwiftLintSyntaxToken? in
             guard var syntaxKind = classification.kind.toSyntaxKind() else {
                 return nil
             }
@@ -37,6 +37,7 @@ private extension SwiftLintFile {
             if syntaxKind.isCommentLike,
                classification.kind != .docBlockComment,
                classification.kind != .blockComment,
+               index != classifications.count - 1, // Don't adjust length if this is the last classification
                stringView.substringWithByteRange(lastCharRange)?.allSatisfy(\.isNewline) == true {
                 length += 1
             } else if syntaxKind == .string {
@@ -49,7 +50,7 @@ private extension SwiftLintFile {
                 if let closeQuote = closeQuoteRanges.first(where: { $0.intersectsOrTouches(classification.range) }) {
                     length = ByteCount(closeQuote.endOffset) - offset
                 }
-           }
+            }
 
             if syntaxKind == .keyword,
                case let byteRange = ByteRange(location: offset, length: length),

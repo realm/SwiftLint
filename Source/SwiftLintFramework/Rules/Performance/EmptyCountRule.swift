@@ -53,7 +53,7 @@ private extension EmptyCountRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        private let operators: Set = ["==", "!=", ">", ">=", "<="]
+        private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
 
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),

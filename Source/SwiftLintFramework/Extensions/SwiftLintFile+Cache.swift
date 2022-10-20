@@ -33,7 +33,7 @@ private let commandsCache = Cache { file -> [Command] in
     return CommandVisitor(locationConverter: file.locationConverter)
         .walk(file: file, handler: \.commands)
 }
-private let syntaxMapCache = Cache { file -> SwiftLintSyntaxMap in
+private let syntaxMapCache = Cache { file in
     SwiftLintSyntaxMap(value: SyntaxMap(tokens: SwiftSyntaxSourceKitBridge.tokens(file: file).map(\.value)))
 }
 private let syntaxKindsByLinesCache = Cache { file in file.syntaxKindsByLine() }

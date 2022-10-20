@@ -68,7 +68,7 @@ private extension SwiftLintFile {
         }
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
 //        let old = syntaxMap.tokens(inByteRange: byteRange)
-//        if new != old, !new.contains(where: { $0.shouldIgnoreMismatches() }) {
+//        if new != old {
 //            queuedPrint("File: \(self.path!)")
 //            queuedPrint("Requested byte range: \(byteRange)")
 //            queuedPrint("Old")

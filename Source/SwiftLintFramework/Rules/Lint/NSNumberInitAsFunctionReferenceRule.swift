@@ -1,14 +1,14 @@
 import SwiftSyntax
 
 // this rule exists due to a compiler bug: https://github.com/apple/swift/issues/51036
-public struct NSNumberDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+public struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "ns_number_direct_init",
-        name: "NSNumber Direct Init",
+        identifier: "ns_number_init_as_function_reference",
+        name: "NSNumber Init as Function Reference",
         description: "Passing `NSNumber.init` or `NSDecimalNumber.init` as a function reference is dangerous " +
                      "as it can cause the wrong initializer to be used, causing crashes. Use `.init(value:)` instead.",
         kind: .lint,
@@ -29,7 +29,7 @@ public struct NSNumberDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule
     }
 }
 
-private extension NSNumberDirectInitRule {
+private extension NSNumberInitAsFunctionReferenceRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard node.declNameArguments.isEmptyOrNil,

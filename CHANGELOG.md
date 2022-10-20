@@ -40,8 +40,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4107](https://github.com/realm/SwiftLint/issues/4107)
 
-* Add new `ns_number_direct_init` rule to catch `NSNumber.init` and
-  `NSDecimalNumber.init` being used as function references since it
+* Add new `ns_number_init_as_function_reference` rule to catch `NSNumber.init`
+  and `NSDecimalNumber.init` being used as function references since it
   can cause the wrong initializer to be used, causing crashes. See
   https://github.com/apple/swift/issues/51036 for more info.  
   [Marcelo Fabri](https://github.com/marcelofabri)

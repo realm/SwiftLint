@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
+public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     public var configuration = EmptyCountConfiguration()
 
     public init() {}
@@ -23,6 +23,8 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         ],
         triggeringExamples: [
             Example("[Int]().↓count == 0\n"),
+            Example("0 == [Int]().↓count\n"),
+            Example("[Int]().↓count==0\n"),
             Example("[Int]().↓count > 0\n"),
             Example("[Int]().↓count != 0\n"),
             Example("[Int]().↓count == 0x0\n"),
@@ -33,20 +35,96 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let defaultPattern = #"\bcount\s*(==|!=|<|<=|>|>=)\s*0(\b|([box][0_]+\b){1})"#
-        let prefixPattern = configuration.onlyAfterDot ? #"\."# : ""
-        let pattern = prefixPattern + defaultPattern
+    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+        syntaxTree.folded()
+    }
 
-        // Offset the violation location in case `only_after_dot` is turned on,
-        // to compensate for the pattern matching the dot
-        let offset = configuration.onlyAfterDot ? 1 : 0
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(onlyAfterDot: configuration.onlyAfterDot)
+    }
+}
 
-        let excludingKinds = SyntaxKind.commentAndStringKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location + offset))
+private extension EmptyCountRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let onlyAfterDot: Bool
+
+        init(onlyAfterDot: Bool) {
+            self.onlyAfterDot = onlyAfterDot
+            super.init(viewMode: .sourceAccurate)
         }
+
+        private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
+
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  let binaryOperator = operatorNode.operatorToken.binaryOperator,
+                  operators.contains(binaryOperator) else {
+                return
+            }
+
+            if let intExpr = node.rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+               let position = node.leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+                violations.append(position)
+                return
+            }
+
+            if let intExpr = node.leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+               let position = node.rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+                violations.append(position)
+                return
+            }
+        }
+    }
+}
+
+private extension ExprSyntax {
+    func countCallPosition(onlyAfterDot: Bool) -> AbsolutePosition? {
+        if let expr = self.as(MemberAccessExprSyntax.self) {
+            if expr.declNameArguments == nil && expr.name.tokenKind == .identifier("count") {
+                return expr.name.positionAfterSkippingLeadingTrivia
+            }
+
+            return nil
+        }
+
+        if !onlyAfterDot, let expr = self.as(IdentifierExprSyntax.self) {
+            return expr.identifier.tokenKind == .identifier("count") ? expr.positionAfterSkippingLeadingTrivia : nil
+        }
+
+        return nil
+    }
+}
+
+private extension TokenSyntax {
+    var binaryOperator: String? {
+        switch tokenKind {
+        case .spacedBinaryOperator(let str), .unspacedBinaryOperator(let str):
+            return str
+        default:
+            return nil
+        }
+    }
+}
+
+private extension IntegerLiteralExprSyntax {
+    var isZero: Bool {
+        guard case var .integerLiteral(number) = digits.tokenKind else {
+            return false
+        }
+
+        number = number.lowercased()
+        for prefix in ["0x", "0o", "0b"] {
+            number = number.deletingPrefix(prefix)
+        }
+
+        number = number.replacingOccurrences(of: "_", with: "")
+        return Int(number) == 0
+    }
+}
+
+private extension String {
+    func deletingPrefix(_ prefix: String) -> String {
+        guard hasPrefix(prefix) else { return self }
+        return String(dropFirst(prefix.count))
     }
 }

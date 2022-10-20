@@ -123,6 +123,7 @@
   - `redundant_string_enum_value`
   - `self_in_property_initialization`
   - `shorthand_operator`
+  - `single_test_class`
   - `sorted_first_last`
   - `static_operator`
   - `strict_fileprivate`

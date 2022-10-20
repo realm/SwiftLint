@@ -27,7 +27,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.1.3")),
-        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .revision("7eb7c76540b1706fbe1fd8c26b627ba00530797b")),
+        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .revision("75492a3ea7498572a30beb1e3c5cfb073da8e753")),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .revision("a9e6df65d8e31e0fa6e8a05ffe40ecd54a645871")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.1"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),

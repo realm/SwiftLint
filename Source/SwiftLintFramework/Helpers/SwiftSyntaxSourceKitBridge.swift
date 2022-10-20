@@ -102,6 +102,8 @@ private extension SwiftLintFile {
             } else if asdf.kind == .attributeBuiltin && asdf.length == 1 && new1[index + 1].kind == .keyword {
                 eatNext = true
                 new.append(asdf)
+            } else if asdf.kind == .attributeBuiltin && asdf.length == 1 && new1[index + 1].kind == .typeidentifier {
+                continue
             } else {
                 new.append(asdf)
             }

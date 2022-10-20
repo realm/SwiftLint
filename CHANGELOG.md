@@ -132,6 +132,7 @@
   - `trailing_comma`
   - `trailing_semicolon`
   - `type_body_length`
+  - `type_name`
   - `unneeded_break_in_switch`
   - `unneeded_parentheses_in_closure_argument`
   - `unowned_variable_capture`
@@ -208,6 +209,9 @@
   `QuickSpec`.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4420](https://github.com/realm/SwiftLint/issues/4420)
+
+* `type_name` rule now also validates protocol declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

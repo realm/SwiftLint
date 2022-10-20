@@ -1,6 +1,6 @@
-public struct PrefixedConstantRuleConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var onlyPrivateMembers = false
+public struct PrefixedConstantRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public var severityConfiguration = SeverityConfiguration(.warning)
+    public var onlyPrivateMembers = false
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", only_private: \(onlyPrivateMembers)"

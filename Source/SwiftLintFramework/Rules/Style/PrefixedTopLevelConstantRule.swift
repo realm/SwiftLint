@@ -1,9 +1,7 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
-
-    private let topLevelPrefix = "k"
 
     public init() {}
 
@@ -42,7 +40,6 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
             Example("internal let ↓Foo = \"Foo\""),
             Example("let ↓Foo = true"),
             Example("let ↓foo = 2, ↓bar = true"),
-            Example("var foo = true, let ↓Foo = true"),
             Example("let\n" +
             "    ↓foo = true"),
             Example("let ↓foo = {\n" +
@@ -51,28 +48,52 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        if configuration.onlyPrivateMembers,
-            let acl = dictionary.accessibility, !acl.isPrivate {
-            return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(onlyPrivateMembers: configuration.onlyPrivateMembers)
+    }
+}
+
+private extension PrefixedTopLevelConstantRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let onlyPrivateMembers: Bool
+        private let topLevelPrefix = "k"
+
+        init(onlyPrivateMembers: Bool) {
+            self.onlyPrivateMembers = onlyPrivateMembers
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard
-            kind == .varGlobal,
-            dictionary.setterAccessibility == nil,
-            dictionary.bodyLength == nil,
-            dictionary.name?.hasPrefix(topLevelPrefix) == false,
-            let nameOffset = dictionary.nameOffset
-            else {
-                return []
-        }
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, byteOffset: nameOffset))
-        ]
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard node.letOrVarKeyword.tokenKind == .letKeyword else {
+                return
+            }
+
+            if onlyPrivateMembers, !node.modifiers.isPrivateOrFilePrivate {
+                return
+            }
+
+            for binding in node.bindings {
+                guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
+                      !pattern.identifier.text.hasPrefix(topLevelPrefix) else {
+                    continue
+                }
+
+                violations.append(binding.pattern.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+}
+
+private extension ModifierListSyntax? {
+    var isPrivateOrFilePrivate: Bool {
+        self?.contains(where: \.isPrivateOrFilePrivate) ?? false
+    }
+}
+
+private extension ModifierListSyntax.Element {
+    var isPrivateOrFilePrivate: Bool {
+        (name.text == "private" || name.text == "fileprivate") && detail == nil
     }
 }

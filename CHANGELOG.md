@@ -103,6 +103,7 @@
   - `no_extension_access_modifier`
   - `no_fallthrough_only`
   - `no_space_in_method_call`
+  - `notification_center_detachment`
   - `nslocalizedstring_require_bundle`
   - `nsobject_prefer_isequal`
   - `number_separator`

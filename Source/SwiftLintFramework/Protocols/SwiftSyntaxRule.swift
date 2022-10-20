@@ -170,7 +170,7 @@ extension Array where Element == DeclSyntaxProtocol.Type {
         ExtensionDeclSyntax.self,
         ProtocolDeclSyntax.self,
         StructDeclSyntax.self,
-        VariableDeclSyntax.self,
+        VariableDeclSyntax.self
     ]
 
     /// Useful for class-specific checks since extensions and protocols do not allow nested classes.

@@ -33,7 +33,9 @@ public struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProvid
 
 private extension IBInspectableInExtensionRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            .allExcept(ExtensionDeclSyntax.self, VariableDeclSyntax.self)
+        }
 
         override func visitPost(_ node: AttributeSyntax) {
             if node.attributeName.text == "IBInspectable" {

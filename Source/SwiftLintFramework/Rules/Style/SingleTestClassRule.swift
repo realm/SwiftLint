@@ -40,6 +40,11 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
             ↓class FooTests: QuickSpec {  }
             ↓class BarTests: XCTestCase {  }
             class TotoTests {  }
+            """),
+            Example("""
+            final ↓class FooTests: QuickSpec {  }
+            ↓class BarTests: XCTestCase {  }
+            class TotoTests {  }
             """)
         ]
     )
@@ -71,7 +76,7 @@ private class TestClassVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        violations.append(node.positionAfterSkippingLeadingTrivia)
+        violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
     }
 }
 

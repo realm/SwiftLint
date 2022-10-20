@@ -73,6 +73,7 @@
   - `explicit_enum_raw_value`
   - `explicit_init`
   - `fallthrough`
+  - `file_name`
   - `first_where`
   - `flatmap_over_map_reduce`
   - `force_try`

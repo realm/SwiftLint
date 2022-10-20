@@ -1,7 +1,7 @@
 internal struct TypeNameRuleExamples {
     static let nonTriggeringExamples: [Example] = {
         let typeExamples = [
-            Example("class MyType {}"),
+            Example("class MyType {} "),
             Example("private struct _MyType {}"),
             Example("enum \(repeatElement("A", count: 40).joined()) {}"),
             Example("struct MyView_Previews: PreviewProvider", excludeFromDocumentation: true),

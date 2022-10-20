@@ -116,6 +116,7 @@
   - `protocol_property_accessors_order`
   - `quick_discouraged_focused_test`
   - `quick_discouraged_pending_test`
+  - `raw_value_for_camel_cased_codable_enum`
   - `reduce_boolean`
   - `redundant_discardable_let`
   - `redundant_nil_coalescing`

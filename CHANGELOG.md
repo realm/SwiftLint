@@ -203,6 +203,12 @@
 * Print violations in realtime if `--progress` and `--output` are both set.  
   [JP Simard](https://github.com/jpsim)
 
+* `quick_discouraged_call`, `quick_discouraged_focused_test` and
+  `quick_discouraged_pending_test` rules now trigger on subclasses of
+  `QuickSpec`.
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#4420](https://github.com/realm/SwiftLint/issues/4420)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

@@ -1,20 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds + [.extension, .protocol]
-
-private extension SourceKittenDictionary {
-    func recursiveDeclaredTypeNames() -> [String] {
-        let subNames = substructure.flatMap { $0.recursiveDeclaredTypeNames() }
-        if let kind = declarationKind,
-            typeAndExtensionKinds.contains(kind), let name = name {
-            return [name] + subNames
-        }
-        return subNames
-    }
-}
-
-public struct FileNameRule: ConfigurationProviderRule, OptInRule {
+public struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
     public var configuration = FileNameConfiguration(
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],
@@ -57,10 +43,11 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         }
 
         // Process nested type separator
-        let dictionary = file.structureDictionary
-        let allDeclaredTypeNames = dictionary.recursiveDeclaredTypeNames().map {
-            $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
-        }
+        let allDeclaredTypeNames = TypeNameCollectingVisitor(viewMode: .sourceAccurate)
+            .walk(tree: file.syntaxTree, handler: \.names)
+            .map {
+                $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
+            }
 
         guard allDeclaredTypeNames.isNotEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
             return []
@@ -69,5 +56,37 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         return [StyleViolation(ruleDescription: Self.description,
                                severity: configuration.severity.severity,
                                location: Location(file: filePath, line: 1))]
+    }
+}
+
+private class TypeNameCollectingVisitor: SyntaxVisitor {
+    private(set) var names: Set<String> = []
+
+    override func visitPost(_ node: ClassDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: ActorDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: StructDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: TypealiasDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: EnumDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        names.insert(node.identifier.text)
+    }
+
+    override func visitPost(_ node: ExtensionDeclSyntax) {
+        names.insert(node.extendedType.withoutTrivia().description)
     }
 }

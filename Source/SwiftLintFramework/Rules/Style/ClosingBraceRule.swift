@@ -54,7 +54,7 @@ private extension ClosingBraceRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: TokenSyntax) -> Syntax {
+        override func visit(_ node: TokenSyntax) -> TokenSyntax {
             guard
                 node.hasClosingBraceViolation,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

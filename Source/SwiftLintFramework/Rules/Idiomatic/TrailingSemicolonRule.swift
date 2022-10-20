@@ -55,7 +55,7 @@ private extension TrailingSemicolonRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: TokenSyntax) -> Syntax {
+        override func visit(_ node: TokenSyntax) -> TokenSyntax {
             guard
                 node.isTrailingSemicolon,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

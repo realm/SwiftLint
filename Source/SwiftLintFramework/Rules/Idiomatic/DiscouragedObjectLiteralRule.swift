@@ -38,12 +38,19 @@ private extension DiscouragedObjectLiteralRule {
             super.init(viewMode: .sourceAccurate)
         }
 
-        override func visitPost(_ node: ObjectLiteralExprSyntax) {
-            if !configuration.imageLiteral && node.identifier.text == "#imageLiteral" {
+        override func visitPost(_ node: MacroExpansionExprSyntax) {
+            guard
+                case let .identifier(identifierText) = node.macro.tokenKind,
+                ["colorLiteral", "imageLiteral"].contains(identifierText)
+            else {
                 return
             }
 
-            if !configuration.colorLiteral && node.identifier.text == "#colorLiteral" {
+            if !configuration.imageLiteral && identifierText == "imageLiteral" {
+                return
+            }
+
+            if !configuration.colorLiteral && identifierText == "colorLiteral" {
                 return
             }
 

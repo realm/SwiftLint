@@ -45,7 +45,15 @@ public struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, Configur
                 print(result)
                 exit()
             }
-            """)
+            """),
+            Example(#"""
+            [1, 2, 3, 1000, 4000].forEach { number in
+                let isSmall = number < 10
+                if isSmall {
+                    print("\(number) is a small number")
+                }
+            }
+            """#)
         ],
         triggeringExamples: [
             Example("private let ↓Foo = 20.0"),
@@ -98,6 +106,10 @@ private extension PrefixedTopLevelConstantRule {
         }
 
         override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
     }

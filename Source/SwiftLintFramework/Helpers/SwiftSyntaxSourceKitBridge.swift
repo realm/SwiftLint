@@ -1,8 +1,6 @@
 import SourceKittenFramework
 import SwiftSyntax
 
-// swiftlint:disable cyclomatic_complexity function_body_length
-
 // This file contains a pile of hacks in order to convert the syntax classifications provided by SwiftSyntax to the
 // data that SourceKit used to provide.
 
@@ -16,6 +14,7 @@ enum SwiftSyntaxSourceKitBridge {
 // MARK: - Private
 
 private extension SwiftLintFile {
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func allTokens() -> [SwiftLintSyntaxToken] {
         let visitor = QuoteVisitor(viewMode: .sourceAccurate)
         let syntaxTree = self.syntaxTree

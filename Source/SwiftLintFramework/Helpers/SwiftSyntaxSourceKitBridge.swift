@@ -25,7 +25,7 @@ private extension SwiftLintFile {
         let openQuoteRanges = visitor.openQuoteRanges.sorted(by: { $0.offset < $1.offset })
         let closeQuoteRanges = visitor.closeQuoteRanges.sorted(by: { $0.offset < $1.offset })
         let classifications = Array(syntaxTree.classifications)
-        let new = classifications.enumerated().compactMap { index, classification -> SwiftLintSyntaxToken? in
+        let new1 = classifications.enumerated().compactMap { index, classification -> SwiftLintSyntaxToken? in
             guard var syntaxKind = classification.kind.toSyntaxKind() else {
                 return nil
             }
@@ -58,6 +58,9 @@ private extension SwiftLintFile {
                 if substring == "Self" {
                     // SwiftSyntax considers 'Self' a keyword, but SourceKit considers it a type identifier.
                     syntaxKind = .typeidentifier
+                } else if substring == "unavailable" {
+                    // SwiftSyntax considers 'unavailable' a keyword, but SourceKit considers it an identifier.
+                    syntaxKind = .identifier
                 } else if substring == "throws" {
                     // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
                     return nil
@@ -71,6 +74,30 @@ private extension SwiftLintFile {
             let syntaxToken = SyntaxToken(type: syntaxKind.rawValue, offset: offset, length: length)
             return SwiftLintSyntaxToken(value: syntaxToken)
         }
+
+        // Combine `@` with next keyword
+        var new: [SwiftLintSyntaxToken] = []
+        var eatNext = false
+        for (index, asdf) in new1.enumerated() {
+            if eatNext {
+                let previous = new.removeLast()
+                let newToken = SwiftLintSyntaxToken(
+                    value: SyntaxToken(
+                        type: previous.value.type,
+                        offset: previous.offset,
+                        length: previous.length + asdf.length
+                    )
+                )
+                new.append(newToken)
+                eatNext = false
+            } else if asdf.kind == .attributeBuiltin && asdf.length == 1 && new1[index + 1].kind == .keyword {
+                eatNext = true
+                new.append(asdf)
+            } else {
+                new.append(asdf)
+            }
+        }
+
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
         let old = oldSyntaxMap.tokens
         if new != old {
@@ -184,8 +211,10 @@ private extension SyntaxClassification {
             return .string
         case .stringInterpolationAnchor:
             return .stringInterpolationAnchor
-        case .poundDirectiveKeyword, .buildConfigId:
-            return .poundDirectiveKeyword
+        case .buildConfigId:
+            return .buildconfigID
+        case .poundDirectiveKeyword:
+            return .buildconfigKeyword
         case .attribute:
             return .attributeBuiltin
         case .objectLiteral:

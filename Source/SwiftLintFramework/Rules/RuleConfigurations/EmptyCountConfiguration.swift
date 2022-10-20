@@ -3,9 +3,9 @@ private enum ConfigurationKey: String {
     case onlyAfterDot = "only_after_dot"
 }
 
-public struct EmptyCountConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.error)
-    private(set) var onlyAfterDot = false
+public struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.error)
+    public private(set) var onlyAfterDot = false
 
     public var consoleDescription: String {
         return [severityConfiguration.consoleDescription,

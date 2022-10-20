@@ -65,6 +65,7 @@
   - `duplicate_enum_cases`
   - `dynamic_inline`
   - `empty_collection_literal`
+  - `empty_count`
   - `empty_enum_arguments`
   - `empty_parameters`
   - `empty_parentheses_with_trailing_closure`

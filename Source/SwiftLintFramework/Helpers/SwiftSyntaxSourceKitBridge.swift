@@ -59,7 +59,7 @@ private extension SwiftLintFile {
                 } else if substring == "throws" {
                     // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
                     return nil
-                } else if AccessControlLevel(description: substring) != nil {
+                } else if AccessControlLevel(description: substring) != nil || substring == "final" {
                     // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in
                     // attributes.
                     syntaxKind = .attributeBuiltin

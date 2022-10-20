@@ -111,7 +111,7 @@ private extension SwiftLintFile {
 
         // Uncomment to debug mismatches from what SourceKit provides and what we get via SwiftSyntax
         let old = oldSyntaxMap.tokens
-        if new != old {
+        if new != old, !old.contains(where: { $0.kind == .commentURL }) {
             if let path = path {
                 queuedPrint("File Path: \(path)")
             } else {

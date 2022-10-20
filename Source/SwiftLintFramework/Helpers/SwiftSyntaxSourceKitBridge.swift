@@ -58,17 +58,26 @@ private extension SwiftLintFile {
                 if substring == "Self" {
                     // SwiftSyntax considers 'Self' a keyword, but SourceKit considers it a type identifier.
                     syntaxKind = .typeidentifier
-                } else if substring == "unavailable" {
-                    // SwiftSyntax considers 'unavailable' a keyword, but SourceKit considers it an identifier.
+                } else if ["unavailable", "swift", "deprecated", "introduced"].contains(substring) {
+                    // SwiftSyntax considers 'unavailable' & 'swift' a keyword, but SourceKit considers it an
+                    // identifier.
                     syntaxKind = .identifier
                 } else if substring == "throws" {
                     // SwiftSyntax considers `throws` a keyword, but SourceKit ignores it.
                     return nil
-                } else if AccessControlLevel(description: substring) != nil || substring == "final" {
+                } else if AccessControlLevel(description: substring) != nil || substring == "final" ||
+                            substring == "lazy" {
                     // SwiftSyntax considers ACL keywords as keywords, but SourceKit considers them to be built-in
                     // attributes.
                     syntaxKind = .attributeBuiltin
                 }
+            }
+
+            if classification.kind == .poundDirectiveKeyword,
+               case let byteRange = ByteRange(location: offset, length: length),
+               let substring = stringView.substringWithByteRange(byteRange),
+               substring == "#warning" || substring == "#error" {
+                syntaxKind = .poundDirectiveKeyword
             }
 
             let syntaxToken = SyntaxToken(type: syntaxKind.rawValue, offset: offset, length: length)

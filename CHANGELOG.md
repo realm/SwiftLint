@@ -83,6 +83,7 @@
   - `file_name`
   - `first_where`
   - `flatmap_over_map_reduce`
+  - `for_where`
   - `force_try`
   - `force_unwrapping`
   - `function_body_length`
@@ -215,7 +216,7 @@
 * Print violations in realtime if `--progress` and `--output` are both set.  
   [JP Simard](https://github.com/jpsim)
 
-* Rewrite `for_where` rule with SwiftSyntax, adding a new configuration
+* Update `for_where` rule, adding a new configuration
   `allow_for_as_filter` to allow using `for in` with a single `if` inside
   when there's a `return` statement inside the `if`'s body.  
   [Marcelo Fabri](https://github.com/marcelofabri)

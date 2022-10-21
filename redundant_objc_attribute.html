@@ -419,6 +419,11 @@
     <span class="kd">@objc</span> <span class="kd">class</span> <span class="kt">Bar</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">BlockEditorSettings</span> <span class="p">{</span>
+    <span class="kd">@objc</span><span class="p">(</span><span class="nv">addElementsObject</span><span class="p">:)</span>
+    <span class="kd">@NSManaged</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">addToElements</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">BlockEditorSettingElement</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kd">@objc</span> <span class="kd">@IBInspectable</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">foo</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{}</span>
 </code></pre>

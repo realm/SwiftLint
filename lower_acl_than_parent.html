@@ -337,12 +337,12 @@
             
             <h1 id='lower-acl-than-parent' class='heading'>Lower ACL than parent</h1>
 
-<p>Ensure definitions have a lower access control level than their enclosing parent</p>
+<p>Ensure declarations have a lower access control level than their enclosing parent</p>
 
 <ul>
 <li><strong>Identifier:</strong> lower_acl_than_parent</li>
 <li><strong>Enabled by default:</strong> No</li>
-<li><strong>Supports autocorrection:</strong> No</li>
+<li><strong>Supports autocorrection:</strong> Yes</li>
 <li><strong>Kind:</strong> lint</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
@@ -372,15 +372,23 @@
 <pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">public</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">public</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">open</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">open</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">public</span> <span class="kd">private(set)</span> <span class="err">↓</span><span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">bar</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="kd">internal</span> <span class="err">↓</span><span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+<pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">struct</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">private</span> <span class="kd">actor</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">actor</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="err">↓</span><span class="kd">public</span> <span class="kd">func</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{}</span> <span class="p">}</span>
 </code></pre>
 
           </div>

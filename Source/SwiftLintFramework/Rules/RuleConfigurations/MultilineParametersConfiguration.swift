@@ -1,6 +1,6 @@
-public struct MultilineParametersConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var allowsSingleLine = true
+public struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var allowsSingleLine = true
 
     public var consoleDescription: String {
         severityConfiguration.consoleDescription

@@ -108,6 +108,7 @@
   - `legacy_objc_type`
   - `legacy_random`
   - `multiple_closures_with_trailing_closure`
+  - `multiline_parameters`
   - `no_extension_access_modifier`
   - `no_fallthrough_only`
   - `no_space_in_method_call`

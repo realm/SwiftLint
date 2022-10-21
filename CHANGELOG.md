@@ -131,6 +131,7 @@
   - `redundant_discardable_let`
   - `redundant_nil_coalescing`
   - `redundant_string_enum_value`
+  - `required_deinit`
   - `self_in_property_initialization`
   - `shorthand_operator`
   - `single_test_class`

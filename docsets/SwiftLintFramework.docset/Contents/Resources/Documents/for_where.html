@@ -346,7 +346,7 @@
 <li><strong>Kind:</strong> idiomatic</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> warning</li>
+<li><strong>Default configuration:</strong> warning, allow_for_as_filter: false</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="n">user</span> <span class="k">in</span> <span class="n">users</span> <span class="k">where</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span> <span class="p">}</span>
@@ -387,15 +387,37 @@
   <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">user</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;</span> <span class="mi">18</span> <span class="p">{</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="n">user</span> <span class="k">in</span> <span class="n">users</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;</span> <span class="mi">18</span> <span class="p">{</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="n">array</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">if</span> <span class="k">case</span> <span class="o">.</span><span class="nf">valueB</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">value</span> <span class="p">{</span>
     <span class="k">return</span> <span class="n">index</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="n">user</span> <span class="k">in</span> <span class="n">users</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="n">user</span> <span class="k">in</span> <span class="n">users</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">derivedValue</span> <span class="o">=</span> <span class="nf">calculateValue</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">derivedValue</span> <span class="o">!=</span> <span class="mi">0</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="n">user</span> <span class="k">in</span> <span class="n">users</span> <span class="p">{</span>
   <span class="err">↓</span><span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">for</span> <span class="n">subview</span> <span class="k">in</span> <span class="n">subviews</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">if</span> <span class="o">!</span><span class="p">(</span><span class="n">subview</span> <span class="k">is</span> <span class="kt">UIStackView</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">subview</span><span class="o">.</span><span class="nf">removeConstraints</span><span class="p">(</span><span class="n">subview</span><span class="o">.</span><span class="n">constraints</span><span class="p">)</span>
+        <span class="n">subview</span><span class="o">.</span><span class="nf">removeFromSuperview</span><span class="p">()</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">for</span> <span class="n">subview</span> <span class="k">in</span> <span class="n">subviews</span> <span class="p">{</span>

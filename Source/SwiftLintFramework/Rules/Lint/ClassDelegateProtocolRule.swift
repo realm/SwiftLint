@@ -22,7 +22,7 @@ public struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderR
             Example("protocol FooDelegate: NSObjectProtocol {}\n"),
             Example("protocol FooDelegate where Self: BarDelegate {}\n"),
             Example("protocol FooDelegate where Self: AnyObject {}\n"),
-            Example("protocol FooDelegate where Self: NSObjectProtocol {} \n")
+            Example("protocol FooDelegate where Self: NSObjectProtocol {}\n")
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}\n"),

@@ -5,7 +5,7 @@ internal extension Configuration {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
 
-        public let allRulesWrapped: [ConfigurationRuleWrapper]
+        let allRulesWrapped: [ConfigurationRuleWrapper]
         internal let mode: RulesMode
         private let aliasResolver: (String) -> String
 

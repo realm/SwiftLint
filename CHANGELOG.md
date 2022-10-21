@@ -107,6 +107,7 @@
   - `legacy_nsgeometry_functions`
   - `legacy_objc_type`
   - `legacy_random`
+  - `lower_acl_than_parent`
   - `multiple_closures_with_trailing_closure`
   - `multiline_parameters`
   - `no_extension_access_modifier`

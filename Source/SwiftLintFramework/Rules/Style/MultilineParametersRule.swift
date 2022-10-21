@@ -31,9 +31,21 @@ private extension MultilineParametersRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            let parameterPositions = node.signature.input.parameterList.map(\.positionAfterSkippingLeadingTrivia)
+            if containsViolation(for: node.signature) {
+                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if containsViolation(for: node.signature) {
+                violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func containsViolation(for signature: FunctionSignatureSyntax) -> Bool {
+            let parameterPositions = signature.input.parameterList.map(\.positionAfterSkippingLeadingTrivia)
             guard parameterPositions.isNotEmpty else {
-                return
+                return false
             }
 
             var numberOfParameters = 0
@@ -50,10 +62,10 @@ private extension MultilineParametersRule {
 
             guard linesWithParameters.count > (allowsSingleLine ? 1 : 0),
                   numberOfParameters != linesWithParameters.count else {
-                return
+                return false
             }
 
-            violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+            return true
         }
     }
 }

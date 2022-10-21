@@ -1,10 +1,11 @@
+import Foundation
 import SwiftSyntax
 
 private let attributeNamesImplyingObjc: Set<String> = [
     "IBAction", "IBOutlet", "IBInspectable", "GKInspectable", "IBDesignable", "NSManaged"
 ]
 
-public struct RedundantObjcAttributeRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+public struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -20,55 +21,23 @@ public struct RedundantObjcAttributeRule: SwiftSyntaxCorrectableRule, Configurat
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
-}
-
-private extension RedundantObjcAttributeRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: AttributeListSyntax) {
-            if let objcAttribute = node.violatingObjCAttribute {
-                violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
+        final class Visitor: ViolationsSyntaxVisitor {
+            override func visitPost(_ node: AttributeListSyntax) {
+                if let objcAttribute = node.violatingObjCAttribute {
+                    violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
+                }
             }
         }
+        return Visitor(viewMode: .sourceAccurate)
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
-        override func visit(_ node: AttributeListSyntax) -> Syntax {
-            guard
-                let objcAttribute = node.violatingObjCAttribute,
-                let index = node.firstIndex(of: Syntax(objcAttribute)),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
-                return super.visit(node)
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        makeVisitor(file: file)
+            .walk(tree: file.syntaxTree, handler: \.violations)
+            .compactMap { violation in
+                let end = AbsolutePosition(utf8Offset: violation.position.utf8Offset + "@objc".count)
+                return file.stringView.NSRange(start: violation.position, end: end)
             }
-
-            correctionPositions.append(objcAttribute.positionAfterSkippingLeadingTrivia)
-
-            // There's an opportunity to improve how we clean up whitespace here.
-            let emptyObjCAttribute = objcAttribute
-                .withAttributeName(.contextualKeyword("", leadingTrivia: objcAttribute.atSignToken.leadingTrivia))
-                .withAtSignToken(nil)
-            let newNode = node.replacing(childAt: node.distance(from: node.startIndex, to: index),
-                                         with: Syntax(emptyObjCAttribute))
-            return super.visit(newNode)
-        }
     }
 }
 
@@ -80,7 +49,10 @@ private extension AttributeListSyntax {
     var objCAttribute: AttributeSyntax? {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
-            .first { $0.attributeName.tokenKind == .contextualKeyword("objc") }
+            .first { attribute in
+                attribute.attributeName.tokenKind == .contextualKeyword("objc") &&
+                    attribute.argument == nil
+            }
     }
 
     var hasAttributeImplyingObjC: Bool {
@@ -125,5 +97,21 @@ private extension AttributeListSyntax {
         } else {
             return nil
         }
+    }
+}
+
+public extension RedundantObjcAttributeRule {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        var whitespaceAndNewlineOffset = 0
+        let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()
+        let nsContent = file.contents.bridge()
+        while nsCharSet
+            .characterIsMember(nsContent.character(at: violationRange.upperBound + whitespaceAndNewlineOffset)) {
+            whitespaceAndNewlineOffset += 1
+        }
+
+        let withTrailingWhitespaceAndNewlineRange = NSRange(location: violationRange.location,
+                                                            length: violationRange.length + whitespaceAndNewlineOffset)
+        return (withTrailingWhitespaceAndNewlineRange, "")
     }
 }

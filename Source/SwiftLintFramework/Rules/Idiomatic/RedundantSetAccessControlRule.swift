@@ -20,6 +20,16 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyn
             private final class A {
               private(set) var value: Int
             }
+            """),
+            Example("""
+            fileprivate class A {
+              public fileprivate(set) var value: Int
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            extension Color {
+                public internal(set) static var someColor = Color.anotherColor
+            }
             """)
         ],
         triggeringExamples: [
@@ -73,6 +83,7 @@ private extension RedundantSetAccessControlRule {
             }
 
             if setAccessor.name.tokenKind == .fileprivateKeyword,
+               modifiers.getAccessor == nil,
                let closestDeclModifiers = node.closestDecl()?.modifiers {
                 let closestDeclIsFilePrivate = closestDeclModifiers.contains {
                     $0.name.tokenKind == .fileprivateKeyword
@@ -85,6 +96,7 @@ private extension RedundantSetAccessControlRule {
             }
 
             if setAccessor.name.tokenKind == .internalKeyword,
+               modifiers.getAccessor == nil,
                let closesDecl = node.closestDecl(),
                let closestDeclModifiers = closesDecl.modifiers {
                 let closestDeclIsInternal = closestDeclModifiers.isEmpty || closestDeclModifiers.contains {
@@ -133,5 +145,9 @@ private extension DeclSyntax {
 private extension ModifierListSyntax {
     var setAccessor: DeclModifierSyntax? {
         first { $0.detail?.detail.tokenKind == .contextualKeyword("set") }
+    }
+
+    var getAccessor: DeclModifierSyntax? {
+        first { $0.detail == nil }
     }
 }

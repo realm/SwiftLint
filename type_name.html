@@ -346,7 +346,7 @@
 <li><strong>Kind:</strong> idiomatic</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> (min_length) w/e: 3/0, (max_length) w/e: 40/1000, excluded: [], allowed_symbols: [], validates_start_with_lowercase: true</li>
+<li><strong>Default configuration:</strong> (min_length) w/e: 3/0, (max_length) w/e: 40/1000, excluded: [], allowed_symbols: [], validates_start_with_lowercase: true, validate_protocols: true</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">MyType</span> <span class="p">{}</span>
@@ -370,6 +370,8 @@
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">MyType</span> <span class="p">{</span>
 <span class="k">case</span> <span class="n">value</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">P</span> <span class="p">{}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="err">↓</span><span class="n">myType</span> <span class="p">{}</span>
@@ -405,6 +407,8 @@
 <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">Foo</span> <span class="p">{</span>
   <span class="kd">associatedtype</span> <span class="err">↓</span><span class="kt">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="err">↓</span><span class="kt">X</span> <span class="p">{}</span>
 </code></pre>
 
           </div>

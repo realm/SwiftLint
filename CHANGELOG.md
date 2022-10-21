@@ -151,6 +151,7 @@
   - `switch_case_alignment`
   - `switch_case_on_newline`
   - `toggle_bool`
+  - `trailing_closure`
   - `trailing_comma`
   - `trailing_semicolon`
   - `type_body_length`

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -31,39 +31,97 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Swif
             Example("private struct Foo { ↓public func bar() {} }"),
             Example("private class Foo { ↓public func bar() {} }"),
             Example("private actor Foo { ↓public func bar() {} }"),
-            Example("struct Foo { ↓public func bar() {} }"),
             Example("class Foo { ↓public func bar() {} }"),
             Example("actor Foo { ↓public func bar() {} }")
+        ],
+        corrections: [
+            Example("struct Foo { ↓public func bar() {} }"):
+                Example("struct Foo { func bar() {} }"),
+            Example("enum Foo { ↓public func bar() {} }"):
+                Example("enum Foo { func bar() {} }"),
+            Example("public class Foo { ↓open func bar() }"):
+                Example("public class Foo { func bar() }"),
+            Example("class Foo { ↓public private(set) var bar: String? }"):
+                Example("class Foo { private(set) var bar: String? }"),
+            Example("private struct Foo { ↓public func bar() {} }"):
+                Example("private struct Foo { func bar() {} }"),
+            Example("private class Foo { ↓public func bar() {} }"):
+                Example("private class Foo { func bar() {} }"),
+            Example("private actor Foo { ↓public func bar() {} }"):
+                Example("private actor Foo { func bar() {} }"),
+            Example("class Foo { ↓public func bar() {} }"):
+                Example("class Foo { func bar() {} }"),
+            Example("actor Foo { ↓public func bar() {} }"):
+                Example("actor Foo { func bar() {} }")
         ]
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
 }
 
 private extension LowerACLThanParentRule {
     private final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeclModifierSyntax) {
-            guard let nearestNominalParent = node.parent?.nearestNominalParent() else {
-                return
+            if node.isHigherACLThanParent {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: DeclModifierSyntax) -> Syntax {
+            guard
+                node.isHigherACLThanParent,
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
             }
 
-            switch node.name.tokenKind {
-            case .internalKeyword
-                where nearestNominalParent.modifiers.isPrivate ||
-                    nearestNominalParent.modifiers.isFileprivate:
-                break
-            case .publicKeyword
-                where nearestNominalParent.modifiers.isPrivate || nearestNominalParent.modifiers.isInternal:
-                break
-            case .contextualKeyword("open") where !nearestNominalParent.modifiers.isOpen:
-                break
-            default:
-                return
-            }
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            let newNode = node.withName(
+                .contextualKeyword("", leadingTrivia: node.leadingTrivia ?? .zero)
+            )
+            return super.visit(newNode)
+        }
+    }
+}
 
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+private extension DeclModifierSyntax {
+    var isHigherACLThanParent: Bool {
+        guard let nearestNominalParent = parent?.nearestNominalParent() else {
+            return false
+        }
+
+        switch name.tokenKind {
+        case .internalKeyword
+            where nearestNominalParent.modifiers.isPrivate ||
+                nearestNominalParent.modifiers.isFileprivate:
+            return true
+        case .publicKeyword
+            where nearestNominalParent.modifiers.isPrivate || nearestNominalParent.modifiers.isInternal:
+            return true
+        case .contextualKeyword("open") where !nearestNominalParent.modifiers.isOpen:
+            return true
+        default:
+            return false
         }
     }
 }

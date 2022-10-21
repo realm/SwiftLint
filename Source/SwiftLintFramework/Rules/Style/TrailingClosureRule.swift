@@ -1,4 +1,3 @@
-import Foundation
 import SwiftSyntax
 
 public struct TrailingClosureRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {

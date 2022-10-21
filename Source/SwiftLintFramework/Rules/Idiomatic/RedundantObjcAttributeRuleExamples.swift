@@ -69,6 +69,12 @@ struct RedundantObjcAttributeRuleExamples {
         class Foo {
             @objc class Bar {}
         }
+        """),
+        Example("""
+        extension BlockEditorSettings {
+            @objc(addElementsObject:)
+            @NSManaged public func addToElements(_ value: BlockEditorSettingElement)
+        }
         """)
     ]
 

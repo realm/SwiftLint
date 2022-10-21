@@ -109,24 +109,18 @@ private extension Syntax {
 
 private extension AttributeListSyntax {
     var violatingObjCAttribute: AttributeSyntax? {
-        if
-            let objcAttribute = objCAttribute,
-            hasAttributeImplyingObjC,
-            parent?.is(ExtensionDeclSyntax.self) != true
-        {
+        guard let objcAttribute = objCAttribute else {
+            return nil
+        }
+
+        if hasAttributeImplyingObjC, parent?.is(ExtensionDeclSyntax.self) != true {
             return objcAttribute
-        } else if
-            let objcAttribute = objCAttribute,
-            parent?.isFunctionOrStoredProperty == true,
-            let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-            parentClassDecl.attributes?.hasObjCMembers == true
-        {
+        } else if parent?.isFunctionOrStoredProperty == true,
+                  let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
+                  parentClassDecl.attributes?.hasObjCMembers == true {
             return objcAttribute
-        } else if
-            let objcAttribute = objCAttribute,
-            let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
-            parentExtensionDecl.attributes?.objCAttribute != nil
-        {
+        } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
+                  parentExtensionDecl.attributes?.objCAttribute != nil {
             return objcAttribute
         } else {
             return nil

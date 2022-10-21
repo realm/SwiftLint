@@ -27,7 +27,8 @@ public struct VoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectable
             Example("func foo(completion: () -> ↓())\n"),
             Example("func foo(completion: () -> ↓(   ))\n"),
             Example("func foo(completion: () -> ↓(Void))\n"),
-            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n")
+            Example("let foo: (ConfigurationTests) -> () throws -> ↓()\n"),
+            Example("typealias ReplaceEditorCallback = (EditorViewController, EditorViewController) -> ↓()")
         ],
         corrections: [
             Example("let abc: () -> ↓() = {}\n"): Example("let abc: () -> Void = {}\n"),

@@ -42,8 +42,8 @@ class SourceKitCrashTests: XCTestCase {
 
         assertHandlerCalled = false
         _ = file.syntaxMap
-        XCTAssertTrue(assertHandlerCalled,
-                      "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
+        XCTAssertFalse(assertHandlerCalled,
+                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
 
         assertHandlerCalled = false
         _ = file.syntaxKindsByLines

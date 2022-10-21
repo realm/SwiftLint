@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 /// A SwiftLint-aware Swift syntax token.
-public struct SwiftLintSyntaxToken {
+public struct SwiftLintSyntaxToken: Equatable {
     /// The raw `SyntaxToken` obtained by SourceKitten.
     public let value: SyntaxToken
 

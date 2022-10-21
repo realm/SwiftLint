@@ -38,7 +38,9 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Swi
 
 private extension ProtocolPropertyAccessorsOrderRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            .allExcept(ProtocolDeclSyntax.self, VariableDeclSyntax.self)
+        }
 
         override func visitPost(_ node: AccessorBlockSyntax) {
             guard node.hasViolation else {

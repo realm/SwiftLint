@@ -1,7 +1,7 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+public struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    public var configuration = ForWhereRuleConfiguration()
 
     public init() {}
 
@@ -66,6 +66,11 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
               if user.id == 1 && user.age > 18 { }
             }
             """),
+            Example("""
+            for user in users {
+              if user.id == 1, user.age > 18 { }
+            }
+            """),
             // if case
             Example("""
             for (index, value) in array.enumerated() {
@@ -73,7 +78,20 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
                 return index
               }
             }
-            """)
+            """),
+            Example("""
+            for user in users {
+              if user.id == 1 { return true }
+            }
+            """, configuration: ["allow_for_as_filter": true]),
+            Example("""
+            for user in users {
+              if user.id == 1 {
+                let derivedValue = calculateValue(from: user)
+                return derivedValue != 0
+              }
+            }
+            """, configuration: ["allow_for_as_filter": true])
         ],
         triggeringExamples: [
             Example("""
@@ -88,84 +106,88 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
                     subview.removeFromSuperview()
                 }
             }
-            """)
+            """),
+            Example("""
+            for subview in subviews {
+                ↓if !(subview is UIStackView) {
+                    subview.removeConstraints(subview.constraints)
+                    subview.removeFromSuperview()
+                }
+            }
+            """, configuration: ["allow_for_as_filter": true])
         ]
     )
 
-    private static let commentKinds = SyntaxKind.commentAndStringKinds
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(allowForAsFilter: configuration.allowForAsFilter)
+    }
+}
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .forEach,
-            let subDictionary = forBody(dictionary: dictionary),
-            subDictionary.substructure.count == 1,
-            let bodyDictionary = subDictionary.substructure.first,
-            bodyDictionary.statementKind == .if,
-            isOnlyOneIf(dictionary: bodyDictionary),
-            isOnlyIfInsideFor(forDictionary: subDictionary, ifDictionary: bodyDictionary, file: file),
-            !isComplexCondition(dictionary: bodyDictionary, file: file),
-            let offset = bodyDictionary .offset else {
-                return []
+private extension ForWhereRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let allowForAsFilter: Bool
+
+        init(allowForAsFilter: Bool) {
+            self.allowForAsFilter = allowForAsFilter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+        override func visitPost(_ node: ForInStmtSyntax) {
+            guard node.whereClause == nil,
+                  case let statements = node.body.statements,
+                  statements.count == 1,
+                  let ifStatement = statements.first?.item.as(IfStmtSyntax.self),
+                  ifStatement.elseBody == nil,
+                  !ifStatement.containsOptionalBinding,
+                  !ifStatement.containsPatternCondition,
+                  ifStatement.conditions.count == 1,
+                  let condition = ifStatement.conditions.first,
+                  !condition.containsMultipleConditions else {
+                return
+            }
+
+            if allowForAsFilter, ifStatement.containsReturnStatement {
+                return
+            }
+
+            violations.append(ifStatement.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension IfStmtSyntax {
+    var containsOptionalBinding: Bool {
+        conditions.contains { element in
+            element.condition.is(OptionalBindingConditionSyntax.self)
+        }
     }
 
-    private func forBody(dictionary: SourceKittenDictionary) -> SourceKittenDictionary? {
-        return dictionary.substructure.first(where: { subDict -> Bool in
-            subDict.statementKind == .brace
-        })
+    var containsPatternCondition: Bool {
+        conditions.contains { element in
+            element.condition.is(MatchingPatternConditionSyntax.self)
+        }
     }
 
-    private func isOnlyOneIf(dictionary: SourceKittenDictionary) -> Bool {
-        let substructure = dictionary.substructure
-        let onlyOneBlock = substructure.filter { $0.statementKind == .brace }.count == 1
-        let noOtherIf = substructure.allSatisfy { $0.statementKind != .if }
-        return onlyOneBlock && noOtherIf
+    var containsReturnStatement: Bool {
+        body.statements.contains { element in
+            element.item.is(ReturnStmtSyntax.self)
+        }
     }
+}
 
-    private func isOnlyIfInsideFor(forDictionary: SourceKittenDictionary,
-                                   ifDictionary: SourceKittenDictionary,
-                                   file: SwiftLintFile) -> Bool {
-        guard let offset = forDictionary.offset,
-            let length = forDictionary.length,
-            let ifOffset = ifDictionary.offset,
-            let ifLength = ifDictionary.length else {
-                return false
+private extension ConditionElementSyntax {
+    var containsMultipleConditions: Bool {
+        guard let condition = condition.as(SequenceExprSyntax.self) else {
+            return false
         }
 
-        let beforeIfRange = ByteRange(location: offset, length: ifOffset - offset)
-        let ifFinalPosition = ifOffset + ifLength
-        let afterIfRange = ByteRange(location: ifFinalPosition, length: offset + length - ifFinalPosition)
-        let allKinds = file.syntaxMap.kinds(inByteRange: beforeIfRange) +
-            file.syntaxMap.kinds(inByteRange: afterIfRange)
-
-        let doesntContainComments = !allKinds.contains { kind in
-            !Self.commentKinds.contains(kind)
-        }
-
-        return doesntContainComments
-    }
-
-    private func isComplexCondition(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        let kind = "source.lang.swift.structure.elem.condition_expr"
-        return dictionary.elements.contains { element in
-            guard element.kind == kind,
-                let range = element.byteRange.flatMap(file.stringView.byteRangeToNSRange)
-            else {
+        return condition.elements.contains { expr in
+            guard let binaryExpr = expr.as(BinaryOperatorExprSyntax.self) else {
                 return false
             }
 
-            let containsKeyword = file.match(pattern: "\\blet|var|case\\b", with: [.keyword], range: range).isNotEmpty
-            if containsKeyword {
-                return true
-            }
-
-            return file.match(pattern: "\\|\\||&&", with: [], range: range).isNotEmpty
+            let operators: Set = ["&&", "||"]
+            return operators.contains(binaryExpr.operatorToken.text)
         }
     }
 }

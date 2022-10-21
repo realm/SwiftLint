@@ -191,8 +191,7 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objc
         extension Foo {
-            ↓@objc
-            var bar: Int {
+            ↓@objc var bar: Int {
                 return 0
             }
         }
@@ -208,8 +207,7 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objc @IBDesignable
         extension Foo {
-            ↓@objc
-            var bar: Int {
+            ↓@objc var bar: Int {
                 return 0
             }
         }
@@ -243,27 +241,7 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objc
         extension Foo {
-            ↓@objc
-            private var bar: Int {
-                return 0
-            }
-        }
-        """):
-        Example("""
-        @objc
-        extension Foo {
-            private var bar: Int {
-                return 0
-            }
-        }
-        """),
-        Example("""
-        @objc
-        extension Foo {
-            ↓@objc
-
-
-            private var bar: Int {
+            ↓@objc private var bar: Int {
                 return 0
             }
         }

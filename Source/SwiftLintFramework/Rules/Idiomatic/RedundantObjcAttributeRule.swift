@@ -1,10 +1,10 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
-    [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
+private let attributeNamesImplyingObjc: Set<String> = [
+    "IBAction", "IBOutlet", "IBInspectable", "GKInspectable", "IBDesignable", "NSManaged"
+]
 
-public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, ConfigurationProviderRule {
+public struct RedundantObjcAttributeRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -16,88 +16,120 @@ public struct RedundantObjcAttributeRule: SubstitutionCorrectableRule, Configura
         kind: .idiomatic,
         nonTriggeringExamples: RedundantObjcAttributeRuleExamples.nonTriggeringExamples,
         triggeringExamples: RedundantObjcAttributeRuleExamples.triggeringExamples,
-        corrections: RedundantObjcAttributeRuleExamples.corrections)
+        corrections: RedundantObjcAttributeRuleExamples.corrections
+    )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension RedundantObjcAttributeRule {
+    private final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: AttributeListSyntax) {
+            if let objcAttribute = node.violatingObjCAttribute {
+                violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.structureDictionary.traverseWithParentDepthFirst { parent, subDict in
-            guard let kind = subDict.declarationKind else { return nil }
-            return violationRanges(file: file, kind: kind, dictionary: subDict, parentStructure: parent)
-        }
-    }
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
 
-    private func violationRanges(file: SwiftLintFile,
-                                 kind: SwiftDeclarationKind,
-                                 dictionary: SourceKittenDictionary,
-                                 parentStructure: SourceKittenDictionary?) -> [NSRange] {
-        let objcAttribute = dictionary.swiftAttributes
-                                      .first(where: { $0.attribute == SwiftDeclarationAttributeKind.objc.rawValue })
-        guard let objcByteRange = objcAttribute?.byteRange,
-              let range = file.stringView.byteRangeToNSRange(objcByteRange),
-              !dictionary.isObjcAndIBDesignableDeclaredExtension
-        else {
-            return []
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        let isInObjcVisibleScope = { () -> Bool in
-            guard let parentStructure = parentStructure,
-                let kind = dictionary.declarationKind,
-                let parentKind = parentStructure.declarationKind else {
-                    return false
+        override func visit(_ node: AttributeListSyntax) -> Syntax {
+            guard
+                let objcAttribute = node.violatingObjCAttribute,
+                let index = node.firstIndex(of: Syntax(objcAttribute)),
+                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
             }
 
-            let isInObjCExtension = [.extensionClass, .extension].contains(parentKind) &&
-                parentStructure.enclosedSwiftAttributes.contains(.objc)
+            correctionPositions.append(objcAttribute.positionAfterSkippingLeadingTrivia)
 
-            let isPrivate = dictionary.accessibility?.isPrivate ?? false
-            let isInObjcMembers = parentStructure.enclosedSwiftAttributes.contains(.objcMembers) && !isPrivate
+            // There's an opportunity to improve how we clean up whitespace here.
+            let emptyObjCAttribute = objcAttribute
+                .withAttributeName(.contextualKeyword("", leadingTrivia: objcAttribute.atSignToken.leadingTrivia))
+                .withAtSignToken(nil)
+            let newNode = node.replacing(childAt: node.distance(from: node.startIndex, to: index),
+                                         with: Syntax(emptyObjCAttribute))
+            return super.visit(newNode)
+        }
+    }
+}
 
-            guard isInObjCExtension || isInObjcMembers else {
+private extension AttributeListSyntax {
+    var hasObjCMembers: Bool {
+        contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("objcMembers") }
+    }
+
+    var objCAttribute: AttributeSyntax? {
+        lazy
+            .compactMap { $0.as(AttributeSyntax.self) }
+            .first { $0.attributeName.tokenKind == .contextualKeyword("objc") }
+    }
+
+    var hasAttributeImplyingObjC: Bool {
+        contains { element in
+            guard case let .identifier(attributeName) = element.as(AttributeSyntax.self)?.attributeName.tokenKind else {
                 return false
             }
 
-            return !SwiftDeclarationKind.typeKinds.contains(kind)
+            return attributeNamesImplyingObjc.contains(attributeName)
         }
-
-        let isUsedWithObjcAttribute = !Set(dictionary.enclosedSwiftAttributes).isDisjoint(with: kindsImplyingObjc)
-
-        if isUsedWithObjcAttribute || isInObjcVisibleScope() {
-            return [range]
-        }
-
-        return []
     }
 }
 
-private extension SourceKittenDictionary {
-    var isObjcAndIBDesignableDeclaredExtension: Bool {
-        guard let declaration = declarationKind else {
+private extension Syntax {
+    var isFunctionOrStoredProperty: Bool {
+        if self.is(FunctionDeclSyntax.self) {
+            return true
+        } else if let variableDecl = self.as(VariableDeclSyntax.self),
+                  variableDecl.bindings.allSatisfy({ $0.accessor == nil }) {
+            return true
+        } else {
             return false
         }
-        return [.extensionClass, .extension].contains(declaration)
-            && Set(enclosedSwiftAttributes).isSuperset(of: [.ibdesignable, .objc])
     }
 }
 
-public extension RedundantObjcAttributeRule {
-     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        var whitespaceAndNewlineOffset = 0
-        let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()
-        let nsContent = file.contents.bridge()
-        while nsCharSet
-            .characterIsMember(nsContent.character(at: violationRange.upperBound + whitespaceAndNewlineOffset)) {
-                whitespaceAndNewlineOffset += 1
+private extension AttributeListSyntax {
+    var violatingObjCAttribute: AttributeSyntax? {
+        if
+            let objcAttribute = objCAttribute,
+            hasAttributeImplyingObjC,
+            parent?.is(ExtensionDeclSyntax.self) != true
+        {
+            return objcAttribute
+        } else if
+            let objcAttribute = objCAttribute,
+            parent?.isFunctionOrStoredProperty == true,
+            let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
+            parentClassDecl.attributes?.hasObjCMembers == true
+        {
+            return objcAttribute
+        } else if
+            let objcAttribute = objCAttribute,
+            let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
+            parentExtensionDecl.attributes?.objCAttribute != nil
+        {
+            return objcAttribute
+        } else {
+            return nil
         }
-
-        let withTrailingWhitespaceAndNewlineRange = NSRange(location: violationRange.location,
-                                                            length: violationRange.length + whitespaceAndNewlineOffset)
-        return (withTrailingWhitespaceAndNewlineRange, "")
     }
 }

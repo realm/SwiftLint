@@ -1,6 +1,6 @@
-public struct TrailingClosureConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var onlySingleMutedParameter: Bool
+public struct TrailingClosureConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var onlySingleMutedParameter: Bool
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", only_single_muted_parameter: \(onlySingleMutedParameter)"

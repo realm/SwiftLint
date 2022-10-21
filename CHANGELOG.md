@@ -228,6 +228,15 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4420](https://github.com/realm/SwiftLint/issues/4420)
 
+* The `type_name` rule now validates protocol declarations by default.
+  You can opt-out by using the `validate_protocols` key in your configuration:
+  ```yml
+  type_name:
+    validate_protocols: false
+  ```
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#4430](https://github.com/realm/SwiftLint/issues/4430)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

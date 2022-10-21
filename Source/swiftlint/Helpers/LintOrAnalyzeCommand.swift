@@ -99,6 +99,9 @@ struct LintOrAnalyzeCommand {
                 builder.ruleBenchmark.record(id: id, time: time)
             }
             builder.ruleBenchmark.save()
+            if !options.quiet, let memoryUsage = memoryUsage() {
+                queuedPrintError(memoryUsage)
+            }
         }
         try builder.cache?.save()
         guard numberOfSeriousViolations == 0 else { exit(2) }
@@ -306,4 +309,29 @@ private actor CorrectionsBuilder {
     func append(_ corrections: [Correction]) {
         self.corrections.append(contentsOf: corrections)
     }
+}
+
+private func memoryUsage() -> String? {
+#if os(Linux)
+    return nil
+#else
+    var info = mach_task_basic_info()
+    let basicInfoCount = MemoryLayout<mach_task_basic_info>.stride / MemoryLayout<natural_t>.stride
+    var count = mach_msg_type_number_t(basicInfoCount)
+
+    let kerr: kern_return_t = withUnsafeMutablePointer(to: &info) {
+        $0.withMemoryRebound(to: integer_t.self, capacity: basicInfoCount) {
+            task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &count)
+        }
+    }
+
+    if kerr == KERN_SUCCESS {
+        let bytes = Measurement<UnitInformationStorage>(value: Double(info.resident_size), unit: .bytes)
+        let formatted = ByteCountFormatter().string(from: bytes)
+        return "Memory used: \(formatted)"
+    } else {
+        let errorMessage = String(cString: mach_error_string(kerr), encoding: .ascii)
+        return "Error with task_info(): \(errorMessage ?? "unknown")"
+    }
+#endif
 }

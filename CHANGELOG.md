@@ -241,6 +241,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4430](https://github.com/realm/SwiftLint/issues/4430)
 
+* Report how much memory was used when `--benchmark` is specified.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Bug Fixes
 
 * Respect `validates_start_with_lowercase` option when linting function names.  

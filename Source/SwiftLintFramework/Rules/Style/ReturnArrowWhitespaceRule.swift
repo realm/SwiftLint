@@ -73,7 +73,7 @@ private extension ReturnArrowWhitespaceRule {
                 return
             }
 
-            violationPositions.append(node.arrow.positionAfterSkippingLeadingTrivia)
+            violations.append(node.arrow.positionAfterSkippingLeadingTrivia)
         }
 
         override func visitPost(_ node: FunctionSignatureSyntax) {
@@ -81,7 +81,7 @@ private extension ReturnArrowWhitespaceRule {
                 return
             }
 
-            violationPositions.append(output.arrow.positionAfterSkippingLeadingTrivia)
+            violations.append(output.arrow.positionAfterSkippingLeadingTrivia)
         }
 
         override func visitPost(_ node: ClosureSignatureSyntax) {
@@ -89,7 +89,7 @@ private extension ReturnArrowWhitespaceRule {
                 return
             }
 
-            violationPositions.append(output.arrow.positionAfterSkippingLeadingTrivia)
+            violations.append(output.arrow.positionAfterSkippingLeadingTrivia)
         }
     }
 
@@ -120,7 +120,7 @@ private extension ReturnArrowWhitespaceRule {
                         node.arrow.withTrailingTrivia(.space)
                     )
                 case .beforeArrow:
-                    newNode = 
+                    break
                 }
             }
 

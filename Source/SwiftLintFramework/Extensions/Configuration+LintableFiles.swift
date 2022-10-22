@@ -36,7 +36,14 @@ extension Configuration {
         // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
         if path.isFile && !forceExclude { return [path] }
 
-        let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
+        let relativePath: String
+        if path.bridge().isAbsolutePath {
+            relativePath = path.bridge().path(relativeTo: rootDirectory)
+        } else {
+            relativePath = path
+        }
+
+        let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: relativePath, rootDirectory: nil) : []
         let includedPaths = self.includedPaths
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }

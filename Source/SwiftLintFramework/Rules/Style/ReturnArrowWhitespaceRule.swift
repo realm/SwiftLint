@@ -41,7 +41,7 @@ public struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, Configurati
             Example("func abc()\n ↓->  Int {}\n"),
             Example("func abc()  ↓->\n  Int {}\n"),
             Example("func abc()  ↓->\nInt {}\n")
-        ],
+        ]/*,
         corrections: [
             Example("func abc()↓->Int {}\n"): Example("func abc() -> Int {}\n"),
             Example("func abc()↓-> Int {}\n"): Example("func abc() -> Int {}\n"),
@@ -51,7 +51,7 @@ public struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, Configurati
             Example("func abc()\n ↓->  Int {}\n"): Example("func abc()\n-> Int {}\n"),
             Example("func abc()  ↓->\n  Int {}\n"): Example("func abc() ->\n  Int {}\n"),
             Example("func abc()  ↓->\nInt {}\n"): Example("func abc() ->\nInt {}\n")
-        ]
+        ]*/
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor? {
@@ -59,10 +59,7 @@ public struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, Configurati
     }
 
     public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
+        nil
     }
 }
 

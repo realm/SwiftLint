@@ -43,7 +43,10 @@ extension Configuration {
             relativePath = path
         }
 
-        let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: relativePath, rootDirectory: nil) : []
+        let pathsForPath = includedPaths.isEmpty
+            ? fileManager.filesToLint(inPath: relativePath, rootDirectory: nil)
+            : []
+
         let includedPaths = self.includedPaths
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }

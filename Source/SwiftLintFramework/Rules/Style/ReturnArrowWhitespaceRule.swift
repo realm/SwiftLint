@@ -1,6 +1,7 @@
+import Foundation
 import SwiftSyntax
 
-public struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+public struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -32,181 +33,134 @@ public struct ReturnArrowWhitespaceRule: SwiftSyntaxCorrectableRule, Configurati
             Example("func abc()↓->(Int, Int) {}\n"),
             Example("func abc()↓-> Int {}\n"),
             Example("func abc()↓->   Int {}\n"),
-            Example("func abc() ↓->Int {}\n"),
-            Example("func abc()  ↓->  Int {}\n"),
-            Example("var abc = {(param: Int) ↓->Bool in }\n"),
+            Example("func abc()↓ ->Int {}\n"),
+            Example("func abc()↓  ->  Int {}\n"),
+            Example("var abc = {(param: Int)↓ ->Bool in }\n"),
             Example("var abc = {(param: Int)↓->Bool in }\n"),
             Example("typealias SuccessBlock = ((Data)↓->Void)"),
             Example("func abc()\n  ↓->  Int {}\n"),
             Example("func abc()\n ↓->  Int {}\n"),
-            Example("func abc()  ↓->\n  Int {}\n"),
-            Example("func abc()  ↓->\nInt {}\n")
-        ]/*,
+            Example("func abc()↓  ->\n  Int {}\n"),
+            Example("func abc()↓  ->\nInt {}\n")
+        ],
         corrections: [
             Example("func abc()↓->Int {}\n"): Example("func abc() -> Int {}\n"),
             Example("func abc()↓-> Int {}\n"): Example("func abc() -> Int {}\n"),
-            Example("func abc() ↓->Int {}\n"): Example("func abc() -> Int {}\n"),
-            Example("func abc()  ↓->  Int {}\n"): Example("func abc() -> Int {}\n"),
+            Example("func abc()↓ ->Int {}\n"): Example("func abc() -> Int {}\n"),
+            Example("func abc()↓  ->  Int {}\n"): Example("func abc() -> Int {}\n"),
             Example("func abc()\n  ↓->  Int {}\n"): Example("func abc()\n  -> Int {}\n"),
-            Example("func abc()\n ↓->  Int {}\n"): Example("func abc()\n-> Int {}\n"),
-            Example("func abc()  ↓->\n  Int {}\n"): Example("func abc() ->\n  Int {}\n"),
-            Example("func abc()  ↓->\nInt {}\n"): Example("func abc() ->\nInt {}\n")
-        ]*/
+            Example("func abc()\n ↓->  Int {}\n"): Example("func abc()\n -> Int {}\n"),
+            Example("func abc()↓  ->\n  Int {}\n"): Example("func abc() ->\n  Int {}\n"),
+            Example("func abc()↓  ->\nInt {}\n"): Example("func abc() ->\nInt {}\n")
+        ]
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        nil
+    public func correct(file: SwiftLintFile) -> [Correction] {
+        let violations = Visitor(viewMode: .sourceAccurate)
+            .walk(file: file, handler: \.corrections)
+            .compactMap { violation in
+                file.stringView.NSRange(start: violation.start, end: violation.end).map { range in
+                    (range: range, correction: violation.correction)
+                }
+            }
+            .filter {
+                file.ruleEnabled(violatingRange: $0.range, for: self) != nil
+            }
+
+        guard violations.isNotEmpty else { return [] }
+
+        let description = Self.description
+        var corrections = [Correction]()
+        var contents = file.contents
+        for violation in violations.sorted(by: { $0.range.location > $1.range.location }) {
+            let contentsNSString = contents.bridge()
+            contents = contentsNSString.replacingCharacters(in: violation.range, with: violation.correction)
+            let location = Location(file: file, characterOffset: violation.range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
+
+        file.write(contents)
+        return corrections
     }
 }
 
 private extension ReturnArrowWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        private(set) var corrections: [ArrowViolation] = []
+
         override func visitPost(_ node: FunctionTypeSyntax) {
-            guard node.arrow.hasArrowViolation else {
+            guard let violation = node.arrow.arrowViolation else {
                 return
             }
 
-            violations.append(node.arrow.positionAfterSkippingLeadingTrivia)
+            violations.append(violation.start)
+            corrections.append(violation)
         }
 
         override func visitPost(_ node: FunctionSignatureSyntax) {
-            guard let output = node.output, output.arrow.hasArrowViolation else {
+            guard let output = node.output, let violation = output.arrow.arrowViolation else {
                 return
             }
 
-            violations.append(output.arrow.positionAfterSkippingLeadingTrivia)
+            violations.append(violation.start)
+            corrections.append(violation)
         }
 
         override func visitPost(_ node: ClosureSignatureSyntax) {
-            guard let output = node.output, output.arrow.hasArrowViolation else {
+            guard let output = node.output, let violation = output.arrow.arrowViolation else {
                 return
             }
 
-            violations.append(output.arrow.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
-        override func visit(_ node: FunctionTypeSyntax) -> TypeSyntax {
-            guard case let violations = node.arrow.arrowViolations,
-                  violations.isNotEmpty,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(node.arrow.positionAfterSkippingLeadingTrivia)
-
-            var newNode = node
-            for violation in violations {
-                switch violation {
-                case .afterArrow:
-                    newNode = newNode.withArrow(
-                        node.arrow.withTrailingTrivia(.space)
-                    )
-                case .beforeArrow:
-                    break
-                }
-            }
-
-            return super.visit(newNode)
-        }
-
-        override func visit(_ node: FunctionSignatureSyntax) -> Syntax {
-            guard let output = node.output,
-                  case let violations = output.arrow.arrowViolations,
-                  violations.isNotEmpty,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(output.arrow.positionAfterSkippingLeadingTrivia)
-
-            var newNode = node
-            for violation in violations {
-                switch violation {
-                case .afterArrow:
-                    newNode = newNode
-                        .withOutput(
-                            output.withArrow(
-                                output.arrow.withTrailingTrivia(.space)
-                            )
-                        )
-                case .beforeArrow:
-                    break
-                }
-            }
-
-            return super.visit(newNode)
-        }
-
-        override func visit(_ node: ClosureSignatureSyntax) -> Syntax {
-            guard let output = node.output,
-                  case let violations = output.arrow.arrowViolations,
-                  violations.isNotEmpty,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
-                return super.visit(node)
-            }
-
-            correctionPositions.append(output.arrow.positionAfterSkippingLeadingTrivia)
-
-            var newNode = node
-            for violation in violations {
-                switch violation {
-                case .afterArrow:
-                    newNode = newNode
-                        .withOutput(
-                            output.withArrow(
-                                output.arrow.withTrailingTrivia(.space)
-                            )
-                        )
-                case .beforeArrow:
-                    break
-                }
-            }
-
-            return super.visit(newNode)
+            violations.append(violation.start)
+            corrections.append(violation)
         }
     }
 }
 
-private enum SpacingViolationKind {
-    case beforeArrow
-    case afterArrow
+private struct ArrowViolation {
+    let start: AbsolutePosition
+    let end: AbsolutePosition
+    let correction: String
 }
 
 private extension TokenSyntax {
-    var hasArrowViolation: Bool {
-        arrowViolations.isNotEmpty
-    }
-
-    var arrowViolations: [SpacingViolationKind] {
+    var arrowViolation: ArrowViolation? {
         guard let previousToken = previousToken, let nextToken = nextToken else {
-            return []
+            return nil
         }
 
-        var violations: [SpacingViolationKind] = []
+        var start: AbsolutePosition?
+        var end: AbsolutePosition?
+        var correction = " -> "
+
         if previousToken.trailingTrivia != .space && !leadingTrivia.containsNewlines() {
-            violations.append(.beforeArrow)
+            start = previousToken.endPositionBeforeTrailingTrivia
+            end = endPosition
+
+            if nextToken.leadingTrivia.containsNewlines() {
+                correction = " ->"
+            }
         }
 
         if trailingTrivia != .space && !nextToken.leadingTrivia.containsNewlines() {
-            violations.append(.afterArrow)
+            if leadingTrivia.containsNewlines() {
+                start = positionAfterSkippingLeadingTrivia
+                correction = "-> "
+            } else {
+                start = previousToken.endPositionBeforeTrailingTrivia
+            }
+            end = endPosition
         }
 
-        return violations
+        guard let start = start, let end = end else {
+            return nil
+        }
+
+        return ArrowViolation(start: start, end: end, correction: correction)
     }
 }
 

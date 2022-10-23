@@ -79,6 +79,7 @@
   - `contains_over_first_not_nil`
   - `contains_over_range_nil_comparison`
   - `convenience_type`
+  - `control_statement`
   - `deployment_target`
   - `discarded_notification_center_observer`
   - `discouraged_assert`

@@ -327,7 +327,7 @@ make_directory_structure
   build(branch)
 end
 
-unless @options[:force] do
+unless @options[:force]
   full_version_branch = `#{@working_dir}/builds/swiftlint-branch version --verbose`
   full_version_main = `#{@working_dir}/builds/swiftlint-main version --verbose`
 

@@ -193,14 +193,6 @@ private extension PatternBindingSyntax {
     }
 }
 
-private extension ModifierListSyntax? {
-    var containsLazy: Bool {
-        self?.contains { elem in
-            elem.name.tokenKind == .contextualKeyword("lazy")
-        } ?? false
-    }
-}
-
 private extension InitializerClauseSyntax {
     var isInitializingToNil: Bool {
         value.is(NilLiteralExprSyntax.self)

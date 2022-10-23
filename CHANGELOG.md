@@ -63,6 +63,7 @@
   - `contains_over_first_not_nil`
   - `contains_over_range_nil_comparison`
   - `deployment_target`
+  - `discarded_notification_center_observer`
   - `discouraged_assert`
   - `discouraged_direct_init`
   - `discouraged_none_name`

@@ -1,7 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import IDEUtils
+import SwiftSyntax
 
-public struct OrphanedDocCommentRule: ConfigurationProviderRule {
+public struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -43,37 +43,79 @@ public struct OrphanedDocCommentRule: ConfigurationProviderRule {
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
+            """),
+            Example("""
+            func foo() {
+              ↓/// Docstring inside a function declaration
+              print("foo")
+            }
             """)
         ]
     )
 
-    private static let characterSet = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "/"))
-
     public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let docStringsTokens = file.syntaxMap.tokens.filter { token in
-            return token.kind == .docComment || token.kind == .docCommentField
-        }
-
-        let docummentedDeclsRanges = file.structureDictionary.traverseDepthFirst { dictionary -> [ByteRange]? in
-            guard let docOffset = dictionary.docOffset, let docLength = dictionary.docLength else {
-                return nil
-            }
-
-            return [ByteRange(location: docOffset, length: docLength)]
-        }.sorted { $0.location < $1.location }
-
-        return docStringsTokens
-            .filter { token in
-                guard docummentedDeclsRanges.firstIndexAssumingSorted(where: token.range.intersects) == nil,
-                    let contents = file.contents(for: token) else {
-                        return false
+        let classifications = file.syntaxClassifications
+            .filter { $0.kind != .none }
+        let docstringsWithOtherComments = classifications
+            .pairs()
+            .compactMap { first, second -> Location? in
+                let firstByteRange = first.range.toSourceKittenByteRange()
+                guard
+                    let second = second,
+                    first.kind == .docLineComment || first.kind == .docBlockComment,
+                    second.kind == .lineComment || second.kind == .blockComment,
+                    let firstString = file.stringView.substringWithByteRange(firstByteRange),
+                    // These patterns are often used for "file header" style comments
+                    !firstString.starts(with: "////") && !firstString.starts(with: "/***")
+                else {
+                    return nil
                 }
 
-                return contents.trimmingCharacters(in: Self.characterSet).isNotEmpty
-            }.map { token in
-                return StyleViolation(ruleDescription: Self.description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, byteOffset: token.offset))
+                return Location(file: file, byteOffset: firstByteRange.location)
             }
+
+        let docstringsInFunctionDeclarations = Visitor(classifications: classifications)
+            .walk(tree: file.syntaxTree, handler: \.violations)
+            .map { Location(file: file, position: $0.position) }
+
+        return (docstringsWithOtherComments + docstringsInFunctionDeclarations)
+            .sorted()
+            .map { location in
+                StyleViolation(ruleDescription: Self.description,
+                               severity: configuration.severity,
+                               location: location)
+            }
+    }
+}
+
+private extension OrphanedDocCommentRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let classifications: [SyntaxClassifiedRange]
+
+        init(classifications: [SyntaxClassifiedRange]) {
+            self.classifications = classifications
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let body = node.body else {
+                return
+            }
+
+            let violatingClassification = classifications.first { classification in
+                classification.range.intersects(body.byteRange) &&
+                    [.docLineComment, .docBlockComment].contains(classification.kind)
+            }
+
+            if let violatingClassification {
+                violations.append(AbsolutePosition(utf8Offset: violatingClassification.offset))
+            }
+        }
+    }
+}
+
+private extension Sequence {
+    func pairs() -> Zip2Sequence<Self, [Element?]> {
+        return zip(self, Array(dropFirst()) + [nil])
     }
 }

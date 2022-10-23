@@ -51,7 +51,8 @@ end
 
 file = Tempfile.new('violations')
 
-Open3.popen3("tools/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
+force_flag = has_danger_changes ? "--force" : ""
+Open3.popen3("tools/oss-check -v #{force_flag} 2> #{file.path}") do |_, stdout, _, _|
   while char = stdout.getc
     print char
   end

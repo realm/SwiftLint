@@ -15,7 +15,15 @@ steps:
     commands:
       - echo "+++ Analyze"
       - bazel test -c opt --test_output=streamed --test_timeout=1800 --spawn_strategy=local analyze
-  - label: "TSan"
+  - label: "TSan Tests"
     commands:
       - echo "+++ Test"
-      - bazel test --xcode_version_config=//bazel:xcode_config --test_output=streamed --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+      - bazel test --test_output=streamed --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+  - label: "TSan Runs"
+    commands:
+      - echo "--- Build"
+      - bazel build --config=release --features=tsan swiftlint
+      - echo "+++ Pre-cache SwiftLint Run"
+      - ./bazel-bin/swiftlint --progress --lenient
+      - echo "+++ Post-cache SwiftLint Run"
+      - ./bazel-bin/swiftlint --progress --lenient

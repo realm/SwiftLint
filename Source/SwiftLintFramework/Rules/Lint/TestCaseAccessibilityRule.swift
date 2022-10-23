@@ -1,8 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderRule,
-                                         SubstitutionCorrectableRule {
+public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = TestCaseAccessibilityConfiguration()
 
     public init() {}
@@ -14,56 +12,120 @@ public struct TestCaseAccessibilityRule: Rule, OptInRule, ConfigurationProviderR
         kind: .lint,
         nonTriggeringExamples: TestCaseAccessibilityRuleExamples.nonTriggeringExamples,
         triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,
-        corrections: TestCaseAccessibilityRuleExamples.corrections
+        corrections: [:] // TestCaseAccessibilityRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return testClasses(in: file).flatMap { dictionary in
-            violationRanges(in: file, for: dictionary).map { range in
-                return StyleViolation(ruleDescription: Self.description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, characterOffset: range.location))
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(allowedPrefixes: configuration.allowedPrefixes, testParentClasses: configuration.testParentClasses)
+    }
+}
+
+private extension TestCaseAccessibilityRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let allowedPrefixes: Set<String>
+        private let testParentClasses: Set<String>
+
+        init(allowedPrefixes: Set<String>, testParentClasses: Set<String>) {
+            self.allowedPrefixes = allowedPrefixes
+            self.testParentClasses = testParentClasses
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            guard !testParentClasses.isDisjoint(with: node.inheritedTypes) else {
+                return
+            }
+
+            violations.append(
+                contentsOf: XCTestClassVisitor(allowedPrefixes: allowedPrefixes)
+                    .walk(tree: node.members, handler: \.violations)
+            )
+        }
+    }
+
+    final class XCTestClassVisitor: ViolationsSyntaxVisitor {
+        private let allowedPrefixes: Set<String>
+
+        init(allowedPrefixes: Set<String>) {
+            self.allowedPrefixes = allowedPrefixes
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard !node.modifiers.isPrivateOrFileprivate,
+                  !XCTestHelpers.isXCTestVariable(node) else {
+                return
+            }
+
+            for binding in node.bindings {
+                guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
+                      case let name = pattern.identifier.text,
+                      !allowedPrefixes.contains(where: name.hasPrefix) else {
+                    continue
+                }
+
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
+                return
             }
         }
-    }
 
-    // MARK: - SubstitutionCorrectableRule
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard hasViolation(modifiers: node.modifiers, identifierToken: node.identifier),
+                  !XCTestHelpers.isXCTestFunction(node) else {
+                return
+            }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return testClasses(in: file).flatMap { violationRanges(in: file, for: $0) }
-    }
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "private ")
-    }
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
 
-    // MARK: - Private
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+                violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
 
-    private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        return file.structureDictionary.substructure.filter { dictionary in
-            dictionary.declarationKind == .class &&
-            configuration.testParentClasses.intersection(dictionary.inheritedTypes).isNotEmpty
+        override func visitPost(_ node: StructDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+                violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: TypealiasDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers, identifierToken: node.identifier) {
+                violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        private func hasViolation(modifiers: ModifierListSyntax?, identifierToken: TokenSyntax) -> Bool {
+            guard !modifiers.isPrivateOrFileprivate else {
+                return false
+            }
+
+            return !allowedPrefixes.contains(where: identifierToken.text.hasPrefix)
         }
     }
+}
 
-    private func violationRanges(in file: SwiftLintFile,
-                                 for dictionary: SourceKittenDictionary) -> [NSRange] {
-        return dictionary.substructure.compactMap { subDictionary -> NSRange? in
-            guard
-                let kind = subDictionary.declarationKind,
-                kind != .varLocal,
-                let name = subDictionary.name,
-                !isXCTestMember(kind: kind, name: name, dictionary: subDictionary),
-                let offset = subDictionary.offset,
-                subDictionary.accessibility?.isPrivate != true else { return nil }
-
-            return file.stringView.byteRangeToNSRange(ByteRange(location: offset, length: 0))
-        }
-    }
-
-    private func isXCTestMember(kind: SwiftDeclarationKind, name: String,
-                                dictionary: SourceKittenDictionary) -> Bool {
-        return XCTestHelpers.isXCTestMember(kind: kind, name: name, dictionary: dictionary)
-            || configuration.allowedPrefixes.contains(where: name.hasPrefix)
+private extension ClassDeclSyntax {
+    var inheritedTypes: [String] {
+        inheritanceClause?.inheritedTypeCollection.compactMap { type in
+            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+        } ?? []
     }
 }

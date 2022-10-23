@@ -97,7 +97,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFr
             .compactMap { previous, current, next -> (ByteRange, shouldAddSpace: Bool)? in
                 if current.tokenKind != .comma {
                     return nil
-                } else if !previous.trailingTrivia.isEmpty && !current.leadingTrivia.containsBlockComments() {
+                } else if !previous.trailingTrivia.isEmpty && !previous.trailingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     let nextIsNewline = next.leadingTrivia.containsNewlines()

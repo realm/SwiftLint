@@ -59,6 +59,10 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)
                 } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                    if case .spaces(1) = current.trailingTrivia.first {
+                        return nil
+                    }
+
                     let flexibleRightSpacing = configuration.flexibleRightSpacing ||
                         caseStatementPositions.contains(current.position)
                     if flexibleRightSpacing && current.trailingTrivia.isNotEmpty {

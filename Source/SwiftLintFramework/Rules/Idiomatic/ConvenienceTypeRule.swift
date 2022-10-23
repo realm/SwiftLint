@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -53,6 +53,11 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
             Example("""
             class Foo { // @objc static func can't exist on an enum
                @objc static func foo() {}
+            }
+            """),
+            Example("""
+            @objcMembers class Foo { // @objc static func can't exist on an enum
+               static func foo() {}
             }
             """),
             Example("""
@@ -112,67 +117,114 @@ public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.offset,
-            [.class, .struct].contains(kind),
-            dictionary.inheritedTypes.isEmpty,
-            dictionary.substructure.isNotEmpty else {
-                return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension ConvenienceTypeRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            if hasViolation(inheritance: node.inheritanceClause, attributes: node.attributes, members: node.members) {
+                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        if let byteRange = dictionary.byteRange,
-           let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
-           firstToken.kind == .keyword,
-           file.contents(for: firstToken) == "actor" {
-                return []
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if hasViolation(inheritance: node.inheritanceClause, attributes: node.attributes, members: node.members) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
 
-        let containsInstanceDeclarations = dictionary.substructure.contains { dict in
-            guard let kind = dict.declarationKind else {
+        private func hasViolation(inheritance: TypeInheritanceClauseSyntax?,
+                                  attributes: AttributeListSyntax?,
+                                  members: MemberDeclBlockSyntax) -> Bool {
+            guard inheritance.isNilOrEmpty,
+                  !attributes.containsObjcMembers,
+                  !attributes.containsObjc,
+                  !members.members.isEmpty else {
                 return false
             }
 
-            let instanceKinds: Set<SwiftDeclarationKind> = [.varInstance, .functionSubscript, .functionMethodInstance]
-            guard instanceKinds.contains(kind), let name = dict.name else {
-                return false
-            }
-
-            if name.hasPrefix("init(") {
-                return !isFunctionUnavailable(file: file, dictionary: dict)
-            }
-
-            return true
+            return ConvenienceTypeCheckVisitor(viewMode: .sourceAccurate)
+                .walk(tree: members, handler: \.canBeConvenienceType)
         }
+    }
+}
 
-        guard !containsInstanceDeclarations else {
-            return []
+private class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor {
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+
+    private(set) var canBeConvenienceType = true
+
+    override func visitPost(_ node: VariableDeclSyntax) {
+        if node.isInstanceVariable {
+            canBeConvenienceType = false
+        } else if node.attributes.containsObjc {
+            canBeConvenienceType = false
         }
-
-        let hasObjcMembers = dictionary.substructure.contains { dict in
-            return dict.enclosedSwiftAttributes.contains(.objc)
-        }
-
-        guard !hasObjcMembers else {
-            return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
     }
 
-    private func isFunctionUnavailable(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Bool {
-        return dictionary.swiftAttributes.contains { dict -> Bool in
-            guard dict.attribute.flatMap(SwiftDeclarationAttributeKind.init(rawValue:)) == .available,
-                let contents = dict.byteRange.flatMap(file.stringView.substringWithByteRange)
-            else {
+    override func visitPost(_ node: FunctionDeclSyntax) {
+        if node.modifiers.containsStaticOrClass {
+            if node.attributes.containsObjc {
+                canBeConvenienceType = false
+            }
+        } else {
+            canBeConvenienceType = false
+        }
+    }
+
+    override func visitPost(_ node: InitializerDeclSyntax) {
+        if !node.attributes.hasUnavailableAttribute {
+            canBeConvenienceType = false
+        }
+    }
+
+    override func visitPost(_ node: SubscriptDeclSyntax) {
+        if !node.modifiers.containsStaticOrClass {
+            canBeConvenienceType = false
+        }
+    }
+}
+
+private extension TypeInheritanceClauseSyntax? {
+    var isNilOrEmpty: Bool {
+        self?.inheritedTypeCollection.isEmpty ?? true
+    }
+}
+
+private extension AttributeListSyntax? {
+    var containsObjcMembers: Bool {
+        self?.contains { elem in
+            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("objcMembers")
+        } ?? false
+    }
+
+    var containsObjc: Bool {
+        self?.contains { elem in
+            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .contextualKeyword("objc")
+        } ?? false
+    }
+}
+
+private extension AttributeListSyntax? {
+    var hasUnavailableAttribute: Bool {
+        guard let attrs = self else {
+            return false
+        }
+
+        return attrs.contains { elem in
+            guard let attr = elem.as(AttributeSyntax.self),
+                    let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
                 return false
             }
 
-            return contents.contains("unavailable")
+            return attr.attributeName.tokenKind == .contextualKeyword("available") && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind == .contextualKeyword("unavailable")
+            }
         }
     }
 }

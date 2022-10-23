@@ -471,6 +471,14 @@
 <span class="p">}</span>
 <span class="k">infix</span> <span class="k">operator</span> <span class="o">|&gt;</span> <span class="p">:</span> <span class="kt">PipelinePrecedence</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">scalar</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="mh">0x000A</span><span class="o">...</span><span class="mh">0x000D</span> <span class="cm">/* LF ... CR */</span><span class="p">:</span> <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">case</span> <span class="mh">0x0085</span> <span class="cm">/* NEXT LINE (NEL) */</span><span class="p">:</span> <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">case</span> <span class="mh">0x2028</span> <span class="cm">/* LINE SEPARATOR */</span><span class="p">:</span> <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">case</span> <span class="mh">0x2029</span> <span class="cm">/* PARAGRAPH SEPARATOR */</span><span class="p">:</span> <span class="k">return</span> <span class="kc">true</span>
+  <span class="k">default</span><span class="p">:</span> <span class="k">return</span> <span class="kc">false</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">abc</span><span class="err">↓</span><span class="p">:</span><span class="kt">Void</span>
 

@@ -61,6 +61,13 @@ public struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
             }
             """),
             Example("""
+            [1, 2, 3].↓reduce(Set<Int>()) { acc, value in
+                var result = acc
+                result.insert(value)
+                return result
+            }
+            """),
+            Example("""
             let rows = violations.enumerated().↓reduce("") { rows, indexAndViolation in
                 return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
             }
@@ -171,8 +178,9 @@ private extension ExprSyntax {
 }
 
 private extension IdentifierExprSyntax {
+    private static let copyOnWriteTypes: Set = ["Array", "Dictionary", "Set"]
+
     var isCopyOnWriteType: Bool {
-        let type = identifier.text
-        return type == "Array" || type == "Dictionary"
+        Self.copyOnWriteTypes.contains(identifier.text)
     }
 }

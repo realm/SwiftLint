@@ -120,6 +120,7 @@
   - `operator_whitespace`
   - `nsobject_prefer_isequal`
   - `prefer_nimble`
+  - `prefer_self_type_over_type_of_self`
   - `prefer_zero_over_explicit_init`
   - `prefixed_toplevel_constant`
   - `private_action`

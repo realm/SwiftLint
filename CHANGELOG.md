@@ -152,6 +152,7 @@
   - `strong_iboutlet`
   - `switch_case_alignment`
   - `switch_case_on_newline`
+  - `test_case_accessibility`
   - `toggle_bool`
   - `trailing_comma`
   - `trailing_semicolon`

@@ -1,6 +1,8 @@
+import Foundation
 import SwiftSyntax
 
-public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
+                                         ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = TestCaseAccessibilityConfiguration()
 
     public init() {}
@@ -12,11 +14,23 @@ public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule, Configurati
         kind: .lint,
         nonTriggeringExamples: TestCaseAccessibilityRuleExamples.nonTriggeringExamples,
         triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,
-        corrections: [:] // TestCaseAccessibilityRuleExamples.corrections
+        corrections: TestCaseAccessibilityRuleExamples.corrections
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(allowedPrefixes: configuration.allowedPrefixes, testParentClasses: configuration.testParentClasses)
+    }
+
+    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+        makeVisitor(file: file)
+            .walk(tree: file.syntaxTree, handler: \.violations)
+            .compactMap {
+                file.stringView.NSRange(start: $0.position, end: $0.position)
+            }
+    }
+
+    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+        (violationRange, "private ")
     }
 }
 

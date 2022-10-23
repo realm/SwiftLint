@@ -163,15 +163,3 @@ private extension TokenSyntax {
         return ArrowViolation(start: start, end: end, correction: correction)
     }
 }
-
-private extension Trivia {
-    func containsNewlines() -> Bool {
-        contains { piece in
-            if case .newlines = piece {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-}

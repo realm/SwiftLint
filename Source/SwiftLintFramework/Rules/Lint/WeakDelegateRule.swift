@@ -108,13 +108,6 @@ private extension Syntax {
 }
 
 private extension VariableDeclSyntax {
-    var weakOrUnownedModifier: DeclModifierSyntax? {
-        modifiers?.first { decl in
-            decl.name.tokenKind == .contextualKeyword("weak") ||
-                decl.name.tokenKind == .contextualKeyword("unowned")
-        }
-    }
-
     var hasDelegateSuffix: Bool {
         bindings.allSatisfy { binding in
             guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else {
@@ -156,13 +149,5 @@ private extension VariableDeclSyntax {
 
             return ignoredAttributes.contains(typeIdentifier.name.withoutTrivia().text)
         } ?? false
-    }
-}
-
-private extension AccessorBlockSyntax {
-    var getAccessor: AccessorDeclSyntax? {
-        return accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("get")
-        }
     }
 }

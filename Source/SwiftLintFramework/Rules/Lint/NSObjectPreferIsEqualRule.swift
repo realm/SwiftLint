@@ -85,16 +85,6 @@ private extension SyntaxProtocol {
     }
 }
 
-private extension ModifierListSyntax? {
-    var isStatic: Bool {
-        guard let modifiers = self else {
-            return false
-        }
-
-        return modifiers.contains { $0.name.tokenKind == .staticKeyword }
-    }
-}
-
 private extension AttributeListSyntax {
     var isObjc: Bool {
         contains { ["objc", "objcMembers"].contains($0.as(AttributeSyntax.self)?.attributeName.text) }

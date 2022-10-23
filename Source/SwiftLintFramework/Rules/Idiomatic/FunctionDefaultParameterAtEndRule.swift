@@ -76,14 +76,6 @@ private extension FunctionDefaultParameterAtEndRule {
     }
 }
 
-private extension ModifierListSyntax? {
-    var containsOverride: Bool {
-        self?.contains { decl in
-            decl.name.tokenKind == .contextualKeyword("override")
-        } ?? false
-    }
-}
-
 private extension FunctionSignatureSyntax {
     var containsViolation: Bool {
         let params = input.parameterList.filter { param in

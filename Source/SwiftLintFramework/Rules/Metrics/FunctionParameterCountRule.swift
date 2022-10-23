@@ -87,11 +87,3 @@ private extension FunctionParameterCountRule {
         }
     }
 }
-
-private extension ModifierListSyntax? {
-    var containsOverride: Bool {
-        self?.contains { elem in
-            elem.name.tokenKind == .contextualKeyword("override")
-        } ?? false
-    }
-}

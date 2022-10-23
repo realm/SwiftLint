@@ -76,15 +76,3 @@ private extension TokenSyntax {
             (trailingTrivia.containsNewlines() || (nextToken?.leadingTrivia.containsNewlines() == true))
     }
 }
-
-private extension Trivia {
-    func containsNewlines() -> Bool {
-        contains { piece in
-            if case .newlines = piece {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-}

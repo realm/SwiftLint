@@ -105,26 +105,3 @@ private extension TokenSyntax {
         }
     }
 }
-
-private extension IntegerLiteralExprSyntax {
-    var isZero: Bool {
-        guard case var .integerLiteral(number) = digits.tokenKind else {
-            return false
-        }
-
-        number = number.lowercased()
-        for prefix in ["0x", "0o", "0b"] {
-            number = number.deletingPrefix(prefix)
-        }
-
-        number = number.replacingOccurrences(of: "_", with: "")
-        return Int(number) == 0
-    }
-}
-
-private extension String {
-    func deletingPrefix(_ prefix: String) -> String {
-        guard hasPrefix(prefix) else { return self }
-        return String(dropFirst(prefix.count))
-    }
-}

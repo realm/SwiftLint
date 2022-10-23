@@ -59,14 +59,6 @@ private extension FunctionDeclSyntax {
     }
 }
 
-private extension ModifierListSyntax? {
-    var containsOverride: Bool {
-        self?.contains { elem in
-            elem.name.tokenKind == .contextualKeyword("override")
-        } ?? false
-    }
-}
-
 private enum QuickFocusedCallKind: String {
     case fdescribe
     case fcontext

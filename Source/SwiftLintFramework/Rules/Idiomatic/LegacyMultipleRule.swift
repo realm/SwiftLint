@@ -61,11 +61,11 @@ private extension LegacyMultipleRule {
 
             let isExprEqualTo0 = {
                 parent.leftOperand.as(InfixOperatorExprSyntax.self) == node &&
-                    parent.rightOperand.as(IntegerLiteralExprSyntax.self)?.digits.tokenKind == .integerLiteral("0")
+                    parent.rightOperand.as(IntegerLiteralExprSyntax.self)?.isZero == true
             }
 
             let is0EqualToExpr = {
-                parent.leftOperand.as(IntegerLiteralExprSyntax.self)?.digits.tokenKind == .integerLiteral("0") &&
+                parent.leftOperand.as(IntegerLiteralExprSyntax.self)?.isZero == true &&
                     parent.rightOperand.as(InfixOperatorExprSyntax.self) == node
             }
 

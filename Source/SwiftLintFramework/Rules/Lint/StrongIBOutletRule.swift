@@ -86,19 +86,6 @@ private extension VariableDeclSyntax {
         return keyword.positionAfterSkippingLeadingTrivia
     }
 
-    var isIBOutlet: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
-        } ?? false
-    }
-
-    var weakOrUnownedModifier: DeclModifierSyntax? {
-        modifiers?.first { decl in
-            decl.name.tokenKind == .contextualKeyword("weak") ||
-                decl.name.tokenKind == .contextualKeyword("unowned")
-        }
-    }
-
     var weakOrUnownedKeyword: TokenSyntax? {
         weakOrUnownedModifier?.name
     }

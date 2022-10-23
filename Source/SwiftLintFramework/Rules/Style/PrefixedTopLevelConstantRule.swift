@@ -91,7 +91,7 @@ private extension PrefixedTopLevelConstantRule {
                 return
             }
 
-            if onlyPrivateMembers, !node.modifiers.isPrivateOrFilePrivate {
+            if onlyPrivateMembers, !node.modifiers.isPrivateOrFileprivate {
                 return
             }
 
@@ -112,17 +112,5 @@ private extension PrefixedTopLevelConstantRule {
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
-    }
-}
-
-private extension ModifierListSyntax? {
-    var isPrivateOrFilePrivate: Bool {
-        self?.contains(where: \.isPrivateOrFilePrivate) ?? false
-    }
-}
-
-private extension ModifierListSyntax.Element {
-    var isPrivateOrFilePrivate: Bool {
-        (name.text == "private" || name.text == "fileprivate") && detail == nil
     }
 }

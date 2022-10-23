@@ -63,11 +63,3 @@ private extension ImplicitlyUnwrappedOptionalRule {
         }
     }
 }
-
-private extension VariableDeclSyntax {
-    var isIBOutlet: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
-        } ?? false
-    }
-}

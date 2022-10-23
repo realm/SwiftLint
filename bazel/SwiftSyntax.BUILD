@@ -48,8 +48,8 @@ swift_library(
     deps = [
         ":SwiftBasicFormat",
         ":SwiftParser",
-        ":SwiftSyntax",
         ":SwiftParserDiagnostics",
+        ":SwiftSyntax",
     ],
 )
 

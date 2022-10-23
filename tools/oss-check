@@ -30,6 +30,9 @@ OptionParser.new do |opts|
   opts.on('--skip-clean', 'skip cleaning on completion') do |skip_clean|
     @options[:skip_clean] = skip_clean
   end
+  opts.on('--force', 'run oss-check even if binaries are equal') do |force|
+    @options[:force] = force
+  end
   opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
     @options[:verbose] = v
   end
@@ -290,10 +293,12 @@ end
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
+  Repo.new('Brave', 'brave/brave-ios'),
   Repo.new('DuckDuckGo', 'duckduckgo/iOS'),
   Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),
   Repo.new('Moya', 'Moya/Moya'),
+  Repo.new('NetNewsWire', 'Ranchero-Software/NetNewsWire'),
   Repo.new('Nimble', 'Quick/Nimble'),
   Repo.new('PocketCasts', 'Automattic/pocket-casts-ios'),
   Repo.new('Quick', 'Quick/Quick'),
@@ -301,6 +306,8 @@ end
   Repo.new('SourceKitten', 'jpsim/SourceKitten'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
   Repo.new('Swift', 'apple/swift'),
+  Repo.new('VLC', 'videolan/vlc-ios'),
+  Repo.new('Wire', 'wireapp/wire-ios'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
 
@@ -320,14 +327,16 @@ make_directory_structure
   build(branch)
 end
 
-full_version_branch = `#{@working_dir}/builds/swiftlint-branch version --verbose`
-full_version_main = `#{@working_dir}/builds/swiftlint-main version --verbose`
+unless @options[:force] do
+  full_version_branch = `#{@working_dir}/builds/swiftlint-branch version --verbose`
+  full_version_main = `#{@working_dir}/builds/swiftlint-main version --verbose`
 
-if full_version_branch == full_version_main
-  message "Skipping OSSCheck because SwiftLint hasn't changed compared to 'main'"
-  # Clean up
-  clean_up unless @options[:skip_clean]
-  exit
+  if full_version_branch == full_version_main
+    message "Skipping OSSCheck because SwiftLint hasn't changed compared to 'main'"
+    # Clean up
+    clean_up unless @options[:skip_clean]
+    exit
+  end
 end
 
 setup_repos

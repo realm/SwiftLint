@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
+public struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
 
     public init() {}
@@ -38,56 +37,51 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "}\n"),
             Example("if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
             "}\n"),
-            Example("func foo() {\nif let ↓_ = bar {\n}\n"),
-            Example("if case .some(let ↓_) = self {}")
+            Example("func foo() {\nif let ↓_ = bar {\n}\n")
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        let conditionKind = "source.lang.swift.structure.elem.condition_expr"
-        guard kind == .if || kind == .guard else {
-            return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(ignoreOptionalTry: configuration.ignoreOptionalTry)
+    }
+}
+
+private extension UnusedOptionalBindingRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let ignoreOptionalTry: Bool
+
+        init(ignoreOptionalTry: Bool) {
+            self.ignoreOptionalTry = ignoreOptionalTry
+            super.init(viewMode: .sourceAccurate)
         }
 
-        let elements = dictionary.elements.filter { $0.kind == conditionKind }
-        return elements.flatMap { element -> [StyleViolation] in
-            guard let byteRange = element.byteRange,
-                let range = file.stringView.byteRangeToNSRange(byteRange)
-            else {
-                return []
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            guard let pattern = node.pattern.as(ExpressionPatternSyntax.self),
+                  pattern.expression.isDiscardExpression else {
+                return
             }
 
-            return violations(in: range, of: file, with: kind).map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
+            if ignoreOptionalTry,
+               let tryExpr = node.initializer?.value.as(TryExprSyntax.self),
+               tryExpr.questionOrExclamationMark?.tokenKind == .postfixQuestionMark {
+                return
+            }
+
+            violations.append(pattern.expression.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension ExprSyntax {
+    var isDiscardExpression: Bool {
+        if self.is(DiscardAssignmentExprSyntax.self) {
+            return true
+        } else if let tuple = self.as(TupleExprSyntax.self) {
+            return tuple.elementList.allSatisfy { elem in
+                elem.expression.isDiscardExpression
             }
         }
-    }
 
-    private func violations(in range: NSRange, of file: SwiftLintFile, with kind: StatementKind) -> [NSRange] {
-        let kinds = SyntaxKind.commentAndStringKinds
-
-        let underscorePattern = "(_\\s*[=,)]\\s*(try\\?)?)"
-        let underscoreTuplePattern = "(\\((\\s*[_,]\\s*)+\\)\\s*=\\s*(try\\?)?)"
-        let letUnderscore = "let\\s+(\(underscorePattern)|\(underscoreTuplePattern))"
-
-        let matches = file.matchesAndSyntaxKinds(matching: letUnderscore, range: range)
-
-        return matches
-            .filter { kinds.isDisjoint(with: $0.1) }
-            .filter { kind != .guard || !containsOptionalTry(at: $0.0.range, of: file) }
-            .map { $0.0.range(at: 1) }
-    }
-
-    private func containsOptionalTry(at range: NSRange, of file: SwiftLintFile) -> Bool {
-        guard configuration.ignoreOptionalTry else {
-            return false
-        }
-
-        let matches = file.match(pattern: "try?", with: [.keyword], range: range)
-        return matches.isNotEmpty
+        return false
     }
 }

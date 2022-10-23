@@ -158,6 +158,7 @@
   - `unused_closure_parameter`
   - `unused_control_flow_label`
   - `unused_enumerated`
+  - `unused_optional_binding`
   - `unused_setter_value`
   - `valid_ibinspectable`
   - `weak_delegate`

@@ -1,6 +1,6 @@
-public struct UnusedOptionalBindingConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var ignoreOptionalTry: Bool
+public struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var ignoreOptionalTry: Bool
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", ignore_optional_try: \(ignoreOptionalTry)"

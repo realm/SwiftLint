@@ -144,7 +144,7 @@ private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsS
         self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: CatchClauseSyntax) -> Syntax {
+    override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
         guard
             node.catchItems?.count == 1,
             let item = node.catchItems?.first,

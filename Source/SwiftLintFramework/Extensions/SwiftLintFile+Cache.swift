@@ -4,6 +4,7 @@ import Darwin
 import Foundation
 import SourceKittenFramework
 import SwiftParser
+import SwiftParserDiagnostics
 import SwiftSyntax
 
 private typealias FileCacheKey = UUID

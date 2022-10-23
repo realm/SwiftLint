@@ -94,7 +94,7 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
         self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: OptionalBindingConditionSyntax) -> Syntax {
+    override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
         guard
             let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
             identifierPattern.identifier.text != bindIdentifier,

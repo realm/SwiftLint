@@ -54,7 +54,7 @@ private extension RedundantNilCoalescingRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: ExprListSyntax) -> Syntax {
+        override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
             guard
                 node.count > 2,
                 let lastExpression = node.last,

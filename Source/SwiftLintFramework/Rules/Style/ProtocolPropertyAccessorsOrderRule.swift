@@ -61,7 +61,7 @@ private extension ProtocolPropertyAccessorsOrderRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: AccessorBlockSyntax) -> Syntax {
+        override func visit(_ node: AccessorBlockSyntax) -> AccessorBlockSyntax {
             guard
                 node.hasViolation,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

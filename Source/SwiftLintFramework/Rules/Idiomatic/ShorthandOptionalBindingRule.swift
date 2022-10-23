@@ -111,7 +111,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: OptionalBindingConditionSyntax) -> Syntax {
+    override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
         guard
             node.isShadowingOptionalBinding,
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

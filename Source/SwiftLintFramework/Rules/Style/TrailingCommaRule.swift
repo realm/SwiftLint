@@ -126,7 +126,7 @@ private extension TrailingCommaRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: DictionaryElementListSyntax) -> Syntax {
+        override func visit(_ node: DictionaryElementListSyntax) -> DictionaryElementListSyntax {
             guard let lastElement = node.last,
                     !lastElement.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                 return super.visit(node)
@@ -163,7 +163,7 @@ private extension TrailingCommaRule {
             }
         }
 
-        override func visit(_ node: ArrayElementListSyntax) -> Syntax {
+        override func visit(_ node: ArrayElementListSyntax) -> ArrayElementListSyntax {
             guard let lastElement = node.last,
                   !lastElement.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                 return super.visit(node)

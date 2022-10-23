@@ -54,11 +54,15 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
                     return nil
                 }
 
-                if previous.trailingTrivia.isNotEmpty && !current.leadingTrivia.containsBlockComments() {
+                if previous.trailingTrivia.isNotEmpty && !previous.trailingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)
                 } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                    if case .spaces(1) = current.trailingTrivia.first {
+                        return nil
+                    }
+
                     let flexibleRightSpacing = configuration.flexibleRightSpacing ||
                         caseStatementPositions.contains(current.position)
                     if flexibleRightSpacing && current.trailingTrivia.isNotEmpty {

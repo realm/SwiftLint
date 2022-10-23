@@ -188,11 +188,14 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
             return nil
         }
 
-        let tooMuchSpacingBefore = previousToken.trailingTrivia.containsTooMuchWhitespacing
-        let tooMuchSpacingAfter = operatorToken.trailingTrivia.containsTooMuchWhitespacing
+        let tooMuchSpacingBefore = previousToken.trailingTrivia.containsTooMuchWhitespacing &&
+            !operatorToken.leadingTrivia.containsNewlines()
+        let tooMuchSpacingAfter = operatorToken.trailingTrivia.containsTooMuchWhitespacing &&
+            !operatorToken.trailingTrivia.containsNewlines()
 
         let tooMuchSpacing = (tooMuchSpacingBefore || tooMuchSpacingAfter) &&
             !operatorToken.leadingTrivia.containsComments &&
+            !operatorToken.trailingTrivia.containsComments &&
             !nextToken.leadingTrivia.containsComments
 
         guard noSpacing || tooMuchSpacing else {

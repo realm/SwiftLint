@@ -1,8 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationProviderRule,
-    OptInRule {
+public struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -42,6 +40,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         ],
         triggeringExamples: [
             Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
+            Example("_ = ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),
             Example("↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n"),
             Example("""
             @discardableResult func foo() -> Any {
@@ -51,58 +50,51 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationOffsets(in: file, dictionary: dictionary, kind: kind).map { location in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: location))
-        }
-    }
-
-    private func violationOffsets(in file: SwiftLintFile, dictionary: SourceKittenDictionary,
-                                  kind: SwiftExpressionKind) -> [ByteCount] {
-        guard kind == .call,
-            let name = dictionary.name,
-            name.hasSuffix(".addObserver"),
-            case let arguments = dictionary.enclosedArguments,
-            case let argumentsNames = arguments.compactMap({ $0.name }),
-            argumentsNames == ["forName", "object", "queue"] ||
-                argumentsNames == ["forName", "object", "queue", "using"],
-            let offset = dictionary.offset,
-            let range = file.stringView.byteRangeToNSRange(ByteRange(location: 0, length: offset)) else {
-                return []
-        }
-
-        if let lastMatch = regex("\\b[^\\(]+").matches(in: file.contents, options: [], range: range).last?.range,
-            lastMatch.location == range.length - lastMatch.length - 1 {
-            return []
-        }
-
-        if let lastMatch = regex("\\s?=\\s*").matches(in: file.contents, options: [], range: range).last?.range,
-            lastMatch.location == range.length - lastMatch.length {
-            return []
-        }
-
-        if let lastMatch = file.match(pattern: "\\breturn\\s+", with: [.keyword], range: range).last,
-            lastMatch.location == range.length - lastMatch.length,
-            let lastFunction = file.structureDictionary.functions(forByteOffset: offset).last,
-            !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
-            return []
-        }
-
-        let kinds = file.structureDictionary.kinds(forByteOffset: offset)
-        if kinds.count >= 2 && SwiftExpressionKind(rawValue: kinds[kinds.count - 2].0) == .array {
-            return []
-        }
-
-        return [offset]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private extension SourceKittenDictionary {
-    func functions(forByteOffset byteOffset: ByteCount) -> [SourceKittenDictionary] {
-        return structures(forByteOffset: byteOffset)
-            .filter { $0.declarationKind.map(SwiftDeclarationKind.functionKinds.contains) == true }
+private extension DiscardedNotificationCenterObserverRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard
+                let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
+                case .identifier("addObserver") = calledExpression.name.tokenKind,
+                case let argumentLabels = node.argumentList.map({ $0.label?.text }),
+                argumentLabels.starts(with: ["forName", "object", "queue"])
+            else {
+                return
+            }
+
+            if
+                let firstParent = node.parent?.as(ReturnStmtSyntax.self),
+                let secondParent = firstParent.parent?.as(CodeBlockItemSyntax.self),
+                let thirdParent = secondParent.parent?.as(CodeBlockItemListSyntax.self),
+                let fourthParent = thirdParent.parent?.as(CodeBlockSyntax.self),
+                let fifthParent = fourthParent.parent?.as(FunctionDeclSyntax.self),
+                fifthParent.attributes?.hasDiscardableResultAttribute != true
+            {
+                return // result is returned from a function
+            } else if node.parent?.is(TupleExprElementSyntax.self) == true {
+                return // result is passed as an argument to a function
+            } else if node.parent?.is(ArrayElementSyntax.self) == true {
+                return // result is an array literal element
+            } else if
+                let previousToken = node.previousToken,
+                case .equal = previousToken.tokenKind,
+                previousToken.previousToken?.tokenKind != .wildcardKeyword
+            {
+                return // result is assigned to something other than the wildcard keyword (`_`)
+            }
+
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension AttributeListSyntax {
+    var hasDiscardableResultAttribute: Bool {
+        contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("discardableResult") } == true
     }
 }

@@ -54,7 +54,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
                     return nil
                 }
 
-                if previous.trailingTrivia.isNotEmpty && !current.leadingTrivia.containsBlockComments() {
+                if previous.trailingTrivia.isNotEmpty && !previous.trailingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)

@@ -227,31 +227,6 @@ extension SourceKittenDictionary {
         }
     }
 
-    /// Traversing all substuctures of the dictionary hierarchically, calling `traverseBlock` on each node.
-    /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
-    ///
-    /// - parameter traverseBlock: block that will be called for each substructure and its parent.
-    ///
-    /// - returns: The list of substructure dictionaries with updated values from the traverse block.
-    func traverseWithParentDepthFirst<T>(traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?)
-        -> [T] {
-        var result: [T] = []
-        traverseWithParentDepthFirst(collectingValuesInto: &result, traverseBlock: traverseBlock)
-        return result
-    }
-
-    private func traverseWithParentDepthFirst<T>(
-        collectingValuesInto array: inout [T],
-        traverseBlock: (SourceKittenDictionary, SourceKittenDictionary) -> [T]?) {
-        substructure.forEach { subDict in
-            subDict.traverseWithParentDepthFirst(collectingValuesInto: &array, traverseBlock: traverseBlock)
-
-            if let collectedValues = traverseBlock(self, subDict) {
-                array += collectedValues
-            }
-        }
-    }
-
     /// Traversing all entities of the dictionary hierarchically, calling `traverseBlock` on each node.
     /// Traversing using depth first strategy, so deepest substructures will be passed to `traverseBlock` first.
     ///

@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -62,6 +61,13 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule {
             }
             """),
             Example("""
+            [1, 2, 3].↓reduce(Set<Int>()) { acc, value in
+                var result = acc
+                result.insert(value)
+                return result
+            }
+            """),
+            Example("""
             let rows = violations.enumerated().↓reduce("") { rows, indexAndViolation in
                 return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
             }
@@ -89,61 +95,92 @@ public struct ReduceIntoRule: ASTRule, ConfigurationProviderRule, OptInRule {
             let bar = values.↓reduce([Int](repeating: 0, count: 10)) { result, value in
                 return result + [value]
             }
+            """),
+            Example("""
+            extension Data {
+                var hexString: String {
+                    return ↓reduce("") { (output, byte) -> String in
+                        output + String(format: "%02x", byte)
+                    }
+                }
+            }
             """)
         ]
     )
 
-    private let reduceExpression = regex("(?<!\\w)reduce$")
-    private let initExpression = regex("^(?:\\[.+:?.*\\]|(?:Array|Dictionary)<.+>)(?:\\.init\\(|\\().*\\)$")
-
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
-            let nameRange = file.stringView.byteRangeToNSRange(nameByteRange),
-            let match = reduceExpression.firstMatch(in: file.contents, options: [], range: nameRange),
-            dictionary.enclosedArguments.count == 2,
-            // would otherwise equal "into"
-            dictionary.enclosedArguments[0].name == nil,
-            argumentIsCopyOnWriteType(dictionary.enclosedArguments[0], file: file)
-        else { return [] }
-
-        let location = Location(
-            file: file,
-            characterOffset: match.range.location
-        )
-        let violation = StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: location
-        )
-        return [violation]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func argumentIsCopyOnWriteType(_ argument: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        if let substructure = argument.substructure.first,
-            let kind = substructure.expressionKind {
-            if kind == .array || kind == .dictionary {
+private extension ReduceIntoRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let name = node.nameToken,
+                  name.text == "reduce",
+                  node.argumentList.count == 2 || (node.argumentList.count == 1 && node.trailingClosure != nil),
+                  let firstArgument = node.argumentList.first,
+                  // would otherwise equal "into"
+                  firstArgument.label == nil,
+                  firstArgument.expression.isCopyOnWriteType else {
+                return
+            }
+
+            violations.append(name.positionAfterSkippingLeadingTrivia)
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var nameToken: TokenSyntax? {
+        if let expr = calledExpression.as(MemberAccessExprSyntax.self) {
+            return expr.name
+        } else if let expr = calledExpression.as(IdentifierExprSyntax.self) {
+            return expr.identifier
+        }
+
+        return nil
+    }
+}
+
+private extension ExprSyntax {
+    var isCopyOnWriteType: Bool {
+        if self.is(StringLiteralExprSyntax.self) ||
+            self.is(DictionaryExprSyntax.self) ||
+            self.is(ArrayExprSyntax.self) {
+            return true
+        }
+
+        if let expr = self.as(FunctionCallExprSyntax.self) {
+            if let identifierExpr = expr.calledExpression.identifierExpr {
+                return identifierExpr.isCopyOnWriteType
+            } else if let memberAccesExpr = expr.calledExpression.as(MemberAccessExprSyntax.self),
+                      memberAccesExpr.name.text == "init",
+                      let identifierExpr = memberAccesExpr.base?.identifierExpr {
+                return identifierExpr.isCopyOnWriteType
+            } else if expr.calledExpression.isCopyOnWriteType {
                 return true
             }
         }
 
-        let contents = file.stringView
-        guard let byteRange = argument.byteRange,
-            let range = contents.byteRangeToNSRange(byteRange)
-            else { return false }
+        return false
+     }
 
-        // Check for string literal
-        let kinds = file.syntaxMap.kinds(inByteRange: byteRange)
-        if kinds == [.string] {
-            return true
+    var identifierExpr: IdentifierExprSyntax? {
+        if let identifierExpr = self.as(IdentifierExprSyntax.self) {
+            return identifierExpr
+        } else if let specializeExpr = self.as(SpecializeExprSyntax.self) {
+            return specializeExpr.expression.identifierExpr
         }
 
-        // check for Array or Dictionary init
-        let initMatch = initExpression.firstMatch(in: contents.string, options: [], range: range)
-        return initMatch != nil
+        return nil
+    }
+}
+
+private extension IdentifierExprSyntax {
+    private static let copyOnWriteTypes: Set = ["Array", "Dictionary", "Set"]
+
+    var isCopyOnWriteType: Bool {
+        Self.copyOnWriteTypes.contains(identifier.text)
     }
 }

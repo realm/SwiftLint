@@ -88,6 +88,15 @@ public struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
             let bar = values.↓reduce([Int](repeating: 0, count: 10)) { result, value in
                 return result + [value]
             }
+            """),
+            Example("""
+            extension Data {
+                var hexString: String {
+                    return ↓reduce("") { (output, byte) -> String in
+                        output + String(format: "%02x", byte)
+                    }
+                }
+            }
             """)
         ]
     )
@@ -100,8 +109,8 @@ public struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
 private extension ReduceIntoRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let expr = node.calledExpression.as(MemberAccessExprSyntax.self),
-                  expr.name.text == "reduce",
+            guard let name = node.nameToken,
+                  name.text == "reduce",
                   node.argumentList.count == 2 || (node.argumentList.count == 1 && node.trailingClosure != nil),
                   let firstArgument = node.argumentList.first,
                   // would otherwise equal "into"
@@ -110,8 +119,20 @@ private extension ReduceIntoRule {
                 return
             }
 
-            violations.append(expr.name.positionAfterSkippingLeadingTrivia)
+            violations.append(name.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var nameToken: TokenSyntax? {
+        if let expr = calledExpression.as(MemberAccessExprSyntax.self) {
+            return expr.name
+        } else if let expr = calledExpression.as(IdentifierExprSyntax.self) {
+            return expr.identifier
+        }
+
+        return nil
     }
 }
 

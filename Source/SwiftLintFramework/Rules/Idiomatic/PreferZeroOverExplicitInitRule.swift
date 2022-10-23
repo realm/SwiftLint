@@ -1,20 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
+public struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    private var pattern: String {
-        let zero = "\\s*:\\s*0(\\.0*)?\\s*"
-        let type = "(\(["CGPoint", "CGSize", "CGVector", "CGRect", "UIEdgeInsets"].joined(separator: "|")))"
-        let firstArg = "(\(["x", "dx", "width", "top"].joined(separator: "|")))"
-        let secondArg = "(\(["y", "dy", "height", "left"].joined(separator: "|")))"
-        let thirdAndFourthArg: String = {
-            let thirdArg = "(\(["width", "bottom"].joined(separator: "|")))"
-            let fourthArg = "(\(["height", "right"].joined(separator: "|")))"
-            return "(\\,\\s*\(thirdArg)\(zero)\\,\\s*\(fourthArg)\(zero))?"
-        }()
-        return "\(type)\\(\\s*\(firstArg)\(zero)\\,\\s*\(secondArg)\(zero)\(thirdAndFourthArg)\\)"
-    }
 
     public static let description = RuleDescription(
         identifier: "prefer_zero_over_explicit_init",
@@ -49,30 +36,116 @@ public struct PreferZeroOverExplicitInitRule: OptInRule, ConfigurationProviderRu
 
     public init() {}
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        violationRanges(in: file).map {
-            StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location)
-            )
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
+    }
+}
+
+private extension PreferZeroOverExplicitInitRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if node.hasViolation {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.matchesAndSyntaxKinds(matching: pattern)
-            .filter {
-                $0.1 == [.identifier, .identifier, .number, .identifier, .number] ||
-                $0.1 == [
-                    .identifier, .identifier, .number, .identifier, .number, .identifier, .number, .identifier, .number
-                ]
+    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        let locationConverter: SourceLocationConverter
+        let disabledRegions: [SourceRange]
+
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
+        }
+
+        override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+            guard node.hasViolation,
+                  let name = node.name,
+                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
             }
-            .map { $0.0.range(at: 0) }
+
+            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+
+            let newNode: MemberAccessExprSyntax = "\(name).zero"
+            return super.visit(
+                newNode
+                    .withLeadingTrivia(node.leadingTrivia ?? .zero)
+                    .withTrailingTrivia(node.trailingTrivia ?? .zero)
+            )
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var hasViolation: Bool {
+        isCGPointZeroCall ||
+            isCGSizeCall ||
+            isCGRectCall ||
+            isCGVectorCall ||
+            isUIEdgeInsetsCall
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        let declaration = file.stringView.substring(with: violationRange)
-        guard let typeEndIndex = declaration.firstIndex(of: "(") else { return nil }
-        return (violationRange, "\(declaration.prefix(upTo: typeEndIndex)).zero")
+    var isCGPointZeroCall: Bool {
+        return name == "CGPoint" &&
+            argumentNames == ["x", "y"] &&
+            argumentsAreAllZero
+    }
+
+    var isCGSizeCall: Bool {
+        return name == "CGSize" &&
+            argumentNames == ["width", "height"] &&
+            argumentsAreAllZero
+    }
+
+    var isCGRectCall: Bool {
+        return name == "CGRect" &&
+            argumentNames == ["x", "y", "width", "height"] &&
+            argumentsAreAllZero
+    }
+
+    var isCGVectorCall: Bool {
+        return name == "CGVector" &&
+            argumentNames == ["dx", "dy"] &&
+            argumentsAreAllZero
+    }
+
+    var isUIEdgeInsetsCall: Bool {
+        return name == "UIEdgeInsets" &&
+            argumentNames == ["top", "left", "bottom", "right"] &&
+            argumentsAreAllZero
+    }
+
+    var name: String? {
+        guard let expr = calledExpression.as(IdentifierExprSyntax.self) else {
+            return nil
+        }
+
+        return expr.identifier.text
+    }
+
+    var argumentNames: [String?] {
+        argumentList.map(\.label?.text)
+    }
+
+    var argumentsAreAllZero: Bool {
+        argumentList.allSatisfy { arg in
+            if let intExpr = arg.expression.as(IntegerLiteralExprSyntax.self) {
+                return intExpr.isZero
+            } else if let floatExpr = arg.expression.as(FloatLiteralExprSyntax.self) {
+                return floatExpr.isZero
+            } else {
+                return false
+            }
+        }
     }
 }

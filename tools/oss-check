@@ -60,6 +60,10 @@ class Repo
     "https://github.com/#{github_location}"
   end
 
+  def cached_tarball
+    "/tmp/#{name}.tgz"
+  end
+
   def to_s
     @name
   end
@@ -139,7 +143,22 @@ def setup_repos
   @repos.each do |repo|
     dir = "#{@working_dir}/#{repo.name}"
     puts "Cloning #{repo}"
-    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
+    if File.exists?(repo.cached_tarball)
+      perform("tar -xzvf #{repo.cached_tarball} #{dir} 2> /dev/null")
+      Dir.chdir(dir) do
+        commit_before_pull = `git rev-parse HEAD`.strip
+        perform("git pull 2> /dev/null")
+        commit_after_pull = `git rev-parse HEAD`.strip
+        if commit_before_pull != commit_after_pull
+          perform("tar -czvf #{repo.cached_tarball}.tmp #{dir} 2> /dev/null")
+          FileUtils.mv("#{repo.cached_tarball}.tmp", repo.cached_tarball)
+        end
+      end
+    else
+      perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
+      perform("tar -czvf #{repo.cached_tarball}.tmp #{dir} 2> /dev/null")
+      FileUtils.mv("#{repo.cached_tarball}.tmp", repo.cached_tarball)
+    end
     swiftlint_config = "#{dir}/.swiftlint.yml"
     FileUtils.rm_rf(swiftlint_config)
     if repo.name == 'Swift'

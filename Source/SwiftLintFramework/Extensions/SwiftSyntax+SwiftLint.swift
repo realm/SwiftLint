@@ -191,20 +191,36 @@ extension Trivia {
 
 extension IntegerLiteralExprSyntax {
     var isZero: Bool {
-        guard case var .integerLiteral(number) = digits.tokenKind else {
+        guard case let .integerLiteral(number) = digits.tokenKind else {
             return false
         }
 
-        if number == "0" { // fast path
+        return number.isZero
+    }
+}
+
+extension FloatLiteralExprSyntax {
+    var isZero: Bool {
+        guard case let .floatingLiteral(number) = floatingDigits.tokenKind else {
+            return false
+        }
+
+        return number.isZero
+    }
+}
+
+private extension String {
+    var isZero: Bool {
+        if self == "0" { // fast path
             return true
         }
 
-        number = number.lowercased()
+        var number = lowercased()
         for prefix in ["0x", "0o", "0b"] {
             number = number.deletingPrefix(prefix)
         }
 
         number = number.replacingOccurrences(of: "_", with: "")
-        return Int(number) == 0
+        return Float(number) == 0
     }
 }

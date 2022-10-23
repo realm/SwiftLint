@@ -87,7 +87,15 @@ private extension ExplicitTopLevelACLRule {
             }
         }
 
-        func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
+        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        private func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
             guard let modifiers = modifiers else {
                 return true
             }

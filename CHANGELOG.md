@@ -167,6 +167,7 @@
   - `unused_setter_value`
   - `valid_ibinspectable`
   - `weak_delegate`
+  - `xct_specific_matcher`
   - `xctfail_message`  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [SimplyDanny](https://github.com/SimplyDanny)

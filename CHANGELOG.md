@@ -141,6 +141,7 @@
   - `redundant_objc_attribute`
   - `redundant_string_enum_value`
   - `required_deinit`
+  - `return_arrow_whitespace`
   - `self_in_property_initialization`
   - `shorthand_operator`
   - `single_test_class`

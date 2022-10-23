@@ -72,6 +72,7 @@
   - `discouraged_object_literal`
   - `discouraged_optional_boolean`
   - `duplicate_enum_cases`
+  - `duplicated_key_in_dictionary_literal`
   - `dynamic_inline`
   - `empty_collection_literal`
   - `empty_count`

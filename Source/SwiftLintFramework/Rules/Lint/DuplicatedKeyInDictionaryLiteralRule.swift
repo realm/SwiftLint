@@ -97,16 +97,17 @@ private extension DuplicatedKeyInDictionaryLiteralRule {
                 return
             }
 
-            var existingKeys: [String: DictionaryKey] = [:]
             let newViolations = keys
-                .filter { key in
-                    guard existingKeys[key.content] != nil else {
-                        existingKeys[key.content] = key
-                        return false
-                    }
-                    return true
+                .reduce(into: [String: [DictionaryKey]]()) { result, key in
+                    result[key.content, default: []].append(key)
                 }
-                .map(\.position)
+                .flatMap { key, value -> [AbsolutePosition] in
+                    guard value.count > 1 else {
+                        return []
+                    }
+
+                    return value.dropFirst().map(\.position)
+                }
 
             violations.append(contentsOf: newViolations)
         }

@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct RedundantSetAccessControlRule: ConfigurationProviderRule {
+public struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -20,6 +20,16 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule {
             private final class A {
               private(set) var value: Int
             }
+            """),
+            Example("""
+            fileprivate class A {
+              public fileprivate(set) var value: Int
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            extension Color {
+                public internal(set) static var someColor = Color.anotherColor
+            }
             """)
         ],
         triggeringExamples: [
@@ -38,6 +48,11 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule {
             }
             """),
             Example("""
+            internal class A {
+              ↓internal(set) var value: Int
+            }
+            """),
+            Example("""
             fileprivate class A {
               ↓fileprivate(set) var value: Int
             }
@@ -45,80 +60,94 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.structureDictionary.traverseWithParentDepthFirst { parent, subDict in
-            guard let kind = subDict.declarationKind else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict, parentDictionary: parent)
-        }
-    }
-
-    private func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                          dictionary: SourceKittenDictionary,
-                          parentDictionary: SourceKittenDictionary?) -> [StyleViolation] {
-        let aclAttributes: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate, .internal, .public, .open]
-        let explicitACL = dictionary.swiftAttributes.compactMap { dict -> SwiftDeclarationAttributeKind? in
-            guard let attribute = dict.attribute.flatMap(SwiftDeclarationAttributeKind.init),
-                aclAttributes.contains(attribute) else {
-                    return nil
-            }
-
-            return attribute
-        }.first
-
-        let acl = dictionary.accessibility
-        let resolvedAccessibility: AccessControlLevel? = explicitACL?.acl ?? {
-            let parentACL = parentDictionary?.accessibility
-
-            if acl == .internal, let parentACL = parentACL, parentACL == .fileprivate {
-                return .fileprivate
-            } else {
-                return acl
-            }
-        }()
-
-        guard SwiftDeclarationKind.variableKinds.contains(kind),
-            resolvedAccessibility?.rawValue == dictionary.setterAccessibility else {
-                return []
-        }
-
-        let explicitSetACL = dictionary.swiftAttributes.first { dict in
-            return dict.attribute?.hasPrefix("source.decl.attribute.setter_access") ?? false
-        }
-
-        guard let offset = explicitSetACL?.offset else {
-            return []
-        }
-
-        // if it's an inferred `private`, it means the variable is actually inside a fileprivate structure
-        if dictionary.accessibility == .private,
-            explicitACL == nil,
-            dictionary.setterAccessibility.flatMap(AccessControlLevel.init(identifier:)) == .private {
-                return []
-        }
-
-        return [
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
-        ]
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 
-private extension SwiftDeclarationAttributeKind {
-    var acl: AccessControlLevel? {
-        switch self {
-        case .private:
-            return .private
-        case .fileprivate:
-            return .fileprivate
-        case .internal:
-            return .internal
-        case .public:
-            return .public
-        case .open:
-            return .open
-        default:
-            return nil
+private extension RedundantSetAccessControlRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [FunctionDeclSyntax.self]
         }
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard let modifiers = node.modifiers, let setAccessor = modifiers.setAccessor else {
+                return
+            }
+
+            let uniqueModifiers = Set(modifiers.map(\.name.tokenKind))
+            if uniqueModifiers.count != modifiers.count {
+                violations.append(modifiers.positionAfterSkippingLeadingTrivia)
+                return
+            }
+
+            if setAccessor.name.tokenKind == .fileprivateKeyword,
+               modifiers.getAccessor == nil,
+               let closestDeclModifiers = node.closestDecl()?.modifiers {
+                let closestDeclIsFilePrivate = closestDeclModifiers.contains {
+                    $0.name.tokenKind == .fileprivateKeyword
+                }
+
+                if closestDeclIsFilePrivate {
+                    violations.append(modifiers.positionAfterSkippingLeadingTrivia)
+                    return
+                }
+            }
+
+            if setAccessor.name.tokenKind == .internalKeyword,
+               modifiers.getAccessor == nil,
+               let closesDecl = node.closestDecl(),
+               let closestDeclModifiers = closesDecl.modifiers {
+                let closestDeclIsInternal = closestDeclModifiers.isEmpty || closestDeclModifiers.contains {
+                    $0.name.tokenKind == .internalKeyword
+                }
+
+                if closestDeclIsInternal {
+                    violations.append(modifiers.positionAfterSkippingLeadingTrivia)
+                    return
+                }
+            }
+        }
+    }
+}
+
+private extension SyntaxProtocol {
+    func closestDecl() -> DeclSyntax? {
+        if let decl = self.parent?.as(DeclSyntax.self) {
+            return decl
+        }
+
+        return parent?.closestDecl()
+    }
+}
+
+private extension DeclSyntax {
+    var modifiers: ModifierListSyntax? {
+        if let decl = self.as(ClassDeclSyntax.self) {
+            return decl.modifiers ?? ModifierListSyntax([])
+        } else if let decl = self.as(ActorDeclSyntax.self) {
+            return decl.modifiers ?? ModifierListSyntax([])
+        } else if let decl = self.as(StructDeclSyntax.self) {
+            return decl.modifiers ?? ModifierListSyntax([])
+        } else if let decl = self.as(ProtocolDeclSyntax.self) {
+            return decl.modifiers ?? ModifierListSyntax([])
+        } else if let decl = self.as(ExtensionDeclSyntax.self) {
+            return decl.modifiers ?? ModifierListSyntax([])
+        } else if let decl = self.as(EnumDeclSyntax.self) {
+            return decl.modifiers ?? ModifierListSyntax([])
+        }
+
+        return nil
+    }
+}
+
+private extension ModifierListSyntax {
+    var setAccessor: DeclModifierSyntax? {
+        first { $0.detail?.detail.tokenKind == .contextualKeyword("set") }
+    }
+
+    var getAccessor: DeclModifierSyntax? {
+        first { $0.detail == nil }
     }
 }

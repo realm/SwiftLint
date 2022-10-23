@@ -131,6 +131,7 @@
   - `quick_discouraged_pending_test`
   - `raw_value_for_camel_cased_codable_enum`
   - `reduce_boolean`
+  - `reduce_into`
   - `redundant_discardable_let`
   - `redundant_nil_coalescing`
   - `redundant_objc_attribute`

@@ -132,7 +132,7 @@ private extension ControlStatementRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: ConditionElementSyntax) -> Syntax {
+        override func visit(_ node: ConditionElementSyntax) -> ConditionElementSyntax {
             guard let tuple = node.condition.as(TupleExprSyntax.self), tuple.elementList.count == 1,
                   !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
                 return super.visit(node)
@@ -145,12 +145,13 @@ private extension ControlStatementRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            let newNode = node
-                .withCondition(
-                    tuple.elementList.first.map(Syntax.init)?
-                        .withLeadingTrivia(node.condition.updatedLeadingTrivia)
-                        .withTrailingTrivia(node.condition.trailingTrivia ?? .zero)
-                )
+
+            let condition = tuple.elementList.first?
+                .as(ConditionElementSyntax.Condition.self)?
+                .withLeadingTrivia(node.condition.updatedLeadingTrivia)
+                .withTrailingTrivia(node.condition.trailingTrivia ?? .zero)
+
+            let newNode = node.withCondition(condition)
             return super.visit(newNode)
         }
 

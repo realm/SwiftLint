@@ -147,15 +147,3 @@ private extension InheritedTypeListSyntax {
         Set(compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text))
     }
 }
-
-private extension ModifierListSyntax? {
-    var isPrivateOrFileprivate: Bool {
-        guard let modifiers = self else {
-            return false
-        }
-
-        return modifiers.contains { elem in
-            elem.name.tokenKind == .privateKeyword || elem.name.tokenKind == .fileprivateKeyword
-        }
-    }
-}

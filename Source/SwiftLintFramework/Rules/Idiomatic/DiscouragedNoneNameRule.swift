@@ -236,21 +236,3 @@ private extension TokenSyntax {
         tokenKind == .identifier("none") || tokenKind == .identifier("`none`")
     }
 }
-
-private extension ModifierListSyntax? {
-    var isStatic: Bool {
-        guard let modifiers = self else {
-            return false
-        }
-
-        return modifiers.contains { $0.name.tokenKind == .staticKeyword }
-    }
-
-    var isClass: Bool {
-        guard let modifiers = self else {
-            return false
-        }
-
-        return modifiers.contains { $0.name.tokenKind == .classKeyword }
-    }
-}

@@ -45,39 +45,11 @@ private extension PrivateActionRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard node.isIBAction, !node.isPrivateOrFileprivate else {
+            guard node.isIBAction, !node.modifiers.isPrivateOrFileprivate else {
                 return
             }
 
             violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var isIBAction: Bool {
-        guard let attributes = attributes else {
-            return false
-        }
-
-        return attributes.contains { elem in
-            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
-        }
-    }
-
-    var isPrivateOrFileprivate: Bool {
-        modifiers.isPrivateOrFileprivate
-    }
-}
-
-private extension ModifierListSyntax? {
-    var isPrivateOrFileprivate: Bool {
-        guard let modifiers = self else {
-            return false
-        }
-
-        return modifiers.contains { elem in
-            elem.name.tokenKind == .privateKeyword || elem.name.tokenKind == .fileprivateKeyword
         }
     }
 }

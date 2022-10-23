@@ -41,7 +41,7 @@ private extension ContainsOverFilterCountRule {
             guard
                 node.count == 3,
                 let last = node.last?.as(IntegerLiteralExprSyntax.self),
-                last.digits.text == "0",
+                last.isZero,
                 let second = node.dropFirst().first,
                 second.firstToken?.tokenKind.isZeroComparison == true,
                 let first = node.first?.as(MemberAccessExprSyntax.self),

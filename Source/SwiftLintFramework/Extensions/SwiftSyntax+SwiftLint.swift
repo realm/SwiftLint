@@ -90,3 +90,121 @@ extension TokenKind {
             self == .unspacedBinaryOperator("==")
     }
 }
+
+extension ModifierListSyntax? {
+    var containsLazy: Bool {
+        contains(tokenKind: .contextualKeyword("lazy"))
+    }
+
+    var containsOverride: Bool {
+        contains(tokenKind: .contextualKeyword("override"))
+    }
+
+    var containsStaticOrClass: Bool {
+        isStatic || isClass
+    }
+
+    var isStatic: Bool {
+        contains(tokenKind: .staticKeyword)
+    }
+
+    var isClass: Bool {
+        contains(tokenKind: .classKeyword)
+    }
+
+    var isPrivateOrFileprivate: Bool {
+        guard let modifiers = self else {
+            return false
+        }
+
+        return modifiers.contains { elem in
+            (elem.name.tokenKind == .privateKeyword || elem.name.tokenKind == .fileprivateKeyword) &&
+                elem.detail == nil
+        }
+    }
+
+    private func contains(tokenKind: TokenKind) -> Bool {
+        guard let modifiers = self else {
+            return false
+        }
+
+        return modifiers.contains { $0.name.tokenKind == tokenKind }
+    }
+}
+
+extension VariableDeclSyntax {
+    var isIBOutlet: Bool {
+        attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
+        } ?? false
+    }
+
+    var weakOrUnownedModifier: DeclModifierSyntax? {
+        modifiers?.first { decl in
+            decl.name.tokenKind == .contextualKeyword("weak") ||
+                decl.name.tokenKind == .contextualKeyword("unowned")
+        }
+    }
+
+    var isInstanceVariable: Bool {
+        !modifiers.containsStaticOrClass
+    }
+}
+
+extension FunctionDeclSyntax {
+    var isIBAction: Bool {
+        attributes?.contains { attr in
+            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
+        } ?? false
+    }
+}
+
+extension AccessorBlockSyntax {
+    var getAccessor: AccessorDeclSyntax? {
+        accessors.first { accessor in
+            accessor.accessorKind.tokenKind == .contextualKeyword("get")
+        }
+    }
+
+    var setAccessor: AccessorDeclSyntax? {
+        accessors.first { accessor in
+            accessor.accessorKind.tokenKind == .contextualKeyword("set")
+        }
+    }
+}
+
+extension Trivia {
+    func containsNewlines() -> Bool {
+        contains { piece in
+            if case .newlines = piece {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    var isSingleSpace: Bool {
+        self == .spaces(1)
+    }
+}
+
+extension IntegerLiteralExprSyntax {
+    var isZero: Bool {
+        guard case var .integerLiteral(number) = digits.tokenKind else {
+            return false
+        }
+
+        if number == "0" { // fast path
+            return true
+        }
+
+        number = number.lowercased()
+        for prefix in ["0x", "0o", "0b"] {
+            number = number.deletingPrefix(prefix)
+        }
+
+        number = number.replacingOccurrences(of: "_", with: "")
+        return Int(number) == 0
+    }
+}

@@ -200,11 +200,3 @@ private extension Either<SubscriptDeclSyntax, VariableDeclSyntax> {
         }
     }
 }
-
-private extension ModifierListSyntax? {
-    var containsOverride: Bool {
-        self?.contains { elem in
-            elem.name.tokenKind == .contextualKeyword("override")
-        } ?? false
-    }
-}

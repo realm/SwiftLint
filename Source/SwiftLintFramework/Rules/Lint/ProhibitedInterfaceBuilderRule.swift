@@ -41,22 +41,6 @@ private extension ProhibitedInterfaceBuilderRule {
     }
 }
 
-private extension VariableDeclSyntax {
-    var isIBOutlet: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBOutlet")
-        } ?? false
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var isIBAction: Bool {
-        attributes?.contains { attr in
-            attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
-        } ?? false
-    }
-}
-
 private func wrapExample(_ text: String, file: StaticString = #file, line: UInt = #line) -> Example {
     return Example("""
     class ViewController: UIViewController {

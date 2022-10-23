@@ -35,7 +35,7 @@ private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: AccessorBlockSyntax) {
         guard let getAccessor = node.getAccessor,
-              !node.containsSetAccessor,
+              node.setAccessor == nil,
               getAccessor.asyncKeyword == nil,
               getAccessor.throwsKeyword == nil,
               getAccessor.modifier == nil,
@@ -51,19 +51,5 @@ private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
                 reason: kind.violationDescription
             )
         )
-    }
-}
-
-private extension AccessorBlockSyntax {
-    var getAccessor: AccessorDeclSyntax? {
-        return accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("get")
-        }
-    }
-
-    var containsSetAccessor: Bool {
-        return accessors.contains { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("set")
-        }
     }
 }

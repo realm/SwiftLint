@@ -56,9 +56,3 @@ private extension FunctionDeclSyntax {
         !identifier.trailingTrivia.isSingleSpace || !funcKeyword.trailingTrivia.isSingleSpace
     }
 }
-
-private extension Trivia {
-    var isSingleSpace: Bool {
-        self == .spaces(1)
-    }
-}

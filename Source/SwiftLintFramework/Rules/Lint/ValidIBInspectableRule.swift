@@ -169,16 +169,6 @@ private extension ValidIBInspectableRule {
 }
 
 private extension VariableDeclSyntax {
-    var isInstanceVariable: Bool {
-        guard let modifiers = modifiers else {
-            return true
-        }
-
-        return !modifiers.contains { modifier in
-            modifier.name.text == "static" || modifier.name.text == "class"
-        }
-    }
-
     var isIBInspectable: Bool {
         attributes?.contains { attr in
             attr.as(AttributeSyntax.self)?.attributeName.text == "IBInspectable"
@@ -208,8 +198,8 @@ private extension VariableDeclSyntax {
             }
 
             // if it has a `get`, it needs to have a `set`, otherwise it's readonly
-            if accessorBlock.containsGetAccessor {
-                return !accessorBlock.containsSetAccessor
+            if accessorBlock.getAccessor != nil {
+                return accessorBlock.setAccessor == nil
             }
 
             return false
@@ -223,20 +213,6 @@ private extension VariableDeclSyntax {
             }
 
             return ValidIBInspectableRule.supportedTypes.contains(type.type.withoutTrivia().description)
-        }
-    }
-}
-
-private extension AccessorBlockSyntax {
-    var containsSetAccessor: Bool {
-        return accessors.contains { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("set")
-        }
-    }
-
-    var containsGetAccessor: Bool {
-        return accessors.contains { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("get")
         }
     }
 }

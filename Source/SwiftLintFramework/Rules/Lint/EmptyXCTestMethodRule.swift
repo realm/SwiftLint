@@ -27,7 +27,7 @@ private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
-        if (node.isOverride || node.isTestMethod) && node.hasEmptyBody {
+        if (node.modifiers.containsOverride || node.isTestMethod) && node.hasEmptyBody {
             violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -45,10 +45,6 @@ private extension ClassDeclSyntax {
 }
 
 private extension FunctionDeclSyntax {
-    var isOverride: Bool {
-        modifiers?.contains { $0.name.text == "override" } ?? false
-    }
-
     var hasEmptyBody: Bool {
         if let body = body {
             return body.statements.isEmpty

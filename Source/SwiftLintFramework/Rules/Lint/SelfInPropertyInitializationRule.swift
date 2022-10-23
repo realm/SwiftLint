@@ -145,17 +145,3 @@ private extension SyntaxProtocol {
         return parent?.closestDecl()
     }
 }
-
-private extension ModifierListSyntax? {
-    var containsLazy: Bool {
-        self?.contains { elem in
-            elem.name.tokenKind == .contextualKeyword("lazy")
-        } ?? false
-    }
-
-    var containsStaticOrClass: Bool {
-        self?.contains { elem in
-            elem.name.tokenKind == .staticKeyword || elem.name.tokenKind == .classKeyword
-        } ?? false
-    }
-}

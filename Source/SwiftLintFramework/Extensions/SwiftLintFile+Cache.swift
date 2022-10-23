@@ -37,9 +37,10 @@ private let commandsCache = Cache { file -> [Command] in
 private let syntaxMapCache = Cache { file in
     responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
 }
-private let syntaxKindsByLinesCache = Cache { file in file.syntaxKindsByLine() }
-private let syntaxTokensByLinesCache = Cache { file in file.syntaxTokensByLine() }
-private let linesWithTokensCache = Cache { file in file.computeLinesWithTokens() }
+private let syntaxClassificationsCache = Cache { $0.syntaxTree.classifications }
+private let syntaxKindsByLinesCache = Cache { $0.syntaxKindsByLine() }
+private let syntaxTokensByLinesCache = Cache { $0.syntaxTokensByLine() }
+private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
@@ -148,6 +149,8 @@ extension SwiftLintFile {
         return structureDictionary
     }
 
+    internal var syntaxClassifications: SyntaxClassifications { syntaxClassificationsCache.get(self) }
+
     internal var syntaxMap: SwiftLintSyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
@@ -196,6 +199,7 @@ extension SwiftLintFile {
         assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
         structureDictionaryCache.invalidate(self)
+        syntaxClassificationsCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
@@ -209,6 +213,7 @@ extension SwiftLintFile {
         assertHandlerCache.clear()
         structureCache.clear()
         structureDictionaryCache.clear()
+        syntaxClassificationsCache.clear()
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()

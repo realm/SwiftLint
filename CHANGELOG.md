@@ -56,6 +56,7 @@
   - `closing_brace`
   - `closure_body_length`
   - `closure_parameter_position`
+  - `comment_spacing`
   - `computed_accessors_order`
   - `conditional_returns_on_newline`
   - `contains_over_filter_count`

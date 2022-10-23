@@ -20,9 +20,15 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFr
             Example("func abc(\n  a: String,\n  bcd: String\n) {\n}\n"),
             Example("#imageLiteral(resourceName: \"foo,bar,baz\")"),
             Example("""
-            kvcStringBuffer.advanced(by: rootKVCLength)
-              .storeBytes(of: 0x2E /* '.' */, as: CChar.self)
-            """)
+                kvcStringBuffer.advanced(by: rootKVCLength)
+                  .storeBytes(of: 0x2E /* '.' */, as: CChar.self)
+                """),
+            Example("""
+                public indirect enum ExpectationMessage {
+                  /// appends after an existing message ("<expectation> (use beNil() to match nils)")
+                  case appends(ExpectationMessage, /* Appended Message */ String)
+                }
+                """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("func abc(a: String↓ ,b: String) { }"),
@@ -102,7 +108,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFr
                     let end = ByteCount(current.endPosition)
                     let nextIsNewline = next.leadingTrivia.containsNewlines()
                     return (ByteRange(location: start, length: end - start), shouldAddSpace: !nextIsNewline)
-                } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                } else if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
                     return (ByteRange(location: ByteCount(current.position), length: 1), shouldAddSpace: true)
                 } else {
                     return nil

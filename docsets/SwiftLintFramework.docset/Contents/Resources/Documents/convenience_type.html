@@ -385,6 +385,10 @@
    <span class="kd">@objc</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">@objcMembers</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="c1">// @objc static func can't exist on an enum</span>
+   <span class="kd">static</span> <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span> <span class="c1">// final class, but @objc class func can't exist on an enum</span>
    <span class="kd">@objc</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>

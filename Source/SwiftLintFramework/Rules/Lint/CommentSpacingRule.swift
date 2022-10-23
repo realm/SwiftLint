@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
-public struct CommentSpacingRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+public struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -120,14 +121,19 @@ public struct CommentSpacingRule: ConfigurationProviderRule, SubstitutionCorrect
 
     public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
-        let commentTokens = file.syntaxMap.tokens.filter { token in
-            guard let kind = token.kind else { return false }
-            return SyntaxKind.commentKinds.contains(kind)
-        }
-        return commentTokens
-            .compactMap { (token: SwiftLintSyntaxToken) -> [NSRange]? in
+        file.syntaxClassifications
+            .compactMap { (classifiedRange: SyntaxClassifiedRange) -> [NSRange]? in
+                switch classifiedRange.kind {
+                case .blockComment, .docBlockComment, .lineComment, .docLineComment:
+                    break
+                default:
+                    return nil
+                }
+
+                let range = ByteRange(location: ByteCount(classifiedRange.range.offset),
+                                      length: ByteCount(classifiedRange.range.length))
                 return file.stringView
-                    .substringWithByteRange(token.range)
+                    .substringWithByteRange(range)
                     .map(StringView.init)
                     .map { commentBody in
                         // Look for 2+ slash characters followed immediately by
@@ -141,7 +147,7 @@ public struct CommentSpacingRule: ConfigurationProviderRule, SubstitutionCorrect
                                     ByteRange(
                                         // Safe to mix NSRange offsets with byte offsets here because the regex can't
                                         // contain multi-byte characters
-                                        location: ByteCount(token.range.lowerBound.value + result.range.upperBound - 1),
+                                        location: ByteCount(range.lowerBound.value + result.range.upperBound - 1),
                                         length: 0
                                     )
                                 )

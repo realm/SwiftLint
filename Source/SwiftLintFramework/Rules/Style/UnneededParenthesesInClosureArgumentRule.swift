@@ -109,7 +109,7 @@ private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         self.disabledRegions = disabledRegions
     }
 
-    override func visit(_ node: ClosureSignatureSyntax) -> Syntax {
+    override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
         guard
             let clause = node.input?.as(ParameterClauseSyntax.self),
             !clause.parameterList.contains(where: { $0.type != nil }),

@@ -62,7 +62,7 @@ private extension ToggleBoolRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: ExprListSyntax) -> Syntax {
+        override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
             guard
                 node.hasToggleBoolViolation,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

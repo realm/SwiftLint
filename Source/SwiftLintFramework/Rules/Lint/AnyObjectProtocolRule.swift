@@ -72,7 +72,7 @@ private extension AnyObjectProtocolRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: InheritedTypeSyntax) -> Syntax {
+        override func visit(_ node: InheritedTypeSyntax) -> InheritedTypeSyntax {
             let typeName = node.typeName
             guard
                 typeName.is(ClassRestrictionTypeSyntax.self),

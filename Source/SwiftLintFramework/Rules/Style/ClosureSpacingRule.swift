@@ -82,7 +82,7 @@ private final class ClosureSpacingRuleRewriter: SyntaxRewriter, ViolationsSyntax
 
     override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
         var node = node
-        node.statements = visit(node.statements).as(CodeBlockItemListSyntax.self)!
+        node.statements = visit(node.statements)
 
         guard
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),

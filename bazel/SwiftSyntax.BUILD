@@ -49,6 +49,7 @@ swift_library(
         ":SwiftBasicFormat",
         ":SwiftParser",
         ":SwiftSyntax",
+        ":SwiftParserDiagnostics",
     ],
 )
 
@@ -63,12 +64,25 @@ swift_library(
     ],
 )
 
+swift_library(
+    name = "SwiftParserDiagnostics",
+    srcs = glob(["Sources/SwiftParserDiagnostics/**/*.swift"]),
+    module_name = "SwiftParserDiagnostics",
+    deps = [
+        ":SwiftBasicFormat",
+        ":SwiftDiagnostics",
+        ":SwiftParser",
+        ":SwiftSyntax",
+    ],
+)
+
 opt_wrapper(
     name = "optlibs",
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftOperators",
         ":SwiftParser",
+        ":SwiftParserDiagnostics",
         ":SwiftSyntax",
         ":SwiftSyntaxBuilder",
     ],

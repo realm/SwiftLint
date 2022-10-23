@@ -3,6 +3,7 @@ import Darwin
 #endif
 import Foundation
 import SourceKittenFramework
+import SwiftParserDiagnostics
 import SwiftParser
 import SwiftSyntax
 

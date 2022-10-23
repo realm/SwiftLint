@@ -87,7 +87,7 @@ private extension LowerACLThanParentRule {
             self.disabledRegions = disabledRegions
         }
 
-        override func visit(_ node: DeclModifierSyntax) -> Syntax {
+        override func visit(_ node: DeclModifierSyntax) -> DeclModifierSyntax {
             guard
                 node.isHigherACLThanParent,
                 !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)

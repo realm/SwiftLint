@@ -1202,6 +1202,7 @@
   - `redundant_optional_initialization`
   - `redundant_set_access_control`
   - `redundant_string_enum_value`
+  - `redundant_type_annotation`
   - `required_deinit`
   - `required_enum_case`
   - `return_arrow_whitespace`

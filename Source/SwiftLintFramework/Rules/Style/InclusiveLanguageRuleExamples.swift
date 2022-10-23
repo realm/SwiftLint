@@ -32,7 +32,7 @@ internal struct InclusiveLanguageRuleExamples {
             case ↓blacklist
         }
         """),
-        Example("↓init(master: String, slave: String) {}"),
+        Example("init(↓master: String, ↓slave: String) {}"),
         Example("""
         final class FooBar {
             func register<↓Master, ↓Slave>(one: Master, two: Slave) {}

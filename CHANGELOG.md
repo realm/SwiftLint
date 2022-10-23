@@ -94,6 +94,7 @@
   - `identical_operands`
   - `implicit_getter`
   - `implicitly_unwrapped_optional`
+  - `inclusive_language`
   - `inert_defer`
   - `is_disjoint`
   - `joined_default_parameter`

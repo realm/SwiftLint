@@ -7,11 +7,11 @@ private enum ConfigurationKey: String {
 
 public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
-    public var additionalTerms: Set<String>?
-    public var overrideTerms: Set<String>?
-    public var overrideAllowedTerms: Set<String>?
-    public var allTerms: Set<String>
-    public var allAllowedTerms: Set<String>
+    private var additionalTerms: Set<String>?
+    private var overrideTerms: Set<String>?
+    private var overrideAllowedTerms: Set<String>?
+    public private(set) var allTerms: [String]
+    public private(set) var allAllowedTerms: Set<String>
 
     public var consoleDescription: String {
         severityConfiguration.consoleDescription
@@ -32,7 +32,7 @@ public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Eq
     ]
 
     public init() {
-        self.allTerms = defaultTerms
+        self.allTerms = defaultTerms.sorted()
         self.allAllowedTerms = defaultAllowedTerms
     }
 
@@ -49,8 +49,9 @@ public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Eq
         overrideTerms = lowercasedSet(for: .overrideTerms, from: configuration)
         overrideAllowedTerms = lowercasedSet(for: .overrideAllowedTerms, from: configuration)
 
-        allTerms = overrideTerms ?? defaultTerms
+        var allTerms = overrideTerms ?? defaultTerms
         allTerms.formUnion(additionalTerms ?? [])
+        self.allTerms = allTerms.sorted()
         allAllowedTerms = overrideAllowedTerms ?? defaultAllowedTerms
     }
 

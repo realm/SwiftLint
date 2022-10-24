@@ -43,7 +43,8 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule,
             Example(#"expect("foo") == "foo""#),
             Example("type(of: model).cachePrefix == cachePrefix"),
             Example("histogram[156].0 == 0x003B8D96 && histogram[156].1 == 1"),
-            Example(#"[Wrapper(type: .three), Wrapper(type: .one)].sorted { "\($0.type)" > "\($1.type)"}"#)
+            Example(#"[Wrapper(type: .three), Wrapper(type: .one)].sorted { "\($0.type)" > "\($1.type)"}"#),
+            Example(#"array.sorted { "\($0)" < "\($1)" }"#)
         ],
         triggeringExamples: operators.flatMap { operation in
             [

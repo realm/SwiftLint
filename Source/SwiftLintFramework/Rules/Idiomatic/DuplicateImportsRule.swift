@@ -23,8 +23,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        dump(file.syntaxTree)
-        return Visitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate)
     }
 }
 

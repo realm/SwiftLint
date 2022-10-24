@@ -361,6 +361,16 @@
     <span class="k">case</span> <span class="nf">add</span><span class="p">(</span><span class="nv">image</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Tag</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+<span class="cp">#if CONFIG_A</span>
+    <span class="k">case</span> <span class="n">value</span> <span class="o">=</span> <span class="s">"CONFIG_A"</span>
+<span class="cp">#elseif CONFIG_B</span>
+    <span class="k">case</span> <span class="n">value</span> <span class="o">=</span> <span class="s">"CONFIG_B"</span>
+<span class="cp">#else</span>
+    <span class="k">case</span> <span class="n">value</span> <span class="o">=</span> <span class="s">"CONFIG_DEFAULT"</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">PictureImport</span> <span class="p">{</span>
     <span class="k">case</span> <span class="err">↓</span><span class="nf">add</span><span class="p">(</span><span class="nv">image</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">)</span>

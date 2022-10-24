@@ -24,6 +24,17 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule
             enum B {
                 case add(image: UIImage)
             }
+            """),
+            Example("""
+            enum Tag: String {
+            #if CONFIG_A
+                case value = "CONFIG_A"
+            #elseif CONFIG_B
+                case value = "CONFIG_B"
+            #else
+                case value = "CONFIG_DEFAULT"
+            #endif
+            }
             """)
         ],
         triggeringExamples: [

@@ -29,6 +29,7 @@ internal struct IdentifierNameRuleExamples {
         Example("↓func IsOperator(name: String) -> Bool"),
         Example("func something(↓x: Int) -> Bool"),
         Example("enum Foo { case ↓MyEnum }"),
-        Example("list.first { ↓l in l == 1 }")
+        Example("list.first { ↓l in l == 1 }"),
+        Example("for ↓i in 0..<10 {}")
     ]
 }

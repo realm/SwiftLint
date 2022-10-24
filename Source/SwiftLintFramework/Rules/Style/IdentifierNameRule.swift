@@ -87,6 +87,14 @@ private extension IdentifierNameRule {
             }
         }
 
+        override func visitPost(_ node: ForInStmtSyntax) {
+            if let pattern = node.pattern.as(IdentifierPatternSyntax.self),
+                let violation = violation(identifier: pattern.identifier, modifiers: nil, kind: .variable,
+                                         violationPosition: pattern.positionAfterSkippingLeadingTrivia) {
+                violations.append(violation)
+            }
+        }
+
         private func violation(identifier: TokenSyntax,
                                modifiers: ModifierListSyntax?,
                                kind: ViolationKind,

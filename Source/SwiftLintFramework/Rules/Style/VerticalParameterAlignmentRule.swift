@@ -29,9 +29,16 @@ private extension VerticalParameterAlignmentRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            let params = node.signature.input.parameterList
+            violations.append(contentsOf: violations(for: node.signature.input.parameterList))
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            violations.append(contentsOf: violations(for: node.signature.input.parameterList))
+        }
+
+        private func violations(for params: FunctionParameterListSyntax) -> [AbsolutePosition] {
             guard params.count > 1 else {
-                return
+                return []
             }
 
             let paramLocations = params.compactMap { param -> (position: AbsolutePosition, line: Int, column: Int)? in
@@ -43,14 +50,17 @@ private extension VerticalParameterAlignmentRule {
                 return (position, line, column)
             }
 
-            guard let firstParamLoc = paramLocations.first else { return }
+            guard let firstParamLoc = paramLocations.first else { return [] }
 
+            var violations: [AbsolutePosition] = []
             for (index, paramLoc) in paramLocations.enumerated() where index > 0 && paramLoc.line > firstParamLoc.line {
                 let previousParamLoc = paramLocations[index - 1]
                 if previousParamLoc.line < paramLoc.line && firstParamLoc.column != paramLoc.column {
                     violations.append(paramLoc.position)
                 }
             }
+
+            return violations
         }
     }
 }

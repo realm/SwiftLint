@@ -35,6 +35,15 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule
                 case value = "CONFIG_DEFAULT"
             #endif
             }
+            """),
+            Example("""
+            enum Target {
+            #if os(iOS)
+              case file
+            #else
+              case file(URL)
+            #endif
+            }
             """)
         ],
         triggeringExamples: [

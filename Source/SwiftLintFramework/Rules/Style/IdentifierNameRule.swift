@@ -1,7 +1,7 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
+public struct IdentifierNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
     public var configuration = NameConfiguration(minLengthWarning: 3,
                                                  minLengthError: 2,
                                                  maxLengthWarning: 40,
@@ -24,107 +24,118 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
-    // swiftlint:disable:next function_body_length
-    public func validate(
-        file: SwiftLintFile,
-        kind: SwiftDeclarationKind,
-        dictionary: SourceKittenDictionary
-    ) -> [StyleViolation] {
-        guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
-            return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
+    }
+}
+
+private extension IdentifierNameRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: NameConfiguration
+
+        init(configuration: NameConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
-        return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.excluded.contains(name), let firstCharacter = name.first else {
-                return []
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers, kind: .function,
+                                         violationPosition: node.funcKeyword.positionAfterSkippingLeadingTrivia) {
+                violations.append(violation)
             }
+        }
 
-            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
-            let description = Self.description
+        override func visitPost(_ node: EnumCaseElementSyntax) {
+            if let violation = violation(identifier: node.identifier, modifiers: nil, kind: .enumElement,
+                                         violationPosition: node.positionAfterSkippingLeadingTrivia) {
+                violations.append(violation)
+            }
+        }
 
-            let type = self.type(for: kind)
-            if !isFunction {
-                let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-                if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
-                    return [
-                        StyleViolation(ruleDescription: description,
-                                       severity: .error,
-                                       location: Location(file: file, byteOffset: offset),
-                                       reason: "\(type) name should only contain alphanumeric " +
-                            "characters: '\(name)'")
-                    ]
+        override func visitPost(_ node: VariableDeclSyntax) {
+            let violationPosition = node.letOrVarKeyword.positionAfterSkippingLeadingTrivia
+            for binding in node.bindings {
+                guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
+                      let violation = violation(identifier: pattern.identifier, modifiers: node.modifiers,
+                                                kind: .variable, violationPosition: violationPosition) else {
+                    continue
                 }
 
-                if let severity = severity(forLength: name.count) {
-                    let reason = "\(type) name should be between " +
-                        "\(configuration.minLengthThreshold) and " +
-                        "\(configuration.maxLengthThreshold) characters long: '\(name)'"
-                    return [
-                        StyleViolation(ruleDescription: Self.description,
-                                       severity: severity,
-                                       location: Location(file: file, byteOffset: offset),
-                                       reason: reason)
-                    ]
+                violations.append(violation)
+                return
+            }
+        }
+
+        private func violation(identifier: TokenSyntax,
+                               modifiers: ModifierListSyntax?,
+                               kind: ViolationKind,
+                               violationPosition: AbsolutePosition) -> ReasonedRuleViolation? {
+            let name = identifier.text
+                .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
+                .replacingOccurrences(of: "`", with: "")
+            guard !modifiers.containsOverride,
+                  !configuration.excluded.contains(name),
+                  let firstCharacter = name.first else {
+                return nil
+            }
+
+            if kind != .function {
+                let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+                if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+                    return ReasonedRuleViolation(
+                        position: violationPosition,
+                        reason: "\(kind.stringValue) name should only contain alphanumeric characters: '\(name)'",
+                        severity: .error
+                    )
+                }
+
+                if let severity = configuration.severity(forLength: name.count) {
+                    let reason = "\(kind.stringValue) name should be between " +
+                                 "\(configuration.minLengthThreshold) and " +
+                                 "\(configuration.maxLengthThreshold) characters long: '\(name)'"
+
+                    return ReasonedRuleViolation(
+                        position: violationPosition,
+                        reason: reason,
+                        severity: severity
+                    )
                 }
             }
 
             let firstCharacterIsAllowed = configuration.allowedSymbols
                 .isSuperset(of: CharacterSet(charactersIn: String(firstCharacter)))
             guard !firstCharacterIsAllowed else {
-                return []
+                return nil
             }
             let requiresCaseCheck = configuration.validatesStartWithLowercase
             if requiresCaseCheck &&
-                kind != .varStatic && name.isViolatingCase && !name.isOperator {
-                let reason = "\(type) name should start with a lowercase character: '\(name)'"
-                return [
-                    StyleViolation(ruleDescription: description,
-                                   severity: .error,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: reason)
-                ]
+                !modifiers.containsStaticOrClass && name.isViolatingCase && !name.isOperator {
+                let reason = "\(kind.stringValue) name should start with a lowercase character: '\(name)'"
+                return ReasonedRuleViolation(
+                    position: violationPosition,
+                    reason: reason,
+                    severity: .error
+                )
             }
 
-            return []
-        } ?? []
-    }
-
-    private func validateName(
-        dictionary: SourceKittenDictionary,
-        kind: SwiftDeclarationKind
-    ) -> (name: String, offset: ByteCount)? {
-        guard
-            var name = dictionary.name,
-            let offset = dictionary.offset,
-            kinds.contains(kind),
-            !name.hasPrefix("$")
-        else { return nil }
-
-        if
-            kind == .enumelement,
-            let parenIndex = name.firstIndex(of: "("),
-            parenIndex > name.startIndex
-        {
-            let index = name.index(before: parenIndex)
-            name = String(name[...index])
+            return nil
         }
-
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
-    private let kinds: Set<SwiftDeclarationKind> = {
-        return SwiftDeclarationKind.variableKinds
-            .union(SwiftDeclarationKind.functionKinds)
-            .union([.enumelement])
-    }()
+    enum ViolationKind {
+        case variable
+        case function
+        case enumElement
 
-    private func type(for kind: SwiftDeclarationKind) -> String {
-        if SwiftDeclarationKind.functionKinds.contains(kind) {
-            return "Function"
-        } else if kind == .enumelement {
-            return "Enum element"
-        } else {
-            return "Variable"
+        var stringValue: String {
+            switch self {
+            case .variable:
+                return "Variable"
+            case .function:
+                return "Function"
+            case .enumElement:
+                return "Enum element"
+            }
         }
     }
 }

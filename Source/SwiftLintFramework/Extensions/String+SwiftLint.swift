@@ -1,5 +1,5 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
 extension String {
     internal func hasTrailingWhitespace() -> Bool {
@@ -22,9 +22,8 @@ extension String {
         return self == lowercased()
     }
 
-    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: SourceKittenDictionary) -> String {
-        if let acl = dict.accessibility,
-            acl.isPrivate && first == "_" {
+    internal func strippingLeadingUnderscoreIfPrivate(modifiers: ModifierListSyntax?) -> String {
+        if first == "_", modifiers.isPrivateOrFileprivate {
             return String(self[index(after: startIndex)...])
         }
         return self

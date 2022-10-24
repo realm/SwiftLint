@@ -133,13 +133,6 @@ private extension String {
 
         return substring(from: 0, length: lastPreviewsIndex)
     }
-
-    func strippingLeadingUnderscoreIfPrivate(modifiers: ModifierListSyntax?) -> String {
-        if first == "_", modifiers.isPrivateOrFileprivate {
-            return String(self[index(after: startIndex)...])
-        }
-        return self
-    }
 }
 
 private extension InheritedTypeListSyntax {

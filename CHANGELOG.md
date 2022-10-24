@@ -112,6 +112,7 @@
   - `generic_type_name`
   - `ibinspectable_in_extension`
   - `identical_operands`
+  - `identifier_name`
   - `implicit_getter`
   - `implicitly_unwrapped_optional`
   - `inclusive_language`

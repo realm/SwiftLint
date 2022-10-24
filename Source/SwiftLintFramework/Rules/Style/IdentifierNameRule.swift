@@ -66,6 +66,27 @@ private extension IdentifierNameRule {
             }
         }
 
+        override func visitPost(_ node: FunctionParameterSyntax) {
+            if let name = node.firstName,
+               let violation = violation(identifier: name, modifiers: node.modifiers, kind: .variable,
+                                         violationPosition: name.positionAfterSkippingLeadingTrivia) {
+                violations.append(violation)
+            }
+
+            if let name = node.secondName,
+               let violation = violation(identifier: name, modifiers: node.modifiers, kind: .variable,
+                                         violationPosition: name.positionAfterSkippingLeadingTrivia) {
+                violations.append(violation)
+            }
+        }
+
+        override func visitPost(_ node: ClosureParamSyntax) {
+            if let violation = violation(identifier: node.name, modifiers: nil, kind: .variable,
+                                         violationPosition: node.positionAfterSkippingLeadingTrivia) {
+                violations.append(violation)
+            }
+        }
+
         private func violation(identifier: TokenSyntax,
                                modifiers: ModifierListSyntax?,
                                kind: ViolationKind,
@@ -73,7 +94,8 @@ private extension IdentifierNameRule {
             let name = identifier.text
                 .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
                 .replacingOccurrences(of: "`", with: "")
-            guard !modifiers.containsOverride,
+            guard name != "_",
+                  !modifiers.containsOverride,
                   !configuration.excluded.contains(name),
                   let firstCharacter = name.first else {
                 return nil

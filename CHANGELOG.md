@@ -122,6 +122,7 @@
   - `nsobject_prefer_isequal`
   - `number_separator`
   - `operator_whitespace`
+  - `override_in_extension`
   - `nsobject_prefer_isequal`
   - `prefer_nimble`
   - `prefer_self_type_over_type_of_self`

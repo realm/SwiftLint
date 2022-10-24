@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule {
+public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -35,30 +35,53 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structureDictionary)
-        let elements = collector.findAllElements(of: [.class, .struct, .enum, .extension])
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        let allowedExtensions = ClassNameCollectingVisitor(viewMode: .sourceAccurate)
+            .walk(tree: file.syntaxTree, handler: \.classNames)
+        return Visitor(allowedExtensions: allowedExtensions)
+    }
+}
 
-        let susceptibleNames = Set(elements.compactMap { $0.kind == .class ? $0.name : nil })
+private extension OverrideInExtensionRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let allowedExtensions: Set<String>
 
-        return elements
-            .filter { $0.kind == .extension && !susceptibleNames.contains($0.name) }
-            .flatMap { element in
-                return element.dictionary.substructure.compactMap { element -> ByteCount? in
-                    guard element.declarationKind != nil,
-                        element.enclosedSwiftAttributes.contains(.override),
-                        let offset = element.offset
-                    else {
-                        return nil
-                    }
+        init(allowedExtensions: Set<String>) {
+            self.allowedExtensions = allowedExtensions
+            super.init(viewMode: .sourceAccurate)
+        }
 
-                    return offset
-                }
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.modifiers.containsOverride {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
+        }
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.modifiers.containsOverride {
+                violations.append(node.letOrVarKeyword.positionAfterSkippingLeadingTrivia)
             }
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard let type = node.extendedType.as(SimpleTypeIdentifierSyntax.self),
+                  !allowedExtensions.contains(type.name.text) else {
+                return .skipChildren
+            }
+
+            return .visitChildren
+        }
+    }
+}
+
+private class ClassNameCollectingVisitor: ViolationsSyntaxVisitor {
+    private(set) var classNames: Set<String> = []
+
+    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+
+    override func visitPost(_ node: ClassDeclSyntax) {
+        classNames.insert(node.identifier.text)
     }
 }

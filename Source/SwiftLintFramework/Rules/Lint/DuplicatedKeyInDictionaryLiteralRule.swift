@@ -101,7 +101,7 @@ private extension DuplicatedKeyInDictionaryLiteralRule {
                 .reduce(into: [String: [DictionaryKey]]()) { result, key in
                     result[key.content, default: []].append(key)
                 }
-                .flatMap { key, value -> [AbsolutePosition] in
+                .flatMap { _, value -> [AbsolutePosition] in
                     guard value.count > 1 else {
                         return []
                     }

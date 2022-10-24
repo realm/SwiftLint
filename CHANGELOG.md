@@ -84,6 +84,7 @@
   - `enum_case_associated_values_count`
   - `explicit_enum_raw_value`
   - `explicit_init`
+  - `explicit_top_level_acl`
   - `fallthrough`
   - `file_name`
   - `first_where`

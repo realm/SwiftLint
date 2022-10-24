@@ -54,7 +54,8 @@ struct RedundantTypeAnnotationRule: OptInRule {
 
             var direction↓: Direction = Direction.up
             """),
-            Example("let values↓: [Int] = [Int]()")
+            Example("let values↓: [Int] = [Int]()"),
+            Example(#"static let version↓: AnnouncementStore.Attribute = AnnouncementStore.Attribute("Version")"#)
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
@@ -75,7 +76,9 @@ struct RedundantTypeAnnotationRule: OptInRule {
               }
             }
             """),
-            Example("let values↓: [Int] = [Int]()"): Example("let values = [Int]()")
+            Example("let values↓: [Int] = [Int]()"): Example("let values = [Int]()"),
+            Example(#"static let version↓: AnnouncementStore.Attribute = AnnouncementStore.Attribute("Version")"#):
+                Example(#"static let version = AnnouncementStore.Attribute("Version")"#)
         ]
     )
 }

@@ -53,7 +53,8 @@ struct RedundantTypeAnnotationRule: OptInRule {
             }
 
             var direction↓: Direction = Direction.up
-            """)
+            """),
+            Example("let values↓: [Int] = [Int]()")
         ],
         corrections: [
             Example("var url↓: URL = URL()"): Example("var url = URL()"),
@@ -73,7 +74,8 @@ struct RedundantTypeAnnotationRule: OptInRule {
                 let myVar = Int(5)
               }
             }
-            """)
+            """),
+            Example("let values↓: [Int] = [Int]()"): Example("let values = [Int]()")
         ]
     )
 }

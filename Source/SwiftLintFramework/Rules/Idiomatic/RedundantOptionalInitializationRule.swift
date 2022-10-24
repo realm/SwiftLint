@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRule, ConfigurationProviderRule {
+public struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -107,82 +106,109 @@ public struct RedundantOptionalInitializationRule: SubstitutionCorrectableASTRul
             """)
     ]
 
-    private let pattern = "(\\s*=\\s*nil\\b)\\s*\\{?"
-
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
-
-    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard SwiftDeclarationKind.variableKinds.contains(kind),
-            let type = dictionary.typeName,
-            typeIsOptional(type),
-            !dictionary.enclosedSwiftAttributes.contains(.lazy),
-            dictionary.isMutableVariable(file: file),
-            let range = range(for: dictionary, file: file) else {
-            return []
-        }
-
-        let regularExpression = regex(pattern)
-        guard let match = regularExpression.matches(in: file.stringView, range: range).first,
-            match.range.location == range.location + range.length - match.range.length else {
-                return []
-        }
-
-        let matched = file.stringView.substring(with: match.range)
-        if matched.hasSuffix("{"), match.numberOfRanges > 1 {
-            return [match.range(at: 1)]
-        } else {
-            return [match.range]
-        }
-    }
-
-    private func range(for dictionary: SourceKittenDictionary, file: SwiftLintFile) -> NSRange? {
-        guard let offset = dictionary.offset,
-            let length = dictionary.length else {
-                return nil
-        }
-
-        let contents = file.stringView
-        if let bodyOffset = dictionary.bodyOffset {
-            return contents.byteRangeToNSRange(ByteRange(location: offset, length: bodyOffset - offset))
-        } else {
-            return contents.byteRangeToNSRange(ByteRange(location: offset, length: length))
-        }
-    }
-
-    private func typeIsOptional(_ type: String) -> Bool {
-        return type.hasSuffix("?") || type.hasPrefix("Optional<")
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
-extension SourceKittenDictionary {
-    fileprivate func isMutableVariable(file: SwiftLintFile) -> Bool {
-        return setterAccessibility != nil || (isLocal && isVariable(file: file))
+private extension RedundantOptionalInitializationRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard node.letOrVarKeyword.tokenKind == .varKeyword,
+                  !node.modifiers.containsLazy else {
+                return
+            }
+
+            violations.append(contentsOf: node.bindings.compactMap(\.violationPosition))
+        }
     }
 
-    private var isLocal: Bool {
-        return accessibility == nil && setterAccessibility == nil
-    }
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        private let locationConverter: SourceLocationConverter
+        private let disabledRegions: [SourceRange]
 
-    private func isVariable(file: SwiftLintFile) -> Bool {
-        guard let byteRange = byteRange,
-            case let contents = file.stringView,
-            let range = contents.byteRangeToNSRange(byteRange),
-            file.match(pattern: "\\Avar\\b", with: [.keyword], range: range).isNotEmpty else {
-                return false
+        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        return true
+        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+            guard node.letOrVarKeyword.tokenKind == .varKeyword,
+                  !node.modifiers.containsLazy else {
+                return super.visit(node)
+            }
+
+            let violations = node.bindings
+                .compactMap { binding in
+                    binding.violationPosition.map { ($0, binding) }
+                }
+                .filter { position, _ in
+                    !position.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+                }
+
+            guard violations.isNotEmpty else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(contentsOf: violations.map(\.0))
+
+            let violatingBindings = violations.map(\.1)
+            let newBindings = PatternBindingListSyntax(node.bindings.map { binding in
+                guard violatingBindings.contains(binding) else {
+                    return binding
+                }
+
+                let newBinding = binding.withInitializer(nil)
+
+                if newBinding.accessor == nil {
+                    return newBinding.withTrailingTrivia(binding.initializer?.trailingTrivia ?? .zero)
+                } else {
+                    return newBinding
+                }
+            })
+
+            return super.visit(node.withBindings(newBindings))
+        }
+    }
+}
+
+private extension PatternBindingSyntax {
+    var violationPosition: AbsolutePosition? {
+        guard let initializer = initializer,
+              let type = typeAnnotation,
+              initializer.isInitializingToNil,
+              type.isOptionalType else {
+            return nil
+        }
+
+        return type.endPositionBeforeTrailingTrivia
+    }
+}
+
+private extension InitializerClauseSyntax {
+    var isInitializingToNil: Bool {
+        value.is(NilLiteralExprSyntax.self)
+    }
+}
+
+private extension TypeAnnotationSyntax {
+    var isOptionalType: Bool {
+        if type.is(OptionalTypeSyntax.self) {
+            return true
+        }
+
+        if let type = type.as(SimpleTypeIdentifierSyntax.self), let genericClause = type.genericArgumentClause {
+            return genericClause.arguments.count == 1 && type.name.text == "Optional"
+        }
+
+        return false
     }
 }

@@ -371,6 +371,14 @@
 <span class="cp">#endif</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">Target</span> <span class="p">{</span>
+<span class="cp">#if os(iOS)</span>
+  <span class="k">case</span> <span class="n">file</span>
+<span class="cp">#else</span>
+  <span class="k">case</span> <span class="nf">file</span><span class="p">(</span><span class="kt">URL</span><span class="p">)</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">PictureImport</span> <span class="p">{</span>
     <span class="k">case</span> <span class="err">↓</span><span class="nf">add</span><span class="p">(</span><span class="nv">image</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">)</span>

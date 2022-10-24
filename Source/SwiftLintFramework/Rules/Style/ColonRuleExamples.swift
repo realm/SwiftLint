@@ -134,7 +134,8 @@ internal struct ColonRuleExamples {
         switch foo {
         case .bar↓ : return baz
         }
-        """)
+        """),
+        Example("private var action↓:(() -> Void)?")
     ]
 
     static let corrections = [
@@ -203,6 +204,7 @@ internal struct ColonRuleExamples {
             switch foo {
             case .bar: return baz
             }
-            """)
+            """),
+        Example("private var action↓:(() -> Void)?"): Example("private var action: (() -> Void)?")
     ]
 }

@@ -174,6 +174,7 @@
   - `unused_optional_binding`
   - `unused_setter_value`
   - `valid_ibinspectable`
+  - `vertical_parameter_alignment`
   - `weak_delegate`
   - `xct_specific_matcher`
   - `xctfail_message`  

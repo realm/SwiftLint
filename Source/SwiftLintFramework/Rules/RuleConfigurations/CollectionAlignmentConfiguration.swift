@@ -1,8 +1,8 @@
-public struct CollectionAlignmentConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var alignColons = false
+public struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var alignColons = false
 
-    init() {}
+    public init() {}
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", align_colons: \(alignColons)"

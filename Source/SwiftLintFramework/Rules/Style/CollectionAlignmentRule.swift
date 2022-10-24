@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = CollectionAlignmentConfiguration()
 
     public init() {}
@@ -14,88 +14,61 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         triggeringExamples: Examples(alignColons: false).triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .dictionary || kind == .array else { return [] }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(alignColons: configuration.alignColons, locationConverter: file.locationConverter)
+    }
+}
 
-        let keyLocations: [Location]
-        if kind == .array {
-            keyLocations = arrayElementLocations(with: file, dictionary: dictionary)
-        } else {
-            keyLocations = dictionaryKeyLocations(with: file, dictionary: dictionary)
+private extension CollectionAlignmentRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let alignColons: Bool
+        private let locationConverter: SourceLocationConverter
+
+        init(alignColons: Bool, locationConverter: SourceLocationConverter) {
+            self.alignColons = alignColons
+            self.locationConverter = locationConverter
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard keyLocations.count >= 2 else {
-            return []
+        override func visitPost(_ node: ArrayExprSyntax) {
+            let locations = node.elements.map { element in
+                locationConverter.location(for: element.positionAfterSkippingLeadingTrivia)
+            }
+            violations.append(contentsOf: validate(keyLocations: locations))
         }
 
-        let firstKeyLocation = keyLocations[0]
-        let remainingKeyLocations = keyLocations[1...]
-        let violationLocations = zip(remainingKeyLocations.indices, remainingKeyLocations)
-            .compactMap { index, location -> Location? in
-                let previousLocation = keyLocations[index - 1]
-                guard let previousLine = previousLocation.line,
-                    let locationLine = location.line,
-                    let firstKeyCharacter = firstKeyLocation.character,
-                    let locationCharacter = location.character,
-                    previousLine < locationLine,
-                    firstKeyCharacter != locationCharacter else { return nil }
+        override func visitPost(_ node: DictionaryElementListSyntax) {
+            let locations = node.map { element in
+                let position = alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
+                                             element.keyExpression.positionAfterSkippingLeadingTrivia
+                return locationConverter.location(for: position)
+            }
+            violations.append(contentsOf: validate(keyLocations: locations))
+        }
 
-                return location
+        private func validate(keyLocations: [SourceLocation]) -> [AbsolutePosition] {
+            guard keyLocations.count >= 2 else {
+                return []
             }
 
-        return violationLocations.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: $0)
+            let firstKeyLocation = keyLocations[0]
+            let remainingKeyLocations = keyLocations[1...]
+
+            return zip(remainingKeyLocations.indices, remainingKeyLocations)
+                .compactMap { index, location -> AbsolutePosition? in
+                    let previousLocation = keyLocations[index - 1]
+                    guard let previousLine = previousLocation.line,
+                          let locationLine = location.line,
+                          let firstKeyColumn = firstKeyLocation.column,
+                          let locationColumn = location.column,
+                          previousLine < locationLine,
+                          firstKeyColumn != locationColumn else {
+                        return nil
+                    }
+
+                    return locationConverter.position(ofLine: locationLine, column: locationColumn)
+                }
         }
-    }
-
-    private func arrayElementLocations(with file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Location] {
-        return dictionary.elements.compactMap { element -> Location? in
-            element.offset.map { Location(file: file, byteOffset: $0) }
-        }
-    }
-
-    private func dictionaryKeyLocations(with file: SwiftLintFile,
-                                        dictionary: SourceKittenDictionary) -> [Location] {
-        var keys: [SourceKittenDictionary] = []
-        var values: [SourceKittenDictionary] = []
-        dictionary.elements.enumerated().forEach { index, element in
-            // in a dictionary, the even elements are keys, and the odd elements are values
-            if index.isMultiple(of: 2) {
-                keys.append(element)
-            } else {
-                values.append(element)
-            }
-        }
-
-        return zip(keys, values).compactMap { key, value -> Location? in
-            guard let keyOffset = key.offset,
-                let valueOffset = value.offset,
-                let keyLength = key.length else { return nil }
-
-            if configuration.alignColons {
-                return colonLocation(with: file,
-                                     keyOffset: keyOffset,
-                                     keyLength: keyLength,
-                                     valueOffset: valueOffset)
-            } else {
-                return Location(file: file, byteOffset: keyOffset)
-            }
-        }
-    }
-
-    private func colonLocation(with file: SwiftLintFile, keyOffset: ByteCount, keyLength: ByteCount,
-                               valueOffset: ByteCount) -> Location? {
-        let contents = file.stringView
-        let matchStart = keyOffset + keyLength
-        let matchLength = valueOffset - matchStart
-        let byteRange = ByteRange(location: matchStart, length: matchLength)
-        let range = contents.byteRangeToNSRange(byteRange)
-
-        let matches = file.match(pattern: ":", excludingSyntaxKinds: [.comment], range: range)
-        return matches.first.map { Location(file: file, characterOffset: $0.location) }
     }
 }
 

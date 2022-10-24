@@ -67,13 +67,7 @@ private extension IdentifierNameRule {
         }
 
         override func visitPost(_ node: FunctionParameterSyntax) {
-            if let name = node.firstName,
-               let violation = violation(identifier: name, modifiers: node.modifiers, kind: .variable,
-                                         violationPosition: name.positionAfterSkippingLeadingTrivia) {
-                violations.append(violation)
-            }
-
-            if let name = node.secondName,
+            if let name = [node.secondName, node.firstName].compactMap({ $0 }).first,
                let violation = violation(identifier: name, modifiers: node.modifiers, kind: .variable,
                                          violationPosition: name.positionAfterSkippingLeadingTrivia) {
                 violations.append(violation)
@@ -90,7 +84,7 @@ private extension IdentifierNameRule {
         override func visitPost(_ node: ForInStmtSyntax) {
             if let pattern = node.pattern.as(IdentifierPatternSyntax.self),
                 let violation = violation(identifier: pattern.identifier, modifiers: nil, kind: .variable,
-                                         violationPosition: pattern.positionAfterSkippingLeadingTrivia) {
+                                          violationPosition: pattern.positionAfterSkippingLeadingTrivia) {
                 violations.append(violation)
             }
         }

@@ -27,6 +27,9 @@ private let structureDictionaryCache = Cache { file in
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
     return Parser.parse(source: file.contents)
 }
+private let locationConverterCache = Cache { file -> SourceLocationConverter in
+    return SourceLocationConverter(file: file.path ?? "<nopath>", tree: file.syntaxTree)
+}
 private let commandsCache = Cache { file -> [Command] in
     guard file.contents.contains("swiftlint:") else {
         return []
@@ -164,9 +167,7 @@ extension SwiftLintFile {
 
     internal var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
 
-    internal var locationConverter: SourceLocationConverter {
-        SourceLocationConverter(file: path ?? "<nopath>", tree: syntaxTree)
-    }
+    internal var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
     internal var commands: [Command] { commandsCache.get(self) }
 
@@ -204,6 +205,7 @@ extension SwiftLintFile {
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
+        locationConverterCache.invalidate(self)
         commandsCache.invalidate(self)
         linesWithTokensCache.invalidate(self)
     }
@@ -218,6 +220,7 @@ extension SwiftLintFile {
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
         syntaxTreeCache.clear()
+        locationConverterCache.clear()
         commandsCache.clear()
         linesWithTokensCache.clear()
     }

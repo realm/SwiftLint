@@ -88,7 +88,7 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
         }
 
         if otherAvailabilityCheckInvolved(ifStmt: node) {
-            // If there are other conditional branches with availablilty checks it might not be possible
+            // If there are other conditional branches with availability checks it might not be possible
             // to just invert the first one.
             return
         }
@@ -101,7 +101,7 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
         )
     }
 
-    private func asAvailabilityCondition(_ condition: Syntax) -> SyntaxProtocol? {
+    private func asAvailabilityCondition(_ condition: ConditionElementSyntax.Condition) -> SyntaxProtocol? {
         condition.as(AvailabilityConditionSyntax.self) ??
             condition.as(UnavailabilityConditionSyntax.self)
     }

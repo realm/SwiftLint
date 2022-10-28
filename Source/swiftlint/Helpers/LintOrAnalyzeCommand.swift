@@ -262,7 +262,11 @@ private class LintOrAnalyzeResultBuilder {
         }
         configuration = config
         reporter = reporterFrom(identifier: options.reporter ?? config.reporter)
-        cache = options.ignoreCache ? nil : LinterCache(configuration: config)
+        if options.ignoreCache || ProcessInfo.processInfo.isLikelyXcodeCloudEnvironment {
+            cache = nil
+        } else {
+            cache = LinterCache(configuration: config)
+        }
         self.options = options
 
         if let outFile = options.output {

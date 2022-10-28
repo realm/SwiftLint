@@ -20,6 +20,11 @@
 
 #### Enhancements
 
+* Fix SwiftLint support on Xcode Cloud.  
+  [JagCesar](https://github.com/JagCesar)
+  [westerlund](https://github.com/westerlund)
+  [#4484](https://github.com/realm/SwiftLint/issues/4484)
+
 * Add `no_magic_numbers` rule to avoid "Magic Numbers".  
   [Henrik Storch](https://github.com/thisisthefoxe)
   [#4031](https://github.com/realm/SwiftLint/issues/4024)

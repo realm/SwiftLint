@@ -76,10 +76,18 @@ swift_library(
     ],
 )
 
+swift_library(
+    name = "IDEUtils",
+    srcs = glob(["Sources/IDEUtils/**/*.swift"]),
+    module_name = "IDEUtils",
+    deps = [":SwiftSyntax"],
+)
+
 opt_wrapper(
     name = "optlibs",
     visibility = ["//visibility:public"],
     deps = [
+        ":IDEUtils",
         ":SwiftOperators",
         ":SwiftParser",
         ":SwiftParserDiagnostics",

@@ -2,6 +2,7 @@
 import Darwin
 #endif
 import Foundation
+import IDEUtils
 import SourceKittenFramework
 import SwiftParser
 import SwiftParserDiagnostics
@@ -182,7 +183,7 @@ extension SwiftLintFile {
         return syntaxTokensByLines
     }
 
-    internal var syntaxKindsByLines: [[SyntaxKind]] {
+    internal var syntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
         guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()

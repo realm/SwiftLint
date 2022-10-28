@@ -59,7 +59,9 @@ private final class YodaConditionRuleVisitor: ViolationsSyntaxVisitor {
     }
 
     private func visit(conditions: ConditionElementListSyntax) {
-        conditions.map(\.condition).compactMap(ExprSyntax.init).forEach(visit(condition:))
+        for condition in conditions.compactMap({ $0.condition.as(ExprSyntax.self) }) {
+            visit(condition: condition)
+        }
     }
 
     private func visit(condition: ExprSyntax) {

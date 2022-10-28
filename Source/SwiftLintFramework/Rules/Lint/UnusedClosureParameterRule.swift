@@ -97,7 +97,7 @@ private extension UnusedClosureParameterRule {
                         )
                     )
                 }
-                let newNode = node.withSignature(signature.withInput(Syntax(newParams)))
+                let newNode = node.withSignature(signature.withInput(.init(newParams)))
                 return super.visit(newNode)
             }
 
@@ -115,7 +115,7 @@ private extension UnusedClosureParameterRule {
                     with: param.withName(param.name.withKind(.wildcardKeyword))
                 )
             }
-            let newNode = node.withSignature(signature.withInput(Syntax(newParams)))
+            let newNode = node.withSignature(signature.withInput(.init(newParams)))
             return super.visit(newNode)
         }
     }

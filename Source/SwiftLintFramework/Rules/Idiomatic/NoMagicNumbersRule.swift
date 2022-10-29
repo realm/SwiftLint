@@ -13,6 +13,7 @@ public struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
         nonTriggeringExamples: [
             Example("var foo = 123"),
             Example("static let bar: Double = 0.123"),
+            Example("let a = b + 1.0"),
             Example("array[0] + array[1] "),
             Example("let foo = 1_000.000_01"),
             Example("// array[1337]"),
@@ -44,7 +45,7 @@ public struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
             Example("bar(↓1_000.005_01)"),
             Example("array[↓42]"),
             Example("let box = array[↓12 + ↓14]"),
-            Example("let a = b + 2.0"),
+            Example("let a = b + ↓2.0"),
             Example("Color.primary.opacity(isAnimate ? ↓0.1 : ↓1.5)")
         ]
     )

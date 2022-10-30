@@ -25,6 +25,7 @@ public struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProvide
         ].map(wrapInSwitch),
         triggeringExamples: [
             Example("case (↓let x,  ↓let y)"),
+            Example("case (↓let x,  ↓let y, _)"),
             Example("case .foo(↓let x, ↓let y)"),
             Example("case (.yamlParsing(↓let x), .yamlParsing(↓let y))"),
             Example("case (↓var x,  ↓var y)"),
@@ -50,6 +51,8 @@ private extension PatternMatchingKeywordsRule {
     final class TupleVisitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TupleExprElementListSyntax) {
             let list = node.flatteningEnumPatterns()
+                .filter { !$0.expression.is(DiscardAssignmentExprSyntax.self) }
+
             guard list.count > 1,
                 let firstLetOrVar = list.first?.expression.asValueBindingPattern()?.letOrVarKeyword.tokenKind else {
                 return

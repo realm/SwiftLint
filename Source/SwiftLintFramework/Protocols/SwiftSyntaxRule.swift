@@ -152,6 +152,14 @@ open class ViolationsSyntaxVisitor: SyntaxVisitor {
         skippableDeclarations.contains { $0 == VariableDeclSyntax.self } ? .skipChildren : .visitChildren
     }
 
+    override open func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
+        skippableDeclarations.contains { $0 == SubscriptDeclSyntax.self } ? .skipChildren : .visitChildren
+    }
+
+    override open func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+        skippableDeclarations.contains { $0 == InitializerDeclSyntax.self } ? .skipChildren : .visitChildren
+    }
+
     override open func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
         skippableDeclarations.contains { $0 == ProtocolDeclSyntax.self } ? .skipChildren : .visitChildren
     }
@@ -170,7 +178,9 @@ extension Array where Element == DeclSyntaxProtocol.Type {
         ExtensionDeclSyntax.self,
         ProtocolDeclSyntax.self,
         StructDeclSyntax.self,
-        VariableDeclSyntax.self
+        VariableDeclSyntax.self,
+        SubscriptDeclSyntax.self,
+        InitializerDeclSyntax.self
     ]
 
     /// Useful for class-specific checks since extensions and protocols do not allow nested classes.

@@ -96,6 +96,7 @@
   - `empty_parentheses_with_trailing_closure`
   - `empty_string`
   - `enum_case_associated_values_count`
+  - `explicit_acl`
   - `explicit_enum_raw_value`
   - `explicit_init`
   - `explicit_top_level_acl`

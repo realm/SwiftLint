@@ -148,6 +148,20 @@ extension ModifierListSyntax? {
     }
 }
 
+extension DeclModifierSyntax {
+    var isACLModifier: Bool {
+        let aclModifiers: Set<TokenKind> = [
+            .privateKeyword,
+            .fileprivateKeyword,
+            .internalKeyword,
+            .publicKeyword,
+            .contextualKeyword("open")
+        ]
+
+        return detail == nil && aclModifiers.contains(name.tokenKind)
+    }
+}
+
 extension VariableDeclSyntax {
     var isIBOutlet: Bool {
         attributes?.contains { attr in

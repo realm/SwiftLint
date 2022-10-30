@@ -1,9 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-private typealias SourceKittenElement = SourceKittenDictionary
-
-public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
+public struct ExplicitACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -77,7 +74,9 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
             Example("↓enum A {}\n"),
             Example("final ↓class B {}\n"),
             Example("internal struct C { ↓let d = 5 }\n"),
+            Example("internal struct C { ↓static let d = 5 }\n"),
             Example("public struct C { ↓let d = 5 }\n"),
+            Example("public struct C { ↓init() }\n"),
             Example("func a() {}\n"),
             Example("internal let a = 0\n↓func b() {}\n"),
             Example("""
@@ -88,109 +87,119 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    private func findAllExplicitInternalTokens(in file: SwiftLintFile) -> [ByteRange] {
-        let contents = file.stringView
-        return file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
-            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    private func offsetOfElements(from elements: [SourceKittenElement], in file: SwiftLintFile,
-                                  thatAreNotInRanges ranges: [ByteRange]) -> [ByteCount] {
-        return elements.compactMap { element in
-            guard let typeOffset = element.offset else {
-                return nil
-            }
-
-            guard let kind = element.declarationKind,
-                !SwiftDeclarationKind.extensionKinds.contains(kind) else {
-                    return nil
-            }
-
-            // find the last "internal" token before the type
-            guard let previousInternalByteRange = lastInternalByteRange(before: typeOffset, in: ranges) else {
-                return typeOffset
-            }
-
-            // the "internal" token correspond to the type if there're only
-            // attributeBuiltin (`final` for example) tokens between them
-            let length = typeOffset - previousInternalByteRange.location
-            let range = ByteRange(location: previousInternalByteRange.location, length: length)
-            let internalDoesntBelongToType = Set(file.syntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
-
-            return internalDoesntBelongToType ? typeOffset : nil
-        }
-    }
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary)
-
-        guard implicitAndExplicitInternalElements.isNotEmpty else {
-            return []
+private extension ExplicitACLRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [
+                FunctionDeclSyntax.self,
+                SubscriptDeclSyntax.self,
+                VariableDeclSyntax.self,
+                ProtocolDeclSyntax.self,
+                InitializerDeclSyntax.self,
+            ]
         }
 
-        let explicitInternalRanges = findAllExplicitInternalTokens(in: file)
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
+            }
 
-        let violations = offsetOfElements(from: implicitAndExplicitInternalElements, in: file,
-                                          thatAreNotInRanges: explicitInternalRanges)
-
-        return violations.map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
+            return node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
         }
-    }
 
-    private func lastInternalByteRange(before typeOffset: ByteCount, in ranges: [ByteRange]) -> ByteRange? {
-        let firstPartition = ranges.prefix(while: { typeOffset > $0.location })
-        return firstPartition.last
-    }
-
-    private func internalTypeElements(in parent: SourceKittenElement) -> [SourceKittenElement] {
-        return parent.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = element.declarationKind,
-                  elementKind != .varLocal, elementKind != .varParameter else {
-                return []
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
             }
 
-            let isDeinit = elementKind == .functionMethodInstance && element.name == "deinit"
-            guard !isDeinit else {
-                return []
+            return node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
             }
 
-            let isPrivate = element.accessibility?.isPrivate ?? false
-            let internalTypeElementsInSubstructure = elementKind.childsAreExemptFromACL || isPrivate ? [] :
-                internalTypeElements(in: element)
+            return node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
+        }
 
-            var isInExtension = false
-            if let kind = parent.declarationKind {
-                isInExtension = SwiftDeclarationKind.extensionKinds.contains(kind)
+        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
             }
 
-            if element.accessibility == .internal || (element.accessibility == nil && isInExtension) {
-                return internalTypeElementsInSubstructure + [element]
+            return node.modifiers.isPrivateOrFileprivate ? .skipChildren : .visitChildren
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: TypealiasDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                let position = node.modifiers.staticOrClassPosition ??
+                               node.funcKeyword.positionAfterSkippingLeadingTrivia
+                violations.append(position)
+            }
+        }
+
+        override func visitPost(_ node: SubscriptDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                let position = node.modifiers.staticOrClassPosition ??
+                               node.subscriptKeyword.positionAfterSkippingLeadingTrivia
+                violations.append(position)
+            }
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if hasViolation(modifiers: node.modifiers) {
+                let position = node.modifiers.staticOrClassPosition ??
+                               node.letOrVarKeyword.positionAfterSkippingLeadingTrivia
+                violations.append(position)
+            }
+        }
+
+        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        private func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
+            guard let modifiers = modifiers else {
+                return true
             }
 
-            return internalTypeElementsInSubstructure
+            return !modifiers.contains(where: \.isACLModifier)
         }
     }
 }
 
-private extension SwiftDeclarationKind {
-    var childsAreExemptFromACL: Bool {
-        switch self {
-        case .associatedtype, .enumcase, .enumelement, .functionAccessorAddress,
-             .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
-             .functionAccessorSetter, .functionAccessorWillset, .genericTypeParam, .module,
-             .precedenceGroup, .varLocal, .varParameter, .varClass,
-             .varGlobal, .varInstance, .varStatic, .typealias, .functionAccessorModify, .functionAccessorRead,
-             .functionConstructor, .functionDestructor, .functionFree, .functionMethodClass,
-             .functionMethodInstance, .functionMethodStatic, .functionOperator, .functionOperatorInfix,
-             .functionOperatorPostfix, .functionOperatorPrefix, .functionSubscript, .protocol, .opaqueType:
-            return true
-        case .class, .enum, .extension, .extensionClass, .extensionEnum,
-             .extensionProtocol, .extensionStruct, .struct:
-            return false
-        }
-    }
-}
+private extension ModifierListSyntax? {
+     var staticOrClassPosition: AbsolutePosition? {
+         self?.first { modifier in
+             modifier.name.tokenKind == .staticKeyword || modifier.name.tokenKind == .classKeyword
+         }?.positionAfterSkippingLeadingTrivia
+     }
+ }

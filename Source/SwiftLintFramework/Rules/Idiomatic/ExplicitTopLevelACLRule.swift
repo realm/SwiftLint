@@ -104,17 +104,3 @@ private extension ExplicitTopLevelACLRule {
         }
     }
 }
-
-private extension DeclModifierSyntax {
-    var isACLModifier: Bool {
-        let aclModifiers: Set<TokenKind> = [
-            .privateKeyword,
-            .fileprivateKeyword,
-            .internalKeyword,
-            .publicKeyword,
-            .contextualKeyword("open")
-        ]
-
-        return detail == nil && aclModifiers.contains(name.tokenKind)
-    }
-}

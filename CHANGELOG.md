@@ -20,6 +20,10 @@
 
 #### Enhancements
 
+* Add `no_magic_numbers` rule to avoid "Magic Numbers".  
+  [Henrik Storch](https://github.com/thisisthefoxe)
+  [#4031](https://github.com/realm/SwiftLint/issues/4024)
+
 * SwiftSyntax libraries have been updated from the previous 5.6 release and now
   use the new parser written in Swift.
   Swift 5.7+ features should now be parsed more accurately.

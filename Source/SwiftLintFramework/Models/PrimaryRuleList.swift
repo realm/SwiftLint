@@ -123,6 +123,7 @@ public let primaryRuleList = RuleList(rules: [
     NoExtensionAccessModifierRule.self,
     NoFallthroughOnlyRule.self,
     NoGroupingExtensionRule.self,
+    NoMagicNumbersRule.self,
     NoSpaceInMethodCallRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,

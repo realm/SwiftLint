@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -34,38 +33,67 @@ public struct PatternMatchingKeywordsRule: ASTRule, ConfigurationProviderRule, O
         ].map(wrapInSwitch)
     )
 
-    public func validate(file: SwiftLintFile, kind: StatementKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .case else {
-            return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
+
+private extension PatternMatchingKeywordsRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: CaseItemSyntax) {
+            let localViolations = TupleVisitor(viewMode: .sourceAccurate)
+                .walk(tree: node.pattern, handler: \.violations)
+            violations.append(contentsOf: localViolations)
+        }
+    }
+
+    final class TupleVisitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: TupleExprElementListSyntax) {
+            let list = node.flatteningEnumPatterns()
+            guard list.count > 1,
+                let firstLetOrVar = list.first?.expression.asValueBindingPattern()?.letOrVarKeyword.tokenKind else {
+                return
+            }
+
+            let hasViolation = list.allSatisfy { elem in
+                elem.expression.asValueBindingPattern()?.letOrVarKeyword.tokenKind == firstLetOrVar
+            }
+
+            guard hasViolation else {
+                return
+            }
+
+            violations.append(contentsOf: list.compactMap { elem in
+                guard let pattern = elem.expression.asValueBindingPattern() else {
+                    return nil
+                }
+
+                return pattern.letOrVarKeyword.positionAfterSkippingLeadingTrivia
+            })
+        }
+    }
+}
+
+private extension TupleExprElementListSyntax {
+    func flatteningEnumPatterns() -> [TupleExprElementSyntax] {
+        flatMap { elem in
+            guard let pattern = elem.expression.as(FunctionCallExprSyntax.self),
+                  pattern.calledExpression.is(MemberAccessExprSyntax.self) else {
+                return [elem]
+            }
+
+            return Array(pattern.argumentList)
+        }
+    }
+}
+
+private extension ExprSyntax {
+    func asValueBindingPattern() -> ValueBindingPatternSyntax? {
+        if let pattern = self.as(UnresolvedPatternExprSyntax.self) {
+            return pattern.pattern.as(ValueBindingPatternSyntax.self)
         }
 
-        let contents = file.stringView
-        return dictionary.elements.flatMap { subDictionary -> [StyleViolation] in
-            guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
-                let caseByteRange = subDictionary.byteRange,
-                let caseRange = contents.byteRangeToNSRange(caseByteRange)
-            else {
-                return []
-            }
-
-            let letMatches = file.match(pattern: "\\blet\\b", with: [.keyword], range: caseRange)
-            let varMatches = file.match(pattern: "\\bvar\\b", with: [.keyword], range: caseRange)
-
-            if letMatches.isNotEmpty && varMatches.isNotEmpty {
-                return []
-            }
-
-            guard letMatches.count > 1 || varMatches.count > 1 else {
-                return []
-            }
-
-            return (letMatches + varMatches).map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
-            }
-        }
+        return nil
     }
 }
 

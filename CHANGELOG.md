@@ -131,6 +131,7 @@
   - `operator_whitespace`
   - `optional_enum_case_matching`
   - `override_in_extension`
+  - `pattern_matching_keywords`
   - `prefer_nimble`
   - `prefer_self_type_over_type_of_self`
   - `prefer_zero_over_explicit_init`

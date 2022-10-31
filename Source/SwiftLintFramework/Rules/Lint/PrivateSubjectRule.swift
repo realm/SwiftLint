@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PrivateSubjectRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
     public var configuration = SeverityConfiguration(.warning)
@@ -14,85 +14,51 @@ public struct PrivateSubjectRule: ASTRule, OptInRule, ConfigurationProviderRule 
         triggeringExamples: PrivateSubjectRuleExamples.triggeringExamples
     )
 
-    private let subjectTypes: Set<String> = ["PassthroughSubject", "CurrentValueSubject"]
-
     // MARK: - Life cycle
 
     public init() {}
 
     // MARK: - Public
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .varInstance,
-            dictionary.accessibility?.isPrivate == false
-        else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let declarationViolation = declarationViolationOffset(
-            dictionary: dictionary
-        )
+private extension PrivateSubjectRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let subjectTypes: Set<String> = ["PassthroughSubject", "CurrentValueSubject"]
 
-        let defaultValueViolation = defaultValueViolationOffset(
-            file: file,
-            dictionary: dictionary
-        )
-
-        let violations = [declarationViolation, defaultValueViolation]
-            .compactMap { $0 }
-            .map {
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard !node.modifiers.isPrivateOrFileprivate,
+                  !node.modifiers.containsStaticOrClass else {
+                return
             }
 
-        return violations
-    }
+            for binding in node.bindings {
+                // Looks for violations matching the format:
+                //
+                // * `let subject: PassthroughSubject<Bool, Never>`
+                // * `let subject: PassthroughSubject<Bool, Never> = .init()`
+                // * `let subject: CurrentValueSubject<Bool, Never>`
+                // * `let subject: CurrentValueSubject<String, Never> = .init("toto")`
+                if let type = binding.typeAnnotation?.type.as(SimpleTypeIdentifierSyntax.self),
+                   subjectTypes.contains(type.name.text) {
+                    violations.append(binding.pattern.positionAfterSkippingLeadingTrivia)
+                    continue
+                }
 
-    // MARK: - Private
-
-    /// Looks for violations matching the format:
-    ///
-    /// * `let subject: PassthroughSubject<Bool, Never>`
-    /// * `let subject: PassthroughSubject<Bool, Never> = .init()`
-    /// * `let subject: CurrentValueSubject<Bool, Never>`
-    /// * `let subject: CurrentValueSubject<String, Never> = .ini("toto")`
-    ///
-    /// - Returns: The violation offset.
-    private func declarationViolationOffset(dictionary: SourceKittenDictionary) -> ByteCount? {
-        guard
-            let typeName = dictionary.typeName,
-            subjectTypes.contains(where: typeName.hasPrefix) == true
-        else {
-            return nil
+                // Looks for violations matching the format:
+                //
+                // * `let subject = PassthroughSubject<Bool, Never>()`
+                // * `let subject = CurrentValueSubject<String, Never>("toto")`
+                if let functionCall = binding.initializer?.value.as(FunctionCallExprSyntax.self),
+                   let specializeExpr = functionCall.calledExpression.as(SpecializeExprSyntax.self),
+                   let identifierExpr = specializeExpr.expression.as(IdentifierExprSyntax.self),
+                   subjectTypes.contains(identifierExpr.identifier.text) {
+                    violations.append(binding.pattern.positionAfterSkippingLeadingTrivia)
+                }
+            }
         }
-
-        return dictionary.nameOffset
-    }
-
-    /// Looks for violations matching the format:
-    ///
-    /// * `let subject = PassthroughSubject<Bool, Never>()`
-    /// * `let subject = CurrentValueSubject<String, Never>("toto")`
-    ///
-    /// - Returns: The violation offset.
-    private func defaultValueViolationOffset(file: SwiftLintFile,
-                                             dictionary: SourceKittenDictionary) -> ByteCount? {
-        guard
-            let offset = dictionary.offset,
-            let length = dictionary.length,
-            case let byteRange = ByteRange(location: offset, length: length),
-            let range = file.stringView.byteRangeToNSRange(byteRange),
-            case let subjects = subjectTypes.joined(separator: "|"),
-            case let pattern = "(\(subjects))<(.+)>\\((.*)\\)",
-            file.match(pattern: pattern, range: range).isEmpty == false
-        else {
-            return nil
-        }
-
-        return dictionary.nameOffset
     }
 }

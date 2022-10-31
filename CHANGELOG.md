@@ -138,6 +138,7 @@
   - `private_action`
   - `private_over_fileprivate`
   - `private_outlet`
+  - `private_subject`
   - `private_unit_test`
   - `prohibited_interface_builder`
   - `protocol_property_accessors_order`

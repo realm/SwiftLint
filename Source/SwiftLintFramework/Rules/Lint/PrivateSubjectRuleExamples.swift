@@ -188,7 +188,7 @@ internal struct PrivateSubjectRuleExamples {
         Example(
             #"""
             final class Foobar {
-                let goodSubject: CurrentValueSubject<String, Never> = .ini("toto")
+                let goodSubject: CurrentValueSubject<String, Never> = .init("toto")
             }
             """#
         ),

@@ -130,6 +130,7 @@
   - `number_separator`
   - `operator_whitespace`
   - `optional_enum_case_matching`
+  - `overridden_super_call`
   - `override_in_extension`
   - `prefer_nimble`
   - `prefer_self_type_over_type_of_self`
@@ -141,6 +142,7 @@
   - `private_subject`
   - `private_unit_test`
   - `prohibited_interface_builder`
+  - `prohibited_super_call`
   - `protocol_property_accessors_order`
   - `quick_discouraged_focused_test`
   - `quick_discouraged_pending_test`

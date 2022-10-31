@@ -119,8 +119,8 @@
   - `legacy_objc_type`
   - `legacy_random`
   - `lower_acl_than_parent`
-  - `multiple_closures_with_trailing_closure`
   - `multiline_parameters`
+  - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`
   - `no_fallthrough_only`
   - `no_space_in_method_call`
@@ -137,8 +137,8 @@
   - `prefer_zero_over_explicit_init`
   - `prefixed_toplevel_constant`
   - `private_action`
-  - `private_over_fileprivate`
   - `private_outlet`
+  - `private_over_fileprivate`
   - `private_subject`
   - `private_unit_test`
   - `prohibited_interface_builder`
@@ -152,8 +152,8 @@
   - `redundant_discardable_let`
   - `redundant_nil_coalescing`
   - `redundant_objc_attribute`
-  - `redundant_set_access_control`
   - `redundant_optional_initialization`
+  - `redundant_set_access_control`
   - `redundant_string_enum_value`
   - `required_deinit`
   - `return_arrow_whitespace`

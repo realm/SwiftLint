@@ -85,6 +85,10 @@ private extension OverriddenSuperCallRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let resolvedMethodNames: [String]
 
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [ProtocolDeclSyntax.self]
+        }
+
         init(resolvedMethodNames: [String]) {
             self.resolvedMethodNames = resolvedMethodNames
             super.init(viewMode: .sourceAccurate)
@@ -99,9 +103,7 @@ private extension OverriddenSuperCallRule {
                 return
             }
 
-            let superCallsCount = SuperCallVisitor(expectedFunctionName: node.identifier.text)
-                .walk(tree: body, handler: \.superCallsCount)
-
+            let superCallsCount = node.numberOfCallsToSuper()
             if superCallsCount == 0 {
                 violations.append(ReasonedRuleViolation(
                     position: body.leftBrace.endPositionBeforeTrailingTrivia,
@@ -114,40 +116,5 @@ private extension OverriddenSuperCallRule {
                 ))
             }
         }
-    }
-
-    final class SuperCallVisitor: SyntaxVisitor {
-        private let expectedFunctionName: String
-        private(set) var superCallsCount = 0
-
-        init(expectedFunctionName: String) {
-            self.expectedFunctionName = expectedFunctionName
-            super.init(viewMode: .sourceAccurate)
-        }
-
-        override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let expr = node.calledExpression.as(MemberAccessExprSyntax.self),
-                  expr.base?.as(SuperRefExprSyntax.self) != nil,
-                  expr.name.text == expectedFunctionName else {
-                return
-            }
-
-            superCallsCount += 1
-        }
-    }
-}
-
-private extension FunctionDeclSyntax {
-    func resolvedName() -> String {
-        var name = self.identifier.text
-        name += "("
-
-        let params = signature.input.parameterList.compactMap { param in
-            (param.firstName ?? param.secondName)?.text.appending(":")
-        }
-
-        name += params.joined()
-        name += ")"
-        return name
     }
 }

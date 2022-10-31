@@ -141,6 +141,7 @@
   - `private_outlet`
   - `private_unit_test`
   - `prohibited_interface_builder`
+  - `prohibited_super_call`
   - `protocol_property_accessors_order`
   - `quick_discouraged_focused_test`
   - `quick_discouraged_pending_test`

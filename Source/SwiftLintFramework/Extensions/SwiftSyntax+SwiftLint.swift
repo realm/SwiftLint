@@ -163,6 +163,31 @@ extension FunctionDeclSyntax {
             attr.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("IBAction")
         } ?? false
     }
+
+    /// Returns the signature including arguments, e.g "setEditing(_:animated:)"
+    func resolvedName() -> String {
+        var name = self.identifier.text
+        name += "("
+
+        let params = signature.input.parameterList.compactMap { param in
+            (param.firstName ?? param.secondName)?.text.appending(":")
+        }
+
+        name += params.joined()
+        name += ")"
+        return name
+    }
+
+    /// How many times this function calls the `super` implementation in its body.
+    /// Returns 0 if the function has no body.
+    func numberOfCallsToSuper() -> Int {
+        guard let body = body else {
+            return 0
+        }
+
+        return SuperCallVisitor(expectedFunctionName: identifier.text)
+            .walk(tree: body, handler: \.superCallsCount)
+    }
 }
 
 extension AccessorBlockSyntax {
@@ -228,5 +253,25 @@ private extension String {
 
         number = number.replacingOccurrences(of: "_", with: "")
         return Float(number) == 0
+    }
+}
+
+private class SuperCallVisitor: SyntaxVisitor {
+    private let expectedFunctionName: String
+    private(set) var superCallsCount = 0
+
+    init(expectedFunctionName: String) {
+        self.expectedFunctionName = expectedFunctionName
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: FunctionCallExprSyntax) {
+        guard let expr = node.calledExpression.as(MemberAccessExprSyntax.self),
+              expr.base?.as(SuperRefExprSyntax.self) != nil,
+              expr.name.text == expectedFunctionName else {
+            return
+        }
+
+        superCallsCount += 1
     }
 }

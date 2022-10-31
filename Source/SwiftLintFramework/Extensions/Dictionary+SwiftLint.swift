@@ -186,21 +186,6 @@ public struct SourceKittenDictionary {
         let array = value["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return array.compactMap { ($0 as? [String: String]).flatMap { $0["key.name"] } }
     }
-
-    internal func extractCallsToSuper(methodName: String) -> [String] {
-        guard let methodNameWithoutArguments = methodName.split(separator: "(").first else {
-            return []
-        }
-        let superCall = "super.\(methodNameWithoutArguments)"
-        return substructure.flatMap { elems -> [String] in
-            guard let type = elems.expressionKind,
-                let name = elems.name,
-                type == .call && superCall == name else {
-                    return elems.extractCallsToSuper(methodName: methodName)
-            }
-            return [name]
-        }
-    }
 }
 
 extension SourceKittenDictionary {

@@ -36,7 +36,18 @@ public struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, Configur
             case (_, _):
                 break
             }
-            """)
+            """),
+            // https://github.com/apple/swift/issues/61817
+            Example("""
+            switch bool {
+            case true?:
+              break
+            case false?:
+              break
+            case .none:
+              break
+            }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -163,7 +174,8 @@ private extension OptionalEnumCaseMatchingRule {
                 return
             }
 
-            if let expression = pattern.expression.as(OptionalChainingExprSyntax.self) {
+            if let expression = pattern.expression.as(OptionalChainingExprSyntax.self),
+               !expression.expression.isDiscardAssignmentOrBoolLiteral {
                 violations.append(expression.questionMark.positionAfterSkippingLeadingTrivia)
             } else if let expression = pattern.expression.as(TupleExprSyntax.self) {
                 let optionalChainingExpressions = expression.optionalChainingExpressions()
@@ -193,7 +205,8 @@ private extension OptionalEnumCaseMatchingRule {
                 return super.visit(node)
             }
 
-            if let expression = pattern.expression.as(OptionalChainingExprSyntax.self) {
+            if let expression = pattern.expression.as(OptionalChainingExprSyntax.self),
+               !expression.expression.isDiscardAssignmentOrBoolLiteral {
                 let violationPosition = expression.questionMark.positionAfterSkippingLeadingTrivia
                 correctionPositions.append(violationPosition)
                 let newExpression = ExprSyntax(expression.withQuestionMark(nil))
@@ -235,6 +248,12 @@ private extension TupleExprSyntax {
     func optionalChainingExpressions() -> [OptionalChainingExprSyntax] {
         elementList
             .compactMap { $0.expression.as(OptionalChainingExprSyntax.self) }
-            .filter { !$0.expression.is(DiscardAssignmentExprSyntax.self) }
+            .filter { !$0.expression.isDiscardAssignmentOrBoolLiteral }
+    }
+}
+
+private extension ExprSyntax {
+    var isDiscardAssignmentOrBoolLiteral: Bool {
+        `is`(DiscardAssignmentExprSyntax.self) || `is`(BooleanLiteralExprSyntax.self)
     }
 }

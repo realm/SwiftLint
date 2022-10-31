@@ -25,6 +25,7 @@ public struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProvide
         ].map(wrapInSwitch),
         triggeringExamples: [
             Example("case (↓let x,  ↓let y)"),
+            Example("case (↓let x,  ↓let y, .foo)"),
             Example("case (↓let x,  ↓let y, _)"),
             Example("case .foo(↓let x, ↓let y)"),
             Example("case (.yamlParsing(↓let x), .yamlParsing(↓let y))"),
@@ -51,15 +52,17 @@ private extension PatternMatchingKeywordsRule {
     final class TupleVisitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TupleExprElementListSyntax) {
             let list = node.flatteningEnumPatterns()
-                .filter { !$0.expression.is(DiscardAssignmentExprSyntax.self) }
+                .compactMap { elem in
+                    elem.expression.asValueBindingPattern()
+                }
 
             guard list.count > 1,
-                let firstLetOrVar = list.first?.expression.asValueBindingPattern()?.letOrVarKeyword.tokenKind else {
+                let firstLetOrVar = list.first?.letOrVarKeyword.tokenKind else {
                 return
             }
 
             let hasViolation = list.allSatisfy { elem in
-                elem.expression.asValueBindingPattern()?.letOrVarKeyword.tokenKind == firstLetOrVar
+                elem.letOrVarKeyword.tokenKind == firstLetOrVar
             }
 
             guard hasViolation else {
@@ -67,11 +70,7 @@ private extension PatternMatchingKeywordsRule {
             }
 
             violations.append(contentsOf: list.compactMap { elem in
-                guard let pattern = elem.expression.asValueBindingPattern() else {
-                    return nil
-                }
-
-                return pattern.letOrVarKeyword.positionAfterSkippingLeadingTrivia
+                return elem.letOrVarKeyword.positionAfterSkippingLeadingTrivia
             })
         }
     }

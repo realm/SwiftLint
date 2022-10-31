@@ -36,26 +36,8 @@ private extension QuickDiscouragedPendingTestRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            node.isSpecFunction ? .visitChildren : .skipChildren
+            node.isQuickSpecFunction ? .visitChildren : .skipChildren
         }
-    }
-}
-
-private extension ClassDeclSyntax {
-    var containsInheritance: Bool {
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
-            return false
-        }
-
-        return inheritanceList.isNotEmpty
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var isSpecFunction: Bool {
-        return identifier.tokenKind == .identifier("spec") &&
-            signature.input.parameterList.isEmpty &&
-            modifiers.containsOverride
     }
 }
 

@@ -188,6 +188,12 @@ extension FunctionDeclSyntax {
         return SuperCallVisitor(expectedFunctionName: identifier.text)
             .walk(tree: body, handler: \.superCallsCount)
     }
+
+    var isQuickSpecFunction: Bool {
+        return identifier.tokenKind == .identifier("spec") &&
+            signature.input.parameterList.isEmpty &&
+            modifiers.containsOverride
+    }
 }
 
 extension AccessorBlockSyntax {
@@ -217,6 +223,16 @@ extension Trivia {
 
     var isSingleSpace: Bool {
         self == .spaces(1)
+    }
+}
+
+extension ClassDeclSyntax {
+    var containsInheritance: Bool {
+        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+            return false
+        }
+
+        return inheritanceList.isNotEmpty
     }
 }
 

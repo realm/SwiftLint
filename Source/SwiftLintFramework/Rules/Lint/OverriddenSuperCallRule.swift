@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
+public struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     public var configuration = OverriddenSuperCallConfiguration()
 
     public init() {}
@@ -76,28 +76,78 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.bodyOffset,
-            let name = dictionary.name,
-            kind == .functionMethodInstance,
-            configuration.resolvedMethodNames.contains(name),
-            dictionary.enclosedSwiftAttributes.contains(.override)
-        else { return [] }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
+    }
+}
 
-        let callsToSuper = dictionary.extractCallsToSuper(methodName: name)
+private extension OverriddenSuperCallRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let resolvedMethodNames: [String]
 
-        if callsToSuper.isEmpty {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Method '\(name)' should call to super function")]
-        } else if callsToSuper.count > 1 {
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset),
-                                   reason: "Method '\(name)' should call to super only once")]
+        init(resolvedMethodNames: [String]) {
+            self.resolvedMethodNames = resolvedMethodNames
+            super.init(viewMode: .sourceAccurate)
         }
-        return []
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard let body = node.body,
+                  node.modifiers.containsOverride,
+                  !node.modifiers.containsStaticOrClass,
+                  case let name = node.resolvedName(),
+                  resolvedMethodNames.contains(name) else {
+                return
+            }
+
+            let superCallsCount = SuperCallVisitor(expectedFunctionName: node.identifier.text)
+                .walk(tree: body, handler: \.superCallsCount)
+
+            if superCallsCount == 0 {
+                violations.append(ReasonedRuleViolation(
+                    position: body.leftBrace.endPositionBeforeTrailingTrivia,
+                    reason: "Method '\(name)' should call to super function"
+                ))
+            } else if superCallsCount > 1 {
+                violations.append(ReasonedRuleViolation(
+                    position: body.leftBrace.endPositionBeforeTrailingTrivia,
+                    reason: "Method '\(name)' should call to super only once"
+                ))
+            }
+        }
+    }
+
+    final class SuperCallVisitor: SyntaxVisitor {
+        private let expectedFunctionName: String
+        private(set) var superCallsCount = 0
+
+        init(expectedFunctionName: String) {
+            self.expectedFunctionName = expectedFunctionName
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let expr = node.calledExpression.as(MemberAccessExprSyntax.self),
+                  expr.base?.as(SuperRefExprSyntax.self) != nil,
+                  expr.name.text == expectedFunctionName else {
+                return
+            }
+
+            superCallsCount += 1
+        }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    func resolvedName() -> String {
+        var name = self.identifier.text
+        name += "("
+
+        let params = signature.input.parameterList.compactMap { param in
+            (param.firstName ?? param.secondName)?.text.appending(":")
+        }
+
+        name += params.joined()
+        name += ")"
+        return name
     }
 }

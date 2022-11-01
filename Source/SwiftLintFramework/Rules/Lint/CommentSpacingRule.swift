@@ -131,8 +131,7 @@ public struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, 
                     return nil
                 }
 
-                let range = ByteRange(location: ByteCount(classifiedRange.range.offset),
-                                      length: ByteCount(classifiedRange.range.length))
+                let range = classifiedRange.range.toSourceKittenByteRange()
                 return file.stringView
                     .substringWithByteRange(range)
                     .map(StringView.init)

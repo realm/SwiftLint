@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 import SwiftSyntax
 
 // workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
@@ -65,6 +66,12 @@ extension AbsolutePosition {
         regions.contains { region in
             region.contains(self, locationConverter: locationConverter)
         }
+    }
+}
+
+extension ByteSourceRange {
+    func toSourceKittenByteRange() -> ByteRange {
+        ByteRange(location: ByteCount(offset), length: ByteCount(length))
     }
 }
 

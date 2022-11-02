@@ -90,10 +90,12 @@ public struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRu
 
 private extension OrphanedDocCommentRule {
     final class Visitor: ViolationsSyntaxVisitor {
-        private let classifications: [SyntaxClassifiedRange]
+        private let docCommentRanges: [ByteSourceRange]
 
         init(classifications: [SyntaxClassifiedRange]) {
-            self.classifications = classifications
+            self.docCommentRanges = classifications
+                .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }
+                .map(\.range)
             super.init(viewMode: .sourceAccurate)
         }
 
@@ -102,13 +104,9 @@ private extension OrphanedDocCommentRule {
                 return
             }
 
-            let violatingClassification = classifications.first { classification in
-                classification.range.intersects(body.byteRange) &&
-                    [.docLineComment, .docBlockComment].contains(classification.kind)
-            }
-
-            if let violatingClassification {
-                violations.append(AbsolutePosition(utf8Offset: violatingClassification.offset))
+            let violatingRange = docCommentRanges.first { $0.intersects(body.byteRange) }
+            if let violatingRange {
+                violations.append(AbsolutePosition(utf8Offset: violatingRange.offset))
             }
         }
     }

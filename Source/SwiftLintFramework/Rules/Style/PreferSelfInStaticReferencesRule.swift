@@ -1,8 +1,11 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, OptInRule {
-    public static let description = RuleDescription(
+public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
+    public var configuration = SeverityConfiguration(.warning)
+
+    public init() {}
+
+    public static var description = RuleDescription(
         identifier: "prefer_self_in_static_references",
         name: "Prefer Self in Static References",
         description: "Static references should be prefixed by `Self` instead of the class name.",
@@ -37,6 +40,10 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     static let k = { C.i }()
                     let h = C.i
                     @GreaterThan(C.j) var k: Int
+                    func f() {
+                        _ = [Int: C]()
+                        _ = [C]()
+                    }
                 }
             """, excludeFromDocumentation: true),
             Example("""
@@ -62,6 +69,12 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     }
                     func g() -> Any { C.self }
                 }
+            """, excludeFromDocumentation: true),
+            Example("""
+                @objc class C: NSObject {
+                    @objc var s = ""
+                    @objc func f() { _ = #keyPath(C.s) }
+                }
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
@@ -73,16 +86,21 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     }
                     static let i = 1
                     let h = C.i
+                    var j: Int { ↓C.i }
                     func f() -> Int { ↓C.i + h }
                 }
             """),
             Example("""
-                    struct S {
-                        static let i = 1
-                        static func f() -> Int { ↓S.i }
-                        func g() -> Any { ↓S.self }
-                    }
-                    """),
+                struct S {
+                    let j: Int
+                    static let i = 1
+                    static func f() -> Int { ↓S.i }
+                    func g() -> Any { ↓S.self }
+                    func h() -> S { S(j: 2) }
+                    func i() -> KeyPath<S, Int> { \\↓S.j }
+                    func j(@Wrap(-↓S.i, ↓S.i) n: Int = ↓S.i) {}
+                }
+            """),
             Example("""
                 struct S {
                     struct T {
@@ -93,14 +111,29 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                     }
                     static let h = ↓S.T.i + ↓S.R.j
                 }
-            """)
+            """),
+            Example("""
+                enum E {
+                    case A
+                    static func f() -> E { ↓E.A }
+                    static func g() -> E { ↓E.f() }
+                }
+            """),
+            Example("""
+                extension E {
+                    class C {
+                        static let i = 2
+                        var j: Int { ↓C.i }
+                    }
+                }
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("""
                 struct S {
                     static let i = 1
                     static let j = ↓S.i
-                    let k = ↓S.j
+                    let k = ↓S  . j
                     static func f(_ l: Int = ↓S.i) -> Int { l*↓S.j }
                     func g() { ↓S.i + ↓S.f() + k }
                 }
@@ -108,7 +141,7 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
                 struct S {
                     static let i = 1
                     static let j = Self.i
-                    let k = Self.j
+                    let k = Self  . j
                     static func f(_ l: Int = Self.i) -> Int { l*Self.j }
                     func g() { Self.i + Self.f() + k }
                 }
@@ -116,95 +149,189 @@ public struct PreferSelfInStaticReferencesRule: SubstitutionCorrectableASTRule, 
         ]
     )
 
-    private static let complexDeclarations: Set = [
-        SwiftDeclarationKind.class,
-        SwiftDeclarationKind.enum,
-        SwiftDeclarationKind.struct
-    ]
-
-    private static let nestedKindsToIgnoreIfClass: Set = [
-        SwiftDeclarationKind.varInstance,
-        SwiftDeclarationKind.varStatic,
-        SwiftDeclarationKind.varParameter
-    ]
-
-    public var configuration = SeverityConfiguration(.warning)
-    public var configurationDescription = "N/A"
-
-    public init() {}
-
-    public init(configuration: Any) throws {
-        throw ConfigurationError.unknownConfiguration
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        violationRanges(in: file, kind: kind, dictionary: dictionary)
-            .compactMap(file.stringView.NSRangeToByteRange)
-            .map { byteRange in
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severity,
-                    location: Location(file: file, byteOffset: byteRange.location)
-                )
+    public func correct(file: SwiftLintFile) -> [Correction] {
+        let ranges = Visitor(viewMode: .sourceAccurate)
+            .walk(file: file, handler: \.corrections)
+            .compactMap { file.stringView.NSRange(start: $0.start, end: $0.end) }
+            .filter { file.ruleEnabled(violatingRange: $0, for: self) != nil }
+            .reversed()
+
+        var corrections = [Correction]()
+        var contents = file.contents
+        for range in ranges {
+            let contentsNSString = contents.bridge()
+            contents = contentsNSString.replacingCharacters(in: range, with: "Self")
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: Self.description, location: location))
+        }
+
+        file.write(contents)
+
+        return corrections
+    }
+}
+
+private class Visitor: ViolationsSyntaxVisitor {
+    private enum ParentDeclBehavior {
+        case likeClass(String)
+        case likeStruct(String)
+        case skipReferences
+
+        var parentName: String? {
+            switch self {
+            case let .likeClass(name): return name
+            case let .likeStruct(name): return name
+            case .skipReferences: return nil
             }
-    }
-
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        (violationRange, "Self.")
-    }
-
-    public func violationRanges(in file: SwiftLintFile,
-                                kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard Self.complexDeclarations.contains(kind),
-              let name = dictionary.name,
-              let bodyRange = dictionary.bodyByteRange else {
-            return []
         }
+    }
 
-        var rangesToIgnore = dictionary.substructure
-            .flatMap { getSubstructuresToIgnore(in: $0, containedIn: kind) }
-            .compactMap(\.byteRange)
-            .unique
-            .sorted { $0.location < $1.location }
-        rangesToIgnore.append(ByteRange(location: bodyRange.upperBound, length: 0)) // Marks the end of the search
+    private enum VariableDeclBehavior {
+        case handleReferences
+        case skipReferences
+    }
 
-        let pattern = "(?<!\\.)\\b\(name)\\.\(kind == .class ? "(?!self)" : "")"
-        var location = bodyRange.location
-        return rangesToIgnore
-            .flatMap { (range: ByteRange) -> [NSRange] in
-                if range.location < location {
-                    location = max(range.upperBound, location)
-                    return []
-                }
-                let searchRange = ByteRange(location: location, length: range.lowerBound - location)
-                location = range.upperBound
-                return file.match(
-                    pattern: pattern,
-                    with: [.identifier],
-                    range: file.stringView.byteRangeToNSRange(searchRange))
+    private var parentDeclScopes = [ParentDeclBehavior]()
+    private var variableDeclScopes = [VariableDeclBehavior]()
+    private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
+
+    override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+        parentDeclScopes.append(.likeClass(node.identifier.text))
+        return .skipChildren
+    }
+
+    override func visitPost(_ node: ActorDeclSyntax) {
+        _ = parentDeclScopes.popLast()
+    }
+
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        parentDeclScopes.append(.likeClass(node.identifier.text))
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: ClassDeclSyntax) {
+        _ = parentDeclScopes.popLast()
+    }
+
+    override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        variableDeclScopes.append(.handleReferences)
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: CodeBlockSyntax) {
+        _ = variableDeclScopes.popLast()
+    }
+
+    override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        parentDeclScopes.append(.likeStruct(node.identifier.text))
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: EnumDeclSyntax) {
+        _ = parentDeclScopes.popLast()
+    }
+
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        parentDeclScopes.append(.skipReferences)
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: ExtensionDeclSyntax) {
+        _ = parentDeclScopes.popLast()
+    }
+
+    override func visit(_ node: MemberAccessExprSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeClass = parentDeclScopes.last {
+            if node.name.tokenKind == .selfKeyword {
+                return .skipChildren
             }
+        }
+        return .visitChildren
     }
 
-    private func getSubstructuresToIgnore(in structure: SourceKittenDictionary,
-                                          containedIn parentKind: SwiftDeclarationKind) -> [SourceKittenDictionary] {
-        guard let kind = structure.kind, let declarationKind = SwiftDeclarationKind(rawValue: kind) else {
-            return []
+    override func visitPost(_ node: IdentifierExprSyntax) {
+        guard let parent = node.parent,
+              parent.as(FunctionCallExprSyntax.self) == nil,
+              parent.as(DictionaryElementSyntax.self) == nil,
+              parent.as(ArrayElementSyntax.self) == nil else {
+            return
         }
-        if Self.complexDeclarations.contains(declarationKind) {
-            return [structure]
+        guard let parentName = parentDeclScopes.last?.parentName,
+              node.identifier.tokenKind == .identifier(parentName) else {
+            return
         }
-        if parentKind != .class {
-            return []
+        addViolation(on: node)
+    }
+
+    override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeClass = parentDeclScopes.last {
+            variableDeclScopes.append(.skipReferences)
+        } else {
+            variableDeclScopes.append(.handleReferences)
         }
-        var structures = structure.swiftAttributes
-        if Self.nestedKindsToIgnoreIfClass.contains(declarationKind) {
-            structures.append(structure)
-            return structures
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: MemberDeclBlockSyntax) {
+        _ = variableDeclScopes.popLast()
+    }
+
+    override func visit(_ node: ObjcKeyPathExprSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeStruct = parentDeclScopes.last {
+            return .visitChildren
         }
-        return structures + structure.substructure
-            .flatMap { getSubstructuresToIgnore(in: $0, containedIn: parentKind) }
+        return .skipChildren
+    }
+
+    override func visit(_ node: ParameterClauseSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeStruct = parentDeclScopes.last {
+            return .visitChildren
+        }
+        return .skipChildren
+    }
+
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        parentDeclScopes.append(.skipReferences)
+        return .skipChildren
+    }
+
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        _ = parentDeclScopes.popLast()
+    }
+
+    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+        parentDeclScopes.append(.likeStruct(node.identifier.text))
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: StructDeclSyntax) {
+        _ = parentDeclScopes.popLast()
+    }
+
+    override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
+        guard node.parent?.as(KeyPathExprSyntax.self) != nil else {
+            return
+        }
+        addViolation(on: node)
+    }
+
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        if node.bindings.count == 1, let binding = node.bindings.first, binding.accessor != nil {
+            // Computed property
+            return .visitChildren
+        }
+        if case .handleReferences = variableDeclScopes.last {
+            return .visitChildren
+        }
+        return .skipChildren
+    }
+
+    private func addViolation(on node: SyntaxProtocol) {
+        violations.append(node.positionAfterSkippingLeadingTrivia)
+        corrections.append((start: node.positionAfterSkippingLeadingTrivia, end: node.endPositionBeforeTrailingTrivia))
     }
 }

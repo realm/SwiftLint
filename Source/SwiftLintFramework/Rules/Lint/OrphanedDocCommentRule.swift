@@ -57,11 +57,10 @@ public struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRu
         let classifications = file.syntaxClassifications
             .filter { $0.kind != .none }
         let docstringsWithOtherComments = classifications
-            .pairs()
+            .adjacentPairs()
             .compactMap { first, second -> Location? in
                 let firstByteRange = first.range.toSourceKittenByteRange()
                 guard
-                    let second = second,
                     first.kind == .docLineComment || first.kind == .docBlockComment,
                     second.kind == .lineComment || second.kind == .blockComment,
                     let firstString = file.stringView.substringWithByteRange(firstByteRange),
@@ -109,11 +108,5 @@ private extension OrphanedDocCommentRule {
                 violations.append(AbsolutePosition(utf8Offset: violatingRange.offset))
             }
         }
-    }
-}
-
-private extension Sequence {
-    func pairs() -> Zip2Sequence<Self, [Element?]> {
-        return zip(self, Array(dropFirst()) + [nil])
     }
 }

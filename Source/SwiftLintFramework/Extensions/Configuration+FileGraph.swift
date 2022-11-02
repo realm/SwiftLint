@@ -21,7 +21,7 @@ internal extension Configuration {
                 Vertix(string: config, rootDirectory: rootDirectory, isInitialVertix: true)
             }
             vertices = Set(verticesArray)
-            edges = Set(zip(verticesArray, verticesArray.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
+            edges = Set(verticesArray.adjacentPairs().map { Edge(parent: $0.0, child: $0.1) })
 
             self.rootDirectory = rootDirectory
             self.ignoreParentAndChildConfigs = ignoreParentAndChildConfigs

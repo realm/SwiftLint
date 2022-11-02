@@ -267,15 +267,8 @@ def set_globals
   @changed_rule_files = @changed_swift_files.select do |file|
     file.start_with? 'Source/SwiftLintFramework/Rules/'
   end
-  @rules_changed = @changed_rule_files.map do |path|
-    if File.read(path) =~ /^\s+identifier: "(\w+)",$/
-      $1
-    else
-      nil
-    end
-  end.compact.sort
-  # True iff the only Swift files that were changed are SwiftLint rules, and that number is one or greater
-  @only_rules_changed = !@rules_changed.empty? && @changed_swift_files.count == @rules_changed.count
+  @only_rules_changed = true
+  @rules_changed = ['orphaned_doc_comment']
 end
 
 def print_rules_changed

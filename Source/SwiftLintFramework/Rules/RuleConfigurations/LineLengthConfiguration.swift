@@ -5,10 +5,10 @@ public struct LineLengthRuleOptions: OptionSet {
         self.rawValue = rawValue
     }
 
-    public static let ignoreURLs = LineLengthRuleOptions(rawValue: 1 << 0)
-    public static let ignoreFunctionDeclarations = LineLengthRuleOptions(rawValue: 1 << 1)
-    public static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
-    public static let ignoreInterpolatedStrings = LineLengthRuleOptions(rawValue: 1 << 3)
+    public static let ignoreURLs = Self(rawValue: 1 << 0)
+    public static let ignoreFunctionDeclarations = Self(rawValue: 1 << 1)
+    public static let ignoreComments = Self(rawValue: 1 << 2)
+    public static let ignoreInterpolatedStrings = Self(rawValue: 1 << 3)
 
     public static let all: LineLengthRuleOptions = [.ignoreURLs,
                                                     .ignoreFunctionDeclarations,

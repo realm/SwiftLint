@@ -13,7 +13,7 @@ private struct FileCacheEntry: Codable {
 private struct FileCache: Codable {
     var entries: [String: FileCacheEntry]
 
-    static var empty: FileCache { return FileCache(entries: [:]) }
+    static var empty: FileCache { return Self(entries: [:]) }
 }
 
 /// A persisted cache for storing and retrieving linter results.
@@ -115,7 +115,7 @@ public final class LinterCache {
     }
 
     internal func flushed() -> LinterCache {
-        return LinterCache(cache: mergeCaches(), location: location, fileManager: fileManager,
+        return Self(cache: mergeCaches(), location: location, fileManager: fileManager,
                            swiftVersion: swiftVersion)
     }
 

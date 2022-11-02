@@ -129,20 +129,20 @@ public struct Command: Equatable {
         switch modifier {
         case .previous:
             return [
-                Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
-                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
+                Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
                         character: Int.max)
             ]
         case .this:
             return [
-                Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
-                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
+                Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
                         character: Int.max)
             ]
         case .next:
             return [
-                Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
-                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max)
+                Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max)
             ]
         }
     }

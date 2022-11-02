@@ -4,7 +4,7 @@ public enum StatementModeConfiguration: String {
 
     init(value: Any) throws {
         if let string = (value as? String)?.lowercased(),
-            let value = StatementModeConfiguration(rawValue: string) {
+            let value = Self(rawValue: string) {
             self = value
         } else {
             throw ConfigurationError.unknownConfiguration

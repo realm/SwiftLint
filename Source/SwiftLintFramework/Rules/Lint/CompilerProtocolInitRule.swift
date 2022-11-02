@@ -133,50 +133,50 @@ private struct ExpressibleByCompiler {
             "Set",
             "IndexSet"
         ]
-        return ExpressibleByCompiler(protocolName: "ExpressibleByArrayLiteral",
+        return Self(protocolName: "ExpressibleByArrayLiteral",
                                      types: types, arguments: [["arrayLiteral"]])
     }()
 
-    private static let byNilLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByNilLiteral",
+    private static let byNilLiteral = Self(protocolName: "ExpressibleByNilLiteral",
                                                             types: ["Optional"],
                                                             arguments: [["nilLiteral"]])
 
-    private static let byBooleanLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByBooleanLiteral",
+    private static let byBooleanLiteral = Self(protocolName: "ExpressibleByBooleanLiteral",
                                                                 types: ["Bool", "NSDecimalNumber",
                                                                         "NSNumber", "ObjCBool"],
                                                                 arguments: [["booleanLiteral"]])
 
-    private static let byFloatLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByFloatLiteral",
+    private static let byFloatLiteral = Self(protocolName: "ExpressibleByFloatLiteral",
                                                               types: ["Decimal", "NSDecimalNumber", "NSNumber"],
                                                               arguments: [["floatLiteral"]])
 
-    private static let byIntegerLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByIntegerLiteral",
+    private static let byIntegerLiteral = Self(protocolName: "ExpressibleByIntegerLiteral",
                                                                 types: ["Decimal", "Double", "Float", "Float80",
                                                                         "NSDecimalNumber", "NSNumber"],
                                                                 arguments: [["integerLiteral"]])
 
-    private static let byUnicodeScalarLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByUnicodeScalarLiteral",
+    private static let byUnicodeScalarLiteral = Self(protocolName: "ExpressibleByUnicodeScalarLiteral",
                                                                       types: ["StaticString", "String",
                                                                               "UnicodeScalar"],
                                                                       arguments: [["unicodeScalarLiteral"]])
 
     private static let byExtendedGraphemeClusterLiteral =
-        ExpressibleByCompiler(protocolName: "ExpressibleByExtendedGraphemeClusterLiteral",
+        Self(protocolName: "ExpressibleByExtendedGraphemeClusterLiteral",
                               types: ["Character", "StaticString", "String"],
                               arguments: [["extendedGraphemeClusterLiteral"]])
 
-    private static let byStringLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByStringLiteral",
+    private static let byStringLiteral = Self(protocolName: "ExpressibleByStringLiteral",
                                                                types: ["CSLocalizedString", "NSMutableString",
                                                                        "NSString", "Selector",
                                                                        "StaticString", "String"],
                                                                arguments: [["stringLiteral"]])
 
-    private static let byStringInterpolation = ExpressibleByCompiler(protocolName: "ExpressibleByStringInterpolation",
+    private static let byStringInterpolation = Self(protocolName: "ExpressibleByStringInterpolation",
                                                                      types: ["String"],
                                                                      arguments: [["stringInterpolation"],
                                                                                  ["stringInterpolationSegment"]])
 
-    private static let byDictionaryLiteral = ExpressibleByCompiler(protocolName: "ExpressibleByDictionaryLiteral",
+    private static let byDictionaryLiteral = Self(protocolName: "ExpressibleByDictionaryLiteral",
                                                                    types: ["Dictionary", "DictionaryLiteral",
                                                                            "NSDictionary", "NSMutableDictionary"],
                                                                    arguments: [["dictionaryLiteral"]])

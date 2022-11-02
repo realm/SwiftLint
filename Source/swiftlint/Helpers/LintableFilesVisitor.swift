@@ -143,14 +143,14 @@ struct LintableFilesVisitor {
             }
 
             return Self(paths: options.paths, action: options.verb.bridge().capitalized,
-                                        useSTDIN: options.useSTDIN, quiet: options.quiet,
-                                        showProgressBar: options.progress,
-                                        useScriptInputFiles: options.useScriptInputFiles,
-                                        forceExclude: options.forceExclude,
-                                        useExcludingByPrefix: options.useExcludingByPrefix,
-                                        cache: cache,
-                                        compilerInvocations: compilerInvocations,
-                                        allowZeroLintableFiles: allowZeroLintableFiles, block: block)
+                        useSTDIN: options.useSTDIN, quiet: options.quiet,
+                        showProgressBar: options.progress,
+                        useScriptInputFiles: options.useScriptInputFiles,
+                        forceExclude: options.forceExclude,
+                        useExcludingByPrefix: options.useExcludingByPrefix,
+                        cache: cache,
+                        compilerInvocations: compilerInvocations,
+                        allowZeroLintableFiles: allowZeroLintableFiles, block: block)
         }
     }
 

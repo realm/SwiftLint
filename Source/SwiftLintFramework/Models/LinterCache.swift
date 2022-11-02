@@ -115,8 +115,7 @@ public final class LinterCache {
     }
 
     internal func flushed() -> LinterCache {
-        return Self(cache: mergeCaches(), location: location, fileManager: fileManager,
-                           swiftVersion: swiftVersion)
+        return Self(cache: mergeCaches(), location: location, fileManager: fileManager, swiftVersion: swiftVersion)
     }
 
     private func fileCache(cacheDescription: String) -> FileCache {

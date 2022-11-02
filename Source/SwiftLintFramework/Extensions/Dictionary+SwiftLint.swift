@@ -103,11 +103,6 @@ public struct SourceKittenDictionary {
         return value["key.typename"] as? String
     }
 
-    /// Documentation offset.
-    var docOffset: ByteCount? {
-        return (value["key.docoffset"] as? Int64).flatMap(ByteCount.init)
-    }
-
     /// Documentation length.
     var docLength: ByteCount? {
         return (value["key.doclength"] as? Int64).flatMap(ByteCount.init)

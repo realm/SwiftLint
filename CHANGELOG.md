@@ -135,6 +135,7 @@
   - `number_separator`
   - `operator_whitespace`
   - `optional_enum_case_matching`
+  - `orphaned_doc_comment`
   - `overridden_super_call`
   - `override_in_extension`
   - `prefer_nimble`

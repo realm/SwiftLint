@@ -6,7 +6,7 @@ public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Co
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
-        fileprivate static var empty: FileUSRs { FileUSRs(referenced: [], declared: []) }
+        fileprivate static var empty: FileUSRs { Self(referenced: [], declared: []) }
     }
 
     struct DeclaredUSR: Hashable {

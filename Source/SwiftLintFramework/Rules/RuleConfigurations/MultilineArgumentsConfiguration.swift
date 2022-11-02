@@ -13,7 +13,7 @@ public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
         init(value: Any) throws {
             guard
                 let string = (value as? String)?.lowercased(),
-                let value = FirstArgumentLocation(rawValue: string) else {
+                let value = Self(rawValue: string) else {
                     throw ConfigurationError.unknownConfiguration
             }
 

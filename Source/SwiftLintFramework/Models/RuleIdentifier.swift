@@ -37,6 +37,6 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     // MARK: - ExpressibleByStringLiteral Conformance
 
     public init(stringLiteral value: String) {
-        self = RuleIdentifier(value)
+        self = Self(value)
     }
 }

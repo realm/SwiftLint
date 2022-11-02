@@ -5,7 +5,7 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
 
     init(value: Any) throws {
         if let string = (value as? String)?.lowercased(),
-            let value = ImplicitlyUnwrappedOptionalModeConfiguration(rawValue: string) {
+            let value = Self(rawValue: string) {
             self = value
         } else {
             throw ConfigurationError.unknownConfiguration

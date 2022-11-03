@@ -322,6 +322,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4234](https://github.com/realm/SwiftLint/issues/4234)
 
+* Fix false-positives from `multiline_arguments_brackets` when a function call has a
+  single line trailing closure.  
+  [CraigSiemens](https://github.com/CraigSiemens)
+  [#4510](https://github.com/realm/SwiftLint/issues/4510)
+
 ## 0.49.1: Buanderie Principale
 
 _Note: The default branch for the SwiftLint git repository was renamed from

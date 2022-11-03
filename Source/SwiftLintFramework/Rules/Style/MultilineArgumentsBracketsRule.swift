@@ -72,6 +72,35 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             SomeType(a: [
                 1, 2, 3
             ], b: [1, 2])
+            """),
+            Example("""
+            SomeType(
+              a: 1
+            ) { print("completion") }
+            """),
+            Example("""
+            SomeType(
+              a: 1
+            ) {
+              print("completion")
+            }
+            """),
+            Example("""
+            SomeType(
+              a: .init() { print("completion") }
+            )
+            """),
+            Example("""
+            SomeType(
+              a: .init() {
+                print("completion")
+              }
+            )
+            """),
+            Example("""
+            SomeType(
+              a: 1
+            ) {} onError: {}
             """)
         ],
         triggeringExamples: [
@@ -112,6 +141,16 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                 b: "two"↓)
             """),
             Example("""
+            SomeOtherType(
+              a: 1↓) {}
+            """),
+            Example("""
+            SomeOtherType(
+              a: 1↓) {
+              print("completion")
+            }
+            """),
+            Example("""
             views.append(ViewModel(
                 title: "MacBook", subtitle: "M1", action: { [weak self] in
                 print("action tapped")
@@ -148,16 +187,33 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             return []
         }
 
+        let trailingClosurePattern = "\\) \\{[^\\}]*\\z"
+        let trailingClosureRegex = regex(trailingClosurePattern)
+
         let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
+        let expectedTrailingClosureBodyEndRegex = regex("\\n[ \\t]*\\) \\{.*\\z")
+
+        // Should only ever be ")" when the call doesn't have a trailing closure, or "}" when it does.
+        let followingCharacter = file.contents.substring(from: range.location + range.length, length: 1)
 
         var violatingByteOffsets = [ByteCount]()
         if expectedBodyBeginRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
             violatingByteOffsets.append(bodyRange.location)
         }
 
-        if expectedBodyEndRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
+        if followingCharacter == ")",
+           expectedBodyEndRegex.firstMatch(in: callBody, range: callBody.fullNSRange) == nil {
             violatingByteOffsets.append(bodyRange.upperBound)
+        } else if followingCharacter == "}",
+                  expectedTrailingClosureBodyEndRegex.firstMatch(in: callBody, range: callBody.fullNSRange) == nil {
+            if let match = trailingClosureRegex.firstMatch(in: callBody, range: callBody.fullNSRange) {
+                let matchFileLocation = range.location + match.range.location
+                let offset = file.stringView.byteOffset(fromLocation: matchFileLocation)
+                violatingByteOffsets.append(offset)
+            } else {
+                violatingByteOffsets.append(bodyRange.upperBound)
+            }
         }
 
         return violatingByteOffsets.map { byteOffset in

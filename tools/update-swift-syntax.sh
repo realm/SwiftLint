@@ -3,7 +3,11 @@
 set -euo pipefail
 
 readonly old_commit="$(grep "apple/swift-syntax" Package.swift | sed -nr 's/.*revision\(\"([a-f0-9]{40})\"\).*/\1/p')"
-readonly new_commit="$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.VERSION.sha" "https://api.github.com/repos/apple/swift-syntax/commits/main")"
+if [ $# -eq 0 ]; then
+  readonly new_commit="$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.VERSION.sha" "https://api.github.com/repos/apple/swift-syntax/commits/main")"
+else
+  readonly new_commit="$1"
+fi
 
 if [[ "$old_commit" == "$new_commit" ]]; then
   echo "SwiftSyntax is already up to date"

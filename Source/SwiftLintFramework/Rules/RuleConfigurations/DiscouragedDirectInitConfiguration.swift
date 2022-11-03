@@ -13,6 +13,7 @@ public struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration
 
     private let defaultDiscouragedInits = [
         "Bundle",
+        "NSError",
         "UIDevice"
     ]
 

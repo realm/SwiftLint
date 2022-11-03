@@ -20,6 +20,10 @@
 
 #### Enhancements
 
+* Adds `NSError` to the list of types in `discouraged_direct_init`.  
+  [jszumski](https://github.com/jszumski)
+  [#4508](https://github.com/realm/SwiftLint/issues/4508)
+
 * Fix SwiftLint support on Xcode Cloud.  
   [JagCesar](https://github.com/JagCesar)
   [westerlund](https://github.com/westerlund)

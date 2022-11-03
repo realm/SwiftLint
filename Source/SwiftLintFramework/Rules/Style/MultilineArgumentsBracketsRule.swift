@@ -1,7 +1,7 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -159,68 +159,45 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let bodyRange = dictionary.bodyByteRange,
-            let range = file.stringView.byteRangeToNSRange(bodyRange)
-        else {
-            return []
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
+    }
+}
 
-        let callBody = file.contents.substring(from: range.location, length: range.length)
+private extension MultilineArgumentsBracketsRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard let firstArgument = node.argumentList.first,
+                  let leftParen = node.leftParen,
+                  let rightParen = node.rightParen else {
+                return
+            }
 
-        let parameters = dictionary.substructure.filter {
-            // Argument expression types that can contain newlines
-            [.argument, .array, .dictionary, .closure, .call].contains($0.expressionKind)
-        }
-        let parameterBodies = parameters.compactMap { $0.content(in: file) }
-        let parametersNewlineCount = parameterBodies.map { body in
-            return body.countOccurrences(of: "\n")
-        }.reduce(0, +)
-        let callNewlineCount = callBody.countOccurrences(of: "\n")
-        let isMultiline = callNewlineCount > parametersNewlineCount
+            let hasMultilineFirstArgument = hasLeadingNewline(firstArgument)
+            let hasMultilineArgument = node.argumentList
+                .contains { argument in
+                    hasLeadingNewline(argument)
+                }
 
-        guard isMultiline else {
-            return []
-        }
+            let hasMultilineRightParen = hasLeadingNewline(rightParen)
 
-        let trailingClosurePattern = "\\) \\{[^\\}]*\\z"
-        let trailingClosureRegex = regex(trailingClosurePattern)
+            if !hasMultilineFirstArgument, hasMultilineArgument {
+                violations.append(leftParen.endPosition)
+            }
 
-        let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
-        let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
-        let expectedTrailingClosureBodyEndRegex = regex("\\n[ \\t]*\\) \\{.*\\z")
+            if !hasMultilineArgument, hasMultilineRightParen {
+                violations.append(leftParen.endPosition)
+            }
 
-        // Should only ever be ")" when the call doesn't have a trailing closure, or "}" when it does.
-        let followingCharacter = file.contents.substring(from: range.location + range.length, length: 1)
-
-        var violatingByteOffsets = [ByteCount]()
-        if expectedBodyBeginRegex.firstMatch(in: callBody, options: [], range: callBody.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyRange.location)
-        }
-
-        if followingCharacter == ")",
-           expectedBodyEndRegex.firstMatch(in: callBody, range: callBody.fullNSRange) == nil {
-            violatingByteOffsets.append(bodyRange.upperBound)
-        } else if followingCharacter == "}",
-                  expectedTrailingClosureBodyEndRegex.firstMatch(in: callBody, range: callBody.fullNSRange) == nil {
-            if let match = trailingClosureRegex.firstMatch(in: callBody, range: callBody.fullNSRange) {
-                let matchFileLocation = range.location + match.range.location
-                let offset = file.stringView.byteOffset(fromLocation: matchFileLocation)
-                violatingByteOffsets.append(offset)
-            } else {
-                violatingByteOffsets.append(bodyRange.upperBound)
+            if !hasMultilineRightParen, hasMultilineArgument {
+                violations.append(rightParen.position)
             }
         }
 
-        return violatingByteOffsets.map { byteOffset in
-            StyleViolation(
-                ruleDescription: Self.description, severity: configuration.severity,
-                location: Location(file: file, byteOffset: byteOffset)
-            )
+        private func hasLeadingNewline(_ syntax: SyntaxProtocol) -> Bool {
+            guard let leadingTrivia = syntax.leadingTrivia else { return false }
+
+            return leadingTrivia.pieces.contains { $0.isNewline }
         }
     }
 }

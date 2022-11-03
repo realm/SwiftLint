@@ -128,6 +128,7 @@
   - `legacy_objc_type`
   - `legacy_random`
   - `lower_acl_than_parent`
+  - `multiline_arguments_brackets`
   - `multiline_parameters`
   - `multiple_closures_with_trailing_closure`
   - `no_extension_access_modifier`

@@ -97,7 +97,7 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                     static func f() -> Int { ↓S.i }
                     func g() -> Any { ↓S.self }
                     func h() -> S { S(j: 2) }
-                    func i() -> KeyPath<S, Int> { \\↓S.j }
+                    func i() -> KeyPath<S, Int> { \\S.j }
                     func j(@Wrap(-↓S.i, ↓S.i) n: Int = ↓S.i) {}
                 }
             """),
@@ -310,13 +310,6 @@ private class Visitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: StructDeclSyntax) {
         _ = parentDeclScopes.popLast()
-    }
-
-    override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
-        guard node.parent?.as(KeyPathExprSyntax.self) != nil else {
-            return
-        }
-        addViolation(on: node)
     }
 
     override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {

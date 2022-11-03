@@ -16,19 +16,24 @@ public struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderR
             Example("let foo = Bundle(path: \"bar\")"),
             Example("let foo = Bundle(identifier: \"bar\")"),
             Example("let foo = Bundle.init(path: \"bar\")"),
-            Example("let foo = Bundle.init(identifier: \"bar\")")
+            Example("let foo = Bundle.init(identifier: \"bar\")"),
+            Example("let foo = NSError(domain: \"bar\", code: 0)"),
+            Example("let foo = NSError.init(domain: \"bar\", code: 0)"),
+            Example("func testNSError()")
         ],
         triggeringExamples: [
             Example("↓UIDevice()"),
             Example("↓Bundle()"),
             Example("let foo = ↓UIDevice()"),
             Example("let foo = ↓Bundle()"),
-            Example("let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice())"),
+            Example("let foo = ↓NSError()"),
+            Example("let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice(), error: ↓NSError())"),
             Example("↓UIDevice.init()"),
             Example("↓Bundle.init()"),
+            Example("↓NSError.init()"),
             Example("let foo = ↓UIDevice.init()"),
             Example("let foo = ↓Bundle.init()"),
-            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())")
+            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init(), error: ↓NSError.init())")
         ]
     )
 

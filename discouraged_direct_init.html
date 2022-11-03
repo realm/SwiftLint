@@ -346,7 +346,7 @@
 <li><strong>Kind:</strong> lint</li>
 <li><strong>Analyzer rule:</strong> No</li>
 <li><strong>Minimum Swift compiler version:</strong> 5.0.0</li>
-<li><strong>Default configuration:</strong> warning, types: [&ldquo;Bundle&rdquo;, &ldquo;Bundle.init&rdquo;, &ldquo;UIDevice&rdquo;, &ldquo;UIDevice.init&rdquo;]</li>
+<li><strong>Default configuration:</strong> warning, types: [&ldquo;Bundle&rdquo;, &ldquo;Bundle.init&rdquo;, &ldquo;NSError&rdquo;, &ldquo;NSError.init&rdquo;, &ldquo;UIDevice&rdquo;, &ldquo;UIDevice.init&rdquo;]</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="kt">UIDevice</span><span class="o">.</span><span class="n">current</span>
@@ -361,6 +361,12 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="kt">Bundle</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">identifier</span><span class="p">:</span> <span class="s">"bar"</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="kt">NSError</span><span class="p">(</span><span class="nv">domain</span><span class="p">:</span> <span class="s">"bar"</span><span class="p">,</span> <span class="nv">code</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="kt">NSError</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">domain</span><span class="p">:</span> <span class="s">"bar"</span><span class="p">,</span> <span class="nv">code</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">testNSError</span><span class="p">()</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">UIDevice</span><span class="p">()</span>
 </code></pre>
@@ -370,17 +376,21 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Bundle</span><span class="p">()</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="nv">bundle</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Bundle</span><span class="p">(),</span> <span class="nv">device</span><span class="p">:</span> <span class="err">↓</span><span class="kt">UIDevice</span><span class="p">())</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">NSError</span><span class="p">()</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="nv">bundle</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Bundle</span><span class="p">(),</span> <span class="nv">device</span><span class="p">:</span> <span class="err">↓</span><span class="kt">UIDevice</span><span class="p">(),</span> <span class="nv">error</span><span class="p">:</span> <span class="err">↓</span><span class="kt">NSError</span><span class="p">())</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">UIDevice</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="kt">Bundle</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="err">↓</span><span class="kt">NSError</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">UIDevice</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">Bundle</span><span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="nv">bundle</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Bundle</span><span class="o">.</span><span class="nf">init</span><span class="p">(),</span> <span class="nv">device</span><span class="p">:</span> <span class="err">↓</span><span class="kt">UIDevice</span><span class="o">.</span><span class="nf">init</span><span class="p">())</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="nv">bundle</span><span class="p">:</span> <span class="err">↓</span><span class="kt">Bundle</span><span class="o">.</span><span class="nf">init</span><span class="p">(),</span> <span class="nv">device</span><span class="p">:</span> <span class="err">↓</span><span class="kt">UIDevice</span><span class="o">.</span><span class="nf">init</span><span class="p">(),</span> <span class="nv">error</span><span class="p">:</span> <span class="err">↓</span><span class="kt">NSError</span><span class="o">.</span><span class="nf">init</span><span class="p">())</span>
 </code></pre>
 
           </div>

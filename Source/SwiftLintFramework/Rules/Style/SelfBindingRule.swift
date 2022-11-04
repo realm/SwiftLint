@@ -26,7 +26,9 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             Example("if let ↓this = self { return }"),
             Example("guard let ↓this = self else else { return }"),
             Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let ↓self = self else else { return }", configuration: ["bind_identifier": "this"])
+            Example("guard let ↓self = self else { return }", configuration: ["bind_identifier": "this"]),
+            Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]),
+            Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"])
         ],
         corrections: [
             Example("if let ↓`self` = self { return }"):
@@ -38,7 +40,11 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             Example("guard let ↓this = self else else { return }"):
                 Example("guard let self = self else else { return }"),
             Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]):
-                Example("if let this = self { return }", configuration: ["bind_identifier": "this"])
+                Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
+            Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]):
+                Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
+            Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"]):
+                Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"])
         ]
     )
 
@@ -67,15 +73,22 @@ private final class SelfBindingRuleVisitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: OptionalBindingConditionSyntax) {
         if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-           identifierPattern.identifier.text != bindIdentifier,
-           let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
-           initializerIdentifier.identifier.text == "self" {
-            violations.append(
-                ReasonedRuleViolation(
-                    position: identifierPattern.positionAfterSkippingLeadingTrivia,
-                    reason: "`self` should always be re-bound to `\(bindIdentifier)`"
+           identifierPattern.identifier.text != bindIdentifier {
+            var hasViolation = false
+            if let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self) {
+                hasViolation = initializerIdentifier.identifier.text == "self"
+            } else if node.initializer == nil {
+                hasViolation = identifierPattern.identifier.text == "self" && bindIdentifier != "self"
+            }
+
+            if hasViolation {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: identifierPattern.positionAfterSkippingLeadingTrivia,
+                        reason: "`self` should always be re-bound to `\(bindIdentifier)`"
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -98,23 +111,48 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
         guard
             let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
             identifierPattern.identifier.text != bindIdentifier,
-            let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
-            initializerIdentifier.identifier.text == "self",
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
         else {
             return super.visit(node)
         }
 
-        correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
+        if let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
+           initializerIdentifier.identifier.text == "self" {
+            correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
 
-        return super.visit(
-            node.withPattern(
-                PatternSyntax(
-                    identifierPattern.withIdentifier(
-                        identifierPattern.identifier.withKind(.identifier(bindIdentifier))
+            return super.visit(
+                node.withPattern(
+                    PatternSyntax(
+                        identifierPattern.withIdentifier(
+                            identifierPattern.identifier.withKind(.identifier(bindIdentifier))
+                        )
                     )
                 )
             )
-        )
+        } else if node.initializer == nil, identifierPattern.identifier.text == "self", bindIdentifier != "self" {
+            correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
+
+            let newNode = node
+                .withPattern(
+                    PatternSyntax(
+                        identifierPattern.withIdentifier(
+                            identifierPattern.identifier.withKind(.identifier(bindIdentifier))
+                        )
+                    )
+                )
+                .withInitializer(
+                    InitializerClauseSyntax(
+                        value: IdentifierExprSyntax(
+                            identifier: .selfKeyword(
+                                leadingTrivia: .space,
+                                trailingTrivia: identifierPattern.trailingTrivia ?? .space
+                            )
+                        )
+                    )
+                )
+            return super.visit(newNode)
+        } else {
+            return super.visit(node)
+        }
     }
 }

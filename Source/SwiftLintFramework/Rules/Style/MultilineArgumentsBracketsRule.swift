@@ -1,4 +1,3 @@
-import Foundation
 import SwiftSyntax
 
 public struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {

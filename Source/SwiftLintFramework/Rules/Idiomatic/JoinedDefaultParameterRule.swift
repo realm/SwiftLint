@@ -84,10 +84,9 @@ private extension JoinedDefaultParameterRule {
 
 private extension FunctionCallExprSyntax {
     var violationPosition: AbsolutePosition? {
-        guard argumentList.count == 1,
-            let memberExp = calledExpression.as(MemberAccessExprSyntax.self),
+        guard let argument = argumentList.first,
+              let memberExp = calledExpression.as(MemberAccessExprSyntax.self),
               memberExp.name.text == "joined",
-              let argument = argumentList.first,
               argument.label?.text == "separator",
               let strLiteral = argument.expression.as(StringLiteralExprSyntax.self),
               strLiteral.isEmptyString else {

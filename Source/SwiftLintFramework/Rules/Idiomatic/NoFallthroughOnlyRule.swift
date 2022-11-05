@@ -26,19 +26,16 @@ private extension NoFallthroughOnlyRule {
 
             let localViolations = cases.enumerated()
                 .compactMap { index, element -> AbsolutePosition? in
-                    guard element.statements.count == 1,
-                          let fallthroughStmt = element.statements.first?.item.as(FallthroughStmtSyntax.self) else {
-                        return nil
+                    if let fallthroughStmt = element.statements.onlyElement?.item.as(FallthroughStmtSyntax.self) {
+                        if case let nextCaseIndex = cases.index(after: index),
+                           nextCaseIndex < cases.endIndex,
+                           case let nextCase = cases[nextCaseIndex],
+                           nextCase.unknownAttr != nil {
+                            return nil
+                        }
+                        return fallthroughStmt.positionAfterSkippingLeadingTrivia
                     }
-
-                    if case let nextCaseIndex = cases.index(after: index),
-                       nextCaseIndex < cases.endIndex,
-                       case let nextCase = cases[nextCaseIndex],
-                       nextCase.unknownAttr != nil {
-                        return nil
-                    }
-
-                    return fallthroughStmt.positionAfterSkippingLeadingTrivia
+                    return nil
                 }
 
             violations.append(contentsOf: localViolations)

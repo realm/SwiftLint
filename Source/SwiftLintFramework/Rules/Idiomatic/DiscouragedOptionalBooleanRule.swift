@@ -36,8 +36,8 @@ private extension DiscouragedOptionalBooleanRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                node.argumentList.count == 1,
-                node.argumentList.first!.expression.is(BooleanLiteralExprSyntax.self),
+                let singleArgument = node.argumentList.onlyElement,
+                singleArgument.expression.is(BooleanLiteralExprSyntax.self),
                 let base = calledExpression.base?.as(IdentifierExprSyntax.self),
                 base.identifier.text == "Optional",
                 calledExpression.name.text == "some"

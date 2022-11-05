@@ -75,7 +75,7 @@ extension ArrayInitRule {
 private extension FunctionCallExprSyntax {
     func singleClosure() -> (String?, CodeBlockItemSyntax)? {
         let closure: ClosureExprSyntax
-        if argumentList.count == 1, let expression = argumentList.first?.expression.as(ClosureExprSyntax.self) {
+        if let expression = argumentList.onlyElement?.expression.as(ClosureExprSyntax.self) {
             closure = expression
         } else if argumentList.isEmpty, let expression = trailingClosure {
             closure = expression
@@ -83,7 +83,7 @@ private extension FunctionCallExprSyntax {
             return nil
         }
 
-        if closure.statements.count == 1, let closureStatement = closure.statements.first {
+        if let closureStatement = closure.statements.onlyElement {
             return (closure.signature?.singleInputParamText(), closureStatement)
         } else {
             return nil
@@ -103,7 +103,7 @@ private extension CodeBlockItemSyntax {
 private extension ClosureSignatureSyntax {
     func singleInputParamText() -> String? {
         if let list = input?.as(ClosureParamListSyntax.self), list.count == 1 {
-            return list.first?.name.text
+            return list.onlyElement?.name.text
         } else if let clause = input?.as(ParameterClauseSyntax.self), clause.parameterList.count == 1,
                   clause.parameterList.first?.secondName == nil {
             return clause.parameterList.first?.firstName?.text

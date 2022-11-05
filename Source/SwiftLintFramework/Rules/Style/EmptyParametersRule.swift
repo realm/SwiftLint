@@ -83,10 +83,9 @@ private extension EmptyParametersRule {
 private extension FunctionTypeSyntax {
     var emptyParametersViolationPosition: AbsolutePosition? {
         guard
-            arguments.count == 1,
+            let argument = arguments.onlyElement,
             leftParen.presence == .present,
             rightParen.presence == .present,
-            let argument = arguments.first,
             let simpleType = argument.type.as(SimpleTypeIdentifierSyntax.self),
             simpleType.typeName == "Void"
         else {

@@ -325,7 +325,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-        if node.bindings.count == 1, node.bindings.first?.accessor != nil {
+        if node.bindings.onlyElement?.accessor != nil {
             // Computed property
             return .visitChildren
         }

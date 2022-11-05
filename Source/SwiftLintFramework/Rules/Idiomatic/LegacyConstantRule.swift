@@ -89,8 +89,7 @@ private extension FunctionCallExprSyntax {
         guard
             let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
             calledExpression.identifier.text == "CGFloat" || calledExpression.identifier.text == "Float",
-            argumentList.count == 1,
-            let argument = argumentList.first?.expression.as(IdentifierExprSyntax.self),
+            let argument = argumentList.onlyElement?.expression.as(IdentifierExprSyntax.self),
             argument.identifier.text == "M_PI"
         else {
             return false

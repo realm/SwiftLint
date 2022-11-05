@@ -86,8 +86,7 @@ extension LegacyHashingRule {
             guard
                 node.parent?.is(MemberDeclListItemSyntax.self) == true,
                 node.letOrVarKeyword.tokenKind == .varKeyword,
-                node.bindings.count == 1,
-                let binding = node.bindings.first,
+                let binding = node.bindings.onlyElement,
                 let identifier = binding.pattern.as(IdentifierPatternSyntax.self),
                 identifier.identifier.text == "hashValue",
                 let returnType = binding.typeAnnotation?.type.as(SimpleTypeIdentifierSyntax.self),

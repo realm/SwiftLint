@@ -109,13 +109,12 @@ private extension FunctionParameterSyntax {
         }
 
         if let optionalType = type?.as(OptionalTypeSyntax.self),
-           let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self),
-           tuple.elements.count == 1 {
-            return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
+           let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self) {
+            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
         }
 
-        if let tuple = type?.as(TupleTypeSyntax.self), tuple.elements.count == 1 {
-            return tuple.elements.first?.type.as(FunctionTypeSyntax.self) != nil
+        if let tuple = type?.as(TupleTypeSyntax.self) {
+            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
         }
 
         if let attrType = type?.as(AttributedTypeSyntax.self) {

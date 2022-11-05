@@ -86,8 +86,7 @@ private extension RedundantStringEnumValueRule {
             let redundantMembersPositions = enumsWithExplicitValues
                 .compactMap { element -> AbsolutePosition? in
                     guard let stringExpr = element.rawValue?.value.as(StringLiteralExprSyntax.self),
-                          stringExpr.segments.count == 1,
-                          let segment = stringExpr.segments.first?.as(StringSegmentSyntax.self),
+                          let segment = stringExpr.segments.onlyElement?.as(StringSegmentSyntax.self),
                           segment.content.text == element.identifier.text else {
                         return nil
                     }

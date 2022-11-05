@@ -135,13 +135,11 @@ private extension ForWhereRule {
         override func visitPost(_ node: ForInStmtSyntax) {
             guard node.whereClause == nil,
                   case let statements = node.body.statements,
-                  statements.count == 1,
-                  let ifStatement = statements.first?.item.as(IfStmtSyntax.self),
+                  let ifStatement = statements.onlyElement?.item.as(IfStmtSyntax.self),
                   ifStatement.elseBody == nil,
                   !ifStatement.containsOptionalBinding,
                   !ifStatement.containsPatternCondition,
-                  ifStatement.conditions.count == 1,
-                  let condition = ifStatement.conditions.first,
+                  let condition = ifStatement.conditions.onlyElement,
                   !condition.containsMultipleConditions else {
                 return
             }

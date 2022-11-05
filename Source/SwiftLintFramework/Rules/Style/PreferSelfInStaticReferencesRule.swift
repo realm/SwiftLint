@@ -8,7 +8,7 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
     public static var description = RuleDescription(
         identifier: "prefer_self_in_static_references",
         name: "Prefer Self in Static References",
-        description: "Static references should be prefixed by `Self` instead of the class name.",
+        description: "Use `Self` to refer to the surrounding type name.",
         kind: .style,
         nonTriggeringExamples: [
             Example("""

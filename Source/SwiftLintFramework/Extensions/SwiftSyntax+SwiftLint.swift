@@ -135,6 +135,10 @@ extension ModifierListSyntax? {
         }
     }
 
+    var isFinal: Bool {
+        contains(tokenKind: .contextualKeyword("final"))
+    }
+
     private func contains(tokenKind: TokenKind) -> Bool {
         guard let modifiers = self else {
             return false

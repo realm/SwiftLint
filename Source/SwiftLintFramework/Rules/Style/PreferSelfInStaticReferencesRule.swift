@@ -71,6 +71,11 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                 }
             """, excludeFromDocumentation: true),
             Example("""
+                class Record<T> {
+                    static func get() -> Record<T> { Record<T>() }
+                }
+            """, excludeFromDocumentation: true),
+            Example("""
                 @objc class C: NSObject {
                     @objc var s = ""
                     @objc func f() { _ = #keyPath(C.s) }
@@ -256,6 +261,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: IdentifierExprSyntax) {
         guard let parent = node.parent,
               parent.as(FunctionCallExprSyntax.self) == nil,
+              parent.as(SpecializeExprSyntax.self) == nil,
               parent.as(DictionaryElementSyntax.self) == nil,
               parent.as(ArrayElementSyntax.self) == nil else {
             return

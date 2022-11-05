@@ -80,14 +80,6 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                     @objc var s = ""
                     @objc func f() { _ = #keyPath(C.s) }
                 }
-            """, excludeFromDocumentation: true),
-            Example("""
-                extension E {
-                    class C {
-                        static let i = 2
-                        var j: Int { C.i }
-                    }
-                }
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
@@ -99,7 +91,7 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                     }
                     static let i = 1
                     let h = C.i
-                    var j: Int { C.i }
+                    var j: Int { ↓C.i }
                     func f() -> Int { ↓C.i + h }
                 }
             """),
@@ -131,7 +123,19 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                     static func f() -> E { ↓E.A }
                     static func g() -> E { ↓E.f() }
                 }
-            """)
+            """),
+            Example("""
+                extension E {
+                    class C {
+                        static var i = 2
+                        var j: Int { ↓C.i }
+                        var k: Int {
+                            get { ↓C.i }
+                            set { ↓C.i = newValue }
+                        }
+                    }
+                }
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("""
@@ -321,6 +325,10 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        if node.bindings.count == 1, node.bindings.first?.accessor != nil {
+            // Computed property
+            return .visitChildren
+        }
         if case .handleReferences = variableDeclScopes.last {
             return .visitChildren
         }

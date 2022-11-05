@@ -260,6 +260,7 @@
 
 * Trigger `prefer_self_in_static_references` rule on more type references like:
   * Key paths (e.g. `\MyType.myVar` -> `\Self.myVar`)
+  * Computed properties (e.g. `var i: Int { MyType.myVar )` -> `var i: Int { Self.myVar }`)
   
   [SimplyDanny](https://github.com/SimplyDanny)
 

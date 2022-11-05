@@ -110,7 +110,7 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                     static func f() -> Int { ↓S.i }
                     func g() -> Any { ↓S.self }
                     func h() -> S { S(j: 2) }
-                    func i() -> KeyPath<S, Int> { \\S.j }
+                    func i() -> KeyPath<S, Int> { \\↓S.j }
                     func j(@Wrap(-↓S.i, ↓S.i) n: Int = ↓S.i) {}
                 }
             """),
@@ -266,11 +266,7 @@ private class Visitor: ViolationsSyntaxVisitor {
               parent.as(ArrayElementSyntax.self) == nil else {
             return
         }
-        guard let parentName = parentDeclScopes.last?.parentName,
-              node.identifier.tokenKind == .identifier(parentName) else {
-            return
-        }
-        addViolation(on: node)
+        addViolation(on: node.identifier)
     }
 
     override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
@@ -318,6 +314,12 @@ private class Visitor: ViolationsSyntaxVisitor {
         _ = parentDeclScopes.popLast()
     }
 
+    override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
+        if node.parent?.as(KeyPathExprSyntax.self) != nil {
+            addViolation(on: node.name)
+        }
+    }
+
     override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         if case .handleReferences = variableDeclScopes.last {
             return .visitChildren
@@ -325,8 +327,12 @@ private class Visitor: ViolationsSyntaxVisitor {
         return .skipChildren
     }
 
-    private func addViolation(on node: SyntaxProtocol) {
-        violations.append(node.positionAfterSkippingLeadingTrivia)
-        corrections.append((start: node.positionAfterSkippingLeadingTrivia, end: node.endPositionBeforeTrailingTrivia))
+    private func addViolation(on node: TokenSyntax) {
+        if let parentName = parentDeclScopes.last?.parentName, node.tokenKind == .identifier(parentName) {
+            violations.append(node.positionAfterSkippingLeadingTrivia)
+            corrections.append(
+                (start: node.positionAfterSkippingLeadingTrivia, end: node.endPositionBeforeTrailingTrivia)
+            )
+        }
     }
 }

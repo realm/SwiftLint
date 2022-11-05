@@ -258,6 +258,11 @@
 * Print violations in realtime if `--progress` and `--output` are both set.  
   [JP Simard](https://github.com/jpsim)
 
+* Trigger `prefer_self_in_static_references` rule on more type references like:
+  * Key paths (e.g. `\MyType.myVar` -> `\Self.myVar`)
+  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Update `for_where` rule, adding a new configuration
   `allow_for_as_filter` to allow using `for in` with a single `if` inside
   when there's a `return` statement inside the `if`'s body.  

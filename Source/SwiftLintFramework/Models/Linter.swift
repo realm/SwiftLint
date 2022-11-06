@@ -222,7 +222,7 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelCompactMap {
+        let validationResults = rules.compactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     storage: storage,
                     configuration: self.configuration,

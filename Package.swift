@@ -60,8 +60,20 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SwiftLintFramework",
+            name: "SwiftLintCore",
             dependencies: frameworkDependencies
+        ),
+        .target(
+            name: "SwiftLintBuiltInRules",
+            dependencies: frameworkDependencies + ["SwiftLintCore"]
+        ),
+        .target(
+            name: "SwiftLintExtraRules",
+            dependencies: frameworkDependencies + ["SwiftLintCore"]
+        ),
+        .target(
+            name: "SwiftLintFramework",
+            dependencies: frameworkDependencies + ["SwiftLintBuiltInRules", "SwiftLintCore", "SwiftLintExtraRules"]
         ),
         .target(
             name: "SwiftLintTestHelpers",

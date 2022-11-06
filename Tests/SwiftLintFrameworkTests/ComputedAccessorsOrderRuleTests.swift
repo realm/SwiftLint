@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 import XCTest
 
 class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {

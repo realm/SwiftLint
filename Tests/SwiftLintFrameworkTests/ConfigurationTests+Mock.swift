@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+import SwiftLintCore
 
 // swiftlint:disable nesting identifier_name
 

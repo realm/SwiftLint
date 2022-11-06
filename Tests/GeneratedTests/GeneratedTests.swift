@@ -1,7 +1,8 @@
 // Generated using Sourcery 2.0.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+@testable import SwiftLintBuiltInRules
 @_spi(TestHelper)
-@testable import SwiftLintFramework
+@testable import SwiftLintCore
 import SwiftLintTestHelpers
 
 // swiftlint:disable file_length type_name

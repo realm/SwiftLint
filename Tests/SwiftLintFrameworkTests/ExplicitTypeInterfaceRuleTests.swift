@@ -1,4 +1,5 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
+import SwiftLintFramework
 
 class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
     func testLocalVars() {

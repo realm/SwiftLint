@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
+@testable import SwiftLintCore
 import XCTest
 
 class ReporterTests: SwiftLintTestCase {

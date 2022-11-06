@@ -1,4 +1,5 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
+import SwiftLintFramework
 import XCTest
 
 class XCTSpecificMatcherRuleTests: SwiftLintTestCase {

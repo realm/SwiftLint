@@ -1,5 +1,5 @@
 import SourceKittenFramework
-@testable import SwiftLintFramework
+@testable import SwiftLintCore
 import XCTest
 
 class CustomRulesTests: SwiftLintTestCase {

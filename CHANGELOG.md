@@ -222,6 +222,10 @@
   messages.  
   [JP Simard](https://github.com/jpsim)
 
+* The `self_binding` rule now catches shorthand optional bindings (for example
+  `if let self {}`) when using a `bind_identifier` different than `self`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Add `library_content_provider` file type to `file_types_order` rule 
   to allow `LibraryContentProvider` to be ordered independent from `main_type`.  
   [dahlborn](https://github.com/dahlborn)

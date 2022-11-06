@@ -101,7 +101,7 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                     static let i = 1
                     static func f() -> Int { ↓S.i }
                     func g() -> Any { ↓S.self }
-                    func h() -> S { S(j: 2) }
+                    func h() -> S { ↓S(j: 2) }
                     func i() -> KeyPath<S, Int> { \\↓S.j }
                     func j(@Wrap(-↓S.i, ↓S.i) n: Int = ↓S.i) {}
                 }
@@ -134,6 +134,14 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
                             set { ↓C.i = newValue }
                         }
                     }
+                }
+            """, excludeFromDocumentation: true),
+            Example("""
+                class C {
+                    var c: C { C() }
+                }
+                final class D {
+                    var d: D { ↓D() }
                 }
             """, excludeFromDocumentation: true)
         ],
@@ -186,13 +194,13 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
 
 private class Visitor: ViolationsSyntaxVisitor {
     private enum ParentDeclBehavior {
-        case likeClass(String)
+        case likeClass(name: String, isFinal: Bool)
         case likeStruct(String)
         case skipReferences
 
         var parentName: String? {
             switch self {
-            case let .likeClass(name): return name
+            case let .likeClass(name, _): return name
             case let .likeStruct(name): return name
             case .skipReferences: return nil
             }
@@ -209,7 +217,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeClass(node.identifier.text))
+        parentDeclScopes.append(.likeClass(name: node.identifier.text, isFinal: node.modifiers.isFinal))
         return .skipChildren
     }
 
@@ -218,7 +226,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeClass(node.identifier.text))
+        parentDeclScopes.append(.likeClass(name: node.identifier.text, isFinal: node.modifiers.isFinal))
         return .visitChildren
     }
 
@@ -264,10 +272,12 @@ private class Visitor: ViolationsSyntaxVisitor {
 
     override func visitPost(_ node: IdentifierExprSyntax) {
         guard let parent = node.parent,
-              parent.as(FunctionCallExprSyntax.self) == nil,
               parent.as(SpecializeExprSyntax.self) == nil,
               parent.as(DictionaryElementSyntax.self) == nil,
               parent.as(ArrayElementSyntax.self) == nil else {
+            return
+        }
+        if parent.as(FunctionCallExprSyntax.self) != nil, case .likeClass(_, false) = parentDeclScopes.last {
             return
         }
         addViolation(on: node.identifier)

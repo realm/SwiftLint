@@ -4,9 +4,9 @@ extension RulesFilter {
     struct ExcludingOptions: OptionSet {
         let rawValue: Int
 
-        static let enabled = ExcludingOptions(rawValue: 1 << 0)
-        static let disabled = ExcludingOptions(rawValue: 1 << 1)
-        static let uncorrectable = ExcludingOptions(rawValue: 1 << 2)
+        static let enabled = Self(rawValue: 1 << 0)
+        static let disabled = Self(rawValue: 1 << 1)
+        static let uncorrectable = Self(rawValue: 1 << 2)
     }
 }
 

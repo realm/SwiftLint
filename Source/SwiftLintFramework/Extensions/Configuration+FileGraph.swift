@@ -247,7 +247,7 @@ internal extension Configuration {
             // Set the config's rootDirectory to rootDirectory (+ adjust included / excluded paths that relate to it).
             // firstConfigurationData.rootDirectory may be different from rootDirectory,
             // e. g. when ../file.yml is passed as the first config
-            firstConfiguration.fileGraph = FileGraph(rootDirectory: rootDirectory)
+            firstConfiguration.fileGraph = Self(rootDirectory: rootDirectory)
             firstConfiguration.makeIncludedAndExcludedPaths(
                 relativeTo: rootDirectory,
                 previousBasePath: firstConfigurationData.rootDirectory
@@ -260,7 +260,7 @@ internal extension Configuration {
                     enableAllRules: enableAllRules,
                     cachePath: cachePath
                 )
-                childConfiguration.fileGraph = FileGraph(rootDirectory: $1.rootDirectory)
+                childConfiguration.fileGraph = Self(rootDirectory: $1.rootDirectory)
 
                 return $0.merged(withChild: childConfiguration, rootDirectory: rootDirectory)
             }

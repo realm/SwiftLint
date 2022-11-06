@@ -36,7 +36,7 @@ private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
         self.testParentClasses = testParentClasses
         super.init(viewMode: .sourceAccurate)
     }
-    
+
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
         node.isXCTestCase(testParentClasses) ? .visitChildren : .skipChildren
     }

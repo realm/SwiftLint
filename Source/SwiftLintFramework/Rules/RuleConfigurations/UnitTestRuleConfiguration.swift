@@ -5,7 +5,7 @@ public typealias SingleTestClassConfiguration = UnitTestRuleConfiguration
 public struct UnitTestRuleConfiguration: RuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     public private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
-    
+
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", test_parent_classes: \(testParentClasses.sorted())"

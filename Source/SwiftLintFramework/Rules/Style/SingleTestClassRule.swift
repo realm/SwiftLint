@@ -71,23 +71,10 @@ private class TestClassVisitor: ViolationsSyntaxVisitor {
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
     override func visitPost(_ node: ClassDeclSyntax) {
-        guard let inheritanceCollection = node.inheritanceClause?.inheritedTypeCollection,
-              inheritanceCollection.containsInheritedType(inheritedTypes: testClasses) else {
+        guard node.inheritanceClause.containsInheritedType(inheritedTypes: testClasses) else {
             return
         }
 
         violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
-    }
-}
-
-private extension InheritedTypeListSyntax {
-    func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
-        contains { elem in
-            guard let simpleType = elem.typeName.as(SimpleTypeIdentifierSyntax.self) else {
-                return false
-            }
-
-            return inheritedTypes.contains(simpleType.name.text)
-        }
     }
 }

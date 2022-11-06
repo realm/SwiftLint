@@ -1,4 +1,4 @@
-import SwiftLintFramework
+import SwiftLintCore
 import XCTest
 
 class AccessControlLevelTests: SwiftLintTestCase {

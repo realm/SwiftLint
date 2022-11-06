@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+import SwiftLintExtraRules
 import SwiftLintTestHelpers
 
 final class ExtraRulesTests: SwiftLintTestCase {

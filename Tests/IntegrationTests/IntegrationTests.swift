@@ -1,6 +1,6 @@
 import Foundation
-import SourceKittenFramework
 @_spi(TestHelper)
+@testable import SwiftLintCore
 import SwiftLintFramework
 import SwiftLintTestHelpers
 import XCTest

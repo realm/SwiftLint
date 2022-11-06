@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 
 // swiftlint:disable function_body_length
 class TypeContentsOrderRuleTests: SwiftLintTestCase {

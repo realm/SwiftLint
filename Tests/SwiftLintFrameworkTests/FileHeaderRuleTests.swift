@@ -1,4 +1,6 @@
-@testable import SwiftLintFramework
+import SourceKittenFramework
+@testable import SwiftLintBuiltInRules
+import SwiftLintFramework
 import XCTest
 
 private let fixturesDirectory = "\(TestResources.path)/FileHeaderRuleFixtures"

@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
 
 class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
     func testConditionalReturnsOnNewlineWithIfOnly() {

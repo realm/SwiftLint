@@ -1,8 +1,4 @@
-
 /// The rule list containing all available rules built into SwiftLint.
-let builtInRules: [Rule.Type] = [
+public let builtInRules: [Rule.Type] = [
 {% for rule in types.structs where rule.name|hasSuffix:"Rule" or rule.name|hasSuffix:"Rules" %}    {{ rule.name }}.self{% if not forloop.last %},{% endif %}
 {% endfor %}]
-
-/// The rule list containing all available rules built into SwiftLint as well as native custom rules.
-public let primaryRuleList = RuleList(rules: builtInRules + extraRules())

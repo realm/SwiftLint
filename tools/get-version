@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-cat Source/SwiftLintFramework/Models/Version.swift | awk -F '"' '{print $2}' | xargs
+cat Source/SwiftLintCore/Models/Version.swift | awk -F '"' '{print $2}' | xargs

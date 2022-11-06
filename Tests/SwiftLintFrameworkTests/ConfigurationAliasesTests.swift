@@ -1,4 +1,4 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintCore
 import XCTest
 
 final class ConfigurationAliasesTests: SwiftLintTestCase {

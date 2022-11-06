@@ -1,4 +1,4 @@
-@testable import SwiftLintFrameworkTests
+@testable import SwiftLintBuiltInRulesTests
 import XCTest
 
 extension AttributesRuleTests {

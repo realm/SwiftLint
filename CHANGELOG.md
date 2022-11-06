@@ -64,6 +64,7 @@
   - `anonymous_argument_in_multiline_closure`
   - `array_init`
   - `attributes`
+  - `balanced_xctest_lifecycle`
   - `block_based_kvo`
   - `class_delegate_protocol`
   - `closing_brace`

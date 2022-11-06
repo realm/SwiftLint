@@ -31,6 +31,16 @@ internal struct IdentifierNameRuleExamples {
         Example("func something(↓x: Int) -> Bool"),
         Example("enum Foo { case ↓MyEnum }"),
         Example("list.first { ↓l in l == 1 }"),
-        Example("for ↓i in 0..<10 {}")
+        Example("for ↓i in 0..<10 {}"),
+        Example("""
+        class MyClass {
+            ↓static var x: Int
+        }
+        """),
+        Example("""
+        class MyClass {
+            ↓class let i = 0
+        }
+        """)
     ]
 }

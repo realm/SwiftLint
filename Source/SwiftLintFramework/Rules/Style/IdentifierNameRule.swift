@@ -103,6 +103,8 @@ private extension IdentifierNameRule {
                 return nil
             }
 
+            let violationPosition = modifiers.staticOrClassPosition ?? violationPosition
+
             if kind != .function {
                 let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
                 if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
@@ -180,5 +182,13 @@ private extension String {
     var isOperator: Bool {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
         return operators.contains(where: hasPrefix)
+    }
+}
+
+private extension ModifierListSyntax? {
+    var staticOrClassPosition: AbsolutePosition? {
+        self?.first { modifier in
+            modifier.name.tokenKind == .staticKeyword || modifier.name.tokenKind == .classKeyword
+        }?.positionAfterSkippingLeadingTrivia
     }
 }

@@ -23,6 +23,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3726](https://github.com/realm/SwiftLint/issues/3726)
 
+* Trigger `prefer_self_in_static_references` rule on more type references like:
+  * Types (e.g. `let a: MyType? { nil }` -> `let a: Self? { nil }`)
+  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 #### Bug Fixes
 
 * Fix `lower_acl_than_parent` rule rewriter by preserving leading whitespace.  

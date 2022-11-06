@@ -71,7 +71,7 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
                 }
             """, excludeFromDocumentation: true),
             Example("""
-                class Record<T> {
+                struct Record<T> {
                     static func get() -> Record<T> { Record<T>() }
                 }
             """, excludeFromDocumentation: true),
@@ -79,6 +79,13 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
                 @objc class C: NSObject {
                     @objc var s = ""
                     @objc func f() { _ = #keyPath(C.s) }
+                }
+            """, excludeFromDocumentation: true),
+            Example("""
+                class C<T> {
+                    let i = 1
+                    let c: C = C()
+                    func f(c: C) -> KeyPath<C, Int> { \\Self.i }
                 }
             """, excludeFromDocumentation: true)
         ],
@@ -112,8 +119,8 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
                     static let i = 1
                     static func f() -> Int { ↓S.i }
                     func g() -> Any { ↓S.self }
-                    func h() -> S { ↓S(j: 2) }
-                    func i() -> KeyPath<S, Int> { \\↓S.j }
+                    func h() -> ↓S { ↓S(j: 2) }
+                    func i() -> KeyPath<↓S, Int> { \\↓S.j }
                     func j(@Wrap(-↓S.i, ↓S.i) n: Int = ↓S.i) {}
                 }
             """),
@@ -131,8 +138,8 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
             Example("""
                 enum E {
                     case A
-                    static func f() -> E { ↓E.A }
-                    static func g() -> E { ↓E.f() }
+                    static func f() -> ↓E { ↓E.A }
+                    static func g() -> ↓E { ↓E.f() }
                 }
             """),
             Example("""
@@ -149,10 +156,31 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
             """, excludeFromDocumentation: true),
             Example("""
                 class C {
+                    let d: C? = nil
                     var c: C { C() }
+                    init() {}
+                    func f(e: C) -> C {
+                        let f: C = C()
+                        return f
+                    }
                 }
                 final class D {
-                    var d: D { ↓D() }
+                    let c: D? = nil
+                    var d: D { D() }
+                    init() {}
+                    func f(e: D) -> D {
+                        let f: D = D()
+                        return f
+                    }
+                }
+                struct S {
+                    // let s: S? = nil // Struct cannot contain itself
+                    var t: ↓S { ↓S() }
+                    init() {}
+                    func f(e: ↓S) -> ↓S {
+                        let f: ↓S = ↓S()
+                        return f
+                    }
                 }
             """, excludeFromDocumentation: true)
         ],
@@ -227,13 +255,13 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
 
 private class Visitor: ViolationsSyntaxVisitor {
     private enum ParentDeclBehavior {
-        case likeClass(name: String, isFinal: Bool)
+        case likeClass(name: String)
         case likeStruct(String)
         case skipReferences
 
         var parentName: String? {
             switch self {
-            case let .likeClass(name, _): return name
+            case let .likeClass(name): return name
             case let .likeStruct(name): return name
             case .skipReferences: return nil
             }
@@ -250,7 +278,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     private(set) var corrections = [(start: AbsolutePosition, end: AbsolutePosition)]()
 
     override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeClass(name: node.identifier.text, isFinal: node.modifiers.isFinal))
+        parentDeclScopes.append(.likeClass(name: node.identifier.text))
         return .skipChildren
     }
 
@@ -259,7 +287,7 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        parentDeclScopes.append(.likeClass(name: node.identifier.text, isFinal: node.modifiers.isFinal))
+        parentDeclScopes.append(.likeClass(name: node.identifier.text))
         return .visitChildren
     }
 
@@ -310,7 +338,7 @@ private class Visitor: ViolationsSyntaxVisitor {
               !parent.is(ArrayElementSyntax.self) else {
             return
         }
-        if parent.is(FunctionCallExprSyntax.self), case .likeClass(_, false) = parentDeclScopes.last {
+        if parent.is(FunctionCallExprSyntax.self), case .likeClass = parentDeclScopes.last {
             return
         }
         addViolation(on: node.identifier)
@@ -362,14 +390,36 @@ private class Visitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
-        if node.parent?.is(KeyPathExprSyntax.self) == true {
+        guard let parent = node.parent else {
+            return
+        }
+        if case .likeClass = parentDeclScopes.last,
+           parent.is(GenericArgumentSyntax.self) || parent.is(ReturnClauseSyntax.self) {
+            // Type is a generic parameter or the return type of a function.
+            return
+        }
+        if node.genericArguments == nil {
+            // Type is specialized.
             addViolation(on: node.name)
         }
     }
 
+    override func visit(_ node: TypeAnnotationSyntax) -> SyntaxVisitorContinueKind {
+        guard case .likeStruct = parentDeclScopes.last else {
+            return .skipChildren
+        }
+        if let varDecl = node.parent?.parent?.parent?.as(VariableDeclSyntax.self) {
+            if varDecl.parent?.is(CodeBlockItemSyntax.self) == true || varDecl.bindings.onlyElement?.accessor != nil {
+                // Is either a local variable declaration or a computed property.
+                return .visitChildren
+            }
+        }
+        return .skipChildren
+    }
+
     override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         if node.bindings.onlyElement?.accessor != nil {
-            // Computed property
+            // Variable declaration is a computed property.
             return .visitChildren
         }
         if case .handleReferences = variableDeclScopes.last {

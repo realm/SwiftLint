@@ -143,6 +143,7 @@
   - `orphaned_doc_comment`
   - `overridden_super_call`
   - `override_in_extension`
+  - `pattern_matching_keywords`
   - `prefer_nimble`
   - `prefer_self_in_static_references`
   - `prefer_self_type_over_type_of_self`

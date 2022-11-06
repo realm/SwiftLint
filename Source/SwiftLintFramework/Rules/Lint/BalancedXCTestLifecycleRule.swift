@@ -115,7 +115,7 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
     }
-    
+
     public func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
         StyleViolation(
             ruleDescription: Self.description,

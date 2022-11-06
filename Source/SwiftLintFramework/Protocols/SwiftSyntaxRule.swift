@@ -69,7 +69,7 @@ public extension SwiftSyntaxRule {
             queuedFatalError("""
                 A severity must be provided. Either define it in the violation or make the rule configuration \
                 conform to `SeverityBasedRuleConfiguration` to take the default.
-            """)
+                """)
         }
         return StyleViolation(
             ruleDescription: Self.description,

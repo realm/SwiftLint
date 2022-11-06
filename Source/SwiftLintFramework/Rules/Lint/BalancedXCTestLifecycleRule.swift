@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProviderRule {
+public struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
     public var configuration = SeverityConfiguration(.warning)
@@ -112,34 +112,51 @@ public struct BalancedXCTestLifecycleRule: Rule, OptInRule, ConfigurationProvide
 
     // MARK: - Public
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        testClasses(in: file).compactMap { violations(in: file, for: $0) }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    // MARK: - Private
+private extension BalancedXCTestLifecycleRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
-    private func testClasses(in file: SwiftLintFile) -> [SourceKittenDictionary] {
-        file.structureDictionary.substructure.filter { dictionary in
-            guard dictionary.declarationKind == .class else { return false }
-            return dictionary.inheritedTypes.contains("XCTestCase")
+        override func visitPost(_ node: ClassDeclSyntax) {
+            guard node.isXCTestCase else {
+                return
+            }
+
+            let methods = SetupTearDownVisitor(viewMode: .sourceAccurate)
+                .walk(tree: node.members, handler: \.methods)
+            guard methods.contains(.setUp) != methods.contains(.tearDown) else {
+                return
+            }
+
+            violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
         }
     }
 
-    private func violations(in file: SwiftLintFile,
-                            for dictionary: SourceKittenDictionary) -> StyleViolation? {
-        let methods = dictionary.substructure
-            .compactMap { XCTMethod($0.name) }
+    final class SetupTearDownVisitor: ViolationsSyntaxVisitor {
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        private(set) var methods: Set<XCTMethod> = []
 
-        guard
-            methods.contains(.setUp) != methods.contains(.tearDown),
-            let offset = dictionary.nameOffset
-        else {
-            return nil
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if let method = XCTMethod(node.identifier.description),
+               node.signature.input.parameterList.isEmpty {
+                methods.insert(method)
+            }
         }
+    }
+}
 
-        return StyleViolation(ruleDescription: Self.description,
-                              severity: configuration.severity,
-                              location: Location(file: file, byteOffset: offset))
+private extension ClassDeclSyntax {
+    var isXCTestCase: Bool {
+        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
+            return false
+        }
+        return inheritanceList.contains { type in
+            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "XCTestCase"
+        }
     }
 }
 
@@ -151,8 +168,8 @@ private enum XCTMethod {
 
     init?(_ name: String?) {
         switch name {
-        case "setUp()", "setUpWithError()": self = .setUp
-        case "tearDown()", "tearDownWithError()": self = .tearDown
+        case "setUp", "setUpWithError": self = .setUp
+        case "tearDown", "tearDownWithError": self = .tearDown
         default: return nil
         }
     }

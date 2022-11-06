@@ -211,6 +211,18 @@ extension AccessorBlockSyntax {
     }
 }
 
+extension TypeInheritanceClauseSyntax? {
+    func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
+        self?.inheritedTypeCollection.contains { elem in
+            guard let simpleType = elem.typeName.as(SimpleTypeIdentifierSyntax.self) else {
+                return false
+            }
+
+            return inheritedTypes.contains(simpleType.name.text)
+        } ?? false
+    }
+}
+
 extension Trivia {
     func containsNewlines() -> Bool {
         contains { piece in

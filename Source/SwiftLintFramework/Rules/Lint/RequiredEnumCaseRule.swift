@@ -1,4 +1,4 @@
-import SourceKittenFramework
+import SwiftSyntax
 
 /// Allows for Enums that conform to a protocol to require that a specific case be present.
 ///
@@ -67,52 +67,7 @@ import SourceKittenFramework
 ///     case accountCreated
 /// }
 /// ````
-public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    private typealias RequiredCase = RequiredEnumCaseRuleConfiguration.RequiredCase
-
-    /// Simple representation of parsed information from the SourceKitRepresentable dictionary.
-    private struct Enum {
-        let location: Location
-        let inheritedTypes: [String]
-        let cases: [String]
-
-        init(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) {
-            location = Self.location(from: dictionary, in: file)
-            inheritedTypes = dictionary.inheritedTypes
-            cases = Self.cases(from: dictionary)
-        }
-
-        /// Determines the location of where the enum declaration starts.
-        ///
-        /// - parameter dictionary: Parsed source for the enum.
-        /// - parameter file:       `SwiftLintFile` that contains the enum.
-        ///
-        /// - returns: Location of where the enum declaration starts.
-        static func location(from dictionary: SourceKittenDictionary, in file: SwiftLintFile) -> Location {
-            return Location(file: file, byteOffset: dictionary.offset ?? 0)
-        }
-
-        /// Determines the names of cases found in the enum.
-        ///
-        /// - parameter dictionary: Parsed source for the enum.
-        /// - returns: Names of cases found in the enum.
-        static func cases(from dictionary: SourceKittenDictionary) -> [String] {
-            let caseSubstructures = dictionary.substructure.filter { dict in
-                return dict.declarationKind == .enumcase
-            }.flatMap { $0.substructure }
-
-            return caseSubstructures.compactMap { $0.name }.map { name in
-                if let parenIndex = name.firstIndex(of: "("),
-                    parenIndex > name.startIndex {
-                    let index = name.index(before: parenIndex)
-                    return String(name[...index])
-                } else {
-                    return name
-                }
-            }
-        }
-    }
-
+public struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = RequiredEnumCaseRuleConfiguration()
 
     public init() {}
@@ -178,45 +133,59 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .enum else {
-            return []
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(configuration: configuration)
+    }
+}
+
+private extension RequiredEnumCaseRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let configuration: RequiredEnumCaseRuleConfiguration
+
+        init(configuration: RequiredEnumCaseRuleConfiguration) {
+            self.configuration = configuration
+            super.init(viewMode: .sourceAccurate)
         }
 
-        return violations(for: Enum(from: dictionary, in: file))
-    }
-
-    /// Iterates over all of the protocols in the configuration and creates violations for missing cases.
-    ///
-    /// - parameter parsed: Enum information parsed from the SourceKitRepresentable dictionary.
-    /// - returns: Violations for missing cases.
-    private func violations(for parsed: Enum) -> [StyleViolation] {
-        var violations: [StyleViolation] = []
-
-        for (type, requiredCases) in configuration.protocols where parsed.inheritedTypes.contains(type) {
-            for requiredCase in requiredCases where !parsed.cases.contains(requiredCase.name) {
-                violations.append(create(violationIn: parsed, for: type, missing: requiredCase))
+        override func visitPost(_ node: EnumDeclSyntax) {
+            guard configuration.protocols.isNotEmpty else {
+                return
             }
+
+            let enumCases = node.enumCasesNames
+            let violations = configuration.protocols
+                .flatMap { type, requiredCases -> [ReasonedRuleViolation] in
+                    guard node.inheritanceClause.containsInheritedType(inheritedTypes: [type]) else {
+                        return []
+                    }
+
+                    return requiredCases.compactMap { requiredCase in
+                        guard !enumCases.contains(requiredCase.name) else {
+                            return nil
+                        }
+
+                        return ReasonedRuleViolation(
+                            position: node.positionAfterSkippingLeadingTrivia,
+                            reason: "Enums conforming to \"\(type)\" must have a \"\(requiredCase.name)\" case",
+                            severity: requiredCase.severity
+                        )
+                    }
+                }
+
+            self.violations.append(contentsOf: violations)
         }
-
-        return violations
     }
+}
 
-    /// Creates the violation for a missing case.
-    ///
-    /// - parameter parsed:       Enum information parsed from the `SourceKitRepresentable` dictionary.
-    /// - parameter protocolName: Name of the protocol that is missing the case.
-    /// - parameter requiredCase: Information about the case and the severity of the violation.
-    ///
-    /// - returns: Created violation.
-    private func create(violationIn parsed: Enum,
-                        for protocolName: String,
-                        missing requiredCase: RequiredCase) -> StyleViolation {
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: requiredCase.severity,
-            location: parsed.location,
-            reason: "Enums conforming to \"\(protocolName)\" must have a \"\(requiredCase.name)\" case")
+private extension EnumDeclSyntax {
+    var enumCasesNames: [String] {
+        return members.members
+            .flatMap { member -> [String] in
+                guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
+                    return []
+                }
+
+                return enumCaseDecl.elements.map(\.identifier.text)
+            }
     }
 }

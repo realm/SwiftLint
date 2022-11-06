@@ -170,6 +170,7 @@
   - `redundant_set_access_control`
   - `redundant_string_enum_value`
   - `required_deinit`
+  - `required_enum_case`
   - `return_arrow_whitespace`
   - `self_in_property_initialization`
   - `shorthand_operator`

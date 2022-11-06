@@ -74,7 +74,7 @@ private class TestClassVisitor: ViolationsSyntaxVisitor {
         self.testClasses = testClasses
         super.init(viewMode: viewMode)
     }
-    
+
     override func visitPost(_ node: ClassDeclSyntax) {
         guard node.inheritanceClause.containsInheritedType(inheritedTypes: testClasses) else {
             return

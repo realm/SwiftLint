@@ -40,8 +40,7 @@ private extension ContainsOverRangeNilComparisonRule {
                 operatorNode.operatorToken.tokenKind.isEqualityComparison,
                 node.rightOperand.is(NilLiteralExprSyntax.self),
                 let first = node.leftOperand.asFunctionCall,
-                first.argumentList.count == 1,
-                first.argumentList.first?.label?.text == "of",
+                first.argumentList.onlyElement?.label?.text == "of",
                 let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
                 calledExpression.name.text == "range"
             else {

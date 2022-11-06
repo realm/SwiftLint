@@ -80,8 +80,7 @@ extension ExprSyntax {
         if let functionCall = self.as(FunctionCallExprSyntax.self) {
             return functionCall
         } else if let tuple = self.as(TupleExprSyntax.self),
-                  tuple.elementList.count == 1,
-                  let firstElement = tuple.elementList.first,
+                  let firstElement = tuple.elementList.onlyElement,
                   let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
             return functionCall
         } else {
@@ -92,7 +91,7 @@ extension ExprSyntax {
 
 extension StringLiteralExprSyntax {
     var isEmptyString: Bool {
-        segments.count == 1 && segments.first?.contentLength == .zero
+        segments.onlyElement?.contentLength == .zero
     }
 }
 

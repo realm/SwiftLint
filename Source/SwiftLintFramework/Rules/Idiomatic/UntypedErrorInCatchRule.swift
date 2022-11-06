@@ -111,8 +111,7 @@ private extension CatchItemSyntax {
 
         if let pattern = pattern?.as(ExpressionPatternSyntax.self),
            let tupleExpr = pattern.expression.as(TupleExprSyntax.self),
-           tupleExpr.elementList.count == 1,
-           let tupleElement = tupleExpr.elementList.first,
+           let tupleElement = tupleExpr.elementList.onlyElement,
            let unresolvedPattern = tupleElement.expression.as(UnresolvedPatternExprSyntax.self),
            let valueBindingPattern = unresolvedPattern.pattern.as(ValueBindingPatternSyntax.self) {
             return valueBindingPattern.valuePattern.is(IdentifierPatternSyntax.self)
@@ -124,8 +123,7 @@ private extension CatchItemSyntax {
 
 private final class UntypedErrorInCatchRuleVisitor: ViolationsSyntaxVisitor {
     override func visitPost(_ node: CatchClauseSyntax) {
-        guard node.catchItems?.count == 1,
-              let item = node.catchItems?.first,
+        guard let item = node.catchItems?.onlyElement,
               item.isIdentifierPattern else {
             return
         }
@@ -146,8 +144,7 @@ private final class UntypedErrorInCatchRuleRewriter: SyntaxRewriter, ViolationsS
 
     override func visit(_ node: CatchClauseSyntax) -> CatchClauseSyntax {
         guard
-            node.catchItems?.count == 1,
-            let item = node.catchItems?.first,
+            let item = node.catchItems?.onlyElement,
             item.isIdentifierPattern,
             !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
         else {

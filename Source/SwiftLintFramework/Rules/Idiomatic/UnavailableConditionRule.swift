@@ -82,7 +82,7 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
             return
         }
 
-        guard node.conditions.count == 1, let condition = node.conditions.first,
+        guard let condition = node.conditions.onlyElement,
               let availability = asAvailabilityCondition(condition.condition) else {
             return
         }

@@ -140,6 +140,7 @@
   - `nslocalizedstring_require_bundle`
   - `nsobject_prefer_isequal`
   - `number_separator`
+  - `object_literal`
   - `operator_whitespace`
   - `optional_enum_case_matching`
   - `orphaned_doc_comment`

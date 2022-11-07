@@ -1,6 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -33,53 +33,49 @@ public struct NSLocalizedStringKeyRule: ASTRule, OptInRule, ConfigurationProvide
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard kind == .call, dictionary.name == "NSLocalizedString" else { return [] }
-
-        return [
-            getViolationForKey(file: file, dictionary: dictionary),
-            getViolationForComment(file: file, dictionary: dictionary)
-        ].compactMap { $0 }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(viewMode: .sourceAccurate)
     }
+}
 
-    // MARK: - Private helpers
+private extension NSLocalizedStringKeyRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text == "NSLocalizedString" else {
+                return
+            }
 
-    private func getViolationForKey(file: SwiftLintFile,
-                                    dictionary: SourceKittenDictionary) -> StyleViolation? {
-        guard let keyArgument = dictionary.enclosedArguments
-                .first(where: { $0.name == nil }),
-              let byteRange = keyArgument.byteRange
-        else { return nil }
+            if let keyArgument = node.argumentList.first(where: { $0.label == nil })?.expression,
+               keyArgument.hasViolation {
+                violations.append(keyArgument.positionAfterSkippingLeadingTrivia)
+            }
 
-        let kinds = file.syntaxMap.kinds(inByteRange: byteRange)
-        guard !kinds.allSatisfy({ $0 == .string }) else { return nil }
-
-        return makeViolation(file: file, byteRange: byteRange)
+            if let commentArgument = node.argumentList.first(where: { $0.label?.text == "comment" })?.expression,
+               commentArgument.hasViolation {
+                violations.append(commentArgument.positionAfterSkippingLeadingTrivia)
+            }
+        }
     }
+}
 
-    private func getViolationForComment(file: SwiftLintFile,
-                                        dictionary: SourceKittenDictionary) -> StyleViolation? {
-        guard let commentArgument = dictionary.enclosedArguments
-                .first(where: { $0.name == "comment" }),
-              let bodyByteRange = commentArgument.bodyByteRange
-        else { return nil }
-
-        let tokens = file.syntaxMap.tokens(inByteRange: bodyByteRange)
-        guard !tokens.isEmpty else { return nil }
-
-        if tokens.allSatisfy({ $0.kind == .string }) {
-            // All tokens are string literals
-            return nil
+private extension ExprSyntax {
+    var hasViolation: Bool {
+        if let strExpr = self.as(StringLiteralExprSyntax.self) {
+            return strExpr.segments.contains { segment in
+                !segment.is(StringSegmentSyntax.self)
+            }
         }
 
-        return makeViolation(file: file, byteRange: bodyByteRange)
-    }
+        if let sequenceExpr = self.as(SequenceExprSyntax.self) {
+            return sequenceExpr.elements.contains { expr in
+                if expr.is(BinaryOperatorExprSyntax.self) {
+                    return false
+                }
 
-    private func makeViolation(file: SwiftLintFile, byteRange: ByteRange) -> StyleViolation {
-        StyleViolation(ruleDescription: Self.description,
-                       severity: configuration.severity,
-                       location: Location(file: file, byteOffset: byteRange.location))
+                return expr.hasViolation
+            }
+        }
+
+        return true
     }
 }

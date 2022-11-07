@@ -68,6 +68,13 @@ public struct ExplicitACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
                     }
                 }
             }
+            """),
+            Example("""
+            private extension Foo {
+                var isValid: Bool {
+                    true
+                }
+            }
             """)
         ],
         triggeringExamples: [
@@ -100,7 +107,7 @@ private extension ExplicitACLRule {
                 SubscriptDeclSyntax.self,
                 VariableDeclSyntax.self,
                 ProtocolDeclSyntax.self,
-                InitializerDeclSyntax.self,
+                InitializerDeclSyntax.self
             ]
         }
 
@@ -176,6 +183,15 @@ private extension ExplicitACLRule {
                                node.letOrVarKeyword.positionAfterSkippingLeadingTrivia
                 violations.append(position)
             }
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            guard let modifiers = node.modifiers,
+                  modifiers.contains(where: \.isACLModifier) else {
+                return .visitChildren
+            }
+
+            return .skipChildren
         }
 
         override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {

@@ -113,6 +113,7 @@
   - `ibinspectable_in_extension`
   - `identical_operands`
   - `implicit_getter`
+  - `implicit_return`
   - `implicitly_unwrapped_optional`
   - `inclusive_language`
   - `inert_defer`

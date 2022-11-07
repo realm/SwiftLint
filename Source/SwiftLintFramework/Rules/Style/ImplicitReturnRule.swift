@@ -1,7 +1,6 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrectableRule, OptInRule {
+public struct ImplicitReturnRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule, OptInRule {
     public var configuration = ImplicitReturnConfiguration()
 
     public init() {}
@@ -16,72 +15,176 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, SubstitutionCorrect
         corrections: ImplicitReturnRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).compactMap {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+        Visitor(includedKinds: configuration.includedKinds)
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
-
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
-        let contents = file.stringView
-
-        return file.matchesAndSyntaxKinds(matching: pattern).compactMap { result, kinds in
-            let range = result.range
-            guard kinds == [.keyword, .keyword] || kinds == [.keyword],
-                let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
-                case let kinds = file.structureDictionary.kinds(forByteOffset: byteRange.location),
-                let outerKindString = kinds.lastExcludingBrace()?.kind
-            else {
-                return nil
-            }
-
-            func isKindIncluded(_ kind: ImplicitReturnConfiguration.ReturnKind) -> Bool {
-                return self.configuration.isKindIncluded(kind)
-            }
-
-            if let outerKind = SwiftExpressionKind(rawValue: outerKindString),
-                isKindIncluded(.closure),
-                [.call, .argument, .closure].contains(outerKind) {
-                    return result.range(at: 1)
-            }
-
-            if let outerKind = SwiftDeclarationKind(rawValue: outerKindString),
-                (isKindIncluded(.function) && SwiftDeclarationKind.functionKinds.contains(outerKind)) ||
-                (isKindIncluded(.getter) && SwiftDeclarationKind.variableKinds.contains(outerKind)) {
-                    return result.range(at: 1)
-            }
-
-            return nil
-        }
+    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+        Rewriter(
+            includedKinds: configuration.includedKinds,
+            locationConverter: file.locationConverter,
+            disabledRegions: disabledRegions(file: file)
+        )
     }
 }
 
-private extension Array where Element == (kind: String, byteRange: ByteRange) {
-    func lastExcludingBrace() -> Element? {
-        guard SwiftVersion.current >= .fiveDotFour else {
-            return last
+private extension ImplicitReturnRule {
+    final class Visitor: ViolationsSyntaxVisitor {
+        private let includedKinds: Set<ImplicitReturnConfiguration.ReturnKind>
+
+        init(includedKinds: Set<ImplicitReturnConfiguration.ReturnKind>) {
+            self.includedKinds = includedKinds
+            super.init(viewMode: .sourceAccurate)
         }
 
-        guard let last = last else {
-            return nil
+        override func visitPost(_ node: ClosureExprSyntax) {
+            guard includedKinds.contains(.closure),
+                  let statement = node.statements.onlyElement,
+                  statement.item.is(ReturnStmtSyntax.self) else {
+                return
+            }
+
+            violations.append(statement.item.positionAfterSkippingLeadingTrivia)
         }
 
-        guard last.kind == "source.lang.swift.stmt.brace", count > 1 else {
-            return last
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            guard includedKinds.contains(.function),
+                  let statement = node.body?.statements.onlyElement,
+                  statement.item.is(ReturnStmtSyntax.self) else {
+                return
+            }
+
+            violations.append(statement.item.positionAfterSkippingLeadingTrivia)
         }
 
-        let secondLast = self[endIndex - 2]
-        if SwiftExpressionKind(rawValue: secondLast.kind) == .closure {
-            return secondLast
+        override func visitPost(_ node: VariableDeclSyntax) {
+            guard includedKinds.contains(.getter) else {
+                return
+            }
+
+            for binding in node.bindings {
+                switch binding.accessor {
+                case nil:
+                    continue
+                case .accessors(let accessors):
+                    if let statement = accessors.getAccessor?.body?.statements.onlyElement,
+                       let returnStmt = statement.item.as(ReturnStmtSyntax.self) {
+                        violations.append(returnStmt.positionAfterSkippingLeadingTrivia)
+                    }
+                case .getter(let getter):
+                    if let returnStmt = getter.statements.onlyElement?.item.as(ReturnStmtSyntax.self) {
+                        violations.append(returnStmt.positionAfterSkippingLeadingTrivia)
+                    }
+                }
+            }
+        }
+    }
+
+    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
+        private(set) var correctionPositions: [AbsolutePosition] = []
+        private let includedKinds: Set<ImplicitReturnConfiguration.ReturnKind>
+        private let locationConverter: SourceLocationConverter
+        private let disabledRegions: [SourceRange]
+
+        init(includedKinds: Set<ImplicitReturnConfiguration.ReturnKind>,
+             locationConverter: SourceLocationConverter,
+             disabledRegions: [SourceRange]) {
+            self.includedKinds = includedKinds
+            self.locationConverter = locationConverter
+            self.disabledRegions = disabledRegions
         }
 
-        return last
+        override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
+            guard includedKinds.contains(.closure),
+                  let statement = node.statements.onlyElement,
+                  let returnStmt = statement.item.as(ReturnStmtSyntax.self),
+                  let expr = returnStmt.expression,
+                  !returnStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(returnStmt.positionAfterSkippingLeadingTrivia)
+
+            let newNode = node.withStatements([
+                statement
+                    .withItem(.expr(expr))
+                    .withLeadingTrivia(returnStmt.leadingTrivia ?? .zero)
+            ])
+            return super.visit(newNode)
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
+            guard includedKinds.contains(.function),
+                  let statement = node.body?.statements.onlyElement,
+                  let returnStmt = statement.item.as(ReturnStmtSyntax.self),
+                  let expr = returnStmt.expression,
+                  !returnStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+                return super.visit(node)
+            }
+
+            correctionPositions.append(returnStmt.positionAfterSkippingLeadingTrivia)
+
+            let newNode = node.withBody(node.body?.withStatements([
+                statement
+                    .withItem(.expr(expr))
+                    .withLeadingTrivia(returnStmt.leadingTrivia ?? .zero)
+            ]))
+            return super.visit(newNode)
+        }
+
+        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+            guard includedKinds.contains(.getter) else {
+                return super.visit(node)
+            }
+
+            let updatedBindings: [PatternBindingSyntax] = node.bindings.map { binding in
+                switch binding.accessor {
+                case nil:
+                    return binding
+                case .accessors(let accessorBlock):
+                    guard let getAccessor = accessorBlock.getAccessor,
+                          let statement = accessorBlock.getAccessor?.body?.statements.onlyElement,
+                          let returnStmt = statement.item.as(ReturnStmtSyntax.self),
+                          !returnStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                          let expr = returnStmt.expression else {
+                        break
+                    }
+
+                    correctionPositions.append(returnStmt.positionAfterSkippingLeadingTrivia)
+
+                    let updatedGetAcessor = getAccessor.withBody(getAccessor.body?.withStatements([
+                        statement
+                            .withItem(.expr(expr))
+                            .withLeadingTrivia(returnStmt.leadingTrivia ?? .zero)
+                    ]))
+                    let updatedAccessors = accessorBlock
+                        .withAccessors(
+                            accessorBlock.accessors.replacing(
+                                childAt: getAccessor.indexInParent,
+                                with: updatedGetAcessor
+                            )
+                        )
+                    return binding.withAccessor(.accessors(updatedAccessors))
+                case .getter(let getter):
+                    guard let statement = getter.statements.onlyElement,
+                          let returnStmt = statement.item.as(ReturnStmtSyntax.self),
+                          !returnStmt.isContainedIn(regions: disabledRegions, locationConverter: locationConverter),
+                          let expr = returnStmt.expression else {
+                        break
+                    }
+
+                    correctionPositions.append(returnStmt.positionAfterSkippingLeadingTrivia)
+                    return binding.withAccessor(.getter(getter.withStatements([
+                        statement
+                            .withItem(.expr(expr))
+                            .withLeadingTrivia(returnStmt.leadingTrivia ?? .zero)
+                    ])))
+                }
+
+                return binding
+            }
+
+            return super.visit(node.withBindings(PatternBindingListSyntax(updatedBindings)))
+        }
     }
 }

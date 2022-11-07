@@ -1,4 +1,4 @@
-public struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
+public struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public enum ReturnKind: String, CaseIterable {
         case closure
         case function
@@ -7,7 +7,7 @@ public struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
 
     public static let defaultIncludedKinds = Set(ReturnKind.allCases)
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
     private(set) var includedKinds = Self.defaultIncludedKinds
 

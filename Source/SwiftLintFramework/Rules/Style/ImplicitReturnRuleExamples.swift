@@ -1,9 +1,9 @@
 internal struct ImplicitReturnRuleExamples {
-    internal struct GenericExamples {
+    internal enum GenericExamples {
         static let nonTriggeringExamples = [Example("if foo {\n  return 0\n}")]
     }
 
-    internal struct ClosureExamples {
+    internal enum ClosureExamples {
         static let nonTriggeringExamples = [
             Example("foo.map { $0 + 1 }"),
             Example("foo.map({ $0 + 1 })"),
@@ -42,7 +42,7 @@ internal struct ImplicitReturnRuleExamples {
         ]
     }
 
-    internal struct FunctionExamples {
+    internal enum FunctionExamples {
         static let nonTriggeringExamples = [
             Example("""
             func foo() -> Int {
@@ -85,7 +85,7 @@ internal struct ImplicitReturnRuleExamples {
         ]
     }
 
-    internal struct GetterExamples {
+    internal enum GetterExamples {
         static let nonTriggeringExamples = [
             Example("var foo: Bool { true }"),
             Example("""

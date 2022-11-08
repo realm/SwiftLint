@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class UnusedOptionalBindingRuleTests: XCTestCase {
+class UnusedOptionalBindingRuleTests: SwiftLintTestCase {
     func testDefaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [

@@ -2,7 +2,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class RuleConfigurationTests: XCTestCase {
+class RuleConfigurationTests: SwiftLintTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],

@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-final class StringExtensionTests: XCTestCase {
+final class StringExtensionTests: SwiftLintTestCase {
     func testRelativePathExpression() {
         XCTAssertEqual("Folder/Test", "Root/Folder/Test".path(relativeTo: "Root"))
         XCTAssertEqual("Test", "Root/Folder/Test".path(relativeTo: "Root/Folder"))

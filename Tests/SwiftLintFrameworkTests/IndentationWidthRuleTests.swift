@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class IndentationWidthRuleTests: XCTestCase {
+class IndentationWidthRuleTests: SwiftLintTestCase {
     // MARK: Examples
     /// It's not okay to have the first line indented.
     func testFirstLineIndentation() {

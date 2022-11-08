@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class DeploymentTargetConfigurationTests: XCTestCase {
+class DeploymentTargetConfigurationTests: SwiftLintTestCase {
     private typealias Version = DeploymentTargetConfiguration.Version
 
     // swiftlint:disable:next function_body_length

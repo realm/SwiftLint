@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class TrailingCommaRuleTests: XCTestCase {
+class TrailingCommaRuleTests: SwiftLintTestCase {
     func testTrailingCommaRuleWithDefaultConfiguration() {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         let triggeringExamples = TrailingCommaRule.description.triggeringExamples +

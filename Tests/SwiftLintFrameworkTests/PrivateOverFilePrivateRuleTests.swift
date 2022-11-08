@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class PrivateOverFilePrivateRuleTests: XCTestCase {
+class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
     func testPrivateOverFilePrivateValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [

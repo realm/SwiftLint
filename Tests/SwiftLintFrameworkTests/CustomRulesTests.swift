@@ -2,7 +2,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class CustomRulesTests: XCTestCase {
+class CustomRulesTests: SwiftLintTestCase {
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [

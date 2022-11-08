@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
+class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
     func testImplicitlyUnwrappedOptionalRuleDefaultConfiguration() {
         let rule = ImplicitlyUnwrappedOptionalRule()
         XCTAssertEqual(rule.configuration.mode, .allExceptIBOutlets)

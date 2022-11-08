@@ -330,7 +330,6 @@ public extension XCTestCase {
                     testShebang: Bool = true,
                     file: StaticString = #file,
                     line: UInt = #line) {
-        RuleRegistry.registerAllRulesOnce()
         guard ruleDescription.minSwiftVersion <= .current else {
             return
         }

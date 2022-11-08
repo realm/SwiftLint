@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class GenericTypeNameRuleTests: XCTestCase {
+class GenericTypeNameRuleTests: SwiftLintTestCase {
     func testGenericTypeNameWithExcluded() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

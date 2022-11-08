@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class LineEndingTests: XCTestCase {
+class LineEndingTests: SwiftLintTestCase {
     func testCarriageReturnDoesNotCauseError() {
         XCTAssert(
             violations(

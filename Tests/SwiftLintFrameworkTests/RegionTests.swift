@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class RegionTests: XCTestCase {
+class RegionTests: SwiftLintTestCase {
     // MARK: Regions From Files
 
     func testNoRegionsInEmptyFile() {

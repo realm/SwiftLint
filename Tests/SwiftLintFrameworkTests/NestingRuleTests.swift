@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class NestingRuleTests: XCTestCase {
+class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testNestingWithAlwaysAllowOneTypeInFunctions() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples

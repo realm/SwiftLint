@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class MultilineArgumentsRuleTests: XCTestCase {
+class MultilineArgumentsRuleTests: SwiftLintTestCase {
     func testMultilineArgumentsWithWithNextLine() {
         let nonTriggeringExamples = [
             Example("foo()"),

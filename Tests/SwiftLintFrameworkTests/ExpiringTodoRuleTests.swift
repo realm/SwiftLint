@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class ExpiringTodoRuleTests: XCTestCase {
+class ExpiringTodoRuleTests: SwiftLintTestCase {
     private lazy var config: Configuration = makeConfiguration()
 
     override func setUp() {

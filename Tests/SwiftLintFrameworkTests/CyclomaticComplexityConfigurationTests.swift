@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class CyclomaticComplexityConfigurationTests: XCTestCase {
+class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
     func testCyclomaticComplexityConfigurationInitializerSetsLevels() {
         let warning = 10
         let error = 30

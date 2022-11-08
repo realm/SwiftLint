@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import XCTest
 
-class ExtendedNSStringTests: XCTestCase {
+class ExtendedNSStringTests: SwiftLintTestCase {
     func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {
         let contents = "" +
         "import Foundation\n" +                               // 18 characters

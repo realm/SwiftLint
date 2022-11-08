@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class EmptyCountRuleTests: XCTestCase {
+class EmptyCountRuleTests: SwiftLintTestCase {
     func testEmptyCountWithOnlyAfterDot() {
         // Test with `only_after_dot` set to true
         let nonTriggeringExamples = [

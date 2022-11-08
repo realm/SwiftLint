@@ -19,7 +19,7 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] { return [] }
 }
 
-class RuleTests: XCTestCase {
+class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock1: Rule {
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "",

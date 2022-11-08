@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class TrailingClosureConfigurationTests: XCTestCase {
+class TrailingClosureConfigurationTests: SwiftLintTestCase {
     func testDefaultConfiguration() {
         let config = TrailingClosureConfiguration()
         XCTAssertEqual(config.severityConfiguration.severity, .warning)

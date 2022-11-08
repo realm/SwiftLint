@@ -1,6 +1,6 @@
 import XCTest
 
-class ExtendedStringTests: XCTestCase {
+class ExtendedStringTests: SwiftLintTestCase {
     func testCountOccurrences() {
         XCTAssertEqual("aabbabaaba".countOccurrences(of: "a"), 6)
         XCTAssertEqual("".countOccurrences(of: "a"), 0)

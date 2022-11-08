@@ -3,7 +3,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class ReporterTests: XCTestCase {
+class ReporterTests: SwiftLintTestCase {
     func testReporterFromString() {
         let reporters: [Reporter.Type] = [
             XcodeReporter.self,

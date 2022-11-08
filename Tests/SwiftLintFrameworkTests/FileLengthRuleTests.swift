@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class FileLengthRuleTests: XCTestCase {
+class FileLengthRuleTests: SwiftLintTestCase {
     func testFileLengthWithDefaultConfiguration() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
                    testMultiByteOffsets: false, testShebang: false)

@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class InclusiveLanguageRuleTests: XCTestCase {
+class InclusiveLanguageRuleTests: SwiftLintTestCase {
     func testNonTriggeringExamplesWithNonDefaultConfig() {
         InclusiveLanguageRuleExamples.nonTriggeringExamplesWithConfig.forEach { example in
             let description = InclusiveLanguageRule.description

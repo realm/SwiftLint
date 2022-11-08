@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
+class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
     func testConditionalReturnsOnNewlineWithIfOnly() {
         // Test with `if_only` set to true
         let nonTriggeringExamples = [

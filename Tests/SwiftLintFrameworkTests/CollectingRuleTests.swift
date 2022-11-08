@@ -4,7 +4,7 @@
 import SwiftLintTestHelpers
 import XCTest
 
-class CollectingRuleTests: XCTestCase {
+class CollectingRuleTests: SwiftLintTestCase {
     func testCollectsIntoStorage() {
         struct Spec: MockCollectingRule {
             func collectInfo(for file: SwiftLintFile) -> Int {

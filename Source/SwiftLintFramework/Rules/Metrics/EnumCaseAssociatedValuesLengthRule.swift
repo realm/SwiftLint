@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
+struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityLevelsConfiguration(warning: 5, error: 6)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "enum_case_associated_values_count",
         name: "Enum Case Associated Values Count",
         description: "Number of associated values in an enum case should be low",
@@ -38,7 +38,7 @@ public struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Co
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 }

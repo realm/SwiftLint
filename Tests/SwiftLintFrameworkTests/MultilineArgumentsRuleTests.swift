@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class MultilineArgumentsRuleTests: SwiftLintTestCase {
     func testMultilineArgumentsWithWithNextLine() {

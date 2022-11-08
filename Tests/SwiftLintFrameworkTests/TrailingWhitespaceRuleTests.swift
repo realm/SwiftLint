@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class TrailingWhitespaceRuleTests: SwiftLintTestCase {
     func testWithIgnoresEmptyLinesEnabled() {

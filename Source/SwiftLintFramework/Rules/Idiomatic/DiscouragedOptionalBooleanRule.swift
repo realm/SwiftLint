@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_optional_boolean",
         name: "Discouraged Optional Boolean",
         description: "Prefer non-optional booleans over optional booleans.",
@@ -14,7 +14,7 @@ public struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRu
         triggeringExamples: DiscouragedOptionalBooleanRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

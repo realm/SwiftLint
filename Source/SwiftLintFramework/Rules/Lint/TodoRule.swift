@@ -1,19 +1,19 @@
 import Foundation
 import SourceKittenFramework
 
-public extension SyntaxKind {
+extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
     var isCommentLike: Bool {
         return Self.commentKinds.contains(self)
     }
 }
 
-public struct TodoRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct TodoRule: ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "todo",
         name: "Todo",
         description: "TODOs and FIXMEs should be resolved.",
@@ -71,7 +71,7 @@ public struct TodoRule: ConfigurationProviderRule {
         return reason
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.match(pattern: "\\b(?:TODO|FIXME)(?::|\\b)").compactMap { range, syntaxKinds in
             if syntaxKinds.contains(where: { !$0.isCommentLike }) {
                 return nil

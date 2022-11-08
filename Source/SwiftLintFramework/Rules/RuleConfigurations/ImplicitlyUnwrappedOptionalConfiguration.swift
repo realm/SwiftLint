@@ -1,5 +1,5 @@
 // swiftlint:disable:next type_name
-public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
+enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     case all = "all"
     case allExceptIBOutlets = "all_except_iboutlets"
 
@@ -13,21 +13,21 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     }
 }
 
-public struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration: SeverityConfiguration
-    public private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
+struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration: SeverityConfiguration
+    private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
 
-    public init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severityConfiguration: SeverityConfiguration) {
+    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severityConfiguration: SeverityConfiguration) {
         self.mode = mode
         self.severityConfiguration = severityConfiguration
     }
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", mode: \(mode)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

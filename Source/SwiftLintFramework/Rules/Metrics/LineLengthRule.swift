@@ -1,16 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigurationProviderRule {
-    public var configuration = LineLengthConfiguration(warning: 120, error: 200)
+struct LineLengthRule: ConfigurationProviderRule {
+    var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
-    public init() {}
+    init() {}
 
     private let commentKinds = SyntaxKind.commentKinds
     private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
     private let functionKinds = SwiftDeclarationKind.functionKinds
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "line_length",
         name: "Line Length",
         description: "Lines should not span too many characters.",
@@ -27,7 +27,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let minValue = configuration.params.map({ $0.value }).min() ?? .max
         let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
         let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])

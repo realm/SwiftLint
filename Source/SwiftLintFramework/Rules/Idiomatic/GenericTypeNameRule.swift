@@ -1,15 +1,15 @@
 import Foundation
 import SwiftSyntax
 
-public struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = NameConfiguration(minLengthWarning: 1,
-                                                 minLengthError: 0,
-                                                 maxLengthWarning: 20,
-                                                 maxLengthError: 1000)
+struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = NameConfiguration(minLengthWarning: 1,
+                                          minLengthError: 0,
+                                          maxLengthWarning: 20,
+                                          maxLengthError: 1000)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "generic_type_name",
         name: "Generic Type Name",
         description: "Generic type name should only contain alphanumeric characters, start with an " +
@@ -50,7 +50,7 @@ public struct GenericTypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
         }
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 }

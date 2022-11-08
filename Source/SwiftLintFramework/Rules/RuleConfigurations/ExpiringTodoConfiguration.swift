@@ -1,17 +1,17 @@
-public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
-    public struct DelimiterConfiguration: Equatable {
-        public static let `default`: DelimiterConfiguration = .init(opening: "[", closing: "]")
+struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
+    struct DelimiterConfiguration: Equatable {
+        static let `default`: DelimiterConfiguration = .init(opening: "[", closing: "]")
 
         fileprivate(set) var opening: String
         fileprivate(set) var closing: String
 
-        public init(opening: String, closing: String) {
+        init(opening: String, closing: String) {
             self.opening = opening
             self.closing = closing
         }
     }
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         let descriptions = [
             "approaching_expiry_severity: \(approachingExpirySeverity.consoleDescription)",
             "expired_severity: \(expiredSeverity.consoleDescription)",
@@ -40,7 +40,7 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
     /// The separator used for regex detection of the expiry-date string
     private(set) var dateSeparator: String
 
-    public init(
+    init(
         approachingExpirySeverity: SeverityConfiguration = .init(.warning),
         expiredSeverity: SeverityConfiguration = .init(.error),
         badFormattingSeverity: SeverityConfiguration = .init(.error),
@@ -57,7 +57,7 @@ public struct ExpiringTodoConfiguration: RuleConfiguration, Equatable {
         self.dateSeparator = dateSeparator
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

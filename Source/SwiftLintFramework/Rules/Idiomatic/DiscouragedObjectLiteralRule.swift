@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = ObjectLiteralConfiguration()
+struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = ObjectLiteralConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_object_literal",
         name: "Discouraged Object Literal",
         description: "Prefer initializers over object literals.",
@@ -24,7 +24,7 @@ public struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, Configur
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 }

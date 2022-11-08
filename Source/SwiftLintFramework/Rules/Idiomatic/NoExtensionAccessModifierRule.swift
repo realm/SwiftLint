@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.error)
+struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "no_extension_access_modifier",
         name: "No Extension Access Modifier",
         description: "Prefer not to use extension access modifiers",
@@ -23,7 +23,7 @@ public struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, Configu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

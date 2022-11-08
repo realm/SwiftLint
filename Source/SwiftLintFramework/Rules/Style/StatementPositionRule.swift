@@ -1,13 +1,13 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = StatementConfiguration(statementMode: .default,
-                                                      severity: SeverityConfiguration(.warning))
+struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = StatementConfiguration(statementMode: .default,
+                                               severity: SeverityConfiguration(.warning))
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",
         description: "Else and catch should be on the same line, one space after the previous " +
@@ -34,7 +34,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public static let uncuddledDescription = RuleDescription(
+    static let uncuddledDescription = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",
         description: "Else and catch should be on the next line, with equal indentation to the " +
@@ -64,7 +64,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         switch configuration.statementMode {
         case .default:
             return defaultValidate(file: file)
@@ -73,7 +73,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         switch configuration.statementMode {
         case .default:
             return defaultCorrect(file: file)

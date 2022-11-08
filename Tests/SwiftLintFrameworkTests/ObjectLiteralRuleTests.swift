@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class ObjectLiteralRuleTests: SwiftLintTestCase {
     // MARK: - Instance Properties

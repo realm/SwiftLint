@@ -2,14 +2,14 @@ private func toExplicitInitMethod(typeName: String) -> String {
     return "\(typeName).init"
 }
 
-public struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
+struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    var severityConfiguration = SeverityConfiguration(.warning)
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", types: \(discouragedInits.sorted(by: <))"
     }
 
-    public private(set) var discouragedInits: Set<String>
+    private(set) var discouragedInits: Set<String>
 
     private let defaultDiscouragedInits = [
         "Bundle",
@@ -23,7 +23,7 @@ public struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration
 
     // MARK: - RuleConfiguration
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

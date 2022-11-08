@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nslocalizedstring_require_bundle",
         name: "NSLocalizedString Require Bundle",
         description: "Calls to NSLocalizedString should specify the bundle which contains the strings file.",
@@ -42,7 +42,7 @@ public struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, Co
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

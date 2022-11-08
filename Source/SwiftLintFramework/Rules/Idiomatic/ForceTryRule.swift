@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.error)
+struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "force_try",
         name: "Force Try",
         description: "Force tries should be avoided.",
@@ -26,7 +26,7 @@ public struct ForceTryRule: ConfigurationProviderRule, SwiftSyntaxRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

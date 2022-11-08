@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_parentheses_with_trailing_closure",
         name: "Empty Parentheses with Trailing Closure",
         description: "When using trailing closures, empty parentheses should be avoided " +
@@ -46,11 +46,11 @@ public struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRul
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nslocalizedstring_key",
         name: "NSLocalizedString Key",
         description: "Static strings should be used as key/comment" +
@@ -33,7 +33,7 @@ public struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, Configuratio
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

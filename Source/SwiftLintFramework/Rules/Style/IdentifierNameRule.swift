@@ -1,16 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = NameConfiguration(minLengthWarning: 3,
-                                                 minLengthError: 2,
-                                                 maxLengthWarning: 40,
-                                                 maxLengthError: 60,
-                                                 excluded: ["id"])
+struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
+    var configuration = NameConfiguration(minLengthWarning: 3,
+                                          minLengthError: 2,
+                                          maxLengthWarning: 40,
+                                          maxLengthError: 60,
+                                          excluded: ["id"])
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "identifier_name",
         name: "Identifier Name",
         description: "Identifier names should only contain alphanumeric characters and " +
@@ -25,7 +25,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     )
 
     // swiftlint:disable:next function_body_length
-    public func validate(
+    func validate(
         file: SwiftLintFile,
         kind: SwiftDeclarationKind,
         dictionary: SourceKittenDictionary

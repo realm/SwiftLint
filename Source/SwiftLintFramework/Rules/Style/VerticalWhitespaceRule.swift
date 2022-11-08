@@ -3,12 +3,12 @@ import SourceKittenFramework
 
 private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line."
 
-public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
+struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",
         description: defaultDescriptionReason,
@@ -38,7 +38,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         return defaultDescriptionReason
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
         guard linesSections.isNotEmpty else {
             return []
@@ -108,7 +108,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         return blankLinesSections
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let linesSections = violatingLineSections(in: file)
         if linesSections.isEmpty { return [] }
 

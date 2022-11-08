@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableASTRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableASTRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_void_return",
         name: "Redundant Void Return",
         description: "Returning Void in a function declaration is redundant.",
@@ -60,8 +60,8 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
     private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -69,8 +69,8 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                                dictionary: SourceKittenDictionary) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
+                         dictionary: SourceKittenDictionary) -> [NSRange] {
         guard functionKinds.contains(kind),
               containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary),
             let nameOffset = dictionary.nameOffset,
@@ -90,7 +90,7 @@ public struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCo
         return [match]
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, "")
     }
 

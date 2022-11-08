@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "flatmap_over_map_reduce",
         name: "FlatMap over map and reduce",
         description: "Prefer `flatMap` over `map` followed by `reduce([], +)`.",
@@ -19,7 +19,7 @@ public struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, Configuratio
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

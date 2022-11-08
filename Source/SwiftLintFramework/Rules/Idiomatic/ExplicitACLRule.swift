@@ -3,12 +3,12 @@ import SourceKittenFramework
 
 private typealias SourceKittenElement = SourceKittenDictionary
 
-public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_acl",
         name: "Explicit ACL",
         description: "All declarations should specify Access Control Level keywords explicitly.",
@@ -122,7 +122,7 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let implicitAndExplicitInternalElements = internalTypeElements(in: file.structureDictionary)
 
         guard implicitAndExplicitInternalElements.isNotEmpty else {

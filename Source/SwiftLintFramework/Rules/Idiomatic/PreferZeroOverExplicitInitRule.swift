@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-public struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prefer_zero_over_explicit_init",
         name: "Prefer Zero Over Explicit Init",
         description: "Prefer `.zero` over explicit init with zero parameters (e.g. `CGPoint(x: 0, y: 0)`)",
@@ -34,13 +34,13 @@ public struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInR
         ]
     )
 
-    public init() {}
+    init() {}
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

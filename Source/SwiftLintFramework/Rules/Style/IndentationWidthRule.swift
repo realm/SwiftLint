@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
+struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs(Int)
@@ -16,13 +16,13 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     }
 
     // MARK: - Properties
-    public var configuration = IndentationWidthConfiguration(
+    var configuration = IndentationWidthConfiguration(
         severity: .warning,
         indentationWidth: 4,
         includeComments: true,
         includeCompilerDirectives: true
     )
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "indentation_width",
         name: "Indentation Width",
         description: "Indent code using either one tab or the configured amount of spaces, " +
@@ -44,10 +44,10 @@ public struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
     )
 
     // MARK: - Initializers
-    public init() {}
+    init() {}
 
     // MARK: - Methods: Validation
-    public func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
+    func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 

@@ -1,12 +1,12 @@
 import IDEUtils
 import SwiftSyntax
 
-public struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "orphaned_doc_comment",
         name: "Orphaned Doc Comment",
         description: "A doc comment should be attached to a declaration.",
@@ -53,7 +53,7 @@ public struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRu
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let classifications = file.syntaxClassifications
             .filter { $0.kind != .none }
         let docstringsWithOtherComments = classifications

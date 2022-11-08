@@ -1,12 +1,12 @@
-public struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var ifOnly = false
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return [severityConfiguration.consoleDescription, "if_only: \(ifOnly)"].joined(separator: ", ")
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

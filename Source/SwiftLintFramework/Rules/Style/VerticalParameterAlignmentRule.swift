@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_parameter_alignment",
         name: "Vertical Parameter Alignment",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a declaration.",
@@ -14,7 +14,7 @@ public struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProv
         triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(locationConverter: file.locationConverter)
     }
 }

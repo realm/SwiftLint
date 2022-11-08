@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    public var configuration = ConditionalReturnsOnNewlineConfiguration()
+struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+    var configuration = ConditionalReturnsOnNewlineConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "conditional_returns_on_newline",
         name: "Conditional Returns on Newline",
         description: "Conditional statements should always return on the next line",
@@ -34,7 +34,7 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(
             ifOnly: configuration.ifOnly,
             locationConverter: file.locationConverter

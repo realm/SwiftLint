@@ -1,21 +1,21 @@
 import Foundation
 import SwiftSyntax
 
-public struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, CacheDescriptionProvider {
-    public var configuration: PrivateUnitTestConfiguration = {
+struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, CacheDescriptionProvider {
+    var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
         configuration.message = "Unit test marked `private` will not be run by XCTest."
         configuration.regex = regex("XCTestCase")
         return configuration
     }()
 
-    internal var cacheDescription: String {
+    var cacheDescription: String {
         return configuration.cacheDescription
     }
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_unit_test",
         name: "Private Unit Test",
         description: "Unit tests marked private are silently skipped.",
@@ -136,11 +136,11 @@ public struct PrivateUnitTestRule: SwiftSyntaxCorrectableRule, ConfigurationProv
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(parentClassRegex: configuration.regex)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             parentClassRegex: configuration.regex,
             locationConverter: file.locationConverter,

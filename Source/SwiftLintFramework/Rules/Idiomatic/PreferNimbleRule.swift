@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prefer_nimble",
         name: "Prefer Nimble",
         description: "Prefer Nimble matchers over XCTAssert functions.",
@@ -24,7 +24,7 @@ public struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class RulesTests: SwiftLintTestCase {
     func testLeadingWhitespace() {

@@ -1,13 +1,13 @@
 import SwiftSyntax
 
-public struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
     private static let operators = ["==", "!=", "===", "!==", ">", ">=", "<", "<="]
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "identical_operands",
         name: "Identical Operands",
         description: "Comparing two identical operands is likely a mistake.",
@@ -72,11 +72,11 @@ public struct IdenticalOperandsRule: ConfigurationProviderRule, SwiftSyntaxRule,
         ]
     )
 
-    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree.folded()
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

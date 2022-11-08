@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
-    public struct FileUSRs: Hashable {
+struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+    struct FileUSRs: Hashable {
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
@@ -14,17 +14,17 @@ public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Co
         let nameOffset: ByteCount
     }
 
-    public typealias FileInfo = FileUSRs
+    typealias FileInfo = FileUSRs
 
-    public var configuration = UnusedDeclarationConfiguration(
+    var configuration = UnusedDeclarationConfiguration(
         severity: .error,
         includePublicAndOpen: false,
         relatedUSRsToSkip: ["s:7SwiftUI15PreviewProviderP"]
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_declaration",
         name: "Unused Declaration",
         description: "Declarations should be referenced at least once within all files linted.",
@@ -34,7 +34,7 @@ public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Co
         requiresFileOnDisk: true
     )
 
-    public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
         guard compilerArguments.isNotEmpty else {
             queuedPrintError("""
                 Attempted to lint file at path '\(file.path ?? "...")' with the \
@@ -69,8 +69,8 @@ public struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Co
         )
     }
 
-    public func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
-                         compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
+                  compilerArguments: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
                                 allReferencedUSRs: allReferencedUSRs)

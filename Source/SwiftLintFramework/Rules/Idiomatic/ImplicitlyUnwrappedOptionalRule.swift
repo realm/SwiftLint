@@ -1,14 +1,14 @@
 import SwiftSyntax
 
-public struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = ImplicitlyUnwrappedOptionalConfiguration(
+struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = ImplicitlyUnwrappedOptionalConfiguration(
         mode: .allExceptIBOutlets,
         severityConfiguration: SeverityConfiguration(.warning)
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "implicitly_unwrapped_optional",
         name: "Implicitly Unwrapped Optional",
         description: "Implicitly unwrapped optionals should be avoided when possible.",
@@ -35,7 +35,7 @@ public struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationPro
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(mode: configuration.mode)
     }
 }

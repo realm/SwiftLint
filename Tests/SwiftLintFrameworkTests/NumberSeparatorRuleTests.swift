@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class NumberSeparatorRuleTests: SwiftLintTestCase {
     func testNumberSeparatorWithMinimumLength() {

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "static_operator",
         name: "Static Operator",
         description: "Operators should be declared as static functions, not free functions.",
@@ -78,7 +78,7 @@ public struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, Op
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

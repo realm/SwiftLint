@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.error)
+struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "dynamic_inline",
         name: "Dynamic Inline",
         description: "Avoid using 'dynamic' and '@inline(__always)' together.",
@@ -24,7 +24,7 @@ public struct DynamicInlineRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

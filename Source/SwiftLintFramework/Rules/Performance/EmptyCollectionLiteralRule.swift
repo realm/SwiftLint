@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_collection_literal",
         name: "Empty Collection Literal",
         description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal.",
@@ -28,7 +28,7 @@ public struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProvider
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

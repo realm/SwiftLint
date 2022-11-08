@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithAllowedSymbols() {

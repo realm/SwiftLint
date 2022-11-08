@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "return_value_from_void_function",
         name: "Return Value from Void Function",
         description: "Returning values from Void functions should be avoided.",
@@ -15,7 +15,7 @@ public struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInR
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ReturnValueFromVoidFunctionVisitor(viewMode: .sourceAccurate)
     }
 }

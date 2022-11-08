@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "valid_ibinspectable",
         name: "Valid IBInspectable",
         description: """
@@ -110,7 +110,7 @@ public struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 

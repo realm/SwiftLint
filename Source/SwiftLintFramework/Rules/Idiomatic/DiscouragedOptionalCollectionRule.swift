@@ -1,11 +1,11 @@
 import SourceKittenFramework
 
-public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_optional_collection",
         name: "Discouraged Optional Collection",
         description: "Prefer empty collection over optional collection.",
@@ -14,9 +14,9 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
         triggeringExamples: DiscouragedOptionalCollectionExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         let offsets = variableViolations(file: file, kind: kind, dictionary: dictionary) +
             functionViolations(file: file, kind: kind, dictionary: dictionary)
 

@@ -6,13 +6,13 @@ private enum ConfigurationKey: String {
     case ignoresCaseStatements = "ignores_case_statements"
 }
 
-public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return length.consoleDescription +
             ", \(ConfigurationKey.ignoresCaseStatements.rawValue): \(ignoresCaseStatements)"
     }
 
-    public static let defaultComplexityStatements: Set<StatementKind> = [
+    static let defaultComplexityStatements: Set<StatementKind> = [
         .forEach,
         .if,
         .guard,
@@ -22,11 +22,11 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         .case
     ]
 
-    public private(set) var length: SeverityLevelsConfiguration
+    private(set) var length: SeverityLevelsConfiguration
 
-    public private(set) var complexityStatements: Set<StatementKind>
+    private(set) var complexityStatements: Set<StatementKind>
 
-    public private(set) var ignoresCaseStatements: Bool {
+    private(set) var ignoresCaseStatements: Bool {
         didSet {
             if ignoresCaseStatements {
                 complexityStatements.remove(.case)
@@ -40,13 +40,13 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         return length.params
     }
 
-    public init(warning: Int, error: Int?, ignoresCaseStatements: Bool = false) {
+    init(warning: Int, error: Int?, ignoresCaseStatements: Bool = false) {
         self.length = SeverityLevelsConfiguration(warning: warning, error: error)
         self.complexityStatements = Self.defaultComplexityStatements
         self.ignoresCaseStatements = ignoresCaseStatements
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),
             configurationArray.isNotEmpty {
             let warning = configurationArray[0]

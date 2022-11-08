@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class DiscouragedObjectLiteralRuleTests: SwiftLintTestCase {
     func testWithImageLiteral() {

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
+struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_optional_binding",
         name: "Unused Optional Binding",
         description: "Prefer `!= nil` over `let _ =`",
@@ -41,7 +41,7 @@ public struct UnusedOptionalBindingRule: SwiftSyntaxRule, ConfigurationProviderR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(ignoreOptionalTry: configuration.ignoreOptionalTry)
     }
 }

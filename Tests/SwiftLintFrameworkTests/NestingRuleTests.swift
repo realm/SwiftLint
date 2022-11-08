@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class NestingRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length

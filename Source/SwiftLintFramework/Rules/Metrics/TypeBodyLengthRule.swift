@@ -10,12 +10,12 @@ private func wrapExample(
                    repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
-public struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 250, error: 350)
+struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityLevelsConfiguration(warning: 250, error: 350)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "type_body_length",
         name: "Type Body Length",
         description: "Type bodies should not span too many lines.",
@@ -33,7 +33,7 @@ public struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
         })
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         BodyLengthRuleVisitor(kind: .type, file: file, configuration: configuration)
     }
 }

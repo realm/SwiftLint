@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "literal_expression_end_indentation",
         name: "Literal Expression End Indentation",
         description: "Array and dictionary literal end should have the same indentation as the line that started it.",
@@ -123,7 +123,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }
@@ -144,7 +144,7 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
 }
 
 extension LiteralExpressionEndIdentationRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let allViolations = violations(in: file).reversed().filter { violation in
             guard let nsRange = file.stringView.byteRangeToNSRange(violation.range) else {
                 return false

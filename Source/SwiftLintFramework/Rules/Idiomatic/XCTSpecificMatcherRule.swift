@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "xct_specific_matcher",
         name: "XCTest Specific Matcher",
         description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
@@ -14,7 +14,7 @@ public struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationP
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

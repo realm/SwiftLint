@@ -2,12 +2,12 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = OperatorUsageWhitespaceConfiguration()
+struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = OperatorUsageWhitespaceConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "operator_usage_whitespace",
         name: "Operator Usage Whitespace",
         description: "Operators should be surrounded by a single whitespace when they are being used.",
@@ -17,7 +17,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         corrections: OperatorUsageWhitespaceRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
@@ -37,7 +37,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = violationRanges(file: file)
             .compactMap { byteRange, correction -> (NSRange, String)? in
                 guard let range = file.stringView.byteRangeToNSRange(byteRange) else {

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_filter_is_empty",
         name: "Contains Over Filter Is Empty",
         description: "Prefer `contains` over using `filter(where:).isEmpty`",
@@ -28,7 +28,7 @@ public struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, Configu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

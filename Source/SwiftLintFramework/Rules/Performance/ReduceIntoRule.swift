@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "reduce_into",
         name: "Reduce Into",
         description: "Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types",
@@ -108,7 +108,7 @@ public struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

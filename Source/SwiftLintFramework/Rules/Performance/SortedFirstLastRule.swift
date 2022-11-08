@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "sorted_first_last",
         name: "Min or Max over Sorted First or Last",
         description: "Prefer using `min()` or `max()` over `sorted().first` or `sorted().last`",
@@ -42,7 +42,7 @@ public struct SortedFirstLastRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

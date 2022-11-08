@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "convenience_type",
         name: "Convenience Type",
         description: "Types used for hosting only static members should be implemented as a caseless enum " +
@@ -117,7 +117,7 @@ public struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

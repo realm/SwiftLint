@@ -2,12 +2,12 @@ import Foundation
 import IDEUtils
 import SourceKittenFramework
 
-public struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "comment_spacing",
         name: "Comment Spacing",
         description: "Prefer at least one space after slashes for comments.",
@@ -119,7 +119,7 @@ public struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, 
         ]
     )
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
         file.syntaxClassifications
             .compactMap { (classifiedRange: SyntaxClassifiedRange) -> [NSRange]? in
@@ -156,7 +156,7 @@ public struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, 
             .flatMap { $0 }
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: Self.description,
@@ -166,7 +166,7 @@ public struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, 
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, " ")
     }
 }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "optional_enum_case_matching",
         name: "Optional Enum Case Match",
         description: "Matching an enum case against an optional enum without '?' is supported on Swift 5.1 and above.",
@@ -155,11 +155,11 @@ public struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, Configur
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

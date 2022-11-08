@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
     func testPrivateOverFilePrivateValidatingExtensions() {

@@ -28,12 +28,12 @@ private let legacyObjcTypes = [
     "NSUUID"
 ]
 
-public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_objc_type",
         name: "Legacy Objective-C Reference Type",
         description: "Prefer Swift value types to bridged Objective-C reference types",
@@ -68,7 +68,7 @@ public struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

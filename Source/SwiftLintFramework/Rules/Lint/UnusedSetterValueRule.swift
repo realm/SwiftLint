@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_setter_value",
         name: "Unused Setter Value",
         description: "Setter value is not used.",
@@ -129,7 +129,7 @@ public struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule 
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

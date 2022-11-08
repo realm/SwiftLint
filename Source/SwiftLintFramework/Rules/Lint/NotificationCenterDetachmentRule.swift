@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",
         description: "An object should only remove itself as an observer in `deinit`.",
@@ -14,7 +14,7 @@ public struct NotificationCenterDetachmentRule: SwiftSyntaxRule, ConfigurationPr
         triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

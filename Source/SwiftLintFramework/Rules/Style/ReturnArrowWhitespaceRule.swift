@@ -1,12 +1,12 @@
 import Foundation
 import SwiftSyntax
 
-public struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "return_arrow_whitespace",
         name: "Returning Whitespace",
         description: "Return arrow and return type should be separated by a single space or on a " +
@@ -55,11 +55,11 @@ public struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, Confi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violations = Visitor(viewMode: .sourceAccurate)
             .walk(file: file, handler: \.corrections)
             .compactMap { violation in

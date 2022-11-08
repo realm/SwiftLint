@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nimble_operator",
         name: "Nimble Operator",
         description: "Prefer Nimble operator overloads over free matcher functions.",
@@ -98,7 +98,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         "beNil": (to: "==", toNot: "!=", .nullary(analogueValue: "nil"))
     ]
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: Self.description,
@@ -144,7 +144,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             .map { $0.0 }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let matches = violationMatchesRanges(in: file)
             .filter { file.ruleEnabled(violatingRanges: [$0], for: self).isNotEmpty }
         guard matches.isNotEmpty else { return [] }

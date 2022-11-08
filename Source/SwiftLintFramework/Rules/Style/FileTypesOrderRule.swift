@@ -1,14 +1,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
+struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias FileTypeOffset = (fileType: FileType, offset: ByteCount)
 
-    public var configuration = FileTypesOrderConfiguration()
+    var configuration = FileTypesOrderConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "file_types_order",
         name: "File Types Order",
         description: "Specifies how the types within a file should be ordered.",
@@ -18,7 +18,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     )
 
     // swiftlint:disable:next function_body_length
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
               let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 

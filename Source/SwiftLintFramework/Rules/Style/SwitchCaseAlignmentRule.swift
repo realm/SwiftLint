@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SwitchCaseAlignmentConfiguration()
+struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SwitchCaseAlignmentConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
         description: """
@@ -40,7 +40,7 @@ public struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRul
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
     }
 }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "nsobject_prefer_isequal",
         name: "NSObject Prefer isEqual",
         description: "NSObject subclasses should implement isEqual instead of ==.",
@@ -14,7 +14,7 @@ public struct NSObjectPreferIsEqualRule: SwiftSyntaxRule, ConfigurationProviderR
         triggeringExamples: NSObjectPreferIsEqualRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

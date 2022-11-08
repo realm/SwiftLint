@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "duplicated_key_in_dictionary_literal",
         name: "Duplicated Key in Dictionary Literal",
         description: "Dictionary literals with duplicated keys will crash in runtime.",
@@ -79,7 +79,7 @@ public struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, Configurati
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 class StatementPositionRuleTests: SwiftLintTestCase {
     func testStatementPositionUncuddled() {

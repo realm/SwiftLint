@@ -1,15 +1,15 @@
 import SourceKittenFramework
 
-public struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
-    public struct Variable: Hashable {
+struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+    struct Variable: Hashable {
         let usr: String
         let offset: ByteCount
     }
 
-    public typealias USR = String
-    public typealias FileInfo = Set<USR>
+    typealias USR = String
+    typealias FileInfo = Set<USR>
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "capture_variable",
         name: "Capture Variable",
         description: "Non-constant variables should not be listed in a closure's capture list" +
@@ -152,16 +152,16 @@ public struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, Coll
         requiresFileOnDisk: true
     )
 
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> CaptureVariableRule.FileInfo {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> CaptureVariableRule.FileInfo {
         file.declaredVariables(compilerArguments: compilerArguments)
     }
 
-    public func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: CaptureVariableRule.FileInfo],
-                         compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: CaptureVariableRule.FileInfo],
+                  compilerArguments: [String]) -> [StyleViolation] {
         file.captureListVariables(compilerArguments: compilerArguments)
             .filter { capturedVariable in collectedInfo.values.contains { $0.contains(capturedVariable.usr) } }
             .map {

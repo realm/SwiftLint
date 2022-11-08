@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "is_disjoint",
         name: "Is Disjoint",
         description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.",
@@ -22,7 +22,7 @@ public struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

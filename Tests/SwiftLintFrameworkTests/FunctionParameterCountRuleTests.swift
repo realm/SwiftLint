@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 
 private func funcWithParameters(_ parameters: String,
                                 violates: Bool = false,

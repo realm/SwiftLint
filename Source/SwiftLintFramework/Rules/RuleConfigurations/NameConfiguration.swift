@@ -1,7 +1,7 @@
 import Foundation
 
-public struct NameConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct NameConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
             "excluded: \(excluded.sorted()), " +
@@ -27,13 +27,13 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         return CharacterSet(charactersIn: allowedSymbolsSet.joined())
     }
 
-    public init(minLengthWarning: Int,
-                minLengthError: Int,
-                maxLengthWarning: Int,
-                maxLengthError: Int,
-                excluded: [String] = [],
-                allowedSymbols: [String] = [],
-                validatesStartWithLowercase: Bool = true) {
+    init(minLengthWarning: Int,
+         minLengthError: Int,
+         maxLengthWarning: Int,
+         maxLengthError: Int,
+         excluded: [String] = [],
+         allowedSymbols: [String] = [],
+         validatesStartWithLowercase: Bool = true) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
@@ -41,7 +41,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -71,13 +71,13 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
 
 // MARK: - ConfigurationProviderRule extensions
 
-public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
+extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
     func severity(forLength length: Int) -> ViolationSeverity? {
         return configuration.severity(forLength: length)
     }
 }
 
-public extension NameConfiguration {
+extension NameConfiguration {
     func severity(forLength length: Int) -> ViolationSeverity? {
         if let minError = minLength.error, length < minError {
             return .error

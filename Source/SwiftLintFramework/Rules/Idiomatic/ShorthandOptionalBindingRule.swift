@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-public struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "shorthand_optional_binding",
         name: "Shorthand Optional Binding",
         description: "Use shorthand syntax for optional binding",
@@ -79,13 +79,13 @@ public struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRul
         deprecatedAliases: ["if_let_shadowing"]
     )
 
-    public init() {}
+    init() {}
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

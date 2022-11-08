@@ -231,6 +231,3 @@ let builtInRules: [Rule.Type] = [
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self
 ]
-
-/// The rule list containing all available rules built into SwiftLint as well as native custom rules.
-public let primaryRuleList = RuleList(rules: builtInRules + extraRules())

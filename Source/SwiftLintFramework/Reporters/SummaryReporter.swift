@@ -56,7 +56,7 @@ private extension TextTable {
                 continue
             }
 
-            let rule = primaryRuleList.list[ruleIdentifier]
+            let rule = RuleRegistry.shared.rule(forID: ruleIdentifier)
             let violations = ruleIdentifiersToViolationsMap[ruleIdentifier]
             let numberOfWarnings = violations?.filter { $0.severity == .warning }.count ?? 0
             let numberOfErrors = violations?.filter { $0.severity == .error }.count ?? 0

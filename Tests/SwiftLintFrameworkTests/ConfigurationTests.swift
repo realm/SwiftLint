@@ -6,7 +6,7 @@ import XCTest
 
 // swiftlint:disable file_length
 
-private let optInRules = primaryRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
+private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 class ConfigurationTests: XCTestCase {
     // MARK: Setup & Teardown
@@ -74,12 +74,11 @@ class ConfigurationTests: XCTestCase {
     func testEnableAllRulesConfiguration() throws {
         let configuration = try Configuration(
             dict: [:],
-            ruleList: primaryRuleList,
             enableAllRules: true,
             cachePath: nil
         )
 
-        XCTAssertEqual(configuration.rules.count, primaryRuleList.list.count)
+        XCTAssertEqual(configuration.rules.count, RuleRegistry.shared.list.list.count)
     }
 
     func testOnlyRules() throws {
@@ -146,7 +145,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.rulesWrapper.disabledRuleIdentifiers,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Set(primaryRuleList.list.keys
+        let expectedIdentifiers = Set(RuleRegistry.shared.list.list.keys
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
         let configuredIdentifiers = Set(disabledConfig.rules.map {
             type(of: $0).description.identifier
@@ -163,7 +162,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.rulesWrapper.disabledRuleIdentifiers,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Set(primaryRuleList.list.keys
+        let expectedIdentifiers = Set(RuleRegistry.shared.list.list.keys
             .filter({ !([validRule] + optInRules).contains($0) }))
         let configuredIdentifiers = Set(configuration.rules.map {
             type(of: $0).description.identifier

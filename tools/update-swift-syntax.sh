@@ -15,8 +15,10 @@ if [[ "$old_commit" == "$new_commit" ]]; then
 fi
 
 echo "Updating SwiftSyntax from $old_commit to $new_commit"
-echo "old_commit=$old_commit" >> $GITHUB_OUTPUT
-echo "new_commit=$new_commit" >> $GITHUB_OUTPUT
+if [[ "${GITHUB_ACTIONS-}" == "true" ]]; then
+  echo "old_commit=$old_commit" >> $GITHUB_OUTPUT
+  echo "new_commit=$new_commit" >> $GITHUB_OUTPUT
+fi
 
 # $1 — string to match
 # $2 — string to replace

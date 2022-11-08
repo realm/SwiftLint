@@ -17,15 +17,6 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
     public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         EmptyXCTestMethodRuleVisitor(testParentClasses: configuration.testParentClasses)
     }
-
-    public func makeViolation(file: SwiftLintFile, violation: ReasonedRuleViolation) -> StyleViolation {
-        StyleViolation(
-            ruleDescription: Self.description,
-            severity: violation.severity ?? configuration.severity,
-            location: Location(file: file, position: violation.position),
-            reason: violation.reason
-        )
-    }
 }
 
 private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {

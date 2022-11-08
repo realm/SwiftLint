@@ -2,7 +2,7 @@ public typealias BalancedXCTestLifecycleConfiguration = UnitTestRuleConfiguratio
 public typealias EmptyXCTestMethodConfiguration = UnitTestRuleConfiguration
 public typealias SingleTestClassConfiguration = UnitTestRuleConfiguration
 
-public struct UnitTestRuleConfiguration: RuleConfiguration, Equatable {
+public struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
     public private(set) var severityConfiguration = SeverityConfiguration(.warning)
     public private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 

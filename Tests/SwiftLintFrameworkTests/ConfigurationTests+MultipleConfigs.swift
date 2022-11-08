@@ -33,7 +33,6 @@ extension ConfigurationTests {
     func testWarningThresholdMerging() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             return Configuration(
-                ruleList: primaryRuleList,
                 warningThreshold: warningThreshold,
                 reporter: XcodeReporter.identifier
             )

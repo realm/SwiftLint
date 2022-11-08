@@ -38,7 +38,7 @@ extension Configuration {
     /// - parameter cachePath:              The location of the persisted cache on disk.
     public init(
         dict: [String: Any],
-        ruleList: RuleList = primaryRuleList,
+        ruleList: RuleList = RuleRegistry.shared.list,
         enableAllRules: Bool = false,
         cachePath: String? = nil
     ) throws {

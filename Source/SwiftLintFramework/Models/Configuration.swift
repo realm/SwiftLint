@@ -121,7 +121,7 @@ public struct Configuration {
     public init(
         rulesMode: RulesMode = .default(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
-        ruleList: RuleList = primaryRuleList,
+        ruleList: RuleList = RuleRegistry.shared.list,
         fileGraph: FileGraph? = nil,
         includedPaths: [String] = [],
         excludedPaths: [String] = [],

@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-final class GlobTests: XCTestCase {
+final class GlobTests: SwiftLintTestCase {
     private var mockPath: String {
         return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }

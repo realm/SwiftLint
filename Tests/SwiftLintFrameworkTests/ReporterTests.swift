@@ -3,7 +3,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class ReporterTests: XCTestCase {
+class ReporterTests: SwiftLintTestCase {
     func testReporterFromString() {
         for reporter in reportersList {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)

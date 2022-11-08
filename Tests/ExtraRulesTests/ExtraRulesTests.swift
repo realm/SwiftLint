@@ -1,8 +1,7 @@
 @testable import SwiftLintFramework
 import SwiftLintTestHelpers
-import XCTest
 
-final class ExtraRulesTests: XCTestCase {
+final class ExtraRulesTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         for ruleType in extraRules() {
             verifyRule(ruleType.description)

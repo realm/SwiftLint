@@ -66,6 +66,13 @@ file_name:
     - GeneratedTests.swift
     - TestHelpers.swift
 
+balanced_xctest_lifecycle: &unit_test_configuration
+  test_parent_classes:
+    - SwiftLintTestCase
+    - XCTestCase
+empty_xctest_method: *unit_test_configuration
+single_test_class: *unit_test_configuration
+
 function_body_length: 60
 type_body_length: 400
 

@@ -2,7 +2,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-final class ParserDiagnosticsTests: XCTestCase {
+final class ParserDiagnosticsTests: SwiftLintTestCase {
     func testFileWithParserErrorDiagnostics() {
         parserDiagnosticsDisabledForTests = false
         XCTAssertNotNil(SwiftLintFile(contents: "importz Foundation").parserDiagnostics)

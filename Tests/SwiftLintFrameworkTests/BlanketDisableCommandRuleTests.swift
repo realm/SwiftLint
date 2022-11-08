@@ -1,10 +1,10 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class BlanketDisableCommandRuleTests: XCTestCase {
-    private var emptyDescription: RuleDescription {
-        BlanketDisableCommandRule.description.with(triggeringExamples: []).with(nonTriggeringExamples: [])
-    }
+class BlanketDisableCommandRuleTests: SwiftLintTestCase {
+    private lazy var emptyDescription = BlanketDisableCommandRule.description
+        .with(triggeringExamples: [])
+        .with(nonTriggeringExamples: [])
 
     func testAlwaysBlanketDisable() {
         let nonTriggeringExamples = [Example("// swiftlint:disable file_length\n// swiftlint:enable file_length")]

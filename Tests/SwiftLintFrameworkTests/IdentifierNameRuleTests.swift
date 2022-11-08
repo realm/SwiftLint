@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class IdentifierNameRuleTests: XCTestCase {
+class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithExcluded() {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

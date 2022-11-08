@@ -8,7 +8,7 @@ import XCTest
 
 private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
-class ConfigurationTests: XCTestCase {
+class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown
     private var previousWorkingDir: String!
 

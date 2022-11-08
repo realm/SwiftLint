@@ -1,7 +1,7 @@
 import SwiftLintFramework
 import XCTest
 
-class DisableAllTests: XCTestCase {
+class DisableAllTests: SwiftLintTestCase {
     /// Example violations. Could be replaced with other single violations.
     private let violatingPhrases = [
         Example("let r = 0"), // Violates identifier_name

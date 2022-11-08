@@ -1,7 +1,6 @@
 import SwiftLintFramework
-import XCTest
 
-class IdentifierNameRuleTests: XCTestCase {
+class IdentifierNameRuleTests: SwiftLintTestCase {
     func testIdentifierNameWithAllowedSymbols() {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

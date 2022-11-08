@@ -329,7 +329,7 @@ public struct CollectedLinter {
         let allCustomIdentifiers =
             (configuration.rules.first { $0 is CustomRules } as? CustomRules)?
             .configuration.customRuleConfigurations.map { RuleIdentifier($0.identifier) } ?? []
-        let allRuleIdentifiers = primaryRuleList.allValidIdentifiers().map { RuleIdentifier($0) }
+        let allRuleIdentifiers = RuleRegistry.shared.list.allValidIdentifiers().map { RuleIdentifier($0) }
         let allValidIdentifiers = Set(allCustomIdentifiers + allRuleIdentifiers + [.all])
 
         return regions.flatMap { region in

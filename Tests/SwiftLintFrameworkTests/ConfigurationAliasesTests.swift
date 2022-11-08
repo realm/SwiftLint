@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-final class ConfigurationAliasesTests: XCTestCase {
+final class ConfigurationAliasesTests: SwiftLintTestCase {
     private let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {

@@ -1,7 +1,7 @@
 // Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 /// The rule list containing all available rules built into SwiftLint.
-public let primaryRuleList = RuleList(rules: [
+public let builtInRules: [Rule.Type] = [
     AccessibilityLabelForImageRule.self,
     AccessibilityTraitForButtonRule.self,
     AnonymousArgumentInMultilineClosureRule.self,
@@ -221,4 +221,4 @@ public let primaryRuleList = RuleList(rules: [
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self
-] + extraRules())
+]

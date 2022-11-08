@@ -1,7 +1,6 @@
 import SwiftLintFramework
-import XCTest
 
-class RulesTests: XCTestCase {
+class RulesTests: SwiftLintTestCase {
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
                    testMultiByteOffsets: false, testShebang: false)

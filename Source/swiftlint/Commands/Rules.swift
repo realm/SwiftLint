@@ -24,7 +24,7 @@ extension SwiftLint {
 
         func run() throws {
             if let ruleID = ruleID {
-                guard let rule = primaryRuleList.list[ruleID] else {
+                guard let rule = RuleRegistry.shared.rule(forID: ruleID) else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
 

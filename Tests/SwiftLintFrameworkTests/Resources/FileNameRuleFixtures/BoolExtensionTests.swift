@@ -1,7 +1,7 @@
 @testable import SomeModule
 import XCTest
 
-class BoolExtensionTests: XCTestCase {
+class BoolExtensionTests: SwiftLintTestCase {
     func testExample() {
         // some code
     }

@@ -14,7 +14,7 @@ class RulesFilter {
     private let allRules: RuleList
     private let enabledRules: [Rule]
 
-    init(allRules: RuleList = primaryRuleList, enabledRules: [Rule]) {
+    init(allRules: RuleList = RuleRegistry.shared.list, enabledRules: [Rule]) {
         self.allRules = allRules
         self.enabledRules = enabledRules
     }

@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class SwitchCaseAlignmentRuleTests: XCTestCase {
+class SwitchCaseAlignmentRuleTests: SwiftLintTestCase {
     func testSwitchCaseAlignmentWithoutIndentedCases() {
         let baseDescription = SwitchCaseAlignmentRule.description
         let examples = SwitchCaseAlignmentRule.Examples(indentedCases: false)

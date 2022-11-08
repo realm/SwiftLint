@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-final class PrefixedTopLevelConstantRuleTests: XCTestCase {
+final class PrefixedTopLevelConstantRuleTests: SwiftLintTestCase {
     func testPrivateOnly() {
         let triggeringExamples = [
             Example("private let ↓Foo = 20.0"),

@@ -1,7 +1,6 @@
 import SwiftLintFramework
-import XCTest
 
-class ColonRuleTests: XCTestCase {
+class ColonRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
     func testColonWithFlexibleRightSpace() {
         // Verify Colon rule with test values for when flexible_right_spacing

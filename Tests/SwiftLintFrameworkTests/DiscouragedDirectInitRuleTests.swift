@@ -1,7 +1,6 @@
 import SwiftLintFramework
-import XCTest
 
-class DiscouragedDirectInitRuleTests: XCTestCase {
+class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
     private let baseDescription = DiscouragedDirectInitRule.description
 
     func testDiscouragedDirectInitWithConfiguredSeverity() {

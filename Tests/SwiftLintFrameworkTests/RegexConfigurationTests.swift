@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class RegexConfigurationTests: XCTestCase {
+class RegexConfigurationTests: SwiftLintTestCase {
     func testShouldValidateIsTrueByDefault() {
         let config = RegexConfiguration(identifier: "example")
         XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))

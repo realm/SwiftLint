@@ -1,7 +1,6 @@
 @testable import SwiftLintFramework
-import XCTest
 
-class FileTypesOrderRuleTests: XCTestCase {
+class FileTypesOrderRuleTests: SwiftLintTestCase {
     func testFileTypesOrderReversedOrder() {
         // Test with reversed `order` entries
         let nonTriggeringExamples = [

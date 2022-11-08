@@ -6,7 +6,7 @@ private let fixturesDirectory = #file.bridge()
     .deletingLastPathComponent.bridge()
     .appendingPathComponent("Resources/FileNameRuleFixtures")
 
-class FileNameRuleTests: XCTestCase {
+class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil,
                           prefixPattern: String? = nil, suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil) throws -> [StyleViolation] {

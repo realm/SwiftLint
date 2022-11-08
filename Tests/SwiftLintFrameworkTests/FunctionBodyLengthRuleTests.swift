@@ -13,7 +13,7 @@ private func violatingFuncWithBody(_ body: String, file: StaticString = #file, l
     return funcWithBody(body, violates: true, file: file, line: line)
 }
 
-class FunctionBodyLengthRuleTests: XCTestCase {
+class FunctionBodyLengthRuleTests: SwiftLintTestCase {
     func testFunctionBodyLengths() {
         let longFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 49).joined())
         XCTAssertEqual(self.violations(longFunctionBody), [])

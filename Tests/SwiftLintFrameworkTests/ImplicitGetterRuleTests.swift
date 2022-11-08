@@ -1,7 +1,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-final class ImplicitGetterRuleTests: XCTestCase {
+final class ImplicitGetterRuleTests: SwiftLintTestCase {
     func testPropertyReason() throws {
         let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.description.identifier))
         let example = Example("""

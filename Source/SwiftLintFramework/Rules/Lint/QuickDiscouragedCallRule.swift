@@ -1,11 +1,11 @@
 import SourceKittenFramework
 
-public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "quick_discouraged_call",
         name: "Quick Discouraged Call",
         description: "Discouraged call inside 'describe' and/or 'context' block.",
@@ -14,7 +14,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
             return $0.inheritedTypes.isNotEmpty &&

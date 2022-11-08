@@ -1,17 +1,17 @@
-public struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public enum Order: String {
+struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    enum Order: String {
         case getSet = "get_set"
         case setGet = "set_get"
     }
 
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order = Order.getSet
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return [severityConfiguration.consoleDescription, "order: \(order.rawValue)"].joined(separator: ", ")
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

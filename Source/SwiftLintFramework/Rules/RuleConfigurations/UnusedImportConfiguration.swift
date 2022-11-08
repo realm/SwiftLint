@@ -1,10 +1,10 @@
 /// The configuration payload mapping an imported module to a set of modules that are allowed to be
 /// transitively imported.
-public struct TransitiveModuleConfiguration: Equatable {
+struct TransitiveModuleConfiguration: Equatable {
     /// The module imported in a source file.
-    public let importedModule: String
+    let importedModule: String
     /// The set of modules that can be transitively imported by `importedModule`.
-    public let transitivelyImportedModules: [String]
+    let transitivelyImportedModules: [String]
 
     init(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
@@ -19,8 +19,8 @@ public struct TransitiveModuleConfiguration: Equatable {
     }
 }
 
-public struct UnusedImportConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct UnusedImportConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return [
             "severity: \(severity.consoleDescription)",
             "require_explicit_imports: \(requireExplicitImports)",
@@ -29,22 +29,22 @@ public struct UnusedImportConfiguration: RuleConfiguration, Equatable {
         ].joined(separator: ", ")
     }
 
-    public private(set) var severity: SeverityConfiguration
-    public private(set) var requireExplicitImports: Bool
-    public private(set) var allowedTransitiveImports: [TransitiveModuleConfiguration]
+    private(set) var severity: SeverityConfiguration
+    private(set) var requireExplicitImports: Bool
+    private(set) var allowedTransitiveImports: [TransitiveModuleConfiguration]
     /// A set of modules to never remove the imports of.
-    public private(set) var alwaysKeepImports: [String]
+    private(set) var alwaysKeepImports: [String]
 
-    public init(severity: ViolationSeverity, requireExplicitImports: Bool,
-                allowedTransitiveImports: [TransitiveModuleConfiguration],
-                alwaysKeepImports: [String]) {
+    init(severity: ViolationSeverity, requireExplicitImports: Bool,
+         allowedTransitiveImports: [TransitiveModuleConfiguration],
+         alwaysKeepImports: [String]) {
         self.severity = SeverityConfiguration(severity)
         self.requireExplicitImports = requireExplicitImports
         self.allowedTransitiveImports = allowedTransitiveImports
         self.alwaysKeepImports = alwaysKeepImports
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

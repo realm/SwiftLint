@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
         description: "Discourages name cases/static members `none`, which can conflict with `Optional<T>.none`.",
@@ -178,7 +178,7 @@ public struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, Configuration
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

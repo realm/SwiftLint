@@ -8,12 +8,12 @@ private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt 
     """, file: file, line: line)
 }
 
-public struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "switch_case_on_newline",
         name: "Switch Case on Newline",
         description: "Cases inside a switch should always be on a newline",
@@ -62,7 +62,7 @@ public struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRul
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(locationConverter: file.locationConverter)
     }
 }

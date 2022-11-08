@@ -3,16 +3,16 @@ private enum ConfigurationKey: String {
     case bindIdentifier = "bind_identifier"
 }
 
-public struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var bindIdentifier = "self"
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return [severityConfiguration.consoleDescription,
                 "\(ConfigurationKey.bindIdentifier): \(bindIdentifier)"].joined(separator: ", ")
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

@@ -11,12 +11,12 @@ private func warnDeprecatedOnce() {
     _ = warnDeprecatedOnceImpl
 }
 
-public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "anyobject_protocol",
         name: "AnyObject Protocol",
         description: "Prefer using `AnyObject` over `class` for class-only protocols.",
@@ -42,12 +42,12 @@ public struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Conf
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         warnDeprecatedOnce()
         return Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

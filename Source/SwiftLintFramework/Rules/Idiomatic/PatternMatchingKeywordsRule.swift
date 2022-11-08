@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "pattern_matching_keywords",
         name: "Pattern Matching Keywords",
         description: "Combine multiple pattern matching bindings by moving keywords out of tuples.",
@@ -35,7 +35,7 @@ public struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProvide
         ].map(wrapInSwitch)
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

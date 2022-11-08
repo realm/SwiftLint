@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = ComputedAccessorsOrderRuleConfiguration()
+struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = ComputedAccessorsOrderRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "computed_accessors_order",
         name: "Computed Accessors Order",
         description: "Getter and setters in computed properties and subscripts should be in a consistent order.",
@@ -14,7 +14,7 @@ public struct ComputedAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntax
         triggeringExamples: ComputedAccessorsOrderRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ComputedAccessorsOrderRuleVisitor(expectedOrder: configuration.order)
     }
 }

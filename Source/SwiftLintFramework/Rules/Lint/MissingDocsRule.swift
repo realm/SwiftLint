@@ -43,15 +43,15 @@ private extension SwiftLintFile {
     }
 }
 
-public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
-    public init() {
+struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
+    init() {
         configuration = MissingDocsRuleConfiguration()
     }
 
-    public typealias ConfigurationType = MissingDocsRuleConfiguration
-    public var configuration: MissingDocsRuleConfiguration
+    typealias ConfigurationType = MissingDocsRuleConfiguration
+    var configuration: MissingDocsRuleConfiguration
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "missing_docs",
         name: "Missing Docs",
         description: "Declarations should be documented.",
@@ -119,7 +119,7 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let acls = configuration.parameters.map { $0.value }
         let dict = file.structureDictionary
         return file.missingDocOffsets(

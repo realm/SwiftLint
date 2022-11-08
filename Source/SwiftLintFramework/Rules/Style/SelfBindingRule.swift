@@ -2,12 +2,12 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
-public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SelfBindingConfiguration()
+struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SelfBindingConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "self_binding",
         name: "Self Binding",
         description: "Re-bind `self` to a consistent identifier name.",
@@ -48,11 +48,11 @@ public struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         SelfBindingRuleVisitor(bindIdentifier: configuration.bindIdentifier)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         SelfBindingRuleRewriter(
             bindIdentifier: configuration.bindIdentifier,
             locationConverter: file.locationConverter,

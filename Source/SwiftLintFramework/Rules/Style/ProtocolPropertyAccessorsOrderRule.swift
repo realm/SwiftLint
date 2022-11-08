@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "protocol_property_accessors_order",
         name: "Protocol Property Accessors Order",
         description: "When declaring properties in protocols, the order of accessors should be `get set`.",
@@ -24,11 +24,11 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Swi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

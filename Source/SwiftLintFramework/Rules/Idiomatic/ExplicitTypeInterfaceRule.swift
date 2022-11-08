@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
-    public var configuration = ExplicitTypeInterfaceConfiguration()
+struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
+    var configuration = ExplicitTypeInterfaceConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_type_interface",
         name: "Explicit Type Interface",
         description: "Properties should have a type interface",
@@ -67,7 +67,7 @@ public struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let captureGroupRanges = Lazy(self.captureGroupRanges(in: file))
         return file.structureDictionary.traverseWithParentsDepthFirst { parents, subDict in
             guard let kind = subDict.declarationKind,

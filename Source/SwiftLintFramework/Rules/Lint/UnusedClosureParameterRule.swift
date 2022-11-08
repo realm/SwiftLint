@@ -1,12 +1,12 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-public struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_closure_parameter",
         name: "Unused Closure Parameter",
         description: "Unused parameter in a closure should be replaced with _.",
@@ -16,11 +16,11 @@ public struct UnusedClosureParameterRule: SwiftSyntaxCorrectableRule, Configurat
         corrections: UnusedClosureParameterRuleExamples.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

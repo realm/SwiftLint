@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-public struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prefer_self_type_over_type_of_self",
         name: "Prefer Self Type Over Type of Self",
         description: "Prefer `Self` over `type(of: self)` when accessing properties or calling methods.",
@@ -105,13 +105,13 @@ public struct PreferSelfTypeOverTypeOfSelfRule: SwiftSyntaxCorrectableRule, OptI
         ]
     )
 
-    public init() {}
+    init() {}
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_filter_count",
         name: "Contains Over Filter Count",
         description: "Prefer `contains` over comparing `filter(where:).count` to 0.",
@@ -30,7 +30,7 @@ public struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, Configura
         }
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

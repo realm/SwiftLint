@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_first_not_nil",
         name: "Contains over first not nil",
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
@@ -30,11 +30,11 @@ public struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, Configura
         }
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree.folded()
     }
 }

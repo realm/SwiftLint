@@ -1,12 +1,12 @@
 import SwiftSyntax
 
 // this rule exists due to a compiler bug: https://github.com/apple/swift/issues/51036
-public struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "ns_number_init_as_function_reference",
         name: "NSNumber Init as Function Reference",
         description: "Passing `NSNumber.init` or `NSDecimalNumber.init` as a function reference is dangerous " +
@@ -24,7 +24,7 @@ public struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, Configuratio
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiple_closures_with_trailing_closure",
         name: "Multiple Closures with Trailing Closure",
         description: "Trailing closure syntax should not be used when passing more than one closure argument.",
@@ -37,7 +37,7 @@ public struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, Configur
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

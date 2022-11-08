@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    public var configuration = ProhibitedSuperConfiguration()
+struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = ProhibitedSuperConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prohibited_super_call",
         name: "Prohibited calls to super",
         description: "Some methods should not call super",
@@ -72,7 +72,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, SwiftSyntaxRule, O
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
     }
 }

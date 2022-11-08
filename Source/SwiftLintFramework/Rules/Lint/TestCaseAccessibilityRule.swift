@@ -1,13 +1,13 @@
 import Foundation
 import SwiftSyntax
 
-public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
+struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
                                          ConfigurationProviderRule, SubstitutionCorrectableRule {
-    public var configuration = TestCaseAccessibilityConfiguration()
+    var configuration = TestCaseAccessibilityConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "test_case_accessibility",
         name: "Test case accessibility",
         description: "Test cases should only contain private non-test members.",
@@ -17,11 +17,11 @@ public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
         corrections: TestCaseAccessibilityRuleExamples.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(allowedPrefixes: configuration.allowedPrefixes, testParentClasses: configuration.testParentClasses)
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         makeVisitor(file: file)
             .walk(tree: file.syntaxTree, handler: \.violations)
             .compactMap {
@@ -29,7 +29,7 @@ public struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
             }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, "private ")
     }
 }

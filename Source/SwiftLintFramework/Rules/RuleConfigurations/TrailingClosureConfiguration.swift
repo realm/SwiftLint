@@ -1,16 +1,16 @@
-public struct TrailingClosureConfiguration: RuleConfiguration, Equatable {
+struct TrailingClosureConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var onlySingleMutedParameter: Bool
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", only_single_muted_parameter: \(onlySingleMutedParameter)"
     }
 
-    public init(onlySingleMutedParameter: Bool = false) {
+    init(onlySingleMutedParameter: Bool = false) {
         self.onlySingleMutedParameter = onlySingleMutedParameter
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

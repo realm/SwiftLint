@@ -1,13 +1,13 @@
 import SourceKittenFramework
 
-public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
+struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: ByteCount)
 
-    public var configuration = TypeContentsOrderConfiguration()
+    var configuration = TypeContentsOrderConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "type_contents_order",
         name: "Type Contents Order",
         description: "Specifies the order of subtypes, properties, methods & more within a type.",
@@ -16,7 +16,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: TypeContentsOrderRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let substructures = dict.substructure
         return substructures.reduce(into: [StyleViolation]()) { violations, substructure in

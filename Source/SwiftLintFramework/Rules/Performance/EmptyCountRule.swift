@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    public var configuration = EmptyCountConfiguration()
+struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+    var configuration = EmptyCountConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_count",
         name: "Empty Count",
         description: "Prefer checking `isEmpty` over comparing `count` to zero.",
@@ -35,11 +35,11 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxR
         ]
     )
 
-    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree.folded()
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(onlyAfterDot: configuration.onlyAfterDot)
     }
 }

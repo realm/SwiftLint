@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "let_var_whitespace",
         name: "Variable Declaration Whitespace",
         description: "Let and var should be separated from other statements by a blank line.",
@@ -62,7 +62,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
 
         var attributeLines = attributeLineNumbers(file: file)

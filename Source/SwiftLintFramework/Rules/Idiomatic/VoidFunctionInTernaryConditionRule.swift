@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "void_function_in_ternary",
         name: "Void Function in Ternary",
         description: "Using ternary to call Void functions should be avoided.",
@@ -108,7 +108,7 @@ public struct VoidFunctionInTernaryConditionRule: ConfigurationProviderRule, Swi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         VoidFunctionInTernaryConditionVisitor(viewMode: .sourceAccurate)
     }
 }

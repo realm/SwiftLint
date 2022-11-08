@@ -4,24 +4,24 @@ private enum ConfigurationKey: String {
     case relatedUSRsToSkip = "related_usrs_to_skip"
 }
 
-public struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
+struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
     private(set) var includePublicAndOpen: Bool
     private(set) var severityConfiguration: SeverityConfiguration
     private(set) var relatedUSRsToSkip: Set<String>
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return "\(ConfigurationKey.severity.rawValue): \(severityConfiguration.severity.rawValue), " +
             "\(ConfigurationKey.includePublicAndOpen.rawValue): \(includePublicAndOpen), " +
             "\(ConfigurationKey.relatedUSRsToSkip.rawValue): \(relatedUSRsToSkip.sorted())"
     }
 
-    public init(severity: ViolationSeverity, includePublicAndOpen: Bool, relatedUSRsToSkip: Set<String>) {
+    init(severity: ViolationSeverity, includePublicAndOpen: Bool, relatedUSRsToSkip: Set<String>) {
         self.includePublicAndOpen = includePublicAndOpen
         self.severityConfiguration = SeverityConfiguration(severity)
         self.relatedUSRsToSkip = relatedUSRsToSkip
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configDict = configuration as? [String: Any], configDict.isNotEmpty else {
             throw ConfigurationError.unknownConfiguration
         }

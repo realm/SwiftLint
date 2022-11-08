@@ -1,12 +1,12 @@
 import SwiftSyntax
 
-public struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
+struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
     private typealias Version = DeploymentTargetConfiguration.Version
-    public var configuration = DeploymentTargetConfiguration()
+    var configuration = DeploymentTargetConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "deployment_target",
         name: "Deployment Target",
         description: "Availability checks or attributes shouldn't be using older versions " +
@@ -16,7 +16,7 @@ public struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: DeploymentTargetRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
     }
 

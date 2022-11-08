@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unowned_variable_capture",
         name: "Unowned Variable Capture",
         description: "Prefer capturing references as weak to avoid potential crashes.",
@@ -25,7 +25,7 @@ public struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, Configurat
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnownedVariableCaptureRuleVisitor(viewMode: .sourceAccurate)
     }
 }

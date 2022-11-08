@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "ibinspectable_in_extension",
         name: "IBInspectable in Extension",
         description: "Extensions shouldn't add @IBInspectable properties.",
@@ -26,7 +26,7 @@ public struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProvid
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

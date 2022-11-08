@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_enum_raw_value",
         name: "Explicit Enum Raw Value",
         description: "Enums should be explicitly assigned their raw values.",
@@ -79,7 +79,7 @@ public struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, Configuratio
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

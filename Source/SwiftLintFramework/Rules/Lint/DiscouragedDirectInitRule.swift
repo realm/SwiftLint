@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = DiscouragedDirectInitConfiguration()
+struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = DiscouragedDirectInitConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_direct_init",
         name: "Discouraged Direct Initialization",
         description: "Discouraged direct initialization of types that can be harmful.",
@@ -37,7 +37,7 @@ public struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(discouragedInits: configuration.discouragedInits)
     }
 }

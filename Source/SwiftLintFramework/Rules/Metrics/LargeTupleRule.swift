@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
+struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
+    var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "large_tuple",
         name: "Large Tuple",
         description: "Tuples shouldn't have too many members. Create a custom type instead.",
@@ -14,7 +14,7 @@ public struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
         triggeringExamples: LargeTupleRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         LargeTupleRuleVisitor(viewMode: .sourceAccurate)
             .walk(file: file, handler: \.violationPositions)
             .sorted(by: { $0.position < $1.position })

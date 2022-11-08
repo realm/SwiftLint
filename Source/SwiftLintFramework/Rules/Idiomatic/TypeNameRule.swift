@@ -1,12 +1,12 @@
 import Foundation
 import SwiftSyntax
 
-public struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = TypeNameRuleConfiguration()
+struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = TypeNameRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
@@ -17,7 +17,7 @@ public struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 }

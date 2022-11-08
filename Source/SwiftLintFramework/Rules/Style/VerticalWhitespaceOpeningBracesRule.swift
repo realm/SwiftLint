@@ -7,10 +7,10 @@ private extension SwiftLintFile {
     }
 }
 
-public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
     private static let nonTriggeringExamples = [
         Example("[1, 2].map { $0 }.foo()"),
@@ -143,11 +143,11 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule {
-    public var configurationDescription: String { return "N/A" }
+    var configurationDescription: String { return "N/A" }
 
-    public init(configuration: Any) throws {}
+    init(configuration: Any) throws {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_whitespace_opening_braces",
         name: "Vertical Whitespace after Opening Braces",
         description: "Don't include vertical whitespace (empty line) after opening braces.",
@@ -157,7 +157,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let patternRegex: NSRegularExpression = regex(pattern)
 
         return file.violatingRanges(for: pattern).map { violationRange in
@@ -177,7 +177,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
 }
 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
         guard violatingRanges.isNotEmpty else { return [] }
 

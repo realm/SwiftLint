@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "array_init",
         name: "Array Init",
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.",
@@ -51,7 +51,7 @@ public struct ArrayInitRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

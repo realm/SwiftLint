@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "class_delegate_protocol",
         name: "Class Delegate Protocol",
         description: "Delegate protocols should be class-only so they can be weakly referenced.",
@@ -31,7 +31,7 @@ public struct ClassDelegateProtocolRule: SwiftSyntaxRule, ConfigurationProviderR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

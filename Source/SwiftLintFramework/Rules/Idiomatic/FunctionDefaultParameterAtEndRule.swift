@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "function_default_parameter_at_end",
         name: "Function Default Parameter at End",
         description: "Prefer to locate parameters with defaults toward the end of the parameter list.",
@@ -51,7 +51,7 @@ public struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationP
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

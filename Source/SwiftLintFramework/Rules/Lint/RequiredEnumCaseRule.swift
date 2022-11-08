@@ -67,16 +67,16 @@ import SwiftSyntax
 ///     case accountCreated
 /// }
 /// ````
-public struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = RequiredEnumCaseRuleConfiguration()
+struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = RequiredEnumCaseRuleConfiguration()
 
-    public init() {}
+    init() {}
 
     private static let exampleConfiguration = [
         "NetworkResponsable": ["success": "warning", "error": "warning", "notConnected": "warning"]
     ]
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "required_enum_case",
         name: "Required Enum Case",
         description: "Enums conforming to a specified protocol must implement a specific case(s).",
@@ -133,7 +133,7 @@ public struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 }

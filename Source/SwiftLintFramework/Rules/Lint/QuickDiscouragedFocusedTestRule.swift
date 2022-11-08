@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "quick_discouraged_focused_test",
         name: "Quick Discouraged Focused Test",
         description: "Discouraged focused test. Other tests won't run while this one is focused.",
@@ -14,7 +14,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -1,9 +1,9 @@
-public struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_cggeometry_functions",
         name: "Legacy CGGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
@@ -102,11 +102,11 @@ public struct LegacyCGGeometryFunctionsRule: SwiftSyntaxCorrectableRule, Configu
         "CGRectIntersection": .function(name: "intersect", argumentLabels: [""])
     ]
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         LegacyFunctionRuleHelper.Visitor(legacyFunctions: Self.legacyFunctions)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         LegacyFunctionRuleHelper.Rewriter(
             legacyFunctions: Self.legacyFunctions,
             locationConverter: file.locationConverter,

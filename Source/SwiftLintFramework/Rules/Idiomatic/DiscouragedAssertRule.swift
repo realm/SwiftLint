@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_assert",
         name: "Discouraged Assert",
         description: "Prefer `assertionFailure()` and/or `preconditionFailure()` over `assert(false)`",
@@ -27,11 +27,11 @@ public struct DiscouragedAssertRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
 
     // MARK: - Life cycle
 
-    public init() {}
+    init() {}
 
     // MARK: - Public
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

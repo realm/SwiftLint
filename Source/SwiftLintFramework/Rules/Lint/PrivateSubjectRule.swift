@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_subject",
         name: "Private Combine Subject",
         description: "Combine Subject should be private.",
@@ -16,11 +16,11 @@ public struct PrivateSubjectRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
 
     // MARK: - Life cycle
 
-    public init() {}
+    init() {}
 
     // MARK: - Public
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

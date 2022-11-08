@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "typesafe_array_init",
         name: "Type-safe Array Init",
         description: ArrayInitRule.description.description,
@@ -58,7 +58,7 @@ public struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
             \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
             """)
 
-    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         guard let filePath = file.path else {
             return []
         }

@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
@@ -23,7 +23,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(in: .whitespacesAndNewlines)
         if countOfLeadingWhitespace == 0 {
             return []
@@ -38,7 +38,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
                                reason: reason)]
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,

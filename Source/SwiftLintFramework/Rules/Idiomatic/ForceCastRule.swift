@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.error)
+struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "force_cast",
         name: "Force Cast",
         description: "Force casts should be avoided.",
@@ -16,7 +16,7 @@ public struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: [ Example("NSNumber() ↓as! Int\n") ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ForceCastRuleVisitor(viewMode: .sourceAccurate)
     }
 }

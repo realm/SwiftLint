@@ -5,12 +5,12 @@ private let attributeNamesImplyingObjc: Set<String> = [
     "IBAction", "IBOutlet", "IBInspectable", "GKInspectable", "IBDesignable", "NSManaged"
 ]
 
-public struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_objc_attribute",
         name: "Redundant @objc Attribute",
         description: "Objective-C attribute (@objc) is redundant in declaration.",
@@ -20,7 +20,7 @@ public struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectab
         corrections: RedundantObjcAttributeRuleExamples.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         final class Visitor: ViolationsSyntaxVisitor {
             override func visitPost(_ node: AttributeListSyntax) {
                 if let objcAttribute = node.violatingObjCAttribute {
@@ -31,7 +31,7 @@ public struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectab
         return Visitor(viewMode: .sourceAccurate)
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         makeVisitor(file: file)
             .walk(tree: file.syntaxTree, handler: \.violations)
             .compactMap { violation in
@@ -100,7 +100,7 @@ private extension AttributeListSyntax {
     }
 }
 
-public extension RedundantObjcAttributeRule {
+extension RedundantObjcAttributeRule {
     func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         var whitespaceAndNewlineOffset = 0
         let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "yoda_condition",
         name: "Yoda condition rule",
         description: "The constant literal should be placed on the right-hand side of the comparison operator.",
@@ -36,7 +36,7 @@ public struct YodaConditionRule: OptInRule, ConfigurationProviderRule, SwiftSynt
             Example("if ↓200 <= i && i <= 299 || ↓600 <= i {}")
         ])
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         YodaConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }

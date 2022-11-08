@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prohibited_interface_builder",
         name: "Prohibited Interface Builder",
         description: "Creating views using Interface Builder should be avoided.",
@@ -20,7 +20,7 @@ public struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSy
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

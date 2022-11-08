@@ -1,15 +1,15 @@
-public struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var allowedPrefixes: Set<String> = []
-    public private(set) var testParentClasses: Set<String> = ["XCTestCase"]
+struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var allowedPrefixes: Set<String> = []
+    private(set) var testParentClasses: Set<String> = ["XCTestCase"]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", allowed_prefixes: [\(allowedPrefixes)]" +
             ", test_parent_classes: [\(testParentClasses)]"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

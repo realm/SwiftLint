@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = ForWhereRuleConfiguration()
+struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = ForWhereRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "for_where",
         name: "For Where",
         description: "`where` clauses are preferred over a single `if` inside a `for`.",
@@ -118,7 +118,7 @@ public struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(allowForAsFilter: configuration.allowForAsFilter)
     }
 }

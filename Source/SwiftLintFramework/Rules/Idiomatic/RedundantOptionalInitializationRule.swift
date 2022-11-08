@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
         description: "Initializing an optional variable with nil is redundant.",
@@ -106,11 +106,11 @@ public struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, C
             """)
     ]
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

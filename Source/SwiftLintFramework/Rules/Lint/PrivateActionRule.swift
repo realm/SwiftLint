@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_action",
         name: "Private Actions",
         description: "IBActions should be private.",
@@ -33,7 +33,7 @@ public struct PrivateActionRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

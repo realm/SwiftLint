@@ -1,19 +1,19 @@
-public struct LineLengthRuleOptions: OptionSet {
-    public let rawValue: Int
+struct LineLengthRuleOptions: OptionSet {
+    let rawValue: Int
 
-    public init(rawValue: Int = 0) {
+    init(rawValue: Int = 0) {
         self.rawValue = rawValue
     }
 
-    public static let ignoreURLs = Self(rawValue: 1 << 0)
-    public static let ignoreFunctionDeclarations = Self(rawValue: 1 << 1)
-    public static let ignoreComments = Self(rawValue: 1 << 2)
-    public static let ignoreInterpolatedStrings = Self(rawValue: 1 << 3)
+    static let ignoreURLs = Self(rawValue: 1 << 0)
+    static let ignoreFunctionDeclarations = Self(rawValue: 1 << 1)
+    static let ignoreComments = Self(rawValue: 1 << 2)
+    static let ignoreInterpolatedStrings = Self(rawValue: 1 << 3)
 
-    public static let all: LineLengthRuleOptions = [.ignoreURLs,
-                                                    .ignoreFunctionDeclarations,
-                                                    .ignoreComments,
-                                                    .ignoreInterpolatedStrings]
+    static let all: LineLengthRuleOptions = [.ignoreURLs,
+                                             .ignoreFunctionDeclarations,
+                                             .ignoreComments,
+                                             .ignoreInterpolatedStrings]
 }
 
 private enum ConfigurationKey: String {
@@ -25,8 +25,8 @@ private enum ConfigurationKey: String {
     case ignoresInterpolatedStrings = "ignores_interpolated_strings"
 }
 
-public struct LineLengthConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct LineLengthConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return length.consoleDescription +
                ", ignores urls: \(ignoresURLs)" +
                ", ignores function declarations: \(ignoresFunctionDeclarations)" +
@@ -44,7 +44,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         return length.params
     }
 
-    public init(warning: Int, error: Int?, options: LineLengthRuleOptions = []) {
+    init(warning: Int, error: Int?, options: LineLengthRuleOptions = []) {
         self.length = SeverityLevelsConfiguration(warning: warning, error: error)
         self.ignoresURLs = options.contains(.ignoreURLs)
         self.ignoresFunctionDeclarations = options.contains(.ignoreFunctionDeclarations)
@@ -52,7 +52,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         self.ignoresInterpolatedStrings = options.contains(.ignoreInterpolatedStrings)
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         if applyArray(configuration: configuration) {
             return
         }

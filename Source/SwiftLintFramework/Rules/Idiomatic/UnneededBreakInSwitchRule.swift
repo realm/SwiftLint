@@ -12,12 +12,12 @@ private func embedInSwitch(
         """, file: file, line: line)
 }
 
-public struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unneeded_break_in_switch",
         name: "Unneeded Break in Switch",
         description: "Avoid using unneeded break statements.",
@@ -50,7 +50,7 @@ public struct UnneededBreakInSwitchRule: SwiftSyntaxRule, ConfigurationProviderR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnneededBreakInSwitchRuleVisitor(viewMode: .sourceAccurate)
     }
 }

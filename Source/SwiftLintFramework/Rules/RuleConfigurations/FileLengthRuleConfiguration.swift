@@ -4,21 +4,21 @@ private enum ConfigurationKey: String {
     case ignoreCommentOnlyLines = "ignore_comment_only_lines"
 }
 
-public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
+struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var ignoreCommentOnlyLines: Bool
     private(set) var severityConfiguration: SeverityLevelsConfiguration
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", \(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
     }
 
-    public init(warning: Int, error: Int?, ignoreCommentOnlyLines: Bool = false) {
+    init(warning: Int, error: Int?, ignoreCommentOnlyLines: Bool = false) {
         self.ignoreCommentOnlyLines = ignoreCommentOnlyLines
         self.severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),
             configurationArray.isNotEmpty {
             let warning = configurationArray[0]

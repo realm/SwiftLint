@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "quick_discouraged_pending_test",
         name: "Quick Discouraged Pending Test",
         description: "Discouraged pending test. This test won't run while it's marked as pending.",
@@ -14,7 +14,7 @@ public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderR
         triggeringExamples: QuickDiscouragedPendingTestRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

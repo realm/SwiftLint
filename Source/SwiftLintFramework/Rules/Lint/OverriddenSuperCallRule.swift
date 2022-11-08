@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
-    public var configuration = OverriddenSuperCallConfiguration()
+struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+    var configuration = OverriddenSuperCallConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "overridden_super_call",
         name: "Overridden methods call super",
         description: "Some overridden methods should always call super",
@@ -76,7 +76,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRul
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
     }
 }

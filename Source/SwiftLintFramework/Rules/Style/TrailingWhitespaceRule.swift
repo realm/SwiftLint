@@ -1,13 +1,13 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                               ignoresComments: true)
+struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                        ignoresComments: true)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",
         description: "Lines should not have trailing whitespace.",
@@ -25,7 +25,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let filteredLines = file.lines.filter {
             guard $0.content.hasTrailingWhitespace() else { return false }
 
@@ -48,7 +48,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let whitespaceCharacterSet = CharacterSet.whitespaces
         var correctedLines = [String]()
         var corrections = [Correction]()

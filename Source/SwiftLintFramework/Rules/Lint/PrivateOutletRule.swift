@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
+struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_outlet",
         name: "Private Outlets",
         description: "IBOutlets should be private to avoid leaking UIKit to higher layers.",
@@ -78,7 +78,7 @@ public struct PrivateOutletRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(allowPrivateSet: configuration.allowPrivateSet)
     }
 }

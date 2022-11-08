@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discarded_notification_center_observer",
         name: "Discarded Notification Center Observer",
         description: "When registering for a notification using a block, the opaque observer that is " +
@@ -50,7 +50,7 @@ public struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, Configur
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

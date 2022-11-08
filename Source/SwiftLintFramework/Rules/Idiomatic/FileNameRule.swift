@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-public struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
-    public var configuration = FileNameConfiguration(
+struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+    var configuration = FileNameConfiguration(
         severity: .warning,
         excluded: ["main.swift", "LinuxMain.swift"],
         prefixPattern: "",
@@ -9,16 +9,16 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeR
         nestedTypeSeparator: "."
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "file_name",
         name: "File Name",
         description: "File name should match a type or extension declared in the file (if any).",
         kind: .idiomatic
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
             case let fileName = filePath.bridge().lastPathComponent,
             !configuration.excluded.contains(fileName) else {

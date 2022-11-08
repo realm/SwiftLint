@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unavailable_condition",
         name: "Unavailable Condition",
         description: "Use #unavailable/#available instead of #available/#unavailable with an empty body.",
@@ -71,7 +71,7 @@ public struct UnavailableConditionRule: ConfigurationProviderRule, SwiftSyntaxRu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UnavailableConditionRuleVisitor(viewMode: .sourceAccurate)
     }
 }

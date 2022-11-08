@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_set_access_control",
         name: "Redundant Set Access Control Rule",
         description: "Property setter access level shouldn't be explicit if " +
@@ -60,7 +60,7 @@ public struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyn
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

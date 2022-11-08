@@ -69,6 +69,7 @@
   - `class_delegate_protocol`
   - `closing_brace`
   - `closure_body_length`
+  - `closure_end_indentation`
   - `closure_parameter_position`
   - `collection_alignment`
   - `comment_spacing`

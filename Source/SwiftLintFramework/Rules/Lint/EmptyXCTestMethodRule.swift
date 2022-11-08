@@ -39,16 +39,6 @@ private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
     }
 }
 
-private extension ClassDeclSyntax {
-    func isXCTestCase(_ testParentClasses: Set<String>) -> Bool {
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
-            return false
-        }
-        let inheritedTypes = inheritanceList.compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text }
-        return testParentClasses.intersection(inheritedTypes).isNotEmpty
-    }
-}
-
 private extension FunctionDeclSyntax {
     var hasEmptyBody: Bool {
         if let body = body {

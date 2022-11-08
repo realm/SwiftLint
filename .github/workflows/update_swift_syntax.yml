@@ -13,6 +13,7 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v2
     - name: Update SwiftSyntax
+      id: update-swift-syntax
       run: ./tools/update-swift-syntax.sh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,6 +28,9 @@ jobs:
       uses: peter-evans/create-pull-request@923ad837f191474af6b1721408744feb989a4c27
       with:
         title: Update SwiftSyntax
+        body: |
+          Diff: https://github.com/apple/swift-syntax/compare/${{ steps.update-swift-syntax.outputs.old_commit }}...${{ steps.update-swift-syntax.outputs.new_commit }}
+        commit-message: Update SwiftSyntax
         delete-branch: true
         branch: update-swift-syntax
         branch-suffix: timestamp

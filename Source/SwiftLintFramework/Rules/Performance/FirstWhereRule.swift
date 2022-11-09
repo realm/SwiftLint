@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "first_where",
         name: "First Where",
         description: "Prefer using `.first(where:)` over `.filter { }.first` in collections.",
@@ -32,7 +32,7 @@ public struct FirstWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

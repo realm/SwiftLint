@@ -44,7 +44,7 @@ internal struct InclusiveLanguageRuleExamples {
 
     static let nonTriggeringExamplesWithConfig: [Example] = [
         Example("""
-        public let blackList = [
+        let blackList = [
             "foo", "bar"
         ]
         """, configuration: [

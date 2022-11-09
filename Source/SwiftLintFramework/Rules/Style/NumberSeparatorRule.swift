@@ -1,16 +1,16 @@
 import Foundation
 import SwiftSyntax
 
-public struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = NumberSeparatorConfiguration(
+struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = NumberSeparatorConfiguration(
         minimumLength: 0,
         minimumFractionLength: nil,
         excludeRanges: []
     )
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
@@ -20,11 +20,11 @@ public struct NumberSeparatorRule: OptInRule, SwiftSyntaxCorrectableRule, Config
         corrections: NumberSeparatorRuleExamples.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             configuration: configuration,
             locationConverter: file.locationConverter,

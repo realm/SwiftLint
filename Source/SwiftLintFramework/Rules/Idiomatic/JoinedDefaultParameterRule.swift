@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "joined_default_parameter",
         name: "Joined Default Parameter",
         description: "Discouraged explicit usage of the default separator.",
@@ -38,11 +38,11 @@ public struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, Configurat
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

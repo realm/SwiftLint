@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "fatal_error_message",
         name: "Fatal Error Message",
         description: "A fatalError call should have a message.",
@@ -36,7 +36,7 @@ public struct FatalErrorMessageRule: SwiftSyntaxRule, ConfigurationProviderRule,
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

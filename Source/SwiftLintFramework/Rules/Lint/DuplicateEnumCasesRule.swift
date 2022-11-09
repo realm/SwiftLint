@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.error)
+struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "duplicate_enum_cases",
         name: "Duplicate Enum Cases",
         description: "Enum can't contain multiple cases with the same name.",
@@ -57,7 +57,7 @@ public struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -37,7 +37,7 @@ private extension SwiftDeclarationKind {
     }
 }
 
-public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
+struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
     private static let variableKinds: Set<SwiftDeclarationKind> = [.varInstance,
                                                                    .varLocal,
                                                                    .varStatic,
@@ -49,7 +49,7 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
 
     private(set) var allowRedundancy = false
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         let excludedKinds = Self.variableKinds.subtracting(allowedKinds)
         let simplifiedExcludedKinds = excludedKinds.compactMap { $0.variableKind?.rawValue }.sorted()
         return severityConfiguration.consoleDescription +
@@ -57,9 +57,9 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             ", allow_redundancy: \(allowRedundancy)"
     }
 
-    public init() {}
+    init() {}
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

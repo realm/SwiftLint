@@ -1,14 +1,14 @@
 import SourceKittenFramework
 
-public struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
+struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var preferredModifierOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", preferred_modifier_order: \(preferredModifierOrder)"
     }
 
-    public init() {
+    init() {
         self.preferredModifierOrder = []
     }
 
@@ -16,7 +16,7 @@ public struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
         self.preferredModifierOrder = preferredModifierOrder
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

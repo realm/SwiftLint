@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "weak_delegate",
         name: "Weak Delegate",
         description: "Delegates should be weak to avoid reference cycles.",
@@ -67,7 +67,7 @@ public struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProvide
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

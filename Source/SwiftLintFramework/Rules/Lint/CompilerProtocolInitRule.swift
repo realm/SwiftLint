@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "compiler_protocol_init",
         name: "Compiler Protocol Init",
         description: Self.violationReason(
@@ -30,7 +30,7 @@ public struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRu
                 "shouldn't be called directly."
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

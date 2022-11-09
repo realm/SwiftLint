@@ -61,12 +61,12 @@ private extension SwiftLintFile {
     }
 }
 
-public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = OpeningBraceConfiguration()
+struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = OpeningBraceConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",
         description: "Opening braces should be preceded by a single space and on the same line " +
@@ -162,7 +162,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
@@ -170,7 +170,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc)
             .filter {
                 file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty

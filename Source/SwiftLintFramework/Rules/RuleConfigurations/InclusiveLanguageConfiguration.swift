@@ -5,15 +5,15 @@ private enum ConfigurationKey: String {
     case overrideAllowedTerms = "override_allowed_terms"
 }
 
-public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
+struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    var severityConfiguration = SeverityConfiguration(.warning)
     private var additionalTerms: Set<String>?
     private var overrideTerms: Set<String>?
     private var overrideAllowedTerms: Set<String>?
-    public private(set) var allTerms: [String]
-    public private(set) var allAllowedTerms: Set<String>
+    private(set) var allTerms: [String]
+    private(set) var allAllowedTerms: Set<String>
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         severityConfiguration.consoleDescription
             + ", additional_terms: \(additionalTerms?.sorted() ?? [])"
             + ", override_terms: \(overrideTerms?.sorted() ?? [])"
@@ -31,12 +31,12 @@ public struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Eq
         "mastercard"
     ]
 
-    public init() {
+    init() {
         self.allTerms = defaultTerms.sorted()
         self.allAllowedTerms = defaultAllowedTerms
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

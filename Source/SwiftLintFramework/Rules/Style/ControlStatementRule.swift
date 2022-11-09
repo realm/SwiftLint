@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "control_statement",
         name: "Control Statement",
         description:
@@ -80,7 +80,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorre
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map { match -> StyleViolation in
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
@@ -88,7 +88,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorre
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let statements = ["if", "for", "guard", "switch", "while", "catch"]
         let statementPatterns: [String] = statements.map { statement -> String in
             let isGuard = statement == "guard"
@@ -116,7 +116,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorre
         }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         var violationString = file.stringView.substring(with: violationRange)
         if violationString.contains("(") && violationString.contains(")") {
             if let openingIndex = violationString.firstIndex(of: "(") {

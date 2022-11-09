@@ -4,21 +4,21 @@ private enum ConfigurationKey: String {
     case ignoresDefaultParameters = "ignores_default_parameters"
 }
 
-public struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
+struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
     private(set) var ignoresDefaultParameters: Bool
     private(set) var severityConfiguration: SeverityLevelsConfiguration
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription +
         "\(ConfigurationKey.ignoresDefaultParameters.rawValue): \(ignoresDefaultParameters)"
     }
 
-    public init(warning: Int, error: Int?, ignoresDefaultParameters: Bool = true) {
+    init(warning: Int, error: Int?, ignoresDefaultParameters: Bool = true) {
         self.ignoresDefaultParameters = ignoresDefaultParameters
         self.severityConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),
             configurationArray.isNotEmpty {
             let warning = configurationArray[0]

@@ -46,12 +46,12 @@ private extension Sequence where Element == Line {
     }
 }
 
-public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "sorted_imports",
         name: "Sorted Imports",
         description: "Imports should be sorted.",
@@ -133,7 +133,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let groups = importGroups(in: file, filterEnabled: false)
         return violatingOffsets(inGroups: groups).map { index -> StyleViolation in
             let location = Location(file: file, characterOffset: index)
@@ -175,7 +175,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let groups = importGroups(in: file, filterEnabled: true)
 
         let corrections = violatingOffsets(inGroups: groups).map { characterOffset -> Correction in

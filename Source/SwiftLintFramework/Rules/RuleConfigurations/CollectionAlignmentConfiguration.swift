@@ -1,14 +1,14 @@
-public struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    public private(set) var alignColons = false
+struct CollectionAlignmentConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var alignColons = false
 
-    public init() {}
+    init() {}
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", align_colons: \(alignColons)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

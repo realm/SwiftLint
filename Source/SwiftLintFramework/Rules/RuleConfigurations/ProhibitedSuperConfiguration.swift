@@ -1,5 +1,5 @@
-public struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     var excluded = [String]()
     var included = ["*"]
 
@@ -16,13 +16,13 @@ public struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equa
 
     init() {}
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", excluded: [\(excluded)]" +
             ", included: [\(included)]"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

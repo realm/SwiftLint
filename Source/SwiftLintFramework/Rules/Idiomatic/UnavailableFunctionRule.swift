@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unavailable_function",
         name: "Unavailable Function",
         description: "Unimplemented functions should be marked as unavailable.",
@@ -72,7 +72,7 @@ public struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRul
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

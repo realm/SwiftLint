@@ -1,11 +1,11 @@
 import SourceKittenFramework
 
-public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_parameter_alignment_on_call",
         name: "Vertical Parameter Alignment On Call",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a method call.",
@@ -102,8 +102,8 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         ]
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, kind: SwiftExpressionKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard kind == .call,
             case let arguments = dictionary.enclosedArguments,
             arguments.count > 1,

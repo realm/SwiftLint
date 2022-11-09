@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = InclusiveLanguageConfiguration()
+struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = InclusiveLanguageConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "inclusive_language",
         name: "Inclusive Language",
         description: """
@@ -17,7 +17,7 @@ public struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule 
         triggeringExamples: InclusiveLanguageRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(allTerms: configuration.allTerms, allAllowedTerms: configuration.allAllowedTerms)
     }
 }

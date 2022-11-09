@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "lower_acl_than_parent",
         name: "Lower ACL than parent",
         description: "Ensure declarations have a lower access control level than their enclosing parent",
@@ -56,11 +56,11 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, Swif
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

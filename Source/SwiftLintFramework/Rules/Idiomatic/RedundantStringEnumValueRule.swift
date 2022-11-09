@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "redundant_string_enum_value",
         name: "Redundant String Enum Value",
         description: "String enum values can be omitted when they are equal to the enumcase name.",
@@ -61,7 +61,7 @@ public struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProvid
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

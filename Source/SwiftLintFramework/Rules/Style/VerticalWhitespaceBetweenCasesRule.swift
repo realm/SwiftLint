@@ -7,10 +7,10 @@ private extension SwiftLintFile {
     }
 }
 
-public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
     private static let nonTriggeringExamples: [Example] = [
         Example("""
@@ -138,7 +138,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 }
 
 extension VerticalWhitespaceBetweenCasesRule: OptInRule {
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "vertical_whitespace_between_cases",
         name: "Vertical Whitespace Between Cases",
         description: "Include a single empty line between switch cases.",
@@ -148,7 +148,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
         corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let patternRegex = regex(pattern)
         return violationRanges(in: file).compactMap { violationRange in
             let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
@@ -170,7 +170,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
 }
 
 extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         guard violatingRanges.isNotEmpty else { return [] }
 

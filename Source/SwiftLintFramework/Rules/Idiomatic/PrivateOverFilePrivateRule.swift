@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    public var configuration = PrivateOverFilePrivateRuleConfiguration()
+struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+    var configuration = PrivateOverFilePrivateRuleConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "private_over_fileprivate",
         name: "Private over fileprivate",
         description: "Prefer `private` over `fileprivate` declarations.",
@@ -56,11 +56,11 @@ public struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntax
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(validateExtensions: configuration.validateExtensions)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             validateExtensions: configuration.validateExtensions,
             locationConverter: file.locationConverter,

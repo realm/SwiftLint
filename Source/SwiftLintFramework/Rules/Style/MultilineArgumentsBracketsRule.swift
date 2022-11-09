@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_arguments_brackets",
         name: "Multiline Arguments Brackets",
         description: "Multiline arguments should have their surrounding brackets in a new line.",
@@ -158,7 +158,7 @@ public struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, Config
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

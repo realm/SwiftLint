@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "implicit_getter",
         name: "Implicit Getter",
         description: "Computed read-only properties and subscripts should avoid using the get keyword.",
@@ -14,7 +14,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ImplicitGetterRuleVisitor(viewMode: .sourceAccurate)
     }
 }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
+struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "function_parameter_count",
         name: "Function Parameter Count",
         description: "Number of function parameters should be low.",
@@ -37,7 +37,7 @@ public struct FunctionParameterCountRule: SwiftSyntaxRule, ConfigurationProvider
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(configuration: configuration)
     }
 }

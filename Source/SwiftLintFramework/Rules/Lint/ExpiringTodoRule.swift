@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
+struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired
@@ -19,7 +19,7 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         }
     }
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "expiring_todo",
         name: "Expiring Todo",
         description: "TODOs and FIXMEs should be resolved prior to their expiry date.",
@@ -44,11 +44,11 @@ public struct ExpiringTodoRule: ConfigurationProviderRule, OptInRule {
         ].skipWrappingInCommentTests()
     )
 
-    public var configuration: ExpiringTodoConfiguration = .init()
+    var configuration: ExpiringTodoConfiguration = .init()
 
-    public init() {}
+    init() {}
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let regex = #"""
         \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
         \\#(configuration.dateDelimiters.opening)\#

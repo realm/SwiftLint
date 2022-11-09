@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-public struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "single_test_class",
         name: "Single Test Class",
         description: "Test files should contain a single QuickSpec or XCTestCase class.",
@@ -49,9 +49,9 @@ public struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationPr
         ]
     )
 
-    public init() {}
+    init() {}
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let classes = TestClassVisitor(viewMode: .sourceAccurate)
             .walk(tree: file.syntaxTree, handler: \.violations)
 

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = AttributesConfiguration()
+struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = AttributesConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "attributes",
         name: "Attributes",
         description: """
@@ -17,7 +17,7 @@ public struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderR
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(
             locationConverter: file.locationConverter,
             configuration: configuration

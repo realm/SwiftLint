@@ -1,8 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
     // List of all possible import kinds
     static let importKinds = [
@@ -11,9 +11,9 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
         "var", "func"
     ]
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "duplicate_imports",
         name: "Duplicate Imports",
         description: "Imports should be unique.",
@@ -132,7 +132,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
         })
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return duplicateImports(file: file).map { duplicateImport in
             StyleViolation(
                 ruleDescription: Self.description,
@@ -142,7 +142,7 @@ public struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let duplicateImports = duplicateImports(file: file).reversed().filter {
             file.ruleEnabled(violatingRange: $0.range, for: self) != nil
         }

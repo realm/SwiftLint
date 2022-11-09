@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_function_chains",
         name: "Multiline Function Chains",
         description: "Chained function calls should be either on the same line, or one per line.",
@@ -94,9 +94,9 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  kind: SwiftExpressionKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         return violatingOffsets(file: file, kind: kind, dictionary: dictionary).map { offset in
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,

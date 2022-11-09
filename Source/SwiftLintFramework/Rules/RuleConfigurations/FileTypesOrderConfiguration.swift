@@ -6,7 +6,7 @@ enum FileType: String {
     case libraryContentProvider = "library_content_provider"
 }
 
-public struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
+struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order: [[FileType]] = [
         [.supportingType],
@@ -16,12 +16,12 @@ public struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
         [.libraryContentProvider]
     ]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", order: \(String(describing: order))"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

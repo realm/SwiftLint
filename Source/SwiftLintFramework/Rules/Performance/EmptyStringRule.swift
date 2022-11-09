@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_string",
         name: "Empty String",
         description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal.",
@@ -24,7 +24,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntax
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

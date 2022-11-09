@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = CollectionAlignmentConfiguration()
+struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = CollectionAlignmentConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "collection_alignment",
         name: "Collection Element Alignment",
         description: "All elements in a collection literal should be vertically aligned",
@@ -14,7 +14,7 @@ public struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRul
         triggeringExamples: Examples(alignColons: false).triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(alignColons: configuration.alignColons, locationConverter: file.locationConverter)
     }
 }

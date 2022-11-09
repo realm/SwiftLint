@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.error)
+struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.error)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "shorthand_operator",
         name: "Shorthand Operator",
         description: "Prefer shorthand operators (+=, -=, *=, /=) over doing the operation and assigning.",
@@ -42,11 +42,11 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule 
 
     fileprivate static let allOperators = ["-", "/", "+", "*"]
 
-    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree.folded()
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

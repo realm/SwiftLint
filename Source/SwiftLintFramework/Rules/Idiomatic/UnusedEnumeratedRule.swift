@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_enumerated",
         name: "Unused Enumerated",
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
@@ -29,7 +29,7 @@ public struct UnusedEnumeratedRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

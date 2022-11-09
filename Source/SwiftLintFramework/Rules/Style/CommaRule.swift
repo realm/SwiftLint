@@ -2,12 +2,12 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "comma",
         name: "Comma Spacing",
         description: "There should be no space before and one after any comma.",
@@ -87,7 +87,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFr
         ]
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -116,7 +116,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFr
             }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let initialNSRanges = Dictionary(
             uniqueKeysWithValues: violationRanges(in: file)
                 .compactMap { byteRange, shouldAddSpace in

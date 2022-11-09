@@ -1,4 +1,4 @@
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class CyclomaticComplexityRuleTests: XCTestCase {

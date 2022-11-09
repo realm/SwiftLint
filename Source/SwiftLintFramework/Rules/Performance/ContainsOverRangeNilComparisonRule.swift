@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "contains_over_range_nil_comparison",
         name: "Contains over range(of:) comparison to nil",
         description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`.",
@@ -23,11 +23,11 @@ public struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, Co
         }
     )
 
-    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree.folded()
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

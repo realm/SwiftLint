@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "strict_fileprivate",
         name: "Strict fileprivate",
         description: "`fileprivate` should be avoided.",
@@ -58,7 +58,7 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, Swift
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

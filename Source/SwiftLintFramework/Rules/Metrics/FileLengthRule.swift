@@ -1,11 +1,11 @@
 import SourceKittenFramework
 
-public struct FileLengthRule: ConfigurationProviderRule {
-    public var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
+struct FileLengthRule: ConfigurationProviderRule {
+    var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "file_length",
         name: "File Length",
         description: "Files should not span too many lines.",
@@ -20,7 +20,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
         ].skipWrappingInCommentTests()
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         func lineCountWithoutComments() -> Int {
             let commentKinds = SyntaxKind.commentKinds
             let lineCount = file.syntaxKindsByLines.filter { kinds in

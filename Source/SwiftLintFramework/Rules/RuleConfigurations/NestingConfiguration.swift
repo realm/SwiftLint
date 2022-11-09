@@ -1,5 +1,5 @@
-public struct NestingConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct NestingConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return "(type_level) \(typeLevel.shortConsoleDescription)"
             + ", (function_level) \(functionLevel.shortConsoleDescription)"
             + ", (check_nesting_in_closures_and_statements) \(checkNestingInClosuresAndStatements)"
@@ -11,19 +11,19 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
     var checkNestingInClosuresAndStatements: Bool
     var alwaysAllowOneTypeInFunctions: Bool
 
-    public init(typeLevelWarning: Int,
-                typeLevelError: Int?,
-                functionLevelWarning: Int,
-                functionLevelError: Int?,
-                checkNestingInClosuresAndStatements: Bool = true,
-                alwaysAllowOneTypeInFunctions: Bool = false) {
+    init(typeLevelWarning: Int,
+         typeLevelError: Int?,
+         functionLevelWarning: Int,
+         functionLevelError: Int?,
+         checkNestingInClosuresAndStatements: Bool = true,
+         alwaysAllowOneTypeInFunctions: Bool = false) {
         self.typeLevel = SeverityLevelsConfiguration(warning: typeLevelWarning, error: typeLevelError)
         self.functionLevel = SeverityLevelsConfiguration(warning: functionLevelWarning, error: functionLevelError)
         self.checkNestingInClosuresAndStatements = checkNestingInClosuresAndStatements
         self.alwaysAllowOneTypeInFunctions = alwaysAllowOneTypeInFunctions
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

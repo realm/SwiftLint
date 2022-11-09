@@ -1,9 +1,9 @@
-public struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
+struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityLevelsConfiguration(warning: 30, error: 100)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "closure_body_length",
         name: "Closure Body Length",
         description: "Closure bodies should not span too many lines.",
@@ -12,7 +12,7 @@ public struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationPr
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         BodyLengthRuleVisitor(kind: .closure, file: file, configuration: configuration)
     }
 }

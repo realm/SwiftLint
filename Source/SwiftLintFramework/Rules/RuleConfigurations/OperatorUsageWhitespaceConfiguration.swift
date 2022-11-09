@@ -1,17 +1,17 @@
-public struct OperatorUsageWhitespaceConfiguration: RuleConfiguration, Equatable {
+struct OperatorUsageWhitespaceConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var linesLookAround = 2
     private(set) var skipAlignedConstants = true
     private(set) var allowedNoSpaceOperators: [String] = ["...", "..<"]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription
             + ", lines_look_around: \(linesLookAround)"
             + ", skip_aligned_constants: \(skipAlignedConstants)"
             + ", allowed_no_space_operators: \(allowedNoSpaceOperators)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

@@ -14,6 +14,11 @@
   in a future release because it is now handled by the Swift compiler.  
   [JP Simard](https://github.com/jpsim)
 
+* Built-in SwiftLint rules are no longer marked as `public` in
+  SwiftLintFramework. This only impacts the programmatic API for the
+  SwiftLintFramework module.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Experimental
 
 * None.

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "prefer_self_in_static_references",
         name: "Prefer Self in Static References",
         description: "Use `Self` to refer to the surrounding type name.",
@@ -166,11 +166,11 @@ public struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let ranges = Visitor(viewMode: .sourceAccurate)
             .walk(file: file, handler: \.corrections)
             .compactMap { file.stringView.NSRange(start: $0.start, end: $0.end) }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "fallthrough",
         name: "Fallthrough",
         description: "Fallthrough should be avoided.",
@@ -30,7 +30,7 @@ public struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptIn
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

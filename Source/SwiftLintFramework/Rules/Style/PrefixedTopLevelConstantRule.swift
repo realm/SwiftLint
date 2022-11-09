@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
+struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "prefixed_toplevel_constant",
         name: "Prefixed Top-Level Constant",
         description: "Top-level constants should be prefixed by `k`.",
@@ -69,7 +69,7 @@ public struct PrefixedTopLevelConstantRule: SwiftSyntaxRule, OptInRule, Configur
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(onlyPrivateMembers: configuration.onlyPrivateMembers)
     }
 }

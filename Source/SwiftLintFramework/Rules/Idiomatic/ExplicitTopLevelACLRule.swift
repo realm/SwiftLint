@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "explicit_top_level_acl",
         name: "Explicit Top Level ACL",
         description: "Top-level declarations should specify Access Control Level keywords explicitly.",
@@ -30,7 +30,7 @@ public struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, Configuration
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

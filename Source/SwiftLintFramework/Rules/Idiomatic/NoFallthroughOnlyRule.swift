@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "no_fallthrough_only",
         name: "No Fallthrough Only",
         description: "Fallthroughs can only be used if the `case` contains at least one other statement.",
@@ -14,7 +14,7 @@ public struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule 
         triggeringExamples: NoFallthroughOnlyRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

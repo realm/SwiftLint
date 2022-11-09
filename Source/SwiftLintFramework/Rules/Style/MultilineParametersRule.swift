@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = MultilineParametersConfiguration()
+struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = MultilineParametersConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_parameters",
         name: "Multiline Parameters",
         description: "Functions and methods parameters should be either on the same line, or one per line.",
@@ -14,7 +14,7 @@ public struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, Configuration
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(allowsSingleLine: configuration.allowsSingleLine, locationConverter: file.locationConverter)
     }
 }

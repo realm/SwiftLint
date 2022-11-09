@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "legacy_multiple",
         name: "Legacy Multiple",
         description: "Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`).",
@@ -39,11 +39,11 @@ public struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyn
         ]
     )
 
-    public func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
+    func preprocess(syntaxTree: SourceFileSyntax) -> SourceFileSyntax? {
         syntaxTree.folded()
     }
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static var description = RuleDescription(
+    static var description = RuleDescription(
         identifier: "legacy_random",
         name: "Legacy Random",
         description: "Prefer using `type.random(in:)` over legacy functions.",
@@ -22,7 +22,7 @@ public struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

@@ -9,12 +9,12 @@ import SourceKittenFramework
 /// Known false negatives for Images declared as instance variables and containers that provide a label but are
 /// not accessibility elements. Known false positives for Images created in a separate function from where they
 /// have accessibility properties applied.
-public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "accessibility_label_for_image",
         name: "Accessibility Label for Image",
         description: "All Images that provide context should have an accessibility label. " +
@@ -27,8 +27,8 @@ public struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule
 
     // MARK: AST Rule
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
         guard kind == .struct,
             dictionary.inheritedTypes.contains("View"),

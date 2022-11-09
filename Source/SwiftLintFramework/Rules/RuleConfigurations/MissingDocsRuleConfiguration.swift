@@ -1,4 +1,4 @@
-public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
+struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var parameters = [
         RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)
@@ -7,7 +7,7 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var excludesInheritedTypes = true
     private(set) var excludesTrivialInit = false
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         let parametersDescription = parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
             "\($0.rawValue): \($1.map { $0.value.description }.sorted(by: <).joined(separator: ", "))"
         }.joined(separator: ", ")
@@ -30,7 +30,7 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let dict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

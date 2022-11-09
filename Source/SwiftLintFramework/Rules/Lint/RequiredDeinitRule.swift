@@ -6,10 +6,10 @@ import SwiftSyntax
 /// of objects and the deinit should print a message or remove its instance from a
 /// list of allocations. Even having an empty deinit method is useful to provide
 /// a place to put a breakpoint when chasing down leaks.
-public struct RequiredDeinitRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RequiredDeinitRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "required_deinit",
         name: "Required Deinit",
         description: "Classes should have an explicit deinit method.",
@@ -66,9 +66,9 @@ public struct RequiredDeinitRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
         ]
     )
 
-    public init() {}
+    init() {}
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

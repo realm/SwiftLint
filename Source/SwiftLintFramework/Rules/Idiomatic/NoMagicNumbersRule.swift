@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public init() {}
+struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    init() {}
 
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "no_magic_numbers",
         name: "No Magic Numbers",
         description: "Magic numbers should be replaced by named constants.",
@@ -50,7 +50,7 @@ public struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProvi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

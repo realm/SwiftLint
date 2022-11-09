@@ -2,13 +2,13 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
+struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
                                     SourceKitFreeRule {
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "comma_inheritance",
         name: "Comma Inheritance Rule",
         description: "Use commas to separate types in inheritance lists",
@@ -62,7 +62,7 @@ public struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Conf
 
     // MARK: - Rule
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -72,11 +72,11 @@ public struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Conf
 
     // MARK: - SubstitutionCorrectableRule
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         return (violationRange, ", ")
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let visitor = CommaInheritanceRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor -> [ByteRange] in
             visitor.violationRanges

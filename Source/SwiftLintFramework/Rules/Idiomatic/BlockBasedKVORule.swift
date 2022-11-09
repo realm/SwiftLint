@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "block_based_kvo",
         name: "Block Based KVO",
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.",
@@ -35,7 +35,7 @@ public struct BlockBasedKVORule: SwiftSyntaxRule, ConfigurationProviderRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

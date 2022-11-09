@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "raw_value_for_camel_cased_codable_enum",
         name: "Raw Value For Camel Cased Codable Enum",
         description: "Camel cased cases of Codable String enums should have raw value.",
@@ -93,7 +93,7 @@ public struct RawValueForCamelCasedCodableEnumRule: SwiftSyntaxRule, OptInRule, 
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

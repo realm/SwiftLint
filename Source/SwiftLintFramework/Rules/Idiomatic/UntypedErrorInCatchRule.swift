@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxCorrectableRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "untyped_error_in_catch",
         name: "Untyped Error in Catch",
         description: "Catch statements should not declare error variables without type casting.",
@@ -87,11 +87,11 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule, Swi
             Example("do {\n    try foo() \n} ↓catch (let error) {}"): Example("do {\n    try foo() \n} catch {}")
         ])
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         UntypedErrorInCatchRuleVisitor(viewMode: .sourceAccurate)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         UntypedErrorInCatchRuleRewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

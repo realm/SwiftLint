@@ -1,5 +1,5 @@
-public struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public enum Platform: String {
+struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    enum Platform: String {
         case iOS
         case iOSApplicationExtension
         case macOS
@@ -25,27 +25,27 @@ public struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equ
         }
     }
 
-    public class Version: Equatable, Comparable {
-        public let platform: Platform
-        public var major: Int
-        public var minor: Int
-        public var patch: Int
+    class Version: Equatable, Comparable {
+        let platform: Platform
+        var major: Int
+        var minor: Int
+        var patch: Int
 
-        public var stringValue: String {
+        var stringValue: String {
             if patch > 0 {
                 return "\(major).\(minor).\(patch)"
             }
             return "\(major).\(minor)"
         }
 
-        public init(platform: Platform, major: Int, minor: Int = 0, patch: Int = 0) {
+        init(platform: Platform, major: Int, minor: Int = 0, patch: Int = 0) {
             self.platform = platform
             self.major = major
             self.minor = minor
             self.patch = patch
         }
 
-        public convenience init(platform: Platform, rawValue: String) throws {
+        convenience init(platform: Platform, rawValue: String) throws {
             let (major, minor, patch) = try Self.parseVersion(string: rawValue)
             self.init(platform: platform, major: major, minor: minor, patch: patch)
         }
@@ -82,11 +82,11 @@ public struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equ
             }
         }
 
-        public static func == (lhs: Version, rhs: Version) -> Bool {
+        static func == (lhs: Version, rhs: Version) -> Bool {
             lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch
         }
 
-        public static func < (lhs: Version, rhs: Version) -> Bool {
+        static func < (lhs: Version, rhs: Version) -> Bool {
             if lhs.major != rhs.major {
                 return lhs.major < rhs.major
             }
@@ -107,17 +107,17 @@ public struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equ
     private(set) var tvOSDeploymentTarget = Version(platform: .tvOS, major: 9)
     private(set) var tvOSAppExtensionDeploymentTarget = Version(platform: .tvOSApplicationExtension, major: 9)
 
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
     private let targets: [String: Version]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         severityConfiguration.consoleDescription + targets
             .sorted { $0.key < $1.key }
             .map { ", \($0): \($1.stringValue)" }.joined()
     }
 
-    public init() {
+    init() {
         self.targets = Dictionary(uniqueKeysWithValues: [
                 iOSDeploymentTarget,
                 iOSAppExtensionDeploymentTarget,
@@ -130,7 +130,7 @@ public struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equ
         ].map { ($0.platform.configurationKey, $0) })
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

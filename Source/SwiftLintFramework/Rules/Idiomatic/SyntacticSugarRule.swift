@@ -2,12 +2,12 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "syntactic_sugar",
         name: "Syntactic Sugar",
         description: "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
@@ -17,7 +17,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, So
         corrections: SyntacticSugarRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             flattenViolations(visitor.violations)
@@ -33,7 +33,7 @@ public struct SyntacticSugarRule: CorrectableRule, ConfigurationProviderRule, So
         return violations.flatMap { [$0] + flattenViolations($0.children) }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             var context = CorrectingContext(rule: self, file: file, contents: file.contents)

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = ObjectLiteralConfiguration()
+struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+    var configuration = ObjectLiteralConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "object_literal",
         name: "Object Literal",
         description: "Prefer object literals over image and color inits.",
@@ -33,7 +33,7 @@ public struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, Opt
         }
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(validateImageLiteral: configuration.imageLiteral, validateColorLiteral: configuration.colorLiteral)
     }
 }

@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "inert_defer",
         name: "Inert Defer",
         description: "If defer is at the end of its parent scope, it will be executed right where it is anyway.",
@@ -50,7 +50,7 @@ public struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

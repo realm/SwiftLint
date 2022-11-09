@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-public struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
-    public var configuration = TrailingCommaConfiguration()
+struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+    var configuration = TrailingCommaConfiguration()
 
-    public init() {}
+    init() {}
 
     private static let triggeringExamples: [Example] = [
         Example("let foo = [1, 2, 3↓,]\n"),
@@ -30,7 +30,7 @@ public struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProvid
         return result
     }()
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "trailing_comma",
         name: "Trailing Comma",
         description: "Trailing commas in arrays and dictionaries should be avoided/enforced.",
@@ -49,14 +49,14 @@ public struct TrailingCommaRule: SwiftSyntaxCorrectableRule, ConfigurationProvid
         corrections: Self.corrections
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(
             mandatoryComma: configuration.mandatoryComma,
             locationConverter: file.locationConverter
         )
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         Rewriter(
             mandatoryComma: configuration.mandatoryComma,
             locationConverter: file.locationConverter,

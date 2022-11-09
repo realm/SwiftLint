@@ -3,13 +3,13 @@ import SourceKittenFramework
 
 private let moduleToLog = ProcessInfo.processInfo.environment["SWIFTLINT_LOG_MODULE_USAGE"]
 
-public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
-    public var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
-                                                         allowedTransitiveImports: [], alwaysKeepImports: [])
+struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
+    var configuration = UnusedImportConfiguration(severity: .warning, requireExplicitImports: false,
+                                                  allowedTransitiveImports: [], alwaysKeepImports: [])
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "unused_import",
         name: "Unused Import",
         description: "All imported modules should be required to make the file compile.",
@@ -20,7 +20,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         requiresFileOnDisk: true
     )
 
-    public func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity.severity,
@@ -29,7 +29,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
         }
     }
 
-    public func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
         let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
 

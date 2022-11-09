@@ -1,16 +1,16 @@
-public struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
+struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
+    var consoleDescription: String {
         return "severity: \(severityConfiguration.consoleDescription), "
             + "indentation_width: \(indentationWidth), "
             + "include_comments: \(includeComments)"
     }
 
-    public private(set) var severityConfiguration: SeverityConfiguration
-    public private(set) var indentationWidth: Int
-    public private(set) var includeComments: Bool
-    public private(set) var includeCompilerDirectives: Bool
+    private(set) var severityConfiguration: SeverityConfiguration
+    private(set) var indentationWidth: Int
+    private(set) var includeComments: Bool
+    private(set) var includeCompilerDirectives: Bool
 
-    public init(
+    init(
         severity: ViolationSeverity,
         indentationWidth: Int,
         includeComments: Bool,
@@ -22,7 +22,7 @@ public struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
         self.includeCompilerDirectives = includeCompilerDirectives
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

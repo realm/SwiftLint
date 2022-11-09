@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "closure_parameter_position",
         name: "Closure Parameter Position",
         description: "Closure parameters should be on the same line as opening brace.",
@@ -96,7 +96,7 @@ public struct ClosureParameterPositionRule: SwiftSyntaxRule, ConfigurationProvid
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(locationConverter: file.locationConverter)
     }
 }

@@ -2,12 +2,12 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = ColonConfiguration()
+struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+    var configuration = ColonConfiguration()
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "colon",
         name: "Colon Spacing",
         description: """
@@ -19,7 +19,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
         corrections: ColonRuleExamples.corrections
     )
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         violationRanges(in: file).map { range in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
@@ -27,7 +27,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
         }
     }
 
-    public func violationRanges(in file: SwiftLintFile) -> [NSRange] {
+    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         let syntaxTree = file.syntaxTree
         let visitor = ColonRuleVisitor(viewMode: .sourceAccurate)
         visitor.walk(syntaxTree)
@@ -86,7 +86,7 @@ public struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule,
             }
     }
 
-    public func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, ": ")
     }
 }

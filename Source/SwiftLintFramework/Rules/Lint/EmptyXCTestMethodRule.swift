@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "empty_xctest_method",
         name: "Empty XCTest Method",
         description: "Empty XCTest method should be avoided.",
@@ -14,7 +14,7 @@ public struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, Swift
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         EmptyXCTestMethodRuleVisitor(viewMode: .sourceAccurate)
     }
 }

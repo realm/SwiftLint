@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",
         description: "Operators should be surrounded by a single whitespace when defining them.",
@@ -25,7 +25,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, SwiftSy
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

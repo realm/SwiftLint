@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    public var configuration = SeverityConfiguration(.warning)
+    var configuration = SeverityConfiguration(.warning)
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "balanced_xctest_lifecycle",
         name: "Balanced XCTest life-cycle",
         description: "Test classes must implement balanced setUp and tearDown methods.",
@@ -108,11 +108,11 @@ public struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, Configura
 
     // MARK: - Life cycle
 
-    public init() {}
+    init() {}
 
     // MARK: - Public
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

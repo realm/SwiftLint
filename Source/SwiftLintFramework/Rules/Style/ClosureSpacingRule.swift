@@ -2,12 +2,12 @@ import SwiftSyntax
 
 // MARK: - ClosureSpacingRule
 
-public struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "closure_spacing",
         name: "Closure Spacing",
         description: "Closure expressions should have a single space inside each brace.",
@@ -38,11 +38,11 @@ public struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProvi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         ClosureSpacingRuleVisitor(locationConverter: file.locationConverter)
     }
 
-    public func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
+    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
         ClosureSpacingRuleRewriter(
             locationConverter: file.locationConverter,
             disabledRegions: disabledRegions(file: file)

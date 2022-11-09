@@ -1,15 +1,15 @@
-public struct ObjectLiteralConfiguration: SeverityBasedRuleConfiguration, Equatable {
-    public private(set) var severityConfiguration = SeverityConfiguration(.warning)
+struct ObjectLiteralConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var imageLiteral = true
     private(set) var colorLiteral = true
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         return severityConfiguration.consoleDescription
             + ", image_literal: \(imageLiteral)"
             + ", color_literal: \(colorLiteral)"
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }

@@ -1,4 +1,4 @@
-public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
+struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
     struct RequiredCase: Hashable {
         var name: String
         var severity: ViolationSeverity
@@ -11,7 +11,7 @@ public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
 
     var protocols: [String: Set<RequiredCase>] = [:]
 
-    public var consoleDescription: String {
+    var consoleDescription: String {
         let protocols = self.protocols.sorted(by: { $0.key < $1.key }) .compactMap { name, required in
             let caseNames: [String] = required.sorted(by: { $0.name < $1.name }).map {
                 "[name: \"\($0.name)\", severity: \"\($0.severity.rawValue)\"]"
@@ -30,7 +30,7 @@ public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
         return protocols.isEmpty ? instructions : protocols
     }
 
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let config = configuration as? [String: [String: String]] else {
             throw ConfigurationError.unknownConfiguration
         }

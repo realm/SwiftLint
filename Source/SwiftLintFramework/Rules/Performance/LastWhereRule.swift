@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "last_where",
         name: "Last Where",
         description: "Prefer using `.last(where:)` over `.filter { }.last` in collections.",
@@ -28,7 +28,7 @@ public struct LastWhereRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRu
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
     }
 }

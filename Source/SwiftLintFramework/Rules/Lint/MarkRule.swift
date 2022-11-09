@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MarkRule: CorrectableRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "mark",
         name: "Mark",
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
@@ -102,7 +102,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         ].joined(separator: "|")
     }
 
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         return violationRanges(in: file, matching: pattern).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
@@ -110,7 +110,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> [Correction] {
         var result = [Correction]()
 
         result.append(contentsOf: correct(file: file,

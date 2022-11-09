@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "multiline_literal_brackets",
         name: "Multiline Literal Brackets",
         description: "Multiline literals should have their surrounding brackets in a new line.",
@@ -103,9 +103,9 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         ]
     )
 
-    public func validate(file: SwiftLintFile,
-                         kind: SwiftExpressionKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  kind: SwiftExpressionKind,
+                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard
             [.array, .dictionary].contains(kind),
             let bodyByteRange = dictionary.bodyByteRange,

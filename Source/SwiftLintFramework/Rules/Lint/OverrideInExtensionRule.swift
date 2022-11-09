@@ -1,11 +1,11 @@
 import SwiftSyntax
 
-public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
-    public var configuration = SeverityConfiguration(.warning)
+struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+    var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
+    init() {}
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "override_in_extension",
         name: "Override in Extension",
         description: "Extensions shouldn't override declarations.",
@@ -35,7 +35,7 @@ public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, Swi
         ]
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         let allowedExtensions = ClassNameCollectingVisitor(viewMode: .sourceAccurate)
             .walk(tree: file.syntaxTree, handler: \.classNames)
         return Visitor(allowedExtensions: allowedExtensions)

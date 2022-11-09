@@ -9,11 +9,6 @@ struct LineLengthRuleOptions: OptionSet {
     static let ignoreFunctionDeclarations = Self(rawValue: 1 << 1)
     static let ignoreComments = Self(rawValue: 1 << 2)
     static let ignoreInterpolatedStrings = Self(rawValue: 1 << 3)
-
-    static let all: LineLengthRuleOptions = [.ignoreURLs,
-                                             .ignoreFunctionDeclarations,
-                                             .ignoreComments,
-                                             .ignoreInterpolatedStrings]
 }
 
 private enum ConfigurationKey: String {

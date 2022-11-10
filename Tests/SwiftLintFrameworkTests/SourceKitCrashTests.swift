@@ -9,11 +9,6 @@ class SourceKitCrashTests: XCTestCase {
         var assertHandlerCalled = false
         file.assertHandler = { assertHandlerCalled = true }
 
-        _ = file.structure
-        XCTAssertFalse(assertHandlerCalled,
-                       "Expects assert handler was not called on accessing SwiftLintFile.structure")
-
-        assertHandlerCalled = false
         _ = file.syntaxMap
         XCTAssertFalse(assertHandlerCalled,
                        "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
@@ -36,11 +31,6 @@ class SourceKitCrashTests: XCTestCase {
         var assertHandlerCalled = false
         file.assertHandler = { assertHandlerCalled = true }
 
-        _ = file.structure
-        XCTAssertTrue(assertHandlerCalled,
-                      "Expects assert handler was called on accessing SwiftLintFile.structure")
-
-        assertHandlerCalled = false
         _ = file.syntaxMap
         XCTAssertTrue(assertHandlerCalled,
                       "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")

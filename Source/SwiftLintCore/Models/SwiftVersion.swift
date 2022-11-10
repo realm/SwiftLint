@@ -17,6 +17,8 @@ public struct SwiftVersion: RawRepresentable, Codable, Comparable {
 }
 
 public extension SwiftVersion {
+    // swiftlint:disable unused_declaration
+
     /// Swift 5.0.x - https://swift.org/download/#swift-50
     static let five = SwiftVersion(rawValue: "5.0.0")
     /// Swift 5.1.x - https://swift.org/download/#swift-51
@@ -35,6 +37,8 @@ public extension SwiftVersion {
     static let fiveDotSeven = SwiftVersion(rawValue: "5.7.0")
     /// Swift 5.8.x - https://swift.org/download/#swift-58
     static let fiveDotEight = SwiftVersion(rawValue: "5.8.0")
+
+    // swiftlint:enable unused_declaration
 
     /// The current detected Swift compiler version, based on the currently accessible SourceKit version.
     ///

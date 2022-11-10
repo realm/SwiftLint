@@ -33,6 +33,18 @@ swift_library(
 )
 
 swift_library(
+    name = "SwiftLintAnalyzerRules",
+    srcs = glob(["Source/SwiftLintAnalyzerRules/**/*.swift"]),
+    module_name = "SwiftLintAnalyzerRules",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
+        ":SwiftLintCore",
+        "@IndexStore//:IndexStore",
+    ],
+)
+
+swift_library(
     name = "SwiftLintBuiltInRules",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
     module_name = "SwiftLintBuiltInRules",
@@ -75,6 +87,7 @@ swift_library(
     module_name = "swiftlint",
     visibility = ["//visibility:public"],
     deps = [
+        ":SwiftLintAnalyzerRules",
         ":SwiftLintFramework",
         "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",

@@ -99,7 +99,7 @@ extension Configuration {
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
         if let rawIndentation = dict[Key.indentation.rawValue] {
-            if let indentationStyle = Self.IndentationStyle(rawIndentation) {
+            if let indentationStyle = Configuration.IndentationStyle(rawIndentation) {
                 return indentationStyle
             }
 

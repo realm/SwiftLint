@@ -17,6 +17,7 @@ struct SwiftLint: AsyncParsableCommand {
             version: Version.value,
             subcommands: [
                 Analyze.self,
+                DeadCode.self,
                 Docs.self,
                 GenerateDocs.self,
                 Lint.self,

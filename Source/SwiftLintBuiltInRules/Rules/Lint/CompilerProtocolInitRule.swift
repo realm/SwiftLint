@@ -108,8 +108,9 @@ private struct ExpressibleByCompiler {
         return self.arguments.contains(arguments)
     }
 
-    private static let byArrayLiteral: ExpressibleByCompiler = {
-        let types: Set = [
+    private static let byArrayLiteral = ExpressibleByCompiler(
+        protocolName: "ExpressibleByArrayLiteral",
+        types: [
             "Array",
             "ArraySlice",
             "ContiguousArray",
@@ -124,9 +125,9 @@ private struct ExpressibleByCompiler {
             "SBElementArray",
             "Set",
             "IndexSet"
-        ]
-        return Self(protocolName: "ExpressibleByArrayLiteral", types: types, arguments: [["arrayLiteral"]])
-    }()
+        ],
+        arguments: [["arrayLiteral"]]
+    )
 
     private static let byNilLiteral = Self(
         protocolName: "ExpressibleByNilLiteral",

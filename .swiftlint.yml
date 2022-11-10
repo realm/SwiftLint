@@ -88,6 +88,7 @@ file_name:
   excluded:
     - Exports.swift
     - GeneratedTests.swift
+    - IndexStore+Visitors.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
 

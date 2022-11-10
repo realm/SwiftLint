@@ -34,6 +34,21 @@ def swiftlint_repos(bzlmod = False):
         url = "https://github.com/JohnSundell/CollectionConcurrencyKit/archive/refs/tags/0.2.0.tar.gz",
     )
 
+    http_archive(
+        name = "com_github_keith_static_index_store",
+        url = "https://github.com/keith/StaticIndexStore/releases/download/5.7/libIndexStore.xcframework.zip",
+        sha256 = "da69bab932357a817aa0756e400be86d7156040bfbea8eded7a3acc529320731",
+        build_file = "@SwiftLint//bazel:StaticIndexStore.BUILD",
+    )
+
+    http_archive(
+        name = "com_github_lyft_index_store",
+        build_file = "@SwiftLint//bazel:IndexStore.BUILD",
+        sha256 = "c2135f9a4dbb399a5c56ab6c9d9da6999a3286c36fb17cab7f55ba6afd4371b7",
+        strip_prefix = "swift-index-store-1.0.0",
+        url = "https://github.com/lyft/swift-index-store/archive/refs/tags/1.0.0.tar.gz",
+    )
+
     # https://github.com/krzyzanowskim/CryptoSwift/pull/989
     http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",

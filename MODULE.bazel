@@ -20,6 +20,8 @@ use_repo(
     "com_github_johnsundell_collectionconcurrencykit",
     "com_github_krzyzanowskim_cryptoswift",
     "swiftlint_com_github_scottrhoyt_swifty_text_table",
+    "com_github_keith_static_index_store",
+    "com_github_lyft_index_store",
 )
 
 extra_rules = use_extension("//bazel:extensions.bzl", "extra_rules")

@@ -31,6 +31,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.1")),
         .package(url: "https://github.com/apple/swift-syntax.git", exact: "0.50800.0-SNAPSHOT-2022-12-29-a"),
+        .package(url: "https://github.com/lyft/swift-index-store.git", from: "1.0.0"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.34.0")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
@@ -49,6 +50,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "CollectionConcurrencyKit",
+                "SwiftLintAnalyzerRules",
                 "SwiftLintFramework",
                 "SwiftyTextTable",
             ]
@@ -62,6 +64,14 @@ let package = Package(
         .target(
             name: "SwiftLintCore",
             dependencies: frameworkDependencies
+        ),
+        .target(
+            name: "SwiftLintAnalyzerRules",
+            dependencies: frameworkDependencies + [
+                "SwiftLintCore",
+                "libIndexStore",
+                .product(name: "IndexStore", package: "swift-index-store")
+            ]
         ),
         .target(
             name: "SwiftLintBuiltInRules",
@@ -112,6 +122,11 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftLintTestHelpers"
             ]
+        ),
+        .binaryTarget(
+            name: "libIndexStore",
+            url: "https://github.com/keith/StaticIndexStore/releases/download/5.7/libIndexStore.xcframework.zip",
+            checksum: "da69bab932357a817aa0756e400be86d7156040bfbea8eded7a3acc529320731"
         ),
         .binaryTarget(
             name: "SwiftLintBinary",

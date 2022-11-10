@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "swift-index-store",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lyft/swift-index-store.git",
+      "state" : {
+        "revision" : "c8df3645ac28b9527cd5157a30f909d69a4b7e2d",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",

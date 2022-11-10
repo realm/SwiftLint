@@ -55,6 +55,15 @@ public struct Region: Equatable {
         return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
     }
 
+    /// Whether the specified rule identifier is disabled in this region.
+    ///
+    /// - parameter ruleIdentifier: The rule identifier whose status should be determined.
+    ///
+    /// - returns: True if the specified rule identifier is disabled in this region.
+    public func isRuleIdentifierDisabled(_ ruleIdentifier: String) -> Bool {
+        disabledRuleIdentifiers.contains { $0 == .all || $0.stringRepresentation == ruleIdentifier }
+    }
+
     /// Returns the deprecated rule aliases that are disabling the specified rule in this region.
     /// Returns the empty set if the rule isn't disabled in this region.
     ///

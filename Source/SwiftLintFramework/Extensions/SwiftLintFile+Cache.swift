@@ -19,11 +19,8 @@ private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
         return nil
     }
 }
-private let structureCache = Cache { file -> Structure? in
-    return responseCache.get(file).map(Structure.init)
-}
 private let structureDictionaryCache = Cache { file in
-    return structureCache.get(file).map { SourceKittenDictionary($0.dictionary) }
+    return responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
 }
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
     return Parser.parse(source: file.contents)
@@ -131,17 +128,6 @@ extension SwiftLintFile {
 
     internal var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
 
-    internal var structure: Structure {
-        guard let structure = structureCache.get(self) else {
-            if let handler = assertHandler {
-                handler()
-                return Structure(sourceKitResponse: [:])
-            }
-            queuedFatalError("Never call this for file that sourcekitd fails.")
-        }
-        return structure
-    }
-
     internal var structureDictionary: SourceKittenDictionary {
         guard let structureDictionary = structureDictionaryCache.get(self) else {
             if let handler = assertHandler {
@@ -199,7 +185,6 @@ extension SwiftLintFile {
         file.clearCaches()
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
-        structureCache.invalidate(self)
         structureDictionaryCache.invalidate(self)
         syntaxClassificationsCache.invalidate(self)
         syntaxMapCache.invalidate(self)
@@ -214,7 +199,6 @@ extension SwiftLintFile {
     internal static func clearCaches() {
         responseCache.clear()
         assertHandlerCache.clear()
-        structureCache.clear()
         structureDictionaryCache.clear()
         syntaxClassificationsCache.clear()
         syntaxMapCache.clear()

@@ -14,7 +14,7 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
     )
 
-    public func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         EmptyXCTestMethodRuleVisitor(testParentClasses: configuration.testParentClasses)
     }
 }

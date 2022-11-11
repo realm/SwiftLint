@@ -69,18 +69,22 @@ public struct Command: Equatable {
     /// - parameter line:         The line in the source file where this command is defined.
     /// - parameter character:    The character offset within the line in the source file where this command is
     ///                           defined.
-    public init?(actionString: String, line: Int, character: Int) {
+    public init?(actionString: String, file: String?, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString("swiftlint:")
         // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" ") else {
+            queuedPrintError("Found a swiftlint directive with no action at \(file ?? "Unknown file"), line \(line)")
             return nil
         }
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
-        guard let actionString = actionAndModifierScanner.scanUpToString(":"),
-            let action = Action(rawValue: actionString)
-            else {
-                return nil
+        guard let actionString = actionAndModifierScanner.scanUpToString(":") else {
+            queuedPrintError("Found a swiftlint directive with no action terminator at \(file ?? "Unknown file"), line \(line)")
+            return nil
+        }
+        guard let action = Action(rawValue: actionString) else {
+            queuedPrintError("Found a swiftlint directive with an invalid action (\(actionString) at \(file ?? "Unknown file"), line \(line)")
+            return nil
         }
         self.action = action
         self.line = line
@@ -103,6 +107,7 @@ public struct Command: Equatable {
             return component.isNotEmpty && component != "*/"
         }
 
+        // TODO: Can we check for invalid rules here as well?
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier

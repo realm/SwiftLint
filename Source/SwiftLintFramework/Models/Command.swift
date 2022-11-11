@@ -74,16 +74,16 @@ public struct Command: Equatable {
         _ = scanner.scanString("swiftlint:")
         // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" "), !actionAndModifierString.isEmpty else {
-            reportSwiftLintDirectiveError("found a swiftlint directive with no action", file: file, line: line, character: character)
+            warn("found a swiftlint directive with no action", file: file, line: line, character: character)
             return nil
         }
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         guard let actionString = actionAndModifierScanner.scanUpToString(":") else {
-            reportSwiftLintDirectiveError("found a swiftlint directive with no action terminator", file: file, line: line, character: character)
+            warn("found a swiftlint directive with no action terminator", file: file, line: line, character: character)
             return nil
         }
         guard let action = Action(rawValue: actionString) else {
-            reportSwiftLintDirectiveError("found a swiftlint directive with an invalid action", file: file, line: line, character: character)
+            warn("found a swiftlint directive with an invalid action", file: file, line: line, character: character)
             return nil
         }
         self.action = action
@@ -108,14 +108,12 @@ public struct Command: Equatable {
         }
 
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
-        
+
         guard !ruleIdentifiers.isEmpty else {
-            reportSwiftLintDirectiveError("found a swiftlint directive with no rules specified", file: file, line: line, character: character)
+            warn("found a swiftlint directive with no rules specified", file: file, line: line, character: character)
             return nil
         }
 
-        print(">>>> ruleIdenfiers = \(ruleIdentifiers)")
-        
         // Modifier
         let hasModifier = actionAndModifierScanner.scanString(":") != nil
         if hasModifier {
@@ -125,7 +123,7 @@ public struct Command: Equatable {
               )
             )
             if modifier == nil {
-                reportSwiftLintDirectiveError("found a invalid swiftlint directive modifier", file: file, line: line, character: character)
+                warn("found an invalid swiftlint directive modifier", file: file, line: line, character: character)
             }
         } else {
             modifier = nil
@@ -160,7 +158,7 @@ public struct Command: Equatable {
     }
 }
 
-fileprivate func reportSwiftLintDirectiveError(_ message: String, file: String?, line: Int, character: Int) {
+private func warn(_ message: String, file: String?, line: Int, character: Int) {
     var errorString = ""
     if let file = file {
         errorString = "\(file):\(line):\(character): "

@@ -107,7 +107,6 @@ public struct Command: Equatable {
             return component.isNotEmpty && component != "*/"
         }
 
-        // TODO: Can we check for invalid rules here as well?
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
         
         guard !ruleIdentifiers.isEmpty else {

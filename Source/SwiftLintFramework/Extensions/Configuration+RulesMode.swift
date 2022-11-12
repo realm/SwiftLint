@@ -61,7 +61,7 @@ public extension Configuration {
                 self = .only(Set(onlyRules + analyzerRules))
             } else {
                 warnAboutDuplicates(in: disabledRules)
-                
+
                 let effectiveOptInRules: [String]
                 if optInRules.contains("all") {
                     effectiveOptInRules = primaryRuleList.list.compactMap { ruleID, ruleType in
@@ -70,7 +70,7 @@ public extension Configuration {
                 } else {
                     effectiveOptInRules = optInRules
                 }
-                                
+
                 warnAboutDuplicates(in: effectiveOptInRules + analyzerRules)
                 self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + analyzerRules))
             }

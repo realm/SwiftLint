@@ -61,8 +61,18 @@ public extension Configuration {
                 self = .only(Set(onlyRules + analyzerRules))
             } else {
                 warnAboutDuplicates(in: disabledRules)
-                warnAboutDuplicates(in: optInRules + analyzerRules)
-                self = .default(disabled: Set(disabledRules), optIn: Set(optInRules + analyzerRules))
+                
+                let effectiveOptInRules: [String]
+                if optInRules.contains("all") {
+                    effectiveOptInRules = primaryRuleList.list.compactMap { ruleID, ruleType in
+                        ruleType is OptInRule.Type ? ruleID : nil
+                    }
+                } else {
+                    effectiveOptInRules = optInRules
+                }
+                                
+                warnAboutDuplicates(in: effectiveOptInRules + analyzerRules)
+                self = .default(disabled: Set(disabledRules), optIn: Set(effectiveOptInRules + analyzerRules))
             }
         }
 

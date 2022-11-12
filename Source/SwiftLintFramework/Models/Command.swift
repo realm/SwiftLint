@@ -105,6 +105,10 @@ public struct Command: Equatable {
 
         ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
+        guard !ruleIdentifiers.isEmpty else {
+            return nil
+        }
+
         // Modifier
         let hasModifier = actionAndModifierScanner.scanString(":") != nil
         if hasModifier {

@@ -89,7 +89,7 @@ let builtInRules: [Rule.Type] = [
     InclusiveLanguageRule.self,
     IndentationWidthRule.self,
     InertDeferRule.self,
-    InvalidSwiftLintDirectiveRule.self,
+    InvalidSwiftLintCommandRule.self,
     IsDisjointRule.self,
     JoinedDefaultParameterRule.self,
     LargeTupleRule.self,

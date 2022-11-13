@@ -8,15 +8,15 @@
 import Foundation
 import SwiftSyntax
 
-struct InvalidSwiftLintDirectiveRule: SwiftSyntaxRule, ConfigurationProviderRule {
+struct InvalidSwiftLintCommandRule: SwiftSyntaxRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
 
     init() {}
 
     static let description = RuleDescription(
-        identifier: "invalid_swiftlint_directive",
-        name: "Invalid SwiftLint Directive",
-        description: "swiftlint directive does not have a valid action or modifier",
+        identifier: "invalid_swiftlint_command",
+        name: "Invalid SwiftLint Command",
+        description: "swiftlint command does not have a valid action or modifier",
         kind: .lint,
         nonTriggeringExamples: [
             Example("// swiftlint:disable some_rule"),
@@ -42,7 +42,7 @@ struct InvalidSwiftLintDirectiveRule: SwiftSyntaxRule, ConfigurationProviderRule
     }
 }
 
-private extension InvalidSwiftLintDirectiveRule {
+private extension InvalidSwiftLintCommandRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: TokenSyntax) {
             let leadingViolations = node.leadingTrivia.violations(offset: node.position)
@@ -92,26 +92,26 @@ private extension Trivia {
         offset: AbsolutePosition
     ) -> ReasonedRuleViolation? {
         if let malformedEnableViolation = malformedModifierViolation(
-            directiveAndAction: "swiftlint:enable:",
+            commandAndAction: "swiftlint:enable:",
             forString: actionString,
             offset: offset
         ) {
             return malformedEnableViolation
         }
         return malformedModifierViolation(
-            directiveAndAction: "swiftlint:disable:",
+            commandAndAction: "swiftlint:disable:",
             forString: actionString,
             offset: offset
         )
     }
 
     private func malformedModifierViolation(
-        directiveAndAction: String,
+        commandAndAction: String,
         forString actionString: String,
         offset: AbsolutePosition
     ) -> ReasonedRuleViolation? {
         let scanner = Scanner(string: actionString)
-        guard scanner.scanString(directiveAndAction) != nil else {
+        guard scanner.scanString(commandAndAction) != nil else {
             return nil
         }
         guard let modifierString = scanner.scanUpToString(" ") else {

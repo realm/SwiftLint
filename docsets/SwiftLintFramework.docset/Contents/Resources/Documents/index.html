@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SwiftLintFramework  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="SwiftLintFramework  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          SwiftLintFramework 0.49.1 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/realm/SwiftLint">
+            <img class="header-icon" src="img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="dash-feed://https%3A%2F%2Frealm.github.io%2FSwiftLint%2Fdocsets%2FSwiftLintFramework.xml">
+            <img class="header-icon" src="img/dash.png" alt="Dash"/>
+            Install in Dash
+          </a>
+        </p>
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
+      <img class="carat" src="img/carat.png" alt=""/>
+      SwiftLintFramework  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Rules.html">Rules</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="rule-directory.html">Rule Directory</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Reporters.html">Reporters</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CSVReporter.html">CSVReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CheckstyleReporter.html">CheckstyleReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmojiReporter.html">EmojiReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GitHubActionsLoggingReporter.html">GitHubActionsLoggingReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/HTMLReporter.html">HTMLReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JSONReporter.html">JSONReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JUnitReporter.html">JUnitReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MarkdownReporter.html">MarkdownReporter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/LinterCache.html">LinterCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/RuleStorage.html">RuleStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/SwiftLintFile.html">SwiftLintFile</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Global%20Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/AccessControlLevel.html">AccessControlLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ConfigurationError.html">ConfigurationError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ExecutableInfo.html">ExecutableInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ExecutableInfo.html">ExecutableInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleIdentifier.html">RuleIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleKind.html">RuleKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleListError.html">RuleListError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/SwiftExpressionKind.html">SwiftExpressionKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ViolationSeverity.html">ViolationSeverity</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/FileManager.html">FileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedFatalError_4file4lines5NeverOSS_s12StaticStringVSutF">queuedFatalError(_:file:line:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework11queuedPrintyyxlF">queuedPrint(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedPrintErroryySSF">queuedPrintError(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework12reporterFrom10identifierAA8Reporter_pXpSS_tF">reporterFrom(identifier:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ASTRule.html">ASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/AnalyzerRule.html">AnalyzerRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17AnyCollectingRuleP">AnyCollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingCorrectableRule.html">CollectingCorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingRule.html">CollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CorrectableRule.html">CorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LintableFileManager.html">LintableFileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework9OptInRuleP">OptInRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Reporter.html">Reporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Rule.html">Rule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/RuleConfiguration.html">RuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17SourceKitFreeRuleP">SourceKitFreeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableASTRule.html">SubstitutionCorrectableASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SubstitutionCorrectableRule.html">SubstitutionCorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ViolationsSyntaxRewriter.html">ViolationsSyntaxRewriter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CodeClimateReporter.html">CodeClimateReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectedLinter.html">CollectedLinter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command.html">Command</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Action.html">– Action</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Modifier.html">– Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Correction.html">Correction</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Example.html">Example</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GitLabJUnitReporter.html">GitLabJUnitReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Linter.html">Linter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Location.html">Location</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Region.html">Region</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleList.html">RuleList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleListDocumentation.html">RuleListDocumentation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleParameter.html">RuleParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SonarQubeReporter.html">SonarQubeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SourceKittenDictionary.html">SourceKittenDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StyleViolation.html">StyleViolation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxMap.html">SwiftLintSyntaxMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxToken.html">SwiftLintSyntaxToken</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftVersion.html">SwiftVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Version.html">Version</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XcodeReporter.html">XcodeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/YamlParser.html">YamlParser</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='swiftlint' class='heading'>SwiftLint</h1>
+
+<p>A tool to enforce Swift style and conventions, loosely based on the now archived <a href="https://github.com/github/swift-style-guide">GitHub Swift Style Guide</a>. SwiftLint enforces the style guide rules that are generally accepted by the Swift community. These rules are well described in popular style guides like <a href="https://github.com/raywenderlich/swift-style-guide">Ray Wenderlich&rsquo;s Swift Style Guide</a>.</p>
+
+<p>SwiftLint hooks into <a href="http://clang.llvm.org">Clang</a> and
+<a href="http://www.jpsim.com/uncovering-sourcekit">SourceKit</a> to use the
+<a href="http://clang.llvm.org/docs/IntroductionToTheClangAST.html">AST</a> representation
+of your source files for more accurate results.</p>
+
+<p><a href="https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main"><img src="https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main" alt="Build Status"></a>
+<a href="https://codecov.io/github/realm/SwiftLint?branch=main"><img src="https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=main" alt="codecov.io"></a></p>
+
+<p><img src="assets/screenshot.png" alt=""></p>
+
+<p>This project adheres to the <a href="https://realm.io/conduct">Contributor Covenant Code of Conduct</a>.
+By participating, you are expected to uphold this code. Please report
+unacceptable behavior to <a href="mailto:info@realm.io">info@realm.io</a>.</p>
+
+<blockquote>
+<p>Language Switch: <a href="https://github.com/realm/SwiftLint/blob/main/README_CN.md">中文</a>, <a href="https://github.com/realm/SwiftLint/blob/main/README_KR.md">한국어</a>.</p>
+</blockquote>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='using-a-href-http-brew-sh-homebrew-a' class='heading'>Using <a href="http://brew.sh/">Homebrew</a>:</h3>
+<pre class="highlight plaintext"><code>brew install swiftlint
+</code></pre>
+<h3 id='using-a-href-https-cocoapods-org-cocoapods-a' class='heading'>Using <a href="https://cocoapods.org">CocoaPods</a>:</h3>
+
+<p>Simply add the following line to your Podfile:</p>
+<pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'SwiftLint'</span>
+</code></pre>
+
+<p>This will download the SwiftLint binaries and dependencies in <code>Pods/</code> during your next
+<code>pod install</code> execution and will allow you to invoke it via <code>${PODS_ROOT}/SwiftLint/swiftlint</code>
+in your Script Build Phases.</p>
+
+<p>This is the recommended way to install a specific version of SwiftLint since it supports
+installing a pinned version rather than simply the latest (which is the case with Homebrew).</p>
+
+<p>Note that this will add the SwiftLint binaries, its dependencies&rsquo; binaries, and the Swift binary
+library distribution to the <code>Pods/</code> directory, so checking in this directory to SCM such as
+git is discouraged.</p>
+<h3 id='using-a-href-https-github-com-yonaskolb-mint-mint-a' class='heading'>Using <a href="https://github.com/yonaskolb/mint">Mint</a>:</h3>
+<pre class="highlight plaintext"><code>$ mint install realm/SwiftLint
+</code></pre>
+<h3 id='using-a-pre-built-package' class='heading'>Using a pre-built package:</h3>
+
+<p>You can also install SwiftLint by downloading <code>SwiftLint.pkg</code> from the
+<a href="https://github.com/realm/SwiftLint/releases/latest">latest GitHub release</a> and
+running it.</p>
+<h3 id='installing-from-source' class='heading'>Installing from source:</h3>
+
+<p>You can also build and install from source by cloning this project and running
+<code>make install</code> (Xcode 13.3 or later).</p>
+<h3 id='using-bazel' class='heading'>Using Bazel</h3>
+
+<p>Put this in your <code>WORKSPACE</code>:</p>
+
+<details>
+
+<summary>WORKSPACE</summary>
+
+&ldquo;`python
+load(&rdquo;@bazel_tools//tools/build_defs/repo:http.bzl&quot;, &ldquo;http_archive&rdquo;)
+
+http_archive(
+    name = &ldquo;build_bazel_rules_apple&rdquo;,
+    sha256 = &ldquo;f94e6dddf74739ef5cb30f000e13a2a613f6ebfa5e63588305a71fce8a8a9911&rdquo;,
+    url = &ldquo;https://github.com/bazelbuild/rules_apple/releases/download/1.1.3/rules_apple.1.1.3.tar.gz&rdquo;,
+)
+
+load(
+    &ldquo;@build_bazel_rules_apple//apple:repositories.bzl&rdquo;,
+    &ldquo;apple_rules_dependencies&rdquo;,
+)
+
+apple_rules_dependencies()
+
+load(
+    &ldquo;@build_bazel_rules_swift//swift:repositories.bzl&rdquo;,
+    &ldquo;swift_rules_dependencies&rdquo;,
+)
+
+swift_rules_dependencies()
+
+load(
+    &ldquo;@build_bazel_rules_swift//swift:extras.bzl&rdquo;,
+    &ldquo;swift_rules_extra_dependencies&rdquo;,
+)
+
+swift_rules_extra_dependencies()
+
+http_archive(
+    name = &ldquo;SwiftLint&rdquo;,
+    sha256 = &ldquo;7c454ff4abeeecdd9513f6293238a6d9f803b587eb93de147f9aa1be0d8337c4&rdquo;,
+    url = &ldquo;https://github.com/realm/SwiftLint/releases/download/0.49.1/bazel.tar.gz&rdquo;,
+)
+
+load(&ldquo;@SwiftLint//bazel:repos.bzl&rdquo;, &ldquo;swiftlint_repos&rdquo;)
+
+swiftlint_repos()
+
+load(&ldquo;@SwiftLint//bazel:deps.bzl&rdquo;, &ldquo;swiftlint_deps&rdquo;)
+
+swiftlint_deps()
+&ldquo;`
+
+</details>
+
+<p>Then you can run SwiftLint in the current directory with this command:</p>
+<pre class="highlight console"><code><span class="go">bazel run -c opt @SwiftLint//:swiftlint
+</span></code></pre>
+<h2 id='usage' class='heading'>Usage</h2>
+<h3 id='presentation' class='heading'>Presentation</h3>
+
+<p>To get a high-level overview of recommended ways to integrate SwiftLint into your project,
+we encourage you to watch this presentation or read the transcript:</p>
+
+<p><a href="https://youtu.be/9Z1nTMTejqU"><img src="assets/presentation.svg" alt="Presentation"></a></p>
+<h3 id='xcode' class='heading'>Xcode</h3>
+
+<p>Integrate SwiftLint into your Xcode project to get warnings and errors displayed
+in the issue navigator.</p>
+
+<p>To do this select the project in the file navigator, then select the primary app
+target, and go to Build Phases. Click the + and select &quot;New Run Script Phase&rdquo;.
+Insert the following as the script:</p>
+
+<p><img src="assets/runscript.png" alt=""></p>
+
+<p>If you installed SwiftLint via Homebrew on Apple Silicon, you might experience this warning:</p>
+<div class="aside aside-warning">
+    <p class="aside-title">Warning</p>
+    <p>SwiftLint not installed, download from <a href="https://github.com/realm/SwiftLint">https://github.com/realm/SwiftLint</a></p>
+
+</div>
+
+<p>That is because Homebrew on Apple Silicon installs the binaries into the <code>/opt/homebrew/bin</code>
+folder by default. To instruct Xcode where to find SwiftLint, you can either add
+<code>/opt/homebrew/bin</code> to the <code>PATH</code> environment variable in your build phase</p>
+<pre class="highlight shell"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/opt/homebrew/bin"</span>
+<span class="k">if </span>which swiftlint <span class="o">&gt;</span> /dev/null<span class="p">;</span> <span class="k">then
+  </span>swiftlint
+<span class="k">else
+  </span><span class="nb">echo</span> <span class="s2">"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"</span>
+<span class="k">fi</span>
+</code></pre>
+
+<p>or you can create a symbolic link in <code>/usr/local/bin</code> pointing to the actual binary:</p>
+<pre class="highlight shell"><code><span class="nb">ln</span> <span class="nt">-s</span> /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
+</code></pre>
+
+<p>You might want to move your SwiftLint phase directly before the &lsquo;Compile Sources&rsquo;
+step to detect errors quickly before compiling. However, SwiftLint is designed
+to run on valid Swift code that cleanly completes the compiler&rsquo;s parsing stage.
+So running SwiftLint before &lsquo;Compile Sources&rsquo; might yield some incorrect
+results.</p>
+
+<p>If you wish to fix violations as well, your script could run
+<code>swiftlint --fix &amp;&amp; swiftlint</code> instead of just <code>swiftlint</code>. This will mean
+that all correctable violations are fixed while ensuring warnings show up in
+your project for remaining violations.</p>
+
+<p>If you&rsquo;ve installed SwiftLint via CocoaPods the script should look like this:</p>
+<pre class="highlight shell"><code><span class="s2">"</span><span class="k">${</span><span class="nv">PODS_ROOT</span><span class="k">}</span><span class="s2">/SwiftLint/swiftlint"</span>
+</code></pre>
+<h3 id='plug-in-support' class='heading'>Plug-in Support</h3>
+
+<p>SwiftLint can be used as a build tool plug-in for both Xcode projects as well as
+Swift packages.</p>
+
+<blockquote>
+<p>Due to limitations with Swift Package Manager Plug-ins this is only
+recommended for projects that have a SwiftLint configuration in their root directory as
+there is currently no way to pass any additional options to the SwiftLint executable.</p>
+</blockquote>
+<h4 id='xcode' class='heading'>Xcode</h4>
+
+<p>You can integrate SwiftLint as a Xcode Build Tool Plug-in if you&rsquo;re working
+with a project in Xcode.</p>
+
+<p>Add SwiftLint as a package dependency to your project without linking any of the
+products.</p>
+
+<p>Select the target you want to add linting to and open the <code>Build Phases</code> inspector.
+Open <code>Run Build Tool Plug-ins</code> and select the <code>+</code> button.
+Select <code>SwiftLintPlugin</code> from the list and add it to the project.</p>
+
+<p><img src="assets/select-swiftlint-plugin.png" alt=""></p>
+<h4 id='swift-package' class='heading'>Swift Package</h4>
+
+<p>You can integrate SwiftLint as a Swift Package Manager Plug-in if you&rsquo;re working with
+a Swift Package with a <code>Package.swift</code> manifest.</p>
+
+<p>Add SwiftLint as a package dependency to your <code>Package.swift</code> file.<br>
+Add SwiftLint to a target using the <code>plugins</code> parameter.</p>
+<pre class="highlight swift"><code><span class="o">.</span><span class="nf">target</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"SwiftLintPlugin"</span><span class="p">,</span> <span class="nv">package</span><span class="p">:</span> <span class="s">"SwiftLint"</span><span class="p">)]</span>
+<span class="p">),</span>
+</code></pre>
+<h3 id='appcode' class='heading'>AppCode</h3>
+
+<p>To integrate SwiftLint with AppCode, install
+<a href="https://plugins.jetbrains.com/plugin/9175">this plugin</a> and configure
+SwiftLint&rsquo;s installed path in the plugin&rsquo;s preferences.
+The <code>fix</code> action is available via <code>⌥⏎</code>.</p>
+<h3 id='visual-studio-code' class='heading'>Visual Studio Code</h3>
+
+<p>To integrate SwiftLint with <a href="https://code.visualstudio.com">vscode</a>, install the
+<a href="https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint"><code>vscode-swiftlint</code></a> extension from the marketplace.</p>
+<h3 id='fastlane' class='heading'>fastlane</h3>
+
+<p>You can use the <a href="https://docs.fastlane.tools/actions/swiftlint">official swiftlint fastlane action</a> to run SwiftLint as part of your fastlane process.</p>
+<pre class="highlight ruby"><code><span class="n">swiftlint</span><span class="p">(</span>
+    <span class="ss">mode: :lint</span><span class="p">,</span>                            <span class="c1"># SwiftLint mode: :lint (default) or :autocorrect</span>
+    <span class="ss">executable: </span><span class="s2">"Pods/SwiftLint/swiftlint"</span><span class="p">,</span> <span class="c1"># The SwiftLint binary path (optional). Important if you've installed it via CocoaPods</span>
+    <span class="ss">path: </span><span class="s2">"/path/to/lint"</span><span class="p">,</span>                  <span class="c1"># Specify path to lint (optional)</span>
+    <span class="ss">output_file: </span><span class="s2">"swiftlint.result.json"</span><span class="p">,</span>   <span class="c1"># The path of the output file (optional)</span>
+    <span class="ss">reporter: </span><span class="s2">"json"</span><span class="p">,</span>                       <span class="c1"># The custom reporter to use (optional)</span>
+    <span class="ss">config_file: </span><span class="s2">".swiftlint-ci.yml"</span><span class="p">,</span>       <span class="c1"># The path of the configuration file (optional)</span>
+    <span class="ss">files: </span><span class="p">[</span>                                <span class="c1"># List of files to process (optional)</span>
+        <span class="s2">"AppDelegate.swift"</span><span class="p">,</span>
+        <span class="s2">"path/to/project/Model.swift"</span>
+    <span class="p">],</span>
+    <span class="ss">ignore_exit_status: </span><span class="kp">true</span><span class="p">,</span>               <span class="c1"># Allow fastlane to continue even if SwiftLint returns a non-zero exit status (Default: false)</span>
+    <span class="ss">quiet: </span><span class="kp">true</span><span class="p">,</span>                            <span class="c1"># Don't print status logs like 'Linting ' &amp; 'Done linting' (Default: false)</span>
+    <span class="ss">strict: </span><span class="kp">true</span>                            <span class="c1"># Fail on warnings? (Default: false)</span>
+<span class="p">)</span>
+</code></pre>
+<h3 id='docker' class='heading'>Docker</h3>
+
+<p><code>swiftlint</code> is also available as a <a href="https://www.docker.com/">Docker</a> image using <code>Ubuntu</code>.
+So just the first time you need to pull the docker image using the next command:</p>
+<pre class="highlight shell"><code>docker pull ghcr.io/realm/swiftlint:latest
+</code></pre>
+
+<p>Then following times, you just run <code>swiftlint</code> inside of the docker like:</p>
+<pre class="highlight shell"><code>docker run <span class="nt">-it</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> <span class="nt">-w</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> ghcr.io/realm/swiftlint:latest
+</code></pre>
+
+<p>This will execute <code>swiftlint</code> in the folder where you are right now (<code>pwd</code>), showing an output like:</p>
+<pre class="highlight shell"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> <span class="nt">-w</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> ghcr.io/realm/swiftlint:latest
+Linting Swift files <span class="k">in </span>current working directory
+Linting <span class="s1">'RuleDocumentation.swift'</span> <span class="o">(</span>1/490<span class="o">)</span>
+...
+Linting <span class="s1">'YamlSwiftLintTests.swift'</span> <span class="o">(</span>490/490<span class="o">)</span>
+Done linting! Found 0 violations, 0 serious <span class="k">in </span>490 files.
+</code></pre>
+
+<p>Here you have more documentation about the usage of <a href="https://docs.docker.com/">Docker Images</a>.</p>
+<h3 id='command-line' class='heading'>Command Line</h3>
+<pre class="highlight plaintext"><code>$ swiftlint help
+OVERVIEW: A tool to enforce Swift style and conventions.
+
+USAGE: swiftlint &lt;subcommand&gt;
+
+OPTIONS:
+  --version               Show the version.
+  -h, --help              Show help information.
+
+SUBCOMMANDS:
+  analyze                 Run analysis rules
+  docs                    Open SwiftLint documentation website in the default web browser
+  generate-docs           Generates markdown documentation for all rules
+  lint (default)          Print lint warnings and errors
+  rules                   Display the list of rules and their identifiers
+  version                 Display the current version of SwiftLint
+
+  See 'swiftlint help &lt;subcommand&gt;' for detailed help.
+</code></pre>
+
+<p>Run <code>swiftlint</code> in the directory containing the Swift files to lint. Directories
+will be searched recursively.</p>
+
+<p>To specify a list of files when using <code>lint</code> or <code>analyze</code>
+(like the list of files modified by Xcode specified by the
+<a href="https://github.com/norio-nomura/ExtraBuildPhase"><code>ExtraBuildPhase</code></a> Xcode
+plugin, or modified files in the working tree based on <code>git ls-files -m</code>), you
+can do so by passing the option <code>--use-script-input-files</code> and setting the
+following instance variables: <code>SCRIPT_INPUT_FILE_COUNT</code> and
+<code>SCRIPT_INPUT_FILE_0</code>, <code>SCRIPT_INPUT_FILE_1</code>&hellip;<code>SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT - 1}</code>.</p>
+
+<p>These are same environment variables set for input files to
+<a href="http://indiestack.com/2014/12/speeding-up-custom-script-phases/">custom Xcode script phases</a>.</p>
+<h3 id='working-with-multiple-swift-versions' class='heading'>Working With Multiple Swift Versions</h3>
+
+<p>SwiftLint hooks into SourceKit so it continues working even as Swift evolves!</p>
+
+<p>This also keeps SwiftLint lean, as it doesn&rsquo;t need to ship with a full Swift
+compiler, it just communicates with the official one you already have installed
+on your machine.</p>
+
+<p>You should always run SwiftLint with the same toolchain you use to compile your
+code.</p>
+
+<p>You may want to override SwiftLint&rsquo;s default Swift toolchain if you have
+multiple toolchains or Xcodes installed.</p>
+
+<p>Here&rsquo;s the order in which SwiftLint determines which Swift toolchain to use:</p>
+
+<ul>
+<li><code>$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE</code></li>
+<li><code>$TOOLCHAIN_DIR</code> or <code>$TOOLCHAINS</code></li>
+<li><code>xcrun -find swift</code></li>
+<li><code>/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+<li><code>/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+<li><code>~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+<li><code>~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain</code></li>
+</ul>
+
+<p><code>sourcekitd.framework</code> is expected to be found in the <code>usr/lib/</code> subdirectory of
+the value passed in the paths above.</p>
+
+<p>You may also set the <code>TOOLCHAINS</code> environment variable to the reverse-DNS
+notation that identifies a Swift toolchain version:</p>
+<pre class="highlight shell"><code><span class="nv">$ TOOLCHAINS</span><span class="o">=</span>com.apple.dt.toolchain.Swift_2_3 swiftlint <span class="nt">--fix</span>
+</code></pre>
+
+<p>On Linux, SourceKit is expected to be located in
+<code>/usr/lib/libsourcekitdInProc.so</code> or specified by the <code>LINUX_SOURCEKIT_LIB_PATH</code>
+environment variable.</p>
+<h3 id='pre-commit' class='heading'>pre-commit</h3>
+
+<p>SwiftLint can be run as a <a href="https://pre-commit.com/">pre-commit</a> hook.
+Once <a href="https://pre-commit.com/#install">installed</a>, add this to the
+<code>.pre-commit-config.yaml</code> in the root of your repository:</p>
+<pre class="highlight yaml"><code><span class="na">repos</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/realm/SwiftLint</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">0.44.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">swiftlint</span>
+</code></pre>
+
+<p>Adjust <code>rev</code> to the SwiftLint version of your choice.</p>
+<h2 id='rules' class='heading'>Rules</h2>
+
+<p>Over 200 rules are included in SwiftLint and the Swift community (that&rsquo;s you!)
+continues to contribute more over time.
+<a href="CONTRIBUTING.md">Pull requests</a> are encouraged.</p>
+
+<p>You can find an updated list of rules and more information about them
+<a href="https://realm.github.io/SwiftLint/rule-directory.html">here</a>.</p>
+
+<p>You can also check <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Rules">Source/SwiftLintFramework/Rules</a>
+directory to see their implementation.</p>
+<h3 id='opt-in-rules' class='heading'>Opt-In Rules</h3>
+
+<p><code>opt_in_rules</code> are disabled by default (i.e., you have to explicitly enable them
+in your configuration file).</p>
+
+<p>Guidelines on when to mark a rule as opt-in:</p>
+
+<ul>
+<li>A rule that can have many false positives (e.g. <code><a href="empty_count.html">empty_count</a></code>)</li>
+<li>A rule that is too slow</li>
+<li>A rule that is not general consensus or is only useful in some cases
+(e.g. <code><a href="force_unwrapping.html">force_unwrapping</a></code>)</li>
+</ul>
+<h3 id='disable-rules-in-code' class='heading'>Disable rules in code</h3>
+
+<p>Rules can be disabled with a comment inside a source file with the following
+format:</p>
+
+<p><code>// swiftlint:disable &lt;rule1&gt; [&lt;rule2&gt; &lt;rule3&gt;...]</code></p>
+
+<p>The rules will be disabled until the end of the file or until the linter sees a
+matching enable comment:</p>
+
+<p><code>// swiftlint:enable &lt;rule1&gt; [&lt;rule2&gt; &lt;rule3&gt;...]</code></p>
+
+<p>For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable colon</span>
+<span class="k">let</span> <span class="nv">noWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// No warning about colons immediately after variable names!</span>
+<span class="c1">// swiftlint:enable colon</span>
+<span class="k">let</span> <span class="nv">hasWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about colons immediately after variable names</span>
+</code></pre>
+
+<p>Including the <code>all</code> keyword will disable all rules until the linter sees a matching enable comment:</p>
+
+<p><code>// swiftlint:disable all</code>
+<code>// swiftlint:enable all</code></p>
+
+<p>For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable all</span>
+<span class="k">let</span> <span class="nv">noWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// No warning about colons immediately after variable names!</span>
+<span class="k">let</span> <span class="nv">i</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Also no warning about short identifier names</span>
+<span class="c1">// swiftlint:enable all</span>
+<span class="k">let</span> <span class="nv">hasWarning</span> <span class="p">:</span><span class="kt">String</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about colons immediately after variable names</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="s">""</span> <span class="c1">// Warning generated about short identifier names</span>
+</code></pre>
+
+<p>It&rsquo;s also possible to modify a <code>disable</code> or <code>enable</code> command by appending
+<code>:previous</code>, <code>:this</code> or <code>:next</code> for only applying the command to the previous,
+this (current) or next line respectively.</p>
+
+<p>For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable:next force_cast</span>
+<span class="k">let</span> <span class="nv">noWarning</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span>
+<span class="k">let</span> <span class="nv">hasWarning</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span>
+<span class="k">let</span> <span class="nv">noWarning2</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span> <span class="c1">// swiftlint:disable:this force_cast</span>
+<span class="k">let</span> <span class="nv">noWarning3</span> <span class="o">=</span> <span class="kt">NSNumber</span><span class="p">()</span> <span class="k">as!</span> <span class="kt">Int</span>
+<span class="c1">// swiftlint:disable:previous force_cast</span>
+</code></pre>
+
+<p>Run <code>swiftlint rules</code> to print a list of all available rules and their
+identifiers.</p>
+<h3 id='configuration' class='heading'>Configuration</h3>
+
+<p>Configure SwiftLint by adding a <code>.swiftlint.yml</code> file from the directory you&rsquo;ll
+run SwiftLint from. The following parameters can be configured:</p>
+
+<p>Rule inclusion:</p>
+
+<ul>
+<li><code>disabled_rules</code>: Disable rules from the default enabled set.</li>
+<li><code>opt_in_rules</code>: Enable rules that are not part of the default set.</li>
+<li><code>only_rules</code>: Only the rules specified in this list will be enabled.
+Cannot be specified alongside <code>disabled_rules</code> or <code>opt_in_rules</code>.</li>
+<li><code>analyzer_rules</code>: This is an entirely separate list of rules that are only
+run by the <code>analyze</code> command. All analyzer rules are opt-in, so this is the
+only configurable rule list, there are no equivalents for <code>disabled_rules</code>
+<code>only_rules</code>.</li>
+</ul>
+<pre class="highlight yaml"><code><span class="c1"># By default, SwiftLint uses a set of sensible default rules you can adjust:</span>
+<span class="na">disabled_rules</span><span class="pi">:</span> <span class="c1"># rule identifiers turned on by default to exclude from running</span>
+  <span class="pi">-</span> <span class="s">colon</span>
+  <span class="pi">-</span> <span class="s">comma</span>
+  <span class="pi">-</span> <span class="s">control_statement</span>
+<span class="na">opt_in_rules</span><span class="pi">:</span> <span class="c1"># some rules are turned off by default, so you need to opt-in</span>
+  <span class="pi">-</span> <span class="s">empty_count</span> <span class="c1"># Find all the available rules by running: `swiftlint rules`</span>
+
+<span class="c1"># Alternatively, specify all rules explicitly by uncommenting this option:</span>
+<span class="c1"># only_rules: # delete `disabled_rules` &amp; `opt_in_rules` if using this</span>
+<span class="c1">#   - empty_parameters</span>
+<span class="c1">#   - vertical_whitespace</span>
+
+<span class="na">included</span><span class="pi">:</span> <span class="c1"># paths to include during linting. `--path` is ignored if present.</span>
+  <span class="pi">-</span> <span class="s">Source</span>
+<span class="na">excluded</span><span class="pi">:</span> <span class="c1"># paths to ignore during linting. Takes precedence over `included`.</span>
+  <span class="pi">-</span> <span class="s">Carthage</span>
+  <span class="pi">-</span> <span class="s">Pods</span>
+  <span class="pi">-</span> <span class="s">Source/ExcludedFolder</span>
+  <span class="pi">-</span> <span class="s">Source/ExcludedFile.swift</span>
+  <span class="pi">-</span> <span class="s">Source/*/ExcludedFile.swift</span> <span class="c1"># Exclude files with a wildcard</span>
+<span class="na">analyzer_rules</span><span class="pi">:</span> <span class="c1"># Rules run by `swiftlint analyze`</span>
+  <span class="pi">-</span> <span class="s">explicit_self</span>
+
+<span class="c1"># configurable rules can be customized from this configuration file</span>
+<span class="c1"># binary rules can set their severity level</span>
+<span class="na">force_cast</span><span class="pi">:</span> <span class="s">warning</span> <span class="c1"># implicitly</span>
+<span class="na">force_try</span><span class="pi">:</span>
+  <span class="na">severity</span><span class="pi">:</span> <span class="s">warning</span> <span class="c1"># explicitly</span>
+<span class="c1"># rules that have both warning and error levels, can set just the warning level</span>
+<span class="c1"># implicitly</span>
+<span class="na">line_length</span><span class="pi">:</span> <span class="m">110</span>
+<span class="c1"># they can set both implicitly with an array</span>
+<span class="na">type_body_length</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="m">300</span> <span class="c1"># warning</span>
+  <span class="pi">-</span> <span class="m">400</span> <span class="c1"># error</span>
+<span class="c1"># or they can set both explicitly</span>
+<span class="na">file_length</span><span class="pi">:</span>
+  <span class="na">warning</span><span class="pi">:</span> <span class="m">500</span>
+  <span class="na">error</span><span class="pi">:</span> <span class="m">1200</span>
+<span class="c1"># naming rules can set warnings/errors for min_length and max_length</span>
+<span class="c1"># additionally they can set excluded names</span>
+<span class="na">type_name</span><span class="pi">:</span>
+  <span class="na">min_length</span><span class="pi">:</span> <span class="m">4</span> <span class="c1"># only warning</span>
+  <span class="na">max_length</span><span class="pi">:</span> <span class="c1"># warning and error</span>
+    <span class="na">warning</span><span class="pi">:</span> <span class="m">40</span>
+    <span class="na">error</span><span class="pi">:</span> <span class="m">50</span>
+  <span class="na">excluded</span><span class="pi">:</span> <span class="s">iPhone</span> <span class="c1"># excluded via string</span>
+  <span class="na">allowed_symbols</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">_"</span><span class="pi">]</span> <span class="c1"># these are allowed in type names</span>
+<span class="na">identifier_name</span><span class="pi">:</span>
+  <span class="na">min_length</span><span class="pi">:</span> <span class="c1"># only min_length</span>
+    <span class="na">error</span><span class="pi">:</span> <span class="m">4</span> <span class="c1"># only error</span>
+  <span class="na">excluded</span><span class="pi">:</span> <span class="c1"># excluded via string array</span>
+    <span class="pi">-</span> <span class="s">id</span>
+    <span class="pi">-</span> <span class="s">URL</span>
+    <span class="pi">-</span> <span class="s">GlobalAPIKey</span>
+<span class="na">reporter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">xcode"</span> <span class="c1"># reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging)</span>
+</code></pre>
+
+<p>You can also use environment variables in your configuration file,
+by using <code>${SOME_VARIABLE}</code> in a string.</p>
+<h4 id='defining-custom-rules' class='heading'>Defining Custom Rules</h4>
+
+<p>You can define custom regex-based rules in your configuration file using the
+following syntax:</p>
+<pre class="highlight yaml"><code><span class="na">custom_rules</span><span class="pi">:</span>
+  <span class="na">pirates_beat_ninjas</span><span class="pi">:</span> <span class="c1"># rule identifier</span>
+    <span class="na">included</span><span class="pi">:</span> 
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">.*</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to include during linting. optional.</span>
+    <span class="na">excluded</span><span class="pi">:</span> 
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">.*Test</span><span class="se">\\</span><span class="s">.swift"</span> <span class="c1"># regex that defines paths to exclude during linting. optional</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">Beat</span><span class="nv"> </span><span class="s">Ninjas"</span> <span class="c1"># rule name. optional.</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span> <span class="c1"># matching pattern</span>
+    <span class="na">capture_group</span><span class="pi">:</span> <span class="m">0</span> <span class="c1"># number of regex capture group to highlight the rule violation at. optional.</span>
+    <span class="na">match_kinds</span><span class="pi">:</span> <span class="c1"># SyntaxKinds to match. optional.</span>
+      <span class="pi">-</span> <span class="s">comment</span>
+      <span class="pi">-</span> <span class="s">identifier</span>
+    <span class="na">message</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Pirates</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">better</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">ninjas."</span> <span class="c1"># violation message. optional.</span>
+    <span class="na">severity</span><span class="pi">:</span> <span class="s">error</span> <span class="c1"># violation severity. optional.</span>
+  <span class="na">no_hiding_in_strings</span><span class="pi">:</span>
+    <span class="na">regex</span><span class="pi">:</span> <span class="s2">"</span><span class="s">([nN]inja)"</span>
+    <span class="na">match_kinds</span><span class="pi">:</span> <span class="s">string</span>
+</code></pre>
+
+<p>This is what the output would look like:</p>
+
+<p><img src="assets/custom-rule.png" alt=""></p>
+
+<p>You can filter the matches by providing one or more <code>match_kinds</code>, which will
+reject matches that include syntax kinds that are not present in this list. Here
+are all the possible syntax kinds:</p>
+
+<ul>
+<li><code>argument</code></li>
+<li><code>attribute.builtin</code></li>
+<li><code>attribute.id</code></li>
+<li><code>buildconfig.id</code></li>
+<li><code>buildconfig.keyword</code></li>
+<li><code>comment</code></li>
+<li><code>comment.mark</code></li>
+<li><code>comment.url</code></li>
+<li><code>doccomment</code></li>
+<li><code>doccomment.field</code></li>
+<li><code>identifier</code></li>
+<li><code>keyword</code></li>
+<li><code>number</code></li>
+<li><code>objectliteral</code></li>
+<li><code>parameter</code></li>
+<li><code>placeholder</code></li>
+<li><code>string</code></li>
+<li><code>string_interpolation_anchor</code></li>
+<li><code>typeidentifier</code></li>
+</ul>
+
+<p>All syntax kinds used in a snippet of Swift code can be extracted asking
+<a href="https://github.com/jpsim/SourceKitten">SourceKitten</a>. For example,
+<code>sourcekitten syntax --text &quot;struct S {}&quot;</code> delivers</p>
+
+<ul>
+<li><code>source.lang.swift.syntaxtype.keyword</code> for the <code>struct</code> keyword and</li>
+<li><code>source.lang.swift.syntaxtype.identifier</code> for its name <code>S</code></li>
+</ul>
+
+<p>which match to <code>keyword</code> and <code>identifier</code> in the above list.</p>
+
+<p>If using custom rules in combination with <code>only_rules</code>, make sure to add
+<code><a href="custom_rules.html">custom_rules</a></code> as an item under <code>only_rules</code>.</p>
+<h3 id='auto-correct' class='heading'>Auto-correct</h3>
+
+<p>SwiftLint can automatically correct certain violations. Files on disk are
+overwritten with a corrected version.</p>
+
+<p>Please make sure to have backups of these files before running
+<code>swiftlint --fix</code>, otherwise important data may be lost.</p>
+
+<p>Standard linting is disabled while correcting because of the high likelihood of
+violations (or their offsets) being incorrect after modifying a file while
+applying corrections.</p>
+<h3 id='analyze' class='heading'>Analyze</h3>
+
+<p>The <code>swiftlint analyze</code> command can lint Swift files using the
+full type-checked AST. The compiler log path containing the clean <code>swiftc</code> build
+command invocation (incremental builds will fail) must be passed to <code>analyze</code>
+via the <code>--compiler-log-path</code> flag.
+e.g. <code>--compiler-log-path /path/to/xcodebuild.log</code></p>
+
+<p>This can be obtained by </p>
+
+<ol>
+<li>Cleaning DerivedData (incremental builds won&rsquo;t work with analyze)</li>
+<li>Running <code>xcodebuild -workspace {WORKSPACE}.xcworkspace -scheme {SCHEME} &gt; xcodebuild.log</code></li>
+<li>Running <code>swiftlint analyze --compiler-log-path xcodebuild.log</code></li>
+</ol>
+
+<p>Analyzer rules tend to be considerably slower than lint rules.</p>
+<h2 id='using-multiple-configuration-files' class='heading'>Using Multiple Configuration Files</h2>
+
+<p>SwiftLint offers a variety of ways to include multiple configuration files.
+Multiple configuration files get merged into one single configuration that is then applied
+just as a single configuration file would get applied.</p>
+
+<p>There are quite a lot of use cases where using multiple configuration files could be helpful:</p>
+
+<p>For instance, one could use a team-wide shared SwiftLint configuration while allowing overrides
+in each project via a child configuration file.</p>
+
+<p>Team-Wide Configuration:</p>
+<pre class="highlight yaml"><code><span class="na">disabled_rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">force_cast</span>
+</code></pre>
+
+<p>Project-Specific Configuration:</p>
+<pre class="highlight yaml"><code><span class="na">opt_in_rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">force_cast</span>
+</code></pre>
+<h3 id='child-parent-configs-locally' class='heading'>Child / Parent Configs (Locally)</h3>
+
+<p>You can specify a <code>child_config</code> and / or a <code>parent_config</code> reference within a configuration file.
+These references should be local paths relative to the folder of the configuration file they are specified in.
+This even works recursively, as long as there are no cycles and no ambiguities.</p>
+
+<p><strong>A child config is treated as a refinement and therefore has a higher priority</strong>,
+while a parent config is considered a base with lower priority in case of conflicts.</p>
+
+<p>Here&rsquo;s an example, assuming you have the following file structure:</p>
+<pre class="highlight plaintext"><code>ProjectRoot
+    |_ .swiftlint.yml
+    |_ .swiftlint_refinement.yml
+    |_ Base
+        |_ .swiftlint_base.yml
+</code></pre>
+
+<p>To include both the refinement and the base file, your <code>.swiftlint.yml</code> should look like this:</p>
+<pre class="highlight yaml"><code><span class="na">child_config</span><span class="pi">:</span> <span class="s">.swiftlint_refinement.yml</span>
+<span class="na">parent_config</span><span class="pi">:</span> <span class="s">Base/.swiftlint_base.yml</span>
+</code></pre>
+
+<p>When merging parent and child configs, <code>included</code> and <code>excluded</code> configurations
+are processed carefully to account for differences in the directory location
+of the containing configuration files.</p>
+<h3 id='child-parent-configs-remote' class='heading'>Child / Parent Configs (Remote)</h3>
+
+<p>Just as you can provide local <code>child_config</code> / <code>parent_config</code> references, instead of
+referencing local paths, you can just put urls that lead to configuration files.
+In order for SwiftLint to detect these remote references, they must start with <code>http://</code> or <code>https://</code>.</p>
+
+<p>The referenced remote configuration files may even recursively reference other
+remote configuration files, but aren&rsquo;t allowed to include local references.</p>
+
+<p>Using a remote reference, your <code>.swiftlint.yml</code> could look like this:</p>
+<pre class="highlight yaml"><code><span class="na">parent_config</span><span class="pi">:</span> <span class="s">https://myteamserver.com/our-base-swiftlint-config.yml</span>
+</code></pre>
+
+<p>Every time you run SwiftLint and have an Internet connection, SwiftLint tries to get a new version of
+every remote configuration that is referenced. If this request times out, a cached version is
+used if available. If there is no cached version available, SwiftLint fails – but no worries, a cached version
+should be there once SwiftLint has run successfully at least once.</p>
+
+<p>If needed, the timeouts for the remote configuration fetching can be specified manually via the
+configuration file(s) using the <code>remote_timeout</code> / <code>remote_timeout_if_cached</code> specifiers.
+These values default to 2 / 1 second(s).</p>
+<h3 id='command-line' class='heading'>Command Line</h3>
+
+<p>Instead of just providing one configuration file when running SwiftLint via the command line,
+you can also pass a hierarchy, where the first configuration is treated as a parent,
+while the last one is treated as the highest-priority child.</p>
+
+<p>A simple example including just two configuration files looks like this:</p>
+
+<p><code>swiftlint --config .swiftlint.yml --config .swiftlint_child.yml</code></p>
+<h3 id='nested-configurations' class='heading'>Nested Configurations</h3>
+
+<p>In addition to a main configuration (the <code>.swiftlint.yml</code> file in the root folder),
+you can put other configuration files named <code>.swiftlint.yml</code> into the directory structure
+that then get merged as a child config, but only with an effect for those files
+that are within the same directory as the config or in a deeper directory where
+there isn&rsquo;t another configuration file. In other words: Nested configurations don&rsquo;t work 
+recursively – there&rsquo;s a maximum number of one nested configuration per file 
+that may be applied in addition to the main configuration.</p>
+
+<p><code>.swiftlint.yml</code> files are only considered as a nested configuration if they have not been
+used to build the main configuration already (e. g. by having been referenced via something
+like <code>child_config: Folder/.swiftlint.yml</code>). Also, <code>parent_config</code> / <code>child_config</code>
+specifications of nested configurations are getting ignored because there&rsquo;s no sense to that.</p>
+
+<p>If one (or more) SwiftLint file(s) are explicitly specified via the <code>--config</code> parameter,
+that configuration will be treated as an override, no matter whether there exist
+other <code>.swiftlint.yml</code> files somewhere within the directory. <strong>So if you want to use
+ nested configurations, you can&rsquo;t use the <code>--config</code> parameter.</strong></p>
+<h2 id='license' class='heading'>License</h2>
+
+<p><a href="LICENSE">MIT licensed.</a></p>
+<h2 id='about' class='heading'>About</h2>
+
+<p><img src="assets/realm.png" width="184" /></p>
+
+<p>SwiftLint is maintained and funded by Realm Inc. The names and logos for
+Realm are trademarks of Realm Inc.</p>
+
+<p>We :heart: open source software!
+See <a href="https://github.com/realm">our other open source projects</a>,
+read <a href="https://realm.io/news">our blog</a>, or say hi on twitter
+(<a href="https://twitter.com/realm">@realm</a>).</p>
+
+<p><img src="assets/macstadium.png" width="184" /></p>
+
+<p>Our thanks to MacStadium for providing a Mac Mini to run our performance
+tests.</p>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2020 <a class="link" href="https://jpsim.com" target="_blank" rel="external noopener">JP Simard</a> under MIT.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>

@@ -1,4 +1,21 @@
 public extension Configuration {
+    /// Returns the rule for the specified ID, if configured in this configuration.
+    ///
+    /// - parameter ruleID: The identifier for the rule to look up.
+    ///
+    /// - returns: The rule for the specified ID, if configured in this configuration.
+    func configuredRule(forID ruleID: String) -> Rule? {
+        rules.first { rule in
+            guard type(of: rule).description.identifier == ruleID else {
+                return false
+            }
+            guard let customRules = rule as? CustomRules else {
+                return true
+            }
+            return !customRules.configuration.customRuleConfigurations.isEmpty
+        }
+    }
+
     /// Represents how a Configuration object can be configured with regards to rules.
     enum RulesMode {
         /// The default rules mode, which will enable all rules that aren't defined as being opt-in

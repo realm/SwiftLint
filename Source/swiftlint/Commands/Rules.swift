@@ -93,15 +93,7 @@ private extension TextTable {
         }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
-            let configuredRule = configuration.rules.first { rule in
-                guard type(of: rule).description.identifier == ruleID else {
-                    return false
-                }
-                guard let customRules = rule as? CustomRules else {
-                    return true
-                }
-                return !customRules.configuration.customRuleConfigurations.isEmpty
-            }
+            let configuredRule = configuration.configuredRule(forID: ruleID)
             addRow(values: [
                 ruleID,
                 (rule is OptInRule) ? "yes" : "no",

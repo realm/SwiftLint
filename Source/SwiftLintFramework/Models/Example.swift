@@ -144,18 +144,22 @@ extension Example: Comparable {
 }
 
 extension Array where Element == Example {
+    /// Make these examples skip wrapping in comment tests.
     func skipWrappingInCommentTests() -> Self {
         map { $0.skipWrappingInCommentTest() }
     }
 
+    /// Make these examples skip wrapping in string tests.
     func skipWrappingInStringTests() -> Self {
         map { $0.skipWrappingInStringTest() }
     }
 
+    /// Make these examples skip multi-byte offset tests.
     func skipMultiByteOffsetTests() -> Self {
         map { $0.skipMultiByteOffsetTest() }
     }
 
+    /// Make these examples skip disable command tests.
     func skipDisableCommandTests() -> Self {
         map { $0.skipDisableCommandTest() }
     }

@@ -44,7 +44,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
         }
     }
 
-    // Returns true if is `private` or `fileprivate`
+    /// Returns true if is `private` or `fileprivate`
     var isPrivate: Bool {
         return self == .private || self == .fileprivate
     }

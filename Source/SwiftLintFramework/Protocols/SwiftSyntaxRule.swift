@@ -112,10 +112,16 @@ public struct ReasonedRuleViolation: Comparable {
 /// Extension for arrays of `ReasonedRuleViolation`s that provides the automatic conversion of
 /// `AbsolutePosition`s into `ReasonedRuleViolation`s (without a specific reason).
 extension Array where Element == ReasonedRuleViolation {
+    /// Append a minimal violation for the specified position.
+    ///
+    /// - parameter position: The position for the violation to append.
     mutating func append(_ position: AbsolutePosition) {
         append(ReasonedRuleViolation(position: position))
     }
 
+    /// Append minimal violations for the specified positions.
+    ///
+    /// - parameter positions: The positions for the violations to append.
     mutating func append(contentsOf positions: [AbsolutePosition]) {
         append(contentsOf: positions.map { ReasonedRuleViolation(position: $0) })
     }
@@ -162,6 +168,7 @@ open class ViolationsSyntaxVisitor: SyntaxVisitor {
 }
 
 extension Array where Element == DeclSyntaxProtocol.Type {
+    /// All visitable declaration syntax types.
     static let all: Self = [
         ActorDeclSyntax.self,
         ClassDeclSyntax.self,
@@ -179,6 +186,11 @@ extension Array where Element == DeclSyntaxProtocol.Type {
         ProtocolDeclSyntax.self
     ]
 
+    /// All declarations except for the specified ones.
+    ///
+    /// - parameter declarations: The declarations to exclude from all declarations.
+    ///
+    /// - returns: All declarations except for the specified ones.
     static func allExcept(_ declarations: Element...) -> Self {
         all.filter { decl in !declarations.contains { $0 == decl } }
     }

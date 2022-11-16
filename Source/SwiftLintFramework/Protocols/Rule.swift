@@ -81,6 +81,8 @@ extension Rule {
         // no-op: only CollectingRules mutate their storage
     }
 
+    /// The cache description which will be used to determine if a previous
+    /// cached value is still valid given the new cache value.
     internal var cacheDescription: String {
         return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
     }

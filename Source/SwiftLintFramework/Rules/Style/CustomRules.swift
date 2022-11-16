@@ -32,19 +32,17 @@ private extension Region {
 
 // MARK: - CustomRulesConfiguration
 
-public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
-    public var consoleDescription: String { return "user-defined" }
+struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
+    var consoleDescription: String { return "user-defined" }
     internal var cacheDescription: String {
         return customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }
             .map { $0.cacheDescription }
             .joined(separator: "\n")
     }
-    public var customRuleConfigurations = [RegexConfiguration]()
+    var customRuleConfigurations = [RegexConfiguration]()
 
-    public init() {}
-
-    public mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -66,24 +64,23 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
     internal var cacheDescription: String {
         return configuration.cacheDescription
     }
 
-    public static let description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "custom_rules",
         name: "Custom Rules",
-        description: "Create custom rules by providing a regex string. " +
-            "Optionally specify what syntax kinds to match against, the severity " +
-            "level, and what message to display.",
+        description: """
+            Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, \
+            the severity level, and what message to display.
+            """,
         kind: .style)
 
-    public var configuration = CustomRulesConfiguration()
+    var configuration = CustomRulesConfiguration()
 
-    public init() {}
-
-    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         guard configurations.isNotEmpty else {

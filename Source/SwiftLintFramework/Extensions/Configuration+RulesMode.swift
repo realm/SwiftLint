@@ -19,7 +19,7 @@ public extension Configuration {
     /// Represents how a Configuration object can be configured with regards to rules.
     enum RulesMode {
         /// The default rules mode, which will enable all rules that aren't defined as being opt-in
-        /// (conforming to the `OptInRule` protocol), minus the rules listed in `disabled`, plus the rules lised in
+        /// (conforming to the `OptInRule` protocol), minus the rules listed in `disabled`, plus the rules listed in
         /// `optIn`.
         case `default`(disabled: Set<String>, optIn: Set<String>)
 
@@ -84,7 +84,7 @@ public extension Configuration {
 
         internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> RulesMode {
             // In the only mode, if the custom rules rule is enabled, all custom rules are also enabled implicitly
-            // This method makes the implicity explicit
+            // This method makes the implicitly explicit
             switch self {
             case let .only(onlyRules) where onlyRules.contains { $0 == CustomRules.description.identifier }:
                 let customRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule as? CustomRules

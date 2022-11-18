@@ -25,19 +25,6 @@
 
 #### Enhancements
 
-* Adds `NSError` to the list of types in `discouraged_direct_init`.  
-  [jszumski](https://github.com/jszumski)
-  [#4508](https://github.com/realm/SwiftLint/issues/4508)
-
-* Fix SwiftLint support on Xcode Cloud.  
-  [JagCesar](https://github.com/JagCesar)
-  [westerlund](https://github.com/westerlund)
-  [#4484](https://github.com/realm/SwiftLint/issues/4484)
-
-* Add `no_magic_numbers` rule to avoid "Magic Numbers".  
-  [Henrik Storch](https://github.com/thisisthefoxe)
-  [#4031](https://github.com/realm/SwiftLint/issues/4024)
-
 * SwiftSyntax libraries have been updated from the previous 5.6 release and now
   use the new parser written in Swift.
   Swift 5.7+ features should now be parsed more accurately.
@@ -49,20 +36,6 @@
   parser regression we can re-file it upstream.  
   [JP Simard](https://github.com/jpsim)
   [#4031](https://github.com/realm/SwiftLint/issues/4031)
-
-* Add ability to filter rules for `generate-docs` subcommand.  
-  [kattouf](https://github.com/kattouf)
-
-* Add new `excludes_trivial_init` configuration for `missing_docs` rule
-  to exclude initializers without any parameters.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#4107](https://github.com/realm/SwiftLint/issues/4107)
-
-* Add new `ns_number_init_as_function_reference` rule to catch `NSNumber.init`
-  and `NSDecimalNumber.init` being used as function references since it
-  can cause the wrong initializer to be used, causing crashes. See
-  https://github.com/apple/swift/issues/51036 for more info.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Rewrite some rules with SwiftSyntax, fixing some false positives and catching
   more violations:
@@ -220,6 +193,20 @@
   commands to account for the changes.  
   [JP Simard](https://github.com/jpsim)
 
+* Add ability to filter rules for `generate-docs` subcommand.  
+  [kattouf](https://github.com/kattouf)
+
+* Add new `excludes_trivial_init` configuration for `missing_docs` rule
+  to exclude initializers without any parameters.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#4107](https://github.com/realm/SwiftLint/issues/4107)
+
+* Add new `ns_number_init_as_function_reference` rule to catch `NSNumber.init`
+  and `NSDecimalNumber.init` being used as function references since it
+  can cause the wrong initializer to be used, causing crashes. See
+  https://github.com/apple/swift/issues/51036 for more info.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * Add `accessibility_trait_for_button` rule to warn if a SwiftUI
   View has a tap gesture added to it without having the button or
   link accessibility trait.  
@@ -302,6 +289,28 @@
 
 * Report how much memory was used when `--benchmark` is specified.  
   [JP Simard](https://github.com/jpsim)
+
+* Adds `NSError` to the list of types in `discouraged_direct_init`.  
+  [jszumski](https://github.com/jszumski)
+  [#4508](https://github.com/realm/SwiftLint/issues/4508)
+
+* Fix SwiftLint support on Xcode Cloud.  
+  [JagCesar](https://github.com/JagCesar)
+  [westerlund](https://github.com/westerlund)
+  [#4484](https://github.com/realm/SwiftLint/issues/4484)
+
+* Add `no_magic_numbers` rule to avoid "Magic Numbers".  
+  [Henrik Storch](https://github.com/thisisthefoxe)
+  [#4031](https://github.com/realm/SwiftLint/issues/4024)
+
+* Add new option `only_enforce_before_trivial_lines` to
+  `vertical_whitespace_closing_braces` rule. It restricts
+  the rule to apply only before trivial lines (containing
+  only closing braces, brackets and parentheses). This
+  allows empty lines before non-trivial lines of code
+  (e.g. if-else-statements).  
+  [benjamin-kramer](https://github.com/benjamin-kramer)
+  [#3940](https://github.com/realm/SwiftLint/issues/3940)
 
 #### Bug Fixes
 
@@ -633,15 +642,6 @@ macOS < 12.
 * None.
 
 #### Enhancements
-
-* Add new option `only_enforce_before_trivial_lines` to
-  `vertical_whitespace_closing_braces` rule. It restricts
-  the rule to apply only before trivial lines (containing
-  only closing braces, brackets and parentheses). This
-  allows empty lines before non-trivial lines of code
-  (e.g. if-else-statements).  
-  [benjamin-kramer](https://github.com/benjamin-kramer)
-  [#3940](https://github.com/realm/SwiftLint/issues/3940)
 
 * Add type-checked analyzer rule version of `ArrayInitRule` named
   `TypesafeArrayInitRule` with identifier `typesafe_array_init` that

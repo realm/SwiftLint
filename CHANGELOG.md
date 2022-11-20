@@ -1,3 +1,24 @@
+## Main
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* Fix building with `swift build -c release`.  
+  [JP Simard](https://github.com/jpsim)
+  [#4559](https://github.com/realm/SwiftLint/issues/4559)
+  [#4560](https://github.com/realm/SwiftLint/issues/4560)
+
 ## 0.50.0: Artisanal Clothes Pegs
 
 #### Breaking

@@ -61,12 +61,11 @@ let package = Package(
             name: "SwiftLintFramework",
             dependencies: frameworkDependencies
         ),
-        .target(
+        .testTarget(
             name: "SwiftLintTestHelpers",
             dependencies: [
                 "SwiftLintFramework"
-            ],
-            path: "Tests/SwiftLintTestHelpers"
+            ]
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",

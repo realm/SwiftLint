@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 import PackageDescription
 
 #if os(macOS)
@@ -8,12 +8,12 @@ private let addCryptoSwift = true
 #endif
 
 let frameworkDependencies: [Target.Dependency] = [
-    .product(name: "IDEUtils", package: "SwiftSyntax"),
+    .product(name: "IDEUtils", package: "swift-syntax"),
     .product(name: "SourceKittenFramework", package: "SourceKitten"),
-    .product(name: "SwiftSyntax", package: "SwiftSyntax"),
-    .product(name: "SwiftSyntaxBuilder", package: "SwiftSyntax"),
-    .product(name: "SwiftParser", package: "SwiftSyntax"),
-    .product(name: "SwiftOperators", package: "SwiftSyntax"),
+    .product(name: "SwiftSyntax", package: "swift-syntax"),
+    .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+    .product(name: "SwiftParser", package: "swift-syntax"),
+    .product(name: "SwiftOperators", package: "swift-syntax"),
     "Yams",
 ]
 + (addCryptoSwift ? ["CryptoSwift"] : [])
@@ -27,8 +27,8 @@ let package = Package(
         .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"])
     ],
     dependencies: [
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.1.3")),
-        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .revision("a82041008d2c678a97407fbd0ce420d3ab047538")),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.1.3")),
+        .package(url: "https://github.com/apple/swift-syntax.git", revision: "a82041008d2c678a97407fbd0ce420d3ab047538"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.33.1")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.1"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),

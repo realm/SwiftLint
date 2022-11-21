@@ -27,7 +27,7 @@ let package = Package(
         .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.1.3")),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.0")),
         .package(url: "https://github.com/apple/swift-syntax.git", revision: "a82041008d2c678a97407fbd0ce420d3ab047538"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMinor(from: "0.33.1")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.1"),

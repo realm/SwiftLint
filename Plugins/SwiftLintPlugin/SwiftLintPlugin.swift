@@ -46,7 +46,12 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         context: XcodePluginContext,
         target: XcodeTarget
     ) throws -> [Command] {
-        guard let sourceTarget = target as? SourceModuleTarget else {
+        let inputFilePaths = target.inputFiles
+            .filter { $0.type == .source && $0.path.extension == "swift" }
+            .map(\.path)
+
+        guard inputFilePaths.isEmpty == false else {
+            // Don't lint anything if there are no Swift source files in this target
             return []
         }
 
@@ -55,13 +60,6 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
             "lint",
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
-
-        let inputFilePaths = sourceTarget.sourceFiles(withSuffix: "swift").map(\.path)
-
-        guard inputFilePaths.isEmpty == false else {
-            // Don't lint anything if there are no Swift source files in this target
-            return []
-        }
 
         arguments += inputFilePaths.map(\.string)
 

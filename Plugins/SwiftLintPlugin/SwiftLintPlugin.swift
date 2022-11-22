@@ -32,7 +32,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
                 executable: swiftlint.path,
                 arguments: arguments,
                 inputFiles: inputFilePaths,
-                outputFiles: []
+                outputFiles: [context.pluginWorkDirectory]
             )
         ]
     }
@@ -69,7 +69,7 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
                 executable: swiftlint.path,
                 arguments: arguments,
                 inputFiles: inputFilePaths,
-                outputFiles: []
+                outputFiles: [context.pluginWorkDirectory]
             )
         ]
     }

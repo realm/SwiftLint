@@ -14,6 +14,7 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
             Example("public struct Foo { public func bar() {} }"),
             Example("internal struct Foo { func bar() {} }"),
             Example("struct Foo { func bar() {} }"),
+            Example("struct Foo { internal func bar() {} }"),
             Example("open class Foo { public func bar() {} }"),
             Example("open class Foo { open func bar() {} }"),
             Example("fileprivate struct Foo { private func bar() {} }"),
@@ -21,7 +22,11 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
             Example("extension Foo { public func bar() {} }"),
             Example("private struct Foo { fileprivate func bar() {} }"),
             Example("private func foo(id: String) {}"),
-            Example("private class Foo { func bar() {} }")
+            Example("private class Foo { func bar() {} }"),
+            Example("public extension Foo { struct Bar { public func baz() {} }}"),
+            Example("public extension Foo { struct Bar { internal func baz() {} }}"),
+            Example("internal extension Foo { struct Bar { internal func baz() {} }}"),
+            Example("extension Foo { struct Bar { internal func baz() {} }}")
         ],
         triggeringExamples: [
             Example("struct Foo { ↓public func bar() {} }"),
@@ -31,8 +36,19 @@ struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule, SwiftSyntax
             Example("private struct Foo { ↓public func bar() {} }"),
             Example("private class Foo { ↓public func bar() {} }"),
             Example("private actor Foo { ↓public func bar() {} }"),
+            Example("fileprivate struct Foo { ↓public func bar() {} }"),
             Example("class Foo { ↓public func bar() {} }"),
-            Example("actor Foo { ↓public func bar() {} }")
+            Example("actor Foo { ↓public func bar() {} }"),
+            Example("private struct Foo { ↓internal func bar() {} }"),
+            Example("fileprivate struct Foo { ↓internal func bar() {} }"),
+            Example("extension Foo { struct Bar { ↓public func baz() {} }}"),
+            Example("internal extension Foo { struct Bar { ↓public func baz() {} }}"),
+            Example("private extension Foo { struct Bar { ↓public func baz() {} }}"),
+            Example("fileprivate extension Foo { struct Bar { ↓public func baz() {} }}"),
+            Example("private extension Foo { struct Bar { ↓internal func baz() {} }}"),
+            Example("fileprivate extension Foo { struct Bar { ↓internal func baz() {} }}"),
+            Example("public extension Foo { struct Bar { struct Baz { ↓public func qux() {} }}}"),
+            Example("final class Foo { ↓public func bar() {} }")
         ],
         corrections: [
             Example("struct Foo { ↓public func bar() {} }"):
@@ -115,9 +131,24 @@ private extension DeclModifierSyntax {
             where nearestNominalParent.modifiers.isPrivate ||
                 nearestNominalParent.modifiers.isFileprivate:
             return true
+        case .internalKeyword
+            where !nearestNominalParent.modifiers.containsACLModifier:
+            guard let nominalExtension = nearestNominalParent.nearestNominalExtensionDeclParent() else {
+                return false
+            }
+            return nominalExtension.modifiers.isPrivate ||
+                nominalExtension.modifiers.isFileprivate
         case .publicKeyword
-            where nearestNominalParent.modifiers.isPrivate || nearestNominalParent.modifiers.isInternal:
+            where nearestNominalParent.modifiers.isPrivate ||
+                nearestNominalParent.modifiers.isFileprivate ||
+                nearestNominalParent.modifiers.isInternal:
             return true
+        case .publicKeyword
+            where !nearestNominalParent.modifiers.containsACLModifier:
+            guard let nominalExtension = nearestNominalParent.nearestNominalExtensionDeclParent() else {
+                return true
+            }
+            return !nominalExtension.modifiers.isPublic
         case .contextualKeyword("open") where !nearestNominalParent.modifiers.isOpen:
             return true
         default:
@@ -134,6 +165,14 @@ private extension SyntaxProtocol {
 
         return parent.isNominalTypeDecl ? parent : parent.nearestNominalParent()
     }
+
+    func nearestNominalExtensionDeclParent() -> Syntax? {
+        guard let parent = parent, !parent.isNominalTypeDecl else {
+            return nil
+        }
+
+        return parent.isExtensionDecl ? parent : parent.nearestNominalExtensionDeclParent()
+    }
 }
 
 private extension Syntax {
@@ -144,6 +183,10 @@ private extension Syntax {
             self.is(EnumDeclSyntax.self)
     }
 
+    var isExtensionDecl: Bool {
+        self.is(ExtensionDeclSyntax.self)
+    }
+
     var modifiers: ModifierListSyntax? {
         if let node = self.as(StructDeclSyntax.self) {
             return node.modifiers
@@ -152,6 +195,8 @@ private extension Syntax {
         } else if let node = self.as(ActorDeclSyntax.self) {
             return node.modifiers
         } else if let node = self.as(EnumDeclSyntax.self) {
+            return node.modifiers
+        } else if let node = self.as(ExtensionDeclSyntax.self) {
             return node.modifiers
         } else {
             return nil
@@ -169,17 +214,30 @@ private extension ModifierListSyntax? {
     }
 
     var isInternal: Bool {
-        self?.allSatisfy { modifier in
-            switch modifier.name.tokenKind {
-            case .fileprivateKeyword, .privateKeyword, .publicKeyword, .contextualKeyword("open"):
-                return false
-            default:
-                return true
-            }
-        } != false
+        self?.contains(where: { $0.name.tokenKind == .internalKeyword }) == true
+    }
+
+    var isPublic: Bool {
+        self?.contains(where: { $0.name.tokenKind == .publicKeyword }) == true
     }
 
     var isOpen: Bool {
         self?.contains(where: { $0.name.tokenKind == .contextualKeyword("open") }) == true
+    }
+
+    var containsACLModifier: Bool {
+        guard self?.isEmpty == false else {
+            return false
+        }
+        let aclTokens: [TokenKind] = [
+            .fileprivateKeyword,
+            .privateKeyword,
+            .internalKeyword,
+            .publicKeyword,
+            .contextualKeyword("open")
+        ]
+        return self?.contains(where: {
+            aclTokens.contains($0.name.tokenKind)
+        }) == true
     }
 }

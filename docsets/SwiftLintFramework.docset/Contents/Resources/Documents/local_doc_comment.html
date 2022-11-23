@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>orphaned_doc_comment  Reference</title>
+    <title>local_doc_comment  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="orphaned_doc_comment  Reference"></a>
+    <a title="local_doc_comment  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -49,7 +49,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
       <img class="carat" src="img/carat.png" alt=""/>
-      orphaned_doc_comment  Reference
+      local_doc_comment  Reference
     </p>
 
     <div class="content-wrapper">
@@ -332,13 +332,13 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='orphaned-doc-comment' class='heading'>Orphaned Doc Comment</h1>
+            <h1 id='local-doc-comment' class='heading'>Local Doc Comment</h1>
 
-<p>A doc comment should be attached to a declaration.</p>
+<p>Doc comments shouldn&rsquo;t be used in local scopes. Use regular comments.</p>
 
 <ul>
-<li><strong>Identifier:</strong> orphaned_doc_comment</li>
-<li><strong>Enabled by default:</strong> Yes</li>
+<li><strong>Identifier:</strong> local_doc_comment</li>
+<li><strong>Enabled by default:</strong> No</li>
 <li><strong>Supports autocorrection:</strong> No</li>
 <li><strong>Kind:</strong> lint</li>
 <li><strong>Analyzer rule:</strong> No</li>
@@ -346,14 +346,13 @@
 <li><strong>Default configuration:</strong> warning</li>
 </ul>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Local scope documentation should use normal comments.</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="c1">/// My great property</span>
 <span class="k">var</span> <span class="nv">myGreatProperty</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="c1">//////////////////////////////////////</span>
-<span class="c1">//</span>
-<span class="c1">// Copyright header.</span>
-<span class="c1">//</span>
-<span class="c1">//////////////////////////////////////</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">/// Look here for more info: https://github.com.</span>
 <span class="k">var</span> <span class="nv">myGreatProperty</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span>
@@ -363,13 +362,10 @@
 <span class="k">var</span> <span class="nv">myGreatProperty</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="c1">/// My great property</span>
-<span class="c1">// Not a doc string</span>
-<span class="k">var</span> <span class="nv">myGreatProperty</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="err">↓</span><span class="c1">/// Look here for more info: https://github.com.</span>
-<span class="c1">// Not a doc string</span>
-<span class="k">var</span> <span class="nv">myGreatProperty</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="err">↓</span><span class="c1">/// Docstring inside a function declaration</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre>
 
           </div>

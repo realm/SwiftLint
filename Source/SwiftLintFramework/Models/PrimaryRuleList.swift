@@ -103,6 +103,7 @@ public let primaryRuleList = RuleList(rules: [
     LetVarWhitespaceRule.self,
     LineLengthRule.self,
     LiteralExpressionEndIdentationRule.self,
+    LocalDocCommentRule.self,
     LowerACLThanParentRule.self,
     MarkRule.self,
     MissingDocsRule.self,

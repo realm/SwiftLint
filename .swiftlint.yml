@@ -36,6 +36,7 @@ opt_in_rules:
   - last_where
   - legacy_multiple
   - literal_expression_end_indentation
+  - local_doc_comment
   - lower_acl_than_parent
   - modifier_order
   - nimble_operator

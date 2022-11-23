@@ -606,6 +606,12 @@ class LiteralExpressionEndIdentationRuleGeneratedTests: XCTestCase {
     }
 }
 
+class LocalDocCommentRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LocalDocCommentRule.description)
+    }
+}
+
 class LowerACLThanParentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LowerACLThanParentRule.description)

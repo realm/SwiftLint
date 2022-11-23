@@ -11,17 +11,25 @@ struct SwiftLintPlugin: BuildToolPlugin {
             return []
         }
 
+        let inputFilePaths = sourceTarget.sourceFiles(withSuffix: "swift")
+            .map(\.path)
+
+        guard inputFilePaths.isEmpty == false else {
+            // Don't lint anything if there are no Swift source files in this target
+            return []
+        }
+
         let swiftlint = try context.tool(named: "swiftlint")
         var arguments: [String] = [
             "lint",
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
 
-        let inputFilePaths = sourceTarget.sourceFiles(withSuffix: "swift").map(\.path)
-
-        guard inputFilePaths.isEmpty == false else {
-            // Don't lint anything if there are no Swift source files in this target
-            return []
+        // Manually look for configuration files, to avoid issues when the plugin does not execute our tool from the package source directory.
+        if let configuration = context.package.directory.firstConfigurationFileInParentDirectories() {
+            arguments.append(contentsOf: [
+                "--config", "\(configuration.string)"
+            ])
         }
 
         arguments += inputFilePaths.map(\.string)
@@ -61,6 +69,13 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
 
+        // Xcode build tool plugins don't seem to run from the project source directory, so our auto-discovery of configuration files doesn't work. We approximate it here.
+        if let configuration = context.xcodeProject.directory.firstConfigurationFileInParentDirectories() {
+            arguments.append(contentsOf: [
+                "--config", "\(configuration.string)"
+            ])
+        }
+
         arguments += inputFilePaths.map(\.string)
 
         return [
@@ -75,3 +90,19 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
     }
 }
 #endif
+
+private extension Path {
+    /// Scans the receiver, then all of it's parents looking for a configuration file with the name ".swiftlint.yml".
+    /// - Returns: Path to the configuration file, or nil if one cannot be found.
+    func firstConfigurationFileInParentDirectories() -> Path? {
+        // TODO: Consider linking to the framework to get the default configuration file name
+        let defaultConfigurationFileName = ".swiftlint.yml"
+        let proposedDirectory = sequence(first: self, next: { $0.removingLastComponent() })
+            .first { path in
+                let potentialConfigurationFile = path.appending(subpath: defaultConfigurationFileName)
+                return FileManager.default.fileExists(atPath: potentialConfigurationFile.string)
+            }
+
+        return proposedDirectory?.appending(subpath: defaultConfigurationFileName)
+    }
+}

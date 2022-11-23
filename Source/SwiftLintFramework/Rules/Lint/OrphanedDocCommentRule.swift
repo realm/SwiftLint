@@ -1,5 +1,4 @@
 import IDEUtils
-import SwiftSyntax
 
 struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
     var configuration = SeverityConfiguration(.warning)
@@ -43,22 +42,15 @@ struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
-            """),
-            Example("""
-            func foo() {
-              ↓/// Docstring inside a function declaration
-              print("foo")
-            }
             """)
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let classifications = file.syntaxClassifications
+        file.syntaxClassifications
             .filter { $0.kind != .none }
-        let docstringsWithOtherComments = classifications
             .pairs()
-            .compactMap { first, second -> Location? in
+            .compactMap { first, second in
                 let firstByteRange = first.range.toSourceKittenByteRange()
                 guard
                     let second = second,
@@ -71,44 +63,10 @@ struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
                     return nil
                 }
 
-                return Location(file: file, byteOffset: firstByteRange.location)
+                return StyleViolation(ruleDescription: Self.description,
+                                      severity: configuration.severity,
+                                      location: Location(file: file, byteOffset: firstByteRange.location))
             }
-
-        let docstringsInFunctionDeclarations = Visitor(classifications: classifications)
-            .walk(tree: file.syntaxTree, handler: \.violations)
-            .map { Location(file: file, position: $0.position) }
-
-        return (docstringsWithOtherComments + docstringsInFunctionDeclarations)
-            .sorted()
-            .map { location in
-                StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: location)
-            }
-    }
-}
-
-private extension OrphanedDocCommentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let docCommentRanges: [ByteSourceRange]
-
-        init(classifications: [SyntaxClassifiedRange]) {
-            self.docCommentRanges = classifications
-                .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }
-                .map(\.range)
-            super.init(viewMode: .sourceAccurate)
-        }
-
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            guard let body = node.body else {
-                return
-            }
-
-            let violatingRange = docCommentRanges.first { $0.intersects(body.byteRange) }
-            if let violatingRange {
-                violations.append(AbsolutePosition(utf8Offset: violatingRange.offset))
-            }
-        }
     }
 }
 

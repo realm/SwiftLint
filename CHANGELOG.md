@@ -10,7 +10,10 @@
 
 #### Enhancements
 
-* None.
+* Moved the validation of doc comments in local scopes out of
+  `orphaned_doc_comment` and into a new opt-in `local_doc_comment` rule.  
+  [JP Simard](https://github.com/jpsim)
+  [#4573](https://github.com/realm/SwiftLint/issues/4573)
 
 #### Bug Fixes
 

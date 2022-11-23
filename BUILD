@@ -1,3 +1,4 @@
+load("@build_bazel_rules_apple//apple:apple.bzl", "apple_universal_binary")
 load(
     "@build_bazel_rules_swift//swift:swift.bzl",
     "swift_binary",
@@ -48,6 +49,18 @@ swift_binary(
     deps = [
         ":swiftlint.library",
     ],
+)
+
+apple_universal_binary(
+    name = "universal_swiftlint",
+    binary = ":swiftlint",
+    forced_cpus = [
+        "x86_64",
+        "arm64",
+    ],
+    minimum_os_version = "12.0",
+    platform_type = "macos",
+    visibility = ["//visibility:public"],
 )
 
 # Linting

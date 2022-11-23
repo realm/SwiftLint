@@ -7,10 +7,7 @@ XCODEFLAGS=-scheme 'swiftlint' \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
 SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
-UNAME=$(shell uname)
 
-SWIFTLINT_EXECUTABLE_X86=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch x86_64 --show-bin-path)/swiftlint
-SWIFTLINT_EXECUTABLE_ARM64=$(shell swift build $(SWIFT_BUILD_FLAGS) --arch arm64 --show-bin-path)/swiftlint
 SWIFTLINT_EXECUTABLE_PARENT=.build/universal
 SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
 
@@ -62,25 +59,18 @@ analyze_autocorrect: write_xcodebuild_log
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	rm -f "./*.zip"
+	rm -f "./*.zip" "bazel.tar.gz" "bazel.tar.gz.sha256"
 	swift package clean
 
 clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-build_x86_64:
-	swift build $(SWIFT_BUILD_FLAGS) --arch x86_64 --product swiftlint
-
-build_arm64:
-	swift build $(SWIFT_BUILD_FLAGS) --arch arm64 --product swiftlint
-
-build: clean build_x86_64 build_arm64
-	# Need to build for each arch independently to work around https://bugs.swift.org/browse/SR-15802
-	mkdir -p $(SWIFTLINT_EXECUTABLE_PARENT)
-	lipo -create -output \
-		"$(SWIFTLINT_EXECUTABLE)" \
-		"$(SWIFTLINT_EXECUTABLE_X86)" \
-		"$(SWIFTLINT_EXECUTABLE_ARM64)"
+build: clean
+	mkdir -p "$(SWIFTLINT_EXECUTABLE_PARENT)"
+	bazel build --config release universal_swiftlint
+	$(eval SWIFTLINT_BINARY := $(shell bazel cquery --config release --output=files universal_swiftlint))
+	mv "$(SWIFTLINT_BINARY)" "$(SWIFTLINT_EXECUTABLE)"
+	chmod +w "$(SWIFTLINT_EXECUTABLE)"
 	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
 
 build_with_disable_sandbox:
@@ -142,7 +132,7 @@ bazel_release:
 	bazel build :release
 	mv bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
 
-release: bazel_release package portable_zip spm_artifactbundle_macos zip_linux_release
+release: clean bazel_release package portable_zip spm_artifactbundle_macos zip_linux_release
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .

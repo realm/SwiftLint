@@ -8,7 +8,7 @@ class NumberSeparatorRuleTests: XCTestCase {
             Example("let foo = 1000"),
             Example("let foo = 1000.0001"),
             Example("let foo = 10_000.0001"),
-            Example("let foo = 1000.000_01")
+            Example("let foo = 1000.00001")
         ]
         let triggeringExamples = [
             Example("let foo = ↓1_000"),
@@ -92,7 +92,8 @@ class NumberSeparatorRuleTests: XCTestCase {
                 "exclude_ranges": [
                     ["min": 1900, "max": 2030],
                     ["min": 2.0, "max": 3.0]
-                ]
+                ],
+                "minimum_fraction_length": 3
             ]
         )
     }

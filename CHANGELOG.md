@@ -22,6 +22,10 @@
   [#4559](https://github.com/realm/SwiftLint/issues/4559)
   [#4560](https://github.com/realm/SwiftLint/issues/4560)
 
+* Fix false positives in `lower_acl_than_parent` when the nominal parent is an extension.  
+  [Steffen Matthischke](https://github.com/heeaad)
+  [#4564](https://github.com/realm/SwiftLint/issues/4564)
+
 ## 0.50.0: Artisanal Clothes Pegs
 
 #### Breaking

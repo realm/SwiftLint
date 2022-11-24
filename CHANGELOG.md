@@ -22,12 +22,18 @@
   [#4559](https://github.com/realm/SwiftLint/issues/4559)
   [#4560](https://github.com/realm/SwiftLint/issues/4560)
 
-* Fix false positives in `lower_acl_than_parent` when the nominal parent is an extension.  
+* Fix false positives in `lower_acl_than_parent` when the nominal parent
+  is an extension.  
   [Steffen Matthischke](https://github.com/heeaad)
   [#4564](https://github.com/realm/SwiftLint/issues/4564)
+
 * Fix `minimum_fraction_length` handling in `number_separator`.  
   [JP Simard](https://github.com/jpsim)
   [#4576](https://github.com/realm/SwiftLint/issues/4576)
+
+* Fix false positives in `closure_spacing`.  
+  [JP Simard](https://github.com/jpsim)
+  [#4582](https://github.com/realm/SwiftLint/issues/4582)
 
 ## 0.50.0: Artisanal Clothes Pegs
 

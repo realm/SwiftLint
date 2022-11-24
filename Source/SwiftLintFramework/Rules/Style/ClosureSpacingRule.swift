@@ -17,14 +17,20 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
             Example("[].filter { $0.contains(location) }"),
             Example("extension UITableViewCell: ReusableView { }"),
             Example("extension UITableViewCell: ReusableView {}"),
-            Example(#"let r = /\{\}/"#, excludeFromDocumentation: true)
+            Example(#"let r = /\{\}/"#, excludeFromDocumentation: true),
+            Example("""
+            var tapped: (UITapGestureRecognizer) -> Void = { _ in /* no-op */ }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("[].filter↓{ $0.contains(location) }"),
             Example("[].filter(↓{$0.contains(location)})"),
             Example("[].map(↓{$0})"),
             Example("(↓{each in return result.contains(where: ↓{e in return e}) }).count"),
-            Example("filter ↓{ sorted ↓{ $0 < $1}}")
+            Example("filter ↓{ sorted ↓{ $0 < $1}}"),
+            Example("""
+            var tapped: (UITapGestureRecognizer) -> Void = ↓{ _ in /* no-op */  }
+            """, excludeFromDocumentation: true)
         ],
         corrections: [
             Example("[].filter(↓{$0.contains(location) })"):
@@ -158,23 +164,23 @@ private extension ClosureExprSyntax {
 
 private extension TokenSyntax {
     var hasSingleSpaceToItsLeft: Bool {
-        if case let .spaces(spaces) = Array(leadingTrivia).last, spaces == 1 {
+        if case .spaces(1) = Array(leadingTrivia).last {
             return true
+        } else if let previousToken, case .spaces(1) = Array(previousToken.trailingTrivia).last {
+            return true
+        } else {
+            return false
         }
-
-        let combinedLeadingTriviaLength = leadingTriviaLength.utf8Length +
-            (previousToken?.trailingTriviaLength.utf8Length ?? 0)
-        return combinedLeadingTriviaLength == 1
     }
 
     var hasSingleSpaceToItsRight: Bool {
-        if case let .spaces(spaces) = trailingTrivia.first, spaces == 1 {
+        if case .spaces(1) = trailingTrivia.first {
             return true
+        } else if let nextToken, case .spaces(1) = nextToken.leadingTrivia.first {
+            return true
+        } else {
+            return false
         }
-
-        let combinedTrailingTriviaLength = trailingTriviaLength.utf8Length +
-            (nextToken?.leadingTriviaLength.utf8Length ?? 0)
-        return combinedTrailingTriviaLength == 1
     }
 
     var hasLeadingNewline: Bool {

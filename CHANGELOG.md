@@ -14,8 +14,10 @@
   `orphaned_doc_comment` and into a new opt-in `local_doc_comment` rule.  
   [JP Simard](https://github.com/jpsim)
   [#4573](https://github.com/realm/SwiftLint/issues/4573)
-* SwiftLint's Swift Package Build Tool Plugin will now only scan files in the target being built. 
-  [Tony Arnold](https://github.com/tonyarnold) 
+
+* SwiftLint's Swift Package Build Tool Plugin will now only scan files
+  in the target being built.  
+  [Tony Arnold](https://github.com/tonyarnold)
   [#4406](https://github.com/realm/SwiftLint/pull/4406)
 
 #### Bug Fixes
@@ -41,6 +43,11 @@
 * Fix line count calculation for multiline string literals.  
   [JP Simard](https://github.com/jpsim)
   [#4585](https://github.com/realm/SwiftLint/issues/4585)
+
+* Fix false positives in `unused_closure_parameter` when using
+  identifiers with backticks.  
+  [JP Simard](https://github.com/jpsim)
+  [#4588](https://github.com/realm/SwiftLint/issues/4588)
 
 ## 0.50.0: Artisanal Clothes Pegs
 

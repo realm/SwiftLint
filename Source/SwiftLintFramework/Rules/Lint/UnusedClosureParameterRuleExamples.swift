@@ -52,7 +52,9 @@ enum UnusedClosureParameterRuleExamples {
             TextField($name)
         }
         """),
-        Example(#"_ = ["a"].filter { `class` in `class`.hasPrefix("a") }"#)
+        Example(#"_ = ["a"].filter { `class` in `class`.hasPrefix("a") }"#),
+        Example("let closure: (Int) -> Void = { `foo` in _ = foo }"),
+        Example("let closure: (Int) -> Void = { foo in _ = `foo` }")
     ]
 
     static let triggering = [

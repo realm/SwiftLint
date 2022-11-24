@@ -100,7 +100,7 @@ private extension Path {
         let proposedDirectory = sequence(first: self, next: { $0.removingLastComponent() })
             .first { path in
                 let potentialConfigurationFile = path.appending(subpath: defaultConfigurationFileName)
-                return FileManager.default.fileExists(atPath: potentialConfigurationFile.string)
+                return FileManager.default.isReadableFile(atPath: potentialConfigurationFile.string)
             }
 
         return proposedDirectory?.appending(subpath: defaultConfigurationFileName)

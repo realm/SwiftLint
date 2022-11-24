@@ -3,8 +3,6 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable type_body_length - Disable the rule and self-test commenting a command
-
 private extension Command {
     init?(string: String) {
         let nsString = string.bridge()

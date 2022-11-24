@@ -35,6 +35,10 @@
   [JP Simard](https://github.com/jpsim)
   [#4582](https://github.com/realm/SwiftLint/issues/4582)
 
+* Fix line count calculation for multiline string literals.  
+  [JP Simard](https://github.com/jpsim)
+  [#4585](https://github.com/realm/SwiftLint/issues/4585)
+
 ## 0.50.0: Artisanal Clothes Pegs
 
 #### Breaking

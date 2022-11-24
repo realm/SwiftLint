@@ -76,7 +76,7 @@ struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     private func typeContent(for typeContentStructure: SourceKittenDictionary) -> TypeContent? {
         guard let typeContentKind = typeContentStructure.declarationKind else { return nil }
 

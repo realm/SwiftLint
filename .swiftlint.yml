@@ -88,6 +88,9 @@ file_name:
     - GeneratedTests.swift
     - TestHelpers.swift
 
+function_body_length: 60
+type_body_length: 400
+
 custom_rules:
   rule_id:
     included: Source/SwiftLintFramework/Rules/.+/\w+\.swift

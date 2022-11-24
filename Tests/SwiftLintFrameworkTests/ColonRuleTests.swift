@@ -2,7 +2,6 @@
 import XCTest
 
 class ColonRuleTests: XCTestCase {
-    // swiftlint:disable:next function_body_length
     func testColonWithFlexibleRightSpace() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is true.
@@ -69,7 +68,6 @@ class ColonRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
 
-    // swiftlint:disable:next function_body_length
     func testColonWithoutApplyToDictionaries() {
         let nonTriggeringExamples = ColonRule.description.nonTriggeringExamples + [
             Example("let abc = [Void:Void]()\n"),

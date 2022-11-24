@@ -43,7 +43,12 @@ extension SwiftLintFile {
         return syntaxTree
             .tokens(viewMode: .sourceAccurate)
             .reduce(into: []) { linesWithTokens, token in
-                if let line = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line {
+                if case .stringSegment = token.tokenKind {
+                    let sourceRange = token.withoutTrivia().sourceRange(converter: locationConverter)
+                    let startLine = sourceRange.start.line!
+                    let endLine = sourceRange.end.line!
+                    linesWithTokens.formUnion(startLine...endLine)
+                } else if let line = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line {
                     linesWithTokens.insert(line)
                 }
             }

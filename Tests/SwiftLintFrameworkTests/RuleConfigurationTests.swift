@@ -2,8 +2,6 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable type_body_length
-
 class RuleConfigurationTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],

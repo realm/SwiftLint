@@ -17,7 +17,6 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         triggeringExamples: FileTypesOrderRuleExamples.triggeringExamples
     )
 
-    // swiftlint:disable:next function_body_length
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
               let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }

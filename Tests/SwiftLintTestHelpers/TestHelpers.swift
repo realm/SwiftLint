@@ -451,7 +451,6 @@ public extension XCTestCase {
         }
     }
 
-    // swiftlint:disable:next function_body_length
     private func verifyExamples(triggers: [Example], nonTriggers: [Example],
                                 configuration config: Configuration, requiresFileOnDisk: Bool,
                                 file callSiteFile: StaticString = #file,

@@ -66,6 +66,7 @@ class ModifierOrderTests: XCTestCase {
                                                                     "override"]])
     }
 
+    // swiftlint:disable:next function_body_length
     func testAtPrefixedGroup() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
@@ -215,6 +216,7 @@ class ModifierOrderTests: XCTestCase {
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
     }
 
+    // swiftlint:disable:next function_body_length
     func testCorrectionsAreAppliedCorrectly() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
@@ -281,6 +283,7 @@ class ModifierOrderTests: XCTestCase {
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
+    // swiftlint:disable:next function_body_length
     func testCorrectionsAreNotAppliedToIrrelevantModifier() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])

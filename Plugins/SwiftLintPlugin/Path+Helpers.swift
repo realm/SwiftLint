@@ -2,7 +2,7 @@ import Foundation
 import PackagePlugin
 
 extension Path {
-    /// Scans the receiver, then all of it's parents looking for a configuration file with the name ".swiftlint.yml".
+    /// Scans the receiver, then all of its parents looking for a configuration file with the name ".swiftlint.yml".
     /// - Returns: Path to the configuration file, or nil if one cannot be found.
     func firstConfigurationFileInParentDirectories() -> Path? {
         // TODO: Consider linking to the framework to get the default configuration file name

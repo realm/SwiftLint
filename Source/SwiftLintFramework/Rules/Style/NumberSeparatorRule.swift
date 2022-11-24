@@ -168,7 +168,7 @@ extension NumberSeparatorValidator {
 
         let minimumLength: Int
         if isFraction {
-            minimumLength = configuration.minimumFractionLength ?? configuration.minimumLength
+            minimumLength = configuration.minimumFractionLength ?? .max
         } else {
             minimumLength = configuration.minimumLength
         }

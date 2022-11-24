@@ -5,6 +5,10 @@ steps:
       - bazel build :swiftlint
       - echo "+++ Test"
       - bazel test --test_output=errors //Tests/...
+  - label: "SwiftPM"
+    commands:
+      - echo "+++ Test"
+      - swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
   - label: "Danger"
     commands:
       - echo "--- Build Danger"

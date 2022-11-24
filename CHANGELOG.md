@@ -14,6 +14,9 @@
   `orphaned_doc_comment` and into a new opt-in `local_doc_comment` rule.  
   [JP Simard](https://github.com/jpsim)
   [#4573](https://github.com/realm/SwiftLint/issues/4573)
+* SwiftLint's Swift Package Build Tool Plugin will now only scan files in the target being built. 
+  [Tony Arnold](https://github.com/tonyarnold) 
+  [#4406](https://github.com/realm/SwiftLint/pull/4406)
 
 #### Bug Fixes
 

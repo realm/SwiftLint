@@ -18,7 +18,14 @@ internal struct TypeNameRuleExamples {
         }
         """),
         Example("enum MyType {\ncase value\n}"),
-        Example("protocol P {}", configuration: ["validate_protocols": false])
+        Example("protocol P {}", configuration: ["validate_protocols": false]),
+        Example("""
+        struct SomeStruct {
+          enum `Type` {
+            case x, y, z
+          }
+        }
+        """)
     ]
 
     static let triggeringExamples: [Example] = [

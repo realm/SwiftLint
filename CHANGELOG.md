@@ -49,6 +49,11 @@
   [JP Simard](https://github.com/jpsim)
   [#4588](https://github.com/realm/SwiftLint/issues/4588)
 
+* Fix `type_name` regression where names with backticks would trigger
+  violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#4571](https://github.com/realm/SwiftLint/issues/4571)
+
 ## 0.50.0: Artisanal Clothes Pegs
 
 #### Breaking

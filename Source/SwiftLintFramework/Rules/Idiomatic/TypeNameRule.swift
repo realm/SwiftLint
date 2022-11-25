@@ -9,9 +9,11 @@ struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",
-        description: "Type name should only contain alphanumeric characters, start with an " +
-                     "uppercase character and span between 3 and 40 characters in length." +
-                     "Private types may start with an underscore.",
+        description: """
+            Type name should only contain alphanumeric characters, start with an uppercase character and span between \
+            3 and 40 characters in length.
+            Private types may start with an underscore.
+            """,
         kind: .idiomatic,
         nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
@@ -91,6 +93,7 @@ private extension TypeNameRule {
             }
 
             let name = originalName
+                .strippingBackticks()
                 .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
                 .strippingTrailingSwiftUIPreviewProvider(inheritedTypes: inheritedTypes)
             let allowedSymbols = nameConfiguration.allowedSymbols.union(.alphanumerics)
@@ -123,6 +126,10 @@ private extension TypeNameRule {
 }
 
 private extension String {
+    func strippingBackticks() -> String {
+        replacingOccurrences(of: "`", with: "")
+    }
+
     func strippingTrailingSwiftUIPreviewProvider(inheritedTypes: InheritedTypeListSyntax?) -> String {
         guard let inheritedTypes = inheritedTypes,
               hasSuffix("_Previews"),

@@ -25,7 +25,8 @@ struct SwiftLintPlugin: BuildToolPlugin {
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
 
-        // Manually look for configuration files, to avoid issues when the plugin does not execute our tool from the package source directory.
+        // Manually look for configuration files, to avoid issues when the plugin does not execute our tool from the
+        // package source directory.
         if let configuration = context.package.directory.firstConfigurationFileInParentDirectories() {
             arguments.append(contentsOf: [
                 "--config", "\(configuration.string)"
@@ -69,7 +70,8 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
 
-        // Xcode build tool plugins don't seem to run from the project source directory, so our auto-discovery of configuration files doesn't work. We approximate it here.
+        // Xcode build tool plugins don't seem to run from the project source directory, so our auto-discovery of
+        // configuration files doesn't work. We approximate it here.
         if let configuration = context.xcodeProject.directory.firstConfigurationFileInParentDirectories() {
             arguments.append(contentsOf: [
                 "--config", "\(configuration.string)"

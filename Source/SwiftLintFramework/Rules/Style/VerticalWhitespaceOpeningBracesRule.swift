@@ -143,8 +143,6 @@ struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule {
-    var configurationDescription: String { return "N/A" }
-
     init(configuration: Any) throws {}
 
     static let description = RuleDescription(

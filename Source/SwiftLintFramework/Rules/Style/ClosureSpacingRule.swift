@@ -20,6 +20,10 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
             Example(#"let r = /\{\}/"#, excludeFromDocumentation: true),
             Example("""
             var tapped: (UITapGestureRecognizer) -> Void = { _ in /* no-op */ }
+            """, excludeFromDocumentation: true),
+            Example("""
+            let test1 = func1(arg: { /* do nothing */ })
+            let test2 = func1 { /* do nothing */ }
             """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [

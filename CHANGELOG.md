@@ -38,6 +38,7 @@
 
 * Fix false positives in `closure_spacing`.  
   [JP Simard](https://github.com/jpsim)
+  [#4565](https://github.com/realm/SwiftLint/issues/4565)
   [#4582](https://github.com/realm/SwiftLint/issues/4582)
 
 * Fix line count calculation for multiline string literals.  

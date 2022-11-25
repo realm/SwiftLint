@@ -22,7 +22,6 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
             var tapped: (UITapGestureRecognizer) -> Void = { _ in /* no-op */ }
             """, excludeFromDocumentation: true),
             Example("""
-            // This triggers a violation:
             let test1 = func1(arg: { /* do nothing */ })
             let test2 = func1 { /* do nothing */ }
             """, excludeFromDocumentation: true)

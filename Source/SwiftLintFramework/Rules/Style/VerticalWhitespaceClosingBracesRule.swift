@@ -57,8 +57,6 @@ extension VerticalWhitespaceClosingBracesRule {
 }
 
 extension VerticalWhitespaceClosingBracesRule: OptInRule {
-    var configurationDescription: String { return "N/A" }
-
     private static let examples = VerticalWhitespaceClosingBracesRuleExamples.self
     static let description = RuleDescription(
         identifier: "vertical_whitespace_closing_braces",

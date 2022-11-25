@@ -85,7 +85,7 @@ private extension UnusedClosureParameterRule {
 
                     if name.tokenKind == .wildcardKeyword {
                         continue
-                    } else if referencedIdentifiers.contains(name.text.removingDollarPrefix) {
+                    } else if referencedIdentifiers.contains(name.text.removingDollarsAndBackticks) {
                         continue
                     }
 
@@ -105,7 +105,7 @@ private extension UnusedClosureParameterRule {
             for (index, param) in params.enumerated() {
                 if param.name.tokenKind == .wildcardKeyword {
                     continue
-                } else if referencedIdentifiers.contains(param.name.text.removingDollarPrefix) {
+                } else if referencedIdentifiers.contains(param.name.text.removingDollarsAndBackticks) {
                     continue
                 }
 
@@ -125,13 +125,14 @@ private final class IdentifierReferenceVisitor: SyntaxVisitor {
     private(set) var identifiers: Set<String> = []
 
     override func visitPost(_ node: IdentifierExprSyntax) {
-        identifiers.insert(node.identifier.text.removingDollarPrefix)
+        identifiers.insert(node.identifier.text.removingDollarsAndBackticks)
     }
 }
 
 private extension String {
-    var removingDollarPrefix: String {
-        replacingOccurrences(of: "$", with: "")
+    var removingDollarsAndBackticks: String {
+        self.replacingOccurrences(of: "$", with: "")
+            .replacingOccurrences(of: "`", with: "")
     }
 }
 
@@ -149,7 +150,7 @@ private extension ClosureExprSyntax {
                 }
                 return ClosureParam(
                     position: param.name.positionAfterSkippingLeadingTrivia,
-                    name: param.name.text.removingDollarPrefix
+                    name: param.name.text.removingDollarsAndBackticks
                 )
             }
         } else if let params = signature?.input?.as(ParameterClauseSyntax.self)?.parameterList {
@@ -160,7 +161,7 @@ private extension ClosureExprSyntax {
                 return param.firstName.map { name in
                     ClosureParam(
                         position: name.positionAfterSkippingLeadingTrivia,
-                        name: name.text.removingDollarPrefix
+                        name: name.text.removingDollarsAndBackticks
                     )
                 }
             }

@@ -375,6 +375,14 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">.</span><span class="nf">bar</span><span class="p">(</span><span class="kt">Baz</span><span class="p">()):</span> <span class="k">break</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">.</span><span class="nf">bar</span><span class="p">(</span><span class="o">.</span><span class="nf">init</span><span class="p">()):</span> <span class="k">break</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
 <span class="k">default</span><span class="p">:</span> <span class="k">break</span>
 <span class="p">}</span>
 </code></pre>
@@ -414,6 +422,14 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
 <span class="k">case</span> <span class="o">.</span><span class="n">bar</span><span class="err">↓</span><span class="p">()</span> <span class="k">where</span> <span class="nf">method</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">.</span><span class="nf">bar</span><span class="p">(</span><span class="o">.</span><span class="n">baz</span><span class="err">↓</span><span class="p">()):</span> <span class="k">break</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="k">switch</span> <span class="n">foo</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">.</span><span class="nf">bar</span><span class="p">(</span><span class="o">.</span><span class="n">baz</span><span class="err">↓</span><span class="p">(</span><span class="n">_</span><span class="p">)):</span> <span class="k">break</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">example</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">{</span>

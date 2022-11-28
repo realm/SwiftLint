@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives in `empty_enum_arguments` when the called expression
+  is an identifier or an init call.  
+  [Steffen Matthischke](https://github.com/heeaad)
+  [#4597](https://github.com/realm/SwiftLint/issues/4597)
 
 ## 0.50.1: Artisanal Clothes Pegs Fixup Edition
 

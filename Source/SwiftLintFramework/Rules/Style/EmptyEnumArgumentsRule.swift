@@ -41,6 +41,8 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             wrapInSwitch("case \"bar\".uppercased()"),
             wrapInSwitch(variable: "(foo, bar)", "case (_, _) where !something"),
             wrapInSwitch("case (let f as () -> String)?"),
+            wrapInSwitch("case .bar(Baz())"),
+            wrapInSwitch("case .bar(.init())"),
             wrapInSwitch("default"),
             Example("if case .bar = foo {\n}"),
             Example("guard case .bar = foo else {\n}"),
@@ -65,6 +67,8 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             wrapInSwitch("case .bar↓()"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"),
             wrapInSwitch("case .bar↓() where method() > 2"),
+            wrapInSwitch("case .bar(.baz↓())"),
+            wrapInSwitch("case .bar(.baz↓(_))"),
             wrapInFunc("case .bar↓(_)"),
             Example("if case .bar↓(_) = foo {\n}"),
             Example("guard case .bar↓(_) = foo else {\n}"),
@@ -89,6 +93,8 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             wrapInSwitch("case .bar↓()"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"): wrapInSwitch("case .bar, .bar2"),
             wrapInSwitch("case .bar↓() where method() > 2"): wrapInSwitch("case .bar where method() > 2"),
+            wrapInSwitch("case .bar(.baz↓())"): wrapInSwitch("case .bar(.baz)"),
+            wrapInSwitch("case .bar(.baz↓(_))"): wrapInSwitch("case .bar(.baz)"),
             wrapInFunc("case .bar↓(_)"): wrapInFunc("case .bar"),
             Example("if case .bar↓(_) = foo {"): Example("if case .bar = foo {"),
             Example("guard case .bar↓(_) = foo else {"): Example("guard case .bar = foo else {"),
@@ -193,7 +199,9 @@ private extension PatternSyntax {
 
 private extension FunctionCallExprSyntax {
     var argumentsHasViolation: Bool {
-        argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
+        !calledExpression.is(IdentifierExprSyntax.self) &&
+            calledExpression.as(MemberAccessExprSyntax.self)?.lastToken?.tokenKind != .initKeyword &&
+            argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
     }
 
     var innermostFunctionCall: FunctionCallExprSyntax {

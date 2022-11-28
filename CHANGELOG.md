@@ -1,3 +1,21 @@
+## Main
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.50.1: Artisanal Clothes Pegs Fixup Edition
 
 #### Breaking

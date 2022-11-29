@@ -3,8 +3,10 @@ import PackageDescription
 
 #if os(macOS)
 private let addCryptoSwift = false
+private let binaryPlugin = true
 #else
 private let addCryptoSwift = true
+private let binaryPlugin = false
 #endif
 
 let frameworkDependencies: [Target.Dependency] = [
@@ -39,7 +41,7 @@ let package = Package(
             name: "SwiftLintPlugin",
             capability: .buildTool(),
             dependencies: [
-                .target(name: "SwiftLintBinary")
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
             ]
         ),
         .executableTarget(

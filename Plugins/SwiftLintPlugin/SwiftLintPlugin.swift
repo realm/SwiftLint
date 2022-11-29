@@ -59,6 +59,8 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
             .filter { $0.type == .source && $0.path.extension == "swift" }
             .map(\.path)
 
+        print("Going to lint \(inputFilePaths.map(\.string).joined(separator: ", "))")
+
         guard inputFilePaths.isEmpty == false else {
             // Don't lint anything if there are no Swift source files in this target
             return []
@@ -79,6 +81,8 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         }
 
         arguments += inputFilePaths.map(\.string)
+
+        print("Will run with arguments: \(arguments)")
 
         return [
             .buildCommand(

@@ -13,7 +13,17 @@ extension Path {
     /// - returns: Path to the configuration file, or nil if one cannot be found.
     func firstConfigurationFileInParentDirectories() -> Path? {
         let defaultConfigurationFileName = ".swiftlint.yml"
-        let proposedDirectory = sequence(first: self, next: { $0.removingLastComponent() }).first { path in
+        let proposedDirectory = sequence(
+            first: self,
+            next: { path in
+                guard path.stem.count > 1 else {
+                    // Check we're not at the root of this filesystem, as `removingLastComponent()` will continually return the root from itself.
+                    return nil
+                }
+
+                return path.removingLastComponent()
+            }
+        ).first { path in
             let potentialConfigurationFile = path.appending(subpath: defaultConfigurationFileName)
             return potentialConfigurationFile.isAccessible()
         }

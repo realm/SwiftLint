@@ -2,7 +2,7 @@ import Foundation
 import PackagePlugin
 
 #if os(Linux)
-import GlibC
+import Glibc
 #else
 import Darwin
 #endif

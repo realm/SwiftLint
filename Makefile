@@ -132,8 +132,6 @@ bazel_release:
 	bazel build :release
 	mv bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
 
-release: clean bazel_release package portable_zip spm_artifactbundle_macos zip_linux_release
-
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .
 
@@ -160,7 +158,7 @@ docs:
 get_version:
 	@echo "$(VERSION_STRING)"
 
-push_version:
+release:
 ifneq ($(strip $(shell git status --untracked-files=no --porcelain 2>/dev/null)),)
 	$(error git state is not clean)
 endif
@@ -168,6 +166,12 @@ endif
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+	make clean
+	make bazel_release
+	make package
+	make portable_zip
+	make spm_artifactbundle_macos
+	./tools/update-artifact-bundle.sh "$(NEW_VERSION)"
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
 	git push origin HEAD

@@ -17,7 +17,8 @@ extension Path {
             first: self,
             next: { path in
                 guard path.stem.count > 1 else {
-                    // Check we're not at the root of this filesystem, as `removingLastComponent()` will continually return the root from itself.
+                    // Check we're not at the root of this filesystem, as `removingLastComponent()`
+                    // will continually return the root from itself.
                     return nil
                 }
 

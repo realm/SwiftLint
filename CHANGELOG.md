@@ -11,9 +11,7 @@
 #### Enhancements
 
 * The `SwiftLintPlugin` SwiftPM plugin now uses a prebuilt binary on
-  macOS. A new `SwiftLintSourcePlugin` SwiftPM plugin builds SwiftLint
-  from source, so it can be used on Linux and for git commits other than
-  tagged releases.  
+  macOS.  
   [Tony Arnold](https://github.com/tonyarnold)
   [JP Simard](https://github.com/jpsim)
   [#4558](https://github.com/realm/SwiftLint/issues/4558)

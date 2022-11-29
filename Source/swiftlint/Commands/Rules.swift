@@ -7,7 +7,8 @@ import Glibc
 #error("Unsupported platform")
 #endif
 import Foundation
-import SwiftLintFramework
+@_spi(TestHelper)
+import  SwiftLintFramework
 import SwiftyTextTable
 
 extension SwiftLint {

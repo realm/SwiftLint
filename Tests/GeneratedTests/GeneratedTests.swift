@@ -1,6 +1,10 @@
 // Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+// swiftlint:disable duplicate_imports
+
 @testable import SwiftLintFramework
+@_spi(TestHelper)
+import  SwiftLintFramework
 import SwiftLintTestHelpers
 import XCTest
 

@@ -1,5 +1,6 @@
 @testable import swiftlint
-import SwiftLintFramework
+@_spi(TestHelper)
+import  SwiftLintFramework
 import XCTest
 
 final class RulesFilterTests: XCTestCase {

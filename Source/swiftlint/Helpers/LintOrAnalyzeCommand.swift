@@ -1,6 +1,7 @@
 import Dispatch
 import Foundation
-import SwiftLintFramework
+@_spi(TestHelper)
+import  SwiftLintFramework
 
 enum LintOrAnalyzeMode {
     case lint, analyze

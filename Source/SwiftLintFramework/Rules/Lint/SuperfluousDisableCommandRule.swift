@@ -1,9 +1,10 @@
-struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKitFreeRule {
-    var configuration = SeverityConfiguration(.warning)
+@_spi(TestHelper)
+public struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKitFreeRule {
+    public var configuration = SeverityConfiguration(.warning)
 
-    init() {}
+    public init() {}
 
-    static let description = RuleDescription(
+    public static let description = RuleDescription(
         identifier: "superfluous_disable_command",
         name: "Superfluous Disable Command",
         description: """
@@ -13,7 +14,7 @@ struct SuperfluousDisableCommandRule: ConfigurationProviderRule, SourceKitFreeRu
         kind: .lint
     )
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
         // This rule is implemented in Linter.swift
         return []
     }

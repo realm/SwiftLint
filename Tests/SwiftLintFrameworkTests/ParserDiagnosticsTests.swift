@@ -1,4 +1,7 @@
+// swiftlint:disable duplicate_imports
 @testable import SwiftLintFramework
+@_spi(TestHelper)
+import SwiftLintFramework
 import XCTest
 
 final class ParserDiagnosticsTests: XCTestCase {

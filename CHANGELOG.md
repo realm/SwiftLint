@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* The `SwiftLintPlugin` SwiftPM plugin now uses a prebuilt binary on
+  macOS.  
+  [Tony Arnold](https://github.com/tonyarnold)
+  [JP Simard](https://github.com/jpsim)
+  [#4558](https://github.com/realm/SwiftLint/issues/4558)
 
 #### Bug Fixes
 

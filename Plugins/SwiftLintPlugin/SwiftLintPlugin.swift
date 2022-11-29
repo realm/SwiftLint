@@ -22,6 +22,7 @@ struct SwiftLintPlugin: BuildToolPlugin {
         let swiftlint = try context.tool(named: "swiftlint")
         var arguments: [String] = [
             "lint",
+            "--quiet",
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
 
@@ -67,6 +68,7 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
         let swiftlint = try context.tool(named: "swiftlint")
         var arguments: [String] = [
             "lint",
+            "--quiet",
             "--cache-path", "\(context.pluginWorkDirectory)"
         ]
 

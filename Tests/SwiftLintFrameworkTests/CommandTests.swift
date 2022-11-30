@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
-@testable
 @_spi(TestHelper)
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 private extension Command {

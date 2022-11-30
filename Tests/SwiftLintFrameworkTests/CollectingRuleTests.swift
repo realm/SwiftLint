@@ -1,9 +1,8 @@
-// swiftlint:disable duplicate_imports
-@testable import SwiftLintFramework
+@testable
 @_spi(TestHelper)
 import SwiftLintFramework
 @_spi(TestHelper)
-import  SwiftLintTestHelpers
+import SwiftLintTestHelpers
 import XCTest
 
 class CollectingRuleTests: XCTestCase {

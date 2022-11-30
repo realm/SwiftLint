@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 @_spi(TestHelper)
-import  SwiftLintFramework
+import SwiftLintFramework
 import XCTest
 
 private let config: Configuration = {

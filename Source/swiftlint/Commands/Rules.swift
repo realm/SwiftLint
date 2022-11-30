@@ -8,7 +8,7 @@ import Glibc
 #endif
 import Foundation
 @_spi(TestHelper)
-import  SwiftLintFramework
+import SwiftLintFramework
 import SwiftyTextTable
 
 extension SwiftLint {

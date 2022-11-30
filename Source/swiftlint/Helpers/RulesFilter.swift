@@ -1,5 +1,5 @@
 @_spi(TestHelper)
-import  SwiftLintFramework
+import SwiftLintFramework
 
 extension RulesFilter {
     struct ExcludingOptions: OptionSet {

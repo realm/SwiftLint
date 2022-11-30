@@ -33,8 +33,16 @@ extension Configuration {
         excludeByPrefix: Bool = false,
         fileManager: LintableFileManager = FileManager.default
     ) -> [String] {
-        // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
-        if path.isFile && !forceExclude { return [path] }
+        if path.isFile {
+            if forceExclude {
+                let filteredPaths = excludeByPrefix
+                    ? filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
+                    : filterExcludedPaths(fileManager: fileManager, in: [path.absolutePathStandardized()])
+                return filteredPaths
+            } else { // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
+                return [path]
+            }
+        }
 
         let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
         let includedPaths = self.includedPaths

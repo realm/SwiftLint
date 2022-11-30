@@ -191,16 +191,10 @@
                 <a class="nav-group-task-link" href="../Protocols.html#/s:18SwiftLintFramework17AnyCollectingRuleP">AnyCollectingRule</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/CollectingCorrectableRule.html">CollectingCorrectableRule</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/CollectingRule.html">CollectingRule</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/CorrectableRule.html">CorrectableRule</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/LintableFileManager.html">LintableFileManager</a>
@@ -222,15 +216,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols.html#/s:18SwiftLintFramework17SourceKitFreeRuleP">SourceKitFreeRule</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/SubstitutionCorrectableASTRule.html">SubstitutionCorrectableASTRule</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/SubstitutionCorrectableRule.html">SubstitutionCorrectableRule</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a>
@@ -263,9 +248,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Configuration/RulesMode.html">– RulesMode</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/Correction.html">Correction</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/Example.html">Example</a>
@@ -345,7 +327,7 @@
 <p>A <code>CollectedLinter</code> is only created after a <code><a href="../Structs/Linter.html">Linter</a></code> has run its collection steps in <code><a href="../Structs/Linter.html#/s:18SwiftLintFramework6LinterV7collect4intoAA09CollectedD0VAA11RuleStorageC_tF">Linter.collect(into:)</a></code>.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Linter.swift#L175-L346">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Linter.swift#L175-L347">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -494,59 +476,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:18SwiftLintFramework15CollectedLinterV7correct5usingSayAA10CorrectionVGAA11RuleStorageC_tF"></a>
-                    <a name="//apple_ref/swift/Method/correct(using:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:18SwiftLintFramework15CollectedLinterV7correct5usingSayAA10CorrectionVGAA11RuleStorageC_tF">correct(using:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Applies corrections for all rules to this file, returning performed corrections.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">correct</span><span class="p">(</span><span class="n">using</span> <span class="nv">storage</span><span class="p">:</span> <span class="kt"><a href="../Classes/RuleStorage.html">RuleStorage</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Structs/Correction.html">Correction</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>storage</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The storage object containing all collected info.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>All corrections that were applied.</p>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Linter.swift#L284-L306">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:18SwiftLintFramework15CollectedLinterV6format7useTabs11indentWidthySb_SitF"></a>
                     <a name="//apple_ref/swift/Method/format(useTabs:indentWidth:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:18SwiftLintFramework15CollectedLinterV6format7useTabs11indentWidthySb_SitF">format(useTabs:<wbr>indentWidth:<wbr>)</a>
@@ -600,7 +529,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Linter.swift#L312-L319">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintFramework/Models/Linter.swift#L313-L320">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

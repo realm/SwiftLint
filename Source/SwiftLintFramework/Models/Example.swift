@@ -19,11 +19,14 @@ public struct Example {
     /// - SeeAlso: addEmoji(_:)
     public private(set) var testMultiByteOffsets: Bool
     /// Whether tests shall verify that the example wrapped in a comment doesn't trigger
-    private(set) var testWrappingInComment: Bool
+    @_spi(TestHelper)
+    public private(set) var testWrappingInComment: Bool
     /// Whether tests shall verify that the example wrapped into a string doesn't trigger
-    private(set) var testWrappingInString: Bool
+    @_spi(TestHelper)
+    public private(set) var testWrappingInString: Bool
     /// Whether tests shall verify that the disabled rule (comment in the example) doesn't trigger
-    private(set) var testDisableCommand: Bool
+    @_spi(TestHelper)
+    public private(set) var testDisableCommand: Bool
     /// Whether the example should be tested on Linux
     public private(set) var testOnLinux: Bool
     /// The path to the file where the example was created
@@ -40,7 +43,8 @@ public struct Example {
     let excludeFromDocumentation: Bool
 
     /// Specifies whether the test example should be the only example run during the current test case execution.
-    var isFocused: Bool
+    @_spi(TestHelper)
+    public var isFocused: Bool
 }
 
 public extension Example {

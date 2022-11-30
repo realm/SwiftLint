@@ -1,4 +1,7 @@
+@_spi(TestHelper)
 @testable import SwiftLintFramework
+@_spi(TestHelper)
+import SwiftLintTestHelpers
 import XCTest
 
 class CollectingRuleTests: XCTestCase {

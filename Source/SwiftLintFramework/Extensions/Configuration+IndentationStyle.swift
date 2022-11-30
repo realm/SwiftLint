@@ -7,7 +7,8 @@ public extension Configuration {
         case spaces(count: Int)
 
         /// The default indentation style if none is explicitly provided.
-        static var `default` = spaces(count: 4)
+        @_spi(TestHelper)
+        public static var `default` = spaces(count: 4)
 
         /// Creates an indentation style based on an untyped configuration value.
         ///

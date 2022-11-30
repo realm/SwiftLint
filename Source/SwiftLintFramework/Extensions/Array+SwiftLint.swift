@@ -67,7 +67,8 @@ extension Array {
     ///
     /// - returns: The elements failing the `belongsInSecondPartition` test, followed by the elements passing the
     ///            `belongsInSecondPartition` test.
-    func partitioned(by belongsInSecondPartition: (Element) throws -> Bool) rethrows ->
+    @_spi(TestHelper)
+    public func partitioned(by belongsInSecondPartition: (Element) throws -> Bool) rethrows ->
         (first: ArraySlice<Element>, second: ArraySlice<Element>) {
             var copy = self
             let pivot = try copy.partition(by: belongsInSecondPartition)
@@ -79,7 +80,8 @@ extension Array {
     /// - parameter transform: The transformation to apply to each element.
     ///
     /// - returns: The result of applying `transform` on every element and flattening the results.
-    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
+    @_spi(TestHelper)
+    public func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 
@@ -110,7 +112,8 @@ extension Array {
 
 extension Collection {
     /// Whether this collection has one or more element.
-    var isNotEmpty: Bool {
+    @_spi(TestHelper)
+    public var isNotEmpty: Bool {
         return !isEmpty
     }
 

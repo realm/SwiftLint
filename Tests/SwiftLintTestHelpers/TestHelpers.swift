@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintFramework
+@_spi(TestHelper)
+import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
@@ -86,6 +87,7 @@ public extension Collection where Element == String {
                 .violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
+    @_spi(TestHelper)
     func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         return map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
             .corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
@@ -107,6 +109,7 @@ public extension Collection where Element: SwiftLintFile {
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
 
+    @_spi(TestHelper)
     func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
         let storage = RuleStorage()
         let corrections = map({ file in

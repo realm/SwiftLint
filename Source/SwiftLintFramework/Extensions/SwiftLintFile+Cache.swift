@@ -46,7 +46,8 @@ private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 internal typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
-internal var parserDiagnosticsDisabledForTests = false
+@_spi(TestHelper)
+public var parserDiagnosticsDisabledForTests = false
 
 private let assertHandlers = [FileCacheKey: AssertHandler]()
 private let assertHandlerCache = Cache { file in assertHandlers[file.cacheKey] }
@@ -196,7 +197,8 @@ extension SwiftLintFile {
         linesWithTokensCache.invalidate(self)
     }
 
-    internal static func clearCaches() {
+    @_spi(TestHelper)
+    public static func clearCaches() {
         responseCache.clear()
         assertHandlerCache.clear()
         structureDictionaryCache.clear()

@@ -1,5 +1,6 @@
 import Dispatch
 import Foundation
+@_spi(TestHelper)
 import SwiftLintFramework
 
 enum LintOrAnalyzeMode {

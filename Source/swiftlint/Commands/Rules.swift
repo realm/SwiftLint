@@ -7,6 +7,7 @@ import Glibc
 #error("Unsupported platform")
 #endif
 import Foundation
+@_spi(TestHelper)
 import SwiftLintFramework
 import SwiftyTextTable
 

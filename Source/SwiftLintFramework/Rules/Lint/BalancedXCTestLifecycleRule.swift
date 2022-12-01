@@ -3,7 +3,7 @@ import SwiftSyntax
 struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
     // MARK: - Properties
 
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = BalancedXCTestLifecycleConfiguration()
 
     static let description = RuleDescription(
         identifier: "balanced_xctest_lifecycle",
@@ -113,16 +113,22 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
     // MARK: - Public
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        Visitor(viewMode: .sourceAccurate, testClasses: configuration.testParentClasses)
     }
 }
 
 private extension BalancedXCTestLifecycleRule {
     final class Visitor: ViolationsSyntaxVisitor {
+        private let testClasses: Set<String>
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
 
+        init(viewMode: SyntaxTreeViewMode, testClasses: Set<String>) {
+            self.testClasses = testClasses
+            super.init(viewMode: viewMode)
+        }
+
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard node.isXCTestCase else {
+            guard node.isXCTestCase(testClasses) else {
                 return
             }
 
@@ -145,17 +151,6 @@ private extension BalancedXCTestLifecycleRule {
                node.signature.input.parameterList.isEmpty {
                 methods.insert(method)
             }
-        }
-    }
-}
-
-private extension ClassDeclSyntax {
-    var isXCTestCase: Bool {
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
-            return false
-        }
-        return inheritanceList.contains { type in
-            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "XCTestCase"
         }
     }
 }

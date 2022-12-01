@@ -100,6 +100,10 @@
   SwiftLintFramework. This only impacts the programmatic API for the
   SwiftLintFramework module.  
   [JP Simard](https://github.com/jpsim)
+* The `balanced_xctest_lifecycle`, `single_test_class`, `empty_xctest_method` and
+  `test_case_accessibility` rules will now be applied to subclasses of `QuickSpec`,
+  as well as `XCTestCase`, by default.  
+  [Martin Redington](https://github.com/mildm8nnered)
 
 #### Experimental
 
@@ -340,6 +344,11 @@
 
 * Print violations in realtime if `--progress` and `--output` are both set.  
   [JP Simard](https://github.com/jpsim)
+
+* Add `test_parent_classes` option to `balanced_xctest_lifecycle`, `single_test_class`
+  and `empty_xctest_method` rules.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#4200](https://github.com/realm/SwiftLint/issues/4200)
 
 * Trigger `prefer_self_in_static_references` rule on more type references like:
   * Key paths (e.g. `\MyType.myVar` -> `\Self.myVar`)

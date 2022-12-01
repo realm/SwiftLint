@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
-    var configuration = SeverityConfiguration(.warning)
+    var configuration = EmptyXCTestMethodConfiguration()
 
     init() {}
 
@@ -15,31 +15,26 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        EmptyXCTestMethodRuleVisitor(viewMode: .sourceAccurate)
+        EmptyXCTestMethodRuleVisitor(testParentClasses: configuration.testParentClasses)
     }
 }
 
 private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
     override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    private let testParentClasses: Set<String>
+
+    init(testParentClasses: Set<String>) {
+        self.testParentClasses = testParentClasses
+        super.init(viewMode: .sourceAccurate)
+    }
 
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        node.isXCTestCase ? .visitChildren : .skipChildren
+        node.isXCTestCase(testParentClasses) ? .visitChildren : .skipChildren
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
         if (node.modifiers.containsOverride || node.isTestMethod) && node.hasEmptyBody {
             violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private extension ClassDeclSyntax {
-    var isXCTestCase: Bool {
-        guard let inheritanceList = inheritanceClause?.inheritedTypeCollection else {
-            return false
-        }
-        return inheritanceList.contains { type in
-            type.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "XCTestCase"
         }
     }
 }

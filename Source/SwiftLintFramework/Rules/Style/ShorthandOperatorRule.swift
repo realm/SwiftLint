@@ -19,7 +19,12 @@ struct ShorthandOperatorRule: ConfigurationProviderRule, SwiftSyntaxRule {
                 Example("foo = self.foo \(operation) 1"),
                 Example("page = ceilf(currentOffset \(operation) pageWidth)"),
                 Example("foo = aMethod(foo \(operation) bar)"),
-                Example("foo = aMethod(bar \(operation) foo)")
+                Example("foo = aMethod(bar \(operation) foo)"),
+                Example("""
+                public func \(operation)= (lhs: inout Foo, rhs: Int) {
+                    lhs = lhs \(operation) rhs
+                }
+                """)
             ]
         } + [
             Example("var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld"),
@@ -64,6 +69,27 @@ private extension ShorthandOperatorRule {
             }
 
             violations.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let binaryOperator = node.identifier.binaryOperator,
+               case let shorthandOperators = ShorthandOperatorRule.allOperators.map({ $0 + "=" }),
+               shorthandOperators.contains(binaryOperator) {
+                return .skipChildren
+            }
+
+            return .visitChildren
+        }
+    }
+}
+
+private extension TokenSyntax {
+    var binaryOperator: String? {
+        switch tokenKind {
+        case .spacedBinaryOperator(let str), .unspacedBinaryOperator(let str):
+            return str
+        default:
+            return nil
         }
     }
 }

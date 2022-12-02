@@ -344,6 +344,10 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">-</span> <span class="n">foo</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">-=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">-</span> <span class="n">rhs</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">/=</span> <span class="mi">1</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">/=</span> <span class="n">variable</span>
@@ -359,6 +363,10 @@
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">/</span> <span class="n">bar</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">/</span> <span class="n">foo</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">/=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">/</span> <span class="n">rhs</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">+=</span> <span class="mi">1</span>
 </code></pre>
@@ -376,6 +384,10 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">+</span> <span class="n">foo</span><span class="p">)</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">+=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">+</span> <span class="n">rhs</span>
+<span class="p">}</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">*=</span> <span class="mi">1</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">*=</span> <span class="n">variable</span>
@@ -391,6 +403,10 @@
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">foo</span> <span class="o">*</span> <span class="n">bar</span><span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">foo</span> <span class="o">=</span> <span class="nf">aMethod</span><span class="p">(</span><span class="n">bar</span> <span class="o">*</span> <span class="n">foo</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="o">*=</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Foo</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">*</span> <span class="n">rhs</span>
+<span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">helloWorld</span> <span class="o">=</span> <span class="s">"world!"</span>
  <span class="n">helloWorld</span> <span class="o">=</span> <span class="s">"Hello, "</span> <span class="o">+</span> <span class="n">helloWorld</span>

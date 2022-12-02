@@ -16,6 +16,11 @@
   [JP Simard](https://github.com/jpsim)
   [#4558](https://github.com/realm/SwiftLint/issues/4558)
 
+* Don't trigger `shorthand_operator` violations inside a shorthand operator
+  function declaration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#4611](https://github.com/realm/SwiftLint/issues/4611)
+
 #### Bug Fixes
 
 * Fix false positives in `empty_enum_arguments` when the called expression

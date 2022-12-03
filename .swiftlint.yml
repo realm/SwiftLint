@@ -78,6 +78,9 @@ opt_in_rules:
   - xct_specific_matcher
   - yoda_condition
 
+attributes:
+  always_on_line_above:
+    - "@OptionGroup"
 identifier_name:
   excluded:
     - id

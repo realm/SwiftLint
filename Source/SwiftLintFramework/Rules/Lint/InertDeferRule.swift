@@ -1,6 +1,18 @@
 import SwiftSyntax
 
-struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `\(InertDeferRule.description.identifier)` rule is now deprecated and will be completely \
+        removed in a future release due to an equivalent warning issued by the Swift compiler.
+        """
+    )
+}()
+
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
+
+struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
     init() {}
@@ -77,7 +89,8 @@ struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        warnDeprecatedOnce()
+        return Visitor(viewMode: .sourceAccurate)
     }
 }
 

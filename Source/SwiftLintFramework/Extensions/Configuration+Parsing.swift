@@ -57,6 +57,7 @@ extension Configuration {
             configurationDictionary: dict, disabledRules: disabledRules,
             optInRules: optInRules, onlyRules: onlyRules, ruleList: ruleList
         )
+        Self.warnAboutMisplacedAnalyzerRules(optInRules: optInRules, ruleList: ruleList)
 
         let allRulesWrapped: [ConfigurationRuleWrapper]
         do {
@@ -201,5 +202,19 @@ extension Configuration {
                 }
             }
         }
+    }
+
+    private static func warnAboutMisplacedAnalyzerRules(optInRules: [String], ruleList: RuleList) {
+        let analyzerRules = ruleList.list
+            .filter { $0.value.self is AnalyzerRule.Type }
+            .map(\.key)
+        Set(analyzerRules).intersection(optInRules)
+            .sorted()
+            .forEach {
+                queuedPrintError("""
+                    warning: '\($0)' should be listed in the 'analyzer_rules' configuration section \
+                    for more clarity as it is only run by 'swiftlint analyze'
+                    """)
+            }
     }
 }

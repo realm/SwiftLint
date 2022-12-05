@@ -76,7 +76,7 @@ private extension PreferZeroOverExplicitInitRule {
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
 
-            let newNode: MemberAccessExprSyntax = "\(name).zero"
+            let newNode: MemberAccessExprSyntax = "\(raw: name).zero"
             return super.visit(
                 newNode
                     .withLeadingTrivia(node.leadingTrivia ?? .zero)

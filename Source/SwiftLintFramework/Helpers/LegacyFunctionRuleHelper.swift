@@ -70,13 +70,13 @@ enum LegacyFunctionRuleHelper {
             case .equal:
                 expr = "\(trimmedArguments[0]) == \(trimmedArguments[1])"
             case let .property(name: propertyName):
-                expr = "\(trimmedArguments[0]).\(propertyName)"
+                expr = "\(trimmedArguments[0]).\(raw: propertyName)"
             case let .function(name: functionName, argumentLabels: argumentLabels, reversed: reversed):
                 let arguments = reversed ? trimmedArguments.reversed() : trimmedArguments
                 let params = zip(argumentLabels, arguments.dropFirst())
                     .map { $0.isEmpty ? "\($1)" : "\($0): \($1)" }
                     .joined(separator: ", ")
-                expr = "\(arguments[0]).\(functionName)(\(params))"
+                expr = "\(arguments[0]).\(raw: functionName)(\(raw: params))"
             case .none:
                 return super.visit(node)
             }

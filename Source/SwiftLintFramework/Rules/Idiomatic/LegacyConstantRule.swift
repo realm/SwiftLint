@@ -62,7 +62,7 @@ private extension LegacyConstantRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            return ("\(correction)" as ExprSyntax)
+            return ("\(raw: correction)" as ExprSyntax)
                 .withLeadingTrivia(node.leadingTrivia ?? .zero)
                 .withTrailingTrivia(node.trailingTrivia ?? .zero)
         }
@@ -77,7 +77,7 @@ private extension LegacyConstantRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            return ("\(calledExpression.identifier.text).pi" as ExprSyntax)
+            return ("\(raw: calledExpression.identifier.text).pi" as ExprSyntax)
                 .withLeadingTrivia(node.leadingTrivia ?? .zero)
                 .withTrailingTrivia(node.trailingTrivia ?? .zero)
         }

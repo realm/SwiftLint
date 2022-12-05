@@ -32,6 +32,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)
 
+* Show warnings in the console for Analyzer rules that are listed in the
+  `opt_in_rules` configuration section.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4612](https://github.com/realm/SwiftLint/issues/4612)
+
 #### Bug Fixes
 
 * Fix configuration parsing error in `unused_declaration` rule.  

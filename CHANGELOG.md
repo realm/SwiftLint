@@ -34,6 +34,10 @@
 
 #### Bug Fixes
 
+* Fix configuration parsing error in `unused_declaration` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4612](https://github.com/realm/SwiftLint/issues/4612)
+
 * Fix false positives in `empty_enum_arguments` when the called expression
   is an identifier or an init call.  
   [Steffen Matthischke](https://github.com/heeaad)

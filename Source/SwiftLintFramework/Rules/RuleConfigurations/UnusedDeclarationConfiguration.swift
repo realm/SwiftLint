@@ -32,7 +32,7 @@ struct UnusedDeclarationConfiguration: RuleConfiguration, Equatable {
             }
             switch (key, value) {
             case (.severity, let stringValue as String):
-                try severityConfiguration.apply(configuration: [key: stringValue])
+                try severityConfiguration.apply(configuration: stringValue)
             case (.includePublicAndOpen, let boolValue as Bool):
                 includePublicAndOpen = boolValue
             case (.relatedUSRsToSkip, let value):

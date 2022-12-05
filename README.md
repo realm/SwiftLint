@@ -483,7 +483,9 @@ run SwiftLint from. The following parameters can be configured:
 Rule inclusion:
 
 * `disabled_rules`: Disable rules from the default enabled set.
-* `opt_in_rules`: Enable rules that are not part of the default set.
+* `opt_in_rules`: Enable rules that are not part of the default set. The
+   special `all` rule will enable all opt in rules, except those listed
+   in `disabled_rules`.
 * `only_rules`: Only the rules specified in this list will be enabled.
    Cannot be specified alongside `disabled_rules` or `opt_in_rules`.
 * `analyzer_rules`: This is an entirely separate list of rules that are only

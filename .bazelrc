@@ -3,6 +3,7 @@ try-import %workspace%/user.bazelrc
 
 build --macos_minimum_os=12.0 --host_macos_minimum_os=12.0
 build --disk_cache=~/.bazel_cache
+build --swiftcopt=-warnings-as-errors
 
 build:release \
   --compilation_mode=opt \

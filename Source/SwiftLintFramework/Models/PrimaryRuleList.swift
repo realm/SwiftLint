@@ -137,6 +137,7 @@ public let primaryRuleList = RuleList(rules: [
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
+    PeriodSpacingRule.self,
     PreferNimbleRule.self,
     PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,

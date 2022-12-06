@@ -136,7 +136,7 @@ docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .
 
 docker_test:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.6-focal swift test --parallel
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm swift:5.7-focal swift test --parallel
 
 docker_htop:
 	docker run --platform linux/amd64 -it --rm --pid=container:swiftlint terencewestphal/htop || reset

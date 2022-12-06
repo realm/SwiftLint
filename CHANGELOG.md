@@ -185,6 +185,7 @@
   `opt_in_rules` configuration section.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4612](https://github.com/realm/SwiftLint/issues/4612)
+
 * Adds `all` pseudo-rule for `opt_in_rules` - enables all opt in rules
   that are not listed in `disabled_rules`  
   [Martin Redington](https://github.com/mildm8nnered)

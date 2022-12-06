@@ -23,6 +23,13 @@ struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, Substitu
             Example("""
             // value: Multiline.
             //        Comment.
+            """),
+            Example("""
+            /**
+            Sentence ended in period.
+
+            - Sentence 2 new line characters after.
+            **/
             """)
         ],
         triggeringExamples: [
@@ -59,8 +66,8 @@ struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, Substitu
                     .substringWithByteRange(range)
                     .map(StringView.init)
                     .map { commentBody in
-                        // Look for a dot character followed immediately by two or more whitespaces
-                        regex(#"\.\s{2,}"#)
+                        // Look for a period followed by two or more whitespaces but not new line or caret returns
+                        regex(#"\.[^\S\r\n]{2,}"#)
                             .matches(in: commentBody)
                             .compactMap { result in
                                 // Set the location to start from the second whitespace till the last one.

@@ -1,7 +1,6 @@
 import Foundation
 import IDEUtils
 import SourceKittenFramework
-import SwiftSyntax
 
 struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration(.warning)

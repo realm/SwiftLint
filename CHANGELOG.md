@@ -3315,6 +3315,11 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 
 #### Enhancements
 
+* Add `period_spacing` opt-in rule that checks periods are not followed
+  by 2 or more spaces in comments.
+  [Julioacarrettoni](https://github.com/Julioacarrettoni)
+  [#4624](https://github.com/realm/SwiftLint/pull/4624)  s
+
 * Add optional filename verification to the `file_header` rule.
   All occurrences in the pattern of the `SWIFTLINT_CURRENT_FILENAME`
   placeholder are replaced by the name of the validated file.  

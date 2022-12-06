@@ -2,7 +2,7 @@ import Foundation
 import IDEUtils
 import SourceKittenFramework
 
-struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, SubstitutionCorrectableRule {
+struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, OptInRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration(.warning)
 
     init() {}

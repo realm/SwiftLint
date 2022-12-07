@@ -107,7 +107,9 @@ private enum QuickCallKind: String {
     case context
     case sharedExamples
     case itBehavesLike
+    case aroundEach
     case beforeEach
+    case justBeforeEach
     case beforeSuite
     case afterEach
     case afterSuite

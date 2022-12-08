@@ -31,6 +31,11 @@
   `single_test_class` and `empty_xctest_method` rules.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#4200](https://github.com/realm/SwiftLint/issues/4200)
+  
+  * Add `period_spacing` opt-in rule that checks periods are not followed
+  by 2 or more spaces in comments.  
+  [Julioacarrettoni](https://github.com/Julioacarrettoni)
+  [#4624](https://github.com/realm/SwiftLint/pull/4624)
 
 #### Bug Fixes
 
@@ -3314,11 +3319,6 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   [#1892](https://github.com/realm/SwiftLint/issues/1892)
 
 #### Enhancements
-
-* Add `period_spacing` opt-in rule that checks periods are not followed
-  by 2 or more spaces in comments.
-  [Julioacarrettoni](https://github.com/Julioacarrettoni)
-  [#4624](https://github.com/realm/SwiftLint/pull/4624)  s
 
 * Add optional filename verification to the `file_header` rule.
   All occurrences in the pattern of the `SWIFTLINT_CURRENT_FILENAME`

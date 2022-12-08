@@ -32,12 +32,12 @@ struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, OptInRul
             """)
         ],
         triggeringExamples: [
-            Example("/* Only god knows why.  This symbol does nothing. */", testWrappingInComment: false),
-            Example("// Only god knows why.  This symbol does nothing.", testWrappingInComment: false),
-            Example("// Single. Double.  End.", testWrappingInComment: false),
-            Example("// Single. Double.  Triple.   End.", testWrappingInComment: false),
-            Example("// Triple.   Quad.    End.", testWrappingInComment: false),
-            Example("///   - code: Identifier of the error.  Integer.", testWrappingInComment: false)
+            Example("/* Only god knows why. ↓ This symbol does nothing. */", testWrappingInComment: false),
+            Example("// Only god knows why. ↓ This symbol does nothing.", testWrappingInComment: false),
+            Example("// Single. Double. ↓ End.", testWrappingInComment: false),
+            Example("// Single. Double. ↓ Triple. ↓  End.", testWrappingInComment: false),
+            Example("// Triple. ↓  Quad. ↓   End.", testWrappingInComment: false),
+            Example("///   - code: Identifier of the error. ↓ Integer.", testWrappingInComment: false)
         ],
         corrections: [
             Example("/* Why. ↓ Symbol does nothing. */"): Example("/* Why. Symbol does nothing. */"),
@@ -52,21 +52,15 @@ struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, OptInRul
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
         file.syntaxClassifications
-            .compactMap { (classifiedRange: SyntaxClassifiedRange) -> [NSRange]? in
-                switch classifiedRange.kind {
-                case .blockComment, .docBlockComment, .lineComment, .docLineComment:
-                    break
-                default:
-                    return nil
-                }
-
-                let range = classifiedRange.range.toSourceKittenByteRange()
+            .filter(\.kind.isComment)
+            .map { $0.range.toSourceKittenByteRange() }
+            .compactMap { (range: ByteRange) -> [NSRange]? in
                 return file.stringView
                     .substringWithByteRange(range)
                     .map(StringView.init)
                     .map { commentBody in
-                        // Look for a period followed by two or more whitespaces but not new line or caret returns
-                        regex(#"\.[^\S\r\n]{2,}"#)
+                        // Look for a period followed by two or more whitespaces but not new line or carriage returns
+                        return regex(#"\.[^\S\r\n]{2,}"#)
                             .matches(in: commentBody)
                             .compactMap { result in
                                 // Set the location to start from the second whitespace till the last one.

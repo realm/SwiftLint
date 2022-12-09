@@ -166,9 +166,8 @@ endif
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
-	make clean
-	make bazel_release
 	make package
+	make bazel_release
 	make portable_zip
 	make spm_artifactbundle_macos
 	./tools/update-artifact-bundle.sh "$(NEW_VERSION)"

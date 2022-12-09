@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Rule Directory  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="Rule Directory  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          SwiftLintFramework 0.50.3 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/realm/SwiftLint">
+            <img class="header-icon" src="img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="dash-feed://https%3A%2F%2Frealm.github.io%2FSwiftLint%2Fdocsets%2FSwiftLintFramework.xml">
+            <img class="header-icon" src="img/dash.png" alt="Dash"/>
+            Install in Dash
+          </a>
+        </p>
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">SwiftLintFramework Reference</a>
+      <img class="carat" src="img/carat.png" alt=""/>
+      Rule Directory  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Rules.html">Rules</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="rule-directory.html">Rule Directory</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Reporters.html">Reporters</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CSVReporter.html">CSVReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CheckstyleReporter.html">CheckstyleReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CodeClimateReporter.html">CodeClimateReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/EmojiReporter.html">EmojiReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GitHubActionsLoggingReporter.html">GitHubActionsLoggingReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/HTMLReporter.html">HTMLReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JSONReporter.html">JSONReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/JUnitReporter.html">JUnitReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/MarkdownReporter.html">MarkdownReporter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/LinterCache.html">LinterCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/RuleStorage.html">RuleStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/SwiftLintFile.html">SwiftLintFile</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Global%20Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Global%20Variables.html#/s:18SwiftLintFramework15primaryRuleListAA0eF0Vvp">primaryRuleList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/AccessControlLevel.html">AccessControlLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ConfigurationError.html">ConfigurationError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ExecutableInfo.html">ExecutableInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleIdentifier.html">RuleIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleKind.html">RuleKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/RuleListError.html">RuleListError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/SwiftExpressionKind.html">SwiftExpressionKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ViolationSeverity.html">ViolationSeverity</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/FileManager.html">FileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/String.html">String</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedFatalError_4file4lines5NeverOSS_s12StaticStringVSutF">queuedFatalError(_:file:line:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework11queuedPrintyyxlF">queuedPrint(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework16queuedPrintErroryySSF">queuedPrintError(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Functions.html#/s:18SwiftLintFramework12reporterFrom10identifierAA8Reporter_pXpSS_tF">reporterFrom(identifier:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ASTRule.html">ASTRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/AnalyzerRule.html">AnalyzerRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17AnyCollectingRuleP">AnyCollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CollectingRule.html">CollectingRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ConfigurationProviderRule.html">ConfigurationProviderRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LintableFileManager.html">LintableFileManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework9OptInRuleP">OptInRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Reporter.html">Reporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Rule.html">Rule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/RuleConfiguration.html">RuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SeverityBasedRuleConfiguration.html">SeverityBasedRuleConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols.html#/s:18SwiftLintFramework17SourceKitFreeRuleP">SourceKitFreeRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ViolationsSyntaxRewriter.html">ViolationsSyntaxRewriter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CollectedLinter.html">CollectedLinter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command.html">Command</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Action.html">– Action</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Command/Modifier.html">– Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration.html">Configuration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/IndentationStyle.html">– IndentationStyle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Configuration/RulesMode.html">– RulesMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Example.html">Example</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/GitLabJUnitReporter.html">GitLabJUnitReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Linter.html">Linter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Location.html">Location</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ReasonedRuleViolation.html">ReasonedRuleViolation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Region.html">Region</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleDescription.html">RuleDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleList.html">RuleList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleListDocumentation.html">RuleListDocumentation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RuleParameter.html">RuleParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SonarQubeReporter.html">SonarQubeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SourceKittenDictionary.html">SourceKittenDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/StyleViolation.html">StyleViolation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxMap.html">SwiftLintSyntaxMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftLintSyntaxToken.html">SwiftLintSyntaxToken</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SwiftVersion.html">SwiftVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Version.html">Version</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/XcodeReporter.html">XcodeReporter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/YamlParser.html">YamlParser</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='rule-directory' class='heading'>Rule Directory</h1>
+<h2 id='default-rules' class='heading'>Default Rules</h2>
+
+<ul>
+<li><code><a href="block_based_kvo.html">block_based_kvo</a></code>: Block Based KVO</li>
+<li><code><a href="class_delegate_protocol.html">class_delegate_protocol</a></code>: Class Delegate Protocol</li>
+<li><code><a href="closing_brace.html">closing_brace</a></code>: Closing Brace Spacing</li>
+<li><code><a href="closure_parameter_position.html">closure_parameter_position</a></code>: Closure Parameter Position</li>
+<li><code><a href="colon.html">colon</a></code>: Colon Spacing</li>
+<li><code><a href="comma.html">comma</a></code>: Comma Spacing</li>
+<li><code><a href="comment_spacing.html">comment_spacing</a></code>: Comment Spacing</li>
+<li><code><a href="compiler_protocol_init.html">compiler_protocol_init</a></code>: Compiler Protocol Init</li>
+<li><code><a href="computed_accessors_order.html">computed_accessors_order</a></code>: Computed Accessors Order</li>
+<li><code><a href="control_statement.html">control_statement</a></code>: Control Statement</li>
+<li><code><a href="custom_rules.html">custom_rules</a></code>: Custom Rules</li>
+<li><code><a href="cyclomatic_complexity.html">cyclomatic_complexity</a></code>: Cyclomatic Complexity</li>
+<li><code><a href="deployment_target.html">deployment_target</a></code>: Deployment Target</li>
+<li><code><a href="discouraged_direct_init.html">discouraged_direct_init</a></code>: Discouraged Direct Initialization</li>
+<li><code><a href="duplicate_enum_cases.html">duplicate_enum_cases</a></code>: Duplicate Enum Cases</li>
+<li><code><a href="duplicate_imports.html">duplicate_imports</a></code>: Duplicate Imports</li>
+<li><code><a href="duplicated_key_in_dictionary_literal.html">duplicated_key_in_dictionary_literal</a></code>: Duplicated Key in Dictionary Literal</li>
+<li><code><a href="dynamic_inline.html">dynamic_inline</a></code>: Dynamic Inline</li>
+<li><code><a href="empty_enum_arguments.html">empty_enum_arguments</a></code>: Empty Enum Arguments</li>
+<li><code><a href="empty_parameters.html">empty_parameters</a></code>: Empty Parameters</li>
+<li><code><a href="empty_parentheses_with_trailing_closure.html">empty_parentheses_with_trailing_closure</a></code>: Empty Parentheses with Trailing Closure</li>
+<li><code><a href="file_length.html">file_length</a></code>: File Length</li>
+<li><code><a href="for_where.html">for_where</a></code>: For Where</li>
+<li><code><a href="force_cast.html">force_cast</a></code>: Force Cast</li>
+<li><code><a href="force_try.html">force_try</a></code>: Force Try</li>
+<li><code><a href="function_body_length.html">function_body_length</a></code>: Function Body Length</li>
+<li><code><a href="function_parameter_count.html">function_parameter_count</a></code>: Function Parameter Count</li>
+<li><code><a href="generic_type_name.html">generic_type_name</a></code>: Generic Type Name</li>
+<li><code><a href="identifier_name.html">identifier_name</a></code>: Identifier Name</li>
+<li><code><a href="implicit_getter.html">implicit_getter</a></code>: Implicit Getter</li>
+<li><code><a href="inclusive_language.html">inclusive_language</a></code>: Inclusive Language</li>
+<li><code><a href="inert_defer.html">inert_defer</a></code>: Inert Defer</li>
+<li><code><a href="is_disjoint.html">is_disjoint</a></code>: Is Disjoint</li>
+<li><code><a href="large_tuple.html">large_tuple</a></code>: Large Tuple</li>
+<li><code><a href="leading_whitespace.html">leading_whitespace</a></code>: Leading Whitespace</li>
+<li><code><a href="legacy_cggeometry_functions.html">legacy_cggeometry_functions</a></code>: Legacy CGGeometry Functions</li>
+<li><code><a href="legacy_constant.html">legacy_constant</a></code>: Legacy Constant</li>
+<li><code><a href="legacy_constructor.html">legacy_constructor</a></code>: Legacy Constructor</li>
+<li><code><a href="legacy_hashing.html">legacy_hashing</a></code>: Legacy Hashing</li>
+<li><code><a href="legacy_nsgeometry_functions.html">legacy_nsgeometry_functions</a></code>: Legacy NSGeometry Functions</li>
+<li><code><a href="legacy_random.html">legacy_random</a></code>: Legacy Random</li>
+<li><code><a href="line_length.html">line_length</a></code>: Line Length</li>
+<li><code><a href="mark.html">mark</a></code>: Mark</li>
+<li><code><a href="multiple_closures_with_trailing_closure.html">multiple_closures_with_trailing_closure</a></code>: Multiple Closures with Trailing Closure</li>
+<li><code><a href="nesting.html">nesting</a></code>: Nesting</li>
+<li><code><a href="no_fallthrough_only.html">no_fallthrough_only</a></code>: No Fallthrough Only</li>
+<li><code><a href="no_space_in_method_call.html">no_space_in_method_call</a></code>: No Space in Method Call</li>
+<li><code><a href="notification_center_detachment.html">notification_center_detachment</a></code>: Notification Center Detachment</li>
+<li><code><a href="ns_number_init_as_function_reference.html">ns_number_init_as_function_reference</a></code>: NSNumber Init as Function Reference</li>
+<li><code><a href="nsobject_prefer_isequal.html">nsobject_prefer_isequal</a></code>: NSObject Prefer isEqual</li>
+<li><code><a href="opening_brace.html">opening_brace</a></code>: Opening Brace Spacing</li>
+<li><code><a href="operator_whitespace.html">operator_whitespace</a></code>: Operator Function Whitespace</li>
+<li><code><a href="orphaned_doc_comment.html">orphaned_doc_comment</a></code>: Orphaned Doc Comment</li>
+<li><code><a href="private_over_fileprivate.html">private_over_fileprivate</a></code>: Private over fileprivate</li>
+<li><code><a href="private_unit_test.html">private_unit_test</a></code>: Private Unit Test</li>
+<li><code><a href="protocol_property_accessors_order.html">protocol_property_accessors_order</a></code>: Protocol Property Accessors Order</li>
+<li><code><a href="reduce_boolean.html">reduce_boolean</a></code>: Reduce Boolean</li>
+<li><code><a href="redundant_discardable_let.html">redundant_discardable_let</a></code>: Redundant Discardable Let</li>
+<li><code><a href="redundant_objc_attribute.html">redundant_objc_attribute</a></code>: Redundant @objc Attribute</li>
+<li><code><a href="redundant_optional_initialization.html">redundant_optional_initialization</a></code>: Redundant Optional Initialization</li>
+<li><code><a href="redundant_set_access_control.html">redundant_set_access_control</a></code>: Redundant Set Access Control Rule</li>
+<li><code><a href="redundant_string_enum_value.html">redundant_string_enum_value</a></code>: Redundant String Enum Value</li>
+<li><code><a href="redundant_void_return.html">redundant_void_return</a></code>: Redundant Void Return</li>
+<li><code><a href="return_arrow_whitespace.html">return_arrow_whitespace</a></code>: Returning Whitespace</li>
+<li><code><a href="self_in_property_initialization.html">self_in_property_initialization</a></code>: Self in Property Initialization</li>
+<li><code><a href="shorthand_operator.html">shorthand_operator</a></code>: Shorthand Operator</li>
+<li><code><a href="statement_position.html">statement_position</a></code>: Statement Position</li>
+<li><code><a href="superfluous_disable_command.html">superfluous_disable_command</a></code>: Superfluous Disable Command</li>
+<li><code><a href="switch_case_alignment.html">switch_case_alignment</a></code>: Switch and Case Statement Alignment</li>
+<li><code><a href="syntactic_sugar.html">syntactic_sugar</a></code>: Syntactic Sugar</li>
+<li><code><a href="todo.html">todo</a></code>: Todo</li>
+<li><code><a href="trailing_comma.html">trailing_comma</a></code>: Trailing Comma</li>
+<li><code><a href="trailing_newline.html">trailing_newline</a></code>: Trailing Newline</li>
+<li><code><a href="trailing_semicolon.html">trailing_semicolon</a></code>: Trailing Semicolon</li>
+<li><code><a href="trailing_whitespace.html">trailing_whitespace</a></code>: Trailing Whitespace</li>
+<li><code><a href="type_body_length.html">type_body_length</a></code>: Type Body Length</li>
+<li><code><a href="type_name.html">type_name</a></code>: Type Name</li>
+<li><code><a href="unavailable_condition.html">unavailable_condition</a></code>: Unavailable Condition</li>
+<li><code><a href="unneeded_break_in_switch.html">unneeded_break_in_switch</a></code>: Unneeded Break in Switch</li>
+<li><code><a href="unused_capture_list.html">unused_capture_list</a></code>: Unused Capture List</li>
+<li><code><a href="unused_closure_parameter.html">unused_closure_parameter</a></code>: Unused Closure Parameter</li>
+<li><code><a href="unused_control_flow_label.html">unused_control_flow_label</a></code>: Unused Control Flow Label</li>
+<li><code><a href="unused_enumerated.html">unused_enumerated</a></code>: Unused Enumerated</li>
+<li><code><a href="unused_optional_binding.html">unused_optional_binding</a></code>: Unused Optional Binding</li>
+<li><code><a href="unused_setter_value.html">unused_setter_value</a></code>: Unused Setter Value</li>
+<li><code><a href="valid_ibinspectable.html">valid_ibinspectable</a></code>: Valid IBInspectable</li>
+<li><code><a href="vertical_parameter_alignment.html">vertical_parameter_alignment</a></code>: Vertical Parameter Alignment</li>
+<li><code><a href="vertical_whitespace.html">vertical_whitespace</a></code>: Vertical Whitespace</li>
+<li><code><a href="void_function_in_ternary.html">void_function_in_ternary</a></code>: Void Function in Ternary</li>
+<li><code><a href="void_return.html">void_return</a></code>: Void Return</li>
+<li><code><a href="xctfail_message.html">xctfail_message</a></code>: XCTFail Message</li>
+</ul>
+<h2 id='opt-in-rules' class='heading'>Opt-In Rules</h2>
+
+<ul>
+<li><code><a href="accessibility_label_for_image.html">accessibility_label_for_image</a></code>: Accessibility Label for Image</li>
+<li><code><a href="accessibility_trait_for_button.html">accessibility_trait_for_button</a></code>: Accessibility Trait for Button</li>
+<li><code><a href="anonymous_argument_in_multiline_closure.html">anonymous_argument_in_multiline_closure</a></code>: Anonymous Argument in Multiline Closure</li>
+<li><code><a href="anyobject_protocol.html">anyobject_protocol</a></code>: AnyObject Protocol</li>
+<li><code><a href="array_init.html">array_init</a></code>: Array Init</li>
+<li><code><a href="attributes.html">attributes</a></code>: Attributes</li>
+<li><code><a href="balanced_xctest_lifecycle.html">balanced_xctest_lifecycle</a></code>: Balanced XCTest life-cycle</li>
+<li><code><a href="capture_variable.html">capture_variable</a></code>: Capture Variable</li>
+<li><code><a href="closure_body_length.html">closure_body_length</a></code>: Closure Body Length</li>
+<li><code><a href="closure_end_indentation.html">closure_end_indentation</a></code>: Closure End Indentation</li>
+<li><code><a href="closure_spacing.html">closure_spacing</a></code>: Closure Spacing</li>
+<li><code><a href="collection_alignment.html">collection_alignment</a></code>: Collection Element Alignment</li>
+<li><code><a href="comma_inheritance.html">comma_inheritance</a></code>: Comma Inheritance Rule</li>
+<li><code><a href="conditional_returns_on_newline.html">conditional_returns_on_newline</a></code>: Conditional Returns on Newline</li>
+<li><code><a href="contains_over_filter_count.html">contains_over_filter_count</a></code>: Contains Over Filter Count</li>
+<li><code><a href="contains_over_filter_is_empty.html">contains_over_filter_is_empty</a></code>: Contains Over Filter Is Empty</li>
+<li><code><a href="contains_over_first_not_nil.html">contains_over_first_not_nil</a></code>: Contains over first not nil</li>
+<li><code><a href="contains_over_range_nil_comparison.html">contains_over_range_nil_comparison</a></code>: Contains over range(of:) comparison to nil</li>
+<li><code><a href="convenience_type.html">convenience_type</a></code>: Convenience Type</li>
+<li><code><a href="discarded_notification_center_observer.html">discarded_notification_center_observer</a></code>: Discarded Notification Center Observer</li>
+<li><code><a href="discouraged_assert.html">discouraged_assert</a></code>: Discouraged Assert</li>
+<li><code><a href="discouraged_none_name.html">discouraged_none_name</a></code>: Discouraged None Name</li>
+<li><code><a href="discouraged_object_literal.html">discouraged_object_literal</a></code>: Discouraged Object Literal</li>
+<li><code><a href="discouraged_optional_boolean.html">discouraged_optional_boolean</a></code>: Discouraged Optional Boolean</li>
+<li><code><a href="discouraged_optional_collection.html">discouraged_optional_collection</a></code>: Discouraged Optional Collection</li>
+<li><code><a href="empty_collection_literal.html">empty_collection_literal</a></code>: Empty Collection Literal</li>
+<li><code><a href="empty_count.html">empty_count</a></code>: Empty Count</li>
+<li><code><a href="empty_string.html">empty_string</a></code>: Empty String</li>
+<li><code><a href="empty_xctest_method.html">empty_xctest_method</a></code>: Empty XCTest Method</li>
+<li><code><a href="enum_case_associated_values_count.html">enum_case_associated_values_count</a></code>: Enum Case Associated Values Count</li>
+<li><code><a href="expiring_todo.html">expiring_todo</a></code>: Expiring Todo</li>
+<li><code><a href="explicit_acl.html">explicit_acl</a></code>: Explicit ACL</li>
+<li><code><a href="explicit_enum_raw_value.html">explicit_enum_raw_value</a></code>: Explicit Enum Raw Value</li>
+<li><code><a href="explicit_init.html">explicit_init</a></code>: Explicit Init</li>
+<li><code><a href="explicit_self.html">explicit_self</a></code>: Explicit Self</li>
+<li><code><a href="explicit_top_level_acl.html">explicit_top_level_acl</a></code>: Explicit Top Level ACL</li>
+<li><code><a href="explicit_type_interface.html">explicit_type_interface</a></code>: Explicit Type Interface</li>
+<li><code><a href="extension_access_modifier.html">extension_access_modifier</a></code>: Extension Access Modifier</li>
+<li><code><a href="fallthrough.html">fallthrough</a></code>: Fallthrough</li>
+<li><code><a href="fatal_error_message.html">fatal_error_message</a></code>: Fatal Error Message</li>
+<li><code><a href="file_header.html">file_header</a></code>: File Header</li>
+<li><code><a href="file_name.html">file_name</a></code>: File Name</li>
+<li><code><a href="file_name_no_space.html">file_name_no_space</a></code>: File Name No Space</li>
+<li><code><a href="file_types_order.html">file_types_order</a></code>: File Types Order</li>
+<li><code><a href="first_where.html">first_where</a></code>: First Where</li>
+<li><code><a href="flatmap_over_map_reduce.html">flatmap_over_map_reduce</a></code>: FlatMap over map and reduce</li>
+<li><code><a href="force_unwrapping.html">force_unwrapping</a></code>: Force Unwrapping</li>
+<li><code><a href="function_default_parameter_at_end.html">function_default_parameter_at_end</a></code>: Function Default Parameter at End</li>
+<li><code><a href="ibinspectable_in_extension.html">ibinspectable_in_extension</a></code>: IBInspectable in Extension</li>
+<li><code><a href="identical_operands.html">identical_operands</a></code>: Identical Operands</li>
+<li><code><a href="implicit_return.html">implicit_return</a></code>: Implicit Return</li>
+<li><code><a href="implicitly_unwrapped_optional.html">implicitly_unwrapped_optional</a></code>: Implicitly Unwrapped Optional</li>
+<li><code><a href="indentation_width.html">indentation_width</a></code>: Indentation Width</li>
+<li><code><a href="joined_default_parameter.html">joined_default_parameter</a></code>: Joined Default Parameter</li>
+<li><code><a href="last_where.html">last_where</a></code>: Last Where</li>
+<li><code><a href="legacy_multiple.html">legacy_multiple</a></code>: Legacy Multiple</li>
+<li><code><a href="legacy_objc_type.html">legacy_objc_type</a></code>: Legacy Objective-C Reference Type</li>
+<li><code><a href="let_var_whitespace.html">let_var_whitespace</a></code>: Variable Declaration Whitespace</li>
+<li><code><a href="literal_expression_end_indentation.html">literal_expression_end_indentation</a></code>: Literal Expression End Indentation</li>
+<li><code><a href="local_doc_comment.html">local_doc_comment</a></code>: Local Doc Comment</li>
+<li><code><a href="lower_acl_than_parent.html">lower_acl_than_parent</a></code>: Lower ACL than parent</li>
+<li><code><a href="missing_docs.html">missing_docs</a></code>: Missing Docs</li>
+<li><code><a href="modifier_order.html">modifier_order</a></code>: Modifier Order</li>
+<li><code><a href="multiline_arguments.html">multiline_arguments</a></code>: Multiline Arguments</li>
+<li><code><a href="multiline_arguments_brackets.html">multiline_arguments_brackets</a></code>: Multiline Arguments Brackets</li>
+<li><code><a href="multiline_function_chains.html">multiline_function_chains</a></code>: Multiline Function Chains</li>
+<li><code><a href="multiline_literal_brackets.html">multiline_literal_brackets</a></code>: Multiline Literal Brackets</li>
+<li><code><a href="multiline_parameters.html">multiline_parameters</a></code>: Multiline Parameters</li>
+<li><code><a href="multiline_parameters_brackets.html">multiline_parameters_brackets</a></code>: Multiline Parameters Brackets</li>
+<li><code><a href="nimble_operator.html">nimble_operator</a></code>: Nimble Operator</li>
+<li><code><a href="no_extension_access_modifier.html">no_extension_access_modifier</a></code>: No Extension Access Modifier</li>
+<li><code><a href="no_grouping_extension.html">no_grouping_extension</a></code>: No Grouping Extension</li>
+<li><code><a href="no_magic_numbers.html">no_magic_numbers</a></code>: No Magic Numbers</li>
+<li><code><a href="nslocalizedstring_key.html">nslocalizedstring_key</a></code>: NSLocalizedString Key</li>
+<li><code><a href="nslocalizedstring_require_bundle.html">nslocalizedstring_require_bundle</a></code>: NSLocalizedString Require Bundle</li>
+<li><code><a href="number_separator.html">number_separator</a></code>: Number Separator</li>
+<li><code><a href="object_literal.html">object_literal</a></code>: Object Literal</li>
+<li><code><a href="operator_usage_whitespace.html">operator_usage_whitespace</a></code>: Operator Usage Whitespace</li>
+<li><code><a href="optional_enum_case_matching.html">optional_enum_case_matching</a></code>: Optional Enum Case Match</li>
+<li><code><a href="overridden_super_call.html">overridden_super_call</a></code>: Overridden methods call super</li>
+<li><code><a href="override_in_extension.html">override_in_extension</a></code>: Override in Extension</li>
+<li><code><a href="pattern_matching_keywords.html">pattern_matching_keywords</a></code>: Pattern Matching Keywords</li>
+<li><code><a href="prefer_nimble.html">prefer_nimble</a></code>: Prefer Nimble</li>
+<li><code><a href="prefer_self_in_static_references.html">prefer_self_in_static_references</a></code>: Prefer Self in Static References</li>
+<li><code><a href="prefer_self_type_over_type_of_self.html">prefer_self_type_over_type_of_self</a></code>: Prefer Self Type Over Type of Self</li>
+<li><code><a href="prefer_zero_over_explicit_init.html">prefer_zero_over_explicit_init</a></code>: Prefer Zero Over Explicit Init</li>
+<li><code><a href="prefixed_toplevel_constant.html">prefixed_toplevel_constant</a></code>: Prefixed Top-Level Constant</li>
+<li><code><a href="private_action.html">private_action</a></code>: Private Actions</li>
+<li><code><a href="private_outlet.html">private_outlet</a></code>: Private Outlets</li>
+<li><code><a href="private_subject.html">private_subject</a></code>: Private Combine Subject</li>
+<li><code><a href="prohibited_interface_builder.html">prohibited_interface_builder</a></code>: Prohibited Interface Builder</li>
+<li><code><a href="prohibited_super_call.html">prohibited_super_call</a></code>: Prohibited calls to super</li>
+<li><code><a href="quick_discouraged_call.html">quick_discouraged_call</a></code>: Quick Discouraged Call</li>
+<li><code><a href="quick_discouraged_focused_test.html">quick_discouraged_focused_test</a></code>: Quick Discouraged Focused Test</li>
+<li><code><a href="quick_discouraged_pending_test.html">quick_discouraged_pending_test</a></code>: Quick Discouraged Pending Test</li>
+<li><code><a href="raw_value_for_camel_cased_codable_enum.html">raw_value_for_camel_cased_codable_enum</a></code>: Raw Value For Camel Cased Codable Enum</li>
+<li><code><a href="reduce_into.html">reduce_into</a></code>: Reduce Into</li>
+<li><code><a href="redundant_nil_coalescing.html">redundant_nil_coalescing</a></code>: Redundant Nil Coalescing</li>
+<li><code><a href="redundant_type_annotation.html">redundant_type_annotation</a></code>: Redundant Type Annotation</li>
+<li><code><a href="required_deinit.html">required_deinit</a></code>: Required Deinit</li>
+<li><code><a href="required_enum_case.html">required_enum_case</a></code>: Required Enum Case</li>
+<li><code><a href="return_value_from_void_function.html">return_value_from_void_function</a></code>: Return Value from Void Function</li>
+<li><code><a href="self_binding.html">self_binding</a></code>: Self Binding</li>
+<li><code><a href="shorthand_optional_binding.html">shorthand_optional_binding</a></code>: Shorthand Optional Binding</li>
+<li><code><a href="single_test_class.html">single_test_class</a></code>: Single Test Class</li>
+<li><code><a href="sorted_first_last.html">sorted_first_last</a></code>: Min or Max over Sorted First or Last</li>
+<li><code><a href="sorted_imports.html">sorted_imports</a></code>: Sorted Imports</li>
+<li><code><a href="static_operator.html">static_operator</a></code>: Static Operator</li>
+<li><code><a href="strict_fileprivate.html">strict_fileprivate</a></code>: Strict fileprivate</li>
+<li><code><a href="strong_iboutlet.html">strong_iboutlet</a></code>: Strong IBOutlet</li>
+<li><code><a href="switch_case_on_newline.html">switch_case_on_newline</a></code>: Switch Case on Newline</li>
+<li><code><a href="test_case_accessibility.html">test_case_accessibility</a></code>: Test case accessibility</li>
+<li><code><a href="toggle_bool.html">toggle_bool</a></code>: Toggle Bool</li>
+<li><code><a href="trailing_closure.html">trailing_closure</a></code>: Trailing Closure</li>
+<li><code><a href="type_contents_order.html">type_contents_order</a></code>: Type Contents Order</li>
+<li><code><a href="typesafe_array_init.html">typesafe_array_init</a></code>: Type-safe Array Init</li>
+<li><code><a href="unavailable_function.html">unavailable_function</a></code>: Unavailable Function</li>
+<li><code><a href="unneeded_parentheses_in_closure_argument.html">unneeded_parentheses_in_closure_argument</a></code>: Unneeded Parentheses in Closure Argument</li>
+<li><code><a href="unowned_variable_capture.html">unowned_variable_capture</a></code>: Unowned Variable Capture</li>
+<li><code><a href="untyped_error_in_catch.html">untyped_error_in_catch</a></code>: Untyped Error in Catch</li>
+<li><code><a href="unused_declaration.html">unused_declaration</a></code>: Unused Declaration</li>
+<li><code><a href="unused_import.html">unused_import</a></code>: Unused Import</li>
+<li><code><a href="vertical_parameter_alignment_on_call.html">vertical_parameter_alignment_on_call</a></code>: Vertical Parameter Alignment On Call</li>
+<li><code><a href="vertical_whitespace_between_cases.html">vertical_whitespace_between_cases</a></code>: Vertical Whitespace Between Cases</li>
+<li><code><a href="vertical_whitespace_closing_braces.html">vertical_whitespace_closing_braces</a></code>: Vertical Whitespace before Closing Braces</li>
+<li><code><a href="vertical_whitespace_opening_braces.html">vertical_whitespace_opening_braces</a></code>: Vertical Whitespace after Opening Braces</li>
+<li><code><a href="weak_delegate.html">weak_delegate</a></code>: Weak Delegate</li>
+<li><code><a href="xct_specific_matcher.html">xct_specific_matcher</a></code>: XCTest Specific Matcher</li>
+<li><code><a href="yoda_condition.html">yoda_condition</a></code>: Yoda condition rule</li>
+</ul>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2022 <a class="link" href="https://jpsim.com" target="_blank" rel="external noopener">JP Simard</a> under MIT.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>

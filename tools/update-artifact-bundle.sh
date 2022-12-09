@@ -11,5 +11,5 @@ sed -i '' \
   Package.swift
 
 sed -i '' \
-  "s/.*checksum.*/            checksum: \"$checksum\",/g" \
+  "s/.*checksum.*/            checksum: \"$checksum\"/g" \
   Package.swift

@@ -43,15 +43,19 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4612](https://github.com/realm/SwiftLint/issues/4612)
 
-* Skip `defer` statements being last in an `#if` block if the `#if` statement is
-  not itself the last statement in a block.  
+* Skip `defer` statements being last in an `#if` block if the `#if`
+  statement is not itself the last statement in a block.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4615](https://github.com/realm/SwiftLint/issues/4615)
 
-* Fix false positives in `empty_enum_arguments` when the called expression
-  is an identifier or an init call.  
+* Fix false positives in `empty_enum_arguments` when the called
+  expression is an identifier or an init call.  
   [Steffen Matthischke](https://github.com/heeaad)
   [#4597](https://github.com/realm/SwiftLint/issues/4597)
+
+* Fix correction issue in `comma` when there was too much whitespace
+  following the comma.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.50.1: Artisanal Clothes Pegs Fixup Edition
 

@@ -49,7 +49,8 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
                       message: My.Custom.message↓ ,
                       another: parameter, doIt: true,
                       alignment: .center)
-            """)
+            """),
+            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#)
         ],
         corrections: [
             Example("func abc(a: String↓,b: String) {}\n"): Example("func abc(a: String, b: String) {}\n"),
@@ -83,7 +84,9 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
                           message: My.Custom.message,
                           another: parameter, doIt: true,
                           alignment: .center)
-                """)
+                """),
+            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#):
+                Example(#"Logger.logError("Hat is too large", info: [])"#)
         ]
     )
 
@@ -109,7 +112,9 @@ struct CommaRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule 
                     let nextIsNewline = next.leadingTrivia.containsNewlines()
                     return (ByteRange(location: start, length: end - start), shouldAddSpace: !nextIsNewline)
                 } else if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
-                    return (ByteRange(location: ByteCount(current.position), length: 1), shouldAddSpace: true)
+                    let start = ByteCount(current.position)
+                    let end = ByteCount(next.positionAfterSkippingLeadingTrivia)
+                    return (ByteRange(location: start, length: end - start), shouldAddSpace: true)
                 } else {
                     return nil
                 }

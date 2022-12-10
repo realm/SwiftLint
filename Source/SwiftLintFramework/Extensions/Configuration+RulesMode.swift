@@ -65,7 +65,7 @@ public extension Configuration {
                 let effectiveOptInRules: [String]
                 if optInRules.contains("all") {
                     effectiveOptInRules = primaryRuleList.list.compactMap { ruleID, ruleType in
-                        ruleType is OptInRule.Type ? ruleID : nil
+                        ruleType is OptInRule.Type && !(ruleType is AnalyzerRule.Type) ? ruleID : nil
                     }
                 } else {
                     effectiveOptInRules = optInRules

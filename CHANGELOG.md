@@ -34,6 +34,11 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#3712](https://github.com/realm/SwiftLint/issues/3712)
 
+* Rewrite `explicit_type_interface` rule with SwiftSyntax fixing a
+  false-positive in if-case-let statements.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4548](https://github.com/realm/SwiftLint/issues/4548)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

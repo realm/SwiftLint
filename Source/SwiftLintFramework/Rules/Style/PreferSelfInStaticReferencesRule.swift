@@ -296,7 +296,7 @@ private class Visitor: ViolationsSyntaxVisitor {
         _ = variableDeclScopes.popLast()
     }
 
-    override func visit(_ node: ObjcKeyPathExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
         if case .likeStruct = parentDeclScopes.last {
             return .visitChildren
         }

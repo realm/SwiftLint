@@ -77,6 +77,16 @@ private extension Syntax {
             return false
         }
     }
+    
+    var modifiers: ModifierListSyntax? {
+        if let decl = self.as(FunctionDeclSyntax.self) {
+            return decl.modifiers
+        } else if let decl = self.as(VariableDeclSyntax.self) {
+            return decl.modifiers
+        } else {
+            return nil
+        }
+    }
 }
 
 private extension AttributeListSyntax {
@@ -89,8 +99,8 @@ private extension AttributeListSyntax {
             return objcAttribute
         } else if parent?.is(EnumDeclSyntax.self) == true {
             return nil
-        } else if parent?.is(FunctionDeclSyntax.self) == true,
-                  parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate == true {
+        } else if parent?.isFunctionOrStoredProperty == true,
+                  parent?.modifiers?.isPrivateOrFilePrivate == true {
             return nil
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),

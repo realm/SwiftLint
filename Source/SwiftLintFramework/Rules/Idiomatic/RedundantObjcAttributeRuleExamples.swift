@@ -1,6 +1,11 @@
 struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = [
-        Example("@objc private var foo: String? {}"),
+        Example("""
+        @objcMembers
+        class Foo: NSObject {
+            @objc private var foo: String? {}
+        }
+        """),
         Example("@IBInspectable private var foo: String? {}"),
         Example("""
         @objcMembers

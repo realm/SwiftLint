@@ -87,6 +87,11 @@ private extension AttributeListSyntax {
 
         if hasAttributeImplyingObjC, parent?.is(ExtensionDeclSyntax.self) != true {
             return objcAttribute
+        } else if parent?.is(EnumDeclSyntax.self) == true {
+            return nil
+        } else if parent?.is(FunctionDeclSyntax.self) == true,
+                  parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate == true {
+            return nil
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes?.hasObjCMembers == true {

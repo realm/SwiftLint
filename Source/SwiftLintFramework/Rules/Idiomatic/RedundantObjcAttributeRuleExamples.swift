@@ -2,7 +2,12 @@ struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = [
         Example("@objc private var foo: String? {}"),
         Example("@IBInspectable private var foo: String? {}"),
-        Example("@objc private func foo(_ sender: Any) {}"),
+        Example("""
+        @objcMembers
+        class Foo: NSObject {
+            @objc private func foo(_ sender: Any) {}
+        }
+        """),
         Example("@IBAction private func foo(_ sender: Any) {}"),
         Example("@GKInspectable private var foo: String! {}"),
         Example("private @GKInspectable var foo: String! {}"),
@@ -75,6 +80,15 @@ struct RedundantObjcAttributeRuleExamples {
             @objc(addElementsObject:)
             @NSManaged public func addToElements(_ value: BlockEditorSettingElement)
         }
+        """),
+        Example("""
+        @objcMembers
+        class Foo: NSObject {
+            @objc
+            private enum Bar: Int {
+                case bar
+            }
+        }
         """)
     ]
 
@@ -140,6 +154,12 @@ struct RedundantObjcAttributeRuleExamples {
             private var bar: Int {
                 return 0
             }
+        }
+        """),
+        Example("""
+        @objcMembers
+        class Foo: NSObject {
+            ↓@objc func foo(_ sender: Any) {}
         }
         """)
     ]

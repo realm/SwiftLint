@@ -116,7 +116,7 @@ private extension AttributeListSyntax {
     }
 }
 
-private extension ModifierListSyntax {
+extension ModifierListSyntax {
     var isPrivateOrFilePrivate: Bool {
         contains(where: \.isPrivateOrFilePrivate)
     }

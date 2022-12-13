@@ -18,6 +18,10 @@
   subjects inside functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4643](https://github.com/realm/SwiftLint/issues/4643)
+* Fix false positives for enums and private functions with
+  `redundant_objc_attribute` rule.  
+  [Cyberbeni](https://github.com/Cyberbeni)
+  [#4633](https://github.com/realm/SwiftLint/issues/4633)
 
 ## 0.50.3: Bundle of Towels
 

@@ -3,7 +3,7 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objcMembers
         class Foo: NSObject {
-            @objc private var foo: String? {}
+            @objc private var foo: String?
         }
         """),
         Example("@IBInspectable private var foo: String? {}"),

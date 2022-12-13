@@ -77,7 +77,7 @@ private extension Syntax {
             return false
         }
     }
-    
+
     var modifiers: ModifierListSyntax? {
         if let decl = self.as(FunctionDeclSyntax.self) {
             return decl.modifiers

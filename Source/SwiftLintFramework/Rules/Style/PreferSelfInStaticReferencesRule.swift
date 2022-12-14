@@ -84,6 +84,17 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
         ],
         triggeringExamples: [
             Example("""
+            final class CheckCellView: NSTableCellView {
+              @IBOutlet var checkButton: NSButton!
+
+              override func awakeFromNib() {
+                checkButton.action = #selector(↓CheckCellView.check(_:))
+              }
+
+              @objc func check(_ button: AnyObject?) {}
+            }
+            """),
+            Example("""
                 class C {
                     struct S {
                         static let i = 2
@@ -146,6 +157,28 @@ struct PreferSelfInStaticReferencesRule: SwiftSyntaxRule, CorrectableRule, Confi
             """, excludeFromDocumentation: true)
         ],
         corrections: [
+            Example("""
+            final class CheckCellView: NSTableCellView {
+              @IBOutlet var checkButton: NSButton!
+
+              override func awakeFromNib() {
+                checkButton.action = #selector(↓CheckCellView.check(_:))
+              }
+
+              @objc func check(_ button: AnyObject?) {}
+            }
+            """):
+                Example("""
+                final class CheckCellView: NSTableCellView {
+                  @IBOutlet var checkButton: NSButton!
+
+                  override func awakeFromNib() {
+                    checkButton.action = #selector(Self.check(_:))
+                  }
+
+                  @objc func check(_ button: AnyObject?) {}
+                }
+                """),
             Example("""
                 struct S {
                     static let i = 1
@@ -296,8 +329,8 @@ private class Visitor: ViolationsSyntaxVisitor {
         _ = variableDeclScopes.popLast()
     }
 
-    override func visit(_ node: ObjcKeyPathExprSyntax) -> SyntaxVisitorContinueKind {
-        if case .likeStruct = parentDeclScopes.last {
+    override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
+        if case .likeClass = parentDeclScopes.last, case .identifier("selector") = node.macro.tokenKind {
             return .visitChildren
         }
         return .skipChildren

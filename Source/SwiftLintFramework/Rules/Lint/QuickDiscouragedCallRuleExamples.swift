@@ -40,6 +40,30 @@ internal struct QuickDiscouragedCallRuleExamples {
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
+                   justBeforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   aroundEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
                   itBehavesLike("bar")
                }
            }

@@ -60,6 +60,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4612](https://github.com/realm/SwiftLint/issues/4612)
 
+* Allow new Quick APIs `aroundEach` and `justBeforeEach`
+  for `quick_discouraged_call`.  
+  [David Steinacher](https://github.com/stonko1994)
+  [#4626](https://github.com/realm/SwiftLint/issues/4626)
+
 #### Bug Fixes
 
 * Fix configuration parsing error in `unused_declaration` rule.  

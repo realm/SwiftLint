@@ -811,6 +811,12 @@ class PatternMatchingKeywordsRuleGeneratedTests: XCTestCase {
     }
 }
 
+class PeriodSpacingRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PeriodSpacingRule.description)
+    }
+}
+
 class PreferNimbleRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)

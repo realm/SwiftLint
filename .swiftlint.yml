@@ -48,6 +48,7 @@ opt_in_rules:
   - overridden_super_call
   - override_in_extension
   - pattern_matching_keywords
+  - period_spacing
   - prefer_self_type_over_type_of_self
   - private_action
   - private_outlet

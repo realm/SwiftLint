@@ -14,7 +14,10 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positives on `private_subject` rule when using
+  subjects inside functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#4643](https://github.com/realm/SwiftLint/issues/4643)
 
 ## 0.50.3: Bundle of Towels
 

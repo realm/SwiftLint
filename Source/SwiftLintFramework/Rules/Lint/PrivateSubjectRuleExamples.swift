@@ -107,7 +107,7 @@ internal struct PrivateSubjectRuleExamples {
                 let goodSubject = PassthroughSubject<Bool, Never>(true)
             }
             """
-        ),
+        )
     ]
 
     static let triggeringExamples: [Example] = [

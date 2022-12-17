@@ -24,6 +24,11 @@
 
 #### Bug Fixes
 
+* Report violations in all `<scope>_length` rules when the error threshold is
+  smaller than the warning threshold.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4645](https://github.com/realm/SwiftLint/issues/4645)
+
 * Fix false positives on `private_subject` rule when using
   subjects inside functions.  
   [Marcelo Fabri](https://github.com/marcelofabri)

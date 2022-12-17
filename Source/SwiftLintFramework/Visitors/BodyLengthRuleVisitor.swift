@@ -115,19 +115,19 @@ final class BodyLengthRuleVisitor: ViolationsSyntaxVisitor {
 
         let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
                                                                         rightBraceLine: rightBraceLine)
-        guard lineCount > configuration.warning else {
+        let severity: ViolationSeverity, upperBound: Int
+        if let error = configuration.error, lineCount > error {
+            severity = .error
+            upperBound = error
+        } else if lineCount > configuration.warning {
+            severity = .warning
+            upperBound = configuration.warning
+        } else {
             return
         }
 
-        let severity: ViolationSeverity
-        if let error = configuration.error, lineCount > error {
-            severity = .error
-        } else {
-            severity = .warning
-        }
-
         let reason = """
-            \(kind.name) body should span \(configuration.warning) lines or less excluding comments and whitespace: \
+            \(kind.name) body should span \(upperBound) lines or less excluding comments and whitespace: \
             currently spans \(lineCount) lines
             """
 

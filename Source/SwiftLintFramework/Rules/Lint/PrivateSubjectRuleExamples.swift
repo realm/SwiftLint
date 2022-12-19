@@ -24,7 +24,7 @@ internal struct PrivateSubjectRuleExamples {
         Example(
             #"""
             final class Foobar {
-                private let goodSubject: PassthroughSubject<Bool, Never> = .ini()
+                private let goodSubject: PassthroughSubject<Bool, Never> = .init()
             }
             """#
         ),
@@ -52,7 +52,7 @@ internal struct PrivateSubjectRuleExamples {
         Example(
             #"""
             final class Foobar {
-                private let goodSubject: CurrentValueSubject<String, Never> = .ini("toto")
+                private let goodSubject: CurrentValueSubject<String, Never> = .init("toto")
             }
             """#
         ),
@@ -89,7 +89,7 @@ internal struct PrivateSubjectRuleExamples {
             #"""
             final class Foobar {
                 private let goodSubject:
-                    PassthroughSubject<Bool, Never> = .ini()
+                    PassthroughSubject<Bool, Never> = .init()
             }
             """#
         ),
@@ -100,6 +100,13 @@ internal struct PrivateSubjectRuleExamples {
                     CurrentValueSubject<Bool, Never>(true)
             }
             """#
+        ),
+        Example(
+            """
+            func foo() {
+                let goodSubject = PassthroughSubject<Bool, Never>(true)
+            }
+            """
         )
     ]
 
@@ -135,7 +142,7 @@ internal struct PrivateSubjectRuleExamples {
         Example(
             #"""
             final class Foobar {
-                let goodSubject: PassthroughSubject<Bool, Never> = .ini()
+                let goodSubject: PassthroughSubject<Bool, Never> = .init()
             }
             """#
         ),
@@ -243,7 +250,7 @@ internal struct PrivateSubjectRuleExamples {
             #"""
             final class Foobar {
                 let ↓badSubject:
-                    PassthroughSubject<Bool, Never> = .ini()
+                    PassthroughSubject<Bool, Never> = .init()
             }
             """#
         ),

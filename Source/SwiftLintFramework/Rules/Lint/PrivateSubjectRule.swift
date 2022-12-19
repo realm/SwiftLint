@@ -29,6 +29,10 @@ private extension PrivateSubjectRule {
     final class Visitor: ViolationsSyntaxVisitor {
         private let subjectTypes: Set<String> = ["PassthroughSubject", "CurrentValueSubject"]
 
+        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+            [FunctionDeclSyntax.self, VariableDeclSyntax.self, SubscriptDeclSyntax.self]
+        }
+
         override func visitPost(_ node: VariableDeclSyntax) {
             guard !node.modifiers.isPrivateOrFileprivate,
                   !node.modifiers.containsStaticOrClass else {

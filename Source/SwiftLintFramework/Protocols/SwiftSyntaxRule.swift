@@ -154,6 +154,10 @@ open class ViolationsSyntaxVisitor: SyntaxVisitor {
         skippableDeclarations.contains { $0 == FunctionDeclSyntax.self } ? .skipChildren : .visitChildren
     }
 
+    override open func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
+        skippableDeclarations.contains { $0 == FunctionDeclSyntax.self } ? .skipChildren : .visitChildren
+    }
+
     override open func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         skippableDeclarations.contains { $0 == VariableDeclSyntax.self } ? .skipChildren : .visitChildren
     }

@@ -174,10 +174,5 @@ To bring up a new Buildkite worker from MacStadium:
    `brew install aria2 bazelisk htop buildkite/buildkite/buildkite-agent robotsandpencils/made/xcodes`
 1. Install latest Xcode version: `xcodes update && xcodes install 14.0.0`
 1. Add `DANGER_GITHUB_API_TOKEN` and `HOME` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
-1. Add `echo "build --remote_cache=grpc://<creds>@swiftlint-ci.jpsim.com:9092" > ci.bazelrc`
-   to `/opt/homebrew/etc/buildkite-agent/hooks/pre-command`, replacing `<creds>` with the
-   bazel-remote credentials
 1. Configure and launch buildkite agent: `brew info buildkite-agent` /
    https://buildkite.com/organizations/swiftlint/agents#setup-macos
-1. On the `swiftlint-ci.jpsim.com` machine only:
-   `docker run -d -u 1000:1000 -v /tmp/swiftlint-bazel-remote-cache:/data -v ~/Desktop/bazel-remote.htpasswd:/etc/bazel-remote/htpasswd -p 9090:8080 -p 9092:9092 buchgr/bazel-remote-cache --htpasswd_file=/etc/bazel-remote/htpasswd --max_size=5`

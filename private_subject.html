@@ -341,7 +341,7 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
-    <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">ini</span><span class="p">()</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
@@ -357,7 +357,7 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
-    <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">ini</span><span class="p">(</span><span class="s">"toto"</span><span class="p">)</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="s">"toto"</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
@@ -379,12 +379,16 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
     <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span>
-        <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">ini</span><span class="p">()</span>
+        <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
     <span class="kd">private</span> <span class="k">let</span> <span class="nv">goodSubject</span> <span class="o">=</span>
         <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">goodSubject</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
@@ -405,7 +409,7 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">ini</span><span class="p">()</span>
+    <span class="k">let</span> <span class="nv">goodSubject</span><span class="p">:</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
@@ -471,7 +475,7 @@
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>
     <span class="kd">let</span> <span class="err">↓</span><span class="nv">badSubject</span><span class="p">:</span>
-        <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">ini</span><span class="p">()</span>
+        <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Foobar</span> <span class="p">{</span>

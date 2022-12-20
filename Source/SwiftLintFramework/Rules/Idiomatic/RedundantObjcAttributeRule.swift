@@ -67,11 +67,10 @@ private extension AttributeListSyntax {
 }
 
 private extension Syntax {
-    var isFunctionOrStoredProperty: Bool {
+    var isFunctionOrProperty: Bool {
         if self.is(FunctionDeclSyntax.self) {
             return true
-        } else if let variableDecl = self.as(VariableDeclSyntax.self),
-                  variableDecl.bindings.allSatisfy({ $0.accessor == nil }) {
+        } else if self.is(VariableDeclSyntax.self) {
             return true
         } else {
             return false
@@ -99,19 +98,20 @@ private extension AttributeListSyntax {
             return objcAttribute
         } else if parent?.is(EnumDeclSyntax.self) == true {
             return nil
-        } else if parent?.isFunctionOrStoredProperty == true,
-                  parent?.modifiers?.isPrivateOrFilePrivate == true {
-            return nil
-        } else if parent?.isFunctionOrStoredProperty == true,
-                  let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-                  parentClassDecl.attributes?.hasObjCMembers == true {
-            return objcAttribute
-        } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
-                  parentExtensionDecl.attributes?.objCAttribute != nil {
-            return objcAttribute
-        } else {
-            return nil
+        } else if parent?.isFunctionOrProperty == true {
+            if let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
+               parentClassDecl.attributes?.hasObjCMembers == true,
+               parent?.modifiers?.isPrivateOrFilePrivate != true
+            {
+                return objcAttribute
+            } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
+                      parentExtensionDecl.attributes?.objCAttribute != nil,
+                      parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate != true
+            {
+                return objcAttribute
+            }
         }
+        return nil
     }
 }
 

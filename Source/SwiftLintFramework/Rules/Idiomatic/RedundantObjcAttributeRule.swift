@@ -90,13 +90,11 @@ private extension AttributeListSyntax {
             return nil
         } else if let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
                   parentClassDecl.attributes?.hasObjCMembers == true,
-                  parent?.functionOrVariableModifiers?.isPrivateOrFilePrivate != true
-        {
+                  parent?.functionOrVariableModifiers?.isPrivateOrFilePrivate != true {
             return objcAttribute
         } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
                   parentExtensionDecl.attributes?.objCAttribute != nil,
-                  parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate != true
-        {
+                  parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate != true {
             return objcAttribute
         }
         return nil

@@ -19,17 +19,6 @@ struct RedundantObjcAttributeRuleExamples {
         Example("@NSManaged var foo: String!"),
         Example("@objc @NSCopying var foo: String!"),
         Example("""
-        @objcMembers
-        class Foo {
-            var bar: Any?
-            @objc
-            class Bar {
-                @objc
-                var foo: Any?
-            }
-        }
-        """),
-        Example("""
         @objc
         extension Foo {
             var bar: Int {
@@ -75,12 +64,6 @@ struct RedundantObjcAttributeRuleExamples {
         }
         """),
         Example("""
-        @objcMembers
-        class Foo {
-            @objc class Bar {}
-        }
-        """),
-        Example("""
         extension BlockEditorSettings {
             @objc(addElementsObject:)
             @NSManaged public func addToElements(_ value: BlockEditorSettingElement)
@@ -116,9 +99,15 @@ struct RedundantObjcAttributeRuleExamples {
         Example("""
         @objcMembers
         class Foo {
+            ↓@objc class Bar {}
+        }
+        """),
+        Example("""
+        @objcMembers
+        class Foo {
             ↓@objc var bar: Any?
             ↓@objc var foo: Any?
-            @objc
+            ↓@objc
             class Bar {
                 @objc
                 var foo: Any?
@@ -200,7 +189,7 @@ struct RedundantObjcAttributeRuleExamples {
         class Foo {
             ↓@objc var bar: Any?
             ↓@objc var foo: Any?
-            @objc
+            ↓@objc
             class Bar {
                 @objc
                 var foo2: Any?
@@ -212,7 +201,6 @@ struct RedundantObjcAttributeRuleExamples {
         class Foo {
             var bar: Any?
             var foo: Any?
-            @objc
             class Bar {
                 @objc
                 var foo2: Any?

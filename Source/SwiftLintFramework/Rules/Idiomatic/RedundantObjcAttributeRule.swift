@@ -67,17 +67,7 @@ private extension AttributeListSyntax {
 }
 
 private extension Syntax {
-    var isFunctionOrProperty: Bool {
-        if self.is(FunctionDeclSyntax.self) {
-            return true
-        } else if self.is(VariableDeclSyntax.self) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    var modifiers: ModifierListSyntax? {
+    var functionOrVariableModifiers: ModifierListSyntax? {
         if let decl = self.as(FunctionDeclSyntax.self) {
             return decl.modifiers
         } else if let decl = self.as(VariableDeclSyntax.self) {
@@ -98,18 +88,16 @@ private extension AttributeListSyntax {
             return objcAttribute
         } else if parent?.is(EnumDeclSyntax.self) == true {
             return nil
-        } else if parent?.isFunctionOrProperty == true {
-            if let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-               parentClassDecl.attributes?.hasObjCMembers == true,
-               parent?.modifiers?.isPrivateOrFilePrivate != true
-            {
-                return objcAttribute
-            } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
-                      parentExtensionDecl.attributes?.objCAttribute != nil,
-                      parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate != true
-            {
-                return objcAttribute
-            }
+        } else if let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
+                  parentClassDecl.attributes?.hasObjCMembers == true,
+                  parent?.functionOrVariableModifiers?.isPrivateOrFilePrivate != true
+        {
+            return objcAttribute
+        } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
+                  parentExtensionDecl.attributes?.objCAttribute != nil,
+                  parent?.as(FunctionDeclSyntax.self)?.modifiers?.isPrivateOrFilePrivate != true
+        {
+            return objcAttribute
         }
         return nil
     }

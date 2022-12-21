@@ -35,13 +35,12 @@ extension Configuration {
     ) -> [String] {
         if path.isFile {
             if forceExclude {
-                let filteredPaths = excludeByPrefix
+                return excludeByPrefix
                     ? filterExcludedPathsByPrefix(in: [path.absolutePathStandardized()])
                     : filterExcludedPaths(fileManager: fileManager, in: [path.absolutePathStandardized()])
-                return filteredPaths
-            } else { // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
-                return [path]
             }
+            // If path is a file and we're not forcing excludes, skip filtering with excluded/included paths
+            return [path]
         }
 
         let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []

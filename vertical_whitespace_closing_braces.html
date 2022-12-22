@@ -336,17 +336,6 @@
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">sum</span>
-
-<span class="p">},</span> <span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">mul</span> <span class="o">=</span> <span class="mi">1</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">mul</span>
-<span class="p">}])</span>
-</code></pre>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
 <span class="p">}</span>
@@ -365,6 +354,17 @@
 <pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span>
   <span class="mi">1</span>
 <span class="p">])</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+  <span class="k">return</span> <span class="n">sum</span>
+
+<span class="p">},</span> <span class="n">foo</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">mul</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
+  <span class="k">return</span> <span class="n">mul</span>
+<span class="p">}])</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span>
 <span class="mi">1</span><span class="p">,</span>
@@ -408,24 +408,12 @@
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
 <span class="err">↓</span>
-
 <span class="p">}</span>
-</code></pre>
-<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">sum</span>
-
-<span class="p">},</span> <span class="n">foo</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">mul</span> <span class="o">=</span> <span class="mi">1</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
-  <span class="k">return</span> <span class="n">mul</span>
-<span class="err">↓</span>
-<span class="p">}])</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="nf">print</span><span class="p">(</span><span class="s">"x is 5"</span><span class="p">)</span>
 <span class="err">↓</span>
+
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span>
@@ -445,6 +433,18 @@
   <span class="mi">1</span>
 <span class="err">↓</span>
 <span class="p">])</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">([</span><span class="n">foo</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">sum</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+  <span class="k">return</span> <span class="n">sum</span>
+
+<span class="p">},</span> <span class="n">foo</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">mul</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">...</span><span class="mi">5</span> <span class="p">{</span> <span class="n">mul</span> <span class="o">*=</span> <span class="n">i</span> <span class="p">}</span>
+  <span class="k">return</span> <span class="n">mul</span>
+<span class="err">↓</span>
+<span class="p">}])</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span>
 <span class="mi">1</span><span class="p">,</span>

@@ -13,7 +13,9 @@
 
 #### Enhancements
 
-* None.
+* Make forceExclude work with directly specified files.  
+  [jimmya](https://github.com/jimmya)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/4609)
 
 #### Bug Fixes
 

@@ -12,6 +12,7 @@ struct NameConfiguration: RuleConfiguration, Equatable {
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
     var excluded: Set<String>
+    var excludedRegularExpressions: Set<String>
     private var allowedSymbolsSet: Set<String>
     var validatesStartWithLowercase: Bool
 
@@ -32,11 +33,13 @@ struct NameConfiguration: RuleConfiguration, Equatable {
          maxLengthWarning: Int,
          maxLengthError: Int,
          excluded: [String] = [],
+         excludedRegularExpressions: [String] = [],
          allowedSymbols: [String] = [],
          validatesStartWithLowercase: Bool = true) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
+        self.excludedRegularExpressions = Set(excludedRegularExpressions)
         self.allowedSymbolsSet = Set(allowedSymbols)
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
@@ -54,6 +57,9 @@ struct NameConfiguration: RuleConfiguration, Equatable {
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
+        }
+        if let excludedRegularExpressions = [String].array(of: configurationDict["excluded_regular_expressions"]) {
+            self.excludedRegularExpressions = Set(excludedRegularExpressions)
         }
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
             self.allowedSymbolsSet = Set(allowedSymbols)

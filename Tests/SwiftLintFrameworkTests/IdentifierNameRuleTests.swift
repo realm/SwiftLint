@@ -2,6 +2,21 @@
 import XCTest
 
 class IdentifierNameRuleTests: XCTestCase {
+    func testIdentifierNameWithExcludedRegularExpressions() {
+        let baseDescription = IdentifierNameRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            Example("let Apple = 0"),
+            Example("let Some_apple = 0"),
+            Example("let test123 = 0"),
+        ]
+        let triggeringExamples = baseDescription.triggeringExamples + [
+            Example("let ap_ple = 0")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
+                                               triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded_regular_expressions": ["apple", "^Apple", "\\d+"]])
+    }
+    
     func testIdentifierNameWithAllowedSymbols() {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

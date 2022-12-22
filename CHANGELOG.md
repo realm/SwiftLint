@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* Deprecate the `unused_capture_list` rule in favor of the Swift compiler
+  warning. At the same time, make it an opt-in rule.  
+  [Cyberbeni](https://github.com/Cyberbeni)
+  [#4656](https://github.com/realm/SwiftLint/issues/4656)
 
 #### Experimental
 

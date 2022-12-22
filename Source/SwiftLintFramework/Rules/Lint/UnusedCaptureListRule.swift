@@ -1,6 +1,18 @@
 import SwiftSyntax
 
-struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule {
+private let warnDeprecatedOnceImpl: Void = {
+    queuedPrintError("""
+        The `\(UnusedCaptureListRule.description.identifier)` rule is now deprecated and will be completely \
+        removed in a future release due to an equivalent warning issued by the Swift compiler.
+        """
+    )
+}()
+
+private func warnDeprecatedOnce() {
+    _ = warnDeprecatedOnceImpl
+}
+
+struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     var configuration = SeverityConfiguration(.warning)
 
     init() {}
@@ -121,7 +133,8 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
+        warnDeprecatedOnce()
+        return Visitor(viewMode: .sourceAccurate)
     }
 }
 

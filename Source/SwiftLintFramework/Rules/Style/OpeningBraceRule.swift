@@ -18,8 +18,8 @@ private extension SwiftLintFile {
             if isAnonymousClosure(range: $0) {
                 return nil
             }
-            let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
-            return ($0, branceRange.location)
+            let braceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
+            return ($0, braceRange.location)
         }
     }
 

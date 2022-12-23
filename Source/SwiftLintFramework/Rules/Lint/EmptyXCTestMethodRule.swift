@@ -8,7 +8,7 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
     static let description = RuleDescription(
         identifier: "empty_xctest_method",
         name: "Empty XCTest Method",
-        description: "Empty XCTest method should be avoided.",
+        description: "Empty XCTest method should be avoided",
         kind: .lint,
         nonTriggeringExamples: EmptyXCTestMethodRuleExamples.nonTriggeringExamples,
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples

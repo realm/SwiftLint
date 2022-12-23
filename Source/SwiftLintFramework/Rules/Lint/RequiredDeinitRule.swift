@@ -12,7 +12,7 @@ struct RequiredDeinitRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
     static let description = RuleDescription(
         identifier: "required_deinit",
         name: "Required Deinit",
-        description: "Classes should have an explicit deinit method.",
+        description: "Classes should have an explicit deinit method",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

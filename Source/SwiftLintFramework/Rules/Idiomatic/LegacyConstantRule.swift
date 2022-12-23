@@ -9,7 +9,7 @@ struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
     static let description = RuleDescription(
         identifier: "legacy_constant",
         name: "Legacy Constant",
-        description: "Struct-scoped constants are preferred over legacy global constants.",
+        description: "Struct-scoped constants are preferred over legacy global constants",
         kind: .idiomatic,
         nonTriggeringExamples: LegacyConstantRuleExamples.nonTriggeringExamples,
         triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,

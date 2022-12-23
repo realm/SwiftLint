@@ -8,7 +8,7 @@ struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "empty_count",
         name: "Empty Count",
-        description: "Prefer checking `isEmpty` over comparing `count` to zero.",
+        description: "Prefer checking `isEmpty` over comparing `count` to zero",
         kind: .performance,
         nonTriggeringExamples: [
             Example("var count = 0\n"),

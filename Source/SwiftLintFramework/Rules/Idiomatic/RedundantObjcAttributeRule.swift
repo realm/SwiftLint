@@ -13,7 +13,7 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule,
     static let description = RuleDescription(
         identifier: "redundant_objc_attribute",
         name: "Redundant @objc Attribute",
-        description: "Objective-C attribute (@objc) is redundant in declaration.",
+        description: "Objective-C attribute (@objc) is redundant in declaration",
         kind: .idiomatic,
         nonTriggeringExamples: RedundantObjcAttributeRuleExamples.nonTriggeringExamples,
         triggeringExamples: RedundantObjcAttributeRuleExamples.triggeringExamples,

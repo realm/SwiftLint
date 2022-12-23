@@ -8,7 +8,7 @@ struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, Sw
     static let description = RuleDescription(
         identifier: "return_value_from_void_function",
         name: "Return Value from Void Function",
-        description: "Returning values from Void functions should be avoided.",
+        description: "Returning values from Void functions should be avoided",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: ReturnValueFromVoidFunctionRuleExamples.nonTriggeringExamples,

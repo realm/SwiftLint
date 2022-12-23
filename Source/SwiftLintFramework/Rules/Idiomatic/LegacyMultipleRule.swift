@@ -8,7 +8,7 @@ struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule
     static let description = RuleDescription(
         identifier: "legacy_multiple",
         name: "Legacy Multiple",
-        description: "Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`).",
+        description: "Prefer using the `isMultiple(of:)` function instead of using the remainder operator (`%`)",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row.isMultiple(of: 2) ? .gray : .white"),

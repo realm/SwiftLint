@@ -8,7 +8,7 @@ struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "xctfail_message",
         name: "XCTFail Message",
-        description: "An XCTFail call should include a description of the assertion.",
+        description: "An XCTFail call should include a description of the assertion",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

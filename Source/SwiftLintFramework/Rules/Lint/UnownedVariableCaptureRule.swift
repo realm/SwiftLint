@@ -8,7 +8,7 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
     static let description = RuleDescription(
         identifier: "unowned_variable_capture",
         name: "Unowned Variable Capture",
-        description: "Prefer capturing references as weak to avoid potential crashes.",
+        description: "Prefer capturing references as weak to avoid potential crashes",
         kind: .lint,
         nonTriggeringExamples: [
             Example("foo { [weak self] in _ }"),

@@ -8,7 +8,7 @@ struct ForWhereRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "for_where",
         name: "Prefer For-Where",
-        description: "`where` clauses are preferred over a single `if` inside a `for`.",
+        description: "`where` clauses are preferred over a single `if` inside a `for`",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

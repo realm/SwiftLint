@@ -8,7 +8,7 @@ struct OrphanedDocCommentRule: SourceKitFreeRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "orphaned_doc_comment",
         name: "Orphaned Doc Comment",
-        description: "A doc comment should be attached to a declaration.",
+        description: "A doc comment should be attached to a declaration",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

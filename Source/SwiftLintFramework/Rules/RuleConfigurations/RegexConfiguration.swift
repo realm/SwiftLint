@@ -4,7 +4,7 @@ import SourceKittenFramework
 public struct RegexConfiguration: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
-    public var message = "Regex matched."
+    public var message = "Regex matched"
     public var regex: NSRegularExpression!
     public var included: [NSRegularExpression] = []
     public var excluded: [NSRegularExpression] = []

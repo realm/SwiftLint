@@ -8,7 +8,7 @@ struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "empty_string",
         name: "Empty String",
-        description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal.",
+        description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal",
         kind: .performance,
         nonTriggeringExamples: [
             Example("myString.isEmpty"),

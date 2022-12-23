@@ -8,7 +8,7 @@ struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
     static let description = RuleDescription(
         identifier: "fallthrough",
         name: "Fallthrough",
-        description: "Fallthrough should be avoided.",
+        description: "Fallthrough should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

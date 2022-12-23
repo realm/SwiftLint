@@ -8,7 +8,7 @@ struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
     static let description = RuleDescription(
         identifier: "trailing_semicolon",
         name: "Trailing Semicolon",
-        description: "Lines should not have trailing semicolons.",
+        description: "Lines should not have trailing semicolons",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let a = 0\n"),

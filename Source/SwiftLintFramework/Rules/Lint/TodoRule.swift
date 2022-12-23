@@ -63,9 +63,9 @@ struct TodoRule: ConfigurationProviderRule {
         }
 
         if message.isEmpty {
-            reason = "\(kind) should be resolved."
+            reason = "\(kind) should be resolved"
         } else {
-            reason = "\(kind) should be resolved (\(message))."
+            reason = "\(kind) should be resolved (\(message))"
         }
 
         return reason

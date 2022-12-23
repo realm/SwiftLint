@@ -9,7 +9,7 @@ struct ExplicitInitRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, 
     static let description = RuleDescription(
         identifier: "explicit_init",
         name: "Explicit Init",
-        description: "Explicitly calling .init() should be avoided.",
+        description: "Explicitly calling .init() should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

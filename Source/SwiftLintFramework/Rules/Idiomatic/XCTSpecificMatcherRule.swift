@@ -8,7 +8,7 @@ struct XCTSpecificMatcherRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
     static let description = RuleDescription(
         identifier: "xct_specific_matcher",
         name: "XCTest Specific Matcher",
-        description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
+        description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`.",
         kind: .idiomatic,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
@@ -72,7 +72,7 @@ private extension XCTSpecificMatcherRule {
 
             violations.append(ReasonedRuleViolation(
                 position: node.positionAfterSkippingLeadingTrivia,
-                reason: "Prefer the specific matcher '\(suggestedMatcher)' instead."
+                reason: "Prefer the specific matcher '\(suggestedMatcher)' instead"
             ))
         }
     }

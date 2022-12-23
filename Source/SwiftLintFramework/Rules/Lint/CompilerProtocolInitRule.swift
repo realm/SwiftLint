@@ -8,10 +8,8 @@ struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "compiler_protocol_init",
         name: "Compiler Protocol Init",
-        description: Self.violationReason(
-            protocolName: "such as `ExpressibleByArrayLiteral`",
-            isPlural: true
-        ),
+        description: "The initializers declared in compiler protocols such as `ExpressibleByArrayLiteral` " +
+                     "shouldn't be called directly.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("let set: Set<Int> = [1, 2]\n"),
@@ -24,11 +22,6 @@ struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n")
         ]
     )
-
-    private static func violationReason(protocolName: String, isPlural: Bool = false) -> String {
-        return "The initializers declared in compiler protocol\(isPlural ? "s" : "") \(protocolName) " +
-                "shouldn't be called directly."
-    }
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
         Visitor(viewMode: .sourceAccurate)
@@ -60,7 +53,8 @@ private extension CompilerProtocolInitRule {
 
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
-                    reason: violationReason(protocolName: compilerProtocol.protocolName)
+                    reason: "Initializers declared in compiler protocol \(compilerProtocol.protocolName) " +
+                            "shouldn't be called directly"
                 ))
                 return
             }

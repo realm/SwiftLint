@@ -119,9 +119,9 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
     private func reason(for check: SyntaxProtocol) -> String {
         switch check {
         case is AvailabilityConditionSyntax:
-            return "Use #unavailable instead of #available with an empty body."
+            return "Use #unavailable instead of #available with an empty body"
         case is UnavailabilityConditionSyntax:
-            return "Use #available instead of #unavailable with an empty body."
+            return "Use #available instead of #unavailable with an empty body"
         default:
             queuedFatalError("Unknown availability check type.")
         }

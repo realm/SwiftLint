@@ -10,7 +10,7 @@ struct ReturnArrowWhitespaceRule: SwiftSyntaxRule, CorrectableRule, Configuratio
         identifier: "return_arrow_whitespace",
         name: "Returning Whitespace",
         description: "Return arrow and return type should be separated by a single space or on a " +
-                     "separate line.",
+                     "separate line",
         kind: .style,
         nonTriggeringExamples: [
             Example("func abc() -> Int {}\n"),

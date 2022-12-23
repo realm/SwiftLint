@@ -3,7 +3,7 @@
 	<testcase name='warning: line_length in filename:1'>
 		<failure>Severity: warning
 Rule: line_length
-Reason: Violation Reason.
+Reason: Violation Reason
 
 File: filename
 Line: 1
@@ -13,7 +13,7 @@ Column: 2
 	<testcase name='error: line_length in filename:1'>
 		<failure>Severity: error
 Rule: line_length
-Reason: Violation Reason.
+Reason: Violation Reason
 
 File: filename
 Line: 1
@@ -23,7 +23,7 @@ Column: 2
 	<testcase name='error: syntactic_sugar in filename:1'>
 		<failure>Severity: error
 Rule: syntactic_sugar
-Reason: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;.
+Reason: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;
 
 File: filename
 Line: 1
@@ -33,7 +33,7 @@ Column: 2
 	<testcase name='error: colon in &lt;nopath&gt;'>
 		<failure>Severity: error
 Rule: colon
-Reason: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.
+Reason: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals
 
 File: &lt;nopath&gt;
 Line: nil

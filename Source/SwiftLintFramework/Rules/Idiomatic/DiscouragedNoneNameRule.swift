@@ -224,9 +224,9 @@ private extension DiscouragedNoneNameRule {
         }
 
         private func reason(type: String) -> String {
-            let reason = "Avoid naming \(type) `none` as the compiler can think you mean `Optional<T>.none`."
-            let recommendation = "Consider using an Optional value instead."
-            return "\(reason) \(recommendation)"
+            let reason = "Avoid naming \(type) `none` as the compiler can think you mean `Optional<T>.none`"
+            let recommendation = "consider using an Optional value instead"
+            return "\(reason); \(recommendation)"
         }
     }
 }

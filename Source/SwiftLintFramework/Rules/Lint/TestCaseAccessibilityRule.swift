@@ -10,7 +10,7 @@ struct TestCaseAccessibilityRule: SwiftSyntaxRule, OptInRule,
     static let description = RuleDescription(
         identifier: "test_case_accessibility",
         name: "Test Case Accessibility",
-        description: "Test cases should only contain private non-test members.",
+        description: "Test cases should only contain private non-test members",
         kind: .lint,
         nonTriggeringExamples: TestCaseAccessibilityRuleExamples.nonTriggeringExamples,
         triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,

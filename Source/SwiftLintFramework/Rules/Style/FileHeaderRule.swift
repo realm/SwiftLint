@@ -33,8 +33,6 @@ struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         ].skipWrappingInCommentTests()
     )
 
-    private static let reason = "Header comments should be consistent with project patterns."
-
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         var firstToken: SwiftLintSyntaxToken?
         var lastToken: SwiftLintSyntaxToken?
@@ -102,7 +100,7 @@ struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severityConfiguration.severity,
                               location: location,
-                              reason: Self.reason)
+                              reason: "Header comments should be consistent with project patterns")
     }
 }
 

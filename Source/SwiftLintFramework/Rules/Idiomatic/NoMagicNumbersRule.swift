@@ -8,7 +8,7 @@ struct NoMagicNumbersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
     static let description = RuleDescription(
         identifier: "no_magic_numbers",
         name: "No Magic Numbers",
-        description: "Magic numbers should be replaced by named constants.",
+        description: "Magic numbers should be replaced by named constants",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var foo = 123"),

@@ -8,7 +8,7 @@ struct RedundantDiscardableLetRule: SwiftSyntaxCorrectableRule, ConfigurationPro
     static let description = RuleDescription(
         identifier: "redundant_discardable_let",
         name: "Redundant Discardable Let",
-        description: "Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function.",
+        description: "Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function",
         kind: .style,
         nonTriggeringExamples: [
             Example("_ = foo()\n"),

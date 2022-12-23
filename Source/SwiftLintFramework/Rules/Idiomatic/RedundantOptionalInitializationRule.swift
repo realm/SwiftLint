@@ -8,7 +8,7 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
-        description: "Initializing an optional variable with nil is redundant.",
+        description: "Initializing an optional variable with nil is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var myVar: Int?\n"),

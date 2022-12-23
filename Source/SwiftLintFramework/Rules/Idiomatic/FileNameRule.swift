@@ -14,7 +14,7 @@ struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
     static let description = RuleDescription(
         identifier: "file_name",
         name: "File Name",
-        description: "File name should match a type or extension declared in the file (if any).",
+        description: "File name should match a type or extension declared in the file (if any)",
         kind: .idiomatic
     )
 

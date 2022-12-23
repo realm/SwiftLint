@@ -8,7 +8,7 @@ struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, O
     static let description = RuleDescription(
         identifier: "empty_collection_literal",
         name: "Empty Collection Literal",
-        description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal.",
+        description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal",
         kind: .performance,
         nonTriggeringExamples: [
             Example("myArray = []"),

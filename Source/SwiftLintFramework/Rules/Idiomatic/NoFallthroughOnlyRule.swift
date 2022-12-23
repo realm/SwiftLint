@@ -8,7 +8,7 @@ struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "no_fallthrough_only",
         name: "No Fallthrough only",
-        description: "Fallthroughs can only be used if the `case` contains at least one other statement.",
+        description: "Fallthroughs can only be used if the `case` contains at least one other statement",
         kind: .idiomatic,
         nonTriggeringExamples: NoFallthroughOnlyRuleExamples.nonTriggeringExamples,
         triggeringExamples: NoFallthroughOnlyRuleExamples.triggeringExamples

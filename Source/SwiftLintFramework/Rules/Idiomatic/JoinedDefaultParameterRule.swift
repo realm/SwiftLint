@@ -8,7 +8,7 @@ struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProv
     static let description = RuleDescription(
         identifier: "joined_default_parameter",
         name: "Joined Default Parameter",
-        description: "Discouraged explicit usage of the default separator.",
+        description: "Discouraged explicit usage of the default separator",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let foo = bar.joined()"),

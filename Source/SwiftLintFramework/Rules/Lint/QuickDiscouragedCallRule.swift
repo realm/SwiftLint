@@ -56,7 +56,7 @@ struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0),
-                           reason: "Discouraged call inside a '\(name)' block.")
+                           reason: "Discouraged call inside a '\(name)' block")
         }
     }
 

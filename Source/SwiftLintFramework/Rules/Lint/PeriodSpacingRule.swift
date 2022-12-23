@@ -10,7 +10,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, OptInRul
     static let description = RuleDescription(
         identifier: "period_spacing",
         name: "Period Spacing",
-        description: "Periods should not be followed by more than one space.",
+        description: "Periods should not be followed by more than one space",
         kind: .style,
         nonTriggeringExamples: [
             Example("let pi = 3.2"),

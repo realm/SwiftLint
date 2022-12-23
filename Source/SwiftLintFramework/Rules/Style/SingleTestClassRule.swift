@@ -61,7 +61,7 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
             return StyleViolation(ruleDescription: Self.description,
                                   severity: configuration.severity,
                                   location: Location(file: file, position: position.position),
-                                  reason: "\(classes.count) test classes found in this file.")
+                                  reason: "\(classes.count) test classes found in this file")
         }
     }
 }

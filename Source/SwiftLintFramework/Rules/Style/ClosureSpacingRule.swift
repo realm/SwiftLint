@@ -10,7 +10,7 @@ struct ClosureSpacingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
     static let description = RuleDescription(
         identifier: "closure_spacing",
         name: "Closure Spacing",
-        description: "Closure expressions should have a single space inside each brace.",
+        description: "Closure expressions should have a single space inside each brace",
         kind: .style,
         nonTriggeringExamples: [
             Example("[].map ({ $0.description })"),

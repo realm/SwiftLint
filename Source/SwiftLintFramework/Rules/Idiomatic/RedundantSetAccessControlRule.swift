@@ -9,7 +9,7 @@ struct RedundantSetAccessControlRule: ConfigurationProviderRule, SwiftSyntaxRule
         identifier: "redundant_set_access_control",
         name: "Redundant Access Control for Setter",
         description: "Property setter access level shouldn't be explicit if " +
-                     "it's the same as the variable access level.",
+                     "it's the same as the variable access level",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("private(set) public var foo: Int"),

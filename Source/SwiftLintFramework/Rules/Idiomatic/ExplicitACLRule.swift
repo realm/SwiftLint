@@ -11,7 +11,7 @@ struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "explicit_acl",
         name: "Explicit ACL",
-        description: "All declarations should specify Access Control Level keywords explicitly.",
+        description: "All declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("internal enum A {}\n"),

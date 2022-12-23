@@ -8,7 +8,7 @@ struct LegacyRandomRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static var description = RuleDescription(
         identifier: "legacy_random",
         name: "Legacy Random",
-        description: "Prefer using `type.random(in:)` over legacy functions.",
+        description: "Prefer using `type.random(in:)` over legacy functions",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("Int.random(in: 0..<10)\n"),

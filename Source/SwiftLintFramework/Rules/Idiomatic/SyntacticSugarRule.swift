@@ -83,7 +83,7 @@ private enum SugaredType: String {
     }
 
     var violationReason: String {
-        "Shorthand syntactic sugar should be used, i.e. \(sugaredExample) instead of \(desugaredExample)."
+        "Shorthand syntactic sugar should be used, i.e. \(sugaredExample) instead of \(desugaredExample)"
     }
 }
 

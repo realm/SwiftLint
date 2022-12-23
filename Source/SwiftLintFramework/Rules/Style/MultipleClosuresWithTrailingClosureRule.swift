@@ -8,7 +8,7 @@ struct MultipleClosuresWithTrailingClosureRule: SwiftSyntaxRule, ConfigurationPr
     static let description = RuleDescription(
         identifier: "multiple_closures_with_trailing_closure",
         name: "Multiple Closures with Trailing Closure",
-        description: "Trailing closure syntax should not be used when passing more than one closure argument.",
+        description: "Trailing closure syntax should not be used when passing more than one closure argument",
         kind: .style,
         nonTriggeringExamples: [
             Example("foo.map { $0 + 1 }\n"),

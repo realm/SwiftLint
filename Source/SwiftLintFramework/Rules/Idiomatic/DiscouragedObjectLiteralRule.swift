@@ -8,7 +8,7 @@ struct DiscouragedObjectLiteralRule: SwiftSyntaxRule, OptInRule, ConfigurationPr
     static let description = RuleDescription(
         identifier: "discouraged_object_literal",
         name: "Discouraged Object Literal",
-        description: "Prefer initializers over object literals.",
+        description: "Prefer initializers over object literals",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let image = UIImage(named: aVariable)"),

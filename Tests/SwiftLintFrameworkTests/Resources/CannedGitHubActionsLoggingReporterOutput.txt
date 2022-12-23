@@ -1,4 +1,4 @@
-::warning file=filename,line=1,col=2::Violation Reason. (line_length)
-::error file=filename,line=1,col=2::Violation Reason. (line_length)
-::error file=filename,line=1,col=2::Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>. (syntactic_sugar)
-::error file=,line=1,col=1::Colons should be next to the identifier when specifying a type and next to the key in dictionary literals. (colon)
+::warning file=filename,line=1,col=2::Violation Reason (line_length)
+::error file=filename,line=1,col=2::Violation Reason (line_length)
+::error file=filename,line=1,col=2::Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int> (syntactic_sugar)
+::error file=,line=1,col=1::Colons should be next to the identifier when specifying a type and next to the key in dictionary literals (colon)

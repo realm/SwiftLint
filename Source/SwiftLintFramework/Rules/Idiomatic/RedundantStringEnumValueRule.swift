@@ -8,7 +8,7 @@ struct RedundantStringEnumValueRule: SwiftSyntaxRule, ConfigurationProviderRule 
     static let description = RuleDescription(
         identifier: "redundant_string_enum_value",
         name: "Redundant String Enum Value",
-        description: "String enum values can be omitted when they are equal to the enumcase name.",
+        description: "String enum values can be omitted when they are equal to the enumcase name",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

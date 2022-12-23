@@ -10,7 +10,7 @@ struct CommentSpacingRule: SourceKitFreeRule, ConfigurationProviderRule, Substit
     static let description = RuleDescription(
         identifier: "comment_spacing",
         name: "Comment Spacing",
-        description: "Prefer at least one space after slashes for comments.",
+        description: "Prefer at least one space after slashes for comments",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

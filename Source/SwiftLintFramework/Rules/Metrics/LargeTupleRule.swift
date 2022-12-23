@@ -20,7 +20,7 @@ struct LargeTupleRule: SourceKitFreeRule, ConfigurationProviderRule {
             .sorted(by: { $0.position < $1.position })
             .compactMap { position, size in
                 for parameter in configuration.params where size > parameter.value {
-                    let reason = "Tuples should have at most \(configuration.warning) members."
+                    let reason = "Tuples should have at most \(configuration.warning) members"
                     return StyleViolation(ruleDescription: Self.description,
                                           severity: parameter.severity,
                                           location: Location(file: file, position: position),

@@ -8,7 +8,7 @@ struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProvi
     static let description = RuleDescription(
         identifier: "discouraged_optional_collection",
         name: "Discouraged Optional Collection",
-        description: "Prefer empty collection over optional collection.",
+        description: "Prefer empty collection over optional collection",
         kind: .idiomatic,
         nonTriggeringExamples: DiscouragedOptionalCollectionExamples.nonTriggeringExamples,
         triggeringExamples: DiscouragedOptionalCollectionExamples.triggeringExamples

@@ -20,7 +20,7 @@ struct InertDeferRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
     static let description = RuleDescription(
         identifier: "inert_defer",
         name: "Inert Defer",
-        description: "If defer is at the end of its parent scope, it will be executed right where it is anyway.",
+        description: "If defer is at the end of its parent scope, it will be executed right where it is anyway",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

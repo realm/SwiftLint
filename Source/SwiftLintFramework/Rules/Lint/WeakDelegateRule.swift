@@ -8,7 +8,7 @@ struct WeakDelegateRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "weak_delegate",
         name: "Weak Delegate",
-        description: "Delegates should be weak to avoid reference cycles.",
+        description: "Delegates should be weak to avoid reference cycles",
         kind: .lint,
         nonTriggeringExamples: [
             Example("class Foo {\n  weak var delegate: SomeProtocol?\n}\n"),

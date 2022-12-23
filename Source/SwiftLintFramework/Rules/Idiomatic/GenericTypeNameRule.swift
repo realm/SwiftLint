@@ -75,7 +75,7 @@ private extension GenericTypeNameRule {
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,
-                        reason: "Generic type name should only contain alphanumeric characters: '\(name)'",
+                        reason: "Generic type name '\(name)' should only contain alphanumeric characters",
                         severity: .error
                     )
                 )
@@ -84,13 +84,13 @@ private extension GenericTypeNameRule {
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,
-                        reason: "Generic type name should start with an uppercase character: '\(name)'",
+                        reason: "Generic type name '\(name)' should start with an uppercase character",
                         severity: .error
                     )
                 )
             } else if let severity = configuration.severity(forLength: name.count) {
-                let reason = "Generic type name should be between \(configuration.minLengthThreshold) and " +
-                             "\(configuration.maxLengthThreshold) characters long: '\(name)'"
+                let reason = "Generic type name '\(name)' should be between \(configuration.minLengthThreshold) and " +
+                             "\(configuration.maxLengthThreshold) characters long"
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,

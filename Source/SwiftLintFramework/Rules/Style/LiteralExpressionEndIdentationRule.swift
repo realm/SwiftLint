@@ -131,7 +131,7 @@ struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptI
 
     private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
         let reason = "\(Self.description.description); " +
-                     "expected \(violation.indentationRanges.expected.length), " +
+                     "expected indentation of \(violation.indentationRanges.expected.length), " +
                      "got \(violation.indentationRanges.actual.length)"
 
         return StyleViolation(ruleDescription: Self.description,

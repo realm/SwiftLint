@@ -8,7 +8,8 @@ struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
     static var description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
-        description: "Discourages name cases/static members `none`, which can conflict with `Optional<T>.none`.",
+        description: "Enum cases and static members named `none` are discouraged as they can conflict with " +
+                     "`Optional<T>.none`.",
         kind: .idiomatic,
         nonTriggeringExamples: [
             // Should not trigger unless exactly matches "none"

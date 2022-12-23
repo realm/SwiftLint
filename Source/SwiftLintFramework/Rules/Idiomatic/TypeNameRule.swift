@@ -101,21 +101,21 @@ private extension TypeNameRule {
             if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
-                    reason: "Type name should only contain alphanumeric characters: '\(name)'",
+                    reason: "Type name '\(name)' should only contain alphanumeric characters",
                     severity: .error
                 )
             } else if nameConfiguration.validatesStartWithLowercase &&
                 name.first?.isLowercase == true {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
-                    reason: "Type name should start with an uppercase character: '\(name)'",
+                    reason: "Type name '\(name)' should start with an uppercase character",
                     severity: .error
                 )
             } else if let severity = nameConfiguration.severity(forLength: name.count) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
-                    reason: "Type name should be between \(nameConfiguration.minLengthThreshold) and " +
-                            "\(nameConfiguration.maxLengthThreshold) characters long: '\(name)'",
+                    reason: "Type name '\(name)' should be between \(nameConfiguration.minLengthThreshold) and " +
+                            "\(nameConfiguration.maxLengthThreshold) characters long",
                     severity: severity
                 )
             }

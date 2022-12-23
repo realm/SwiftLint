@@ -7,6 +7,11 @@
   [Cyberbeni](https://github.com/Cyberbeni)
   [#4656](https://github.com/realm/SwiftLint/issues/4656)
 
+* Deprecate the `inert_defer` rule in favor of the Swift compiler warning.
+  At the same time, make it an opt-in rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4615](https://github.com/realm/SwiftLint/issues/4615)
+
 #### Experimental
 
 * None.

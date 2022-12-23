@@ -12,7 +12,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     static let description = RuleDescription(
         identifier: "unused_import",
         name: "Unused Import",
-        description: "All imported modules should be required to make the file compile.",
+        description: "All imported modules should be required to make the file compile",
         kind: .lint,
         nonTriggeringExamples: UnusedImportRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnusedImportRuleExamples.triggeringExamples,

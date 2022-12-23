@@ -8,7 +8,7 @@ struct BalancedXCTestLifecycleRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
     static let description = RuleDescription(
         identifier: "balanced_xctest_lifecycle",
         name: "Balanced XCTest Life Cycle",
-        description: "Test classes must implement balanced setUp and tearDown methods.",
+        description: "Test classes must implement balanced setUp and tearDown methods",
         kind: .lint,
         nonTriggeringExamples: [
             Example(#"""

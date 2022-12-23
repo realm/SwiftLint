@@ -12,7 +12,7 @@ struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeR
     static let description = RuleDescription(
         identifier: "file_name_no_space",
         name: "File Name no Space",
-        description: "File name should not contain any whitespace.",
+        description: "File name should not contain any whitespace",
         kind: .idiomatic
     )
 

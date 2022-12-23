@@ -6,7 +6,7 @@ struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule, ConfigurationProviderR
     static let description = RuleDescription(
         identifier: "closure_body_length",
         name: "Closure Body Length",
-        description: "Closure bodies should not span too many lines.",
+        description: "Closure bodies should not span too many lines",
         kind: .metrics,
         nonTriggeringExamples: ClosureBodyLengthRuleExamples.nonTriggeringExamples,
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples

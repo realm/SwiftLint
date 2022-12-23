@@ -8,7 +8,7 @@ struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
     static let description = RuleDescription(
         identifier: "no_space_in_method_call",
         name: "No Space in Method Call",
-        description: "Don't add a space between the method name and the parentheses.",
+        description: "Don't add a space between the method name and the parentheses",
         kind: .style,
         nonTriggeringExamples: [
             Example("foo()"),

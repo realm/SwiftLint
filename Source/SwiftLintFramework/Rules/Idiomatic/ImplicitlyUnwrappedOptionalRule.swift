@@ -11,7 +11,7 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
     static let description = RuleDescription(
         identifier: "implicitly_unwrapped_optional",
         name: "Implicitly Unwrapped Optional",
-        description: "Implicitly unwrapped optionals should be avoided when possible.",
+        description: "Implicitly unwrapped optionals should be avoided when possible",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("@IBOutlet private var label: UILabel!"),

@@ -8,7 +8,7 @@ struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "closing_brace",
         name: "Closing Brace Spacing",
-        description: "Closing brace with closing parenthesis should not have any whitespaces in the middle.",
+        description: "Closing brace with closing parenthesis should not have any whitespaces in the middle",
         kind: .style,
         nonTriggeringExamples: [
             Example("[].map({ })"),

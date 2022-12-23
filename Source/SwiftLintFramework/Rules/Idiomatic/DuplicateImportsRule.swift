@@ -16,7 +16,7 @@ struct DuplicateImportsRule: ConfigurationProviderRule, CorrectableRule {
     static let description = RuleDescription(
         identifier: "duplicate_imports",
         name: "Duplicate Imports",
-        description: "Imports should be unique.",
+        description: "Imports should be unique",
         kind: .idiomatic,
         nonTriggeringExamples: DuplicateImportsRuleExamples.nonTriggeringExamples,
         triggeringExamples: DuplicateImportsRuleExamples.triggeringExamples,

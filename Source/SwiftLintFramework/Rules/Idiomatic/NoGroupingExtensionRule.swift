@@ -8,7 +8,7 @@ struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "no_grouping_extension",
         name: "No Grouping Extension",
-        description: "Extensions shouldn't be used to group code within the same source file.",
+        description: "Extensions shouldn't be used to group code within the same source file",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("protocol Food {}\nextension Food {}\n"),

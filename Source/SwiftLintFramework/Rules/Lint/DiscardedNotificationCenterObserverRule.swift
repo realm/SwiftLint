@@ -9,7 +9,7 @@ struct DiscardedNotificationCenterObserverRule: SwiftSyntaxRule, ConfigurationPr
         identifier: "discarded_notification_center_observer",
         name: "Discarded Notification Center Observer",
         description: "When registering for a notification using a block, the opaque observer that is " +
-                     "returned should be stored so it can be removed later.",
+                     "returned should be stored so it can be removed later",
         kind: .lint,
         nonTriggeringExamples: [
             Example("let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n"),

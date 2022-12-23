@@ -8,7 +8,7 @@ struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, Sw
     static let description = RuleDescription(
         identifier: "quick_discouraged_pending_test",
         name: "Quick Discouraged Pending Test",
-        description: "Discouraged pending test. This test won't run while it's marked as pending.",
+        description: "This test won't run as long as it's marked pending",
         kind: .lint,
         nonTriggeringExamples: QuickDiscouragedPendingTestRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedPendingTestRuleExamples.triggeringExamples

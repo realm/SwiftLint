@@ -9,7 +9,7 @@ struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
         identifier: "nslocalizedstring_key",
         name: "NSLocalizedString Key",
         description: "Static strings should be used as key/comment" +
-            " in NSLocalizedString in order for genstrings to work.",
+            " in NSLocalizedString in order for genstrings to work",
         kind: .lint,
         nonTriggeringExamples: [
             Example("NSLocalizedString(\"key\", comment: \"\")"),

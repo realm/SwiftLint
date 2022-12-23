@@ -134,7 +134,7 @@ private extension DeploymentTargetRule {
 
             return """
             Availability \(violationType.displayString) is using a version (\(versionString)) that is \
-            satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platform.rawValue).
+            satisfied by the deployment target (\(minVersion.stringValue)) for platform \(platform.rawValue)
             """
         }
     }

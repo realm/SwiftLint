@@ -16,7 +16,7 @@ final class ImplicitGetterRuleTests: XCTestCase {
 
         let violations = violations(example, config: config)
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Computed read-only properties should avoid using the get keyword.")
+        XCTAssertEqual(violations.first?.reason, "Computed read-only properties should avoid using the get keyword")
     }
 
     func testSubscriptReason() throws {
@@ -33,6 +33,6 @@ final class ImplicitGetterRuleTests: XCTestCase {
 
         let violations = violations(example, config: config)
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Computed read-only subscripts should avoid using the get keyword.")
+        XCTAssertEqual(violations.first?.reason, "Computed read-only subscripts should avoid using the get keyword")
     }
 }

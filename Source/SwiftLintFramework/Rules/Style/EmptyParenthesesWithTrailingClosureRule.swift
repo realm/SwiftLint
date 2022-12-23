@@ -9,7 +9,7 @@ struct EmptyParenthesesWithTrailingClosureRule: SwiftSyntaxCorrectableRule, Conf
         identifier: "empty_parentheses_with_trailing_closure",
         name: "Empty Parentheses with Trailing Closure",
         description: "When using trailing closures, empty parentheses should be avoided " +
-                     "after the method call.",
+                     "after the method call",
         kind: .style,
         nonTriggeringExamples: [
             Example("[1, 2].map { $0 + 1 }\n"),

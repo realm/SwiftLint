@@ -8,7 +8,7 @@ struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Configura
     static let description = RuleDescription(
         identifier: "enum_case_associated_values_count",
         name: "Enum Case Associated Values Count",
-        description: "Number of associated values in an enum case should be low",
+        description: "The number of associated values in an enum case should be low.",
         kind: .metrics,
         nonTriggeringExamples: [
             Example("""

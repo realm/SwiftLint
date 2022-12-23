@@ -60,7 +60,7 @@ struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                     ruleDescription: Self.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: typeContentOffset.offset),
-                    reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'."
+                    reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'"
                 )
                 violations.append(styleViolation)
             }

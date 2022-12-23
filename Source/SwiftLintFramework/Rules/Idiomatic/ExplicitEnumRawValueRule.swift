@@ -8,7 +8,7 @@ struct ExplicitEnumRawValueRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
     static let description = RuleDescription(
         identifier: "explicit_enum_raw_value",
         name: "Explicit Enum Raw Value",
-        description: "Enums should be explicitly assigned their raw values.",
+        description: "Enums should be explicitly assigned their raw values",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("""

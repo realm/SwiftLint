@@ -132,7 +132,7 @@ struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.parameters.first { $0.value == acl }?.severity ?? .warning,
                            location: Location(file: file, byteOffset: offset),
-                           reason: "\(acl.description) declarations should be documented.")
+                           reason: "\(acl.description) declarations should be documented")
         }
     }
 }

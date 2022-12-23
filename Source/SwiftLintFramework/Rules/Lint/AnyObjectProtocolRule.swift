@@ -19,7 +19,7 @@ struct AnyObjectProtocolRule: SwiftSyntaxCorrectableRule, OptInRule, Configurati
     static let description = RuleDescription(
         identifier: "anyobject_protocol",
         name: "AnyObject Protocol",
-        description: "Prefer using `AnyObject` over `class` for class-only protocols.",
+        description: "Prefer using `AnyObject` over `class` for class-only protocols",
         kind: .lint,
         nonTriggeringExamples: [
             Example("protocol SomeProtocol {}\n"),

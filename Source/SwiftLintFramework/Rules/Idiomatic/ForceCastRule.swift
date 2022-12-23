@@ -8,7 +8,7 @@ struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "force_cast",
         name: "Force Cast",
-        description: "Force casts should be avoided.",
+        description: "Force casts should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("NSNumber() as? Int\n")

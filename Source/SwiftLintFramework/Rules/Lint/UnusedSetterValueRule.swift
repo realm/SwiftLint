@@ -8,7 +8,7 @@ struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
     static let description = RuleDescription(
         identifier: "unused_setter_value",
         name: "Unused Setter Value",
-        description: "Setter value is not used.",
+        description: "Setter value is not used",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

@@ -10,7 +10,7 @@ struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
         name: "Inclusive Language",
         description: """
             Identifiers should use inclusive language that avoids discrimination against groups of people based on \
-            race, gender, or socioeconomic status
+            race, gender, or socioeconomic status.
             """,
         kind: .style,
         nonTriggeringExamples: InclusiveLanguageRuleExamples.nonTriggeringExamples,
@@ -126,7 +126,7 @@ private extension InclusiveLanguageRule {
 
             return ReasonedRuleViolation(
                 position: node.positionAfterSkippingLeadingTrivia,
-                reason: "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive."
+                reason: "Declaration \(name) contains the term \"\(term)\" which is not considered inclusive"
             )
         }
 

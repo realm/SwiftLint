@@ -83,7 +83,7 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
                     ruleDescription: Self.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: fileTypeOffset.offset),
-                    reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'."
+                    reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'"
                 )
                 violations.append(styleViolation)
             }

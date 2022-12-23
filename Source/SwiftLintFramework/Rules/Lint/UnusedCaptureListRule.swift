@@ -20,7 +20,7 @@ struct UnusedCaptureListRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInR
     static var description = RuleDescription(
         identifier: "unused_capture_list",
         name: "Unused Capture List",
-        description: "Unused reference in a capture list should be removed.",
+        description: "Unused reference in a capture list should be removed",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -181,12 +181,7 @@ private extension UnusedCaptureListRule {
             }
 
             for entry in captureItemsWithNames where missingIdentifiers.contains(entry.name) {
-                violations.append(
-                    ReasonedRuleViolation(
-                        position: entry.item.positionAfterSkippingLeadingTrivia,
-                        reason: "Unused reference \(entry.name) in a capture list should be removed."
-                    )
-                )
+                violations.append(entry.item.positionAfterSkippingLeadingTrivia)
             }
         }
     }

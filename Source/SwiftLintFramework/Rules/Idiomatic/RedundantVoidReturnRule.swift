@@ -9,7 +9,7 @@ struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectab
     static let description = RuleDescription(
         identifier: "redundant_void_return",
         name: "Redundant Void Return",
-        description: "Returning Void in a function declaration is redundant.",
+        description: "Returning Void in a function declaration is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("func foo() {}\n"),

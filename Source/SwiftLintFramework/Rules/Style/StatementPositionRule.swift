@@ -10,8 +10,7 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",
-        description: "Else and catch should be on the same line, one space after the previous " +
-                     "declaration.",
+        description: "Else and catch should be on the same line, one space after the previous declaration",
         kind: .style,
         nonTriggeringExamples: [
             Example("} else if {"),
@@ -38,7 +37,7 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "statement_position",
         name: "Statement Position",
         description: "Else and catch should be on the next line, with equal indentation to the " +
-                     "previous declaration.",
+                     "previous declaration",
         kind: .style,
         nonTriggeringExamples: [
             Example("  }\n  else if {"),

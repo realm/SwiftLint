@@ -8,7 +8,7 @@ struct PatternMatchingKeywordsRule: SwiftSyntaxRule, ConfigurationProviderRule, 
     static let description = RuleDescription(
         identifier: "pattern_matching_keywords",
         name: "Pattern Matching Keywords",
-        description: "Combine multiple pattern matching bindings by moving keywords out of tuples.",
+        description: "Combine multiple pattern matching bindings by moving keywords out of tuples",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("default"),

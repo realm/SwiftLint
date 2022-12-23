@@ -8,7 +8,7 @@ struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
     static let description = RuleDescription(
         identifier: "flatmap_over_map_reduce",
         name: "Flat Map over Map Reduce",
-        description: "Prefer `flatMap` over `map` followed by `reduce([], +)`.",
+        description: "Prefer `flatMap` over `map` followed by `reduce([], +)`",
         kind: .performance,
         nonTriggeringExamples: [
             Example("let foo = bar.map { $0.count }.reduce(0, +)"),

@@ -1,6 +1,6 @@
 Other
-⛔️ Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.
+⛔️ Colons should be next to the identifier when specifying a type and next to the key in dictionary literals
 filename
-⛔️ Line 1: Violation Reason.
-⛔️ Line 1: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.
-⚠️ Line 1: Violation Reason.
+⛔️ Line 1: Violation Reason
+⛔️ Line 1: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>
+⚠️ Line 1: Violation Reason

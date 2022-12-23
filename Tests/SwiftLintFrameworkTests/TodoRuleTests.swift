@@ -10,14 +10,14 @@ class TodoRuleTests: XCTestCase {
         let example = Example("fatalError() // TODO: Implement")
         let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement).")
+        XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement)")
     }
 
     func testFixMeMessage() {
         let example = Example("fatalError() // FIXME: Implement")
         let violations = self.violations(example)
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement).")
+        XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement)")
     }
 
     private func violations(_ example: Example) -> [StyleViolation] {

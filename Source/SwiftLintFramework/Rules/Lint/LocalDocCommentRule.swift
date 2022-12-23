@@ -9,7 +9,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
     static let description = RuleDescription(
         identifier: "local_doc_comment",
         name: "Local Doc Comment",
-        description: "Doc comments shouldn't be used in local scopes. Use regular comments.",
+        description: "Prefer regular comments over doc comments in local scopes",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

@@ -8,7 +8,7 @@ struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSynta
     static let description = RuleDescription(
         identifier: "override_in_extension",
         name: "Override in Extension",
-        description: "Extensions shouldn't override declarations.",
+        description: "Extensions shouldn't override declarations",
         kind: .lint,
         nonTriggeringExamples: [
             Example("extension Person {\n  var age: Int { return 42 }\n}\n"),

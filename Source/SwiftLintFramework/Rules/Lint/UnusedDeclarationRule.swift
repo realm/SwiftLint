@@ -27,7 +27,7 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
     static let description = RuleDescription(
         identifier: "unused_declaration",
         name: "Unused Declaration",
-        description: "Declarations should be referenced at least once within all files linted.",
+        description: "Declarations should be referenced at least once within all files linted",
         kind: .lint,
         nonTriggeringExamples: UnusedDeclarationRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnusedDeclarationRuleExamples.triggeringExamples,

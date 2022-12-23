@@ -8,7 +8,7 @@ struct IsDisjointRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "is_disjoint",
         name: "Is Disjoint",
-        description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.",
+        description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)"),

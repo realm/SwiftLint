@@ -8,7 +8,7 @@ struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderRule, Sw
     static let description = RuleDescription(
         identifier: "quick_discouraged_focused_test",
         name: "Quick Discouraged Focused Test",
-        description: "Discouraged focused test. Other tests won't run while this one is focused.",
+        description: "Non-focused tests won't run as long as this test is focused",
         kind: .lint,
         nonTriggeringExamples: QuickDiscouragedFocusedTestRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples

@@ -8,7 +8,7 @@ struct PrivateOverFilePrivateRule: ConfigurationProviderRule, SwiftSyntaxCorrect
     static let description = RuleDescription(
         identifier: "private_over_fileprivate",
         name: "Private over Fileprivate",
-        description: "Prefer `private` over `fileprivate` declarations.",
+        description: "Prefer `private` over `fileprivate` declarations",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("extension String {}"),

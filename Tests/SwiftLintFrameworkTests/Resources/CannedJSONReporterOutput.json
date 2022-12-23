@@ -1,6 +1,6 @@
 [
   {
-    "reason" : "Violation Reason.",
+    "reason" : "Violation Reason",
     "character" : 2,
     "file" : "filename",
     "rule_id" : "line_length",
@@ -9,7 +9,7 @@
     "type" : "Line Length"
   },
   {
-    "reason" : "Violation Reason.",
+    "reason" : "Violation Reason",
     "character" : 2,
     "file" : "filename",
     "rule_id" : "line_length",
@@ -18,7 +18,7 @@
     "type" : "Line Length"
   },
   {
-    "reason" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
+    "reason" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
     "character" : 2,
     "file" : "filename",
     "rule_id" : "syntactic_sugar",
@@ -27,7 +27,7 @@
     "type" : "Syntactic Sugar"
   },
   {
-    "reason" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
+    "reason" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals",
     "character" : null,
     "file" : null,
     "rule_id" : "colon",

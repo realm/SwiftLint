@@ -56,7 +56,7 @@ private final class ComputedAccessorsOrderRuleVisitor: ViolationsSyntaxVisitor {
         case .setGet:
             orderString = "setter and then the getter"
         }
-        return "Computed \(kindString) should declare first the \(orderString)."
+        return "Computed \(kindString) should first declare the \(orderString)"
     }
 }
 

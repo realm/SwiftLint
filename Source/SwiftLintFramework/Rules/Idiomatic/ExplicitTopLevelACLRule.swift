@@ -8,7 +8,7 @@ struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
     static let description = RuleDescription(
         identifier: "explicit_top_level_acl",
         name: "Explicit Top Level ACL",
-        description: "Top-level declarations should specify Access Control Level keywords explicitly.",
+        description: "Top-level declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("internal enum A {}\n"),

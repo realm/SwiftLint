@@ -9,7 +9,7 @@ struct ToggleBoolRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, Op
     static var description = RuleDescription(
         identifier: "toggle_bool",
         name: "Toggle Bool",
-        description: "Prefer `someBool.toggle()` over `someBool = !someBool`.",
+        description: "Prefer `someBool.toggle()` over `someBool = !someBool`",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("isHidden.toggle()\n"),

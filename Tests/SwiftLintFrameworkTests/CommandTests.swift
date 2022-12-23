@@ -339,7 +339,7 @@ class CommandTests: XCTestCase {
 
         XCTAssertEqual(
             violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,
-            "'nesting_foo' is not a valid SwiftLint rule. Please remove it from the disable command."
+            "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
         )
 
         XCTAssertEqual(violations(Example("/* swiftlint:disable nesting */\n")).count, 1)

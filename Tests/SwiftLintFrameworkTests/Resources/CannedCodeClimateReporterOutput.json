@@ -1,7 +1,7 @@
 [
   {
     "check_name" : "Line Length",
-    "description" : "Violation Reason.",
+    "description" : "Violation Reason",
     "engine_name" : "SwiftLint",
     "fingerprint" : "917a85854a9500cfd28520fa4875a3ecbba171e522f13452c7adec71fc14497a",
     "location" : {
@@ -16,7 +16,7 @@
   },
   {
     "check_name" : "Line Length",
-    "description" : "Violation Reason.",
+    "description" : "Violation Reason",
     "engine_name" : "SwiftLint",
     "fingerprint" : "917a85854a9500cfd28520fa4875a3ecbba171e522f13452c7adec71fc14497a",
     "location" : {
@@ -31,7 +31,7 @@
   },
   {
     "check_name" : "Syntactic Sugar",
-    "description" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.",
+    "description" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
     "engine_name" : "SwiftLint",
     "fingerprint" : "6477f518963149b01807a31e7067be97dc39a30b93673e1e246f812e9ea5ef21",
     "location" : {
@@ -46,7 +46,7 @@
   },
   {
     "check_name" : "Colon Spacing",
-    "description" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
+    "description" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals",
     "engine_name" : "SwiftLint",
     "fingerprint" : "9b1ddedc847d23a54124cb02a56452fc01c23df8f3babc07a6a68cf2449b14a6",
     "location" : {

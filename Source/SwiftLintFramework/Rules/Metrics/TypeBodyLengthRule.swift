@@ -18,7 +18,7 @@ struct TypeBodyLengthRule: SwiftSyntaxRule, ConfigurationProviderRule {
     static let description = RuleDescription(
         identifier: "type_body_length",
         name: "Type Body Length",
-        description: "Type bodies should not span too many lines.",
+        description: "Type bodies should not span too many lines",
         kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum", "actor"].flatMap({ type in
             [

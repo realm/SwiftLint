@@ -41,7 +41,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
         if let first = violatingModifiers.first {
             let preferredModifier = first.0
             let declaredModifier = first.1
-            let reason = "\(preferredModifier.keyword) modifier should be before \(declaredModifier.keyword)."
+            let reason = "\(preferredModifier.keyword) modifier should come before \(declaredModifier.keyword)"
             return [
                 StyleViolation(
                     ruleDescription: Self.description,

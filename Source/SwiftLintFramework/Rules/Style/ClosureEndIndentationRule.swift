@@ -25,9 +25,9 @@ struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule {
     }
 
     private func styleViolation(for violation: Violation, in file: SwiftLintFile) -> StyleViolation {
-        let reason = "Closure end should have the same indentation as the line that started it. " +
-                     "Expected \(violation.indentationRanges.expected.length), " +
-                     "got \(violation.indentationRanges.actual.length)."
+        let reason = "Closure end should have the same indentation as the line that started it; " +
+                     "expected \(violation.indentationRanges.expected.length), " +
+                     "got \(violation.indentationRanges.actual.length)"
 
         return StyleViolation(ruleDescription: Self.description,
                               severity: configuration.severity,

@@ -108,8 +108,8 @@ private extension TrailingCommaRule {
 
         private func violation(for position: AbsolutePosition) -> ReasonedRuleViolation {
             let reason = mandatoryComma
-                ? "Multi-line collection literals should have trailing commas."
-                : "Collection literals should not have trailing commas."
+                ? "Multi-line collection literals should have trailing commas"
+                : "Collection literals should not have trailing commas"
             return ReasonedRuleViolation(position: position, reason: reason)
         }
     }

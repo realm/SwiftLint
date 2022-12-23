@@ -8,7 +8,7 @@ struct EmptyParametersRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
     static let description = RuleDescription(
         identifier: "empty_parameters",
         name: "Empty Parameters",
-        description: "Prefer `() -> ` over `Void -> `.",
+        description: "Prefer `() -> ` over `Void -> `",
         kind: .style,
         nonTriggeringExamples: [
             Example("let abc: () -> Void = {}\n"),

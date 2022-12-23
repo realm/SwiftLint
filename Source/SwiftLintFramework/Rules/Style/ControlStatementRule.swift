@@ -11,7 +11,7 @@ struct ControlStatementRule: ConfigurationProviderRule, SubstitutionCorrectableR
         name: "Control Statement",
         description:
             "`if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their " +
-            "conditionals or arguments in parentheses.",
+            "conditionals or arguments in parentheses",
         kind: .style,
         nonTriggeringExamples: [
             Example("if condition {\n"),

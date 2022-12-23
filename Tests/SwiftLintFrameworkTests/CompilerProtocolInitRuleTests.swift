@@ -15,7 +15,7 @@ class CompilerProtocolInitRuleTests: XCTestCase {
         )
         XCTAssertEqual(
             violation.reason,
-            "The initializers declared in compiler protocol ExpressibleByIntegerLiteral shouldn't be called directly."
+            "Initializers declared in compiler protocol ExpressibleByIntegerLiteral shouldn't be called directly"
         )
     }
 }

@@ -1,4 +1,4 @@
-filename:1:2: warning: Line Length Violation: Violation Reason. (line_length)
-filename:1:2: error: Line Length Violation: Violation Reason. (line_length)
-filename:1:2: error: Syntactic Sugar Violation: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>. (syntactic_sugar)
-<nopath>:1:1: error: Colon Spacing Violation: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals. (colon)
+filename:1:2: warning: Line Length Violation: Violation Reason (line_length)
+filename:1:2: error: Line Length Violation: Violation Reason (line_length)
+filename:1:2: error: Syntactic Sugar Violation: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int> (syntactic_sugar)
+<nopath>:1:1: error: Colon Spacing Violation: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals (colon)

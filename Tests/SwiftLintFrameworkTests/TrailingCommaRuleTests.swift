@@ -11,7 +11,7 @@ class TrailingCommaRuleTests: XCTestCase {
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2,\n]\n")
         XCTAssertEqual(trailingCommaViolations(failingCase).first?.reason,
-                       "Collection literals should not have trailing commas.")
+                       "Collection literals should not have trailing commas")
     }
 
     private static let triggeringExamples = [
@@ -65,7 +65,7 @@ class TrailingCommaRuleTests: XCTestCase {
         // Ensure the rule produces the correct reason string.
         let failingCase = Example("let array = [\n\t1,\n\t2\n]\n")
         XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration).first?.reason,
-                       "Multi-line collection literals should have trailing commas.")
+                       "Multi-line collection literals should have trailing commas")
     }
 
     private func trailingCommaViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {

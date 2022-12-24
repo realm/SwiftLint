@@ -7,9 +7,9 @@ private extension SwiftLintFile {
     func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
         let excludingPattern: String
         if allowMultilineFunc {
-            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
+            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
         } else {
-            excludingPattern = #"(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
+            excludingPattern = #"(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
         }
 
         return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
@@ -104,23 +104,7 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
                     func f() -> () -> Void {
                         {}
                     }
-                    """),
-            Example("""
-                    if
-                        "test".filter({ "0123456789".contains($0) }).isEmpty
-                    {
-                       // code here
-                    }
-                    """),
-            Example("""
-                    if
-                        let a = ["A", "B"].first(where: { $0 == "A" }), // removing the parameter condition of "first" here removes the warning
-                        let b = ["B"].first
-                    { // This triggers the violation
-                        print(a)
-                    }
                     """)
-            // Example("let pattern = #/(\{(?<key>\w+)\})/#")
         ],
         triggeringExamples: [
             Example("func abc()↓{\n}"),
@@ -172,7 +156,7 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
                    }
 
                    func openingBraceViolation()
-                   {
+                  ↓{
                        print("Brackets")
                    }
                }

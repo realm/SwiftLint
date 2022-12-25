@@ -7,9 +7,9 @@ private extension SwiftLintFile {
     func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
         let excludingPattern: String
         if allowMultilineFunc {
-            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
+            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
         } else {
-            excludingPattern = #"(?:(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
+            excludingPattern = #"(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
         }
 
         return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
@@ -18,8 +18,8 @@ private extension SwiftLintFile {
             if isAnonymousClosure(range: $0) {
                 return nil
             }
-            let branceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
-            return ($0, branceRange.location)
+            let braceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
+            return ($0, braceRange.location)
         }
     }
 
@@ -147,6 +147,19 @@ struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
             func run_Array_method2x(_ N: Int) {
 
             }
+            """),
+            Example("""
+               class TestFile {
+                   func problemFunction() {
+                       #if DEBUG
+                       #endif
+                   }
+
+                   func openingBraceViolation()
+                  ↓{
+                       print("Brackets")
+                   }
+               }
             """)
         ],
         corrections: [

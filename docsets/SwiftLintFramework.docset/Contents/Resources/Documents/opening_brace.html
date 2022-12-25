@@ -469,6 +469,18 @@
 
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code>   <span class="kd">class</span> <span class="kt">TestFile</span> <span class="p">{</span>
+       <span class="kd">func</span> <span class="nf">problemFunction</span><span class="p">()</span> <span class="p">{</span>
+           <span class="cp">#if DEBUG</span>
+           <span class="cp">#endif</span>
+       <span class="p">}</span>
+
+       <span class="kd">func</span> <span class="nf">openingBraceViolation</span><span class="p">()</span>
+      <span class="err">↓</span><span class="p">{</span>
+           <span class="nf">print</span><span class="p">(</span><span class="s">"Brackets"</span><span class="p">)</span>
+       <span class="p">}</span>
+   <span class="p">}</span>
+</code></pre>
 
           </div>
         </section>

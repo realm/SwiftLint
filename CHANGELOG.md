@@ -29,6 +29,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#4643](https://github.com/realm/SwiftLint/issues/4643)
 
+* Fix for compiler directives masking subsequent `opening_brace`
+  violations.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#3712](https://github.com/realm/SwiftLint/issues/3712)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

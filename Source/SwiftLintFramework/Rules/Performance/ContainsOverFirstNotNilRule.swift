@@ -7,7 +7,7 @@ struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
 
     static let description = RuleDescription(
         identifier: "contains_over_first_not_nil",
-        name: "Contains over first not nil",
+        name: "Contains over First not Nil",
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in

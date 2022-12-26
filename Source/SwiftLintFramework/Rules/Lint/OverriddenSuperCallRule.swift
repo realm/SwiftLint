@@ -7,7 +7,7 @@ struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptI
 
     static let description = RuleDescription(
         identifier: "overridden_super_call",
-        name: "Overridden methods call super",
+        name: "Overridden Method Calls Super",
         description: "Some overridden methods should always call super",
         kind: .lint,
         nonTriggeringExamples: [

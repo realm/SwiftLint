@@ -7,7 +7,7 @@ struct ReduceIntoRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
 
     static var description = RuleDescription(
         identifier: "reduce_into",
-        name: "Reduce Into",
+        name: "Reduce into",
         description: "Prefer `reduce(into:_:)` over `reduce(_:_:)` for copy-on-write types",
         kind: .performance,
         nonTriggeringExamples: [

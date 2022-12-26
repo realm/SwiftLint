@@ -7,7 +7,7 @@ struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule,
 
     static let description = RuleDescription(
         identifier: "vertical_parameter_alignment_on_call",
-        name: "Vertical Parameter Alignment On Call",
+        name: "Vertical Parameter Alignment on Call",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a method call.",
         kind: .style,
         nonTriggeringExamples: [

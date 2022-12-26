@@ -7,7 +7,7 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
 
     static let description = RuleDescription(
         identifier: "strict_fileprivate",
-        name: "Strict fileprivate",
+        name: "Strict Fileprivate",
         description: "`fileprivate` should be avoided.",
         kind: .idiomatic,
         nonTriggeringExamples: [

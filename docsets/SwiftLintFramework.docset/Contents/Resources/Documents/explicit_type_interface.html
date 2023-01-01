@@ -333,7 +333,7 @@
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="k">let</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">let</span> <span class="nv">myVar</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
@@ -346,27 +346,27 @@
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="err">↓</span><span class="k">var</span> <span class="nv">myVar</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="kd">var</span> <span class="err">↓</span><span class="n">myVar</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="err">↓</span><span class="k">let</span> <span class="nv">mylet</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="kd">let</span> <span class="err">↓</span><span class="n">mylet</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="err">↓</span><span class="kd">static</span> <span class="k">var</span> <span class="nv">myStaticVar</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="kd">static</span> <span class="kd">var</span> <span class="err">↓</span><span class="n">myStaticVar</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="err">↓</span><span class="kd">class</span> <span class="k">var</span> <span class="nv">myClassVar</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="kd">class</span> <span class="kd">var</span> <span class="err">↓</span><span class="n">myClassVar</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="err">↓</span><span class="k">let</span> <span class="nv">myVar</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="err">↓</span><span class="n">myVar</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="err">↓</span><span class="n">s</span> <span class="o">=</span> <span class="s">""</span>
 <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>
-  <span class="err">↓</span><span class="k">let</span> <span class="nv">myVar</span> <span class="o">=</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="err">↓</span><span class="n">myVar</span> <span class="o">=</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 

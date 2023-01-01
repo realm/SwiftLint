@@ -1,59 +1,23 @@
-import SourceKittenFramework
+struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equatable {
+    enum VariableKind: String, CaseIterable {
+        case instance
+        case local
+        case `static`
+        case `class`
 
-private enum VariableKind: String {
-    case instance
-    case local
-    case `static`
-    case `class`
-}
-
-private extension SwiftDeclarationKind {
-    init(variableKind: VariableKind) {
-        switch variableKind {
-        case .instance:
-            self = .varInstance
-        case .local:
-            self = .varLocal
-        case .static:
-            self = .varStatic
-        case .class:
-            self = .varClass
-        }
+        static let all = Set(allCases)
     }
-
-    var variableKind: VariableKind? {
-        switch self {
-        case .varInstance:
-            return .instance
-        case .varLocal:
-            return .local
-        case .varStatic:
-            return .static
-        case .varClass:
-            return .class
-        default:
-            return nil
-        }
-    }
-}
-
-struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
-    private static let variableKinds: Set<SwiftDeclarationKind> = [.varInstance,
-                                                                   .varLocal,
-                                                                   .varStatic,
-                                                                   .varClass]
 
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
-    private(set) var allowedKinds = Self.variableKinds
+    private(set) var allowedKinds = VariableKind.all
 
     private(set) var allowRedundancy = false
 
     var consoleDescription: String {
-        let excludedKinds = Self.variableKinds.subtracting(allowedKinds)
-        let simplifiedExcludedKinds = excludedKinds.compactMap { $0.variableKind?.rawValue }.sorted()
+        let excludedKinds = VariableKind.all.subtracting(allowedKinds).map(\.rawValue).sorted()
         return severityConfiguration.consoleDescription +
-            ", excluded: \(simplifiedExcludedKinds)" +
+            ", excluded: \(excludedKinds)" +
             ", allow_redundancy: \(allowRedundancy)"
     }
 
@@ -68,8 +32,7 @@ struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             case ("severity", let severityString as String):
                 try severityConfiguration.apply(configuration: severityString)
             case ("excluded", let excludedStrings as [String]):
-                let excludedKinds = excludedStrings.compactMap(VariableKind.init(rawValue:))
-                allowedKinds.subtract(excludedKinds.map(SwiftDeclarationKind.init(variableKind:)))
+                allowedKinds.subtract(excludedStrings.compactMap(VariableKind.init(rawValue:)))
             case ("allow_redundancy", let allowRedundancy as Bool):
                 self.allowRedundancy = allowRedundancy
             default:

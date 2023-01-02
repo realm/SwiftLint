@@ -22,6 +22,10 @@
   [jimmya](https://github.com/jimmya)
   [#issue_number](https://github.com/realm/SwiftLint/issues/4609)
 
+* Separate analyzer rules as an independent section in the rule directory of the reference.  
+  [Ethan Wong](https://github.com/GetToSet)
+  [#4664](https://github.com/realm/SwiftLint/pull/4664)
+
 #### Bug Fixes
 
 * Report violations in all `<scope>_length` rules when the error threshold is

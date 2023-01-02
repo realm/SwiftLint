@@ -34,7 +34,8 @@ public struct RuleListDocumentation {
 
     private var indexContents: String {
         let defaultRuleDocumentations = ruleDocumentations.filter { !$0.isOptInRule }
-        let optInRuleDocumentations = ruleDocumentations.filter { $0.isOptInRule }
+        let optInRuleDocumentations = ruleDocumentations.filter { $0.isOptInRule && !$0.isAnalyzerRule }
+        let analyzerRuleDocumentations = ruleDocumentations.filter { $0.isAnalyzerRule }
 
         return """
             # Rule Directory
@@ -48,6 +49,12 @@ public struct RuleListDocumentation {
             ## Opt-In Rules
 
             \(optInRuleDocumentations
+                .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
+                .joined(separator: "\n"))
+
+            ## Analyzer Rules
+
+            \(analyzerRuleDocumentations
                 .map { "* `\($0.ruleIdentifier)`: \($0.ruleName)" }
                 .joined(separator: "\n"))
 

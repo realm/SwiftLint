@@ -66,7 +66,9 @@ private extension GenericTypeNameRule {
 
         override func visitPost(_ node: GenericParameterSyntax) {
             let name = node.name.text
-            guard !configuration.excluded.contains(name) else {
+            guard !configuration.excludedRegularExpressions.contains(where: {
+                return !$0.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
+            }) else {
                 return
             }
 

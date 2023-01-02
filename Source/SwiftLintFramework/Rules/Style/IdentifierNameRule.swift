@@ -34,13 +34,10 @@ struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return validateName(dictionary: dictionary, kind: kind).map { name, offset in
-            guard !configuration.excluded.contains(name), let firstCharacter = name.first else {
-                return []
-            }
+            guard let firstCharacter = name.first else { return [] }
 
             guard !configuration.excludedRegularExpressions.contains(where: {
-                guard let regex = try? NSRegularExpression(pattern: $0) else { return false }
-                return !regex.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
+                return !$0.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
             }) else {
                 return []
             }

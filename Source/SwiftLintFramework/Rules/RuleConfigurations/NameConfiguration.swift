@@ -90,3 +90,13 @@ extension NameConfiguration {
         return nil
     }
 }
+
+// MARK: - `exclude` option extensions
+
+extension NameConfiguration {
+    func shouldExclude(name: String) -> Bool {
+        return excludedRegularExpressions.contains(where: {
+            return !$0.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
+        })
+    }
+}

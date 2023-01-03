@@ -88,16 +88,7 @@ private extension TypeNameRule {
             let originalName = identifier.text
             let nameConfiguration = configuration.nameConfiguration
 
-            guard !nameConfiguration.excludedRegularExpressions.contains(where: {
-                let matches = $0.matches(
-                    in: originalName,
-                    options: [],
-                    range: NSRange(originalName.startIndex..., in: originalName)
-                )
-                return !matches.isEmpty
-            }) else {
-                return nil
-            }
+            guard !nameConfiguration.shouldExclude(name: originalName) else { return nil }
 
             let name = originalName
                 .strippingBackticks()

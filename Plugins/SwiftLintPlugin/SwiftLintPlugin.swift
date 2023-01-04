@@ -36,13 +36,15 @@ struct SwiftLintPlugin: BuildToolPlugin {
 
         arguments += inputFilePaths.map(\.string)
 
+        // We are not producing output files and this is needed only to not include cache files into bundle
+        let outputFilesDirectory = context.pluginWorkDirectory.appending("Output")
+
         return [
-            .buildCommand(
+            .prebuildCommand(
                 displayName: "SwiftLint",
                 executable: swiftlint.path,
                 arguments: arguments,
-                inputFiles: inputFilePaths,
-                outputFiles: [context.pluginWorkDirectory]
+                outputFilesDirectory: outputFilesDirectory
             )
         ]
     }
@@ -82,13 +84,15 @@ extension SwiftLintPlugin: XcodeBuildToolPlugin {
 
         arguments += inputFilePaths.map(\.string)
 
+        // We are not producing output files and this is needed only to not include cache files into bundle
+        let outputFilesDirectory = context.pluginWorkDirectory.appending("Output")
+
         return [
-            .buildCommand(
+            .prebuildCommand(
                 displayName: "SwiftLint",
                 executable: swiftlint.path,
                 arguments: arguments,
-                inputFiles: inputFilePaths,
-                outputFiles: [context.pluginWorkDirectory]
+                outputFilesDirectory: outputFilesDirectory
             )
         ]
     }

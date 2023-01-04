@@ -1,16 +1,22 @@
 import Foundation
 
-public struct ExcludedRegexExpression: Equatable, Hashable {
+public final class ExcludedRegexExpression: NSObject {
     public let regex: NSRegularExpression
 
     init?(pattern: String) {
         guard let regex = try? NSRegularExpression(pattern: pattern)  else { return nil }
         self.regex = regex
     }
-}
 
-public extension ExcludedRegexExpression {
-    static func == (lhs: ExcludedRegexExpression, rhs: ExcludedRegexExpression) -> Bool {
-        return lhs.regex.pattern == rhs.regex.pattern
+    public override func isEqual(_ object: Any?) -> Bool {
+        if let object = object as? ExcludedRegexExpression {
+            return regex.pattern == object.regex.pattern
+        } else {
+            return false
+        }
+    }
+
+    public override var hash: Int {
+        return regex.pattern.hashValue
     }
 }

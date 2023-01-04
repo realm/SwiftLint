@@ -8,7 +8,7 @@ public final class ExcludedRegexExpression: NSObject {
         self.regex = regex
     }
 
-    public override func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         if let object = object as? ExcludedRegexExpression {
             return regex.pattern == object.regex.pattern
         } else {
@@ -16,7 +16,7 @@ public final class ExcludedRegexExpression: NSObject {
         }
     }
 
-    public override var hash: Int {
+    override public var hash: Int {
         return regex.pattern.hashValue
     }
 }

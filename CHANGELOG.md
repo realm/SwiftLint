@@ -25,10 +25,8 @@
 * Separate analyzer rules as an independent section in the rule directory of the reference.  
   [Ethan Wong](https://github.com/GetToSet)
   [#4664](https://github.com/realm/SwiftLint/pull/4664)
-* Add `excluded_regular_expressions` option to `identifier_name` rule.  
+  
 * Interpret strings in `excluded` option of `identifier_name`, 
-
-* Interpret items in `excluded` option of `identifier_name`, 
   `type_name` and `generic_type_name` rules as regex.  
   [Moly](https://github.com/kyounh12)
   [#4655](https://github.com/realm/SwiftLint/pull/4655)

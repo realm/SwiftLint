@@ -26,7 +26,9 @@ let package = Package(
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),
-        .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"])
+        .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"]),
+        .plugin(name: "LinterPlugin", targets: ["SwiftLint Lint"]),
+        .plugin(name: "FormatterPlugin", targets: ["SwiftLint Format"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.0")),
@@ -43,6 +45,32 @@ let package = Package(
             dependencies: [
                 .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
             ]
+        ),
+        .plugin(
+            name: "SwiftLint Lint",
+            capability: .command(
+                intent: .custom(
+                    verb: "lint",
+                    description: "Lint source files"
+                )
+            ),
+            dependencies: [
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
+            ],
+            path: "Plugins/SwiftLintLint"
+        ),
+        .plugin(
+            name: "SwiftLint Format",
+            capability: .command(
+                intent: .sourceCodeFormatting(),
+                permissions: [
+                    .writeToPackageDirectory(reason: "This command reformats source files")
+                ]
+            ),
+            dependencies: [
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
+            ],
+            path: "Plugins/SwiftLintFormat"
         ),
         .executableTarget(
             name: "swiftlint",

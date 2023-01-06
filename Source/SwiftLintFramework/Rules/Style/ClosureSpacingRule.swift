@@ -224,8 +224,7 @@ private extension TokenSyntax {
             .postfixQuestionMark,
             .rightParen,
             .rightSquareBracket,
-            .semicolon,
-            .stringInterpolationAnchor
+            .semicolon
         ]
         if case .newlines = trailingTrivia.first {
             return true

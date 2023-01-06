@@ -383,6 +383,6 @@ class RuleConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.severityConfiguration.severity, .error)
         XCTAssertEqual(configuration.order, .setGet)
 
-        XCTAssertEqual(configuration.consoleDescription, "error, order: set_get")
+        XCTAssertEqual(configuration.consoleDescription, "severity: error, order: set_get")
     }
 }

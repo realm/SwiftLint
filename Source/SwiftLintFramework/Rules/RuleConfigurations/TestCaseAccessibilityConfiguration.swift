@@ -4,7 +4,7 @@ struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration, Equat
     private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", allowed_prefixes: \(allowedPrefixes.sorted())" +
             ", test_parent_classes: \(testParentClasses.sorted())"
     }

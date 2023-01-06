@@ -27,7 +27,7 @@ extension VerticalWhitespaceClosingBracesRule {
         private(set) var onlyEnforceBeforeTrivialLines = false
 
         var consoleDescription: String {
-            return severityConfiguration.consoleDescription +
+            return "severity: \(severityConfiguration.consoleDescription)" +
                 ", \(ConfigurationKey.onlyEnforceBeforeTrivialLines.rawValue): \(onlyEnforceBeforeTrivialLines)"
         }
 

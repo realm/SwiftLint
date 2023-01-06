@@ -45,7 +45,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
     }
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", excluded: \(excluded)" +
             ", included: \(included)"
     }

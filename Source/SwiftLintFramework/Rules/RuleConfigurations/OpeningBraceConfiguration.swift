@@ -8,7 +8,7 @@ struct OpeningBraceConfiguration: RuleConfiguration, Equatable {
     private(set) var allowMultilineFunc = false
 
     var consoleDescription: String {
-        return [severityConfiguration.consoleDescription,
+        return ["severity: \(severityConfiguration.consoleDescription)",
                 "\(ConfigurationKey.allowMultilineFunc): \(allowMultilineFunc)"].joined(separator: ", ")
     }
 

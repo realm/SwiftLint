@@ -3,7 +3,7 @@ struct PrefixedConstantRuleConfiguration: SeverityBasedRuleConfiguration, Equata
     var onlyPrivateMembers = false
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", only_private: \(onlyPrivateMembers)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", only_private: \(onlyPrivateMembers)"
     }
 
     init(onlyPrivateMembers: Bool) {

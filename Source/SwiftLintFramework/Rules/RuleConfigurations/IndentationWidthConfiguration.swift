@@ -1,6 +1,6 @@
 struct IndentationWidthConfiguration: RuleConfiguration, Equatable {
     var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription), "
+        return "severity: \("severity: \(severityConfiguration.consoleDescription)"), "
             + "indentation_width: \(indentationWidth), "
             + "include_comments: \(includeComments)"
     }

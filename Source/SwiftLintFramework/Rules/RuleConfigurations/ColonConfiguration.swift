@@ -4,7 +4,7 @@ struct ColonConfiguration: RuleConfiguration, Equatable {
     private(set) var applyToDictionaries = true
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", flexible_right_spacing: \(flexibleRightSpacing)" +
             ", apply_to_dictionaries: \(applyToDictionaries)"
     }

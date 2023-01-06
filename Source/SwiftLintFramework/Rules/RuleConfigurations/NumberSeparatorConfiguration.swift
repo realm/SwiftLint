@@ -11,7 +11,7 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration, Equatable {
         } else {
             minimumFractionLengthDescription = ", minimum_fraction_length: none"
         }
-        return severityConfiguration.consoleDescription
+        return "severity: \(severityConfiguration.consoleDescription)"
             + ", minimum_length: \(minimumLength)"
             + minimumFractionLengthDescription
     }

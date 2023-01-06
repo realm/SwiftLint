@@ -8,7 +8,7 @@ struct EmptyCountConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var onlyAfterDot = false
 
     var consoleDescription: String {
-        return [severityConfiguration.consoleDescription,
+        return ["severity: \(severityConfiguration.consoleDescription)",
                 "\(ConfigurationKey.onlyAfterDot.rawValue): \(onlyAfterDot)"].joined(separator: ", ")
     }
 

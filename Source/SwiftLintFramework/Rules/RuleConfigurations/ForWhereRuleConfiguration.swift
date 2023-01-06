@@ -3,7 +3,7 @@ struct ForWhereRuleConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var allowForAsFilter = false
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", allow_for_as_filter: \(allowForAsFilter)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", allow_for_as_filter: \(allowForAsFilter)"
     }
 
     mutating func apply(configuration: Any) throws {

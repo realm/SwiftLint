@@ -5,7 +5,7 @@ struct OperatorUsageWhitespaceConfiguration: RuleConfiguration, Equatable {
     private(set) var allowedNoSpaceOperators: [String] = ["...", "..<"]
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription
+        return "severity: \(severityConfiguration.consoleDescription)"
             + ", lines_look_around: \(linesLookAround)"
             + ", skip_aligned_constants: \(skipAlignedConstants)"
             + ", allowed_no_space_operators: \(allowedNoSpaceOperators)"

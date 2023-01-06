@@ -3,7 +3,7 @@ struct UnusedOptionalBindingConfiguration: SeverityBasedRuleConfiguration, Equat
     private(set) var ignoreOptionalTry: Bool
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", ignore_optional_try: \(ignoreOptionalTry)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", ignore_optional_try: \(ignoreOptionalTry)"
     }
 
     init(ignoreOptionalTry: Bool) {

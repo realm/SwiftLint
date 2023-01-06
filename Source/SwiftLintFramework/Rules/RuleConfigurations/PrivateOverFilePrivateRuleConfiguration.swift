@@ -3,7 +3,7 @@ struct PrivateOverFilePrivateRuleConfiguration: SeverityBasedRuleConfiguration, 
     var validateExtensions = false
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", validate_extensions: \(validateExtensions)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", validate_extensions: \(validateExtensions)"
     }
 
     // MARK: - RuleConfiguration

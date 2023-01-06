@@ -3,7 +3,7 @@ struct TrailingCommaConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var mandatoryComma: Bool
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", mandatory_comma: \(mandatoryComma)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", mandatory_comma: \(mandatoryComma)"
     }
 
     init(mandatoryComma: Bool = false) {

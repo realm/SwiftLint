@@ -4,7 +4,7 @@ struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
     var ignoresComments = true
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", ignores_empty_lines: \(ignoresEmptyLines)" +
             ", ignores_comments: \(ignoresComments)"
     }

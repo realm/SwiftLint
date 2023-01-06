@@ -16,7 +16,7 @@ struct ExplicitTypeInterfaceConfiguration: SeverityBasedRuleConfiguration, Equat
 
     var consoleDescription: String {
         let excludedKinds = VariableKind.all.subtracting(allowedKinds).map(\.rawValue).sorted()
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", excluded: \(excludedKinds)" +
             ", allow_redundancy: \(allowRedundancy)"
     }

@@ -3,7 +3,8 @@ struct TrailingClosureConfiguration: RuleConfiguration, Equatable {
     private(set) var onlySingleMutedParameter: Bool
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", only_single_muted_parameter: \(onlySingleMutedParameter)"
+        return "severity: \(severityConfiguration.consoleDescription)"
+            + ", only_single_muted_parameter: \(onlySingleMutedParameter)"
     }
 
     init(onlySingleMutedParameter: Bool = false) {

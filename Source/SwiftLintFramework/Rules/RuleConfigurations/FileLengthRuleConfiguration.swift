@@ -9,7 +9,7 @@ struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration: SeverityLevelsConfiguration
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", \(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
     }
 

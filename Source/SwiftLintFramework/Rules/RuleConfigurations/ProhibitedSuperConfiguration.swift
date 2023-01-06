@@ -17,7 +17,7 @@ struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration, Equatable {
     init() {}
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", excluded: [\(excluded)]" +
             ", included: [\(included)]"
     }

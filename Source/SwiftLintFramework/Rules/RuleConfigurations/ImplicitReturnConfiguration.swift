@@ -13,7 +13,7 @@ struct ImplicitReturnConfiguration: RuleConfiguration, Equatable {
 
     var consoleDescription: String {
         let includedKinds = self.includedKinds.map { $0.rawValue }
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", included: [\(includedKinds.sorted().joined(separator: ", "))]"
     }
 

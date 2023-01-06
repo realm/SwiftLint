@@ -4,7 +4,7 @@ struct ObjectLiteralConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var colorLiteral = true
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription
+        return "severity: \(severityConfiguration.consoleDescription)"
             + ", image_literal: \(imageLiteral)"
             + ", color_literal: \(colorLiteral)"
     }

@@ -51,7 +51,7 @@ let package = Package(
             name: "SwiftLint Lint",
             capability: .command(
                 intent: .custom(
-                    verb: "lint",
+                    verb: "lint-source-code",
                     description: "Lint source files"
                 )
             ),
@@ -77,7 +77,7 @@ let package = Package(
             name: "SwiftLint Analyze",
             capability: .command(
                 intent: .custom(
-                    verb: "analyze",
+                    verb: "analyze-source-code",
                     description: "Analyze source files"
                 ),
                 permissions: [

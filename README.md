@@ -236,6 +236,8 @@ Add SwiftLint to a target using the `plugins` parameter.
 
 #### Command Plugin
 
+SwiftLint can be used as a command plug-in for both Xcode projects as well as Swift packages.
+
 ##### Command-Line
 
 ```bash
@@ -255,7 +257,22 @@ $ swift package plugin --allow-writing-to-package-directory analyze-source-code 
 
 ##### Xcode
 
-TBD
+You can integrate SwiftLint as a Xcode Command Plug-in if you're working
+with a project in Xcode.
+
+Select the package and open the context menu.
+Select `SwiftLint {Option}` from the list.
+
+![](assets/select-command-plugin.png)
+
+Select target and enter arguments.
+Select the `Run` button.
+
+![](assets/select-command-plugin-2.png)
+
+For format and analyze, select `Allow Command to Change Files` button.
+
+![](assets/select-command-plugin-3.png)
 
 ### AppCode
 

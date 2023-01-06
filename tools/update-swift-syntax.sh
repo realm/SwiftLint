@@ -33,7 +33,8 @@ function replace() {
 }
 
 replace "$old_tag" "$new_tag" Package.swift
-replace "$old_tag" "$new_tag" Package.resolved
+swift package update
+
 replace "$old_tag" "$new_tag" bazel/repos.bzl
 
 readonly url="https://github.com/apple/swift-syntax/archive/refs/tags/$new_tag.tar.gz"

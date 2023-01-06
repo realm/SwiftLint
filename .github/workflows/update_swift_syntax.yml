@@ -8,7 +8,7 @@ on:
 
 jobs:
   update_swift_syntax:
-    runs-on: ubuntu-latest
+    runs-on: macos-12
     steps:
     - name: Checkout source
       uses: actions/checkout@v3

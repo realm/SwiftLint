@@ -3,7 +3,7 @@ struct PrivateOutletRuleConfiguration: SeverityBasedRuleConfiguration, Equatable
     var allowPrivateSet = false
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", allow_private_set: \(allowPrivateSet)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", allow_private_set: \(allowPrivateSet)"
     }
 
     init(allowPrivateSet: Bool) {

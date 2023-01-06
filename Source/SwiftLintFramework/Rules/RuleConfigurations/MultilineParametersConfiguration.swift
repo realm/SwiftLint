@@ -3,7 +3,7 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration, Equatab
     private(set) var allowsSingleLine = true
 
     var consoleDescription: String {
-        severityConfiguration.consoleDescription
+        "severity: \(severityConfiguration.consoleDescription)"
             + ", allowsSingleLine: \(allowsSingleLine)"
     }
 

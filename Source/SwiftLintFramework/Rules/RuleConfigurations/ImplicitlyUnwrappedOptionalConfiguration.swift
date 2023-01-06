@@ -23,7 +23,7 @@ struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration,
     }
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", mode: \(mode)"
     }
 

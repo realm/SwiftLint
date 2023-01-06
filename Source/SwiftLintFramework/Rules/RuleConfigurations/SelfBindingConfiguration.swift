@@ -8,7 +8,7 @@ struct SelfBindingConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var bindIdentifier = "self"
 
     var consoleDescription: String {
-        return [severityConfiguration.consoleDescription,
+        return ["severity: \(severityConfiguration.consoleDescription)",
                 "\(ConfigurationKey.bindIdentifier): \(bindIdentifier)"].joined(separator: ", ")
     }
 

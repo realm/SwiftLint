@@ -17,7 +17,7 @@ struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
     ]
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", order: \(String(describing: order))"
     }
 

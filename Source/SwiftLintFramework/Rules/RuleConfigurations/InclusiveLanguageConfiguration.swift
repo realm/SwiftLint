@@ -14,7 +14,7 @@ struct InclusiveLanguageConfiguration: SeverityBasedRuleConfiguration, Equatable
     private(set) var allAllowedTerms: Set<String>
 
     var consoleDescription: String {
-        severityConfiguration.consoleDescription
+        "severity: \(severityConfiguration.consoleDescription)"
             + ", additional_terms: \(additionalTerms?.sorted() ?? [])"
             + ", override_terms: \(overrideTerms?.sorted() ?? [])"
             + ", override_allowed_terms: \(overrideAllowedTerms?.sorted() ?? [])"

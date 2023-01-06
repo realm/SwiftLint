@@ -7,7 +7,7 @@ public struct UnitTestRuleConfiguration: SeverityBasedRuleConfiguration, Equatab
     public private(set) var testParentClasses: Set<String> = ["QuickSpec", "XCTestCase"]
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", test_parent_classes: \(testParentClasses.sorted())"
     }
 

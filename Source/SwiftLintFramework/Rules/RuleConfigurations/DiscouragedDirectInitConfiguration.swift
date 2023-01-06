@@ -6,7 +6,7 @@ struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration, Equat
     var severityConfiguration = SeverityConfiguration(.warning)
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", types: \(discouragedInits.sorted(by: <))"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", types: \(discouragedInits.sorted(by: <))"
     }
 
     private(set) var discouragedInits: Set<String>

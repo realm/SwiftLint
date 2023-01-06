@@ -4,7 +4,7 @@ struct AttributesConfiguration: SeverityBasedRuleConfiguration, Equatable {
     private(set) var alwaysOnNewLine = Set<String>()
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
+        return "severity: \(severityConfiguration.consoleDescription)" +
             ", always_on_same_line: \(alwaysOnSameLine.sorted())" +
             ", always_on_line_above: \(alwaysOnNewLine.sorted())"
     }

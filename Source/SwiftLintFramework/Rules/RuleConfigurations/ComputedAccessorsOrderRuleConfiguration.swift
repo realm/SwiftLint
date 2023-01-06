@@ -8,7 +8,8 @@ struct ComputedAccessorsOrderRuleConfiguration: SeverityBasedRuleConfiguration, 
     private(set) var order = Order.getSet
 
     var consoleDescription: String {
-        return [severityConfiguration.consoleDescription, "order: \(order.rawValue)"].joined(separator: ", ")
+        return "severity: \(severityConfiguration.consoleDescription)"
+            + ", order: \(order.rawValue)"
     }
 
     mutating func apply(configuration: Any) throws {

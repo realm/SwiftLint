@@ -9,8 +9,8 @@ struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration: SeverityLevelsConfiguration
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
-        "\(ConfigurationKey.ignoresDefaultParameters.rawValue): \(ignoresDefaultParameters)"
+        return "severity: \(severityConfiguration.consoleDescription)" +
+        ", \(ConfigurationKey.ignoresDefaultParameters.rawValue): \(ignoresDefaultParameters)"
     }
 
     init(warning: Int, error: Int?, ignoresDefaultParameters: Bool = true) {

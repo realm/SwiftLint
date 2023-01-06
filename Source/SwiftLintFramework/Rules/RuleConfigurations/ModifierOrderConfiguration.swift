@@ -5,7 +5,8 @@ struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
     private(set) var preferredModifierOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", preferred_modifier_order: \(preferredModifierOrder)"
+        return "severity: \(severityConfiguration.consoleDescription)"
+            + ", preferred_modifier_order: \(preferredModifierOrder)"
     }
 
     init() {

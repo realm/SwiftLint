@@ -3,7 +3,7 @@ struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
     private(set) var maxEmptyLines: Int
 
     var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", max_empty_lines: \(maxEmptyLines)"
+        return "severity: \(severityConfiguration.consoleDescription)" + ", max_empty_lines: \(maxEmptyLines)"
     }
 
     init(maxEmptyLines: Int) {

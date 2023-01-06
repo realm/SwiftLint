@@ -3,7 +3,7 @@ struct ConditionalReturnsOnNewlineConfiguration: SeverityBasedRuleConfiguration,
     private(set) var ifOnly = false
 
     var consoleDescription: String {
-        return [severityConfiguration.consoleDescription, "if_only: \(ifOnly)"].joined(separator: ", ")
+        return ["severity: \(severityConfiguration.consoleDescription)", "if_only: \(ifOnly)"].joined(separator: ", ")
     }
 
     mutating func apply(configuration: Any) throws {

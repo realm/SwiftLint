@@ -2,22 +2,23 @@
 
 set -euo pipefail
 
-readonly old_commit="$(grep "apple/swift-syntax" Package.swift | sed -nr 's/.*revision: \"([a-f0-9]{40})\"\),$/\1/p')"
+readonly old_tag="$(sed -n 's/.* exact: "\(.*\)".*/\1/p' Package.swift)"
 if [ $# -eq 0 ]; then
-  readonly new_commit="$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.VERSION.sha" "https://api.github.com/repos/apple/swift-syntax/commits/main")"
+  readonly new_tag="$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/apple/swift-syntax/releases?per_page=1" | sed -n 's/.*tag_name":"\([^"]*\)".*/\1/p')"
 else
-  readonly new_commit="$1"
+  readonly new_tag="$1"
 fi
 
-if [[ "$old_commit" == "$new_commit" ]]; then
-  echo "SwiftSyntax is already up to date"
+if [[ "$old_tag" == "$new_tag" ]]; then
+  echo "SwiftSyntax is already up to date at $new_tag"
   exit 0
 fi
 
-echo "Updating SwiftSyntax from $old_commit to $new_commit"
+echo "Updating SwiftSyntax from $old_tag to $new_tag"
 if [[ "${GITHUB_ACTIONS-}" == "true" ]]; then
-  echo "old_commit=$old_commit" >> $GITHUB_OUTPUT
-  echo "new_commit=$new_commit" >> $GITHUB_OUTPUT
+  echo "needs_update=true" >> $GITHUB_OUTPUT
+  echo "old_tag=$old_tag" >> $GITHUB_OUTPUT
+  echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
 fi
 
 # $1 — string to match
@@ -31,11 +32,12 @@ function replace() {
   fi
 }
 
-replace "$old_commit" "$new_commit" Package.swift
-replace "$old_commit" "$new_commit" Package.resolved
-replace "$old_commit" "$new_commit" bazel/repos.bzl
+replace "$old_tag" "$new_tag" Package.swift
+swift package update
 
-readonly url="https://github.com/apple/swift-syntax/archive/$new_commit.tar.gz"
+replace "$old_tag" "$new_tag" bazel/repos.bzl
+
+readonly url="https://github.com/apple/swift-syntax/archive/refs/tags/$new_tag.tar.gz"
 output="$(mktemp -d)/download"
 if ! curl -s --location --fail --output "$output" "$url"; then
   echo "error: failed to download $url" >&2

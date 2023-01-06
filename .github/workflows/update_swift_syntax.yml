@@ -8,28 +8,22 @@ on:
 
 jobs:
   update_swift_syntax:
-    runs-on: ubuntu-latest
+    runs-on: macos-12
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Update SwiftSyntax
       id: update-swift-syntax
       run: ./tools/update-swift-syntax.sh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Check for changes
-      id: state
-      run: |
-        if ! git diff-index --quiet HEAD --; then
-          echo "dirty=true" >> $GITHUB_OUTPUT
-        fi
     - name: Create PR
-      if: steps.state.outputs.dirty == 'true'
+      if: steps.update-swift-syntax.outputs.needs_update == 'true'
       uses: peter-evans/create-pull-request@923ad837f191474af6b1721408744feb989a4c27
       with:
         title: Update SwiftSyntax
         body: |
-          Diff: https://github.com/apple/swift-syntax/compare/${{ steps.update-swift-syntax.outputs.old_commit }}...${{ steps.update-swift-syntax.outputs.new_commit }}
+          Diff: https://github.com/apple/swift-syntax/compare/${{ steps.update-swift-syntax.outputs.old_tag }}...${{ steps.update-swift-syntax.outputs.new_tag }}
         commit-message: Update SwiftSyntax
         delete-branch: true
         branch: update-swift-syntax

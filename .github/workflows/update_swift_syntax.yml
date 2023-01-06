@@ -1,0 +1,30 @@
+name: update_swift_syntax
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Mondays at 1pm UTC (9am EDT)
+    - cron: "0 13 * * 1"
+
+jobs:
+  update_swift_syntax:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+    - name: Update SwiftSyntax
+      id: update-swift-syntax
+      run: ./tools/update-swift-syntax.sh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create PR
+      if: steps.update-swift-syntax.outputs.needs_update == 'true'
+      uses: peter-evans/create-pull-request@923ad837f191474af6b1721408744feb989a4c27
+      with:
+        title: Update SwiftSyntax
+        body: |
+          Diff: https://github.com/apple/swift-syntax/compare/${{ steps.update-swift-syntax.outputs.old_tag }}...${{ steps.update-swift-syntax.outputs.new_tag }}
+        commit-message: Update SwiftSyntax
+        delete-branch: true
+        branch: update-swift-syntax
+        branch-suffix: timestamp

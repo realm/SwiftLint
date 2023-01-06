@@ -11,7 +11,10 @@ cc_library(
 
 swift_library(
     name = "SwiftSyntax",
-    srcs = glob(["Sources/SwiftSyntax/**/*.swift"]),
+    srcs = glob(
+        ["Sources/SwiftSyntax/**/*.swift"],
+        exclude = ["Sources/SwiftSyntax/Documentation.docc/**"],
+    ),
     module_name = "SwiftSyntax",
     private_deps = ["_CSwiftSyntax"],
 )

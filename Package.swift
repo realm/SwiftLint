@@ -28,7 +28,8 @@ let package = Package(
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),
         .plugin(name: "SwiftLintPlugin", targets: ["SwiftLintPlugin"]),
         .plugin(name: "LinterPlugin", targets: ["SwiftLint Lint"]),
-        .plugin(name: "FormatterPlugin", targets: ["SwiftLint Format"])
+        .plugin(name: "FormatterPlugin", targets: ["SwiftLint Format"]),
+        .plugin(name: "AnalyzerPlugin", targets: ["SwiftLint Analyze"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.2.0")),
@@ -71,6 +72,22 @@ let package = Package(
                 .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
             ],
             path: "Plugins/SwiftLintFormat"
+        ),
+        .plugin(
+            name: "SwiftLint Analyze",
+            capability: .command(
+                intent: .custom(
+                    verb: "analyze",
+                    description: "Analyze source files"
+                ),
+                permissions: [
+                    .writeToPackageDirectory(reason: "This command fixes source files")
+                ]
+            ),
+            dependencies: [
+                .target(name: binaryPlugin ? "SwiftLintBinary" : "swiftlint")
+            ],
+            path: "Plugins/SwiftLintAnalyze"
         ),
         .executableTarget(
             name: "swiftlint",

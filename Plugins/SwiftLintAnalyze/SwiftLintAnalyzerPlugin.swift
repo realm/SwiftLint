@@ -8,7 +8,7 @@ struct SwiftLintAnalyzerPlugin {
         tool: PackagePlugin.PluginContext.Tool,
         configFile: String?,
         isFix: Bool,
-        compileLogPath: String?
+        compilerLogPath: String?
     ) throws {
         let swiftlintExec = URL(fileURLWithPath: tool.path.string)
         
@@ -19,8 +19,8 @@ struct SwiftLintAnalyzerPlugin {
         if isFix {
             swiftlintArgs.append("--fix")
         }
-        if let compileLogPath {
-            swiftlintArgs.append(contentsOf: ["--compile-log-path", compileLogPath])
+        if let compilerLogPath {
+            swiftlintArgs.append(contentsOf: ["--compiler-log-path", compilerLogPath])
         }
         swiftlintArgs.append(contentsOf: directories)
         
@@ -52,14 +52,14 @@ extension SwiftLintAnalyzerPlugin: CommandPlugin {
         
         let configFile = argExtractor.extractOption(named: "config").first
         let isFix = argExtractor.extractFlag(named: "fix") > 0
-        let compileLogPath = argExtractor.extractOption(named: "compile-log-path").first
+        let compilerLogPath = argExtractor.extractOption(named: "compiler-log-path").first
         
         try analyze(
             in: targetDirectories,
             tool: swiftlintTool,
             configFile: configFile,
             isFix: isFix,
-            compileLogPath: compileLogPath
+            compilerLogPath: compilerLogPath
         )
     }
 }
@@ -77,14 +77,14 @@ extension SwiftLintAnalyzerPlugin: XcodeCommandPlugin {
         var argExtractor = ArgumentExtractor(arguments)
         let configFile = argExtractor.extractOption(named: "config").first
         let isFix = argExtractor.extractFlag(named: "fix") > 0
-        let compileLogPath = argExtractor.extractOption(named: "compile-log-path").first
+        let compilerLogPath = argExtractor.extractOption(named: "compiler-log-path").first
         
         try analyze(
             in: [context.xcodeProject.directory.string],
             tool: swiftlintTool,
             configFile: configFile,
             isFix: isFix,
-            compileLogPath: compileLogPath
+            compilerLogPath: compilerLogPath
         )
     }
 }

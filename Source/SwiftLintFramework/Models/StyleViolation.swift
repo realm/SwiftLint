@@ -28,7 +28,8 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
     /// - parameter ruleDescription: The description of the rule that generated this violation.
     /// - parameter severity:        The severity of this violation.
     /// - parameter location:        The location of this violation.
-    /// - parameter reason:          The justification for this violation.
+    /// - parameter reason:          The justification for this violation. If not specified the rule's description will
+    ///                              be used.
     public init(ruleDescription: RuleDescription,
                 severity: ViolationSeverity = .warning,
                 location: Location,
@@ -39,6 +40,15 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
         self.severity = severity
         self.location = location
         self.reason = reason ?? ruleDescription.description
+        #if DEBUG
+        if self.reason.trimmingTrailingCharacters(in: .whitespaces).last == ".",
+           builtInRules.contains(where: { rule in rule.description.identifier == self.ruleIdentifier }) {
+            queuedFatalError("""
+                Reasons shall not end with a period. Got "\(self.reason)". Either rewrite the rule's description \
+                or set a custom reason in the StyleViolation's constructor.
+                """)
+        }
+        #endif
     }
 
     /// Returns the same violation, but with the `severity` that is passed in

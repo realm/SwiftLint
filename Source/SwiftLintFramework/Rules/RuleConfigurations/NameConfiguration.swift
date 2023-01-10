@@ -4,14 +4,14 @@ struct NameConfiguration: RuleConfiguration, Equatable {
     var consoleDescription: String {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
-            "excluded: \(excludedRegularExpressions.map { $0.regex.pattern }.sorted()), " +
+            "excluded: \(excludedRegularExpressions.map(\.pattern).sorted()), " +
             "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
             "validates_start_with_lowercase: \(validatesStartWithLowercase)"
     }
 
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
-    var excludedRegularExpressions: Set<ExcludedRegexExpression>
+    var excludedRegularExpressions: Set<ComparableRegex>
     private var allowedSymbolsSet: Set<String>
     var validatesStartWithLowercase: Bool
 
@@ -36,7 +36,7 @@ struct NameConfiguration: RuleConfiguration, Equatable {
          validatesStartWithLowercase: Bool = true) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
-        self.excludedRegularExpressions = Set(excluded.compactMap { ExcludedRegexExpression(pattern: "^\($0)$") })
+        self.excludedRegularExpressions = Set(excluded.compactMap { ComparableRegex(pattern: "^\($0)$") })
         self.allowedSymbolsSet = Set(allowedSymbols)
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
@@ -53,7 +53,7 @@ struct NameConfiguration: RuleConfiguration, Equatable {
             try maxLength.apply(configuration: maxLengthConfiguration)
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
-            self.excludedRegularExpressions = Set(excluded.compactMap { ExcludedRegexExpression(pattern: "^\($0)$") })
+            self.excludedRegularExpressions = Set(excluded.compactMap { ComparableRegex(pattern: "^\($0)$") })
         }
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
             self.allowedSymbolsSet = Set(allowedSymbols)
@@ -95,8 +95,6 @@ extension NameConfiguration {
 
 extension NameConfiguration {
     func shouldExclude(name: String) -> Bool {
-        return excludedRegularExpressions.contains(where: {
-            return !$0.regex.matches(in: name, options: [], range: NSRange(name.startIndex..., in: name)).isEmpty
-        })
+        excludedRegularExpressions.contains { $0.matches(string: name) }
     }
 }

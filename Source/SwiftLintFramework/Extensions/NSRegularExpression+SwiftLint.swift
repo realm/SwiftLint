@@ -45,3 +45,42 @@ extension NSRegularExpression {
         return matches(in: file.stringView.string, options: options, range: file.stringView.range)
     }
 }
+
+/// `NSRegularExpression` wrapper that considers two instances of itself as equal if the regex pattern and the
+/// regex properties match. This is different from `NSRegularExpression`s where two instances are only equal
+/// if they point to the exact same object.
+final class ComparableRegex: NSObject {
+    private let regex: NSRegularExpression
+    private let comparisonKey: RegexCacheKey
+
+    /// Creates a `ComparableRegex` instance.
+    ///
+    /// - parameter pattern: The regular expression as a string.
+    /// - parameter options: Regular expression properties.
+    init?(pattern: String, options: NSRegularExpression.Options? = nil) {
+        guard let regex = try? NSRegularExpression.cached(pattern: pattern, options: options) else {
+            return nil
+        }
+        self.regex = regex
+        self.comparisonKey = RegexCacheKey(pattern: pattern, options: regex.options)
+    }
+
+    var pattern: String {
+        regex.pattern
+    }
+
+    override func isEqual(_ object: Any?) -> Bool {
+        if let object = object as? Self {
+            return comparisonKey == object.comparisonKey
+        }
+        return false
+    }
+
+    override var hash: Int {
+        comparisonKey.hashValue
+    }
+
+    func matches(string: String) -> Bool {
+        !regex.matches(in: string, options: [], range: NSRange(string.startIndex..., in: string)).isEmpty
+    }
+}

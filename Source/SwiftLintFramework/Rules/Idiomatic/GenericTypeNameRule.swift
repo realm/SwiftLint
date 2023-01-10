@@ -66,9 +66,7 @@ private extension GenericTypeNameRule {
 
         override func visitPost(_ node: GenericParameterSyntax) {
             let name = node.name.text
-            guard !configuration.excluded.contains(name) else {
-                return
-            }
+            guard !configuration.shouldExclude(name: name) else { return }
 
             let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
             if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {

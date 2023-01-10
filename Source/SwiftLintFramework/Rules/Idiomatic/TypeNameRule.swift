@@ -88,9 +88,7 @@ private extension TypeNameRule {
             let originalName = identifier.text
             let nameConfiguration = configuration.nameConfiguration
 
-            guard !nameConfiguration.excluded.contains(originalName) else {
-                return nil
-            }
+            guard !nameConfiguration.shouldExclude(name: originalName) else { return nil }
 
             let name = originalName
                 .strippingBackticks()

@@ -1,4 +1,5 @@
 @testable import SwiftLintFramework
+import SwiftParser
 import XCTest
 
 class NumberSeparatorRuleTests: XCTestCase {
@@ -96,5 +97,48 @@ class NumberSeparatorRuleTests: XCTestCase {
                 "minimum_fraction_length": 3
             ]
         )
+    }
+
+    func testSpecificViolationReasons() {
+        XCTAssertEqual(
+            violations(in: "1_000"),
+            []
+        )
+        XCTAssertEqual(
+            violations(in: "1000"),
+            [NumberSeparatorRule.missingSeparatorsReason]
+        )
+        XCTAssertEqual(
+            violations(in: "1.000000", config: ["minimum_fraction_length": 5]),
+            [NumberSeparatorRule.missingSeparatorsReason]
+        )
+        XCTAssertEqual(
+            violations(in: "10_00"),
+            [NumberSeparatorRule.misplacedSeparatorsReason]
+        )
+        XCTAssertEqual(
+            violations(in: "1_000_0"),
+            [NumberSeparatorRule.misplacedSeparatorsReason]
+        )
+        XCTAssertEqual(
+            violations(in: "1000.0_00"),
+            [NumberSeparatorRule.misplacedSeparatorsReason]
+        )
+        XCTAssertEqual(
+            violations(in: "10_00", config: ["minimum_length": 5]),
+            [NumberSeparatorRule.misplacedSeparatorsReason]
+        )
+        XCTAssertEqual(
+            violations(in: "1000.0_00", config: ["minimum_fraction_length": 5]),
+            [NumberSeparatorRule.misplacedSeparatorsReason]
+        )
+    }
+
+    private func violations(in code: String, config: Any = []) -> [String] {
+        var rule = NumberSeparatorRule()
+        try? rule.configuration.apply(configuration: config)
+        let visitor = rule.makeVisitor(file: SwiftLintFile(contents: ""))
+        visitor.walk(Parser.parse(source: "let a = " + code))
+        return visitor.violations.compactMap(\.reason)
     }
 }

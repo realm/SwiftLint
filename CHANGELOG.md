@@ -59,6 +59,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#4677](https://github.com/realm/SwiftLint/issues/4677)
 
+* Fix caching of `indentation_width` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#4121](https://github.com/realm/SwiftLint/issues/4121)
+
 ## 0.50.3: Bundle of Towels
 
 #### Breaking

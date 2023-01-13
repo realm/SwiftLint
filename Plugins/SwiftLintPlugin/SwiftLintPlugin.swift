@@ -3,46 +3,47 @@ import PackagePlugin
 
 @main
 struct SwiftLintPlugin: BuildToolPlugin {
-    func createBuildCommands(
-        context: PackagePlugin.PluginContext,
-        target: PackagePlugin.Target
-    ) async throws -> [PackagePlugin.Command] {
+    func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
         guard let sourceTarget = target as? SourceModuleTarget else {
             return []
         }
+        return createBuildCommands(
+            inputFiles: sourceTarget.sourceFiles(withSuffix: "swift").map(\.path),
+            packageDirectory: context.package.directory,
+            workingDirectory: context.pluginWorkDirectory,
+            tool: try context.tool(named: "swiftlint")
+        )
+    }
 
-        let inputFilePaths = sourceTarget.sourceFiles(withSuffix: "swift")
-            .map(\.path)
-
-        guard inputFilePaths.isEmpty == false else {
+    private func createBuildCommands(inputFiles: [Path],
+                                     packageDirectory: Path,
+                                     workingDirectory: Path,
+                                     tool: PluginContext.Tool) -> [Command] {
+        if inputFiles.isEmpty {
             // Don't lint anything if there are no Swift source files in this target
             return []
         }
 
-        let swiftlint = try context.tool(named: "swiftlint")
-        var arguments: [String] = [
+        var arguments = [
             "lint",
             "--quiet",
-            "--cache-path", "\(context.pluginWorkDirectory)"
+            "--cache-path", "\(workingDirectory)"
         ]
 
         // Manually look for configuration files, to avoid issues when the plugin does not execute our tool from the
         // package source directory.
-        if let configuration = context.package.directory.firstConfigurationFileInParentDirectories() {
-            arguments.append(contentsOf: [
-                "--config", "\(configuration.string)"
-            ])
+        if let configuration = packageDirectory.firstConfigurationFileInParentDirectories() {
+            arguments.append(contentsOf: ["--config", "\(configuration.string)"])
         }
-
-        arguments += inputFilePaths.map(\.string)
+        arguments += inputFiles.map(\.string)
 
         return [
             .buildCommand(
                 displayName: "SwiftLint",
-                executable: swiftlint.path,
+                executable: tool.path,
                 arguments: arguments,
-                inputFiles: inputFilePaths,
-                outputFiles: [context.pluginWorkDirectory]
+                inputFiles: inputFiles,
+                outputFiles: [workingDirectory]
             )
         ]
     }
@@ -52,45 +53,16 @@ struct SwiftLintPlugin: BuildToolPlugin {
 import XcodeProjectPlugin
 
 extension SwiftLintPlugin: XcodeBuildToolPlugin {
-    func createBuildCommands(
-        context: XcodePluginContext,
-        target: XcodeTarget
-    ) throws -> [Command] {
+    func createBuildCommands(context: XcodePluginContext, target: XcodeTarget) throws -> [Command] {
         let inputFilePaths = target.inputFiles
             .filter { $0.type == .source && $0.path.extension == "swift" }
             .map(\.path)
-
-        guard inputFilePaths.isEmpty == false else {
-            // Don't lint anything if there are no Swift source files in this target
-            return []
-        }
-
-        let swiftlint = try context.tool(named: "swiftlint")
-        var arguments: [String] = [
-            "lint",
-            "--quiet",
-            "--cache-path", "\(context.pluginWorkDirectory)"
-        ]
-
-        // Xcode build tool plugins don't seem to run from the project source directory, so our auto-discovery of
-        // configuration files doesn't work. We approximate it here.
-        if let configuration = context.xcodeProject.directory.firstConfigurationFileInParentDirectories() {
-            arguments.append(contentsOf: [
-                "--config", "\(configuration.string)"
-            ])
-        }
-
-        arguments += inputFilePaths.map(\.string)
-
-        return [
-            .buildCommand(
-                displayName: "SwiftLint",
-                executable: swiftlint.path,
-                arguments: arguments,
-                inputFiles: inputFilePaths,
-                outputFiles: [context.pluginWorkDirectory]
-            )
-        ]
+        return createBuildCommands(
+            inputFiles: inputFilePaths,
+            packageDirectory: context.xcodeProject.directory,
+            workingDirectory: context.pluginWorkDirectory,
+            tool: try context.tool(named: "swiftlint")
+        )
     }
 }
 #endif

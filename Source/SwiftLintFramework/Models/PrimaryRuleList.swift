@@ -187,6 +187,7 @@ let builtInRules: [Rule.Type] = [
     StrictFilePrivateRule.self,
     StrongIBOutletRule.self,
     SuperfluousDisableCommandRule.self,
+    SuperfluousElseRule.self,
     SwitchCaseAlignmentRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,

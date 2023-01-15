@@ -1106,6 +1106,12 @@ class SuperfluousDisableCommandRuleGeneratedTests: XCTestCase {
     }
 }
 
+class SuperfluousElseRuleGeneratedTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SuperfluousElseRule.description)
+    }
+}
+
 class SwitchCaseAlignmentRuleGeneratedTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseAlignmentRule.description)

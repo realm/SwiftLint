@@ -323,6 +323,17 @@ extension TriviaPiece {
     }
 }
 
+extension TriviaPiece {
+    var isOtherThanComment: Bool {
+        switch self {
+        case .blockComment, .lineComment, .docLineComment, .docBlockComment:
+            return false
+        default:
+            return true
+        }
+    }
+}
+
 extension IntegerLiteralExprSyntax {
     var isZero: Bool {
         guard case let .integerLiteral(number) = digits.tokenKind else {

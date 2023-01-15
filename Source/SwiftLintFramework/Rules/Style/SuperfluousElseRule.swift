@@ -99,6 +99,7 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
                     } else ↓if i < 10 {
                         return 2
                     } else {
+                        // comment
                         return 3
                     }
                 }
@@ -111,6 +112,7 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
                     if i < 10 {
                         return 2
                     }
+                    // comment
                     return 3
                 }
             """),
@@ -134,7 +136,6 @@ struct SuperfluousElseRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRul
                     }
                 }
             """)
-            
         ]
     )
 
@@ -211,11 +212,13 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
     }
 
     private func modify(ifStmt: IfStmtSyntax) -> (newIfStmt: IfStmtSyntax, removedItems: [CodeBlockItemSyntax]) {
-        let ifStmtWithoutElse = removeElse(from: ifStmt)
         if case let .codeBlock(block) = ifStmt.elseBody {
             return (
-                ifStmtWithoutElse,
-                block.statements.map { $0.withLeadingTrivia(ifStmt.leadingTrivia ?? .zero) }
+                removeElse(from: ifStmt, withTrailingTrivia: block.leftBrace.trailingTrivia),
+                block.statements.map { stmt in
+                    let comments = stmt.leadingTrivia.dropFirstNoneComments
+                    return stmt.withLeadingTrivia((ifStmt.leadingTrivia ?? .zero) + comments)
+                }
             )
         }
         if case let .ifStmt(nestedIfStmt) = ifStmt.elseBody {
@@ -224,15 +227,27 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
                     item: CodeBlockItemSyntax.Item(nestedIfStmt.withLeadingTrivia(ifStmt.leadingTrivia ?? .zero))
                 )
             ]
-            return (ifStmtWithoutElse, removedItems)
+            return (
+                removeElse(from: ifStmt, withTrailingTrivia: nestedIfStmt.body.leftBrace.trailingTrivia.dropFirstNoneComments),
+                removedItems
+            )
         }
         return (ifStmt, [])
     }
 
-    private func removeElse(from ifStmt: IfStmtSyntax) -> IfStmtSyntax {
+    private func removeElse(from ifStmt: IfStmtSyntax, withTrailingTrivia trivia: Trivia) -> IfStmtSyntax {
         ifStmt
-            .withBody(ifStmt.body.withRightBrace(ifStmt.body.rightBrace.withTrailingTrivia(.zero)))
+            .withBody(ifStmt.body.withRightBrace(ifStmt.body.rightBrace.withTrailingTrivia(trivia)))
             .withElseKeyword(nil)
             .withElseBody(nil)
+    }
+}
+
+private extension Trivia? {
+    var dropFirstNoneComments: Trivia {
+        if let self {
+            return Trivia(pieces: Array(self.drop(while: \.isOtherThanComment)))
+        }
+        return .zero
     }
 }

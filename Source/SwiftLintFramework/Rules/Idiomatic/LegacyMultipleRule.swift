@@ -52,7 +52,7 @@ private extension LegacyMultipleRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  operatorNode.operatorToken.tokenKind == .spacedBinaryOperator("%"),
+                  operatorNode.operatorToken.tokenKind == .binaryOperator("%"),
                   let parent = node.parent?.as(InfixOperatorExprSyntax.self),
                   let parentOperatorNode = parent.operatorOperand.as(BinaryOperatorExprSyntax.self),
                   parentOperatorNode.isEqualityOrInequalityOperator else {
@@ -80,8 +80,7 @@ private extension LegacyMultipleRule {
 
 private extension BinaryOperatorExprSyntax {
     var isEqualityOrInequalityOperator: Bool {
-        operatorToken.tokenKind == .spacedBinaryOperator("==") ||
-            operatorToken.tokenKind == .unspacedBinaryOperator("==") ||
-            operatorToken.tokenKind == .spacedBinaryOperator("!=")
+        operatorToken.tokenKind == .binaryOperator("==") ||
+            operatorToken.tokenKind == .binaryOperator("!=")
     }
 }

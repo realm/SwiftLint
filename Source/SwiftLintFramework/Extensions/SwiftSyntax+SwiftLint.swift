@@ -107,9 +107,7 @@ extension StringLiteralExprSyntax {
 
 extension TokenKind {
     var isEqualityComparison: Bool {
-        self == .spacedBinaryOperator("==") ||
-            self == .spacedBinaryOperator("!=") ||
-            self == .unspacedBinaryOperator("==")
+        self == .binaryOperator("==") || self == .binaryOperator("!=")
     }
 }
 

@@ -102,7 +102,7 @@ private extension FunctionDeclSyntax {
 
     var isOperator: Bool {
         switch identifier.tokenKind {
-        case .spacedBinaryOperator:
+        case .binaryOperator:
             return true
         default:
             return false

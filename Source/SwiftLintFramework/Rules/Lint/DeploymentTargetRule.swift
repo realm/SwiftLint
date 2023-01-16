@@ -83,36 +83,28 @@ private extension DeploymentTargetRule {
             }
         }
 
-        override func visitPost(_ node: UnavailabilityConditionSyntax) {
-            for elem in node.availabilitySpec {
-                guard let restriction = elem.entry.as(AvailabilityVersionRestrictionSyntax.self),
-                      let versionString = restriction.version?.description,
-                      let reason = reason(platform: restriction.platform, version: versionString,
-                                          violationType: .negativeCondition) else {
-                    continue
-                }
-
-                violations.append(
-                    ReasonedRuleViolation(
-                        position: node.poundUnavailableKeyword.positionAfterSkippingLeadingTrivia,
-                        reason: reason
-                    )
-                )
-            }
-        }
-
         override func visitPost(_ node: AvailabilityConditionSyntax) {
+            let violationType: AvailabilityType
+            switch node.availabilityKeyword.tokenKind {
+            case .poundUnavailableKeyword:
+                violationType = .negativeCondition
+            case .poundAvailableKeyword:
+                violationType = .condition
+            default:
+                queuedFatalError("Unknown availability check type.")
+            }
+
             for elem in node.availabilitySpec {
                 guard let restriction = elem.entry.as(AvailabilityVersionRestrictionSyntax.self),
                       let versionString = restriction.version?.description,
                       let reason = reason(platform: restriction.platform, version: versionString,
-                                          violationType: .condition) else {
+                                          violationType: violationType) else {
                     continue
                 }
 
                 violations.append(
                     ReasonedRuleViolation(
-                        position: node.poundAvailableKeyword.positionAfterSkippingLeadingTrivia,
+                        position: node.availabilityKeyword.positionAfterSkippingLeadingTrivia,
                         reason: reason
                     )
                 )

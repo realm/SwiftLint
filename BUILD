@@ -122,13 +122,18 @@ xcodeproj(
                     "--progress",
                 ],
             ),
-            test_action = xcode_schemes.test_action([
-                "//Tests:CLITests",
-                "//Tests:SwiftLintFrameworkTests",
-                "//Tests:GeneratedTests",
-                "//Tests:IntegrationTests",
-                "//Tests:ExtraRulesTests",
-            ]),
+            test_action = xcode_schemes.test_action(
+                env = {
+                    "RUNNING_RULES_XCODEPROJ_TESTS": "TRUE",
+                },
+                targets = [
+                    "//Tests:CLITests",
+                    "//Tests:ExtraRulesTests",
+                    "//Tests:GeneratedTests",
+                    "//Tests:IntegrationTests",
+                    "//Tests:SwiftLintFrameworkTests",
+                ],
+            ),
         ),
     ],
     top_level_targets = [

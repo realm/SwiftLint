@@ -29,64 +29,92 @@ class FileNameRuleTests: XCTestCase {
         return rule.validate(file: file)
     }
 
-    func testMainDoesntTrigger() {
+    func testMainDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "main.swift").isEmpty)
     }
 
-    func testLinuxMainDoesntTrigger() {
+    func testLinuxMainDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "LinuxMain.swift").isEmpty)
     }
 
-    func testClassNameDoesntTrigger() {
+    func testClassNameDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "MyClass.swift").isEmpty)
     }
 
-    func testStructNameDoesntTrigger() {
+    func testStructNameDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "MyStruct.swift").isEmpty)
     }
 
-    func testExtensionNameDoesntTrigger() {
+    func testExtensionNameDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
     }
 
-    func testNestedExtensionDoesntTrigger() {
+    func testNestedExtensionDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "Notification.Name+Extension.swift").isEmpty)
     }
 
-    func testNestedTypeSeparatorDoesntTrigger() {
+    func testNestedTypeSeparatorDoesntTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "").isEmpty)
         XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: "__").isEmpty)
     }
 
-    func testWrongNestedTypeSeparatorDoesTrigger() {
+    func testWrongNestedTypeSeparatorDoesTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try !validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isEmpty)
         XCTAssert(try !validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isEmpty)
     }
 
-    func testMisspelledNameDoesTrigger() {
+    func testMisspelledNameDoesTrigger() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssertEqual(try validate(fileName: "MyStructf.swift").count, 1)
     }
 
-    func testMisspelledNameDoesntTriggerWithOverride() {
+    func testMisspelledNameDoesntTriggerWithOverride() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "MyStructf.swift", excludedOverride: ["MyStructf.swift"]).isEmpty)
     }
 
-    func testMainDoesTriggerWithoutOverride() {
+    func testMainDoesTriggerWithoutOverride() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssertEqual(try validate(fileName: "main.swift", excludedOverride: []).count, 1)
     }
 
-    func testCustomSuffixPattern() {
+    func testCustomSuffixPattern() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?").isEmpty)
         XCTAssert(try validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?").isEmpty)
         XCTAssert(try validate(fileName: "BoolExtensionTests.swift", suffixPattern: "Extensions?|\\+.*").isEmpty)
     }
 
-    func testCustomPrefixPattern() {
+    func testCustomPrefixPattern() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(try validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?").isEmpty)
         XCTAssert(try validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?").isEmpty)
     }
 
-    func testCustomPrefixAndSuffixPatterns() {
+    func testCustomPrefixAndSuffixPatterns() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssert(
             try validate(
                 fileName: "SLBoolExtension.swift",

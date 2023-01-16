@@ -42,26 +42,15 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule,
 }
 
 private extension AttributeListSyntax {
-    var hasObjCMembers: Bool {
-        contains { attribute in
-            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
-            return name == "objcMembers"
-        }
-    }
-
     var objCAttribute: AttributeSyntax? {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
-            .first { attribute in
-                attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "objc" &&
-                    attribute.argument == nil
-            }
+            .first { $0.attributeNameText == "objc" && $0.argument == nil }
     }
 
     var hasAttributeImplyingObjC: Bool {
         contains { element in
-            guard let attribute = element.as(AttributeSyntax.self),
-                  let attributeName = attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text else {
+            guard let attributeName = element.as(AttributeSyntax.self)?.attributeNameText else {
                 return false
             }
 
@@ -93,7 +82,7 @@ private extension AttributeListSyntax {
             return objcAttribute
         } else if parent?.isFunctionOrStoredProperty == true,
                   let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-                  parentClassDecl.attributes?.hasObjCMembers == true {
+                  parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
             return objcAttribute
         } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
                   parentExtensionDecl.attributes?.objCAttribute != nil {
@@ -117,11 +106,5 @@ extension RedundantObjcAttributeRule {
         let withTrailingWhitespaceAndNewlineRange = NSRange(location: violationRange.location,
                                                             length: violationRange.length + whitespaceAndNewlineOffset)
         return (withTrailingWhitespaceAndNewlineRange, "")
-    }
-}
-
-private extension TokenKind {
-    var isObjc: Bool {
-        self == .keyword(.objc) || self == .identifier("objc")
     }
 }

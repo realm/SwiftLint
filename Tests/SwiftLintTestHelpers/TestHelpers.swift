@@ -319,6 +319,11 @@ private func addShebang(_ example: Example) -> Example {
 public extension XCTestCase {
     var isRunningWithBazel: Bool { FileManager.default.currentDirectoryPath.contains("bazel-out") }
 
+    // Enable all tests when runfiles support is added - https://github.com/buildbuddy-io/rules_xcodeproj/issues/828
+    var shouldSkipRulesXcodeprojRunFiles: Bool {
+        ProcessInfo.processInfo.environment["RUNNING_RULES_XCODEPROJ_TESTS"] != nil
+    }
+
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,

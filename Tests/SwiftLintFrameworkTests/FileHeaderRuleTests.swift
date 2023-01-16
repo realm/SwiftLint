@@ -1,5 +1,6 @@
 import SourceKittenFramework
 @testable import SwiftLintFramework
+import SwiftLintTestHelpers
 import XCTest
 
 private let fixturesDirectory = #file.bridge()
@@ -131,7 +132,9 @@ class FileHeaderRuleTests: XCTestCase {
                    skipCommentTests: true, testMultiByteOffsets: false)
     }
 
-    func testFileHeaderWithRequiredStringUsingFilenamePlaceholder() {
+    func testFileHeaderWithRequiredStringUsingFilenamePlaceholder() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration = ["required_string": "// SWIFTLINT_CURRENT_FILENAME"]
 
         // Non triggering tests
@@ -143,7 +146,9 @@ class FileHeaderRuleTests: XCTestCase {
         XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
     }
 
-    func testFileHeaderWithForbiddenStringUsingFilenamePlaceholder() {
+    func testFileHeaderWithForbiddenStringUsingFilenamePlaceholder() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration = ["forbidden_string": "// SWIFTLINT_CURRENT_FILENAME"]
 
         // Non triggering tests
@@ -155,7 +160,9 @@ class FileHeaderRuleTests: XCTestCase {
         XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).count, 1)
     }
 
-    func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
+    func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
         let configuration2 = ["required_pattern":
             "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
@@ -170,7 +177,9 @@ class FileHeaderRuleTests: XCTestCase {
         XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration1).count, 1)
     }
 
-    func testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder() {
+    func testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration1 = ["forbidden_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
         let configuration2 = ["forbidden_pattern": "//.*(\\s|\")SWIFTLINT_CURRENT_FILENAME(\\s|\").*"]
 

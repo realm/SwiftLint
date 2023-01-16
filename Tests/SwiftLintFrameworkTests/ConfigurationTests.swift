@@ -2,6 +2,7 @@ import Foundation
 import SourceKittenFramework
 @_spi(TestHelper)
 @testable import SwiftLintFramework
+import SwiftLintTestHelpers
 import XCTest
 
 // swiftlint:disable file_length
@@ -54,7 +55,9 @@ class ConfigurationTests: XCTestCase {
         XCTAssertFalse(config.allowZeroLintableFiles)
     }
 
-    func testInitWithRelativePathAndRootPath() {
+    func testInitWithRelativePathAndRootPath() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let expectedConfig = Mock.Config._0
 
         let config = Configuration(configurationFiles: [".swiftlint.yml"])
@@ -215,7 +218,9 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(actualExcludedPath, desiredExcludedPath)
     }
 
-    func testIncludedExcludedRelativeLocationLevel0() {
+    func testIncludedExcludedRelativeLocationLevel0() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         // Same as testIncludedPathRelatedToConfigurationFileLocationLevel1(),
         // but run from the directory the config file resides in
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
@@ -286,7 +291,9 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
-    func testLintablePaths() {
+    func testLintablePaths() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let paths = Configuration.default.lintablePaths(inPath: Mock.Dir.level0, forceExclude: false)
         let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
         let expectedFilenames = [
@@ -298,7 +305,9 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }
 
-    func testGlobIncludePaths() {
+    func testGlobIncludePaths() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(includedPaths: ["**/Level2"])
         let paths = configuration.lintablePaths(inPath: Mock.Dir.level0, forceExclude: true)
@@ -323,26 +332,34 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(Mock.Config._0, Mock.Config._0)
     }
 
-    func testIsNotEqualTo() {
+    func testIsNotEqualTo() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         XCTAssertNotEqual(Mock.Config._0, Mock.Config._2)
     }
 
     // MARK: - Testing Custom Configuration File
 
-    func testCustomConfiguration() {
+    func testCustomConfiguration() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let file = SwiftLintFile(path: Mock.Swift._0)!
         XCTAssertNotEqual(Mock.Config._0.configuration(for: file),
                           Mock.Config._0Custom.configuration(for: file))
     }
 
-    func testConfigurationWithSwiftFileAsRoot() {
+    func testConfigurationWithSwiftFileAsRoot() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration = Configuration(configurationFiles: [Mock.Yml._0])
 
         let file = SwiftLintFile(path: Mock.Swift._0)!
         XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
-    func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
+    func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration = Mock.Config._0Custom
 
         let file = SwiftLintFile(path: Mock.Swift._0)!
@@ -395,7 +412,9 @@ class ConfigurationTests: XCTestCase {
 
 // MARK: - ExcludeByPrefix option tests
 extension ConfigurationTests {
-    func testExcludeByPrefixExcludedPaths() {
+    func testExcludeByPrefixExcludedPaths() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(includedPaths: ["Level1"],
                                           excludedPaths: ["Level1/Level1.swift",
@@ -416,7 +435,9 @@ extension ConfigurationTests {
         XCTAssertEqual([], paths)
     }
 
-    func testExcludeByPrefixForceExcludesFileNotPresentInExcluded() {
+    func testExcludeByPrefixForceExcludesFileNotPresentInExcluded() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(includedPaths: ["Level1"],
                                           excludedPaths: ["Level1/Level1.swift"])
@@ -427,7 +448,9 @@ extension ConfigurationTests {
         XCTAssertEqual(["Level2.swift", "Level3.swift"], filenames)
     }
 
-    func testExcludeByPrefixForceExcludesDirectory() {
+    func testExcludeByPrefixForceExcludesDirectory() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             excludedPaths: [
@@ -441,7 +464,9 @@ extension ConfigurationTests {
         XCTAssertEqual(["Level0.swift", "Level1.swift"], filenames)
     }
 
-    func testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
+    func testExcludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             excludedPaths: [
@@ -455,7 +480,9 @@ extension ConfigurationTests {
         XCTAssertEqual(["Level0.swift"], filenames)
     }
 
-    func testExcludeByPrefixGlobExcludePaths() {
+    func testExcludeByPrefixGlobExcludePaths() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0)
         let configuration = Configuration(
             includedPaths: ["Level1"],
@@ -498,7 +525,9 @@ extension ConfigurationTests {
     //
     // This issue may not be reproducible under normal execution: the cache is in memory, so when a user changes
     // the cachePath from command line and re-runs swiftlint, cache is not reused leading to the correct behavior
-    func testMainInitWithCachePathAndCachedConfig() {
+    func testMainInitWithCachePathAndCachedConfig() throws {
+        try XCTSkipIf(shouldSkipRulesXcodeprojRunFiles)
+
         let configuration1 = Configuration(
             configurationFiles: [],
             cachePath: "cache/path/1"

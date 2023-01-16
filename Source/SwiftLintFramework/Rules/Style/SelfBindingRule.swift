@@ -143,7 +143,8 @@ private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRew
                 .withInitializer(
                     InitializerClauseSyntax(
                         value: IdentifierExprSyntax(
-                            identifier: .selfKeyword(
+                            identifier: .keyword(
+                                .`self`,
                                 leadingTrivia: .space,
                                 trailingTrivia: identifierPattern.trailingTrivia ?? .space
                             )

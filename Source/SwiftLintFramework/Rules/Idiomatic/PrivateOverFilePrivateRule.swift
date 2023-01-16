@@ -240,7 +240,7 @@ private extension PrivateOverFilePrivateRule {
 
 private extension ModifierListSyntax? {
     var fileprivateModifier: DeclModifierSyntax? {
-        self?.first { $0.name.tokenKind == .fileprivateKeyword }
+        self?.first { $0.name.tokenKind == .keyword(.fileprivate) }
     }
 }
 
@@ -249,7 +249,8 @@ private extension ModifierListSyntax {
         replacing(
             childAt: fileprivateModifier.indexInParent,
             with: fileprivateModifier.withName(
-                .privateKeyword(
+                .keyword(
+                    .private,
                     leadingTrivia: fileprivateModifier.leadingTrivia ?? .zero,
                     trailingTrivia: fileprivateModifier.trailingTrivia ?? .zero
                 )

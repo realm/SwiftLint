@@ -160,7 +160,7 @@ private extension FunctionCallExprSyntax {
     var hasViolation: Bool {
         return isTypeOfSelfCall &&
             argumentList.map(\.label?.text) == ["of"] &&
-            argumentList.first?.expression.as(IdentifierExprSyntax.self)?.identifier.tokenKind == .selfKeyword
+            argumentList.first?.expression.as(IdentifierExprSyntax.self)?.identifier.tokenKind == .keyword(.self)
     }
 
     var isTypeOfSelfCall: Bool {

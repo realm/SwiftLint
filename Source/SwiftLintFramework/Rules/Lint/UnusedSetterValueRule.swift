@@ -139,7 +139,7 @@ private extension UnusedSetterValueRule {
         override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: AccessorDeclSyntax) {
-            guard node.accessorKind.tokenKind == .contextualKeyword("set") else {
+            guard node.accessorKind.tokenKind == .keyword(.set) else {
                 return
             }
 

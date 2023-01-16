@@ -26,7 +26,7 @@ private extension NotificationCenterDetachmentRule {
                   let arg = node.argumentList.first,
                   arg.label == nil,
                   let expr = arg.expression.as(IdentifierExprSyntax.self),
-                  expr.identifier.tokenKind == .selfKeyword else {
+                  expr.identifier.tokenKind == .keyword(.self) else {
                 return
             }
 

@@ -38,7 +38,7 @@ private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
     }
 
     override func visitPost(_ node: TokenListSyntax) {
-        if case .contextualKeyword("unowned") = node.first?.tokenKind {
+        if case .keyword(.unowned) = node.first?.tokenKind {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }

@@ -113,11 +113,11 @@ extension TokenKind {
 
 extension ModifierListSyntax? {
     var containsLazy: Bool {
-        contains(tokenKind: .contextualKeyword("lazy"))
+        contains(tokenKind: .keyword(.lazy))
     }
 
     var containsOverride: Bool {
-        contains(tokenKind: .contextualKeyword("override"))
+        contains(tokenKind: .keyword(.override))
     }
 
     var containsStaticOrClass: Bool {
@@ -125,15 +125,15 @@ extension ModifierListSyntax? {
     }
 
     var isStatic: Bool {
-        contains(tokenKind: .staticKeyword)
+        contains(tokenKind: .keyword(.static))
     }
 
     var isClass: Bool {
-        contains(tokenKind: .classKeyword)
+        contains(tokenKind: .keyword(.class))
     }
 
     var isFileprivate: Bool {
-        contains(tokenKind: .fileprivateKeyword)
+        contains(tokenKind: .keyword(.fileprivate))
     }
 
     var isPrivateOrFileprivate: Bool {
@@ -142,13 +142,13 @@ extension ModifierListSyntax? {
         }
 
         return modifiers.contains { elem in
-            (elem.name.tokenKind == .privateKeyword || elem.name.tokenKind == .fileprivateKeyword) &&
+            (elem.name.tokenKind == .keyword(.private) || elem.name.tokenKind == .keyword(.fileprivate)) &&
                 elem.detail == nil
         }
     }
 
     var isFinal: Bool {
-        contains(tokenKind: .contextualKeyword("final"))
+        contains(tokenKind: .keyword(.final))
     }
 
     private func contains(tokenKind: TokenKind) -> Bool {
@@ -169,8 +169,8 @@ extension VariableDeclSyntax {
 
     var weakOrUnownedModifier: DeclModifierSyntax? {
         modifiers?.first { decl in
-            decl.name.tokenKind == .contextualKeyword("weak") ||
-                decl.name.tokenKind == .contextualKeyword("unowned")
+            decl.name.tokenKind == .keyword(.weak) ||
+                decl.name.tokenKind == .keyword(.unowned)
         }
     }
 
@@ -239,13 +239,13 @@ extension FunctionDeclSyntax {
 extension AccessorBlockSyntax {
     var getAccessor: AccessorDeclSyntax? {
         accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("get")
+            accessor.accessorKind.tokenKind == .keyword(.get)
         }
     }
 
     var setAccessor: AccessorDeclSyntax? {
         accessors.first { accessor in
-            accessor.accessorKind.tokenKind == .contextualKeyword("set")
+            accessor.accessorKind.tokenKind == .keyword(.set)
         }
     }
 

@@ -112,18 +112,17 @@ private extension LowerACLThanParentRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            let keyword: String
-            let trailingTrivia: Trivia
-            if node.name.tokenKind == .contextualKeyword("open") {
-                keyword = "public"
-                trailingTrivia = .space
+            let newNode: DeclModifierSyntax
+            if node.name.tokenKind == .keyword(.open) {
+                newNode = DeclModifierSyntax(
+                    leadingTrivia: node.leadingTrivia ?? .zero,
+                    name: .keyword(.public),
+                    trailingTrivia: .space
+                )
             } else {
-                keyword = ""
-                trailingTrivia = .zero
+                newNode = DeclModifierSyntax(name: .keyword(.internal, presence: .missing))
             }
-            let newNode = node.withName(
-                .contextualKeyword(keyword, leadingTrivia: node.leadingTrivia ?? .zero, trailingTrivia: trailingTrivia)
-            )
+
             return super.visit(newNode)
         }
     }
@@ -136,29 +135,29 @@ private extension DeclModifierSyntax {
         }
 
         switch name.tokenKind {
-        case .internalKeyword
+        case .keyword(.internal)
             where nearestNominalParent.modifiers.isPrivate ||
                 nearestNominalParent.modifiers.isFileprivate:
             return true
-        case .internalKeyword
+        case .keyword(.internal)
             where !nearestNominalParent.modifiers.containsACLModifier:
             guard let nominalExtension = nearestNominalParent.nearestNominalExtensionDeclParent() else {
                 return false
             }
             return nominalExtension.modifiers.isPrivate ||
                 nominalExtension.modifiers.isFileprivate
-        case .publicKeyword
+        case .keyword(.public)
             where nearestNominalParent.modifiers.isPrivate ||
                 nearestNominalParent.modifiers.isFileprivate ||
                 nearestNominalParent.modifiers.isInternal:
             return true
-        case .publicKeyword
+        case .keyword(.public)
             where !nearestNominalParent.modifiers.containsACLModifier:
             guard let nominalExtension = nearestNominalParent.nearestNominalExtensionDeclParent() else {
                 return true
             }
             return !nominalExtension.modifiers.isPublic
-        case .contextualKeyword("open") where !nearestNominalParent.modifiers.isOpen:
+        case .keyword(.open) where !nearestNominalParent.modifiers.isOpen:
             return true
         default:
             return false
@@ -215,32 +214,33 @@ private extension Syntax {
 
 private extension ModifierListSyntax? {
     var isPrivate: Bool {
-        self?.contains(where: { $0.name.tokenKind == .privateKeyword }) == true
+        self?.contains(where: { $0.name.tokenKind == .keyword(.private) }) == true
     }
 
     var isInternal: Bool {
-        self?.contains(where: { $0.name.tokenKind == .internalKeyword }) == true
+        self?.contains(where: { $0.name.tokenKind == .keyword(.internal) }) == true
     }
 
     var isPublic: Bool {
-        self?.contains(where: { $0.name.tokenKind == .publicKeyword }) == true
+        self?.contains(where: { $0.name.tokenKind == .keyword(.public) }) == true
     }
 
     var isOpen: Bool {
-        self?.contains(where: { $0.name.tokenKind == .contextualKeyword("open") }) == true
+        self?.contains(where: { $0.name.tokenKind == .keyword(.open) }) == true
     }
 
     var containsACLModifier: Bool {
         guard self?.isEmpty == false else {
             return false
         }
-        let aclTokens: [TokenKind] = [
-            .fileprivateKeyword,
-            .privateKeyword,
-            .internalKeyword,
-            .publicKeyword,
-            .contextualKeyword("open")
+        let aclTokens: Set<TokenKind> = [
+            .keyword(.private),
+            .keyword(.fileprivate),
+            .keyword(.internal),
+            .keyword(.public),
+            .keyword(.open)
         ]
+
         return self?.contains(where: {
             aclTokens.contains($0.name.tokenKind)
         }) == true

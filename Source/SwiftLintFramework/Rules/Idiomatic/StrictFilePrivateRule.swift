@@ -11,7 +11,10 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
         description: "`fileprivate` should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
+            Example("extension String {}"),
+            Example("private extension String {}"),
             Example("""
+            public
                 extension String {
                     var i: Int { 1 }
                 }
@@ -180,7 +183,7 @@ private extension StrictFilePrivateRule {
         }()
 
         override func visitPost(_ node: DeclModifierSyntax) {
-            guard node.name.tokenKind == .fileprivateKeyword, let grandparent = node.parent?.parent else {
+            guard node.name.tokenKind == .keyword(.fileprivate), let grandparent = node.parent?.parent else {
                 return
             }
             guard grandparent.is(FunctionDeclSyntax.self) || grandparent.is(VariableDeclSyntax.self) else {
@@ -193,7 +196,7 @@ private extension StrictFilePrivateRule {
                 return
             }
             if let varDecl = grandparent.as(VariableDeclSyntax.self) {
-                let isSpecificForSetter = node.detail?.detail.tokenKind == .contextualKeyword("set")
+                let isSpecificForSetter = node.detail?.detail.tokenKind == .keyword(.set)
                 let firstImplementingProtocol = varDecl.bindings
                     .flatMap { binding in
                         let pattern = binding.pattern

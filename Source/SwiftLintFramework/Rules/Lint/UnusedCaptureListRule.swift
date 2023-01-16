@@ -152,12 +152,12 @@ private extension UnusedCaptureListRule {
                         return (name.text, item)
                     } else if let expr = item.expression.as(IdentifierExprSyntax.self) {
                         // allow "[unowned self]"
-                        if expr.identifier.tokenKind == .selfKeyword && item.specifier.containsUnowned {
+                        if expr.identifier.tokenKind == .keyword(.self) && item.specifier.containsUnowned {
                             return nil
                         }
 
                         // allow "[self]" capture (SE-0269)
-                        if expr.identifier.tokenKind == .selfKeyword && item.specifier.isNilOrEmpty {
+                        if expr.identifier.tokenKind == .keyword(.self) && item.specifier.isNilOrEmpty {
                             return nil
                         }
 
@@ -207,7 +207,7 @@ private final class IdentifierReferenceVisitor: SyntaxVisitor {
 private extension TokenListSyntax? {
     var containsUnowned: Bool {
         self?.contains { token in
-            token.tokenKind == .contextualKeyword("unowned")
+            token.tokenKind == .keyword(.unowned)
         } ?? false
     }
 

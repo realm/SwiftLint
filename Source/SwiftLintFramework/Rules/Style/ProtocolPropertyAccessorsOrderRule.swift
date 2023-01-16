@@ -83,7 +83,7 @@ private extension AccessorBlockSyntax {
     var hasViolation: Bool {
         guard accessors.count == 2,
               accessors.allSatisfy({ $0.body == nil }),
-              accessors.first?.accessorKind.tokenKind == .contextualKeyword("set") else {
+              accessors.first?.accessorKind.tokenKind == .keyword(.set) else {
             return false
         }
 

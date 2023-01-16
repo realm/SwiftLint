@@ -79,7 +79,7 @@ private extension UnusedClosureParameterRule {
                         continue
                     }
 
-                    if name.tokenKind == .wildcardKeyword {
+                    if name.tokenKind == .wildcard {
                         continue
                     } else if referencedIdentifiers.contains(name.text.removingDollarsAndBackticks) {
                         continue
@@ -89,7 +89,7 @@ private extension UnusedClosureParameterRule {
                     newParams = newParams.withParameterList(
                         newParams.parameterList.replacing(
                             childAt: index,
-                            with: param.withFirstName(name.withKind(.wildcardKeyword))
+                            with: param.withFirstName(name.withKind(.wildcard))
                         )
                     )
                 }
@@ -99,7 +99,7 @@ private extension UnusedClosureParameterRule {
 
             var newParams = params
             for (index, param) in params.enumerated() {
-                if param.name.tokenKind == .wildcardKeyword {
+                if param.name.tokenKind == .wildcard {
                     continue
                 } else if referencedIdentifiers.contains(param.name.text.removingDollarsAndBackticks) {
                     continue
@@ -108,7 +108,7 @@ private extension UnusedClosureParameterRule {
                 correctionPositions.append(param.name.positionAfterSkippingLeadingTrivia)
                 newParams = newParams.replacing(
                     childAt: index,
-                    with: param.withName(param.name.withKind(.wildcardKeyword))
+                    with: param.withName(param.name.withKind(.wildcard))
                 )
             }
             let newNode = node.withSignature(signature.withInput(.init(newParams)))
@@ -141,7 +141,7 @@ private extension ClosureExprSyntax {
     var namedParameters: [ClosureParam] {
         if let params = signature?.input?.as(ClosureParamListSyntax.self) {
             return params.compactMap { param in
-                if param.name.tokenKind == .wildcardKeyword {
+                if param.name.tokenKind == .wildcard {
                     return nil
                 }
                 return ClosureParam(
@@ -151,7 +151,7 @@ private extension ClosureExprSyntax {
             }
         } else if let params = signature?.input?.as(ParameterClauseSyntax.self)?.parameterList {
             return params.compactMap { param in
-                if param.firstName?.tokenKind == .wildcardKeyword {
+                if param.firstName?.tokenKind == .wildcard {
                     return nil
                 }
                 return param.firstName.map { name in

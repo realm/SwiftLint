@@ -142,7 +142,7 @@ private extension VariableDeclSyntax {
         ]
 
         return attributes?.contains { attr in
-            guard let customAttr = attr.as(CustomAttributeSyntax.self),
+            guard case let .attribute(customAttr) = attr,
                   let typeIdentifier = customAttr.attributeName.as(SimpleTypeIdentifierSyntax.self) else {
                 return false
             }

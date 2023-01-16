@@ -5,8 +5,7 @@ extension SwiftLint {
     struct Lint: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Print lint warnings and errors")
 
-        @OptionGroup
-        var common: LintOrAnalyzeArguments
+        @OptionGroup var common: LintOrAnalyzeArguments
         @Option(help: pathOptionDescription(for: .lint))
         var path: String?
         @Flag(help: "Lint standard input.")

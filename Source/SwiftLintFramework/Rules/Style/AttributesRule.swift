@@ -154,7 +154,7 @@ private extension AttributeListSyntax {
             .children(viewMode: .sourceAccurate)
             .compactMap { $0.as(AttributeSyntax.self) }
             .map { attribute in
-                let atPrefixedName = "@\(attribute.attributeName.text)"
+                let atPrefixedName = "@\(attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)!.name.text)"
                 if configuration.alwaysOnSameLine.contains(atPrefixedName) {
                     return (attribute, .sameLineAsDeclaration)
                 } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {

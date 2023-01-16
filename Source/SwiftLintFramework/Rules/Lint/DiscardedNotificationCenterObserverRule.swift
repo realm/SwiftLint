@@ -95,6 +95,9 @@ private extension DiscardedNotificationCenterObserverRule {
 
 private extension AttributeListSyntax {
     var hasDiscardableResultAttribute: Bool {
-        contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("discardableResult") } == true
+        contains { attribute in
+            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return name == "discardableResult"
+        } == true
     }
 }

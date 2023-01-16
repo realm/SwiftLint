@@ -87,6 +87,9 @@ private extension SyntaxProtocol {
 
 private extension AttributeListSyntax {
     var isObjc: Bool {
-        contains { ["objc", "objcMembers"].contains($0.as(AttributeSyntax.self)?.attributeName.text) }
+        contains { attribute in
+            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return ["objc", "objcMembers"].contains(name)
+        }
     }
 }

@@ -43,21 +43,25 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule,
 
 private extension AttributeListSyntax {
     var hasObjCMembers: Bool {
-        contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .identifier("objcMembers") }
+        contains { attribute in
+            let name = attribute.as(AttributeSyntax.self)?.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text
+            return name == "objcMembers"
+        }
     }
 
     var objCAttribute: AttributeSyntax? {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
             .first { attribute in
-                attribute.attributeName.tokenKind == .keyword(.objc) &&
+                attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "objc" &&
                     attribute.argument == nil
             }
     }
 
     var hasAttributeImplyingObjC: Bool {
         contains { element in
-            guard case let .identifier(attributeName) = element.as(AttributeSyntax.self)?.attributeName.tokenKind else {
+            guard let attribute = element.as(AttributeSyntax.self),
+                  let attributeName = attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text else {
                 return false
             }
 
@@ -113,5 +117,11 @@ extension RedundantObjcAttributeRule {
         let withTrailingWhitespaceAndNewlineRange = NSRange(location: violationRange.location,
                                                             length: violationRange.length + whitespaceAndNewlineOffset)
         return (withTrailingWhitespaceAndNewlineRange, "")
+    }
+}
+
+private extension TokenKind {
+    var isObjc: Bool {
+        self == .keyword(.objc) || self == .identifier("objc")
     }
 }

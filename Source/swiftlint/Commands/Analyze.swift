@@ -5,8 +5,7 @@ extension SwiftLint {
     struct Analyze: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Run analysis rules")
 
-        @OptionGroup
-        var common: LintOrAnalyzeArguments
+        @OptionGroup var common: LintOrAnalyzeArguments
         @Option(help: pathOptionDescription(for: .analyze))
         var path: String?
         @Flag(help: quietOptionDescription(for: .analyze))

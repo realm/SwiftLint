@@ -123,8 +123,8 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return attr.attributeName.tokenKind == .contextualKeyword("available") && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind == .contextualKeyword("unavailable")
+            return attr.attributeName.tokenKind == .keyword(.available) && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind == .keyword(.unavailable)
             }
         }
     }

@@ -205,7 +205,7 @@ private extension AttributeListSyntax? {
 
     var containsObjc: Bool {
         self?.contains { elem in
-            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .contextualKeyword("objc")
+            elem.as(AttributeSyntax.self)?.attributeName.tokenKind == .keyword(.objc)
         } ?? false
     }
 }
@@ -222,8 +222,8 @@ private extension AttributeListSyntax? {
                 return false
             }
 
-            return attr.attributeName.tokenKind == .contextualKeyword("available") && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind == .contextualKeyword("unavailable")
+            return attr.attributeName.tokenKind == .keyword(.available) && arguments.contains { arg in
+                arg.entry.as(TokenSyntax.self)?.tokenKind == .keyword(.unavailable)
             }
         }
     }

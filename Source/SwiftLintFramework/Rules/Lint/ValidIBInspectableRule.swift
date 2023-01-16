@@ -180,7 +180,7 @@ private extension VariableDeclSyntax {
     }
 
     var isReadOnlyProperty: Bool {
-        if letOrVarKeyword.tokenKind == .letKeyword {
+        if letOrVarKeyword.tokenKind == .keyword(.let) {
             return true
         }
 

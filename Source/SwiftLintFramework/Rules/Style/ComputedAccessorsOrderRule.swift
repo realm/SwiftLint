@@ -67,11 +67,11 @@ private extension AccessorBlockSyntax {
         }
 
         let tokens = accessors.map(\.accessorKind.tokenKind)
-        if tokens == [.contextualKeyword("get"), .contextualKeyword("set")] {
+        if tokens == [.keyword(.get), .keyword(.set)] {
             return .getSet
         }
 
-        if tokens == [.contextualKeyword("set"), .contextualKeyword("get")] {
+        if tokens == [.keyword(.set), .keyword(.get)] {
             return .setGet
         }
 

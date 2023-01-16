@@ -83,7 +83,7 @@ private extension DiscardedNotificationCenterObserverRule {
             } else if
                 let previousToken = node.previousToken,
                 case .equal = previousToken.tokenKind,
-                previousToken.previousToken?.tokenKind != .wildcardKeyword
+                previousToken.previousToken?.tokenKind != .wildcard
             {
                 return // result is assigned to something other than the wildcard keyword (`_`)
             }

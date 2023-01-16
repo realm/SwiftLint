@@ -66,7 +66,7 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
 private extension StrictFilePrivateRule {
     final class Visitor: ViolationsSyntaxVisitor {
         override func visitPost(_ node: DeclModifierSyntax) {
-            if node.name.tokenKind == .fileprivateKeyword {
+            if node.name.tokenKind == .keyword(.fileprivate) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

@@ -200,7 +200,7 @@ private extension PatternSyntax {
 private extension FunctionCallExprSyntax {
     var argumentsHasViolation: Bool {
         !calledExpression.is(IdentifierExprSyntax.self) &&
-            calledExpression.as(MemberAccessExprSyntax.self)?.lastToken?.tokenKind != .initKeyword &&
+            calledExpression.as(MemberAccessExprSyntax.self)?.lastToken?.tokenKind != .keyword(.`init`) &&
             argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
     }
 
@@ -226,7 +226,7 @@ private extension FunctionCallExprSyntax {
             let newExpression = self
                 .withCalledExpression(ExprSyntax(newCalledExpression))
                 .withLeftParen(nil)
-                .withArgumentList(nil)
+                .withArgumentList([])
                 .withRightParen(nil)
             return ExprSyntax(newExpression)
         }

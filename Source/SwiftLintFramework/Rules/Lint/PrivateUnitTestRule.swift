@@ -227,7 +227,7 @@ private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
         var leadingTrivia = Trivia.zero
         for modifier in modifiers {
             let accumulatedLeadingTrivia = leadingTrivia + (modifier.leadingTrivia ?? .zero)
-            if modifier.name.tokenKind == .privateKeyword {
+            if modifier.name.tokenKind == .keyword(.private) {
                 leadingTrivia = accumulatedLeadingTrivia
             } else {
                 filteredModifiers.append(modifier.withLeadingTrivia(accumulatedLeadingTrivia))
@@ -269,11 +269,11 @@ private extension FunctionDeclSyntax {
 
 private extension ModifierListSyntax {
     var hasPrivate: Bool {
-        contains { $0.name.tokenKind == .privateKeyword }
+        contains { $0.name.tokenKind == .keyword(.private) }
     }
 
     var hasStatic: Bool {
-        contains { $0.name.tokenKind == .staticKeyword }
+        contains { $0.name.tokenKind == .keyword(.static) }
     }
 }
 
@@ -284,5 +284,5 @@ private func resultInPrivateProperty(modifiers: ModifierListSyntax?, attributes:
     guard let attributes else {
         return true
     }
-    return !attributes.contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .contextualKeyword("objc") }
+    return !attributes.contains { $0.as(AttributeSyntax.self)?.attributeName.tokenKind == .keyword(.objc) }
 }

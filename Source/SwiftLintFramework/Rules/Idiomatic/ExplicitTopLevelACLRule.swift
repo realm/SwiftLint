@@ -108,11 +108,11 @@ private extension ExplicitTopLevelACLRule {
 private extension DeclModifierSyntax {
     var isACLModifier: Bool {
         let aclModifiers: Set<TokenKind> = [
-            .privateKeyword,
-            .fileprivateKeyword,
-            .internalKeyword,
-            .publicKeyword,
-            .contextualKeyword("open")
+            .keyword(.private),
+            .keyword(.fileprivate),
+            .keyword(.internal),
+            .keyword(.public),
+            .keyword(.open)
         ]
 
         return detail == nil && aclModifiers.contains(name.tokenKind)

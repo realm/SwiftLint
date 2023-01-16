@@ -50,7 +50,7 @@ private extension AttributeListSyntax {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
             .first { attribute in
-                attribute.attributeName.tokenKind == .contextualKeyword("objc") &&
+                attribute.attributeName.tokenKind == .keyword(.objc) &&
                     attribute.argument == nil
             }
     }

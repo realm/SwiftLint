@@ -82,11 +82,11 @@ private extension RedundantSetAccessControlRule {
                 return
             }
 
-            if setAccessor.name.tokenKind == .fileprivateKeyword,
+            if setAccessor.name.tokenKind == .keyword(.fileprivate),
                modifiers.getAccessor == nil,
                let closestDeclModifiers = node.closestDecl()?.modifiers {
                 let closestDeclIsFilePrivate = closestDeclModifiers.contains {
-                    $0.name.tokenKind == .fileprivateKeyword
+                    $0.name.tokenKind == .keyword(.fileprivate)
                 }
 
                 if closestDeclIsFilePrivate {
@@ -95,12 +95,12 @@ private extension RedundantSetAccessControlRule {
                 }
             }
 
-            if setAccessor.name.tokenKind == .internalKeyword,
+            if setAccessor.name.tokenKind == .keyword(.internal),
                modifiers.getAccessor == nil,
                let closesDecl = node.closestDecl(),
                let closestDeclModifiers = closesDecl.modifiers {
                 let closestDeclIsInternal = closestDeclModifiers.isEmpty || closestDeclModifiers.contains {
-                    $0.name.tokenKind == .internalKeyword
+                    $0.name.tokenKind == .keyword(.internal)
                 }
 
                 if closestDeclIsInternal {
@@ -144,7 +144,7 @@ private extension DeclSyntax {
 
 private extension ModifierListSyntax {
     var setAccessor: DeclModifierSyntax? {
-        first { $0.detail?.detail.tokenKind == .contextualKeyword("set") }
+        first { $0.detail?.detail.tokenKind == .keyword(.set) }
     }
 
     var getAccessor: DeclModifierSyntax? {

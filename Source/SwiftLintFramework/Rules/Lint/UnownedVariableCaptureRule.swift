@@ -31,23 +31,9 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
 }
 
 private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: ClosureCaptureItemSyntax) {
-        if let token = node.unownedToken {
-            violations.append(token.positionAfterSkippingLeadingTrivia)
-        }
-    }
-
-    override func visitPost(_ node: TokenListSyntax) {
-        if case .keyword(.unowned) = node.first?.tokenKind {
+    override func visitPost(_ node: TokenSyntax) {
+        if case .keyword(.unowned) = node.tokenKind {
             violations.append(node.positionAfterSkippingLeadingTrivia)
-        }
-    }
-}
-
-private extension ClosureCaptureItemSyntax {
-    var unownedToken: TokenSyntax? {
-        specifier?.first { token in
-            token.tokenKind == .identifier("unowned")
         }
     }
 }

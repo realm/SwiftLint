@@ -12,10 +12,9 @@ public struct GroupedReporter: Reporter {
 
     private static func groupViolations(_ violations: [StyleViolation],
                                         WithViolationsSeverity severity: ViolationSeverity) -> [[StyleViolation]] {
-        
         let groupedBySeverity = Dictionary(grouping: violations) { $0.severity }
         var groupedArrays = [[StyleViolation]]()
-        
+
         if let errorViolations = groupedBySeverity[severity] {
             let groupedErrorViolations = Dictionary(grouping: errorViolations) { $0.ruleIdentifier }
             for key in groupedErrorViolations.keys {
@@ -24,32 +23,32 @@ public struct GroupedReporter: Reporter {
                 }
             }
         }
-        
-        groupedArrays.sort { (array0, array1) -> Bool in
+
+        groupedArrays.sort { array0, array1 -> Bool in
             return array0.count > array1.count
         }
         return groupedArrays
     }
-    
+
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         var report = ""
-        
-        let errorsCount = violations.filter{ $0.severity == .error }.count
-        let warningsCount = violations.filter{ $0.severity == .warning }.count
-        
+
+        let errorsCount = violations.filter { $0.severity == .error }.count
+        let warningsCount = violations.filter { $0.severity == .warning }.count
+
         let groupedErrors = groupViolations(violations, WithViolationsSeverity: .error)
         let groupdeWarnings = groupViolations(violations, WithViolationsSeverity: .warning)
-        
+
         var errorsTable = TextTable(groupedViolations: groupedErrors)
         errorsTable.header = "Errors: \(errorsCount)\n"
-        
+
         var warningsTable = TextTable(groupedViolations: groupdeWarnings)
         warningsTable.header = "Errors: \(warningsCount)\n"
 
         report.append(errorsTable.render())
         report.append("\n\n\n")
         report.append(warningsTable.render())
-        
+
         return report
     }
 }

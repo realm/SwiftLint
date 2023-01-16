@@ -32,7 +32,29 @@ struct SuperfluousElseRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
                 } else {
                     return 3
                 }
-            """)
+            """),
+            Example("""
+                if i > 0 {
+                    if a > 1 {
+                        return 1
+                    }
+                } else {
+                    return 3
+                }
+            """),
+            Example("""
+                if i > 0 {
+                    if a > 1 {
+                        if a > 1 {
+                            // comment
+                        } else {
+                            return 1
+                        }
+                    }
+                } else {
+                    return 3
+                }
+            """, excludeFromDocumentation: true)
         ],
         triggeringExamples: [
             Example("""
@@ -101,6 +123,19 @@ private extension IfStmtSyntax {
         return thenBodyReturns
     }
 
+    private var returnsInAllBranches: Bool {
+        guard lastStatementReturns(in: body) else {
+            return false
+        }
+        if case let .ifStmt(nestedIfStmt) = elseBody {
+            return nestedIfStmt.returnsInAllBranches
+        }
+        if case let .codeBlock(block) = elseBody {
+            return lastStatementReturns(in: block)
+        }
+        return false
+    }
+
     private func lastStatementReturns(in block: CodeBlockSyntax) -> Bool {
         guard let lastItem = block.statements.last?.as(CodeBlockItemSyntax.self)?.item else {
             return false
@@ -109,7 +144,7 @@ private extension IfStmtSyntax {
             return true
         }
         if let last = lastItem.as(IfStmtSyntax.self) {
-            return lastStatementReturns(in: last.body)
+            return last.returnsInAllBranches
         }
         return false
     }

@@ -15,7 +15,7 @@ struct SuperfluousElseRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
                 if i > 0 {
                     // comment
                 } else if i < 12 {
-                    // comment
+                    return 2
                 } else {
                     return 3
                 }
@@ -91,7 +91,14 @@ private class Visitor: ViolationsSyntaxVisitor {
 
 private extension IfStmtSyntax {
     var violatesRule: Bool {
-        elseKeyword != nil && lastStatementReturns(in: body)
+        if elseKeyword == nil {
+            return false
+        }
+        let thenBodyReturns = lastStatementReturns(in: body)
+        if thenBodyReturns, let parent = parent?.as(IfStmtSyntax.self) {
+            return parent.violatesRule
+        }
+        return thenBodyReturns
     }
 
     private func lastStatementReturns(in block: CodeBlockSyntax) -> Bool {

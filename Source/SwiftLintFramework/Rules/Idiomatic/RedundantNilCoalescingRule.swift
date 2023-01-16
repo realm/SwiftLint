@@ -75,6 +75,6 @@ private extension RedundantNilCoalescingRule {
 
 private extension TokenKind {
     var isNilCoalescingOperator: Bool {
-        self == .spacedBinaryOperator("??") || self == .unspacedBinaryOperator("??")
+        self == .binaryOperator("??")
     }
 }

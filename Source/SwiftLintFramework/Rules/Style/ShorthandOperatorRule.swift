@@ -86,7 +86,7 @@ private extension ShorthandOperatorRule {
 private extension TokenSyntax {
     var binaryOperator: String? {
         switch tokenKind {
-        case .spacedBinaryOperator(let str), .unspacedBinaryOperator(let str):
+        case .binaryOperator(let str):
             return str
         default:
             return nil

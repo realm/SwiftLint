@@ -101,9 +101,9 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
         )
     }
 
-    private func asAvailabilityCondition(_ condition: ConditionElementSyntax.Condition) -> SyntaxProtocol? {
-        condition.as(AvailabilityConditionSyntax.self) ??
-            condition.as(UnavailabilityConditionSyntax.self)
+    private func asAvailabilityCondition(_ condition: ConditionElementSyntax.Condition)
+        -> AvailabilityConditionSyntax? {
+        condition.as(AvailabilityConditionSyntax.self)
     }
 
     private func otherAvailabilityCheckInvolved(ifStmt: IfStmtSyntax) -> Bool {
@@ -116,11 +116,11 @@ private final class UnavailableConditionRuleVisitor: ViolationsSyntaxVisitor {
         return false
     }
 
-    private func reason(for check: SyntaxProtocol) -> String {
-        switch check {
-        case is AvailabilityConditionSyntax:
+    private func reason(for condition: AvailabilityConditionSyntax) -> String {
+        switch condition.availabilityKeyword.tokenKind {
+        case .poundAvailableKeyword:
             return "Use #unavailable instead of #available with an empty body"
-        case is UnavailabilityConditionSyntax:
+        case .poundUnavailableKeyword:
             return "Use #available instead of #unavailable with an empty body"
         default:
             queuedFatalError("Unknown availability check type.")

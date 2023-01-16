@@ -7,8 +7,8 @@ struct SuperfluousElseRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
 
     static var description = RuleDescription(
         identifier: "superfluous_else",
-        name: "Superfluous Else Block",
-        description: "Else-blocks should be avoided when the previous if-blocks all left the current scope",
+        name: "Superfluous Else",
+        description: "Else branches should be avoided when the previous if-block exits the current scope",
         kind: .style,
         nonTriggeringExamples: [
             Example("""
